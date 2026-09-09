@@ -11,7 +11,6 @@ import { focusTrap, type FocusTrapModifierSignature } from 'ember-focus-trap';
 import onClickOutside from 'ember-click-outside/modifiers/on-click-outside';
 import { Backdrop, type BackdropSignature } from './backdrop';
 import { Portal, findParentPortal, type PortalSignature } from './portal';
-import { getElementByAttribute } from '../../-private/dom';
 import type { ModifierLike } from '@glint/template';
 import type { CssTransitionSignature } from 'ember-css-transitions/modifiers/css-transition';
 import { isTesting, macroCondition } from '@embroider/macros';
@@ -20,17 +19,35 @@ type FocusTrapOptions = NonNullable<
   FocusTrapModifierSignature['Args']['Named']['focusTrapOptions']
 >;
 
-function hasNestedPortals(element: HTMLElement): boolean {
-  const portal = findParentPortal(element);
-  if (!portal) {
+/**
+ * Whether `target` sits inside a portal nested within this overlay's own
+ * portal.
+ *
+ * The question a click handler needs answered is about *this* click, not about
+ * the mere existence of a nested portal. Asking only "is a nested portal
+ * mounted?" made a parent overlay ignore every outside click for as long as a
+ * child was open -- so with a Dropdown submenu (or a Select inside a Modal)
+ * open, clicking the page did not close anything.
+ *
+ * A portal that is not a descendant of this overlay's portal -- one given an
+ * explicit `@target`, or opted out of `appendToParentPortal` -- is not nested,
+ * and a click in it is a genuine outside click.
+ */
+function isWithinNestedPortal(
+  contentElement: HTMLElement,
+  target: EventTarget | null
+): boolean {
+  const ownPortal = findParentPortal(contentElement);
+  if (!ownPortal || !(target instanceof Element)) {
     return false;
   }
-  const childPortal = getElementByAttribute(portal, 'data-portal');
-  if (childPortal) {
-    return true;
+
+  const targetPortal = target.closest('[data-portal="true"]');
+  if (!targetPortal || targetPortal === ownPortal) {
+    return false;
   }
 
-  return false;
+  return ownPortal.contains(targetPortal);
 }
 
 // Blocking the body scroll mutates global state, so it has to be reference
@@ -241,7 +258,7 @@ class Overlay extends Component<OverlaySignature> {
       this.args.closeOnOverlayElementClick !== false &&
       event.target === this.contentElement &&
       this.mouseDownContentElement == this.contentElement &&
-      !hasNestedPortals(this.contentElement) &&
+      !isWithinNestedPortal(this.contentElement, event.target) &&
       !hasWormholeOrAlertParentElement(event.target as HTMLElement)
     ) {
       this.handleClose();
@@ -253,7 +270,7 @@ class Overlay extends Component<OverlaySignature> {
     if (
       this.args.closeOnOutsideClick !== false &&
       this.contentElement &&
-      !hasNestedPortals(this.contentElement) &&
+      !isWithinNestedPortal(this.contentElement, e.target) &&
       !hasWormholeOrAlertParentElement(e.target as HTMLElement)
     ) {
       this.handleClose();

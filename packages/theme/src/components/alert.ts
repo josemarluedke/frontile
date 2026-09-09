@@ -21,11 +21,16 @@ const alert = tv({
   slots: {
     // The outer element: box treatment only (surface, border, radius).
     // No shadow and a tighter radius than `notificationCard` — an Alert
-    // sits in the page rather than floating over it. No transition
-    // machinery, no `stackPlacement`, no `overflow-hidden`: those exist on
-    // the card to serve the notification stack's geometry, which Alert has
-    // no part in.
-    base: 'w-full rounded-lg border',
+    // sits in the page rather than floating over it, and no transition
+    // machinery or `stackPlacement`, which exist on the card only to serve
+    // the notification stack's geometry.
+    //
+    // `overflow-hidden` is not optional: this element owns the radius, but
+    // the `tonal` variant paints its tint on `inner` (it needs an opaque
+    // surface underneath — see that slot). `inner` has square corners, so
+    // without clipping here its tint paints over all four rounded corners
+    // and the alert reads as a rectangle.
+    base: 'w-full rounded-lg border overflow-hidden',
     // The inner element carries the row layout. Alert has no
     // ResizeObserver, so unlike the card it does not need this split for
     // measurement — it needs it because the `tonal` variant's translucent

@@ -4213,917 +4213,6 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
-    module: 'dropdown',
-    name: 'Dropdown',
-    fileName:
-      'packages/frontile/declarations/components/collections/dropdown.d.ts',
-    Args: [
-      {
-        identifier: 'closeOnItemSelect',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Whether the dropdown should close upon selecting an item.',
-        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
-      },
-      {
-        identifier: 'didClose',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Callback when closing has finished, including any exit transition.',
-        tags: {},
-      },
-      {
-        identifier: 'flipOptions',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'alignment\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackPlacements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Placement[]; fallbackStrategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bestFit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'initialPlacement\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackAxisSideDirection</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> ...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Options for the floating-ui flip middleware, which moves the content to\nthe opposite side when it would overflow the viewport.',
-        tags: {},
-      },
-      {
-        identifier: 'middleware',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: string; options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> any; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">fn</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">state</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">placement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">strategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Strategy</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">x</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">y</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">initialPlacement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">middlewareData</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> MiddlewareData</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">rects</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ElementRects</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">platform</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Platform</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">elements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Elements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Promisable</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;...></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }[]</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
-        tags: {},
-      },
-      {
-        identifier: 'offsetOptions',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">OffsetOptions</span></span>',
-          items: [
-            'number',
-            '{ mainAxis?: number; crossAxis?: number; alignmentAxis?: number; }',
-            'Derivable<OffsetValue>',
-          ],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: { defaultValue: { name: 'defaultValue', value: '5' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">5</span></span>',
-      },
-      {
-        identifier: 'placement',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-end\'</span></span>',
-          items: [
-            "'bottom'",
-            "'left'",
-            "'right'",
-            "'top'",
-            "'top-start'",
-            "'top-end'",
-            "'right-start'",
-            "'right-end'",
-            "'bottom-start'",
-            "'bottom-end'",
-            "'left-start'",
-            "'left-end'",
-          ],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'Placement of the menu when open',
-        tags: {
-          defaultValue: { name: 'defaultValue', value: "'bottom-start'" },
-        },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom-start\'</span></span>',
-      },
-      {
-        identifier: 'shiftOptions',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; rootBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> RootBoundary; elementContext</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> ElementContext; altBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; limiter</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Options for the floating-ui shift middleware, which nudges the content\nalong its axis to keep it in view.',
-        tags: {},
-      },
-      {
-        identifier: 'strategy',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Strategy</span></span>',
-          items: ["'absolute'", "'fixed'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: { defaultValue: { name: 'defaultValue', value: "'absolute'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'absolute\'</span></span>',
-      },
-    ],
-    Blocks: [
-      {
-        identifier: 'default',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Trigger: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Trigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (anchor, toggle, trigger bound); Menu: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Menu</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (toggle, Content, closeOnItemSelect bound); }]</span></span>',
-          items: [
-            {
-              identifier: '0',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
-                items: [
-                  {
-                    identifier: 'Trigger',
-                    type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Trigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (anchor, toggle, trigger bound)</span></span>',
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {},
-                  },
-                  {
-                    identifier: 'Menu',
-                    type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Menu</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (toggle, Content, closeOnItemSelect bound)</span></span>',
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {},
-                  },
-                ],
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-          ],
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-    ],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLUListElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'dropdown',
-    name: 'Trigger',
-    fileName:
-      'packages/frontile/declarations/components/collections/dropdown.d.ts',
-    Args: [
-      {
-        identifier: 'anchor',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
-        },
-        isRequired: true,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'toggle',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-        },
-        isRequired: true,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'trigger',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
-        },
-        isRequired: true,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'appearance',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
-          items: [
-            "'default'",
-            "'soft'",
-            "'outlined'",
-            "'minimal'",
-            "'tonal'",
-            "'custom'",
-          ],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'The button appearance',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
-      },
-      {
-        identifier: 'class',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Custom class name, it will override the default ones using Tailwind Merge library.',
-        tags: {},
-      },
-      {
-        identifier: 'intent',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
-          items: [
-            "'default'",
-            "'primary'",
-            "'secondary'",
-            "'tertiary'",
-            "'success'",
-            "'warning'",
-            "'danger'",
-          ],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'The intent of the button',
-        tags: {},
-      },
-      {
-        identifier: 'isInGroup',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'If button is part of a group. Most of the time, this is automatically set\nwhen using the ButtonGroup component.',
-        tags: {},
-      },
-      {
-        identifier: 'size',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span></span>',
-          items: ["'sm'", "'md'", "'lg'", "'xs'", "'xl'", "'2xl'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'The size of the button',
-        tags: {},
-      },
-    ],
-    Blocks: [
-      {
-        identifier: 'default',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
-          items: [],
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-    ],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLButtonElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'dropdown',
-    name: 'Menu',
-    fileName:
-      'packages/frontile/declarations/components/collections/dropdown.d.ts',
-    Args: [
-      {
-        identifier: 'Content',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth, preventAutoFocus, isHoverTrigger, onContentHoverStart, onContentHoverEnd, registerArrow, velcroData bound)</span></span>',
-        },
-        isRequired: true,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'toggle',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-        },
-        isRequired: true,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'allowEmpty',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'appearance',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span></span>',
-          items: ["'default'", "'outlined'", "'faded'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'The appearance of each item',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
-      },
-      {
-        identifier: 'backdrop',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'blur\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'transparent\'</span></span>',
-          items: ["'faded'", "'none'", "'blur'", "'transparent'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
-        tags: {},
-      },
-      {
-        identifier: 'backdropTransition',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
-          items: [
-            {
-              identifier: 'didTransitionIn',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'didTransitionOut',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'enterClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'enterActiveClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'enterToClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'isEnabled',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'leaveClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'leaveActiveClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'leaveToClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'name',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'parentSelector',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-          ],
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
-        tags: {},
-      },
-      {
-        identifier: 'blockScroll',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
-      },
-      {
-        identifier: 'class',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'closeOnEscapeKey',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'Whether to close when the escape key is pressed',
-        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
-      },
-      {
-        identifier: 'closeOnItemSelect',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'closeOnOutsideClick',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Whether to close when the area outside (the backdrop) is clicked',
-        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
-      },
-      {
-        identifier: 'disabledKeys',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string[]</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'disableFocusTrap',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
-      },
-      {
-        identifier: 'disableTransitions',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'Disable css transitions',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
-      },
-      {
-        identifier: 'focusTrapOptions',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">any</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'Focus trap options',
-        tags: {
-          defaultValue: {
-            name: 'defaultValue',
-            value: '{ clickOutsideDeactivates: true, allowOutsideClick: true }',
-          },
-        },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">clickOutsideDeactivates</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">allowOutsideClick</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> }</span></span>',
-      },
-      {
-        identifier: 'intent',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
-          items: [
-            "'default'",
-            "'primary'",
-            "'secondary'",
-            "'tertiary'",
-            "'success'",
-            "'warning'",
-            "'danger'",
-          ],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'The intent of each item',
-        tags: {},
-      },
-      {
-        identifier: 'onAction',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          "Callback when a menu item is selected, receiving that item's <code>@key</code>.",
-        tags: {},
-      },
-      {
-        identifier: 'onSelectionChange',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'renderInPlace',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Whether to render in place or in the specified/default destination',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
-      },
-      {
-        identifier: 'selectedKeys',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string[]</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'selectionMode',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SelectionMode</span></span>',
-          items: ["'none'", "'single'", "'multiple'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'shortcutAppearance',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
-          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          "The appearance of the keycap rendered for each item's <code>@shortcut</code>.",
-        tags: { defaultValue: { name: 'defaultValue', value: "'inherit'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'inherit\'</span></span>',
-      },
-      {
-        identifier: 'target',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Element</span></span>',
-          items: ['string', 'Element'],
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
-        tags: {},
-      },
-      {
-        identifier: 'transition',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
-          items: [
-            {
-              identifier: 'didTransitionIn',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'didTransitionOut',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'enterClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'enterActiveClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'enterToClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'isEnabled',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'leaveClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'leaveActiveClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'leaveToClass',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'name',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'parentSelector',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-          ],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'The transition to be used in the Modal.',
-        tags: {
-          defaultValue: {
-            name: 'defaultValue',
-            value: "{name: 'overlay-transition--scale'}",
-          },
-        },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'overlay-transition--scale\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span>',
-      },
-      {
-        identifier: 'transitionDuration',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'Duration of the animation',
-        tags: { defaultValue: { name: 'defaultValue', value: '200' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">200</span></span>',
-      },
-    ],
-    Blocks: [
-      {
-        identifier: 'default',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager bound)]</span></span>',
-          items: [
-            {
-              identifier: '0',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager bound)</span></span>',
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-          ],
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-    ],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLUListElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
     module: 'autocomplete',
     name: 'Autocomplete',
     fileName:
@@ -12242,6 +11331,22 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
       },
       {
+        identifier: 'arrowClass',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value:
+              "Additional classes for the arrow element, merged with `overlayArrow`'s\ndefaults via Tailwind Merge. Lets a consumer that composes `Content`\n(e.g. `Tooltip`) give the arrow an intent-specific border; not meant as\npublic `Popover` API.",
+          },
+        },
+      },
+      {
         identifier: 'backdrop',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -18397,6 +17502,1738 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'dropdown',
+    name: 'Dropdown',
+    fileName:
+      'packages/frontile/declarations/components/collections/dropdown/dropdown.d.ts',
+    Args: [
+      {
+        identifier: 'closeOnItemSelect',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the dropdown should close upon selecting an item.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
+        identifier: 'didClose',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Callback when closing has finished, including any exit transition.',
+        tags: {},
+      },
+      {
+        identifier: 'flipOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'alignment\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackPlacements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Placement[]; fallbackStrategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bestFit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'initialPlacement\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackAxisSideDirection</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> ...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Options for the floating-ui flip middleware, which moves the content to\nthe opposite side when it would overflow the viewport.',
+        tags: {},
+      },
+      {
+        identifier: 'middleware',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: string; options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> any; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">fn</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">state</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">placement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">strategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Strategy</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">x</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">y</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">initialPlacement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">middlewareData</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> MiddlewareData</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">rects</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ElementRects</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">platform</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Platform</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">elements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Elements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Promisable</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;...></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
+        tags: {},
+      },
+      {
+        identifier: 'offsetOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">OffsetOptions</span></span>',
+          items: [
+            'number',
+            '{ mainAxis?: number; crossAxis?: number; alignmentAxis?: number; }',
+            'Derivable<OffsetValue>',
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: '5' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">5</span></span>',
+      },
+      {
+        identifier: 'placement',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-end\'</span></span>',
+          items: [
+            "'bottom'",
+            "'left'",
+            "'right'",
+            "'top'",
+            "'top-start'",
+            "'top-end'",
+            "'right-start'",
+            "'right-end'",
+            "'bottom-start'",
+            "'bottom-end'",
+            "'left-start'",
+            "'left-end'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Placement of the menu when open',
+        tags: {
+          defaultValue: { name: 'defaultValue', value: "'bottom-start'" },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom-start\'</span></span>',
+      },
+      {
+        identifier: 'shiftOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; rootBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> RootBoundary; elementContext</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> ElementContext; altBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; limiter</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Options for the floating-ui shift middleware, which nudges the content\nalong its axis to keep it in view.',
+        tags: {},
+      },
+      {
+        identifier: 'strategy',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Strategy</span></span>',
+          items: ["'absolute'", "'fixed'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'absolute'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'absolute\'</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Trigger: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Trigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (anchor, toggle, trigger bound); Menu: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Menu</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (toggle, close, Content, closeOnItemSelect bound); }]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'Trigger',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Trigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (anchor, toggle, trigger bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Menu',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Menu</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (toggle, close, Content, closeOnItemSelect bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLUListElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'dropdown',
+    name: 'Trigger',
+    fileName:
+      'packages/frontile/declarations/components/collections/dropdown/dropdown.d.ts',
+    Args: [
+      {
+        identifier: 'anchor',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'toggle',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'trigger',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'appearance',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          items: [
+            "'default'",
+            "'soft'",
+            "'outlined'",
+            "'minimal'",
+            "'tonal'",
+            "'custom'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The button appearance',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+      },
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom class name, it will override the default ones using Tailwind Merge library.',
+        tags: {},
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The intent of the button',
+        tags: {},
+      },
+      {
+        identifier: 'isInGroup',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'If button is part of a group. Most of the time, this is automatically set\nwhen using the ButtonGroup component.',
+        tags: {},
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'", "'xs'", "'xl'", "'2xl'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The size of the button',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLButtonElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'dropdown',
+    name: 'Menu',
+    fileName:
+      'packages/frontile/declarations/components/collections/dropdown/dropdown.d.ts',
+    Args: [
+      {
+        identifier: 'Content',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth, preventAutoFocus, isHoverTrigger, onContentHoverStart, onContentHoverEnd, registerArrow, velcroData bound)</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'allowEmpty',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'appearance',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span></span>',
+          items: ["'default'", "'outlined'", "'faded'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The appearance of each item',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+      },
+      {
+        identifier: 'autoActivateMode',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'first\'</span></span>',
+          items: ["'none'", "'first'"],
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'backdrop',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'blur\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'transparent\'</span></span>',
+          items: ["'faded'", "'none'", "'blur'", "'transparent'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
+        tags: {},
+      },
+      {
+        identifier: 'backdropTransition',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'enterClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'enterToClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'isEnabled',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'leaveClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'leaveToClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'name',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'parentSelector',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
+        tags: {},
+      },
+      {
+        identifier: 'blockScroll',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'close',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'closeOnEscapeKey',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Whether to close when the escape key is pressed',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
+        identifier: 'closeOnItemSelect',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'closeOnOutsideClick',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether to close when the area outside (the backdrop) is clicked',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
+        identifier: 'context',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'depth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '0 for the root menu, 1 for a submenu, and so on.',
+              tags: {},
+            },
+            {
+              identifier: 'closeRoot',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Close the whole chain. Choosing a leaf three levels down dismisses the\nentire dropdown, not just the level the leaf sits in.',
+              tags: {},
+            },
+            {
+              identifier: 'closeSelf',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Close just this level, leaving its parent open -- what ArrowLeft does.\nOn the root this is the same thing as `closeRoot`.',
+              tags: {},
+            },
+            {
+              identifier: 'subs',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Map</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string, SubHandle</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "The submenus registered at this level, keyed by their trigger's key.",
+              tags: {},
+            },
+            {
+              identifier: 'registerSub',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">handle</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> SubHandle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'unregisterSub',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'selectionMode',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SelectionMode</span></span>',
+                items: ["'none'", "'single'", "'multiple'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'selectedKeys',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string[]</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'disabledKeys',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string[]</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'allowEmpty',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'onAction',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'onSelectionChange',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">keys</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'appearance',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span></span>',
+                items: ["'default'", "'outlined'", "'faded'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'intent',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+                items: [
+                  "'default'",
+                  "'primary'",
+                  "'secondary'",
+                  "'tertiary'",
+                  "'success'",
+                  "'warning'",
+                  "'danger'",
+                ],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'shortcutAppearance',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
+                items: [
+                  "'default'",
+                  "'outlined'",
+                  "'faded'",
+                  "'inherit'",
+                  "'plain'",
+                ],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'closeOnItemSelect',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'disableTransitions',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'transitionDuration',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'depth',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'disabledKeys',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'disableFocusTrap',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'disableTransitions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Disable css transitions',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'focusTrapOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">any</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Focus trap options',
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value: '{ clickOutsideDeactivates: true, allowOutsideClick: true }',
+          },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">clickOutsideDeactivates</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">allowOutsideClick</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> }</span></span>',
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The intent of each item',
+        tags: {},
+      },
+      {
+        identifier: 'menuId',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'onAction',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Callback when a menu item is selected, receiving that item's <code>@key</code>.",
+        tags: {},
+      },
+      {
+        identifier: 'onActiveItemChange',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">item</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ListItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback when the active (highlighted) row changes.',
+        tags: {},
+      },
+      {
+        identifier: 'onSelectionChange',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'renderInPlace',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether to render in place or in the specified/default destination',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'selectedKeys',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'selectionMode',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SelectionMode</span></span>',
+          items: ["'none'", "'single'", "'multiple'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'shortcutAppearance',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
+          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The appearance of the keycap rendered for each item's <code>@shortcut</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'inherit'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'inherit\'</span></span>',
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Element</span></span>',
+          items: ['string', 'Element'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'toggle',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value:
+              "Optional rather than required: the root `Dropdown` binds this, but a\n`Sub`-rendered `Menu` never does (a submenu is dismissed through `close`,\nnot `toggle` -- see `Sub`'s `Menu=(component @menu ...)` invocation, which\nhas no `toggle=` at all). `closeRoot` below already guards this with a\n`typeof this.args.toggle === 'function'` check, so this only makes the\ntype match the runtime behavior that was already there; it does not\nchange it. Leaving this required was what made every `Sub`-bound `Menu`\nrequire a fully-populated args hash at the type level, even though every\nother remaining arg is optional.",
+          },
+        },
+      },
+      {
+        identifier: 'transition',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'enterClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'enterToClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'isEnabled',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'leaveClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'leaveToClass',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'name',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'parentSelector',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The transition to be used in the Modal.',
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value: "{name: 'overlay-transition--scale'}",
+          },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'overlay-transition--scale\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span>',
+      },
+      {
+        identifier: 'transitionDuration',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Duration of the animation',
+        tags: { defaultValue: { name: 'defaultValue', value: '200' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">200</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager bound), sub: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Sub</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (item, menu, parentContext bound)]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager bound)</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: '1',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Sub</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (item, menu, parentContext bound)</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLUListElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'sub',
+    name: 'Sub',
+    fileName:
+      'packages/frontile/declarations/components/collections/dropdown/sub.d.ts',
+    Args: [
+      {
+        identifier: 'item',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager bound)</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value:
+              "Named `item` rather than `Item`: Ember's template compiler treats any\nnamed arg whose first letter is not lowercase (`@Item`, `@Menu`, ...) as\nreserved and refuses to reference it inside a template -- so every named\narg here and on `SubTrigger` below is lowercase even though the values\nyielded to consumers (`Trigger`, `Menu`, `Sub`) stay capitalized block\nparams, which are not subject to that rule.",
+          },
+        },
+      },
+      {
+        identifier: 'menu',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">typeof</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Menu</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value:
+              'The raw, unbound `Menu` -- `Sub` curries `Content`/`context`/`depth`/\n`menuId`/`autoActivateMode`/`close` onto it itself (see `BoundMenuComponent`\nabove and the template below).',
+          },
+        },
+      },
+      {
+        identifier: 'parentContext',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'depth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '0 for the root menu, 1 for a submenu, and so on.',
+              tags: {},
+            },
+            {
+              identifier: 'closeRoot',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Close the whole chain. Choosing a leaf three levels down dismisses the\nentire dropdown, not just the level the leaf sits in.',
+              tags: {},
+            },
+            {
+              identifier: 'closeSelf',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Close just this level, leaving its parent open -- what ArrowLeft does.\nOn the root this is the same thing as `closeRoot`.',
+              tags: {},
+            },
+            {
+              identifier: 'subs',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Map</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string, SubHandle</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "The submenus registered at this level, keyed by their trigger's key.",
+              tags: {},
+            },
+            {
+              identifier: 'registerSub',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">handle</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> SubHandle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'unregisterSub',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'selectionMode',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SelectionMode</span></span>',
+                items: ["'none'", "'single'", "'multiple'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'selectedKeys',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string[]</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'disabledKeys',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string[]</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'allowEmpty',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'onAction',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'onSelectionChange',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">keys</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'appearance',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span></span>',
+                items: ["'default'", "'outlined'", "'faded'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'intent',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+                items: [
+                  "'default'",
+                  "'primary'",
+                  "'secondary'",
+                  "'tertiary'",
+                  "'success'",
+                  "'warning'",
+                  "'danger'",
+                ],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'shortcutAppearance',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
+                items: [
+                  "'default'",
+                  "'outlined'",
+                  "'faded'",
+                  "'inherit'",
+                  "'plain'",
+                ],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'closeOnItemSelect',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'disableTransitions',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'transitionDuration',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'flipOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'alignment\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackPlacements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Placement[]; fallbackStrategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bestFit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'initialPlacement\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackAxisSideDirection</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> ...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Options for the floating-ui flip middleware, which moves the content to\nthe opposite side when it would overflow the viewport.',
+        tags: {},
+      },
+      {
+        identifier: 'middleware',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: string; options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> any; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">fn</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">state</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">placement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">strategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Strategy</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">x</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">y</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">initialPlacement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">middlewareData</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> MiddlewareData</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">rects</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ElementRects</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">platform</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Platform</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">elements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Elements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Promisable</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;...></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
+        tags: {},
+      },
+      {
+        identifier: 'offsetOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">OffsetOptions</span></span>',
+          items: [
+            'number',
+            '{ mainAxis?: number; crossAxis?: number; alignmentAxis?: number; }',
+            'Derivable<OffsetValue>',
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: '5' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">5</span></span>',
+      },
+      {
+        identifier: 'placement',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-end\'</span></span>',
+          items: [
+            "'bottom'",
+            "'left'",
+            "'right'",
+            "'top'",
+            "'top-start'",
+            "'top-end'",
+            "'right-start'",
+            "'right-end'",
+            "'bottom-start'",
+            "'bottom-end'",
+            "'left-start'",
+            "'left-end'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Placement of the menu when open',
+        tags: {
+          defaultValue: { name: 'defaultValue', value: "'bottom-start'" },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom-start\'</span></span>',
+      },
+      {
+        identifier: 'shiftOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; rootBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> RootBoundary; elementContext</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> ElementContext; altBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; limiter</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Options for the floating-ui shift middleware, which nudges the content\nalong its axis to keep it in view.',
+        tags: {},
+      },
+      {
+        identifier: 'strategy',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Strategy</span></span>',
+          items: ["'absolute'", "'fixed'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'absolute'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'absolute\'</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Trigger: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SubTrigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (item, anchor, onTriggerClick, isOpen, submenuId, key, hoverTrigger bound); Menu: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Menu</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (context, depth, menuId, autoActivateMode, close, Content bound); isOpen: boolean; }]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'Trigger',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SubTrigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (item, anchor, onTriggerClick, isOpen, submenuId, key, hoverTrigger bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Menu',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Menu</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (context, depth, menuId, autoActivateMode, close, Content bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isOpen',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'sub',
+    name: 'SubTrigger',
+    fileName:
+      'packages/frontile/declarations/components/collections/dropdown/sub.d.ts',
+    Args: [
+      {
+        identifier: 'anchor',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'hoverTrigger',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'isOpen',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'item',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager bound)</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'onTriggerClick',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'submenuId',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'key',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The key this row registers under. Generated by <code>Sub</code> when omitted; accept\nan override so a test or a consumer can address the row by <code>data-key</code>.',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLLIElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLLIElement',
+    },
+    description:
+      "<p>The row that opens a submenu.</p>\n<p>It renders the parent level's own bound <code>item</code>, so it registers with that\nlevel's <code>ListManager</code> and takes part in arrow navigation, type-ahead and the\nroving tab stop exactly like any other row -- while <code>@hasSubmenu</code> keeps it\nfrom ever selecting.</p>",
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'group',
     name: 'ListboxGroup',
     fileName:
@@ -18654,6 +19491,17 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'hasSubmenu',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Marks this option as the trigger for a submenu.</p>\n<p>It stops the option selecting: opening a submenu is not choosing\nanything, so <code>onAction</code> and <code>onSelectionChange</code> must not fire for it.\nThe option still registers with the <code>ListManager</code> and so still takes\npart in arrow navigation, type-ahead and the roving tab stop.</p>\n<p>Renders <code>aria-haspopup="menu"</code> and a trailing chevron, unless an <code>:end</code>\nblock supplies its own trailing content.</p>',
+        tags: {},
+      },
+      {
         identifier: 'intent',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -18671,6 +19519,17 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: 'The intent of each item',
+        tags: {},
+      },
+      {
+        identifier: 'isSubmenuOpen',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Whether this option's submenu is currently open. Only meaningful\nalongside <code>@hasSubmenu</code>; drives <code>aria-expanded</code> and the highlighted\nresting state via <code>data-submenu-open</code>.",
         tags: {},
       },
       {
@@ -18720,6 +19579,17 @@ const data: ComponentDoc[] = [
         tags: { defaultValue: { name: 'defaultValue', value: "'inherit'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'inherit\'</span></span>',
+      },
+      {
+        identifier: 'submenuId',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The id of the <code>role="menu"</code> element this option opens, for\n<code>aria-controls</code>. Only meaningful alongside <code>@hasSubmenu</code>.',
+        tags: {},
       },
       {
         identifier: 'textValue',
@@ -19734,8 +20604,8 @@ const data: ComponentDoc[] = [
         identifier: 'layout',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'fixed\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span></span>',
-          items: ["'fixed'", "'auto'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'auto\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'fixed\'</span></span>',
+          items: ["'auto'", "'fixed'"],
         },
         isRequired: false,
         isInternal: false,
@@ -20597,8 +21467,8 @@ const data: ComponentDoc[] = [
         identifier: 'layout',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'fixed\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span></span>',
-          items: ["'fixed'", "'auto'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'auto\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'fixed\'</span></span>',
+          items: ["'auto'", "'fixed'"],
         },
         isRequired: false,
         isInternal: false,

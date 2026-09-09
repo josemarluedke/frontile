@@ -604,6 +604,15 @@ import { Listbox } from 'frontile';
 |          | `aria-selected` reflecting selection — options only, since it is invalid on a plain `menuitem` |
 |          | `aria-disabled="true"` for keys in `@disabledKeys`                                             |
 |          | a roving `tabindex` — exactly one option carries `0`, every other one `-1`                     |
+|          | `aria-haspopup="menu"`, `aria-expanded` and `aria-controls` on an item with `@hasSubmenu`       |
+
+An item that opens a nested menu takes three arguments: `@hasSubmenu` renders a trailing
+chevron (unless the item supplies its own `:end` block) and switches its ARIA to
+`aria-haspopup="menu"`; `@isSubmenuOpen` drives `aria-expanded` and a `data-submenu-open`
+resting state; `@submenuId` points `aria-controls` at the submenu's `role="menu"` element.
+An item with `@hasSubmenu` never selects, so `@onAction` and `@onSelectionChange` never fire
+for it, while it still takes part in arrow navigation, type-ahead and the roving tab stop
+like any other item. [Dropdown](./dropdown)'s `Sub` sets all three of these automatically.
 
 The options form a composite you step into once and then navigate with the arrow keys, so only
 one of them is ever in the tab order. That one is the active option; with nothing active it is
