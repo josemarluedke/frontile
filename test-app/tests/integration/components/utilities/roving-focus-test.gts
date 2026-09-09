@@ -27,6 +27,7 @@ module(
           <div>
             <button
               type="button"
+              role="radio"
               aria-checked="true"
               {{roving.setupItem}}
             >A</button>
@@ -72,6 +73,7 @@ module(
           <div>
             <button
               type="button"
+              role="radio"
               aria-checked="true"
               {{roving.setupItem}}
             >A</button>
@@ -107,6 +109,7 @@ module(
             <button type="button" disabled {{roving.setupItem}}>A</button>
             <button
               type="button"
+              role="radio"
               aria-checked="true"
               {{roving.setupItem}}
             >B</button>
@@ -142,6 +145,7 @@ module(
           <div>
             <button
               type="button"
+              role="radio"
               aria-checked="true"
               {{roving.setupItem}}
             >A</button>
@@ -171,6 +175,7 @@ module(
             <button type="button" {{roving.setupItem}}>A</button>
             <button
               type="button"
+              role="radio"
               aria-checked="true"
               {{roving.setupItem}}
             >B</button>
@@ -220,6 +225,7 @@ module(
           <div>
             <button
               type="button"
+              role="radio"
               aria-checked="true"
               {{roving.setupItem}}
             >A</button>
@@ -253,6 +259,7 @@ module(
             <div>
               <button
                 type="button"
+                role="radio"
                 aria-checked="true"
                 {{horizontal.setupItem}}
               >A</button>
@@ -262,6 +269,7 @@ module(
             <div>
               <button
                 type="button"
+                role="radio"
                 aria-checked="true"
                 {{vertical.setupItem}}
               >D</button>
@@ -363,6 +371,7 @@ module(
           <div>
             <button
               type="button"
+              role="radio"
               aria-checked="true"
               {{roving.setupItem}}
             >A</button>
@@ -409,6 +418,7 @@ module(
           <div>
             <button
               type="button"
+              role="radio"
               aria-checked="true"
               {{roving.setupItem}}
             >A</button>

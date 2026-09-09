@@ -605,6 +605,17 @@ class InputOtp extends Component<InputOtpSignature> {
           </div>
         {{/each}}
 
+        {{! False positive in no-unsupported-role-attributes
+            (ember-template-lint 7.9.3). Its getImplicitRole helper matches an
+            aria-query key on the type attribute alone and ignores that key's
+            other constraints, so a plain text input resolves to the
+            list-bearing combobox entry instead of textbox. This input has no
+            list attribute, so textbox is its real implicit role, and textbox
+            does support aria-placeholder. The rule is disabled for this
+            element only, so its autofixer cannot silently delete
+            aria-placeholder when someone runs pnpm lint:hbs --fix. See the
+            @placeholder test in input-otp-test.gts. }}
+        {{! template-lint-disable no-unsupported-role-attributes }}
         <input
           {{this.inputRef.setup}}
           {{this.syncFromValueArg @value}}
@@ -630,6 +641,7 @@ class InputOtp extends Component<InputOtpSignature> {
           spellcheck="false"
           ...attributes
         />
+        {{! template-lint-enable no-unsupported-role-attributes }}
       </div>
     </FormControl>
   </template>
