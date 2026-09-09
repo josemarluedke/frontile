@@ -125,12 +125,13 @@ const alert = tv({
 
   compoundVariants: [
     // default: neutral surface, colour carried by the icon and title.
-    // The `default` intent has no accent — icon and title stay neutral at
-    // the same `firm` level the other intents use for their accent text.
+    // The `default` intent has no accent colour to lend the title emphasis,
+    // so the title earns its prominence from weight of ink instead, sitting
+    // a level above the icon.
     {
       variant: 'default',
       intent: 'default',
-      class: { icon: 'text-neutral-firm', title: 'text-neutral-firm' }
+      class: { icon: 'text-neutral-firm', title: 'text-neutral-bolder' }
     },
     {
       variant: 'default',
