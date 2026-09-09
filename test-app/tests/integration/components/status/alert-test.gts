@@ -44,6 +44,15 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
         tonal: 'variant-tonal',
         solid: 'variant-solid'
       },
+      layout: {
+        inline: 'layout-inline',
+        banner: {
+          base: ['layout-banner'],
+          inner: ['banner-inner'],
+          content: ['banner-content'],
+          closeButton: ['banner-close']
+        }
+      },
       hasDescription: {
         true: { inner: ['has-description'] },
         false: { inner: ['no-description'] }
@@ -52,6 +61,7 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
     defaultVariants: {
       intent: 'default',
       variant: 'default',
+      layout: 'inline',
       hasDescription: false
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -310,6 +320,29 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         `expected the shipped base slot to clip the tonal tint with overflow-hidden, got: ${classes}`
       );
     });
+
+    test('the real banner layout drops the radius and the border', function (assert) {
+      // `rounded-none` and `border-0` are bare classes in a theme string, and
+      // every other test in this file renders against the placeholder recipe
+      // registered at module scope — so nothing else here can see whether the
+      // shipped recipe still carries them. Same reasoning as the
+      // `overflow-hidden` and icon-clamp guards above.
+      const banner = shippedAlert({ layout: 'banner' });
+      const base = banner.base();
+
+      assert.true(
+        base.includes('rounded-none'),
+        `expected the shipped banner base to drop the radius, got: ${base}`
+      );
+      assert.true(
+        base.includes('border-0'),
+        `expected the shipped banner base to drop the border, got: ${base}`
+      );
+      assert.true(
+        banner.content().includes('grow-0'),
+        `expected the shipped banner content slot to drop grow, got: ${banner.content()}`
+      );
+    });
   });
 
   module('actions and closing', function () {
@@ -537,6 +570,70 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       assert.dom('[data-test-id="alert-icon"]').hasClass('my-icon');
       assert.dom('[data-test-id="alert-actions"]').hasClass('my-actions');
       assert.dom('[data-test-id="alert-close-button"]').hasClass('my-close');
+    });
+  });
+
+  module('layout', function () {
+    test('it renders the inline layout by default', async function (assert) {
+      await render(<template><Alert @title="Saved" /></template>);
+
+      assert.dom('[data-test-id="alert"]').hasClass('layout-inline');
+      assert.dom('[data-test-id="alert"]').doesNotHaveClass('layout-banner');
+    });
+
+    test('@layout=banner puts the banner classes on the right slots', async function (assert) {
+      const onClose = () => {};
+
+      await render(
+        <template>
+          <Alert
+            @layout="banner"
+            @title="Scheduled maintenance"
+            @onClose={{onClose}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="alert"]').hasClass('layout-banner');
+      assert.dom('[data-test-id="alert"] .banner-inner').exists();
+      assert.dom('[data-test-id="alert-content"]').hasClass('banner-content');
+      assert
+        .dom('[data-test-id="alert-close-button"]')
+        .hasClass('banner-close');
+    });
+
+    test('a banner still renders its actions and calls @onClose', async function (assert) {
+      let closed = 0;
+      const onClose = () => {
+        closed++;
+      };
+
+      await render(
+        <template>
+          <Alert
+            @layout="banner"
+            @title="Update available"
+            @onClose={{onClose}}
+          >
+            <:actions><button
+                type="button"
+                data-test-id="refresh"
+              >Refresh</button></:actions>
+          </Alert>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="alert-actions"] [data-test-id="refresh"]')
+        .exists('the actions block still renders in banner mode');
+
+      await click('[data-test-id="alert-close-button"]');
+
+      assert.strictEqual(
+        closed,
+        1,
+        'the pinned close button still fires @onClose'
+      );
     });
   });
 });
