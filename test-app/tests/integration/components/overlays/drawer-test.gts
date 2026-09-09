@@ -7,7 +7,7 @@ import {
   triggerKeyEvent,
   settled
 } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Drawer } from 'frontile/overlays';
 import { cell } from 'ember-resources';
@@ -15,6 +15,7 @@ import {
   captureFrontileWarnings,
   observeWarningsBelowCapture
 } from 'test-app/tests/helpers/frontile-warnings';
+import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 import { warn } from '@ember/debug';
 
 module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
@@ -1036,5 +1037,138 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     assert
       .dom('[data-test-id="drawer"] .drawer__description')
       .hasText('Supporting text');
+  });
+
+  test('the real theme keeps the drawer flush with its inset, without a phantom cross-axis scroll', async function (assert) {
+    // Regression test: the `base` slot used to carry `w-full h-full`
+    // unconditionally. On the cross axis (e.g. `left-2`/`right-2` for a
+    // `bottom` placement) the element is already stretched between two
+    // insets, and `w-full`/`h-full` then override that stretch with 100% of
+    // the containing block -- 16px wider/taller than the box the insets
+    // describe -- silently consuming the intended 8px outside margin as an
+    // 8px auto-scroll instead of leaving it visible.
+    //
+    // This has to be checked against the *real*, shipped theme, not this
+    // file's own `registerCustomStyles` mock above (needed by the
+    // class-name assertions elsewhere in this file), which replaces
+    // `drawer`/`overlay` with plain test markers that carry none of the real
+    // utilities (`top-2`, `w-full`, `fixed`, `overflow-auto`, ...) and so
+    // could not exercise this bug either way. `realStyles` is captured in
+    // `tests/helpers/real-theme-styles.ts` before any test file's
+    // module-level `registerCustomStyles` call can replace it (see that
+    // file), so it stays the genuine shipped theme regardless of which test
+    // file happens to load first.
+    const previousDrawerStyles = useStyles().drawer;
+    const previousOverlayStyles = useStyles().overlay;
+    registerCustomStyles({
+      drawer: realStyles.drawer,
+      overlay: realStyles.overlay
+    });
+
+    try {
+      const isOpen = cell(true);
+
+      await render(
+        <template>
+          <Drawer
+            @isOpen={{isOpen.current}}
+            @placement="bottom"
+            @size="md"
+            @disableTransitions={{true}}
+            data-test-id="drawer"
+            as |m|
+          >
+            <m.Body>My Content</m.Body>
+          </Drawer>
+        </template>
+      );
+
+      const bottomDrawer = find('[data-test-id="drawer"]') as HTMLElement;
+      assert.ok(bottomDrawer, 'the bottom-placement drawer renders');
+
+      // The drawer itself (`role="dialog"`) is `position: absolute` and its
+      // own content is small, so it never scrolls itself -- the bug instead
+      // shows up on its containing block: `<Overlay>`'s outer
+      // `[data-component="overlay"]` div, which is `fixed inset-0
+      // overflow-auto`. The CSS scrollable-overflow area of an `overflow:
+      // auto` container includes absolutely-positioned descendants whose
+      // containing block it is, so when the drawer's cross-axis size
+      // ignores its insets (the bug) and renders wider/taller than that
+      // container, the container itself gains a real, measurable scrollbar.
+      const bottomOverlay = bottomDrawer.closest(
+        '[data-component="overlay"]'
+      ) as HTMLElement;
+      assert.ok(bottomOverlay, 'the drawer has an overlay container');
+
+      assert.true(
+        bottomOverlay.scrollWidth <= bottomOverlay.clientWidth,
+        `bottom placement: no phantom horizontal scroll on the overlay container (scrollWidth=${bottomOverlay.scrollWidth}, clientWidth=${bottomOverlay.clientWidth})`
+      );
+
+      // `getBoundingClientRect()` is not usable here: `#ember-testing-container`
+      // is rendered under a test-harness `zoom` style, which rescales the
+      // *visual* pixels a rect reports without changing the resolved CSS
+      // length values. `getComputedStyle()` reports those resolved values
+      // directly, so it stays a reliable "8px" regardless of the harness's
+      // zoom.
+      const bottomStyle = getComputedStyle(bottomDrawer);
+      assert.strictEqual(
+        bottomStyle.left,
+        '8px',
+        'bottom placement: sits exactly 8px from the left edge it is inset from'
+      );
+      assert.strictEqual(
+        bottomStyle.right,
+        '8px',
+        'bottom placement: sits exactly 8px from the right edge it is inset from'
+      );
+
+      const isOpenLeft = cell(true);
+
+      await render(
+        <template>
+          <Drawer
+            @isOpen={{isOpenLeft.current}}
+            @placement="left"
+            @size="md"
+            @disableTransitions={{true}}
+            data-test-id="drawer"
+            as |m|
+          >
+            <m.Body>My Content</m.Body>
+          </Drawer>
+        </template>
+      );
+
+      const leftDrawer = find('[data-test-id="drawer"]') as HTMLElement;
+      assert.ok(leftDrawer, 'the left-placement drawer renders');
+
+      const leftOverlay = leftDrawer.closest(
+        '[data-component="overlay"]'
+      ) as HTMLElement;
+      assert.ok(leftOverlay, 'the drawer has an overlay container');
+
+      assert.true(
+        leftOverlay.scrollHeight <= leftOverlay.clientHeight,
+        `left placement: no phantom vertical scroll on the overlay container (scrollHeight=${leftOverlay.scrollHeight}, clientHeight=${leftOverlay.clientHeight})`
+      );
+
+      const leftStyle = getComputedStyle(leftDrawer);
+      assert.strictEqual(
+        leftStyle.top,
+        '8px',
+        'left placement: sits exactly 8px from the top edge it is inset from'
+      );
+      assert.strictEqual(
+        leftStyle.bottom,
+        '8px',
+        'left placement: sits exactly 8px from the bottom edge it is inset from'
+      );
+    } finally {
+      registerCustomStyles({
+        drawer: previousDrawerStyles,
+        overlay: previousOverlayStyles
+      });
+    }
   });
 });

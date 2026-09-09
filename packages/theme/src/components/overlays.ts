@@ -57,7 +57,7 @@ const modal = tv({
 
 const drawer = tv({
   slots: {
-    base: 'flex flex-col absolute rounded-2xl w-full h-full outline-hidden overflow-clip border border-neutral-muted shadow-elevation-5',
+    base: 'flex flex-col absolute rounded-2xl outline-hidden overflow-clip border border-neutral-muted shadow-elevation-5',
     closeButton: 'absolute top-3 right-3',
     header: '',
     body: 'grow overflow-y-auto',
@@ -103,10 +103,10 @@ const drawer = tv({
       full: ''
     },
     placement: {
-      top: 'top-2 right-2 left-2',
-      bottom: 'bottom-2 right-2 left-2',
-      left: 'top-2 bottom-2 left-2',
-      right: 'top-2 bottom-2 right-2'
+      top: 'top-2 right-2 left-2 h-full',
+      bottom: 'bottom-2 right-2 left-2 h-full',
+      left: 'top-2 bottom-2 left-2 w-full',
+      right: 'top-2 bottom-2 right-2 w-full'
     }
   },
   compoundVariants: [
