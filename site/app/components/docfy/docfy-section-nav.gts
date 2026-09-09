@@ -1,6 +1,8 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
+import { hash } from '@ember/helper';
 import { DocfyLink, DocfyOutput } from '@docfy/ember';
+import { TabNav } from 'frontile';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';
 import type RouterService from '@ember/routing/router-service';
 
@@ -34,30 +36,36 @@ export default class DocfySectionNav extends Component {
 
   <template>
     <DocfyOutput @scope="docs" as |node|>
-      <nav class="sticky top-16 z-10 -mx-4 lg:-mx-6 mb-6 lg:mb-8">
+      <div class="sticky top-16 z-10 -mx-4 lg:-mx-6 mb-6 lg:mb-8">
         <div
           class="border-b border-neutral-subtle bg-surface-canvas backdrop-blur-xl backdrop-saturate-150 px-4 lg:px-6 pt-3 lg:pt-4"
         >
-          <div class="flex gap-4 lg:gap-8 overflow-x-auto scrollbar-hide">
+          <TabNav
+            @label="Documentation sections"
+            @variant="underline"
+            @intent="primary"
+            @classes={{hash
+              list="border-none gap-4 lg:gap-8 overflow-x-auto scrollbar-hide"
+              tab="pb-3 lg:pb-4 text-xs lg:text-sm whitespace-nowrap"
+            }}
+            as |tabNav|
+          >
             {{#each node.children as |child|}}
               {{#let (this.getFirstPageUrl child) as |url|}}
                 {{#if url}}
                   <DocfyLink
                     @to={{url}}
-                    class="pb-3 lg:pb-4 text-xs lg:text-sm font-medium transition-colors text-neutral-strong hover:text-neutral-firm hover:border-b-2 hover:border-primary hover:-mb-px whitespace-nowrap
-                      {{if
-                        (this.isActive child)
-                        'text-neutral-firm border-b-2 border-primary -mb-px'
-                      }}"
+                    class={{tabNav.itemClass}}
+                    {{tabNav.setupItem (this.isActive child)}}
                   >
                     {{child.label}}
                   </DocfyLink>
                 {{/if}}
               {{/let}}
             {{/each}}
-          </div>
+          </TabNav>
         </div>
-      </nav>
+      </div>
     </DocfyOutput>
   </template>
 }
