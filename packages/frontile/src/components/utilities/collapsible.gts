@@ -3,6 +3,7 @@ import { buildWaiter } from '@ember/test-waiters';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import safeStyles from '../../utils/safe-styles';
+import { prefersReducedMotion } from '../../utils/prefers-reduced-motion';
 import type Owner from '@ember/owner';
 
 const waiter = buildWaiter('frontile:collapsible');
@@ -196,6 +197,26 @@ class Collapsible extends Component<CollapsibleSignature> {
 
   expand(element: HTMLElement): void {
     this.isCurrentlyOpen = true;
+
+    // The transition is written as an inline style, so a
+    // `motion-reduce:transition-none` class could never beat it. The check has
+    // to happen here.
+    //
+    // Height, overflow and opacity below land where `onTransitionEnd` leaves
+    // them at the end of a normal expand. `transition` is the one property
+    // that differs: the animated path never clears it, so an element that has
+    // animated keeps an inline `transition` at rest while this path clears it.
+    // Nothing reads that property between runs, so the asymmetry is harmless
+    // -- but it is why this is not, strictly, the same terminal state.
+    if (prefersReducedMotion()) {
+      element.style.transition = '';
+      element.style.overflow = '';
+      element.style.opacity = '1';
+      element.style.height = 'auto';
+      this.endWaiter();
+      return;
+    }
+
     element.style.transition = [
       this.heightTransition(0.4),
       this.opacityTransition(0.3)
@@ -209,8 +230,34 @@ class Collapsible extends Component<CollapsibleSignature> {
     });
   }
 
+  /**
+   * The geometry a collapsed panel ends at.
+   *
+   * Shared by the animated path's final frame and the reduced-motion early
+   * return. Extracted rather than written twice: these two have to agree
+   * about what "closed" means, and a second copy is only a way for them to
+   * drift apart.
+   */
+  applyClosedState(element: HTMLElement): void {
+    const initialHeight = this.initialHeight;
+
+    if (!initialHeight) {
+      element.style.opacity = '0';
+    }
+    element.style.height = initialHeight || '0';
+  }
+
   contract(element: HTMLElement): void {
     this.isCurrentlyOpen = false;
+
+    if (prefersReducedMotion()) {
+      element.style.transition = '';
+      element.style.overflow = 'hidden';
+      this.applyClosedState(element);
+      this.endWaiter();
+      return;
+    }
+
     const height = element.scrollHeight;
     element.style.transition = '';
     element.style.overflow = 'hidden';
@@ -223,12 +270,7 @@ class Collapsible extends Component<CollapsibleSignature> {
       ].join(', ');
 
       window.requestAnimationFrame(() => {
-        const initialHeight = this.initialHeight;
-
-        if (!initialHeight) {
-          element.style.opacity = '0';
-        }
-        element.style.height = initialHeight || '0';
+        this.applyClosedState(element);
       });
     });
   }

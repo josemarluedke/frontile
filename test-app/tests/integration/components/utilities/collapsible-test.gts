@@ -1,9 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, rerender, settled } from '@ember/test-helpers';
+import { render, rerender, settled, find } from '@ember/test-helpers';
 import { getPendingWaiterState, getWaiters } from '@ember/test-waiters';
 import { Collapsible } from 'frontile';
 import { cell } from 'ember-resources';
+import { setPrefersReducedMotion } from 'frontile/test-support';
 
 const WAITER_NAME = 'frontile:collapsible';
 
@@ -393,6 +394,69 @@ module(
         waiter.endAsync = originalEndAsync;
         collapsibleWaiter().reset();
       }
+    });
+  }
+);
+
+module(
+  'Integration | Component | Collapsible | reduced motion',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    hooks.afterEach(function () {
+      setPrefersReducedMotion(undefined);
+    });
+
+    test('it skips the transition when the user prefers reduced motion', async function (assert) {
+      setPrefersReducedMotion(true);
+      const isOpen = cell(false);
+
+      await render(
+        <template>
+          <Collapsible @isOpen={{isOpen.current}} data-test-panel>
+            {{! template-lint-disable no-inline-styles }}
+            <p style="height: 40px">Body</p>
+          </Collapsible>
+        </template>
+      );
+
+      isOpen.current = true;
+      await settled();
+
+      const panel = find('[data-test-panel]') as HTMLElement;
+      assert.strictEqual(
+        panel.style.transition,
+        '',
+        'no inline transition was written'
+      );
+      assert.strictEqual(
+        panel.style.height,
+        'auto',
+        'settled at its full height'
+      );
+    });
+
+    test('it still transitions by default', async function (assert) {
+      setPrefersReducedMotion(false);
+      const isOpen = cell(false);
+
+      await render(
+        <template>
+          <Collapsible @isOpen={{isOpen.current}} data-test-panel>
+            {{! template-lint-disable no-inline-styles }}
+            <p style="height: 40px">Body</p>
+          </Collapsible>
+        </template>
+      );
+
+      const panel = find('[data-test-panel]') as HTMLElement;
+      isOpen.current = true;
+      await rerender();
+      assert.ok(
+        panel.style.transition.includes('height'),
+        'a height transition was written'
+      );
+      await settled();
     });
   }
 );

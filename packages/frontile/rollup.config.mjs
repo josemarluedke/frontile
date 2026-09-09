@@ -33,6 +33,7 @@ export default {
       'status.js',
       'utilities.js',
       'navigation.js',
+      'disclosure.js',
       'test-support.js',
       'template-registry.js'
     ]),

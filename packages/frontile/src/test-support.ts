@@ -55,3 +55,5 @@ function changeOption(
 
   return triggerEvent(select, 'change');
 }
+
+export { setPrefersReducedMotion } from './utils/prefers-reduced-motion';
