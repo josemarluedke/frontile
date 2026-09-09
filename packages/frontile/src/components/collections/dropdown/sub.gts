@@ -15,6 +15,7 @@ import type { Timer } from '@ember/runloop';
 import type { WithBoundArgs } from '@glint/template';
 import type { ModifierLike } from '@glint/template';
 import type { Menu } from './dropdown';
+import { isPointInSafeArea, type Rect } from '../../../utils/safe-area';
 
 /**
  * Long enough that dragging the pointer across a row on its way somewhere else
@@ -160,6 +161,7 @@ class Sub extends Component<SubSignature> {
   willDestroy(): void {
     super.willDestroy();
     this.args.parentContext.unregisterSub(this.triggerKey);
+    this.stopTracking();
     cancel(this.#openTimer);
     cancel(this.#closeTimer);
   }
@@ -172,9 +174,12 @@ class Sub extends Component<SubSignature> {
   open = (source: OpenSource = 'pointer') => {
     this.openSource = source;
     this.isOpen = true;
+    this.startTracking();
   };
 
   close = () => {
+    this.stopTracking();
+
     if (this.isDestroyed || this.isDestroying) {
       return;
     }
@@ -183,6 +188,63 @@ class Sub extends Component<SubSignature> {
 
   #openTimer?: Timer;
   #closeTimer?: Timer;
+
+  /**
+   * The trigger element, captured by `hoverTrigger`, so the safe area can be
+   * measured without querying for it.
+   */
+  #triggerEl?: HTMLElement;
+
+  /**
+   * Whether the pointer is currently being tracked against the safe area.
+   * Guards against installing the document listener twice.
+   */
+  #isTracking = false;
+
+  /**
+   * Keeps the submenu open while the pointer is heading for it.
+   *
+   * The pointer has to cross a gap to reach a submenu, and it crosses it
+   * diagonally -- so `pointerleave` on the trigger cannot mean "close". While
+   * the submenu is open, every pointer move is tested against the safe area:
+   * inside it, the pending close is cancelled; outside it, the pointer has
+   * clearly gone elsewhere and the submenu closes.
+   *
+   * This also handles hovering a sibling row with no extra wiring: a sibling
+   * is outside the safe area, so moving onto one closes the submenu.
+   */
+  trackPointer = (event: PointerEvent) => {
+    const submenu = document.getElementById(this.submenuId);
+    if (!this.#triggerEl || !submenu) {
+      return;
+    }
+
+    const trigger: Rect = this.#triggerEl.getBoundingClientRect();
+    const content: Rect = submenu.getBoundingClientRect();
+    const point = { x: event.clientX, y: event.clientY };
+
+    if (isPointInSafeArea(point, trigger, content)) {
+      this.cancelClose();
+    } else {
+      this.scheduleClose();
+    }
+  };
+
+  startTracking = () => {
+    if (this.#isTracking) {
+      return;
+    }
+    this.#isTracking = true;
+    document.addEventListener('pointermove', this.trackPointer);
+  };
+
+  stopTracking = () => {
+    if (!this.#isTracking) {
+      return;
+    }
+    this.#isTracking = false;
+    document.removeEventListener('pointermove', this.trackPointer);
+  };
 
   scheduleOpen = () => {
     this.cancelClose();
@@ -206,6 +268,7 @@ class Sub extends Component<SubSignature> {
   };
 
   hoverTrigger = modifier((el: HTMLElement) => {
+    this.#triggerEl = el;
     el.addEventListener('pointerenter', this.scheduleOpen);
     el.addEventListener('pointerleave', this.scheduleClose);
 
@@ -214,6 +277,10 @@ class Sub extends Component<SubSignature> {
       el.removeEventListener('pointerleave', this.scheduleClose);
       cancel(this.#openTimer);
       cancel(this.#closeTimer);
+      this.stopTracking();
+      if (this.#triggerEl === el) {
+        this.#triggerEl = undefined;
+      }
     };
   });
 

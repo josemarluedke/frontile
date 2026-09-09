@@ -642,6 +642,58 @@ module(
       assert.dom('[data-key="nested"]').doesNotExist('leaving closed it');
     });
 
+    test('the pointer may travel through the gap into the submenu', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await triggerEvent(
+        '[data-test-id="dropdown-submenu-trigger"]',
+        'pointerenter'
+      );
+      assert.dom('[data-key="nested"]').exists('open to begin with');
+
+      const submenuId = document
+        .querySelector('[data-test-id="dropdown-submenu-trigger"]')
+        ?.getAttribute('aria-controls') as string;
+      const submenu = document.querySelector(`#${submenuId}`) as HTMLElement;
+      const box = submenu.getBoundingClientRect();
+
+      // Leave the trigger, then move onto a point inside the submenu itself.
+      //
+      // The first `triggerEvent` is deliberately NOT awaited: awaiting it
+      // would resolve only once `settled()` sees no pending timers, which
+      // means waiting out the full `SUBMENU_CLOSE_DELAY` for the scheduled
+      // close to actually fire -- defeating the point of this test, which is
+      // to move the pointer into the submenu *before* that happens.
+      // `triggerEvent` dispatches its DOM event synchronously before
+      // returning its promise, so the `pointerleave` (and the close it
+      // schedules) still lands before the `pointermove` below runs.
+      triggerEvent('[data-test-id="dropdown-submenu-trigger"]', 'pointerleave');
+      await triggerEvent(document, 'pointermove', {
+        clientX: box.left + box.width / 2,
+        clientY: box.top + box.height / 2
+      });
+
+      assert
+        .dom('[data-key="nested"]')
+        .exists('moving into the submenu kept it open');
+    });
+
     test('closing a submenu returns focus to the parent level', async function (assert) {
       await render(
         <template>
