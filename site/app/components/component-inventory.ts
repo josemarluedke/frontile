@@ -317,6 +317,18 @@ export const inventory: InventoryCategory[] = [
       },
     ],
   },
+  {
+    name: 'Disclosure',
+    summary: 'Collapsing secondary content so the page stays scannable.',
+    items: [
+      {
+        name: 'Accordion',
+        path: '/docs/components/disclosure/accordion',
+        description:
+          'A vertically stacked set of headings that each reveal a section of content.',
+      },
+    ],
+  },
 ];
 
 export const componentCount: number = inventory.reduce(

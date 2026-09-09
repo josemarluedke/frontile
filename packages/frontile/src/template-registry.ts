@@ -57,6 +57,8 @@ import type {
 
 import type { Tabs, TabNav, ExternalLink } from './components/navigation';
 
+import type { Accordion } from './components/disclosure';
+
 export default interface Registry {
   // Buttons
   Button: typeof Button;
@@ -115,4 +117,7 @@ export default interface Registry {
   Tabs: typeof Tabs;
   TabNav: typeof TabNav;
   ExternalLink: typeof ExternalLink;
+
+  // Disclosure
+  Accordion: typeof Accordion;
 }
