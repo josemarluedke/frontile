@@ -340,6 +340,32 @@ module(
       assert.dom('nav').containsText('0-0 of 0');
     });
 
+    test('the summary element is marked so the row can justify around it', async function (assert) {
+      await render(
+        <template>
+          <Pagination @total={{50}}>
+            <:summary as |s|>{{s.total}} results</:summary>
+          </Pagination>
+        </template>
+      );
+
+      assert
+        .dom('[data-pagination-summary]')
+        .exists(
+          'the summary carries the hook the theme keys its :has() rule off'
+        );
+    });
+
+    test('no summary element is rendered without the block', async function (assert) {
+      await render(<template><Pagination @total={{50}} /></template>);
+
+      assert
+        .dom('[data-pagination-summary]')
+        .doesNotExist(
+          'nothing for the :has() rule to match, so the row stays centred'
+        );
+    });
+
     test('the item block replaces the chips and setupItem writes the ARIA', async function (assert) {
       await render(
         <template>

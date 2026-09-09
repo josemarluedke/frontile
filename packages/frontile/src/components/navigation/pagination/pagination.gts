@@ -302,47 +302,14 @@ class Pagination extends Component<PaginationSignature> {
     };
   }
 
-  /**
-   * A component cannot ask from JS whether it was given a block, and writing
-   * tracked state from a render-time modifier to find out trips Glimmer's
-   * backtracking assertion. So both layouts are resolved up front and the
-   * template picks one with `(has-block "summary")` -- no state, no second
-   * render pass, and the recipe stays the only source of classes.
-   */
   @cached
-  get styleVariants() {
+  get styles() {
     const { pagination } = useStyles();
-    const shared = {
+
+    return pagination({
       size: this.args.size,
       intent: this.args.intent,
       isDisabled: this.isDisabled
-    };
-
-    return {
-      withSummary: pagination({ ...shared, hasSummary: true }),
-      withoutSummary: pagination({ ...shared, hasSummary: false })
-    };
-  }
-
-  /**
-   * Every slot but `base` is identical across the two, so the rest of the
-   * template reads through this one.
-   */
-  get styles() {
-    return this.styleVariants.withoutSummary;
-  }
-
-  @cached
-  get baseClassWithSummary(): string {
-    return this.styleVariants.withSummary.base({
-      class: this.args.classes?.base
-    });
-  }
-
-  @cached
-  get baseClassWithoutSummary(): string {
-    return this.styleVariants.withoutSummary.base({
-      class: this.args.classes?.base
     });
   }
 
@@ -386,27 +353,17 @@ class Pagination extends Component<PaginationSignature> {
     this.goTo(this.currentPage + 1);
   };
 
-  goToFirst = (): void => {
-    this.goTo(1);
-  };
-
-  goToLast = (): void => {
-    this.goTo(this.totalPages);
-  };
-
   <template>
-    {{! template-lint-disable no-unnecessary-curly-parens }}
     <nav
       aria-label={{this.label}}
-      class={{if
-        (has-block "summary")
-        this.baseClassWithSummary
-        this.baseClassWithoutSummary
-      }}
+      class={{this.styles.base class=@classes.base}}
       ...attributes
     >
       {{#if (has-block "summary")}}
-        <div class={{this.styles.summary class=@classes.summary}}>
+        <div
+          class={{this.styles.summary class=@classes.summary}}
+          data-pagination-summary
+        >
           {{yield this.summary to="summary"}}
         </div>
       {{/if}}
@@ -420,7 +377,7 @@ class Pagination extends Component<PaginationSignature> {
               aria-label="Go to first page"
               disabled={{this.isPrevDisabled}}
               data-test-first
-              {{press this.goToFirst}}
+              {{press (fn this.goTo 1)}}
             >
               <ChevronDoubleLeftIcon />
             </button>
@@ -491,7 +448,7 @@ class Pagination extends Component<PaginationSignature> {
               aria-label="Go to last page"
               disabled={{this.isNextDisabled}}
               data-test-last
-              {{press this.goToLast}}
+              {{press (fn this.goTo this.totalPages)}}
             >
               <ChevronDoubleRightIcon />
             </button>

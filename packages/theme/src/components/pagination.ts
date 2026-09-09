@@ -35,7 +35,17 @@ const controlSize = {
 
 const pagination = tv({
   slots: {
-    base: 'flex w-full items-center gap-4',
+    // The summary sits on the leading edge and the controls on the trailing
+    // one, so the row justifies apart only when a summary is actually there;
+    // with nothing to justify against, the controls centre instead. Keyed off
+    // the summary element's own presence with `:has()` -- the same trick
+    // `table.ts` uses -- so the layout follows the rendered structure rather
+    // than a variant the component has to compute and thread through.
+    base: [
+      'flex w-full items-center gap-4',
+      'justify-center',
+      '[&:has([data-pagination-summary])]:justify-between'
+    ],
 
     summary: 'text-neutral shrink-0',
 
@@ -133,23 +143,13 @@ const pagination = tv({
     // disable for them.
     isDisabled: {
       true: { base: 'opacity-disabled', list: 'pointer-events-none' }
-    },
-
-    // With a summary the row is justified, pushing the controls to the far
-    // edge; without one there is nothing to justify against and the controls
-    // centre instead. Driven by `(has-block "summary")`, so the layout follows
-    // the block rather than needing an argument of its own.
-    hasSummary: {
-      true: { base: 'justify-between' },
-      false: { base: 'justify-center' }
     }
   },
 
   defaultVariants: {
     size: 'md',
     intent: 'default',
-    isDisabled: false,
-    hasSummary: false
+    isDisabled: false
   }
 });
 
