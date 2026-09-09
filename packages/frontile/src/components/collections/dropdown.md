@@ -737,6 +737,8 @@ The arguments declared once on the root `d.Menu` (`@onAction`, `@selectionMode`,
 `@selectedKeys`, `@disabledKeys`, `@allowEmpty`, `@onSelectionChange`, `@appearance`,
 `@intent`, `@shortcutAppearance`, `@closeOnItemSelect`, `@disableTransitions`,
 `@transitionDuration`) apply at every depth, so a nested `s.Menu` only needs its own items.
+Passing one of these same arguments to a nested `s.Menu` instead of the root has no effect —
+the root's value always wins, silently — so declare them once, on `d.Menu`.
 
 `s.Trigger` needs no `@key` — `Sub` generates one, and a sub-trigger never fires
 `@onAction`. `Sub` positions its menu with `@placement`, `@offsetOptions`, `@flipOptions`,
