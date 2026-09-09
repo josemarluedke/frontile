@@ -627,14 +627,11 @@ export default class DropdownWithCallback extends Component {
 
 ### With Submenus
 
-Group related actions behind a nested menu. `d.Menu` yields a second block
-param, `Sub`, which in turn yields its own `Trigger` and `Menu`. Submenus open
-on hover, on click, or with <kbd>→</kbd>, and close with <kbd>←</kbd> or
-<kbd>Esc</kbd>.
-
-`@onAction`, `@selectionMode` and `@selectedKeys` are declared once on the root
-`d.Menu` and apply at every depth — a sub-trigger itself never fires
-`@onAction`.
+Group related actions behind a nested menu. `Sub` is a second, optional block
+param yielded by `d.Menu` alongside `Item` — existing `as |Item|` code keeps
+working unchanged, and you only reach for `Sub` where a nested menu is
+actually needed. Submenus open on hover, on click, or with <kbd>→</kbd>, and
+close with <kbd>←</kbd> or <kbd>Esc</kbd>.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -722,6 +719,29 @@ export default class NestedSubmenuDropdown extends Component {
 }
 ```
 
+## Anatomy
+
+Dropdown yields the pieces you assemble the menu from:
+
+| Yielded     | Purpose                                                                                                 |
+| ----------- | -------------------------------------------------------------------------------------------------------- |
+| `d.Trigger` | Button that opens the menu                                                                              |
+| `d.Menu`    | The menu itself; yields an `Item` for each entry and, as a second block param, `Sub` for a nested menu  |
+| `Item`      | A single menu entry                                                                                     |
+| `Sub`       | A nested menu, yielded alongside `Item`; yields its own `s.Trigger` and `s.Menu`                        |
+
+A `Sub`'s `s.Menu` yields `Item` and `Sub` again, the same as the root `d.Menu`, so menus can
+nest to any depth.
+
+The arguments declared once on the root `d.Menu` (`@onAction`, `@selectionMode`,
+`@selectedKeys`, `@disabledKeys`, `@allowEmpty`, `@onSelectionChange`, `@appearance`,
+`@intent`, `@shortcutAppearance`, `@closeOnItemSelect`, `@disableTransitions`,
+`@transitionDuration`) apply at every depth, so a nested `s.Menu` only needs its own items.
+
+`s.Trigger` needs no `@key` — `Sub` generates one, and a sub-trigger never fires
+`@onAction`. `Sub` positions its menu with `@placement`, `@offsetOptions`, `@flipOptions`,
+`@shiftOptions`, `@middleware` and `@strategy`, defaulting to `@placement="right-start"`.
+
 ## Accessibility
 
 Dropdown is a Popover wrapping a Listbox with `@type="menu"`, and inherits from both.
@@ -765,20 +785,6 @@ inside it rather than leaving. `@autoActivateMode="none"` means no item is activ
 menu opens, so the first `ArrowDown` lands on the first item rather than the second.
 
 ### Submenus
-
-`d.Menu` yields a second block param, `Sub`, next to the item component. A `Sub`
-yields its own `Trigger` and `Menu` — and that `Menu` yields `Sub` again, so
-menus can nest to any depth. The arguments declared once on the root `d.Menu`
-(`@onAction`, `@selectionMode`, `@selectedKeys`, `@disabledKeys`,
-`@allowEmpty`, `@onSelectionChange`, `@appearance`, `@intent`,
-`@shortcutAppearance`, `@closeOnItemSelect`, `@disableTransitions`,
-`@transitionDuration`) apply at every depth, so a nested `s.Menu` only needs
-its own items.
-
-`s.Trigger` needs no `@key` — `Sub` generates one, and a sub-trigger never
-fires `@onAction`. `Sub` positions its menu with `@placement`,
-`@offsetOptions`, `@flipOptions`, `@shiftOptions`, `@middleware` and
-`@strategy`, defaulting to `@placement="right-start"`.
 
 A submenu also opens on hovering its trigger, after a short delay, and stays
 open while the pointer travels toward it; moving onto a sibling row closes it.
