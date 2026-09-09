@@ -711,25 +711,22 @@ module(
         '0px',
         'the bar has a height of its own rather than the tab height'
       );
-      // `computed.width` is the fractional used value from getComputedStyle,
-      // while `offsetWidth` is rounded to an integer. On macOS the fraction
-      // happens to land on a whole pixel so a strict string comparison
-      // passes; on Linux CI, different font metrics land the tab's real
-      // width off the whole pixel (e.g. 116.156px vs offsetWidth's rounded
-      // 117). Compare against the tab's own fractional computed width
-      // instead: `getBoundingClientRect()` returns the post-zoom rendered
-      // size, which the ember-testing container's `zoom` can scale by a
-      // factor unrelated to the indicator's own computed style, whereas
-      // both computed-style reads live in the same coordinate space.
-      const secondTabWidth = parseFloat(
-        window.getComputedStyle(secondTab).width
+      // Compare the same quantity the component actually copies. The
+      // indicator is sized by publishing the selected tab's `offsetWidth`
+      // into a CSS variable, and `offsetWidth` is a rounded integer -- so the
+      // bar is legitimately up to a pixel narrower than the tab's real
+      // fractional width, at any zoom. Measuring either side with
+      // `getComputedStyle` or `getBoundingClientRect` therefore reports that
+      // rounding gap as a mismatch (0.367px in a local reproduction, 0.844px
+      // on CI, where the tab's fractional width differs with the font
+      // metrics). `offsetWidth` on both sides is exact and zoom-invariant,
+      // because it is the measurement the sizing is derived from.
+      assert.strictEqual(
+        indicator.offsetWidth,
+        secondTab.offsetWidth,
+        'the bar is as wide as the selected tab'
       );
-      assert.pushResult({
-        result: Math.abs(parseFloat(computed.width) - secondTabWidth) < 0.75,
-        actual: computed.width,
-        expected: `~${secondTabWidth}px`,
-        message: 'the bar is as wide as the selected tab'
-      });
+
       assert.ok(
         computed.translate.includes(`${secondTab.offsetLeft}px`),
         `the bar's translate (${computed.translate}) reflects the selected ` +
@@ -784,23 +781,12 @@ module(
         '2px',
         'the bar is the thin vertical accent (w-0.5), not the full tab width'
       );
-      // Same fraction-vs-rounded-integer mismatch as the horizontal underline
-      // test above: `computed.height` is the fractional used value while
-      // `offsetHeight` is rounded, and differing font metrics on Linux CI can
-      // put the real height off the whole pixel. Compare against the tab's
-      // own fractional computed height (not `getBoundingClientRect()`, whose
-      // post-zoom rendered size the ember-testing container's `zoom` can
-      // scale independently of a computed-style read) within a sub-pixel
-      // tolerance instead of an exact string match.
-      const secondTabHeight = parseFloat(
-        window.getComputedStyle(secondTab).height
+      // Same reasoning as the width assertion above, on the other axis.
+      assert.strictEqual(
+        indicator.offsetHeight,
+        secondTab.offsetHeight,
+        'the bar is as tall as the selected tab'
       );
-      assert.pushResult({
-        result: Math.abs(parseFloat(computed.height) - secondTabHeight) < 0.75,
-        actual: computed.height,
-        expected: `~${secondTabHeight}px`,
-        message: 'the bar is as tall as the selected tab'
-      });
       assert.ok(
         computed.translate.includes(`${secondTab.offsetTop}px`),
         `the bar's translate (${computed.translate}) reflects the selected ` +
