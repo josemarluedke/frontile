@@ -73,7 +73,12 @@ const drawer = tv({
     header: '',
     body: 'grow overflow-y-auto',
     footer: 'flex justify-end items-center relative gap-4',
-    icon: 'row-span-2 col-start-1 shrink-0 flex items-center justify-center',
+    // The gap between the icon column and the text column lives here rather
+    // than as `gap-x-*` on the header grid. A column gap applies between the
+    // two tracks whether or not the icon track has anything in it, so a
+    // header with no icon still had its title indented past the body text
+    // below it. As a margin it only exists when an icon does.
+    icon: 'row-span-2 col-start-1 mr-3 shrink-0 flex items-center justify-center',
     title: 'col-start-2 font-header',
     description: 'col-start-2',
     dragHandle:
@@ -86,7 +91,7 @@ const drawer = tv({
         base: 'bg-surface-drawer text-on-surface-drawer',
         body: 'bg-surface-drawer px-8 py-6',
         header:
-          'relative grid grid-cols-[auto_1fr] items-center gap-x-3 bg-black text-white px-8 py-6 pr-24',
+          'relative grid grid-cols-[auto_1fr] items-center bg-black text-white px-8 py-6 pr-24',
         footer:
           'bg-surface-app text-on-surface-app border-t border-neutral-muted px-8 py-6',
         // The close button's own `transparent` variant hovers to
@@ -113,11 +118,11 @@ const drawer = tv({
       ghost: {
         base: 'bg-surface-modal text-on-surface-modal',
         body: 'px-8 py-6',
-        // Same grid layout as `default` (left-aligned, icon column, close
-        // button column) but ghost's own colours -- no `bg-black`/`text-white`
-        // here, this stays on `surface-modal`.
+        // Same grid layout as `default` (left-aligned, icon column) but
+        // ghost's own colours -- no `bg-black`/`text-white` here, this stays
+        // on `surface-modal`.
         header:
-          'relative grid grid-cols-[auto_1fr] items-center gap-x-3 font-header px-8 py-6 pr-24',
+          'relative grid grid-cols-[auto_1fr] items-center font-header px-8 py-6 pr-24',
         footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal px-8 py-6`,
         title: 'text-header-lg',
         description: 'text-sm text-neutral',
