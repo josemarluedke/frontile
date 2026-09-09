@@ -69,7 +69,15 @@ const drawer = tv({
     // contributes nothing to that height. The header reserves space for it
     // with right padding instead, since an out-of-flow element cannot push
     // the text out of its own way.
-    headerCloseButton: 'absolute top-1/2 right-8 -translate-y-1/2 shrink-0',
+    //
+    // `right-5` rather than `right-8` is optical alignment, not a mistake.
+    // The button's hit area is its icon plus 12px of padding on each side --
+    // padding that exists for the hover and focus rings, and that is
+    // invisible at rest. Pinning the button's *box* to the header's 32px
+    // padding would leave the visible glyph sitting 12px further in than the
+    // body text below it. Offsetting by that padding (32 - 12 = 20px) lines
+    // the glyph's edge up with the content instead of the box's.
+    headerCloseButton: 'absolute top-1/2 right-5 -translate-y-1/2 shrink-0',
     header: '',
     body: 'grow overflow-y-auto',
     footer: 'flex justify-end items-center relative gap-4',
