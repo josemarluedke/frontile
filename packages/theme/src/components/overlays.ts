@@ -79,7 +79,16 @@ const drawer = tv({
     // the glyph's edge up with the content instead of the box's.
     headerCloseButton: 'absolute top-1/2 right-5 -translate-y-1/2 shrink-0',
     header: '',
-    body: 'grow overflow-y-auto',
+    // `touch-pan-y` (not `touch-none`) tells the browser it may still handle
+    // vertical panning natively -- matching `overflow-y-auto` above -- while
+    // continuing to deliver pointer events to `dragToDismiss` for the first
+    // few pixels of a touch drag. That's what lets the modifier decide
+    // (before the browser commits to a native scroll) whether a body press
+    // is a scroll or a dismiss drag; `touch-none` would suppress the native
+    // scroll it's supposed to fall back to, and the default `touch-auto`
+    // would let the browser claim the gesture for panning *and* pinch-zoom,
+    // which fires `pointercancel` more eagerly than plain vertical panning.
+    body: 'grow overflow-y-auto touch-pan-y',
     footer: 'flex justify-end items-center relative gap-4',
     // The gap between the icon column and the text column lives here rather
     // than as `gap-x-*` on the header grid. A column gap applies between the

@@ -6,20 +6,26 @@ import { dragToDismiss } from 'frontile/modifiers/drag-to-dismiss';
 // jsdom-free helper: dispatch a real PointerEvent on the element. Chrome
 // supports the constructor; `pointerId` is what setPointerCapture keys on, and
 // a synthetic id will make capture throw — the modifier guards that.
+//
+// Returns `dispatchEvent`'s own boolean: `false` means some listener called
+// `preventDefault()` on this (cancelable) event -- the reliable way to check,
+// since checking `event.defaultPrevented` from a listener on the same target
+// can run *before* an ancestor's listener (e.g. the modifier's, on a parent
+// element) gets a chance to call it during the bubble phase.
 function pointer(
   el: Element,
-  type: 'pointerdown' | 'pointermove' | 'pointerup',
+  type: 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel',
   x: number,
   y: number
-): void {
-  el.dispatchEvent(
+): boolean {
+  return el.dispatchEvent(
     new PointerEvent(type, {
       bubbles: true,
       cancelable: true,
       pointerId: 1,
       isPrimary: true,
       button: 0,
-      buttons: type === 'pointerup' ? 0 : 1,
+      buttons: type === 'pointerup' || type === 'pointercancel' ? 0 : 1,
       clientX: x,
       clientY: y
     })
@@ -273,5 +279,185 @@ module('Integration | Modifier | dragToDismiss', function (hooks) {
       matchAtDismiss && Number(matchAtDismiss[1]) >= 80,
       `onDismiss saw the transform still at/beyond the released offset, got "${transformWhenDismissed}"`
     );
+  });
+
+  test('a press on the scroll container that moves away from the dismiss direction never claims the gesture and never preventDefaults', async function (assert) {
+    const onDismiss = () => {
+      assert.notOk(true, 'onDismiss must not fire');
+    };
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 200px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+            scrollSelector="[data-test-id='scroller']"
+          }}
+        >
+          <div data-test-id="scroller" style="height: 100%; overflow-y: auto;">
+            content
+          </div>
+        </div>
+      </template>
+    );
+
+    const scroller = find("[data-test-id='scroller']")!;
+    const panel = find("[data-test-id='panel']") as HTMLElement;
+
+    // Content is shorter than the scroller, so it's always "at the edge" --
+    // this is exactly the case that used to hijack every touch. Direction 1
+    // dismisses downward; move upward instead (away from the dismiss
+    // direction), past the claim threshold.
+    pointer(scroller, 'pointerdown', 0, 0);
+    const notCancelled = pointer(scroller, 'pointermove', 0, -40);
+    pointer(scroller, 'pointerup', 0, -40);
+    await settled();
+
+    assert.strictEqual(
+      panel.style.transform,
+      '',
+      'the panel was never dragged'
+    );
+    assert.true(
+      notCancelled,
+      'preventDefault was never called, so native scrolling stayed live'
+    );
+  });
+
+  test('a press on the scroll container that moves toward the dismiss direction past the claim threshold still dismisses', async function (assert) {
+    let dismissed = 0;
+    const onDismiss = () => {
+      dismissed += 1;
+    };
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 200px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+            scrollSelector="[data-test-id='scroller']"
+          }}
+        >
+          <div data-test-id="scroller" style="height: 100%; overflow-y: auto;">
+            content
+          </div>
+        </div>
+      </template>
+    );
+
+    const scroller = find("[data-test-id='scroller']")!;
+
+    // Still at the scroll edge (content shorter than container), but now
+    // moving down (toward the dismiss direction) well past both the claim
+    // threshold and the 25% distance threshold.
+    pointer(scroller, 'pointerdown', 0, 0);
+    pointer(scroller, 'pointermove', 0, 80);
+    pointer(scroller, 'pointerup', 0, 80);
+
+    await waitUntil(() => dismissed === 1);
+    await settled();
+
+    assert.strictEqual(dismissed, 1, 'onDismiss fired once');
+  });
+
+  test('a press on the scroll container below the claim threshold does not preventDefault', async function (assert) {
+    const onDismiss = () => {};
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 200px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+            scrollSelector="[data-test-id='scroller']"
+          }}
+        >
+          <div data-test-id="scroller" style="height: 100%; overflow-y: auto;">
+            content
+          </div>
+        </div>
+      </template>
+    );
+
+    const scroller = find("[data-test-id='scroller']")!;
+
+    pointer(scroller, 'pointerdown', 0, 0);
+    const notCancelled = pointer(scroller, 'pointermove', 0, 4); // well under CLAIM_THRESHOLD_PX
+    pointer(scroller, 'pointerup', 0, 4);
+    await settled();
+
+    assert.true(
+      notCancelled,
+      'a tiny move below the claim threshold is left alone'
+    );
+  });
+
+  test('pointercancel on a pending (unclaimed) gesture resets cleanly without dismissing', async function (assert) {
+    let dismissed = 0;
+    const onDismiss = () => {
+      dismissed += 1;
+    };
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 200px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+            scrollSelector="[data-test-id='scroller']"
+          }}
+        >
+          <div data-test-id="scroller" style="height: 100%; overflow-y: auto;">
+            content
+          </div>
+        </div>
+      </template>
+    );
+
+    const scroller = find("[data-test-id='scroller']")!;
+    const panel = find("[data-test-id='panel']") as HTMLElement;
+
+    // A small move that hasn't crossed the claim threshold yet, then the
+    // browser takes over (as it would once it recognizes a native scroll)
+    // and fires pointercancel instead of pointerup.
+    pointer(scroller, 'pointerdown', 0, 0);
+    pointer(scroller, 'pointermove', 0, 4);
+    pointer(scroller, 'pointercancel', 0, 4);
+    await settled();
+
+    assert.strictEqual(dismissed, 0, 'onDismiss did not fire');
+    assert.strictEqual(
+      panel.style.transform,
+      '',
+      'the panel was never dragged'
+    );
+
+    // A fresh gesture afterwards must still work normally.
+    pointer(scroller, 'pointerdown', 0, 0);
+    pointer(scroller, 'pointermove', 0, 80);
+    pointer(scroller, 'pointerup', 0, 80);
+
+    await waitUntil(() => dismissed === 1);
+    await settled();
+
+    assert.strictEqual(dismissed, 1, 'a later gesture still dismisses');
   });
 });

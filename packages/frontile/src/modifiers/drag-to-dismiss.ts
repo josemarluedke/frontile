@@ -34,6 +34,17 @@ const EASING = 'cubic-bezier(0.37, 0, 0.63, 1)';
 /** Resistance applied to movement away from the dismiss direction. */
 const RUBBER_BAND = 0.2;
 
+/**
+ * Travel, in px, a press on a scroll container must cover before the
+ * modifier decides whether it is a dismiss drag or a native scroll. Below
+ * this, a tap's inherent jitter (and a real scroll's own initial wobble)
+ * would otherwise read as a direction. 10px sits in the middle of the 8-12px
+ * range typical of touch "slop" thresholds (e.g. the ~10px many browsers use
+ * before committing a touch gesture to panning) -- large enough to filter
+ * jitter, small enough that the decision still feels immediate.
+ */
+const CLAIM_THRESHOLD_PX = 10;
+
 function prefersReducedMotion(): boolean {
   return (
     typeof window.matchMedia === 'function' &&
@@ -55,6 +66,15 @@ const dragToDismiss = modifier<{
   let offset = 0;
   let samples: Sample[] = [];
   let isDestroyed = false;
+
+  // A press that landed on the scroll container (rather than the handle)
+  // does not claim the gesture on pointerdown. It waits here, undecided,
+  // until handlePointerMove sees enough travel to tell a dismiss drag from a
+  // native scroll -- see the pending branch there for the decision itself.
+  let pendingPointerId: number | null = null;
+  let pendingStartX = 0;
+  let pendingStartY = 0;
+  let pendingTarget: EventTarget | null = null;
   let exitTimeoutId: number | undefined;
   // Set once the gesture has committed to dismissing. After that point the
   // off-screen transform must survive teardown -- see the note in the
@@ -87,7 +107,14 @@ const dragToDismiss = modifier<{
         : null;
 
     if (!scroller) {
-      // The press did not land in the scroll container at all.
+      // The press did not land in the scroll container at all -- e.g. a
+      // header or footer area outside it. There's nothing there to protect
+      // from a hijacked scroll, so it's always draggable. This used to be
+      // riskier than it sounds, since the old pointerdown-time claim
+      // preventDefault'd every subsequent move unconditionally; now it only
+      // matters once handlePointerMove's own along-axis/toward-dismiss gate
+      // agrees, so a header press that wiggles sideways or the wrong way no
+      // longer hijacks anything either.
       return true;
     }
 
@@ -108,34 +135,11 @@ const dragToDismiss = modifier<{
       target.closest(named.handleSelector)
     );
 
-  // Without either selector configured, the whole element is free-drag: any
-  // pointerdown on it starts a drag. Once a handleSelector and/or
-  // scrollSelector is configured, they're the only ways in — a handle press
-  // always qualifies, and a scroll container only yields once it's already
-  // scrolled to the edge the drag pulls away from (or the press landed
-  // outside it entirely).
-  const pointerDownStartsDrag = (target: EventTarget | null): boolean => {
-    if (!named.handleSelector && !named.scrollSelector) {
-      return true;
-    }
-
-    return isHandle(target) || scrollerAllowsDrag(target);
-  };
-
-  const handlePointerDown = (event: PointerEvent): void => {
-    if (
-      !named.isEnabled ||
-      pointerId !== null ||
-      !event.isPrimary ||
-      event.button !== 0
-    ) {
-      return;
-    }
-
-    if (!pointerDownStartsDrag(event.target)) {
-      return;
-    }
-
+  // Claim the gesture immediately -- this is only ever right for a press
+  // that needs no further evidence: the handle (an explicit affordance, see
+  // below), or any press at all when there's no scroll container configured
+  // to protect (free-drag, nothing native can conflict with).
+  const claimDrag = (event: PointerEvent): void => {
     pointerId = event.pointerId;
     start = axisPosition(event);
     offset = 0;
@@ -153,11 +157,46 @@ const dragToDismiss = modifier<{
     element.style.transition = 'none';
   };
 
-  const handlePointerMove = (event: PointerEvent): void => {
-    if (pointerId !== event.pointerId) {
+  const handlePointerDown = (event: PointerEvent): void => {
+    if (
+      !named.isEnabled ||
+      pointerId !== null ||
+      pendingPointerId !== null ||
+      !event.isPrimary ||
+      event.button !== 0
+    ) {
       return;
     }
 
+    if (isHandle(event.target)) {
+      claimDrag(event);
+      return;
+    }
+
+    if (!named.scrollSelector) {
+      // Nothing scrollable is configured at all, so there's no native
+      // scroll to protect -- the whole element is free-drag, same as
+      // always.
+      claimDrag(event);
+      return;
+    }
+
+    // A scroll container exists somewhere in this element. Claiming here
+    // (the old behaviour) meant every press that landed at the scroll
+    // edge -- including the extremely common case of content shorter than
+    // the container, where scrollHeight === clientHeight so it is *always*
+    // at the edge -- immediately took over the gesture and preventDefault'd
+    // every subsequent move, which silently broke native scrolling. Instead,
+    // wait: record where the press started and decide once handlePointerMove
+    // sees enough travel to tell a scroll from a dismiss drag.
+    pendingPointerId = event.pointerId;
+    pendingStartX = event.clientX;
+    pendingStartY = event.clientY;
+    pendingTarget = event.target;
+    samples = [{ position: axisPosition(event), time: event.timeStamp }];
+  };
+
+  const applyDragOffset = (event: PointerEvent): void => {
     const position = axisPosition(event);
     const raw = (position - start) * named.direction;
 
@@ -165,17 +204,70 @@ const dragToDismiss = modifier<{
     // panel still acknowledges the gesture without appearing to detach.
     offset = raw >= 0 ? raw : raw * RUBBER_BAND;
 
-    samples.push({ position, time: event.timeStamp });
-    samples = samples.filter(
-      (sample) => event.timeStamp - sample.time <= VELOCITY_WINDOW_MS
-    );
-
     // Once we own the gesture the browser must not also scroll or select.
     if (event.cancelable) {
       event.preventDefault();
     }
 
     setTransform(offset * named.direction);
+  };
+
+  const handlePointerMove = (event: PointerEvent): void => {
+    const isActive = pointerId === event.pointerId;
+    const isPending = !isActive && pendingPointerId === event.pointerId;
+
+    if (!isActive && !isPending) {
+      return;
+    }
+
+    samples.push({ position: axisPosition(event), time: event.timeStamp });
+    samples = samples.filter(
+      (sample) => event.timeStamp - sample.time <= VELOCITY_WINDOW_MS
+    );
+
+    if (isPending) {
+      const dx = event.clientX - pendingStartX;
+      const dy = event.clientY - pendingStartY;
+
+      if (Math.hypot(dx, dy) < CLAIM_THRESHOLD_PX) {
+        // Not enough travel yet to tell a scroll from a dismiss drag. Leave
+        // the event alone -- no preventDefault -- so native scrolling (if
+        // any) is free to happen.
+        return;
+      }
+
+      // Enough travel to decide, once and for all: never re-evaluate this
+      // gesture again after this point.
+      const axisDelta = named.axis === 'y' ? dy : dx;
+      const crossDelta = named.axis === 'y' ? dx : dy;
+      const movesTowardDismiss = axisDelta * named.direction > 0;
+      const isAlongAxis = Math.abs(axisDelta) > Math.abs(crossDelta);
+      const target = pendingTarget;
+
+      pendingPointerId = null;
+      pendingTarget = null;
+
+      if (!isAlongAxis || !movesTowardDismiss || !scrollerAllowsDrag(target)) {
+        // Abandoned permanently for this gesture: never preventDefault, let
+        // the browser scroll (or do nothing) natively. Nothing was ever
+        // claimed or captured, so there's nothing to undo.
+        return;
+      }
+
+      pointerId = event.pointerId;
+      start = named.axis === 'y' ? pendingStartY : pendingStartX;
+      offset = 0;
+
+      try {
+        element.setPointerCapture(event.pointerId);
+      } catch {
+        // ignore
+      }
+
+      element.style.transition = 'none';
+    }
+
+    applyDragOffset(event);
   };
 
   const settle = (): void => {
@@ -271,6 +363,18 @@ const dragToDismiss = modifier<{
   };
 
   const handlePointerUp = (event: PointerEvent): void => {
+    if (pendingPointerId === event.pointerId) {
+      // The gesture never crossed the claim threshold: a tap, or a press
+      // that stayed a native scroll for its whole life. This also covers
+      // `pointercancel`, which the browser fires on a pending gesture when
+      // it takes over to scroll -- either way, nothing was ever claimed or
+      // captured, so resetting is all there is to do; it must not be
+      // mistaken for a dismiss.
+      pendingPointerId = null;
+      pendingTarget = null;
+      return;
+    }
+
     if (pointerId !== event.pointerId) {
       return;
     }

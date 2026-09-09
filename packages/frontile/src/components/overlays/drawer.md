@@ -474,6 +474,12 @@ The handle is a real button (labelled "Close drawer"), so keyboard and assistive
 users can close the drawer by activating it, without performing a gesture at all — and it
 closes on click as well as on drag for everyone else.
 
+A press on the body itself (not just the handle) can also dismiss the drawer, once the body's
+own scroll position is already at the edge the drag pulls away from — so a drag toward the
+handle's side dismisses, while scrolling through a longer body still scrolls normally instead
+of being hijacked. This distinction is decided a few pixels into the gesture, not at the very
+first touch, so tapping or starting to scroll never has a false start.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';

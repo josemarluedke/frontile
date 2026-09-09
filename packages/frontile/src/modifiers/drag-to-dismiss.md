@@ -38,7 +38,11 @@ export default class DragToDismissExample extends Component {
   };
 
   <template>
-    <button {{on "click" this.open}} class='text-on-primary bg-primary p-2 rounded' type='button'>
+    <button
+      {{on 'click' this.open}}
+      class='text-on-primary bg-primary p-2 rounded'
+      type='button'
+    >
       Open panel
     </button>
 
@@ -69,14 +73,14 @@ export default class DragToDismissExample extends Component {
 
 The `dragToDismiss` modifier accepts only named arguments:
 
-| Name             | Type          | Description                                                                                        |
-| ---------------- | ------------- | --------------------------------------------------------------------------------------------------- |
-| `axis`            | `'x' \| 'y'` | The axis the drag moves along.                                                                       |
-| `direction`        | `1 \| -1`    | Which way along the axis dismisses: `1` for down/right, `-1` for up/left.                            |
-| `isEnabled`        | `boolean`    | Whether the modifier responds to pointer events at all.                                              |
-| `onDismiss`        | `() => void` | Called once the gesture commits to a dismiss.                                                        |
-| `handleSelector`   | `string`     | Optional CSS selector for an element that is always draggable (e.g. a drag handle).                  |
-| `scrollSelector`   | `string`     | Optional CSS selector for a scrollable container inside the element that may start a drag once it's already scrolled to the edge the drag pulls away from. |
+| Name             | Type         | Description                                                                                                                                                |
+| ---------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `axis`           | `'x' \| 'y'` | The axis the drag moves along.                                                                                                                             |
+| `direction`      | `1 \| -1`    | Which way along the axis dismisses: `1` for down/right, `-1` for up/left.                                                                                  |
+| `isEnabled`      | `boolean`    | Whether the modifier responds to pointer events at all.                                                                                                    |
+| `onDismiss`      | `() => void` | Called once the gesture commits to a dismiss.                                                                                                              |
+| `handleSelector` | `string`     | Optional CSS selector for an element that is always draggable (e.g. a drag handle).                                                                        |
+| `scrollSelector` | `string`     | Optional CSS selector for a scrollable container inside the element that may start a drag once it's already scrolled to the edge the drag pulls away from. |
 
 ## Usage Notes
 
@@ -101,10 +105,31 @@ The `dragToDismiss` modifier accepts only named arguments:
   without appearing to detach or leave its container.
 - **Handles vs. free-drag**: without `handleSelector` or `scrollSelector`, the
   whole element starts a drag on `pointerdown`. Pass `handleSelector` to
-  restrict dragging to a specific child (e.g. a grab handle), and
-  `scrollSelector` to let a drag also start from inside a scrollable region,
-  but only once that region is already scrolled to the edge the gesture pulls
-  away from — so a partially scrolled list still scrolls normally instead of
-  dismissing.
+  restrict dragging to a specific child (e.g. a grab handle) — a press there
+  claims the drag immediately, since a handle is an explicit affordance with
+  nothing else it could mean.
+- **`scrollSelector` and native scrolling**: a press elsewhere does _not_
+  claim the gesture on `pointerdown` when `scrollSelector` is configured —
+  claiming immediately, and calling `preventDefault` on every subsequent
+  move, is what used to break native scrolling: a scroll container whose
+  content is no taller than itself (`scrollHeight === clientHeight`, the
+  common "content fits" case) is _always_ at its scroll edge, so every touch
+  on it would hijack the gesture and the user could never scroll. Instead the
+  modifier waits, undecided, until the pointer has travelled past a small
+  threshold (10px), then decides once and never re-evaluates: it claims the
+  drag only if that travel was predominantly along `axis`, in the dismiss
+  `direction`, _and_ the nearest ancestor matching `scrollSelector` (if any)
+  is already scrolled to the edge the drag pulls away from. Otherwise it
+  abandons the gesture permanently — no `preventDefault`, ever, for the rest
+  of that pointer's gesture — and native scrolling proceeds untouched. A
+  press outside any `scrollSelector` element entirely (e.g. a header) has no
+  native scroll to protect, so it only needs the direction/threshold check.
+  `pointercancel` on a gesture still in this undecided state (e.g. the
+  browser taking over to scroll) resets cleanly without dismissing. A
+  consumer whose scroll container scrolls along the same axis as the drag
+  should also set `touch-action` on it (e.g. `pan-y` for a vertical drawer)
+  so the browser is free to pan it natively once handed off, instead of the
+  default `auto`, which can additionally recognize gestures like pinch-zoom
+  and fire `pointercancel` more eagerly.
 - **Reduced motion**: when the user prefers reduced motion, the settle and
   commit transitions are skipped rather than animated.
