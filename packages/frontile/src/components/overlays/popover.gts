@@ -752,6 +752,15 @@ interface ContentArgs extends Pick<
 
   /**
    * @internal
+   * Additional classes for the arrow element, merged with `overlayArrow`'s
+   * defaults via Tailwind Merge. Lets a consumer that composes `Content`
+   * (e.g. `Tooltip`) give the arrow an intent-specific border; not meant as
+   * public `Popover` API.
+   */
+  arrowClass?: string;
+
+  /**
+   * @internal
    */
   velcroData?: MiddlewareArguments;
 
@@ -913,7 +922,7 @@ class Content extends Component<ContentSignature> {
 
   get arrowClass(): string {
     const { overlayArrow } = useStyles();
-    return overlayArrow();
+    return overlayArrow({ class: this.args.arrowClass });
   }
 
   /**

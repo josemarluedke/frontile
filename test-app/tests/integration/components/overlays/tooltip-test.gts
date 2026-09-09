@@ -12,6 +12,7 @@ import {
 } from '@ember/test-helpers';
 import { Tooltip } from 'frontile/overlays';
 import { cell } from 'ember-resources';
+import { hash } from '@ember/helper';
 
 module(
   'Integration | Component | Tooltip | @frontile/overlays',
@@ -278,6 +279,41 @@ module(
 
       assert.dom('[role="tooltip"]').hasClass('bg-danger');
       assert.dom('[role="tooltip"]').hasClass('px-3');
+    });
+
+    test('@classes.arrow lands on the arrow element', async function (assert) {
+      // Regression test: `Tooltip`'s `classNames` getter has always computed
+      // an `arrow` slot class from `@classes.arrow` (`tooltip.gts`), but
+      // `Popover.Content` used to render its arrow from only its own
+      // `arrowClass` (`overlayArrow()`), with no argument through which a
+      // consumer could contribute classes -- so `@classes.arrow` was a
+      // silent no-op. Asserting the class list, not computed styles: several
+      // sibling test files mutate a shared theme singleton via
+      // `registerCustomStyles` with no reset (see the comment on "the
+      // content does not clip the arrow" above), which makes computed-style
+      // assertions unreliable suite-wide.
+      await render(
+        <template>
+          <Tooltip
+            @content="Hi"
+            @arrow={{true}}
+            @classes={{hash arrow="custom-arrow-class"}}
+            @openDelay={{0}}
+            @closeDelay={{0}}
+            as |t|
+          >
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{t.trigger}}
+            >Trigger</button>
+          </Tooltip>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+
+      assert.dom('[data-part="arrow"]').hasClass('custom-arrow-class');
     });
 
     test('@isDisabled never opens', async function (assert) {

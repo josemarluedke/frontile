@@ -691,6 +691,7 @@ class TooltipContent extends Component<TooltipContentSignature> {
   <template>
     <@PopoverContent
       @class={{@classNames.base}}
+      @arrowClass={{@classNames.arrow}}
       @arrow={{@arrow}}
       @disableInteractive={{@disableInteractive}}
       @transition={{hash name="overlay-transition--tooltip"}}
