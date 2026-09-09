@@ -10,6 +10,10 @@ function chips(): string[] {
   return findAll('[data-test-page]').map((el) => el.textContent!.trim());
 }
 
+class ControlledState {
+  @tracked page = 2;
+}
+
 module(
   'Integration | Component | Pagination | frontile/navigation',
   function (hooks) {
@@ -75,9 +79,7 @@ module(
 
     test('controlled: the rendered page only ever reflects @page', async function (assert) {
       const calls: number[] = [];
-      const state = new (class {
-        @tracked page = 2;
-      })();
+      const state = new ControlledState();
       const onChange = (page: number): void => {
         calls.push(page);
       };
@@ -180,6 +182,41 @@ module(
       );
 
       assert.deepEqual(chips(), ['1', '2', '3'], 'three items, one per page');
+    });
+
+    test('a @total below 0 is treated as 0', async function (assert) {
+      await render(<template><Pagination @total={{-5}} /></template>);
+
+      assert.deepEqual(chips(), ['1'], 'negative total behaves like zero');
+    });
+
+    test('a @siblingCount below 0 is treated as 0', async function (assert) {
+      await render(
+        <template>
+          <Pagination
+            @total={{120}}
+            @pageSize={{10}}
+            @page={{6}}
+            @siblingCount={{-2}}
+          />
+        </template>
+      );
+
+      assert.deepEqual(
+        chips(),
+        ['1', '6', '12'],
+        'negative siblingCount behaves like 0'
+      );
+    });
+
+    test('@page={{0}} clamps up to the first page', async function (assert) {
+      await render(
+        <template><Pagination @total={{30}} @page={{0}} /></template>
+      );
+
+      assert
+        .dom('[aria-current="page"]')
+        .hasText('1', 'clamped up to the first page');
     });
 
     test('the ellipsis is hidden from assistive tech but announced as more pages', async function (assert) {
