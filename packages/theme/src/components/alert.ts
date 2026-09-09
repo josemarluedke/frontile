@@ -84,6 +84,32 @@ const alert = tv({
         base: 'border-transparent'
       }
     },
+    // Shape and alignment, independent of the colour `variant` above.
+    //
+    // `banner` is a full-bleed announcement bar spanning its container: no
+    // radius, no border, content centred. Width is not part of it — `base`
+    // is already `w-full`, so an Alert fills its container either way.
+    layout: {
+      inline: {},
+      banner: {
+        // `relative` is the positioning context for the pinned close button
+        // below. `rounded-none` and `border-0` beat the base slot's
+        // `rounded-lg` and `border` through tailwind-merge.
+        base: 'relative rounded-none border-0',
+        inner: 'justify-center',
+        // `grow-0` is what actually centres the row. `content`'s `grow` is
+        // what pins the text left and pushes trailing items right, so
+        // without dropping it `justify-center` has no free space to
+        // distribute and silently does nothing.
+        content: 'grow-0 text-center',
+        // Out of the flex flow entirely, so the text stays centred on the
+        // full banner whether or not the alert is dismissible — a
+        // dismissible and a non-dismissible banner stacked together line up.
+        // `mr-0` cancels the inline layout's `-mr-1`, which would otherwise
+        // pull the pinned button past the edge.
+        closeButton: 'absolute right-3 top-1/2 -translate-y-1/2 mr-0'
+      }
+    },
     // With a description the icon centres on the *title's* line box rather
     // than on the whole (now multi-line) row, hence the negative offset.
     hasDescription: {
@@ -233,12 +259,22 @@ const alert = tv({
         title: 'text-on-danger',
         description: 'text-on-danger'
       }
+    },
+
+    // A banner centres its text, so the inline layout's top-aligned icon and
+    // its calculated negative offset (see the `hasDescription` variant) read
+    // as misaligned. Centre the row instead, whether or not it wraps.
+    {
+      layout: 'banner',
+      hasDescription: true,
+      class: { inner: 'items-center', icon: 'mt-0' }
     }
   ],
 
   defaultVariants: {
     intent: 'default',
     variant: 'default',
+    layout: 'inline',
     hasDescription: false
   }
 });
