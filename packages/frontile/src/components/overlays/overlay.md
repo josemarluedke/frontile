@@ -34,7 +34,7 @@ export default class BasicOverlay extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @onPress={{this.toggle}}>
         Open Overlay
       </Button>
@@ -88,7 +88,7 @@ export default class BackdropTypes extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
         <Button @onPress={{this.toggleFaded}}>
           Faded Backdrop
@@ -165,7 +165,7 @@ export default class RenderInPlace extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
         <Button @onPress={{this.togglePortal}}>
           Portal Overlay (Default)
@@ -250,7 +250,7 @@ export default class CustomCloseBehavior extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-2 gap-2'>
         <Button @onPress={{this.toggleNormal}}>
           Normal Overlay
@@ -340,7 +340,7 @@ export default class FocusManagement extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
         <Button @onPress={{this.toggleFocusTrap}} data-test-trigger>
           Focus Trap Enabled
@@ -428,7 +428,7 @@ export default class AnimationsAndTransitions extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
         <Button @onPress={{this.toggleFast}}>
           Fast Animation (100ms)
@@ -508,7 +508,7 @@ export default class OverlayElementClick extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
         <Button @onPress={{this.toggleDefault}}>
           Default Behavior

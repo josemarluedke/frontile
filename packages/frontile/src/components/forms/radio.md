@@ -22,7 +22,11 @@ The most basic usage of a Radio component with a label and value.
 ```gts preview
 import { Radio } from 'frontile';
 
-<template><Radio @name='terms' @label='Accept Terms' @value='accepted' /></template>
+<template>
+  <div class='demo-stack'>
+    <Radio @name='terms' @label='Accept Terms' @value='accepted' />
+  </div>
+</template>
 ```
 
 > **Modern Usage:** For most use cases, prefer using Radio components with the Form and Field components. This provides automatic data binding, validation, and state management without manual `@onChange` handlers. See the "Controlled with Form/Field" example below.
@@ -46,7 +50,7 @@ export default class ControlledRadio extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
         <form.Field @name='newsletter' as |field|>
           <field.RadioGroup @label='Newsletter Preference' as |Radio|>
@@ -117,44 +121,46 @@ export default class FormValidationExample extends Component {
   };
 
   <template>
-    <Form
-      @data={{this.formData}}
-      @schema={{schema}}
-      @onChange={{this.handleFormChange}}
-      @onSubmit={{this.handleSubmit}}
-      @validateOn={{array 'change' 'submit'}}
-      as |form|
-    >
-      <div class='flex flex-col gap-4'>
-        <form.Field @name='fullName' as |field|>
-          <field.Input @label='Full Name' @isRequired={{true}} />
-        </form.Field>
+    <div class='demo-stack'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleSubmit}}
+        @validateOn={{array 'change' 'submit'}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='fullName' as |field|>
+            <field.Input @label='Full Name' @isRequired={{true}} />
+          </form.Field>
 
-        <form.Field @name='email' as |field|>
-          <field.Input
-            @label='Email Address'
-            @type='email'
-            @isRequired={{true}}
-          />
-        </form.Field>
+          <form.Field @name='email' as |field|>
+            <field.Input
+              @label='Email Address'
+              @type='email'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        <form.Field @name='experience' as |field|>
-          <field.RadioGroup @label='Experience Level' @isRequired={{true}} as |Radio|>
-            <Radio @label='Junior (0-2 years)' @value='junior' />
-            <Radio @label='Mid-level (3-5 years)' @value='mid' />
-            <Radio @label='Senior (5+ years)' @value='senior' />
-          </field.RadioGroup>
-        </form.Field>
+          <form.Field @name='experience' as |field|>
+            <field.RadioGroup @label='Experience Level' @isRequired={{true}} as |Radio|>
+              <Radio @label='Junior (0-2 years)' @value='junior' />
+              <Radio @label='Mid-level (3-5 years)' @value='mid' />
+              <Radio @label='Senior (5+ years)' @value='senior' />
+            </field.RadioGroup>
+          </form.Field>
 
-        <form.Field @name='remoteWork' as |field|>
-          <field.Checkbox @label='Open to remote work' />
-        </form.Field>
+          <form.Field @name='remoteWork' as |field|>
+            <field.Checkbox @label='Open to remote work' />
+          </form.Field>
 
-        <div>
-          <Button type='submit'>Submit Application</Button>
+          <div>
+            <Button type='submit'>Submit Application</Button>
+          </div>
         </div>
-      </div>
-    </Form>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -168,7 +174,7 @@ import { Radio, RadioGroup } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <div class='flex flex-col gap-6'>
+  <div class='demo-stack'>
     {{! Size variants }}
     <div>
       <h4 class='text-sm font-medium mb-2'>Size Variants</h4>

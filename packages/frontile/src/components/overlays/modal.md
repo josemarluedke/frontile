@@ -35,7 +35,7 @@ export default class BasicModal extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @onPress={{this.toggle}}>
         Open Modal
       </Button>
@@ -139,7 +139,7 @@ export default class ModalSizes extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-3 gap-2'>
         {{#each this.sizeOptions as |option|}}
           <Button @onPress={{fn this.openModal option.key}}>
@@ -192,7 +192,7 @@ export default class ModalPositioning extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
         <Button @onPress={{this.toggleStandard}}>
           Standard Position
@@ -289,7 +289,7 @@ export default class ModalBackdrops extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.backdropOptions as |option|}}
           <Button @onPress={{fn this.openModal option.key}}>
@@ -361,7 +361,7 @@ export default class ConfirmationDialog extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @intent='danger' @onPress={{this.openDialog}}>
         Delete Item
       </Button>
@@ -510,7 +510,7 @@ export default class FormModal extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @onPress={{this.toggle}}>
         Open Contact Form
       </Button>
@@ -614,7 +614,7 @@ export default class ModalCloseButton extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
         <Button @onPress={{this.toggleNormal}}>
           Normal Close Button
@@ -715,7 +715,7 @@ export default class NestedModals extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @onPress={{this.toggleFirst}}>
         Open First Modal
       </Button>

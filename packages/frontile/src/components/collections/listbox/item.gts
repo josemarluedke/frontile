@@ -63,6 +63,32 @@ export interface ListboxItemSignature {
       | 'danger';
 
     type?: 'menu' | 'listbox';
+
+    /**
+     * Marks this option as the trigger for a submenu.
+     *
+     * It stops the option selecting: opening a submenu is not choosing
+     * anything, so `onAction` and `onSelectionChange` must not fire for it.
+     * The option still registers with the `ListManager` and so still takes
+     * part in arrow navigation, type-ahead and the roving tab stop.
+     *
+     * Renders `aria-haspopup="menu"` and a trailing chevron, unless an `:end`
+     * block supplies its own trailing content.
+     */
+    hasSubmenu?: boolean;
+
+    /**
+     * Whether this option's submenu is currently open. Only meaningful
+     * alongside `@hasSubmenu`; drives `aria-expanded` and the highlighted
+     * resting state via `data-submenu-open`.
+     */
+    isSubmenuOpen?: boolean;
+
+    /**
+     * The id of the `role="menu"` element this option opens, for
+     * `aria-controls`. Only meaningful alongside `@hasSubmenu`.
+     */
+    submenuId?: string;
   };
   Element: HTMLLIElement;
   Blocks: {
@@ -109,7 +135,13 @@ class ListboxItem extends Component<ListboxItemSignature> {
       return;
     }
 
-    this.manager.selectItem(this.listItem);
+    // Opening a submenu is not choosing anything, so a sub-trigger must not
+    // reach `selectItem` -- that is what fires `onAction` and
+    // `onSelectionChange`. It still registers as an item, so arrow
+    // navigation, type-ahead and the roving tab stop are unaffected.
+    if (!this.args.hasSubmenu) {
+      this.manager.selectItem(this.listItem);
+    }
 
     if (typeof this.args.onClick === 'function') {
       this.args.onClick();
@@ -148,6 +180,41 @@ class ListboxItem extends Component<ListboxItemSignature> {
     };
   }
 
+  /**
+   * The `submenuIndicator` slot is only ever rendered on a sub-trigger, so it
+   * is looked up here rather than in `classNames`, and only when
+   * `@hasSubmenu` is set — a plain item never pays for it.
+   *
+   * `registerCustomStyles` (`packages/theme/src/index.ts`) shallow-replaces:
+   * a consumer supplying their own `listboxItem` via `tv({...})` swaps out
+   * the whole config, not just the slots they mention. `tv()` in turn only
+   * produces a function for a slot it was actually given. So a third-party
+   * override written before this slot existed has no `submenuIndicator` key
+   * at all, and calling it would throw. A published component library must
+   * not crash a consumer's app over a stale override, so this stays
+   * defensive — but the check now only runs for sub-triggers, not for every
+   * item on every render.
+   */
+  get submenuIndicatorClass(): string | undefined {
+    if (!this.args.hasSubmenu) {
+      return undefined;
+    }
+
+    const { listboxItem } = useStyles();
+    const { submenuIndicator } = listboxItem({
+      appearance: this.args.appearance || 'default',
+      intent: this.args.intent || 'default',
+      isDisabled: this.listItem?.isDisabled,
+      isSelected: this.listItem?.isSelected,
+      isActive: this.listItem?.isActive,
+      withDivider: this.args.withDivider
+    });
+
+    return typeof submenuIndicator === 'function'
+      ? submenuIndicator()
+      : undefined;
+  }
+
   get shortcutAppearance() {
     return this.args.shortcutAppearance ?? 'inherit';
   }
@@ -172,6 +239,39 @@ class ListboxItem extends Component<ListboxItemSignature> {
     return this.listItem?.isSelected ? 'true' : 'false';
   }
 
+  /**
+   * `aria-haspopup="menu"` rather than the bare `"true"`: both are valid, but
+   * the explicit role tells a screen reader what is about to open.
+   */
+  get ariaHasPopup(): 'menu' | undefined {
+    return this.args.hasSubmenu ? 'menu' : undefined;
+  }
+
+  /**
+   * Only a row that owns a popup has an expanded state. Rendering
+   * `aria-expanded` on a plain `menuitem` would be invalid ARIA, so this is
+   * undefined -- and therefore omitted -- unless `@hasSubmenu` is set.
+   */
+  /**
+   * `aria-expanded` and `data-submenu-open` share this same value — one is
+   * the ARIA state for assistive tech, the other a styling hook for the
+   * template's own resting/hover state — so both getters delegate here.
+   */
+  get submenuOpenState(): 'true' | 'false' | undefined {
+    if (!this.args.hasSubmenu) {
+      return undefined;
+    }
+    return this.args.isSubmenuOpen ? 'true' : 'false';
+  }
+
+  get ariaExpanded(): 'true' | 'false' | undefined {
+    return this.submenuOpenState;
+  }
+
+  get dataSubmenuOpen(): 'true' | 'false' | undefined {
+    return this.submenuOpenState;
+  }
+
   <template>
     <li
       {{this.manager.setupItem
@@ -185,6 +285,10 @@ class ListboxItem extends Component<ListboxItemSignature> {
       role={{this.role}}
       aria-labelledby={{this.labelId}}
       aria-selected={{this.ariaSelected}}
+      aria-haspopup={{this.ariaHasPopup}}
+      aria-expanded={{this.ariaExpanded}}
+      aria-controls={{if @hasSubmenu @submenuId}}
+      data-submenu-open={{this.dataSubmenuOpen}}
       tabindex={{this.tabindex}}
       data-active="{{this.listItem.isActive}}"
       data-selected="{{this.listItem.isSelected}}"
@@ -239,6 +343,17 @@ class ListboxItem extends Component<ListboxItemSignature> {
         </span>
       {{/if}}
 
+      {{#if @hasSubmenu}}
+        {{#unless (has-block "end")}}
+          <span
+            data-test-id="listbox-item-submenu-indicator"
+            class={{this.submenuIndicatorClass}}
+          >
+            <ChevronRightIcon class="h-full w-full" />
+          </span>
+        {{/unless}}
+      {{/if}}
+
       {{yield to="end"}}
     </li>
     {{#if @withDivider}}
@@ -262,6 +377,25 @@ const CheckIcon: TOC<{
       stroke-linecap="round"
       stroke-linejoin="round"
       d="m4.5 12.75 6 6 9-13.5"
+    />
+  </svg>
+</template>;
+
+const ChevronRightIcon: TOC<{
+  Element: SVGElement;
+}> = <template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    ...attributes
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="m8.25 4.5 7.5 7.5-7.5 7.5"
     />
   </svg>
 </template>;

@@ -26,7 +26,11 @@ The most basic usage of a Switch component with a label.
 ```gts preview
 import { Switch } from 'frontile';
 
-<template><Switch @label='Enable Notifications' /></template>
+<template>
+  <div class='demo-stack'>
+    <Switch @label='Enable Notifications' />
+  </div>
+</template>
 ```
 
 ### Controlled with Form/Field
@@ -46,7 +50,7 @@ export default class ControlledSwitch extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onChange={{this.handleFormChange}}
@@ -123,7 +127,7 @@ export default class ValidatedSwitch extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -196,14 +200,16 @@ import { SunIcon, MoonIcon } from 'site/components/icons';
 
 export default class CustomContentSwitchExample extends Component {
   <template>
-    <Switch @label='Dark Mode'>
-      <:startContent>
-        <SunIcon />
-      </:startContent>
-      <:endContent>
-        <MoonIcon />
-      </:endContent>
-    </Switch>
+    <div class='demo-stack'>
+      <Switch @label='Dark Mode'>
+        <:startContent>
+          <SunIcon />
+        </:startContent>
+        <:endContent>
+          <MoonIcon />
+        </:endContent>
+      </Switch>
+    </div>
   </template>
 }
 ```
@@ -215,15 +221,17 @@ import { SunIcon, MoonIcon } from 'site/components/icons';
 
 export default class CustomContentSwitchExample extends Component {
   <template>
-    <Switch @label='Dark Mode'>
-      <:thumbContent as |o|>
-        {{#if o.isSelected}}
-          <MoonIcon class='size-3' />
-        {{else}}
-          <SunIcon class='size-3' />
-        {{/if}}
-      </:thumbContent>
-    </Switch>
+    <div class='demo-stack'>
+      <Switch @label='Dark Mode'>
+        <:thumbContent as |o|>
+          {{#if o.isSelected}}
+            <MoonIcon class='size-3' />
+          {{else}}
+            <SunIcon class='size-3' />
+          {{/if}}
+        </:thumbContent>
+      </Switch>
+    </div>
   </template>
 }
 ```
@@ -237,7 +245,7 @@ import { Switch } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <div class='flex flex-col gap-6'>
+  <div class='demo-stack'>
     {{! Size variants }}
     <div>
       <h4 class='text-sm font-medium mb-2'>Size Variants</h4>
