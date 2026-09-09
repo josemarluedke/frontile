@@ -315,6 +315,12 @@ export const inventory: InventoryCategory[] = [
         description:
           'A navigation bar styled like Tabs, for links that change the page.',
       },
+      {
+        name: 'Pagination',
+        path: '/docs/components/navigation/pagination',
+        description:
+          'A row of controls for moving through a paged list, with page numbers and prev/next.',
+      },
     ],
   },
   {
