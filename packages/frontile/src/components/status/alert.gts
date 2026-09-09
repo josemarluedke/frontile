@@ -92,6 +92,19 @@ interface AlertSignature {
     variant?: 'default' | 'tonal' | 'solid';
 
     /**
+     * `banner` drops the radius and border and centres the content, for a
+     * full-bleed announcement bar spanning its container — a notice under a
+     * Drawer's header, say.
+     *
+     * Width is not what this controls: an Alert is `w-full` in either layout.
+     * A banner's close button is pinned to the trailing edge rather than sitting
+     * in the row, so the centred text does not shift when it is present.
+     *
+     * @defaultValue 'inline'
+     */
+    layout?: 'inline' | 'banner';
+
+    /**
      * Removes the icon. Wins over the `icon` block if both are supplied.
      *
      * @defaultValue false
@@ -210,6 +223,7 @@ class Alert extends Component<AlertSignature> {
     } = alert({
       intent: this.intent,
       variant: this.args.variant ?? 'default',
+      layout: this.args.layout ?? 'inline',
       hasDescription
     });
 
