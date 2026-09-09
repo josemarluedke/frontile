@@ -184,10 +184,18 @@ module(
       assert.deepEqual(chips(), ['1', '2', '3'], 'three items, one per page');
     });
 
-    test('a @total below 0 is treated as 0', async function (assert) {
-      await render(<template><Pagination @total={{-5}} /></template>);
+    test('the summary reports zeroes when @total is negative', async function (assert) {
+      await render(
+        <template>
+          <Pagination @total={{-5}}>
+            <:summary as |s|>{{s.from}}-{{s.to}} of {{s.total}}</:summary>
+          </Pagination>
+        </template>
+      );
 
-      assert.deepEqual(chips(), ['1'], 'negative total behaves like zero');
+      assert
+        .dom('nav')
+        .containsText('0-0 of 0', 'negative total behaves like zero');
     });
 
     test('a @siblingCount below 0 is treated as 0', async function (assert) {
@@ -209,14 +217,14 @@ module(
       );
     });
 
-    test('@page={{0}} clamps up to the first page', async function (assert) {
+    test('a @page below 1 clamps up to the first page', async function (assert) {
       await render(
-        <template><Pagination @total={{30}} @page={{0}} /></template>
+        <template><Pagination @total={{30}} @page={{-5}} /></template>
       );
 
       assert
         .dom('[aria-current="page"]')
-        .hasText('1', 'clamped up to the first page');
+        .hasText('1', 'negative page clamped up to the first page');
     });
 
     test('the ellipsis is hidden from assistive tech but announced as more pages', async function (assert) {
