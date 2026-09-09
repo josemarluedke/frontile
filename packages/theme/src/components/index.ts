@@ -10,6 +10,7 @@ export * from './listbox';
 export * from './dropdown';
 export * from './popover';
 export * from './divider';
+export * from './external-link';
 export * from './skeleton';
 export * from './spinner';
 export * from './table';
