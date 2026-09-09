@@ -206,6 +206,37 @@ module(
       assert.equal(calledClosed, true, 'should called didClose argument');
     });
 
+    test('clicking outside closes the whole chain while a submenu is open', async function (assert) {
+      await render(
+        <template>
+          <div id="outside" tabindex="0"></div>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+
+      assert.dom('[data-key="nested"]').exists('submenu is open');
+      assert.dom('[data-key="edit"]').exists('root menu is open');
+
+      await click('#outside');
+
+      assert.dom('[data-key="nested"]').doesNotExist('submenu item is gone');
+      assert.dom('[data-key="edit"]').doesNotExist('root item is gone');
+    });
+
     test('on pressing arrow up/down key, opens the menu', async function (assert) {
       await render(
         <template>
