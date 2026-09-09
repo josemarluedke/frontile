@@ -106,12 +106,16 @@ const drawer = tv({
     // which fires `pointercancel` more eagerly than plain vertical panning.
     body: 'grow overflow-y-auto touch-pan-y',
     footer: 'flex justify-end items-center relative gap-4',
+    // Sized from the design: a 40px icon box with a 16px gap to the text.
+    // `self-start` matches the design's `align-items: flex-start` -- the icon
+    // tops out with the title rather than centring across both text rows.
+    //
     // The gap between the icon column and the text column lives here rather
     // than as `gap-x-*` on the header grid. A column gap applies between the
     // two tracks whether or not the icon track has anything in it, so a
     // header with no icon still had its title indented past the body text
     // below it. As a margin it only exists when an icon does.
-    icon: 'row-span-2 col-start-1 mr-3 shrink-0 flex items-center justify-center',
+    icon: 'row-span-2 col-start-1 self-start mr-4 size-10 shrink-0 flex items-center justify-center',
     title: 'col-start-2 font-header',
     description: 'col-start-2',
     dragHandle:
@@ -136,8 +140,8 @@ const drawer = tv({
         closeButton: 'text-white hover:bg-white/10',
         headerCloseButton: 'text-white hover:bg-white/10',
         icon: 'text-white',
-        title: 'text-header-sm font-semibold text-white',
-        description: 'text-sm text-white/70',
+        title: 'text-header-md text-white',
+        description: 'text-body-sm text-white/80',
         // The handle can sit over the black header band (bottom placement)
         // or the surface-app footer (top placement) -- white in light mode,
         // black in dark mode. `bg-neutral` (gray-500 light / gray-400 dark)
