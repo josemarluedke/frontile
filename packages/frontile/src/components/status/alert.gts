@@ -224,7 +224,8 @@ class Alert extends Component<AlertSignature> {
       intent: this.intent,
       variant: this.args.variant ?? 'default',
       layout: this.args.layout ?? 'inline',
-      hasDescription
+      hasDescription,
+      hasCloseButton: !!this.args.onClose
     });
 
     return {

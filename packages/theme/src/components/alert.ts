@@ -120,6 +120,12 @@ const alert = tv({
       false: {
         inner: 'items-center'
       }
+    },
+    // Paints nothing alone — it only matters combined with `layout: 'banner'`
+    // below, where a present close button needs room reserved for it.
+    hasCloseButton: {
+      true: {},
+      false: {}
     }
   },
 
@@ -269,6 +275,23 @@ const alert = tv({
       layout: 'banner',
       hasDescription: true,
       class: { inner: 'items-center', icon: 'mt-0' }
+    },
+    // The pinned close button (see `layout.banner.closeButton` above) sits
+    // outside the flex flow, so nothing about the row's own layout makes
+    // room for it — a centred, wrapping title can run underneath it. Reserve
+    // space on both sides rather than only the trailing edge: the button is
+    // 28px wide starting 12px from the edge (occupying the outer 40px),
+    // `px-11` (44px) clears it with a little breathing room, and doing it
+    // symmetrically keeps the centring axis at the banner's true centre —
+    // padding only on the right would clear the button but drag the text off
+    // centre, undoing the reason the button is pinned in the first place.
+    // `px-11` only touches the horizontal axis, so `inner`'s vertical `p-4`
+    // is untouched. Conditional on `hasCloseButton` so a non-dismissible
+    // banner keeps using its full width.
+    {
+      layout: 'banner',
+      hasCloseButton: true,
+      class: { inner: 'px-11' }
     }
   ],
 
@@ -276,7 +299,8 @@ const alert = tv({
     intent: 'default',
     variant: 'default',
     layout: 'inline',
-    hasDescription: false
+    hasDescription: false,
+    hasCloseButton: false
   }
 });
 

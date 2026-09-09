@@ -56,13 +56,21 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
       hasDescription: {
         true: { inner: ['has-description'] },
         false: { inner: ['no-description'] }
+      },
+      // The component always passes `hasCloseButton` (see alert.gts), so the
+      // placeholder recipe needs the variant declared even though none of
+      // these tests assert on it.
+      hasCloseButton: {
+        true: {},
+        false: {}
       }
     },
     defaultVariants: {
       intent: 'default',
       variant: 'default',
       layout: 'inline',
-      hasDescription: false
+      hasDescription: false,
+      hasCloseButton: false
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
@@ -361,6 +369,32 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       assert.true(
         banner.closeButton().includes('mr-0'),
         `expected the shipped banner close button to cancel the inline layout's margin with mr-0, got: ${banner.closeButton()}`
+      );
+    });
+
+    test('the real banner layout reserves symmetric padding only when a close button is present', function (assert) {
+      // The close button is pinned out of flow (see the test above), so
+      // nothing about the row's own layout keeps a centred, wrapping title
+      // from running underneath it. `inner` must gain horizontal padding
+      // wide enough to clear the button when one is present, and must not
+      // gain it — losing the alert's usable width for nothing — when it
+      // isn't.
+      const withCloseButton = shippedAlert({
+        layout: 'banner',
+        hasCloseButton: true
+      }).inner();
+      const withoutCloseButton = shippedAlert({
+        layout: 'banner',
+        hasCloseButton: false
+      }).inner();
+
+      assert.true(
+        withCloseButton.includes('px-11'),
+        `expected a dismissible banner's inner slot to reserve horizontal padding for the close button, got: ${withCloseButton}`
+      );
+      assert.false(
+        withoutCloseButton.includes('px-11'),
+        `expected a non-dismissible banner's inner slot to not reserve padding for a close button, got: ${withoutCloseButton}`
       );
     });
   });
