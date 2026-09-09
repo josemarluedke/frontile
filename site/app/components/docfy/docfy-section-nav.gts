@@ -38,16 +38,14 @@ export default class DocfySectionNav extends Component {
     <DocfyOutput @scope="docs" as |node|>
       <div class="sticky top-16 z-10 -mx-4 lg:-mx-6 mb-6 lg:mb-8">
         <div
-          class="border-b border-neutral-subtle bg-surface-canvas backdrop-blur-xl backdrop-saturate-150 px-4 lg:px-6 pt-3 lg:pt-4"
+          class="bg-surface-canvas backdrop-blur-xl backdrop-saturate-150 px-4 lg:px-6 pt-3 lg:pt-4"
         >
           <TabNav
             @label="Documentation sections"
             @variant="underline"
             @intent="primary"
-            @classes={{hash
-              list="border-none gap-4 lg:gap-8 overflow-x-auto scrollbar-hide"
-              tab="pb-3 lg:pb-4 text-xs lg:text-sm whitespace-nowrap"
-            }}
+            @size="sm"
+            @classes={{hash list="overflow-x-auto scrollbar-hide"}}
             as |tabNav|
           >
             {{#each node.children as |child|}}
