@@ -31,7 +31,13 @@ import type {
   SimpleTable
 } from './components/collections';
 
-import type { Overlay, Modal, Drawer, Popover } from './components/overlays';
+import type {
+  Overlay,
+  Modal,
+  Drawer,
+  Popover,
+  Tooltip
+} from './components/overlays';
 
 import type {
   NotificationCard,
@@ -49,7 +55,7 @@ import type {
   Kbd
 } from './components/utilities';
 
-import type { Tabs, TabNav } from './components/navigation';
+import type { Tabs, TabNav, ExternalLink } from './components/navigation';
 
 import type { Accordion } from './components/disclosure';
 
@@ -89,6 +95,7 @@ export default interface Registry {
   Drawer: typeof Drawer;
   Modal: typeof Modal;
   Popover: typeof Popover;
+  Tooltip: typeof Tooltip;
 
   // Notifications
   NotificationCard: typeof NotificationCard;
@@ -109,6 +116,7 @@ export default interface Registry {
   // Navigation
   Tabs: typeof Tabs;
   TabNav: typeof TabNav;
+  ExternalLink: typeof ExternalLink;
 
   // Disclosure
   Accordion: typeof Accordion;

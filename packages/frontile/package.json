@@ -93,6 +93,7 @@
     "@ember/test-waiters": "^4.1.2",
     "@embroider/addon-shim": "^1.10.3",
     "@embroider/macros": "^1.20.6",
+    "@floating-ui/dom": "^1.0.1",
     "@frontile/theme": "workspace:^",
     "@glint/template": "^1.8.0",
     "@universal-ember/table": "^4.0.0",
