@@ -326,7 +326,11 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       // every other test in this file renders against the placeholder recipe
       // registered at module scope — so nothing else here can see whether the
       // shipped recipe still carries them. Same reasoning as the
-      // `overflow-hidden` and icon-clamp guards above.
+      // `overflow-hidden` and icon-clamp guards above. The close-button
+      // classes are pinned down here too: pulling the button out of the flex
+      // flow is what keeps the centred text from shifting when the alert is
+      // dismissible, so a dismissible and a non-dismissible banner still line
+      // up — losing `absolute` or `mr-0` would silently undo that.
       const banner = shippedAlert({ layout: 'banner' });
       const base = banner.base();
 
@@ -339,8 +343,24 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         `expected the shipped banner base to drop the border, got: ${base}`
       );
       assert.true(
+        banner.inner().includes('justify-center'),
+        `expected the shipped banner inner slot to centre the row, got: ${banner.inner()}`
+      );
+      assert.true(
         banner.content().includes('grow-0'),
         `expected the shipped banner content slot to drop grow, got: ${banner.content()}`
+      );
+      assert.true(
+        banner.content().includes('text-center'),
+        `expected the shipped banner content slot to centre its text, got: ${banner.content()}`
+      );
+      assert.true(
+        banner.closeButton().includes('absolute'),
+        `expected the shipped banner close button to be pinned out of the flex flow with absolute, got: ${banner.closeButton()}`
+      );
+      assert.true(
+        banner.closeButton().includes('mr-0'),
+        `expected the shipped banner close button to cancel the inline layout's margin with mr-0, got: ${banner.closeButton()}`
       );
     });
   });
