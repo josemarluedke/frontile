@@ -258,8 +258,7 @@ supply through `<:item>` — typically an `<a href>` — has no `disabled`
 attribute to set, so only the pointer is blocked; the element stays
 keyboard-reachable and `Enter`-activatable. If you render your own links,
 handle the disabled state on them too, for example by dropping the `href`,
-the same way `TabNav.Item` disables an anchor
-(`packages/frontile/src/components/navigation/tab-nav/item.gts`).
+the same way [`TabNav`](./tab-nav) disables an anchor.
 
 ```gts preview
 import { Pagination } from 'frontile';
