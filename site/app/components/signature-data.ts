@@ -9658,6 +9658,168 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'external-link',
+    name: 'ExternalLink',
+    fileName:
+      'packages/frontile/declarations/components/navigation/external-link.d.ts',
+    Args: [
+      {
+        identifier: 'href',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: 'The absolute URL to link to.',
+        tags: {},
+      },
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom class name, it will override the default ones using Tailwind Merge\nlibrary.',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'icon\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom CSS classes for styling the individual slots: <code>base</code> for the\nanchor, <code>icon</code> for the glyph wrapper.',
+        tags: {},
+      },
+      {
+        identifier: 'iconPlacement',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'end\'</span></span>',
+          items: ["'start'", "'end'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Which side of the text the glyph sits on.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'end'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'end\'</span></span>',
+      },
+      {
+        identifier: 'newTabLabel',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The visually-hidden text announced when the link opens a new tab. Pass\nan empty string to suppress it.',
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value: "'(opens in a new tab)'",
+          },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'(opens in a new tab)\'</span></span>',
+      },
+      {
+        identifier: 'rel',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Replaces the default <code>rel</code>. Left off, <code>noopener noreferrer</code> is applied\nwhenever the link opens a new browsing context.',
+        tags: {},
+      },
+      {
+        identifier: 'showIcon',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Set to <code>false</code> to drop the glyph. The <code>target</code>, <code>rel</code> and new-tab\nannouncement are unaffected.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The browsing context to open in: <code>_blank</code>, <code>_self</code>, <code>_parent</code>, <code>_top</code>,\nor a frame name.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'_blank'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'_blank\'</span></span>',
+      },
+      {
+        identifier: 'underline',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'always\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'hover\'</span></span>',
+          items: ["'none'", "'always'", "'hover'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'always'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'always\'</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: 'The link text.',
+        tags: {},
+      },
+      {
+        identifier: 'icon',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Replaces the built-in glyph, keeping its size and spacing.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLAnchorElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement',
+    },
+    description:
+      '<p>A link to another site.</p>\n<p>It opens a new tab, marks itself with an external-link glyph, protects the\nopener with <code>rel="noopener noreferrer"</code>, and tells assistive technology that\na new tab is coming — so the four cannot drift apart. For in-app navigation\nuse <code>TabNav</code> or Ember\'s <code>LinkTo</code>.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'notification-card',
     name: 'NotificationCard',
     fileName:
@@ -22962,8 +23124,8 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'underline\'</span></span>',
-          items: ["'solid'", "'underline'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'underline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'solid\'</span></span>',
+          items: ["'underline'", "'solid'"],
         },
         isRequired: false,
         isInternal: false,
@@ -23822,8 +23984,8 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'underline\'</span></span>',
-          items: ["'solid'", "'underline'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'underline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'solid\'</span></span>',
+          items: ["'underline'", "'solid'"],
         },
         isRequired: false,
         isInternal: false,

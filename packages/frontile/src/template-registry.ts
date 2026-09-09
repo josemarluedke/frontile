@@ -49,7 +49,7 @@ import type {
   Kbd
 } from './components/utilities';
 
-import type { Tabs, TabNav } from './components/navigation';
+import type { Tabs, TabNav, ExternalLink } from './components/navigation';
 
 export default interface Registry {
   // Buttons
@@ -107,4 +107,5 @@ export default interface Registry {
   // Navigation
   Tabs: typeof Tabs;
   TabNav: typeof TabNav;
+  ExternalLink: typeof ExternalLink;
 }
