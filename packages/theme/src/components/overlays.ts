@@ -59,20 +59,17 @@ const drawer = tv({
   slots: {
     base: 'flex flex-col absolute rounded-2xl outline-hidden overflow-clip border border-neutral-muted shadow-elevation-5',
     closeButton: 'absolute top-3 right-3',
-    // The close button rendered *inside* the header (see `drawer.gts`) lives
-    // in its own grid column rather than being absolutely positioned: it
-    // spans both header rows like `icon` does, so `self-center` centres it
-    // against the header's actual content height whether that's a
-    // title-only header or a title + description one.
-    // `row-start-1` is required, not just decorative: this button is the
-    // *last* DOM child of the header (after title/description), so CSS
-    // grid's auto-placement cursor -- which only moves forward -- has
-    // already advanced past row 1 by the time it gets here and would
-    // otherwise place it at row 2 spanning a new row 3, off-centre from the
-    // title+description block. `icon` doesn't need this because it's the
-    // *first* child, so the cursor still starts at row 1 when it is placed.
-    headerCloseButton:
-      'col-start-3 row-start-1 row-span-2 self-center justify-self-end shrink-0',
+    // The close button rendered *inside* the header (see `drawer.gts`) is
+    // absolutely positioned rather than placed as a grid item. Making it a
+    // grid item was tried and reverted: as a spanning item it forces the
+    // header's row track count up, so a header with only a title grew a
+    // phantom second row and the band became far taller than its content.
+    // Out of flow, it centres against whatever height the header's own
+    // content produces -- title-only or title + description alike -- and
+    // contributes nothing to that height. The header reserves space for it
+    // with right padding instead, since an out-of-flow element cannot push
+    // the text out of its own way.
+    headerCloseButton: 'absolute top-1/2 right-8 -translate-y-1/2 shrink-0',
     header: '',
     body: 'grow overflow-y-auto',
     footer: 'flex justify-end items-center relative gap-4',
@@ -89,7 +86,7 @@ const drawer = tv({
         base: 'bg-surface-drawer text-on-surface-drawer',
         body: 'bg-surface-drawer px-8 py-6',
         header:
-          'grid grid-cols-[auto_1fr_auto] items-center gap-x-3 bg-black text-white px-8 py-6',
+          'relative grid grid-cols-[auto_1fr] items-center gap-x-3 bg-black text-white px-8 py-6 pr-24',
         footer:
           'bg-surface-app text-on-surface-app border-t border-neutral-muted px-8 py-6',
         // The close button's own `transparent` variant hovers to
@@ -120,7 +117,7 @@ const drawer = tv({
         // button column) but ghost's own colours -- no `bg-black`/`text-white`
         // here, this stays on `surface-modal`.
         header:
-          'grid grid-cols-[auto_1fr_auto] items-center gap-x-3 font-header px-8 py-6',
+          'relative grid grid-cols-[auto_1fr] items-center gap-x-3 font-header px-8 py-6 pr-24',
         footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal px-8 py-6`,
         title: 'text-header-lg',
         description: 'text-sm text-neutral',
