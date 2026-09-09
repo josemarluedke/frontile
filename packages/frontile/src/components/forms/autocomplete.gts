@@ -353,9 +353,6 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   /** Element id of the currently active (highlighted) option, for aria-activedescendant. */
   @tracked activeDescendant?: string;
 
-  /** The currently active (highlighted) option. */
-  activeItem?: ListItem;
-
   /**
    * Label of the selected key, captured at selection time. Needed in async
    * mode, where the selected item may no longer be present in the currently
@@ -469,12 +466,10 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
 
   onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter' && this.isOpen) {
-      // Prevent form submission while the dropdown is open. Canceling
-      // keydown also suppresses the keypress event the Listbox listens to,
-      // so select the active option directly.
+      // Prevent form submission while the dropdown is open. Selecting the
+      // active option is the Listbox's job: it handles Enter on keydown, so
+      // canceling this event no longer suppresses the one it listens to.
       event.preventDefault();
-
-      this.activeItem?.el.click();
     }
   };
 
@@ -533,7 +528,6 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       this._inputValue = undefined;
     }
     this.activeDescendant = undefined;
-    this.activeItem = undefined;
 
     // Reset async results so reopening shows the default `@items` again.
     if (typeof this.args.onSearch === 'function') {
@@ -544,7 +538,6 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   };
 
   onActiveItemChange = (_key?: string, item?: ListItem) => {
-    this.activeItem = item;
     this.activeDescendant = item?.el.id || undefined;
   };
 

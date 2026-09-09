@@ -9,6 +9,26 @@ import { array, get } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 
+/**
+ * Press a key the way a browser does.
+ *
+ * A browser dispatches `keydown` and only follows it with `keypress` when the
+ * keydown was not canceled. Tests that dispatch `keypress` directly therefore
+ * describe an event sequence that cannot happen when any handler calls
+ * `preventDefault()`, which is exactly the fragility this models.
+ */
+function pressKey(el: HTMLElement, key: string) {
+  const notCanceled = el.dispatchEvent(
+    new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
+  );
+
+  if (notCanceled) {
+    el.dispatchEvent(
+      new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
+    );
+  }
+}
+
 module(
   'Integration | Component | Listbox | @frontile/collections',
   function (hooks) {
@@ -375,23 +395,23 @@ module(
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
 
       // select active item
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Enter');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Enter');
       assert.equal(selectedKeys.current.length, 1);
       assert.equal(selectedKeys.current[0], 'cheetah');
 
       // search
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'E');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'E');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'C');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'C');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
 
-      triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'C');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'R');
+      triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'C');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'R');
 
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       assert
@@ -399,7 +419,7 @@ module(
         .hasAttribute(
           'data-active',
           'true',
-          'should have selected crocodile due to two keypress'
+          'should have selected crocodile due to two keydown'
         );
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
     });
@@ -438,13 +458,13 @@ module(
       ) as HTMLElement;
 
       listbox.dispatchEvent(
-        new KeyboardEvent('keypress', { key: 'c', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'c', bubbles: true })
       );
       listbox.dispatchEvent(
-        new KeyboardEvent('keypress', { key: 'r', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'r', bubbles: true })
       );
       listbox.dispatchEvent(
-        new KeyboardEvent('keypress', { key: 'Enter', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
       );
       await settled();
 
@@ -486,7 +506,7 @@ module(
 
       for (const key of ['b', 'i', 'g', ' ', 'd']) {
         listbox.dispatchEvent(
-          new KeyboardEvent('keypress', { key, bubbles: true })
+          new KeyboardEvent('keydown', { key, bubbles: true })
         );
       }
       await settled();
@@ -499,6 +519,273 @@ module(
           'Space extended the search buffer to "big d", matching Big Dog'
         );
       assert.dom('[data-key="big-cat"]').hasAttribute('data-active', 'false');
+    });
+
+    test('Enter still selects when another keydown handler calls preventDefault', async function (assert) {
+      // The whole justification for handling keys on `keydown` instead of the
+      // deprecated `keypress`. A browser only fires `keypress` when the
+      // preceding `keydown` was NOT canceled, so any co-located handler that
+      // calls `preventDefault()` on keydown -- Dropdown's submenu keys, a
+      // consuming app's own shortcut handler, Autocomplete's form-submission
+      // guard -- silently deletes the `keypress` event Listbox used to rely
+      // on, and Enter selection just stops working with no error.
+      //
+      // `pressKey` reproduces that browser behaviour faithfully rather than
+      // dispatching a `keypress` that a real browser would never have
+      // delivered. Dispatch stays synchronous and native: no `await` between
+      // keystrokes, so a pending type-ahead debounce cannot make this
+      // vacuously pass. See the regression test above for the full rationale.
+      const animals = ['cheetah', 'crocodile', 'elephant'];
+      const selected: string[] = [];
+      const onAction = (key: string) => selected.push(key);
+
+      // Stands in for any sibling keydown listener on the same <ul>, the way
+      // Dropdown's Menu attaches its submenu keys through `...attributes`.
+      const cancelKeydown = modifier((el: HTMLElement) => {
+        const handler = (event: KeyboardEvent) => event.preventDefault();
+        el.addEventListener('keydown', handler);
+        return () => el.removeEventListener('keydown', handler);
+      });
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            @items={{animals}}
+            @onAction={{onAction}}
+            {{cancelKeydown}}
+          />
+        </template>
+      );
+
+      const listbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      pressKey(listbox, 'Enter');
+      await settled();
+
+      assert.deepEqual(
+        selected,
+        ['cheetah'],
+        'Enter selected the active item even though keydown was canceled'
+      );
+    });
+
+    test('modifier-combo shortcuts do not leak into the type-ahead buffer', async function (assert) {
+      // `keypress` largely did not fire for modifier combinations; `keydown`
+      // does, and it reports a printable `key`: Cmd+K arrives as
+      // `key === 'k'`. A bare `key.length === 1` check would type that into
+      // the search buffer and steal the user's shortcut. Shift is exempt --
+      // a capital letter is legitimate type-ahead, asserted below.
+      const animals = ['cheetah', 'crocodile', 'elephant'];
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            @items={{animals}}
+          />
+        </template>
+      );
+
+      const listbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      for (const modifier of ['metaKey', 'ctrlKey', 'altKey']) {
+        listbox.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'e',
+            code: 'KeyE',
+            bubbles: true,
+            [modifier]: true
+          })
+        );
+      }
+      await settled();
+
+      assert
+        .dom('[data-key="elephant"]')
+        .hasAttribute(
+          'data-active',
+          'false',
+          'Cmd+E / Ctrl+E / Alt+E did not type-ahead to elephant'
+        );
+      assert
+        .dom('[data-key="cheetah"]')
+        .hasAttribute('data-active', 'true', 'the active item never moved');
+
+      // Shift must still reach type-ahead, or capital letters stop working.
+      listbox.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'E',
+          code: 'KeyE',
+          bubbles: true,
+          shiftKey: true
+        })
+      );
+      await settled();
+
+      assert
+        .dom('[data-key="elephant"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'Shift+E is a legitimate type-ahead character'
+        );
+    });
+
+    test('modifier combos do not trigger Enter or Space selection', async function (assert) {
+      // The same leak as type-ahead, on the selection paths. `keypress`
+      // filtered modifier combos out for free; `keydown` delivers Cmd+Enter,
+      // Ctrl+Space and Cmd+Space (Spotlight) with an unchanged `key`, and
+      // acting on those both steals an OS/app shortcut and selects something
+      // the user never asked for.
+      const animals = ['cheetah', 'crocodile'];
+      const selected: string[] = [];
+      const onAction = (key: string) => selected.push(key);
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            @items={{animals}}
+            @onAction={{onAction}}
+          />
+        </template>
+      );
+
+      const listbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      for (const key of ['Enter', ' ']) {
+        for (const modifier of ['metaKey', 'ctrlKey', 'altKey']) {
+          listbox.dispatchEvent(
+            new KeyboardEvent('keydown', {
+              key,
+              bubbles: true,
+              [modifier]: true
+            })
+          );
+        }
+      }
+      await settled();
+
+      assert.deepEqual(selected, [], 'no modifier combo selected anything');
+
+      // Unmodified Enter still selects, so the guard is not simply inert.
+      listbox.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+      );
+      await settled();
+
+      assert.deepEqual(selected, ['cheetah'], 'plain Enter still selects');
+    });
+
+    test('autorepeat from a held key does not extend the search buffer', async function (assert) {
+      // A held key autorepeats under `keydown`, which `keypress` never
+      // exposed here. `search()` accumulates a prefix rather than cycling
+      // between same-initial items, so honouring repeats would turn a
+      // leaned-on 'a' into the buffer "aa" and jump the user elsewhere.
+      //
+      // The item labels make that jump observable: "a" matches Apple (first
+      // in DOM order) while "aa" matches Aardvark. Asserting only that Apple
+      // stays active would pass vacuously, because a buffer matching nothing
+      // leaves the active item exactly where it already was.
+      const items = ['Apple', 'Aardvark'];
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            @items={{items}}
+          />
+        </template>
+      );
+
+      const listbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      // Synchronous and native: an `await` here would let the 500ms
+      // type-ahead debounce clear the buffer between keystrokes and hide a
+      // regression. See the Enter-after-type-ahead test above.
+      listbox.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'a', bubbles: true })
+      );
+      for (let i = 0; i < 2; i++) {
+        listbox.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'a',
+            bubbles: true,
+            repeat: true
+          })
+        );
+      }
+      await settled();
+
+      assert
+        .dom('[data-key="Apple"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'the buffer stayed "a" and kept matching Apple'
+        );
+      assert
+        .dom('[data-key="Aardvark"]')
+        .hasAttribute(
+          'data-active',
+          'false',
+          'autorepeat did not extend the buffer to "aa"'
+        );
+    });
+
+    test('IME composition keystrokes are left to the input method', async function (assert) {
+      // A mid-composition `keydown` still reports a printable `key`, but the
+      // keystroke belongs to the IME, not to type-ahead. Same observable
+      // labels as the autorepeat test above, for the same reason.
+      const items = ['Apple', 'Aardvark'];
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            @items={{items}}
+          />
+        </template>
+      );
+
+      const listbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      listbox.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'a', bubbles: true })
+      );
+      listbox.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'a',
+          bubbles: true,
+          isComposing: true
+        })
+      );
+      await settled();
+
+      assert
+        .dom('[data-key="Apple"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'the composing keystroke did not extend the buffer to "aa"'
+        );
+      assert.dom('[data-key="Aardvark"]').hasAttribute('data-active', 'false');
     });
 
     test('Space selects the active item when no search is active', async function (assert) {
@@ -521,7 +808,7 @@ module(
 
       // `@autoActivateMode` defaults to "first", so item-1 is already active
       // without any navigation.
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', ' ');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', ' ');
 
       assert.deepEqual(
         onAction,
@@ -555,7 +842,7 @@ module(
         </template>
       );
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Z');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Z');
       assert
         .dom('[data-key="item-1"]')
         .hasAttribute(
@@ -564,7 +851,7 @@ module(
           'should have matched the external label text'
         );
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Y');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Y');
       assert
         .dom('[data-key="item-2"]')
         .hasAttribute(
@@ -593,10 +880,10 @@ module(
 
       // A search that matches nothing leaves the previously active item
       // active, so match the other item first to make this discriminating.
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Y');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Y');
       assert.dom('[data-key="item-2"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Z');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Z');
       assert
         .dom('[data-key="item-1"]')
         .hasAttribute('data-active', 'true', 'should have used its own text');
@@ -626,12 +913,12 @@ module(
         </template>
       );
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Z');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Z');
       assert
         .dom('[data-key="item-1"]')
         .hasAttribute('data-active', 'true', 'should have used @textValue');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Y');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Y');
       assert
         .dom('[data-key="item-2"]')
         .hasAttribute(
@@ -872,7 +1159,7 @@ module(
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       await triggerKeyEvent('[data-test-input]', 'keydown', 'ArrowDown');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
-      await triggerKeyEvent('[data-test-input]', 'keypress', 'E');
+      await triggerKeyEvent('[data-test-input]', 'keydown', 'E');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
       await fillIn('[data-test-input]', 'e');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');

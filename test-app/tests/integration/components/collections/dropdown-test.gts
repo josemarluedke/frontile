@@ -617,7 +617,7 @@ module(
 
       await click('[data-test-id="dropdown-trigger"]');
       await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Enter');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Enter');
 
       assert.dom('[data-key="nested"]').exists('Enter opened the submenu');
     });
@@ -727,10 +727,10 @@ module(
       ) as HTMLElement;
 
       listbox.dispatchEvent(
-        new KeyboardEvent('keypress', { key: 'm', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'm', bubbles: true })
       );
       listbox.dispatchEvent(
-        new KeyboardEvent('keypress', { key: 'Enter', bubbles: true })
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
       );
       await settled();
 
