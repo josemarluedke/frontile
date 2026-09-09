@@ -54,6 +54,8 @@ const dragToDismiss = modifier<{
   let start = 0;
   let offset = 0;
   let samples: Sample[] = [];
+  let isDestroyed = false;
+  let exitTimeoutId: number | undefined;
 
   const axisPosition = (event: PointerEvent): number =>
     named.axis === 'y' ? event.clientY : event.clientX;
@@ -183,26 +185,60 @@ const dragToDismiss = modifier<{
   };
 
   const commit = (): void => {
-    // The drag transform lives on this element, while the close animation
-    // runs on the overlay wrapper above it. Animating this element back to 0
-    // relies on that animation starting the same frame as the wrapper's
-    // leave transition -- but onDismiss() -> onClose -> a tracked flag flip
-    // -> Ember re-render -> ember-css-transitions applying `leave` and then
-    // waiting a rAF before `leave-active`/`leave-to`. That gap runs several
-    // frames after our own transition already started travelling back to 0,
-    // so the drawer visibly snaps toward its resting position before the
-    // wrapper's slide-out even begins.
+    // We own the exit motion ourselves rather than handing off to the
+    // overlay wrapper's leave animation. onDismiss() -> onClose -> a tracked
+    // flag flip -> Ember re-render -> ember-css-transitions applying `leave`
+    // happens several frames later, and in that gap Ember's re-render (or
+    // this modifier's own teardown, which runs once `isOpen` flips) clears
+    // this element's inline transform -- so freezing the transform and
+    // waiting for the wrapper's animation let the drawer visibly snap back
+    // to rest before sliding out.
     //
-    // Instead, freeze the drag transform exactly where release left it --
-    // no transition, no change to the transform value -- and hand off to
-    // onDismiss(). The wrapper's own 0 -> 100% leave animation then carries
-    // the drawer (dragged offset and all) the rest of the way off-screen, so
-    // the whole motion is continuous from wherever the user let go. Because
-    // this element never animates on its own after release, there is no
-    // ordering between two animations left to race.
-    element.style.transition = 'none';
+    // Instead, animate this element from its current dragged offset the
+    // rest of the way off-screen (its own size along the axis), and only
+    // call onDismiss() once that animation finishes. While onDismiss has
+    // not fired, `isOpen` is still true, so nothing re-renders or destroys
+    // this element and nothing can clear its inline style out from under
+    // the animation -- the motion is continuous from wherever the user let
+    // go, and by the time onDismiss finally runs the element is already
+    // off-screen, so whatever the wrapper's leave animation does next is
+    // invisible.
+    if (prefersReducedMotion()) {
+      named.onDismiss();
+      return;
+    }
 
-    named.onDismiss();
+    const size = elementSize();
+    const distance = Math.max(size, Math.abs(offset));
+
+    const finish = (): void => {
+      if (exitTimeoutId !== undefined) {
+        window.clearTimeout(exitTimeoutId);
+        exitTimeoutId = undefined;
+      }
+      element.removeEventListener('transitionend', onTransitionEnd);
+
+      if (isDestroyed) {
+        return;
+      }
+
+      named.onDismiss();
+    };
+
+    const onTransitionEnd = (event: TransitionEvent): void => {
+      if (event.target !== element || event.propertyName !== 'transform') {
+        return;
+      }
+      finish();
+    };
+
+    element.addEventListener('transitionend', onTransitionEnd);
+    // transitionend can fail to fire (e.g. the element is hidden mid
+    // transition), so a timeout guarantees onDismiss still runs.
+    exitTimeoutId = window.setTimeout(finish, SETTLE_MS + 50);
+
+    element.style.transition = `transform ${SETTLE_MS}ms ${EASING}`;
+    setTransform(distance * named.direction);
   };
 
   const velocity = (event: PointerEvent): number => {
@@ -264,13 +300,27 @@ const dragToDismiss = modifier<{
     element.removeEventListener('pointerup', handlePointerUp);
     element.removeEventListener('pointercancel', handlePointerUp);
 
-    // The element is normally destroyed along with the rest of the drawer
-    // once the leave animation finishes, so a frozen drag transform never
-    // gets a chance to leak into a reopen. Clear it defensively anyway --
-    // e.g. an element reused by a future modifier revision -- so nothing
-    // outlives this instance.
-    element.style.transform = '';
-    element.style.transition = '';
+    // Mark torn down first so a pending exit animation's finish() (from
+    // transitionend or its setTimeout fallback) sees it and skips calling
+    // onDismiss() again -- the caller that tore this modifier down has
+    // already moved on, and firing onDismiss after teardown could re-enter
+    // logic that no longer expects it.
+    isDestroyed = true;
+
+    // Because commit() defers onDismiss() until the exit animation finishes,
+    // isOpen is still true (and this element still mounted) for the whole
+    // animation -- so teardown here only ever runs for a drag that never
+    // committed (disabled mid-drag, spring-back, or the consumer unmounting
+    // the drawer some other way), or for a rare unmount that races an
+    // in-flight exit animation. Only reset the drag styling when there is no
+    // exit animation pending -- clearing `transform`/`transition` out from
+    // under a pending one would abort it visibly (snap the element back)
+    // for no reason, since finish() above already made sure onDismiss()
+    // itself is a no-op after teardown.
+    if (exitTimeoutId === undefined) {
+      element.style.transform = '';
+      element.style.transition = '';
+    }
   };
 });
 

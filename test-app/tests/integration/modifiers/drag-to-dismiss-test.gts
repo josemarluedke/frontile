@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, settled } from '@ember/test-helpers';
+import { render, find, settled, waitUntil } from '@ember/test-helpers';
 import { dragToDismiss } from 'frontile/modifiers/drag-to-dismiss';
 
 // jsdom-free helper: dispatch a real PointerEvent on the element. Chrome
@@ -57,6 +57,11 @@ module('Integration | Modifier | dragToDismiss', function (hooks) {
     pointer(handle, 'pointerdown', 0, 0);
     pointer(handle, 'pointermove', 0, 80); // 80 > 25% of 200
     pointer(handle, 'pointerup', 0, 80);
+
+    // onDismiss is deferred until the exit animation finishes (transitionend
+    // or its setTimeout fallback), not fired synchronously on pointerup —
+    // await settled() does not wait for a raw setTimeout, so poll instead.
+    await waitUntil(() => dismissed === 1);
     await settled();
 
     assert.strictEqual(dismissed, 1, 'onDismiss fired once');
@@ -197,14 +202,18 @@ module('Integration | Modifier | dragToDismiss', function (hooks) {
     pointer(panel, 'pointerdown', 0, 0);
     pointer(panel, 'pointermove', 0, 80); // 80 > 25% of 200
     pointer(panel, 'pointerup', 0, 80);
+
+    await waitUntil(() => dismissed === 1);
     await settled();
 
     assert.strictEqual(dismissed, 1, 'onDismiss fired once');
   });
 
-  test('on commit, the transform is frozen at the dragged offset (not animated back toward 0) before onDismiss fires', async function (assert) {
+  test('on commit, the exit animation continues from the released offset (never back toward 0) and onDismiss fires only once it finishes', async function (assert) {
+    let dismissed = 0;
     let transformWhenDismissed: string | undefined;
     const onDismiss = () => {
+      dismissed += 1;
       const el = find("[data-test-id='panel']") as HTMLElement;
       transformWhenDismissed = el.style.transform;
     };
@@ -232,29 +241,37 @@ module('Integration | Modifier | dragToDismiss', function (hooks) {
 
     pointer(handle, 'pointerdown', 0, 0);
     pointer(handle, 'pointermove', 0, 80); // 80 > 25% of 200, commits
-
-    // Read the transform synchronously, in the same tick as pointerup —
-    // before any later hypothetical rAF/transition could have moved it. A
-    // buggy implementation that resets the transform to 0 (or animates
-    // toward 0) as part of commit() would already show 0 here or shortly
-    // after; the fix freezes it at the released offset.
     pointer(handle, 'pointerup', 0, 80);
 
+    // Immediately after pointerup, onDismiss must not have fired yet — it is
+    // deferred until the exit animation completes — and the transform must
+    // not have snapped back toward 0: it should be at or beyond the released
+    // 80px offset, continuing the gesture rather than reversing it.
+    const matchAfterRelease = /translateY\((-?[\d.]+)px\)/.exec(
+      panel.style.transform
+    );
+    assert.ok(matchAfterRelease, 'a transform is present right after release');
     assert.ok(
-      panel.style.transform.includes('80'),
-      `transform stays frozen at the released offset (80px), got "${panel.style.transform}"`
+      Number(matchAfterRelease![1]) >= 80,
+      `transform does not fall back below the released offset, got "${panel.style.transform}"`
     );
-    assert.strictEqual(
-      panel.style.transition,
-      'none',
-      'no transition is applied to the element on commit, so it cannot animate on its own'
-    );
+    assert.strictEqual(dismissed, 0, 'onDismiss has not fired yet');
 
+    await waitUntil(() => dismissed === 1);
     await settled();
 
+    assert.strictEqual(
+      dismissed,
+      1,
+      'onDismiss fires once the exit animation completes'
+    );
+
+    const matchAtDismiss = transformWhenDismissed
+      ? /translateY\((-?[\d.]+)px\)/.exec(transformWhenDismissed)
+      : null;
     assert.ok(
-      transformWhenDismissed?.includes('80'),
-      `onDismiss saw the transform still at the released offset, got "${transformWhenDismissed}"`
+      matchAtDismiss && Number(matchAtDismiss[1]) >= 80,
+      `onDismiss saw the transform still at/beyond the released offset, got "${transformWhenDismissed}"`
     );
   });
 });
