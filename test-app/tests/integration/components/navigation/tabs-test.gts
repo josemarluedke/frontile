@@ -796,8 +796,7 @@ module(
         window.getComputedStyle(secondTab).height
       );
       assert.pushResult({
-        result:
-          Math.abs(parseFloat(computed.height) - secondTabHeight) < 0.75,
+        result: Math.abs(parseFloat(computed.height) - secondTabHeight) < 0.75,
         actual: computed.height,
         expected: `~${secondTabHeight}px`,
         message: 'the bar is as tall as the selected tab'
