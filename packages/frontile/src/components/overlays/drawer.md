@@ -64,6 +64,84 @@ export default class BasicDrawer extends Component {
 }
 ```
 
+### Header title, description and icon
+
+`<d.Header>` accepts `@title` and `@description` directly, or a block yielding `h.Icon`,
+`h.Title` and `h.Description` for when you need to place them yourself — a blockless
+`<h.Title />` or `<h.Description />` falls back to `@title` / `@description`.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+
+export default class DrawerHeaderArgs extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @onPress={{this.toggle}}>
+      Open Drawer
+    </Button>
+
+    <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+      <d.Header
+        @title='Account settings'
+        @description='Update your name, email and password.'
+      />
+      <d.Body>
+        <p>The title and description above came from `@title` and
+          `@description`, with no block needed.</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+import { SettingsIcon } from 'site/components/icons';
+
+export default class DrawerHeaderBlock extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @onPress={{this.toggle}}>
+      Open Drawer
+    </Button>
+
+    <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+      <d.Header
+        @title='Account settings'
+        @description='Update your name, email and password.'
+        as |h|
+      >
+        <h.Icon><SettingsIcon /></h.Icon>
+        <h.Title />
+        <h.Description />
+      </d.Header>
+      <d.Body>
+        <p>The title and description here are still the same `@title` and
+          `@description`, only placed alongside an icon by the block.</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
 ### Different Placements
 
 Drawers can slide in from any edge of the screen.
@@ -239,6 +317,147 @@ export default class DrawerSizes extends Component {
         </d.Body>
       </Drawer>
     </div>
+  </template>
+}
+```
+
+### Appearance
+
+`@appearance` controls how the header, body and footer relate to each other. `default` gives
+the drawer a black header band, a body on its own surface and a solid footer. `ghost` keeps
+every region on the same surface as the modal — the flat look Drawer used before v0.18.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { fn } from '@ember/helper';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+
+export default class DrawerAppearances extends Component {
+  @tracked isOpen = false;
+  @tracked selectedAppearance = 'default';
+
+  appearances = ['default', 'ghost'];
+
+  @action openDrawer(appearance) {
+    this.selectedAppearance = appearance;
+    this.isOpen = true;
+  }
+
+  @action closeDrawer() {
+    this.isOpen = false;
+  }
+
+  <template>
+    <div class='flex gap-2'>
+      {{#each this.appearances as |appearance|}}
+        <Button @onPress={{fn this.openDrawer appearance}}>
+          {{appearance}}
+        </Button>
+      {{/each}}
+    </div>
+
+    <Drawer
+      @isOpen={{this.isOpen}}
+      @onClose={{this.closeDrawer}}
+      @appearance={{this.selectedAppearance}}
+      as |d|
+    >
+      <d.Header
+        @title='{{this.selectedAppearance}} appearance'
+        @description='Switch appearances with the buttons above.'
+      />
+      <d.Body>
+        <p>This is the body content, on its own surface in `default` and flat
+          in `ghost`.</p>
+      </d.Body>
+      <d.Footer @class='flex gap-2'>
+        <Button @onPress={{this.closeDrawer}}>Close</Button>
+      </d.Footer>
+    </Drawer>
+  </template>
+}
+```
+
+### Drag to close
+
+Vertical drawers (`top`/`bottom`) show a grab handle and can be dragged closed by default;
+side drawers (`left`/`right`) don't. `@allowDragToClose` overrides either default explicitly,
+and it has no effect when `@allowClosing={{false}}` — a non-dismissible drawer stays
+non-dismissible. The handle is a real button (labelled "Close drawer"), so it closes the
+drawer on click as well as on drag — the gesture is never the only way out.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+
+export default class DrawerDragBottom extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @onPress={{this.toggle}}>
+      Open Bottom Drawer
+    </Button>
+
+    <Drawer
+      @isOpen={{this.isOpen}}
+      @onClose={{this.toggle}}
+      @placement='bottom'
+      as |d|
+    >
+      <d.Header @title='Drag me down' @description='Or use the close button.' />
+      <d.Body>
+        <p>Drag the handle at the top of this drawer down to dismiss it, or
+          release early to have it spring back.</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+
+export default class DrawerDragRight extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @onPress={{this.toggle}}>
+      Open Right Drawer
+    </Button>
+
+    <Drawer
+      @isOpen={{this.isOpen}}
+      @onClose={{this.toggle}}
+      @placement='right'
+      @allowDragToClose={{true}}
+      as |d|
+    >
+      <d.Header
+        @title='Opted in'
+        @description='Right drawers need @allowDragToClose to get the handle.'
+      />
+      <d.Body>
+        <p>Drag the handle on the left edge toward the left to dismiss.</p>
+      </d.Body>
+    </Drawer>
   </template>
 }
 ```
