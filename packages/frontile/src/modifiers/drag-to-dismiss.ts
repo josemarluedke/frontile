@@ -184,17 +184,23 @@ const dragToDismiss = modifier<{
 
   const commit = (): void => {
     // The drag transform lives on this element, while the close animation
-    // runs on the overlay wrapper above it. Returning this element to 0
-    // over the same duration and easing as the wrapper's 0 -> 100% slide
-    // makes the two transforms compose into one continuous motion from the
-    // dragged offset to fully off-screen. Clearing the transform before
-    // handing off instead produces a visible snap back to 0 for a frame.
-    if (prefersReducedMotion()) {
-      element.style.transition = '';
-    } else {
-      element.style.transition = `transform ${SETTLE_MS}ms ${EASING}`;
-    }
-    element.style.transform = '';
+    // runs on the overlay wrapper above it. Animating this element back to 0
+    // relies on that animation starting the same frame as the wrapper's
+    // leave transition -- but onDismiss() -> onClose -> a tracked flag flip
+    // -> Ember re-render -> ember-css-transitions applying `leave` and then
+    // waiting a rAF before `leave-active`/`leave-to`. That gap runs several
+    // frames after our own transition already started travelling back to 0,
+    // so the drawer visibly snaps toward its resting position before the
+    // wrapper's slide-out even begins.
+    //
+    // Instead, freeze the drag transform exactly where release left it --
+    // no transition, no change to the transform value -- and hand off to
+    // onDismiss(). The wrapper's own 0 -> 100% leave animation then carries
+    // the drawer (dragged offset and all) the rest of the way off-screen, so
+    // the whole motion is continuous from wherever the user let go. Because
+    // this element never animates on its own after release, there is no
+    // ordering between two animations left to race.
+    element.style.transition = 'none';
 
     named.onDismiss();
   };
@@ -257,6 +263,14 @@ const dragToDismiss = modifier<{
     element.removeEventListener('pointermove', handlePointerMove);
     element.removeEventListener('pointerup', handlePointerUp);
     element.removeEventListener('pointercancel', handlePointerUp);
+
+    // The element is normally destroyed along with the rest of the drawer
+    // once the leave animation finishes, so a frozen drag transform never
+    // gets a chance to leak into a reopen. Clear it defensively anyway --
+    // e.g. an element reused by a future modifier revision -- so nothing
+    // outlives this instance.
+    element.style.transform = '';
+    element.style.transition = '';
   };
 });
 

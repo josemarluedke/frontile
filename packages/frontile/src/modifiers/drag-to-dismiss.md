@@ -84,9 +84,16 @@ The `dragToDismiss` modifier accepts only named arguments:
   displacement exceeds **25%** of the element's size along `axis`, or the
   velocity over the trailing **100ms** exceeds **0.4 px/ms**. Either
   condition alone is enough.
-- **Settle animation**: whether the drag commits or springs back, the
-  element's transform animates over **200ms** with
-  `cubic-bezier(0.37, 0, 0.63, 1)` easing.
+- **Settle animation**: when a drag springs back (does not commit), the
+  element's transform animates back to rest over **200ms** with
+  `cubic-bezier(0.37, 0, 0.63, 1)` easing. When a drag commits, the element's
+  transform is instead frozen exactly where the gesture was released — no
+  transition is applied to it — and `onDismiss` fires immediately. This lets
+  a consumer's own close animation (e.g. the Drawer's slide-out) carry the
+  element the rest of the way off-screen starting from the dragged offset,
+  rather than racing the drag transform's own return-to-zero against that
+  animation, which visibly snapped the element back toward its resting
+  position for a frame before the close animation could start.
 - **Rubber-banding**: movement away from the dismiss direction is damped by a
   factor of **0.2**, so the element still visibly responds to the gesture
   without appearing to detach or leave its container.

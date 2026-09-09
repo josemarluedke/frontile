@@ -201,4 +201,60 @@ module('Integration | Modifier | dragToDismiss', function (hooks) {
 
     assert.strictEqual(dismissed, 1, 'onDismiss fired once');
   });
+
+  test('on commit, the transform is frozen at the dragged offset (not animated back toward 0) before onDismiss fires', async function (assert) {
+    let transformWhenDismissed: string | undefined;
+    const onDismiss = () => {
+      const el = find("[data-test-id='panel']") as HTMLElement;
+      transformWhenDismissed = el.style.transform;
+    };
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 200px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+            handleSelector="[data-test-id='handle']"
+          }}
+        >
+          <div data-test-id="handle" style="height: 20px;"></div>
+        </div>
+      </template>
+    );
+
+    const handle = find("[data-test-id='handle']")!;
+    const panel = find("[data-test-id='panel']") as HTMLElement;
+
+    pointer(handle, 'pointerdown', 0, 0);
+    pointer(handle, 'pointermove', 0, 80); // 80 > 25% of 200, commits
+
+    // Read the transform synchronously, in the same tick as pointerup —
+    // before any later hypothetical rAF/transition could have moved it. A
+    // buggy implementation that resets the transform to 0 (or animates
+    // toward 0) as part of commit() would already show 0 here or shortly
+    // after; the fix freezes it at the released offset.
+    pointer(handle, 'pointerup', 0, 80);
+
+    assert.ok(
+      panel.style.transform.includes('80'),
+      `transform stays frozen at the released offset (80px), got "${panel.style.transform}"`
+    );
+    assert.strictEqual(
+      panel.style.transition,
+      'none',
+      'no transition is applied to the element on commit, so it cannot animate on its own'
+    );
+
+    await settled();
+
+    assert.ok(
+      transformWhenDismissed?.includes('80'),
+      `onDismiss saw the transform still at the released offset, got "${transformWhenDismissed}"`
+    );
+  });
 });

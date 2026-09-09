@@ -82,7 +82,14 @@ const drawer = tv({
         icon: 'text-white',
         title: 'text-header-sm font-semibold text-white',
         description: 'text-sm text-white/70',
-        dragHandleBar: 'bg-white/40'
+        // The handle can sit over the black header band (bottom placement)
+        // or the surface-app footer (top placement) -- white in light mode,
+        // black in dark mode. `bg-neutral` (gray-500 light / gray-400 dark)
+        // is the one level that reads against both, plus the surface-drawer
+        // body a side-placement handle runs down. See the "compound variant
+        // vs. single semantic level" note on the `ghost` bar below -- same
+        // reasoning applies here.
+        dragHandleBar: 'bg-neutral'
       },
       ghost: {
         base: 'bg-surface-modal text-on-surface-modal',
@@ -91,7 +98,16 @@ const drawer = tv({
         footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal p-8`,
         title: 'text-header-lg',
         description: 'text-sm text-neutral',
-        dragHandleBar: 'bg-neutral-soft'
+        // `bg-neutral-soft` (gray-200 light / gray-700 dark) reads too faint
+        // against `surface-modal` (white light / gray-950 dark) -- verified
+        // in the browser. `bg-neutral` (gray-500 / gray-400) gives clear
+        // contrast against surface-modal in both placements/schemes, and
+        // matches the level used for the `default` appearance above, which
+        // a matrix of appearance x placement compound variants would not
+        // buy us anything over -- every surface the handle can land on
+        // (black header, surface-app, surface-drawer, surface-modal)
+        // contrasts against this one level.
+        dragHandleBar: 'bg-neutral'
       }
     },
     size: {
