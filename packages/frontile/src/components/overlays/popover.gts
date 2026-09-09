@@ -595,8 +595,9 @@ class Popover extends Component<PopoverSignature> {
   /**
    * Clears the short window during which `open()` refuses to re-open.
    *
-   * The 90ms this is debounced by is deliberately not the transition duration
-   * (200ms): the window exists to absorb a single event cascade -- the Overlay's
+   * The 90ms this is debounced by is deliberately unrelated to the transition
+   * duration (the default `scale` transition runs 200ms in and 100ms out):
+   * the window exists to absorb a single event cascade -- the Overlay's
    * outside-click handler closing while the trigger's own click handler is
    * about to re-open -- not to wait for the animation out. Stretching it to the
    * transition would leave the trigger feeling dead for a fifth of a second

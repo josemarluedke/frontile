@@ -30,9 +30,13 @@ type BoundPopoverContent = PopoverSignature['Blocks']['default'][0]['Content'];
  * being invoked as a plain function in application code -- so there is no
  * type-safe way to call through to it. This narrow, well-understood cast is
  * the exception: `modifier()` from `ember-modifier` returns the exact
- * function it was given (see its `dist/index.js`, `setModifierManager(() =>
- * MANAGER, fn); return fn;` with no wrapping), so at runtime `p.trigger`
- * *is* that function. `(el, positional, named) => teardown` is how
+ * function it was given. `ember-modifier`'s `dist/index.js` ends `modifier()`
+ * with `return setModifierManager(() => MANAGER, fn);`. Its own comment there
+ * calls the declared return type "a *lie*" -- that is about the TYPE, not the
+ * runtime: `setModifierManager` delegates to `@glimmer/manager`'s
+ * `setInternalModifierManager`, whose body is `map.set(obj, manager), obj`,
+ * so it really does hand back the same `fn`. At runtime `p.trigger` *is*
+ * that function. `(el, positional, named) => teardown` is how
  * `Popover`'s own `trigger` is declared.
  *
  * WARNING FOR A FUTURE UPGRADER: this cast is verified against
@@ -69,6 +73,16 @@ type PopoverTriggerFn = (
 type PopoverAnchorFn = (
   element: HTMLElement | SVGElement
 ) => void | (() => void);
+
+/**
+ * A modifier value that will be invoked directly as a function rather than
+ * applied in a template. See `PopoverTriggerFn` for why that is sound and
+ * what has to be re-verified on an `ember-modifier` upgrade. Stands in for
+ * `p.anchor`/`p.trigger` wherever this file only needs to cache and compare
+ * their identity (not call them) -- the actual call sites still narrow to
+ * `PopoverAnchorFn`/`PopoverTriggerFn` via the existing documented casts.
+ */
+type CallableModifier = object;
 
 interface TooltipSignature {
   Args: {
@@ -369,8 +383,8 @@ class Tooltip extends Component<TooltipSignature> {
    * destructor.
    */
   cachedTrigger?: {
-    anchor: unknown;
-    trigger: unknown;
+    anchor: CallableModifier;
+    trigger: CallableModifier;
     modifier: ModifierLike<{ Element: HTMLElement }>;
   };
 
@@ -420,7 +434,7 @@ class Tooltip extends Component<TooltipSignature> {
    * one seam the test suite can wrap to count real anchor installations
    * (see `tooltip-test.gts`'s anchor-churn-guard test).
    */
-  ensureAnchor(anchor: unknown, element: HTMLElement | SVGElement) {
+  ensureAnchor(anchor: CallableModifier, element: HTMLElement | SVGElement) {
     // The wrapper modifier re-ran for this same element -- any anchor
     // teardown its destructor speculatively scheduled (see
     // `scheduleAnchorTeardownCheck`) is stale: the element didn't actually go
@@ -513,8 +527,8 @@ class Tooltip extends Component<TooltipSignature> {
   }
 
   makeTrigger = (
-    anchor: unknown,
-    trigger: unknown
+    anchor: CallableModifier,
+    trigger: CallableModifier
   ): ModifierLike<{ Element: HTMLElement }> => {
     if (
       !this.cachedTrigger ||

@@ -480,5 +480,141 @@ module(
         'the raised error is the mutual-exclusion assertion, not some other failure'
       );
     });
+
+    test('keyboard focus-visible opens it and blur closes it', async function (assert) {
+      await render(
+        <template>
+          <Tooltip @content="Hi" @openDelay={{0}} @closeDelay={{0}} as |t|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{t.trigger}}
+            >Trigger</button>
+          </Tooltip>
+        </template>
+      );
+
+      // `focus()` alone does not set `:focus-visible` in every browser, so
+      // dispatch a keyboard-origin focus the way a Tab would. Same technique
+      // as `popover-test.gts`'s "hover: keyboard focus opens it and blur
+      // closes it" -- this version goes through `Tooltip`'s own `t.trigger`,
+      // which is what proves `Tooltip` wires the focus path at all.
+      const trigger = find('[data-test-id="trigger"]') as HTMLButtonElement;
+      await triggerKeyEvent(document.body, 'keydown', 'Tab');
+      trigger.focus();
+      await triggerEvent(trigger, 'focusin');
+
+      assert.dom('[role="tooltip"]').exists('focus opens it');
+
+      trigger.blur();
+      await triggerEvent(trigger, 'focusout');
+      assert.dom('[role="tooltip"]').doesNotExist('blur closes it');
+    });
+
+    test('@disableInteractive closes when the trigger is left', async function (assert) {
+      await render(
+        <template>
+          <Tooltip
+            @content="Hi"
+            @disableInteractive={{true}}
+            @openDelay={{0}}
+            @closeDelay={{50}}
+            as |t|
+          >
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{t.trigger}}
+            >Trigger</button>
+          </Tooltip>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+      assert.dom('[role="tooltip"]').exists();
+
+      // Leave the trigger and land on the content before the close fires --
+      // exactly the sequence that keeps a tooltip open when it's interactive
+      // (see "hovering the content keeps it open" above). `@disableInteractive`
+      // exists to make this the opposite, so this test must actually touch
+      // the content -- a test that never moves the pointer onto it would pass
+      // even with `disableInteractive` unimplemented. Dispatched raw, not
+      // through `triggerEvent`, for the same reason as the other tests in
+      // this file that interleave events inside a delay window: `triggerEvent`
+      // awaits `settled()`, which would wait out the pending close timer
+      // before the content's `mouseenter` had a chance to (wrongly) cancel it.
+      const trigger = find('[data-test-id="trigger"]') as HTMLElement;
+      trigger.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+      (find('[role="tooltip"]') as HTMLElement).dispatchEvent(
+        new MouseEvent('mouseenter', { bubbles: true })
+      );
+      await settled();
+
+      assert
+        .dom('[role="tooltip"]')
+        .doesNotExist(
+          '@disableInteractive ignores the pointer arriving on the content'
+        );
+    });
+
+    test('it honours non-zero @openDelay / @closeDelay', async function (assert) {
+      await render(
+        <template>
+          <Tooltip @content="Hi" @openDelay={{120}} @closeDelay={{40}} as |t|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{t.trigger}}
+            >Trigger</button>
+          </Tooltip>
+        </template>
+      );
+
+      // Dispatched raw, not through `triggerEvent`: `triggerEvent` awaits
+      // `settled()` internally, which would wait out the pending open timer
+      // before this test ever got to assert on the not-yet-open state.
+      //
+      // Every other open/close test in this file uses `@openDelay={{0}}`/
+      // `@closeDelay={{0}}`, so none of them proves the delay is actually
+      // observed -- a scheduled callback resolves on the next runloop turn
+      // either way, `@openDelay` honoured or not. Asserting "not open on the
+      // very next tick" alone doesn't distinguish a real ~120ms delay from a
+      // broken one that opens after 0ms: both are still closed one
+      // microtask after `mouseenter`. So this measures wall-clock elapsed
+      // time against `Date.now()` and asserts it actually took at least
+      // close to the requested delay, not merely that it was asynchronous.
+      const trigger = find('[data-test-id="trigger"]') as HTMLElement;
+      const openStart = Date.now();
+      trigger.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+
+      assert
+        .dom('[role="tooltip"]')
+        .doesNotExist('not yet open immediately after mouseenter');
+
+      await waitUntil(() => find('[role="tooltip"]'), { timeout: 2000 });
+      const openElapsed = Date.now() - openStart;
+      assert.dom('[role="tooltip"]').exists('open once @openDelay elapses');
+      assert.ok(
+        openElapsed >= 100,
+        `opening took at least close to the 120ms @openDelay (took ${openElapsed}ms)`
+      );
+
+      const closeStart = Date.now();
+      trigger.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+
+      assert
+        .dom('[role="tooltip"]')
+        .exists('still open immediately after mouseleave');
+
+      await waitUntil(() => !find('[role="tooltip"]'), { timeout: 2000 });
+      const closeElapsed = Date.now() - closeStart;
+      assert
+        .dom('[role="tooltip"]')
+        .doesNotExist('closed once @closeDelay elapses');
+      assert.ok(
+        closeElapsed >= 25,
+        `closing took at least close to the 40ms @closeDelay (took ${closeElapsed}ms)`
+      );
+    });
   }
 );

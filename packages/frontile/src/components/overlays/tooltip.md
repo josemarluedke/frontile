@@ -143,10 +143,10 @@ long the tooltip waits before showing and hiding. `@closeDelay` is also the
 window the pointer has to cross the gap between the trigger and the tooltip
 content, so setting it very low makes the tooltip effectively non-interactive.
 
-These defaults are deliberately longer than the underlying `Popover`'s hover
-defaults (`100`ms/`100`ms): a tooltip fires on every incidental mouse pass over
-its trigger, so it waits a little longer before appearing to avoid flashing at
-a user who was only moving the cursor across.
+These defaults are longer than the underlying `Popover`'s hover defaults
+(`100`ms/`100`ms): a tooltip fires on every incidental mouse pass over its
+trigger, so it waits a little longer before appearing to avoid flashing at a
+user who was only moving the cursor across.
 
 ```gts preview
 import { Tooltip } from 'frontile';

@@ -429,7 +429,8 @@ so it is reachable without a mouse. `Escape` closes it while it's open. The poin
 keyboard focus, may both move off the trigger and onto the content without the popover
 closing (see [Hover Trigger](#hover-trigger)). Unlike the click trigger, a hover popover
 never moves focus into its content — focus stays wherever it already was, avoiding the page
-jump that comes from a portaled overlay being scrolled into view.
+jump that comes from a portaled overlay being scrolled into view. Consequently there is
+nothing to restore on close either.
 
 The `aria=` option, passed alongside the trigger type, chooses which relationship the
 trigger element carries:
