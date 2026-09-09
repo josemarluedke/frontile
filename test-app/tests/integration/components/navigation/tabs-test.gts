@@ -711,10 +711,18 @@ module(
         '0px',
         'the bar has a height of its own rather than the tab height'
       );
-      assert.strictEqual(
-        computed.width,
-        `${secondTab.offsetWidth}px`,
-        'the bar is as wide as the selected tab'
+      // `getComputedStyle` reports a sub-pixel width (`116.156px`) while
+      // `offsetWidth` is rounded to an integer (`117`), so comparing the two
+      // as strings only passes when the tab happens to measure a whole number
+      // of pixels -- which depends on the platform's font metrics, and does
+      // not hold on CI. Compare numerically, allowing for that rounding.
+      // `offsetWidth` (not `getBoundingClientRect`) is the right reference:
+      // the test container is scaled, and only `offsetWidth` is untransformed,
+      // matching the coordinate space `computed.width` is reported in.
+      assert.ok(
+        Math.abs(parseFloat(computed.width) - secondTab.offsetWidth) < 2,
+        `the bar (${computed.width}) is as wide as the selected tab ` +
+          `(${secondTab.offsetWidth}px)`
       );
       assert.ok(
         computed.translate.includes(`${secondTab.offsetLeft}px`),
@@ -770,10 +778,11 @@ module(
         '2px',
         'the bar is the thin vertical accent (w-0.5), not the full tab width'
       );
-      assert.strictEqual(
-        computed.height,
-        `${secondTab.offsetHeight}px`,
-        'the bar is as tall as the selected tab'
+      // Same sub-pixel-vs-rounded mismatch as the horizontal case above.
+      assert.ok(
+        Math.abs(parseFloat(computed.height) - secondTab.offsetHeight) < 2,
+        `the bar (${computed.height}) is as tall as the selected tab ` +
+          `(${secondTab.offsetHeight}px)`
       );
       assert.ok(
         computed.translate.includes(`${secondTab.offsetTop}px`),

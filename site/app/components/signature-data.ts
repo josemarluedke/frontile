@@ -10971,6 +10971,19 @@ const data: ComponentDoc[] = [
     fileName: 'packages/frontile/declarations/components/overlays/popover.d.ts',
     Args: [
       {
+        identifier: 'closeDelay',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Milliseconds to wait before closing after the pointer leaves the trigger\nor the content. Only applies to a <code>trigger</code> installed in hover mode.</p>\n<p>This is also the window the pointer has to cross the gap between the\ntrigger and the content, so setting it to 0 makes content hover\nunreachable in practice.</p>',
+        tags: { defaultValue: { name: 'defaultValue', value: '100' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">100</span></span>',
+      },
+      {
         identifier: 'didClose',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
@@ -11047,6 +11060,19 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'openDelay',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Milliseconds to wait before opening on hover or keyboard focus. Only\napplies to a <code>trigger</code> installed in hover mode.',
+        tags: { defaultValue: { name: 'defaultValue', value: '100' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">100</span></span>',
+      },
+      {
         identifier: 'placement',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -11106,7 +11132,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ anchor: ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ Element: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; measureWidth: ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ Element: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; isOpen: boolean; toggle: () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; open: () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; close: () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; trigger: ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ Element: HTMLElement; Args: { Positional: [eventType</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'click\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'hover\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]; }; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; Content: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth bound); }]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ anchor: ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ Element: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; measureWidth: ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ Element: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; isOpen: boolean; toggle: () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; open: () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; close: () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; trigger: ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ Element: HTMLElement; Args: { Positional: [eventType</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'click\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'hover\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]; Named: { aria?: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'menu\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'describedby\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }; }; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; data: MiddlewareArguments; Content: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth, preventAutoFocus, isHoverTrigger, onContentHoverStart, onContentHoverEnd, registerArrow, velcroData bound); }]</span></span>',
           items: [
             {
               identifier: '0',
@@ -11180,7 +11206,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'trigger',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Args</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: { </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Positional</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: [eventType</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'click\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'hover\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]; }; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Args</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: { </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Positional</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: [eventType</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'click\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'hover\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Named</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: { aria</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'menu\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'describedby\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }; }; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -11188,9 +11214,20 @@ const data: ComponentDoc[] = [
                     tags: {},
                   },
                   {
+                    identifier: 'data',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Placement; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">strategy</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Strategy; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">x</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: number; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">y</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: number; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">initialPlacement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Placement; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">middlewareData</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: MiddlewareData; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rects</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: ElementRects; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">platform</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Platform; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">elements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Elements; }</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The floating-ui middleware data for the current position, including\nthe placement actually resolved after `flip`.',
+                    tags: {},
+                  },
+                  {
                     identifier: 'Content',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth bound)</span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth, preventAutoFocus, isHoverTrigger, onContentHoverStart, onContentHoverEnd, registerArrow, velcroData bound)</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -11280,6 +11317,34 @@ const data: ComponentDoc[] = [
         isInternal: true,
         description: '',
         tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'arrow',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Renders an arrow pointing at the anchor.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'arrowClass',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value:
+              "Additional classes for the arrow element, merged with `overlayArrow`'s\ndefaults via Tailwind Merge. Lets a consumer that composes `Content`\n(e.g. `Tooltip`) give the arrow an intent-specific border; not meant as\npublic `Popover` API.",
+          },
+        },
       },
       {
         identifier: 'backdrop',
@@ -11492,6 +11557,19 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
       },
       {
+        identifier: 'disableInteractive',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Closes as soon as the pointer leaves the trigger, instead of letting it\nmove into the content. Only meaningful for a hover trigger.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
         identifier: 'disableTransitions',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
@@ -11521,6 +11599,38 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">clickOutsideDeactivates</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">allowOutsideClick</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> }</span></span>',
       },
       {
+        identifier: 'isHoverTrigger',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'onContentHoverEnd',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'onContentHoverStart',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
         identifier: 'onOpen',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
@@ -11548,6 +11658,16 @@ const data: ComponentDoc[] = [
         identifier: 'preventFocusRestore',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'registerArrow',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
         },
         isRequired: false,
         isInternal: true,
@@ -11747,6 +11867,16 @@ const data: ComponentDoc[] = [
         description: '',
         tags: { internal: { name: 'internal', value: '' } },
       },
+      {
+        identifier: 'velcroData',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Placement; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">strategy</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Strategy; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">x</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: number; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">y</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: number; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">initialPlacement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Placement; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">middlewareData</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: MiddlewareData; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rects</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: ElementRects; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">platform</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Platform; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">elements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: Elements; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
     ],
     Blocks: [
       {
@@ -11885,6 +12015,479 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
     description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'tooltip',
+    name: 'Tooltip',
+    fileName: 'packages/frontile/declarations/components/overlays/tooltip.d.ts',
+    Args: [
+      {
+        identifier: 'arrow',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Renders an arrow pointing at the trigger.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Custom class for the tooltip, merged with the theme's using Tailwind\nMerge.",
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'arrow\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: "Class names for each slot, merged with the theme's.",
+        tags: {},
+      },
+      {
+        identifier: 'closeDelay',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Milliseconds before closing. Also the window the pointer has to cross\nthe gap into the tooltip, so a very small value makes the tooltip\neffectively non-interactive.',
+        tags: { defaultValue: { name: 'defaultValue', value: '150' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">150</span></span>',
+      },
+      {
+        identifier: 'content',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The tooltip's text. A shorthand for the common case; pass a <code>Content</code>\nblock instead when the tooltip needs markup. Passing both asserts.",
+        tags: {},
+      },
+      {
+        identifier: 'didClose',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Callback when closing has finished, including any exit transition.',
+        tags: {},
+      },
+      {
+        identifier: 'disableInteractive',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Closes as soon as the pointer leaves the trigger, rather than letting it\nmove onto the tooltip.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'flipOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'alignment\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackPlacements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Placement[]; fallbackStrategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bestFit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'initialPlacement\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackAxisSideDirection</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> ...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Options for the floating-ui flip middleware, which moves the tooltip\nto the opposite side when it would overflow the viewport. Forwarded\nto the underlying <code>Popover</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The tooltip's semantic color role. The arrow inherits the body's\nbackground, so it follows the chosen intent automatically.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Installs the trigger but never opens. For a tooltip whose text is\nconditionally irrelevant.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isOpen',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the tooltip is open. Pair with <code>onOpenChange</code> to control it;\nleave it unset to let the tooltip manage its own state. Passing\n<code>isOpen</code> alone, without <code>onOpenChange</code>, falls back to uncontrolled\nbehavior.',
+        tags: {},
+      },
+      {
+        identifier: 'middleware',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: string; options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> any; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">fn</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">state</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">placement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">strategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Strategy</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">x</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">y</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">initialPlacement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">middlewareData</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> MiddlewareData</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">rects</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ElementRects</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">platform</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Platform</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">elements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Elements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Promisable</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;...></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Additional floating-ui middleware, for positioning behavior beyond\nwhat <code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code>\ncover. Forwarded to the underlying <code>Popover</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'offsetOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">OffsetOptions</span></span>',
+          items: [
+            'number',
+            '{ mainAxis?: number; crossAxis?: number; alignmentAxis?: number; }',
+            'Derivable<OffsetValue>',
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The gap, in pixels, between the trigger and the tooltip. The default\nleaves room for the arrow when <code>@arrow</code> is enabled.',
+        tags: { defaultValue: { name: 'defaultValue', value: '8' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">8</span></span>',
+      },
+      {
+        identifier: 'onOpenChange',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">isOpen</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Callback when the tooltip opens or closes, receiving the new state.',
+        tags: {},
+      },
+      {
+        identifier: 'openDelay',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Milliseconds before opening on hover or keyboard focus.',
+        tags: { defaultValue: { name: 'defaultValue', value: '200' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">200</span></span>',
+      },
+      {
+        identifier: 'placement',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-end\'</span></span>',
+          items: [
+            "'bottom'",
+            "'left'",
+            "'right'",
+            "'top'",
+            "'top-start'",
+            "'top-end'",
+            "'right-start'",
+            "'right-end'",
+            "'bottom-start'",
+            "'bottom-end'",
+            "'left-start'",
+            "'left-end'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The requested placement of the tooltip relative to its trigger. This is\na preference, not a guarantee: the flip middleware may resolve it to\nthe opposite side when there is no room for it in the requested spot.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'top'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'top\'</span></span>',
+      },
+      {
+        identifier: 'shiftOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; rootBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> RootBoundary; elementContext</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> ElementContext; altBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; limiter</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Options for the floating-ui shift middleware, which nudges the\ntooltip along its axis to keep it in view. Forwarded to the\nunderlying <code>Popover</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The tooltip's size, which scales its padding and label text.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+      },
+      {
+        identifier: 'strategy',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Strategy</span></span>',
+          items: ["'absolute'", "'fixed'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The CSS positioning strategy, forwarded to the underlying\n<code>Popover</code>/floating-ui.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'absolute'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'absolute\'</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ trigger: ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ Element: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; Content: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">TooltipContent</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (PopoverContent, classNames, arrow, disableInteractive, hasContentArg bound); isOpen: boolean; open: () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; close: () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'trigger',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The modifier to apply to the element the tooltip describes. Installs\nthe hover/focus listeners that open and close the tooltip, and keeps\n`aria-describedby` in sync while it does.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Content',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">TooltipContent</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (PopoverContent, classNames, arrow, disableInteractive, hasContentArg bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isOpen',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: 'Whether the tooltip is currently open.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'open',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: 'Opens the tooltip.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'close',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: 'Closes the tooltip.',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLDivElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'tooltip',
+    name: 'TooltipContent',
+    fileName: 'packages/frontile/declarations/components/overlays/tooltip.d.ts',
+    Args: [
+      {
+        identifier: 'classNames',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'base',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'arrow',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'PopoverContent',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth, preventAutoFocus, isHoverTrigger, onContentHoverStart, onContentHoverEnd, registerArrow, velcroData bound)</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'arrow',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'disableInteractive',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'hasContentArg',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value:
+              'Set only on the bound `Content` yielded to the consumer. Lets this\ncomponent assert when it renders while `@content` is also in use --\na `Tooltip` cannot otherwise tell whether the consumer invoked the\nyielded `Content` block.',
+          },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLDivElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description:
+      '<p>The tooltip\'s content. Configures <code>Popover.Content</code> for a tooltip: no focus\ntrap, no autofocus, no scroll lock, <code>role="tooltip"</code>, and <code>tabindex="-1"</code> so\nit is never a tab stop -- <code>Overlay</code> sets <code>tabindex="0"</code> but spreads\n<code>...attributes</code> after it, so this wins.</p>\n<p>Its constructor also asserts that <code>@content</code> and a <code>&#x3C;t.Content></code> block are\nnever used together: <code>hasContentArg</code> is set only on the bound <code>Content</code>\nyielded to the consumer (see <code>TooltipContentSignature[\'Args\']</code>), so this\ncomponent renders with it <code>true</code> exactly when the consumer both passed\n<code>@content</code> to <code>Tooltip</code> <em>and</em> invoked the yielded <code>Content</code> block. The\ncheck has to live here, on the content side, rather than on <code>Tooltip</code>\nitself, because a Glimmer component has no way to observe whether a\nconsumer invoked one of its yielded blocks -- <code>Tooltip</code> cannot tell\n<code>&#x3C;t.Content></code> was used at all until this component actually renders.</p>',
     tags: {},
   },
   {
@@ -17232,7 +17835,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'Content',
         type: {
-          type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth bound)</span></span>',
+          type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Content</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth, preventAutoFocus, isHoverTrigger, onContentHoverStart, onContentHoverEnd, registerArrow, velcroData bound)</span></span>',
         },
         isRequired: true,
         isInternal: true,

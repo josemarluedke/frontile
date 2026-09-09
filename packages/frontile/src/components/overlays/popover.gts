@@ -1,16 +1,19 @@
 import Component from '@glimmer/component';
 import { Overlay, type OverlaySignature } from './overlay';
-import { tracked } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
 import { Velcro } from 'ember-velcro';
+import { arrow as arrowMiddleware } from '@floating-ui/dom';
 import { assert } from '@ember/debug';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-import { debounce } from '@ember/runloop';
+import { debounce, later, cancel } from '@ember/runloop';
+import type { Timer as EmberTimer } from '@ember/runloop';
 import type { ModifierLike } from '@glint/template';
 import type { WithBoundArgs } from '@glint/template';
 import type { Signature as VelcroSignature } from 'ember-velcro/modifiers/velcro';
+import type { MiddlewareArguments } from '@floating-ui/dom';
 
 interface PopoverSignature {
   Args: {
@@ -76,6 +79,26 @@ interface PopoverSignature {
      * Callback when closing has finished, including any exit transition.
      */
     didClose?: () => void;
+
+    /**
+     * Milliseconds to wait before opening on hover or keyboard focus. Only
+     * applies to a `trigger` installed in hover mode.
+     *
+     * @defaultValue 100
+     */
+    openDelay?: number;
+
+    /**
+     * Milliseconds to wait before closing after the pointer leaves the trigger
+     * or the content. Only applies to a `trigger` installed in hover mode.
+     *
+     * This is also the window the pointer has to cross the gap between the
+     * trigger and the content, so setting it to 0 makes content hover
+     * unreachable in practice.
+     *
+     * @defaultValue 100
+     */
+    closeDelay?: number;
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -94,8 +117,17 @@ interface PopoverSignature {
         close: () => void;
         trigger: ModifierLike<{
           Element: HTMLElement;
-          Args: { Positional: [eventType?: 'click' | 'hover'] };
+          Args: {
+            Positional: [eventType?: 'click' | 'hover'];
+            Named: { aria?: 'menu' | 'describedby' | 'none' };
+          };
         }>;
+
+        /**
+         * The floating-ui middleware data for the current position, including
+         * the placement actually resolved after `flip`.
+         */
+        data: MiddlewareArguments;
         Content: WithBoundArgs<
           typeof Content,
           | 'loop'
@@ -106,6 +138,12 @@ interface PopoverSignature {
           | 'blockScroll'
           | 'backdrop'
           | 'triggerWidth'
+          | 'preventAutoFocus'
+          | 'isHoverTrigger'
+          | 'onContentHoverStart'
+          | 'onContentHoverEnd'
+          | 'registerArrow'
+          | 'velcroData'
         >;
       }
     ];
@@ -133,7 +171,61 @@ class Popover extends Component<PopoverSignature> {
   @tracked _isOpen = false;
   @tracked isClosing = false;
   @tracked preventFocusRestore = false;
+
+  /**
+   * Whether a `trigger` is installed in hover mode. Hover popovers must not
+   * take focus -- `Overlay` focuses its content when the focus trap is
+   * disabled, which for a hover popover means the pointer silently moves focus
+   * and scrolls the content into view.
+   */
+  @tracked isHoverTrigger = false;
   @tracked triggerWidth?: number;
+
+  /**
+   * The arrow element, once `Content` has rendered one. Tracked because the
+   * middleware array is derived from it -- `Velcro` re-runs when the array
+   * identity changes, so the arrow is picked up whenever it appears, in either
+   * render order.
+   */
+  @tracked arrowEl?: HTMLElement;
+
+  registerArrow = modifier((el: HTMLElement) => {
+    this.arrowEl = el;
+
+    return () => {
+      if (this.arrowEl === el) {
+        this.arrowEl = undefined;
+      }
+    };
+  });
+
+  /**
+   * `@cached` is load-bearing, not decorative: without it this getter would
+   * build a brand-new array (and a brand-new `arrowMiddleware(...)` instance)
+   * on every access. `{{this.middleware}}` sits in the same template block
+   * that yields `velcro.data`, so a `Velcro`-driven position update re-renders
+   * that block, which re-invokes the getter -- an unmemoized array would read
+   * to `Velcro` as changed middleware and retrigger positioning, looping
+   * forever. Caching keeps the array's identity stable across re-renders that
+   * don't touch `this.args.middleware` or `this.arrowEl`, while still
+   * producing a new array when either of those tracked dependencies changes
+   * (e.g. when the arrow element first appears).
+   */
+  @cached
+  get middleware(): VelcroSignature['Args']['Named']['middleware'] {
+    const consumer = this.args.middleware ?? [];
+
+    if (!this.arrowEl) {
+      return this.args.middleware;
+    }
+
+    // `padding` keeps the arrow off the content's rounded corners, where it
+    // would poke out past the radius.
+    return [
+      ...consumer,
+      arrowMiddleware({ element: this.arrowEl, padding: 4 })
+    ];
+  }
 
   get isOpen(): boolean {
     if (
@@ -200,8 +292,130 @@ class Popover extends Component<PopoverSignature> {
     debounce(this, this.resetIsClosing, 90);
   };
 
+  /**
+   * The single pending hover intent, or `undefined`. One field rather than two
+   * debounces: `debounce` keys on the target/method pair, so debouncing
+   * `open` from `mouseenter` and `close` from `mouseleave` left the two unable
+   * to cancel each other -- a leave-then-re-enter inside the window queued
+   * both, and the close won.
+   *
+   * Scheduled with `@ember/runloop`'s `later`/`cancel`, like the rest of this
+   * codebase (`-private/timer.ts`, `control-blur.ts`, `-private/manager.ts`,
+   * `utils/listManager.ts`, `resetIsClosing` below), rather than a raw
+   * `setTimeout`/`clearTimeout`. Run-loop tracking is what makes `settled()`
+   * -- and so `await triggerEvent(...)`/`await click(...)` in
+   * `@ember/test-helpers` -- wait out a pending hover open or close, the same
+   * way every other timed transition in this component already does. Tests
+   * that need to prove a pending close gets cancelled by a second event
+   * (e.g. the pointer arriving on the content) dispatch the raw DOM events
+   * directly and `await settled()` once afterward, instead of relying on
+   * `await triggerEvent(...)`'s auto-wait -- see the "hover: leaving and
+   * re-entering" tests below.
+   */
+  hoverTimer?: { id: EmberTimer; intent: 'open' | 'close' };
+
+  get openDelay(): number {
+    return typeof this.args.openDelay === 'number' ? this.args.openDelay : 100;
+  }
+
+  get closeDelay(): number {
+    return typeof this.args.closeDelay === 'number'
+      ? this.args.closeDelay
+      : 100;
+  }
+
+  clearHoverTimer = () => {
+    if (this.hoverTimer) {
+      cancel(this.hoverTimer.id);
+      this.hoverTimer = undefined;
+    }
+  };
+
+  scheduleOpen = () => {
+    this.clearHoverTimer();
+
+    if (this.isOpen) {
+      return;
+    }
+
+    const run = () => {
+      this.hoverTimer = undefined;
+      if (this.isDestroyed || this.isDestroying) return;
+      // A hover open is never part of the click cascade `isClosing` guards
+      // against, so it must not be gated by it -- that gate is what swallowed
+      // opens on an adjacent trigger.
+      this.isClosing = false;
+      this.open();
+    };
+
+    if (this.openDelay === 0) {
+      run();
+      return;
+    }
+
+    this.hoverTimer = { id: later(run, this.openDelay), intent: 'open' };
+  };
+
+  scheduleClose = () => {
+    this.clearHoverTimer();
+
+    if (!this.isOpen) {
+      return;
+    }
+
+    const run = () => {
+      this.hoverTimer = undefined;
+      if (this.isDestroyed || this.isDestroying) return;
+      this.close();
+    };
+
+    if (this.closeDelay === 0) {
+      run();
+      return;
+    }
+
+    this.hoverTimer = { id: later(run, this.closeDelay), intent: 'close' };
+  };
+
+  /**
+   * `Escape` must close a hover popover (WCAG 1.4.13), but in hover mode focus
+   * is typically nowhere near the trigger, so a trigger-level `keydown` would
+   * never see the key. Installed on the document while open in hover mode.
+   */
+  escapeListener?: (event: KeyboardEvent) => void;
+
+  setupEscapeListener = () => {
+    if (this.escapeListener) return;
+
+    this.escapeListener = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && this.isOpen) {
+        this.clearHoverTimer();
+        this.close();
+      }
+    };
+
+    document.addEventListener('keydown', this.escapeListener);
+  };
+
+  teardownEscapeListener = () => {
+    if (this.escapeListener) {
+      document.removeEventListener('keydown', this.escapeListener);
+      this.escapeListener = undefined;
+    }
+  };
+
+  willDestroy(): void {
+    super.willDestroy();
+    this.clearHoverTimer();
+    this.teardownEscapeListener();
+  }
+
   trigger = modifier(
-    (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
+    (
+      el: HTMLElement,
+      [eventType]: [eventType?: 'click' | 'hover'],
+      { aria }: { aria?: 'menu' | 'describedby' | 'none' } = {}
+    ) => {
       // The trigger is only the width reference when nothing more specific was
       // nominated. `widthEl` is checked when the measurement happens rather than
       // when the modifier installs, so the two modifiers can install in either
@@ -227,14 +441,10 @@ class Popover extends Component<PopoverSignature> {
         observer.observe(el);
       }
 
-      const debounceDuration = 100;
-
-      const open = () => {
-        debounce(this, this.open, debounceDuration);
-      };
-
-      const close = () => {
-        debounce(this, this.close, debounceDuration);
+      const onFocusIn = () => {
+        if (el.matches(':focus-visible')) {
+          this.scheduleOpen();
+        }
       };
 
       const onKeydown = (event: KeyboardEvent) => {
@@ -273,28 +483,62 @@ class Popover extends Component<PopoverSignature> {
 
       if (eventType === 'hover') {
         this.preventFocusRestore = true;
-        el.addEventListener('mouseenter', open);
-        el.addEventListener('mouseleave', close);
+        this.isHoverTrigger = true;
+        // The modifier body re-runs on every open/close (it reads
+        // `this.isOpen` below to keep whichever ARIA attribute the trigger's
+        // `aria` mode owns in sync -- `aria-expanded` in `'menu'` mode,
+        // `aria-describedby` in `'describedby'` mode), and the returned
+        // cleanup below always tears the listener down first -- so gating
+        // the install on `isOpen` here is what keeps the document listener
+        // attached only while open, matching the doc comment on
+        // `escapeListener`.
+        if (this.isOpen) {
+          this.setupEscapeListener();
+        }
+
+        el.addEventListener('mouseenter', this.scheduleOpen);
+        el.addEventListener('mouseleave', this.scheduleClose);
+        // Keyboard-only: a mouse click also fires `focusin`, and opening on
+        // that would leave content up after the pointer had already left.
+        el.addEventListener('focusin', onFocusIn);
+        el.addEventListener('focusout', this.scheduleClose);
       } else {
         el.addEventListener('keydown', onKeydown);
         el.addEventListener('click', this.toggle);
       }
 
-      el.setAttribute('aria-haspopup', 'true');
-      el.setAttribute('aria-controls', this.menuId);
-      // Reading `this.isOpen` here is what keeps `aria-expanded` in sync: the
+      // Reading `this.isOpen` here is what keeps these attributes in sync: the
       // modifier consumes the tracked state, so its whole body re-runs on every
-      // open and close. That is more work than one attribute needs -- the
-      // listeners and the ResizeObserver are rebuilt too -- but it is also the
-      // only mechanism that covers `@isOpen` being flipped from outside in
-      // controlled mode, which an imperative update from `open()`/`close()`
-      // would miss. Correctness over the rebuild.
-      el.setAttribute('aria-expanded', this.isOpen.toString());
+      // open and close. That is more work than an attribute needs -- the
+      // listeners are rebuilt too -- but it is the only mechanism that covers
+      // `@isOpen` being flipped from outside in controlled mode, which an
+      // imperative update from `open()`/`close()` would miss.
+      const ariaMode = aria ?? 'menu';
+
+      if (ariaMode === 'menu') {
+        el.setAttribute('aria-haspopup', 'true');
+        el.setAttribute('aria-controls', this.menuId);
+        el.setAttribute('aria-expanded', this.isOpen.toString());
+      } else if (ariaMode === 'describedby') {
+        // A tooltip is its trigger's description, not a popup it owns. The
+        // attribute only exists while there is something to describe --
+        // pointing at an unrendered id is worse than pointing at nothing.
+        if (this.isOpen) {
+          el.setAttribute('aria-describedby', this.menuId);
+        } else {
+          el.removeAttribute('aria-describedby');
+        }
+      }
 
       return () => {
         if (eventType === 'hover') {
-          el.removeEventListener('mouseenter', open);
-          el.removeEventListener('mouseleave', close);
+          this.isHoverTrigger = false;
+          this.clearHoverTimer();
+          this.teardownEscapeListener();
+          el.removeEventListener('mouseenter', this.scheduleOpen);
+          el.removeEventListener('mouseleave', this.scheduleClose);
+          el.removeEventListener('focusin', onFocusIn);
+          el.removeEventListener('focusout', this.scheduleClose);
         } else {
           el.removeEventListener('click', this.toggle);
           el.removeEventListener('keydown', onKeydown);
@@ -351,8 +595,9 @@ class Popover extends Component<PopoverSignature> {
   /**
    * Clears the short window during which `open()` refuses to re-open.
    *
-   * The 90ms this is debounced by is deliberately not the transition duration
-   * (200ms): the window exists to absorb a single event cascade -- the Overlay's
+   * The 90ms this is debounced by is deliberately unrelated to the transition
+   * duration (the default `scale` transition runs 200ms in and 100ms out):
+   * the window exists to absorb a single event cascade -- the Overlay's
    * outside-click handler closing while the trigger's own click handler is
    * about to re-open -- not to wait for the animation out. Stretching it to the
    * transition would leave the trigger feeling dead for a fifth of a second
@@ -392,7 +637,7 @@ class Popover extends Component<PopoverSignature> {
       @strategy={{if @strategy @strategy "absolute"}}
       @offsetOptions={{if @offsetOptions @offsetOptions 5}}
       @flipOptions={{@flipOptions}}
-      @middleware={{@middleware}}
+      @middleware={{this.middleware}}
       @shiftOptions={{@shiftOptions}}
       as |velcro|
     >
@@ -405,6 +650,7 @@ class Popover extends Component<PopoverSignature> {
           close=this.close
           toggle=this.toggle
           trigger=this.trigger
+          data=velcro.data
           Content=(component
             Content
             id=this.menuId
@@ -413,7 +659,13 @@ class Popover extends Component<PopoverSignature> {
             toggle=this.toggle
             internalDidClose=this.didClose
             preventFocusRestore=this.preventFocusRestore
+            preventAutoFocus=this.isHoverTrigger
             triggerWidth=this.triggerWidth
+            isHoverTrigger=this.isHoverTrigger
+            onContentHoverStart=this.clearHoverTimer
+            onContentHoverEnd=this.scheduleClose
+            registerArrow=this.registerArrow
+            velcroData=velcro.data
           )
         )
       }}
@@ -472,6 +724,55 @@ interface ContentArgs extends Pick<
   triggerWidth?: number;
 
   /**
+   * @internal
+   */
+  isHoverTrigger?: boolean;
+
+  /**
+   * @internal
+   */
+  onContentHoverStart?: () => void;
+
+  /**
+   * @internal
+   */
+  onContentHoverEnd?: () => void;
+
+  /**
+   * Renders an arrow pointing at the anchor.
+   *
+   * @defaultValue false
+   */
+  arrow?: boolean;
+
+  /**
+   * @internal
+   */
+  registerArrow?: ModifierLike<{ Element: HTMLElement }>;
+
+  /**
+   * @internal
+   * Additional classes for the arrow element, merged with `overlayArrow`'s
+   * defaults via Tailwind Merge. Lets a consumer that composes `Content`
+   * (e.g. `Tooltip`) give the arrow an intent-specific border; not meant as
+   * public `Popover` API.
+   */
+  arrowClass?: string;
+
+  /**
+   * @internal
+   */
+  velcroData?: MiddlewareArguments;
+
+  /**
+   * Closes as soon as the pointer leaves the trigger, instead of letting it
+   * move into the content. Only meaningful for a hover trigger.
+   *
+   * @defaultValue false
+   */
+  disableInteractive?: boolean;
+
+  /**
    * Custom class name for the content element, merged with the default ones
    * using Tailwind Merge.
    */
@@ -517,7 +818,17 @@ class Content extends Component<ContentSignature> {
 
   get classNames() {
     const { popover } = useStyles();
-    return popover({ size: this.args.size, class: this.args.class });
+    return popover({
+      size: this.args.size,
+      // Scoped to `@arrow`, not applied unconditionally: an unrelated
+      // popover may rely on `overflow-auto` (the `overlay` tv base) to
+      // scroll long content, and `@arrow` is new, so gating on it here
+      // can't regress an existing popover. Without this, the arrow's
+      // protruding half is clipped by that inherited `overflow-auto` --
+      // see the `tooltip` theme base for the same fix, unconditional there
+      // because a tooltip should never scroll.
+      class: [this.args.arrow ? 'overflow-visible' : undefined, this.args.class]
+    });
   }
 
   get backdrop(): OverlaySignature['Args']['backdrop'] {
@@ -566,6 +877,141 @@ class Content extends Component<ContentSignature> {
     }
   });
 
+  /**
+   * `{{#if}}` cannot guard a modifier, so the decision lives inside it: when
+   * the trigger is not in hover mode, or the consumer opted out, this installs
+   * no listeners at all.
+   *
+   * Also tracks focus, not just the pointer: a keyboard user tabbing from the
+   * trigger into a focusable element inside the content triggers the
+   * trigger's own `focusout`, which unconditionally schedules a close. With
+   * nothing here to cancel it, that close would fire out from under a
+   * keyboard user after `closeDelay`, even though the pointer analogue --
+   * moving onto the content -- keeps it open. `focusin`/`focusout` reuse the
+   * same callbacks as `mouseenter`/`mouseleave` because they need to do
+   * exactly the same thing: cancel or (re)schedule the one pending hover
+   * intent.
+   */
+  trackContentHover = modifier((el: HTMLElement) => {
+    if (
+      this.args.isHoverTrigger !== true ||
+      this.args.disableInteractive === true
+    ) {
+      return;
+    }
+
+    const enter = () => this.args.onContentHoverStart?.();
+    const leave = () => this.args.onContentHoverEnd?.();
+
+    el.addEventListener('mouseenter', enter);
+    el.addEventListener('mouseleave', leave);
+    el.addEventListener('focusin', enter);
+    el.addEventListener('focusout', leave);
+
+    return () => {
+      el.removeEventListener('mouseenter', enter);
+      el.removeEventListener('mouseleave', leave);
+      el.removeEventListener('focusin', enter);
+      el.removeEventListener('focusout', leave);
+    };
+  });
+
+  get placement(): string | undefined {
+    return this.args.velcroData?.placement;
+  }
+
+  get arrowClass(): string {
+    const { overlayArrow } = useStyles();
+    return overlayArrow({ class: this.args.arrowClass });
+  }
+
+  /**
+   * Positions the arrow from the floating-ui `arrow` middleware: it supplies
+   * the offset along the content's edge (`x` for a top/bottom placement, `y`
+   * for left/right), and the side the arrow sits on is the one opposite the
+   * resolved placement. Inline styles rather than classes -- the offset is a
+   * computed pixel value that changes on every reposition.
+   *
+   * Also clears two of the arrow's four borders (`overlayArrow` draws all
+   * four, since a rotated square has no "outer edge" of its own to target
+   * with a class). Half the arrow sits inside the content box, half sits
+   * outside pointing at the anchor; the half inside draws two border lines
+   * straight across the content's fill, which reads as a stray diagonal
+   * seam. Only the two edges meeting at the *outward* vertex (the one
+   * pointing away from the box, at the anchor) should keep a border --
+   * those are the visible "point" of the arrow against the page background.
+   *
+   * Worked out for a `rotate: 45deg` square with corners TL/TR/BR/BL: that
+   * rotation carries TL to the top vertex, TR to the right vertex, BR to the
+   * bottom vertex, and BL to the left vertex, so `border-top` (the TL-TR
+   * edge) and `border-left` (the BL-TL edge) are the two edges meeting at
+   * the *top* vertex, and so on around. Which vertex is "outward" depends on
+   * `staticSide` (the box edge the arrow sits on): outward is the same
+   * direction as `staticSide` itself (e.g. `top` placement puts the box
+   * above the anchor, so the arrow sits on the box's own bottom edge and
+   * points further down, toward the anchor -- the bottom vertex, made of
+   * `border-right`+`border-bottom`, so the *top* vertex's
+   * `border-top`+`border-left` are the ones to clear).
+   */
+  positionArrow = modifier((el: HTMLElement) => {
+    const data = this.args.velcroData;
+    const offset = data?.middlewareData?.arrow;
+    const placement = data?.placement;
+
+    if (!offset || !placement) {
+      return;
+    }
+
+    const staticSides: Record<string, string> = {
+      top: 'bottom',
+      bottom: 'top',
+      left: 'right',
+      right: 'left'
+    };
+    const side = placement.split('-')[0] as string;
+    const staticSide = staticSides[side] ?? 'bottom';
+
+    el.style.left = typeof offset.x === 'number' ? `${offset.x}px` : '';
+    el.style.top = typeof offset.y === 'number' ? `${offset.y}px` : '';
+    el.style.right = '';
+    el.style.bottom = '';
+    // Half the arrow's 8px box, so the rotated square straddles the edge.
+    el.style[staticSide as 'top' | 'bottom' | 'left' | 'right'] = '-4px';
+
+    type BorderWidthProp =
+      | 'borderTopWidth'
+      | 'borderRightWidth'
+      | 'borderBottomWidth'
+      | 'borderLeftWidth';
+
+    // The two edges meeting at the *inward* vertex (the one poking into the
+    // content box), keyed by `side` -- see the doc comment above for the
+    // derivation.
+    const innerBorders: Record<string, [BorderWidthProp, BorderWidthProp]> = {
+      top: ['borderTopWidth', 'borderLeftWidth'],
+      bottom: ['borderRightWidth', 'borderBottomWidth'],
+      left: ['borderBottomWidth', 'borderLeftWidth'],
+      right: ['borderTopWidth', 'borderRightWidth']
+    };
+
+    const allBorderProps: BorderWidthProp[] = [
+      'borderTopWidth',
+      'borderRightWidth',
+      'borderBottomWidth',
+      'borderLeftWidth'
+    ];
+    // Reset every side first: the resolved placement (and so `side`) can
+    // change at runtime -- e.g. the flip middleware -- and a border cleared
+    // for a previous placement must not stay cleared for the new one.
+    for (const prop of allBorderProps) {
+      el.style[prop] = '';
+    }
+    const toClear = innerBorders[side] ?? innerBorders['top'];
+    for (const prop of toClear as [BorderWidthProp, BorderWidthProp]) {
+      el.style[prop] = '0';
+    }
+  });
+
   <template>
     <Overlay
       @blockScroll={{this.blockScroll}}
@@ -591,13 +1037,31 @@ class Content extends Component<ContentSignature> {
       @preventAutoFocus={{@preventAutoFocus}}
       @closeOnOverlayElementClick={{false}}
       id={{@id}}
+      data-placement={{this.placement}}
       ...attributes
       {{this.updateTriggerWidth @triggerWidth}}
+      {{this.trackContentHover @isHoverTrigger @disableInteractive}}
     >
       {{yield}}
+      {{#if @arrow}}
+        <span
+          class={{this.arrowClass}}
+          data-part="arrow"
+          {{@registerArrow}}
+          {{! @velcroData is passed but never read by the modifier body: supplying
+              it is what makes ember-modifier re-run this on every reposition.
+              Remove the argument and the arrow positions once, then never moves. }}
+          {{this.positionArrow @velcroData}}
+        ></span>
+      {{/if}}
     </Overlay>
   </template>
 }
 
-export { Popover, type PopoverSignature, type ContentSignature };
+export {
+  Popover,
+  Content as PopoverContent,
+  type PopoverSignature,
+  type ContentSignature
+};
 export default Popover;

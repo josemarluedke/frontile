@@ -472,6 +472,9 @@ importers:
       '@embroider/macros':
         specifier: ^1.20.6
         version: 1.20.6(@babel/core@7.26.7)(@glint/template@1.8.0)
+      '@floating-ui/dom':
+        specifier: ^1.0.1
+        version: 1.7.2
       '@frontile/theme':
         specifier: workspace:^
         version: link:../theme
@@ -7443,6 +7446,7 @@ packages:
       {
         integrity: sha512-wqW3VdPnlSWT4eRiYX+hcs+C6ViBPUWk1qTCd+37qw9kEm/a5n2qcyQDMBWvSYKN/ctqZzeXNQaeBjOetJJUkw==
       }
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   chokidar@3.6.0:
     resolution:
