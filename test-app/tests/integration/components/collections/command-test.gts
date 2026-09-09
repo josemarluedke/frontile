@@ -206,7 +206,7 @@ module(
       // Down twice, crossing from one group into the next where relevant.
       await triggerKeyEvent(input, 'keydown', 'ArrowDown');
       await triggerKeyEvent(input, 'keydown', 'ArrowDown');
-      await triggerKeyEvent(input, 'keypress', 'Enter');
+      await triggerKeyEvent(input, 'keydown', 'Enter');
 
       assert.strictEqual(selected.length, 1, 'Enter selected exactly one item');
       assert.notStrictEqual(selected[0], undefined, 'and reported which one');

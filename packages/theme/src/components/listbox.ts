@@ -32,7 +32,18 @@ const listboxItem = tv({
       'text-neutral-firm',
       'group-hover:text-current'
     ],
-    selectedIcon: ['text-inherit', 'w-4', 'h-4', 'shrink-0']
+    selectedIcon: ['text-inherit', 'w-4', 'h-4', 'shrink-0'],
+    // The chevron on a row that opens a submenu. Sized like `selectedIcon`
+    // -- both are trailing affordances on the same row -- but dimmer at rest,
+    // since it marks a direction rather than a state. `text-inherit` on the
+    // active row lets it pick up the row's own colour.
+    submenuIndicator: [
+      'text-neutral-firm',
+      'group-data-is-active:text-inherit',
+      'w-4',
+      'h-4',
+      'shrink-0'
+    ]
   },
   variants: {
     appearance: {

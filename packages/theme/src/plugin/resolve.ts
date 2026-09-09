@@ -67,6 +67,7 @@ const SEMANTIC_COLOR_PREFIXES = [
   'success',
   'danger',
   'warning',
+  'surface-input',
   'surface-modal'
 ];
 
@@ -74,8 +75,11 @@ const EXCLUDED_COLORS = ['background', 'focus', 'divider'];
 
 /**
  * Determine if a color should have an "on-" variant generated.
- * Includes semantic colors and surface-modal.
- * Excludes utility colors and transparent overlays.
+ *
+ * Membership is the explicit `SEMANTIC_COLOR_PREFIXES` allowlist, not a
+ * derived rule: every intent category needs a contrast foreground, but only
+ * some surfaces do, and which ones is a judgement call recorded in that list.
+ * Utility colors and translucent surfaces are rejected outright below.
  */
 function shouldGenerateOnColor(colorName: string): boolean {
   if (EXCLUDED_COLORS.includes(colorName)) {

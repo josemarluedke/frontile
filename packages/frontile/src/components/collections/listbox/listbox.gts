@@ -93,6 +93,54 @@ const isInputElement = (
 
 const isUndefined = (a: unknown) => typeof a === 'undefined';
 
+const NAVIGATION_KEYS = [
+  'ArrowUp',
+  'ArrowDown',
+  'PageUp',
+  'PageDown',
+  'Home',
+  'End'
+];
+
+/**
+ * Whether a command-style modifier is held.
+ *
+ * Enter, Space and type-ahead moved here from the deprecated `keypress`,
+ * which largely did not deliver modifier combinations at all. `keydown` does,
+ * and it reports an unchanged `key`: Cmd+K arrives as `key === 'k'`, Cmd+Space
+ * (Spotlight) as `key === ' '`. Acting on those would swallow the user's and
+ * the OS's shortcuts -- typing them into the search buffer, or selecting an
+ * option nobody asked for -- so a modifier combo is not ours to handle.
+ *
+ * Shift is deliberately absent: a capital letter is legitimate type-ahead.
+ * `Popover`'s open-on-letter handler makes the same check for the same
+ * reason.
+ *
+ * Arrow and Home/End navigation is exempt, because it always lived on
+ * `keydown` and so already had to tolerate these combinations.
+ */
+const hasCommandModifier = (event: KeyboardEvent): boolean => {
+  return event.metaKey || event.ctrlKey || event.altKey;
+};
+
+/**
+ * Whether a keystroke should extend the type-ahead search buffer.
+ *
+ * Any single printable character qualifies. Unlike `Popover`'s letter check
+ * this deliberately does not require `event.code === 'Key' + key`, which
+ * restricts matching to A-Z: a listbox types ahead with digits and
+ * punctuation too, and the WAI-ARIA APG requires Space to extend an active
+ * search.
+ *
+ * Autorepeat is dropped. `search()` accumulates a prefix rather than cycling
+ * between same-initial items, so a leaned-on 'a' would build "aaaa" and match
+ * nothing -- a hazard `keypress` never surfaced here. Keystrokes mid-IME
+ * composition belong to the input method, not to type-ahead.
+ */
+const isTypeAheadKey = (event: KeyboardEvent): boolean => {
+  return event.key.length === 1 && !event.repeat && !event.isComposing;
+};
+
 class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
   listManager = new ListManager({
     selectionMode: this.args.selectionMode,
@@ -107,34 +155,19 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
       : this.args.autoActivateMode
   });
 
-  handleKeyPress = (event: KeyboardEvent) => {
-    if (isInputElement(event.target)) {
-      if (event.key === 'Enter') {
-        this.listManager.selectActiveItem();
-        return;
-      }
-    } else {
-      if (
-        ['Enter', ' '].includes(event.key) &&
-        this.listManager.searchKeys == ''
-      ) {
-        this.listManager.selectActiveItem();
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      } else if (event.key.length === 1) {
-        this.listManager.search(event.key);
-        return;
-      }
-    }
-  };
-
+  /**
+   * All keyboard behaviour lands on `keydown`.
+   *
+   * Selection and type-ahead used to live on a separate `keypress` listener.
+   * A browser fires `keypress` only when the preceding `keydown` was not
+   * canceled, so any co-located `keydown` handler calling `preventDefault()`
+   * -- `Dropdown`'s submenu keys, a consuming app's shortcut handler --
+   * silently deleted the event this component depended on, and Enter
+   * selection stopped working with no error at all. `keypress` is also absent
+   * from current spec guidance and inconsistent for non-printable keys.
+   */
   handleKeyDown = (event: KeyboardEvent) => {
-    if (
-      ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(
-        event.key
-      )
-    ) {
+    if (NAVIGATION_KEYS.includes(event.key)) {
       event.preventDefault();
 
       if (event.key === 'ArrowDown') {
@@ -146,12 +179,54 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
       } else if (event.key === 'End' || event.key === 'PageDown') {
         this.listManager.setLastOptionActive();
       }
-    }
-  };
 
-  onKeyPress = (event: KeyboardEvent) => {
-    if (this.args.isKeyboardEventsEnabled) {
-      this.handleKeyPress(event);
+      return;
+    }
+
+    if (hasCommandModifier(event)) {
+      return;
+    }
+
+    // Navigation above applies wherever the keystroke came from, but text
+    // entry does not: when the events are forwarded from a real input (an
+    // Autocomplete or Select trigger), the input owns the typing and only
+    // Enter is ours to act on.
+    if (isInputElement(event.target)) {
+      if (event.key === 'Enter') {
+        this.listManager.selectActiveItem();
+      }
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      // Enter always selects the active item, even mid-search — unlike
+      // Space, Enter is never itself a type-ahead character (its length is
+      // 5, not 1), so gating it on an empty search buffer just drops the
+      // keystroke while `search()`'s 500ms debounce is still pending. Do
+      // not fold this back into the Space branch below.
+      this.listManager.selectActiveItem();
+      this.listManager.clearSearch();
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    if (event.key === ' ' && this.listManager.searchKeys == '') {
+      this.listManager.selectActiveItem();
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    if (isTypeAheadKey(event)) {
+      if (event.key === ' ') {
+        // Space extends an active search rather than selecting, but it must
+        // still not scroll the page. Only `keydown` can prevent that; the
+        // old `keypress` listener fired too late to stop it.
+        event.preventDefault();
+      }
+
+      this.listManager.search(event.key);
     }
   };
 
@@ -172,10 +247,6 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
           'keydown',
           this.handleKeyDown
         );
-        args.elementToAddKeyboardEvents.addEventListener(
-          'keypress',
-          this.handleKeyPress
-        );
       }
 
       return () => {
@@ -183,10 +254,6 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
           args.elementToAddKeyboardEvents.removeEventListener(
             'keydown',
             this.handleKeyDown
-          );
-          args.elementToAddKeyboardEvents.removeEventListener(
-            'keypress',
-            this.handleKeyPress
           );
         }
       };
@@ -237,7 +304,6 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
           (isUndefined @autoActivateMode) "first" @autoActivateMode
         )
       }}
-      {{on "keypress" this.onKeyPress}}
       {{on "keydown" this.onKeyDown}}
       {{this.setupEvents
         elementToAddKeyboardEvents=@elementToAddKeyboardEvents

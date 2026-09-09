@@ -10,12 +10,14 @@ export * from './listbox';
 export * from './dropdown';
 export * from './popover';
 export * from './divider';
+export * from './external-link';
 export * from './skeleton';
 export * from './spinner';
 export * from './table';
 export * from './segmented-control';
 export * from './tabs';
 export * from './pagination';
+export * from './tooltip';
 
 export * from './notifications-container';
 export * from './notification-card';

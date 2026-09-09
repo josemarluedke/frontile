@@ -609,6 +609,16 @@ class ListManager {
     }
   }
 
+  /**
+   * Clears the type-ahead search buffer immediately, without waiting for the
+   * debounced timeout that `search()` schedules. Consumers that select an
+   * item outside of `search()` itself (e.g. pressing Enter mid-search) call
+   * this so a stale buffer doesn't survive the selection.
+   */
+  clearSearch(): void {
+    this.#clearSearch();
+  }
+
   isKeyDisabled(key: string): boolean {
     return this.args.disabledKeys?.includes(key) || false;
   }
