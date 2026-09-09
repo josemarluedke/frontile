@@ -642,6 +642,58 @@ module(
       assert.dom('[data-key="nested"]').doesNotExist('leaving closed it');
     });
 
+    test('an immediate Enter after type-ahead onto a sub-trigger opens the submenu', async function (assert) {
+      // Regression test for: type-ahead onto a submenu trigger, then press
+      // Enter right away -- nothing happened until a second Enter, because
+      // `handleKeyPress` guarded Enter on an empty search buffer, which the
+      // 500ms `debounce`d clear had not yet emptied. This is the path the
+      // bug was originally found on.
+      //
+      // Both keys are dispatched natively and synchronously, with no
+      // `await` in between -- an awaited `triggerKeyEvent` chains
+      // `settled()`, which would wait out the pending debounce and clear
+      // the search buffer before Enter arrived, making this pass
+      // vacuously against the broken code. Same technique as the
+      // pointer-travel test above.
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      assert.dom('[data-key="nested"]').doesNotExist('closed at rest');
+
+      const listbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      listbox.dispatchEvent(
+        new KeyboardEvent('keypress', { key: 'm', bubbles: true })
+      );
+      listbox.dispatchEvent(
+        new KeyboardEvent('keypress', { key: 'Enter', bubbles: true })
+      );
+      await settled();
+
+      assert
+        .dom('[data-key="nested"]')
+        .exists(
+          'type-ahead onto "More", then an immediate Enter, opened the submenu'
+        );
+    });
+
     test('the pointer may travel through the gap into the submenu', async function (assert) {
       await render(
         <template>

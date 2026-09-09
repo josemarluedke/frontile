@@ -404,6 +404,132 @@ module(
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
     });
 
+    test('an immediate Enter after type-ahead selects the matched item', async function (assert) {
+      // Regression test for: type a few letters of type-ahead, then press
+      // Enter right away -- nothing happened. Root cause: `handleKeyPress`
+      // guarded Enter on `searchKeys == ''`, but the search buffer is only
+      // cleared by a 500ms debounce, so any Enter within that window was
+      // silently dropped.
+      //
+      // Both keys are dispatched natively and synchronously, with no
+      // `await` in between. Awaiting `triggerKeyEvent` chains `settled()`,
+      // which waits out the pending `debounce(this, this.#clearSearch, 500)`
+      // scheduled by the first keystroke's `search()` call -- that would
+      // clear `searchKeys` before Enter ever arrives and make this test
+      // vacuously pass against the broken code. See the same technique in
+      // dropdown-test.gts's submenu pointer-travel test.
+      const animals = ['cheetah', 'crocodile', 'elephant'];
+      const selected: string[] = [];
+      const onAction = (key: string) => selected.push(key);
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            @items={{animals}}
+            @onAction={{onAction}}
+          />
+        </template>
+      );
+
+      const listbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      listbox.dispatchEvent(
+        new KeyboardEvent('keypress', { key: 'c', bubbles: true })
+      );
+      listbox.dispatchEvent(
+        new KeyboardEvent('keypress', { key: 'r', bubbles: true })
+      );
+      listbox.dispatchEvent(
+        new KeyboardEvent('keypress', { key: 'Enter', bubbles: true })
+      );
+      await settled();
+
+      assert.deepEqual(
+        selected,
+        ['crocodile'],
+        'type-ahead matched crocodile and the immediate Enter selected it'
+      );
+    });
+
+    test('Space is still a search character while a search is active', async function (assert) {
+      // The half of the guard that must NOT change: Space is a legitimate
+      // type-ahead character per the WAI-ARIA APG while a search buffer is
+      // already non-empty, and must only *select* when no search is active.
+      //
+      // Each keystroke is dispatched natively and synchronously, with no
+      // `await` in between -- an awaited `triggerKeyEvent` between letters
+      // would chain `settled()`, which waits out the pending 500ms
+      // `#clearSearch` debounce and clears the buffer before the next
+      // letter arrives, collapsing "big d" down to a single leftover
+      // character. See the file-level note on the type-ahead-then-Enter
+      // test above for the same hazard.
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            as |l|
+          >
+            <l.Item @key="big-cat">Big Cat</l.Item>
+            <l.Item @key="big-dog">Big Dog</l.Item>
+          </Listbox>
+        </template>
+      );
+
+      const listbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      for (const key of ['b', 'i', 'g', ' ', 'd']) {
+        listbox.dispatchEvent(
+          new KeyboardEvent('keypress', { key, bubbles: true })
+        );
+      }
+      await settled();
+
+      assert
+        .dom('[data-key="big-dog"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'Space extended the search buffer to "big d", matching Big Dog'
+        );
+      assert.dom('[data-key="big-cat"]').hasAttribute('data-active', 'false');
+    });
+
+    test('Space selects the active item when no search is active', async function (assert) {
+      const onAction: string[] = [];
+      const handleAction = (key: string) => onAction.push(key);
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            @onAction={{handleAction}}
+            as |l|
+          >
+            <l.Item @key="item-1">Item 1</l.Item>
+            <l.Item @key="item-2">Item 2</l.Item>
+          </Listbox>
+        </template>
+      );
+
+      // `@autoActivateMode` defaults to "first", so item-1 is already active
+      // without any navigation.
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', ' ');
+
+      assert.deepEqual(
+        onAction,
+        ['item-1'],
+        'Space with no search active selected the active item'
+      );
+    });
+
     test('it derives textValue from a document-scoped aria-labelledby', async function (assert) {
       // `aria-labelledby` points at ids anywhere in the document and holds a
       // space-separated *list* of them — neither of which a scoped

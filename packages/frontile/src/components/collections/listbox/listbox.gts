@@ -114,10 +114,18 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
         return;
       }
     } else {
-      if (
-        ['Enter', ' '].includes(event.key) &&
-        this.listManager.searchKeys == ''
-      ) {
+      if (event.key === 'Enter') {
+        // Enter always selects the active item, even mid-search — unlike
+        // Space, Enter is never itself a type-ahead character (its length is
+        // 5, not 1), so gating it on an empty search buffer just drops the
+        // keystroke while `search()`'s 500ms debounce is still pending. Do
+        // not fold this back into the Space branch below.
+        this.listManager.selectActiveItem();
+        this.listManager.clearSearch();
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      } else if (event.key === ' ' && this.listManager.searchKeys == '') {
         this.listManager.selectActiveItem();
         event.preventDefault();
         event.stopPropagation();
