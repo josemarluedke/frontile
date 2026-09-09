@@ -20,6 +20,19 @@ const control = [
   'disabled:cursor-not-allowed disabled:opacity-disabled'
 ];
 
+/**
+ * The size-dependent half of the same story: `prev` and `next` are one
+ * affordance at every size, so each size is written once here and spread into
+ * both slots below. Written as whole literal class strings rather than
+ * composed from parts -- Tailwind generates nothing from an interpolated
+ * class, so the scanner has to see each one intact.
+ */
+const controlSize = {
+  sm: 'h-7 px-2 text-label-xs [&_svg]:size-3.5',
+  md: 'h-9 px-3 text-label-sm [&_svg]:size-4',
+  lg: 'h-11 px-4 text-label-md [&_svg]:size-5'
+} as const;
+
 const pagination = tv({
   slots: {
     base: 'flex w-full items-center gap-4',
@@ -66,24 +79,24 @@ const pagination = tv({
         summary: 'text-body-xs',
         list: 'gap-0.5',
         page: 'size-7 text-label-xs',
-        prev: 'h-7 px-2 text-label-xs [&_svg]:size-3.5',
-        next: 'h-7 px-2 text-label-xs [&_svg]:size-3.5',
+        prev: controlSize.sm,
+        next: controlSize.sm,
         ellipsis: 'size-7 text-label-xs'
       },
       md: {
         summary: 'text-body-sm',
         list: 'gap-1',
         page: 'size-9 text-label-sm',
-        prev: 'h-9 px-3 text-label-sm [&_svg]:size-4',
-        next: 'h-9 px-3 text-label-sm [&_svg]:size-4',
+        prev: controlSize.md,
+        next: controlSize.md,
         ellipsis: 'size-9 text-label-sm'
       },
       lg: {
         summary: 'text-body-md',
         list: 'gap-1.5',
         page: 'size-11 text-label-md',
-        prev: 'h-11 px-4 text-label-md [&_svg]:size-5',
-        next: 'h-11 px-4 text-label-md [&_svg]:size-5',
+        prev: controlSize.lg,
+        next: controlSize.lg,
         ellipsis: 'size-11 text-label-md'
       }
     },
