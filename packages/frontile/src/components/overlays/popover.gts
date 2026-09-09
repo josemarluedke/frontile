@@ -809,7 +809,17 @@ class Content extends Component<ContentSignature> {
 
   get classNames() {
     const { popover } = useStyles();
-    return popover({ size: this.args.size, class: this.args.class });
+    return popover({
+      size: this.args.size,
+      // Scoped to `@arrow`, not applied unconditionally: an unrelated
+      // popover may rely on `overflow-auto` (the `overlay` tv base) to
+      // scroll long content, and `@arrow` is new, so gating on it here
+      // can't regress an existing popover. Without this, the arrow's
+      // protruding half is clipped by that inherited `overflow-auto` --
+      // see the `tooltip` theme base for the same fix, unconditional there
+      // because a tooltip should never scroll.
+      class: [this.args.arrow ? 'overflow-visible' : undefined, this.args.class]
+    });
   }
 
   get backdrop(): OverlaySignature['Args']['backdrop'] {
@@ -912,6 +922,27 @@ class Content extends Component<ContentSignature> {
    * for left/right), and the side the arrow sits on is the one opposite the
    * resolved placement. Inline styles rather than classes -- the offset is a
    * computed pixel value that changes on every reposition.
+   *
+   * Also clears two of the arrow's four borders (`overlayArrow` draws all
+   * four, since a rotated square has no "outer edge" of its own to target
+   * with a class). Half the arrow sits inside the content box, half sits
+   * outside pointing at the anchor; the half inside draws two border lines
+   * straight across the content's fill, which reads as a stray diagonal
+   * seam. Only the two edges meeting at the *outward* vertex (the one
+   * pointing away from the box, at the anchor) should keep a border --
+   * those are the visible "point" of the arrow against the page background.
+   *
+   * Worked out for a `rotate: 45deg` square with corners TL/TR/BR/BL: that
+   * rotation carries TL to the top vertex, TR to the right vertex, BR to the
+   * bottom vertex, and BL to the left vertex, so `border-top` (the TL-TR
+   * edge) and `border-left` (the BL-TL edge) are the two edges meeting at
+   * the *top* vertex, and so on around. Which vertex is "outward" depends on
+   * `staticSide` (the box edge the arrow sits on): outward is the same
+   * direction as `staticSide` itself (e.g. `top` placement puts the box
+   * above the anchor, so the arrow sits on the box's own bottom edge and
+   * points further down, toward the anchor -- the bottom vertex, made of
+   * `border-right`+`border-bottom`, so the *top* vertex's
+   * `border-top`+`border-left` are the ones to clear).
    */
   positionArrow = modifier((el: HTMLElement) => {
     const data = this.args.velcroData;
@@ -937,6 +968,39 @@ class Content extends Component<ContentSignature> {
     el.style.bottom = '';
     // Half the arrow's 8px box, so the rotated square straddles the edge.
     el.style[staticSide as 'top' | 'bottom' | 'left' | 'right'] = '-4px';
+
+    type BorderWidthProp =
+      | 'borderTopWidth'
+      | 'borderRightWidth'
+      | 'borderBottomWidth'
+      | 'borderLeftWidth';
+
+    // The two edges meeting at the *inward* vertex (the one poking into the
+    // content box), keyed by `side` -- see the doc comment above for the
+    // derivation.
+    const innerBorders: Record<string, [BorderWidthProp, BorderWidthProp]> = {
+      top: ['borderTopWidth', 'borderLeftWidth'],
+      bottom: ['borderRightWidth', 'borderBottomWidth'],
+      left: ['borderBottomWidth', 'borderLeftWidth'],
+      right: ['borderTopWidth', 'borderRightWidth']
+    };
+
+    const allBorderProps: BorderWidthProp[] = [
+      'borderTopWidth',
+      'borderRightWidth',
+      'borderBottomWidth',
+      'borderLeftWidth'
+    ];
+    // Reset every side first: the resolved placement (and so `side`) can
+    // change at runtime -- e.g. the flip middleware -- and a border cleared
+    // for a previous placement must not stay cleared for the new one.
+    for (const prop of allBorderProps) {
+      el.style[prop] = '';
+    }
+    const toClear = innerBorders[side] ?? innerBorders['top'];
+    for (const prop of toClear as [BorderWidthProp, BorderWidthProp]) {
+      el.style[prop] = '0';
+    }
   });
 
   <template>

@@ -7,7 +7,7 @@ const tooltip = tv({
     // the resolved placement the content carries as `data-placement`, so the
     // enter transition grows out of the anchor rather than out of nowhere.
     base: [
-      'relative w-max max-w-xs rounded-lg shadow-md',
+      'relative w-max max-w-xs rounded-lg shadow-md overflow-visible',
       'data-[placement^=top]:origin-bottom',
       'data-[placement^=bottom]:origin-top',
       'data-[placement^=left]:origin-right',

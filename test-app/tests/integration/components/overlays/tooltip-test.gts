@@ -201,6 +201,59 @@ module(
         .hasAttribute('data-placement', /^(top|bottom)/);
     });
 
+    test('the content does not clip the arrow', async function (assert) {
+      // Regression test: the arrow element existing in the DOM (as the test
+      // above asserts) is not enough to prove it is actually visible. The
+      // `overlay` tv base this content inherits from sets `overflow-auto`,
+      // which establishes a scrollport that clips anything protruding past
+      // the box -- including half of the arrow, which sits centered on the
+      // content's edge by design (see `positionArrow` in `popover.gts`). That
+      // bug shipped with the arrow element present and correctly rotated and
+      // positioned, so `[data-part="arrow"] exists()` passed throughout --
+      // only the *rendered visibility* was broken.
+      //
+      // Asserting a computed style (e.g. `getComputedStyle(...).overflow`)
+      // would not reliably constrain this in this suite: several sibling
+      // test files (`overlay-test.gts`, `modal-test.gts`, `drawer-test.gts`,
+      // `popover-test.gts`, `dropdown-test.gts`, `command-test.gts`) call
+      // `registerCustomStyles` at module scope to replace the shared
+      // `overlay` recipe with a bare `overlay__content` fixture that carries
+      // no CSS at all -- and since `registerCustomStyles` mutates a
+      // module-level singleton in `@frontile/theme` with no reset, that
+      // override is live for the rest of the suite once any of those modules
+      // loads, regardless of which test the runner actually executes.
+      // Checking the literal class name is what survives that: the fix
+      // (`overflow-visible` added to the `tooltip` theme's own `base`, unlike
+      // the mocked-out `overlay` base) is asserted as a string, independent
+      // of whether a real stylesheet is attached in this environment.
+      await render(
+        <template>
+          <Tooltip
+            @content="Hi"
+            @arrow={{true}}
+            @openDelay={{0}}
+            @closeDelay={{0}}
+            as |t|
+          >
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{t.trigger}}
+            >Trigger</button>
+          </Tooltip>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+
+      assert
+        .dom('[role="tooltip"]')
+        .hasClass(
+          'overflow-visible',
+          'the tooltip requests overflow: visible so it never clips the arrow protruding past its edge'
+        );
+    });
+
     test('@intent and @size apply theme classes', async function (assert) {
       await render(
         <template>

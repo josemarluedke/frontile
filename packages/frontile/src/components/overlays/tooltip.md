@@ -78,13 +78,17 @@ asserts in development — pick one.
 ```gts preview
 import { Tooltip } from 'frontile';
 import { Button } from 'frontile';
+import { Kbd } from 'frontile';
 
 <template>
   <Tooltip as |t|>
     <Button {{t.trigger}}>Keyboard shortcuts</Button>
     <t.Content>
       <p class='font-semibold'>Save</p>
-      <p>Cmd+S saves the current document.</p>
+      <p class='flex items-center gap-1'>
+        <Kbd @keys='mod+s' @appearance='inherit' @size='sm' />
+        saves the current document.
+      </p>
     </t.Content>
   </Tooltip>
 </template>
