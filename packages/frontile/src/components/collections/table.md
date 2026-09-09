@@ -43,7 +43,11 @@ export default class DemoComponent extends Component {
     { key: 'role', name: 'Role' }
   ] as const satisfies ColumnConfig<User>[];
 
-  <template><Table @columns={{this.columns}} @items={{users}} /></template>
+  <template>
+    <div class='demo-stack demo-stack--wide'>
+      <Table @columns={{this.columns}} @items={{users}} />
+    </div>
+  </template>
 }
 ```
 
@@ -73,7 +77,11 @@ export default class DemoComponent extends Component {
     }
   ] as const satisfies ColumnConfig<User>[];
 
-  <template><Table @columns={{this.columns}} @items={{users}} /></template>
+  <template>
+    <div class='demo-stack demo-stack--wide'>
+      <Table @columns={{this.columns}} @items={{users}} />
+    </div>
+  </template>
 }
 ```
 
@@ -106,7 +114,11 @@ export default class DemoComponent extends Component {
     { key: 'status', name: 'Status', Cell: StatusCell }
   ] as const satisfies ColumnConfig<User>[];
 
-  <template><Table @columns={{this.columns}} @items={{users}} /></template>
+  <template>
+    <div class='demo-stack demo-stack--wide'>
+      <Table @columns={{this.columns}} @items={{users}} />
+    </div>
+  </template>
 }
 
 function eq(a: string | undefined, b: string) {
@@ -132,13 +144,15 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig<User>[];
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{users}}
-      @size='sm'
-      @isStriped={{true}}
-      @classes={{hash wrapper='shadow-lg rounded-xl'}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{users}}
+        @size='sm'
+        @isStriped={{true}}
+        @classes={{hash wrapper='shadow-lg rounded-xl'}}
+      />
+    </div>
   </template>
 }
 ```
@@ -170,12 +184,14 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig<Employee>[];
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{employees}}
-      @isScrollable={{true}}
-      @classes={{hash wrapper='h-48'}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{employees}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper='h-48'}}
+      />
+    </div>
   </template>
 }
 ```
@@ -226,13 +242,15 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{this.moreUsers}}
-      @isStickyHeader={{true}}
-      @isScrollable={{true}}
-      @classes={{hash wrapper='h-48'}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.moreUsers}}
+        @isStickyHeader={{true}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper='h-48'}}
+      />
+    </div>
   </template>
 }
 ```
@@ -271,12 +289,14 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig<Employee>[];
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{employees}}
-      @isScrollable={{true}}
-      @classes={{hash wrapper='max-w-2xl'}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{employees}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper='max-w-2xl'}}
+      />
+    </div>
   </template>
 }
 ```
@@ -323,13 +343,15 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{this.items}}
-      @stickyKeys={{array 'admin' 'guest'}}
-      @isScrollable={{true}}
-      @classes={{hash wrapper='h-48'}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @stickyKeys={{array 'admin' 'guest'}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper='h-48'}}
+      />
+    </div>
   </template>
 }
 ```
@@ -357,11 +379,13 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig[];
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{products}}
-      @footerColumns={{this.footerColumns}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{products}}
+        @footerColumns={{this.footerColumns}}
+      />
+    </div>
   </template>
 }
 ```
@@ -408,31 +432,33 @@ export default class DemoComponent extends Component {
   }
 
   <template>
-    <div class='space-y-4'>
-      <div class='flex items-end space-x-4 justify-center'>
-        <Button
-          @onPress={{this.toggleLoading}}
-          @size='sm'
-          @appearance='outlined'
-          @intent={{if this.isLoading 'danger' 'primary'}}
-        >
-          {{if this.isLoading 'Stop Loading' 'Start Loading'}}
-        </Button>
-        <Select
-          @inputSize='sm'
-          @label='Color'
-          @items={{this.colorOptions}}
-          @selectedKey={{this.loadingColor}}
-          @onSelectionChange={{this.updateLoadingColor}}
-          class='w-32'
+    <div class='demo-stack demo-stack--wide'>
+      <div class='space-y-4'>
+        <div class='flex items-end space-x-4 justify-center'>
+          <Button
+            @onPress={{this.toggleLoading}}
+            @size='sm'
+            @appearance='outlined'
+            @intent={{if this.isLoading 'danger' 'primary'}}
+          >
+            {{if this.isLoading 'Stop Loading' 'Start Loading'}}
+          </Button>
+          <Select
+            @inputSize='sm'
+            @label='Color'
+            @items={{this.colorOptions}}
+            @selectedKey={{this.loadingColor}}
+            @onSelectionChange={{this.updateLoadingColor}}
+            class='w-32'
+          />
+        </div>
+        <Table
+          @columns={{this.columns}}
+          @items={{products}}
+          @isLoading={{this.isLoading}}
+          @loadingColor={{this.loadingColor}}
         />
       </div>
-      <Table
-        @columns={{this.columns}}
-        @items={{products}}
-        @isLoading={{this.isLoading}}
-        @loadingColor={{this.loadingColor}}
-      />
     </div>
   </template>
 }
@@ -488,22 +514,24 @@ export default class DemoComponent extends Component {
   }
 
   <template>
-    <div class='w-full space-y-3'>
-      <div class='flex gap-2'>
-        <Button @size='sm' @intent='primary' {{on 'click' this.load}}>
-          Load data
-        </Button>
-        <Button @size='sm' @appearance='outlined' {{on 'click' this.reset}}>
-          Back to loading
-        </Button>
-      </div>
+    <div class='demo-stack demo-stack--wide'>
+      <div class='w-full space-y-3'>
+        <div class='flex gap-2'>
+          <Button @size='sm' @intent='primary' {{on 'click' this.load}}>
+            Load data
+          </Button>
+          <Button @size='sm' @appearance='outlined' {{on 'click' this.reset}}>
+            Back to loading
+          </Button>
+        </div>
 
-      <Table
-        @columns={{this.columns}}
-        @items={{this.items}}
-        @isLoading={{this.isLoading}}
-        @skeletonRows={{5}}
-      />
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @isLoading={{this.isLoading}}
+          @skeletonRows={{5}}
+        />
+      </div>
     </div>
   </template>
 }
@@ -539,12 +567,14 @@ const columns = [
 ];
 
 <template>
-  <Table
-    @columns={{columns}}
-    @items={{(array)}}
-    @isLoading={{true}}
-    @skeletonRows={{4}}
-  />
+  <div class='demo-stack demo-stack--wide'>
+    <Table
+      @columns={{columns}}
+      @items={{(array)}}
+      @isLoading={{true}}
+      @skeletonRows={{4}}
+    />
+  </div>
 </template>
 ```
 
@@ -587,24 +617,26 @@ export default class DemoComponent extends Component {
   }
 
   <template>
-    <div class='space-y-4'>
-      <Button @onPress={{this.toggleLoading}} @size='sm' @appearance='outlined'>
-        {{if this.isLoading 'Stop Loading' 'Start Loading'}}
-      </Button>
-      <div class='relative'>
-        <Table
-          @columns={{this.columns}}
-          @items={{products}}
-          @isLoading={{this.isLoading}}
-        >
-          <:loading>
-            <div
-              class='absolute inset-0 z-10 bg-surface-canvas/80 backdrop-blur-sm flex items-center justify-center'
-            >
-              <Spinner @size='lg' />
-            </div>
-          </:loading>
-        </Table>
+    <div class='demo-stack demo-stack--wide'>
+      <div class='space-y-4'>
+        <Button @onPress={{this.toggleLoading}} @size='sm' @appearance='outlined'>
+          {{if this.isLoading 'Stop Loading' 'Start Loading'}}
+        </Button>
+        <div class='relative'>
+          <Table
+            @columns={{this.columns}}
+            @items={{products}}
+            @isLoading={{this.isLoading}}
+          >
+            <:loading>
+              <div
+                class='absolute inset-0 z-10 bg-surface-canvas/80 backdrop-blur-sm flex items-center justify-center'
+              >
+                <Spinner @size='lg' />
+              </div>
+            </:loading>
+          </Table>
+        </div>
       </div>
     </div>
   </template>
@@ -633,15 +665,17 @@ export default class DemoComponent extends Component {
   emptyItems: User[] = [];
 
   <template>
-    <Table @columns={{this.columns}} @items={{this.emptyItems}}>
-      <:empty>
-        <div class='text-center py-8'>
-          <h3 class='text-lg font-medium mb-2'>No Users Found</h3>
-          <p class='text-muted mb-4'>Get started by adding your first user.</p>
-          <Button @intent='primary' @size='sm'>Add User</Button>
-        </div>
-      </:empty>
-    </Table>
+    <div class='demo-stack demo-stack--wide'>
+      <Table @columns={{this.columns}} @items={{this.emptyItems}}>
+        <:empty>
+          <div class='text-center py-8'>
+            <h3 class='text-lg font-medium mb-2'>No Users Found</h3>
+            <p class='text-muted mb-4'>Get started by adding your first user.</p>
+            <Button @intent='primary' @size='sm'>Add User</Button>
+          </div>
+        </:empty>
+      </Table>
+    </div>
   </template>
 }
 ```
@@ -665,11 +699,13 @@ export default class DemoComponent extends Component {
   emptyItems: User[] = [];
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{this.emptyItems}}
-      @emptyContent='No users available'
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.emptyItems}}
+        @emptyContent='No users available'
+      />
+    </div>
   </template>
 }
 ```
@@ -694,36 +730,38 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig<User>[];
 
   <template>
-    <Table @columns={{this.columns}} @items={{users}}>
-      <:cell as |c|>
-        <c.For @key='name'>
-          <div class='flex items-center space-x-2'>
-            <Avatar
-              @name={{c.value}}
+    <div class='demo-stack demo-stack--wide'>
+      <Table @columns={{this.columns}} @items={{users}}>
+        <:cell as |c|>
+          <c.For @key='name'>
+            <div class='flex items-center space-x-2'>
+              <Avatar
+                @name={{c.value}}
+                @size='sm'
+                @src='https://i.pravatar.cc/150?img={{c.value}}'
+              />
+              <span class='font-medium'>{{c.value}}</span>
+            </div>
+          </c.For>
+
+          <c.For @key='status'>
+            <Chip
               @size='sm'
-              @src='https://i.pravatar.cc/150?img={{c.value}}'
-            />
-            <span class='font-medium'>{{c.value}}</span>
-          </div>
-        </c.For>
+              @appearance='outlined'
+              @intent='{{if (eq c.value "active") "success" "danger"}}'
+              @withDot={{true}}
+            >
+              {{c.value}}
+            </Chip>
 
-        <c.For @key='status'>
-          <Chip
-            @size='sm'
-            @appearance='outlined'
-            @intent='{{if (eq c.value "active") "success" "danger"}}'
-            @withDot={{true}}
-          >
+          </c.For>
+
+          <c.Default>
             {{c.value}}
-          </Chip>
-
-        </c.For>
-
-        <c.Default>
-          {{c.value}}
-        </c.Default>
-      </:cell>
-    </Table>
+          </c.Default>
+        </:cell>
+      </Table>
+    </div>
   </template>
 }
 
@@ -758,18 +796,20 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig<User>[];
 
   <template>
-    <Table @columns={{this.columns}} @items={{users}}>
-      <:header as |h|>
-        {{#if (eq h.column.key 'name')}}
-          <div class='flex items-center space-x-2'>
-            <UserIcon />
-            <span>{{h.column.name}}</span>
-          </div>
-        {{else}}
-          {{h.column.name}}
-        {{/if}}
-      </:header>
-    </Table>
+    <div class='demo-stack demo-stack--wide'>
+      <Table @columns={{this.columns}} @items={{users}}>
+        <:header as |h|>
+          {{#if (eq h.column.key 'name')}}
+            <div class='flex items-center space-x-2'>
+              <UserIcon />
+              <span>{{h.column.name}}</span>
+            </div>
+          {{else}}
+            {{h.column.name}}
+          {{/if}}
+        </:header>
+      </Table>
+    </div>
   </template>
 }
 
@@ -798,23 +838,25 @@ export default class DemoComponent extends Component {
   }
 
   <template>
-    <Table @columns={{this.columns}} @items={{products}}>
-      <:bodyTop>
-        <tr>
-          <td colspan='2' class='bg-muted/30 px-4 py-2 font-medium'>
-            Order Summary
-          </td>
-        </tr>
-      </:bodyTop>
-      <:bodyBottom>
-        <tr>
-          <td colspan='2' class='bg-muted/50 px-4 py-3 flex justify-between'>
-            <span>Total:</span>
-            <span class='font-semibold'>${{this.total}}</span>
-          </td>
-        </tr>
-      </:bodyBottom>
-    </Table>
+    <div class='demo-stack demo-stack--wide'>
+      <Table @columns={{this.columns}} @items={{products}}>
+        <:bodyTop>
+          <tr>
+            <td colspan='2' class='bg-muted/30 px-4 py-2 font-medium'>
+              Order Summary
+            </td>
+          </tr>
+        </:bodyTop>
+        <:bodyBottom>
+          <tr>
+            <td colspan='2' class='bg-muted/50 px-4 py-3 flex justify-between'>
+              <span>Total:</span>
+              <span class='font-semibold'>${{this.total}}</span>
+            </td>
+          </tr>
+        </:bodyBottom>
+      </Table>
+    </div>
   </template>
 }
 ```
@@ -837,17 +879,19 @@ const columns = [
 ];
 
 <template>
-  <Table @columns={{columns}} @items={{(array)}}>
-    <:bodyTop as |b|>
-      <b.Row>
-        {{#each b.columns as |column|}}
-          <b.Cell data-column={{column.key}}>
-            <Skeleton />
-          </b.Cell>
-        {{/each}}
-      </b.Row>
-    </:bodyTop>
-  </Table>
+  <div class='demo-stack demo-stack--wide'>
+    <Table @columns={{columns}} @items={{(array)}}>
+      <:bodyTop as |b|>
+        <b.Row>
+          {{#each b.columns as |column|}}
+            <b.Cell data-column={{column.key}}>
+              <Skeleton />
+            </b.Cell>
+          {{/each}}
+        </b.Row>
+      </:bodyTop>
+    </Table>
+  </div>
 </template>
 ```
 
@@ -893,14 +937,16 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig<User>[];
 
   <template>
-    <Table @columns={{this.columns}} @items={{users}}>
-      <:toolbar as |t|>
-        <div class='flex items-center justify-between mb-4'>
-          <h3 class='font-semibold'>User Management</h3>
-          <t.ColumnVisibility />
-        </div>
-      </:toolbar>
-    </Table>
+    <div class='demo-stack demo-stack--wide'>
+      <Table @columns={{this.columns}} @items={{users}}>
+        <:toolbar as |t|>
+          <div class='flex items-center justify-between mb-4'>
+            <h3 class='font-semibold'>User Management</h3>
+            <t.ColumnVisibility />
+          </div>
+        </:toolbar>
+      </Table>
+    </div>
   </template>
 }
 ```
@@ -946,11 +992,13 @@ export default class DemoComponent extends Component {
   };
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{this.items}}
-      @onSort={{this.handleSort}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @onSort={{this.handleSort}}
+      />
+    </div>
   </template>
 }
 ```
@@ -995,19 +1043,21 @@ export default class DemoComponent extends Component {
   };
 
   <template>
-    <div>
-      <p class='mb-4 text-sm'>
-        Selected:
-        {{this.selectedKeys.size}}
-        row(s)
-      </p>
-      <Table
-        @columns={{this.columns}}
-        @items={{this.items}}
-        @selectionMode='multiple'
-        @selectedKeys={{this.selectedKeys}}
-        @onSelectionChange={{this.handleSelectionChange}}
-      />
+    <div class='demo-stack demo-stack--wide'>
+      <div>
+        <p class='mb-4 text-sm'>
+          Selected:
+          {{this.selectedKeys.size}}
+          row(s)
+        </p>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @selectionMode='multiple'
+          @selectedKeys={{this.selectedKeys}}
+          @onSelectionChange={{this.handleSelectionChange}}
+        />
+      </div>
     </div>
   </template>
 }
@@ -1048,18 +1098,20 @@ export default class DemoComponent extends Component {
   }
 
   <template>
-    <div>
-      <p class='mb-4 text-sm'>
-        Selected:
-        {{if this.selectedUser this.selectedUser.name 'None'}}
-      </p>
-      <Table
-        @columns={{this.columns}}
-        @items={{this.items}}
-        @selectionMode='single'
-        @selectedKeys={{this.selectedKeys}}
-        @onSelectionChange={{this.handleSelectionChange}}
-      />
+    <div class='demo-stack demo-stack--wide'>
+      <div>
+        <p class='mb-4 text-sm'>
+          Selected:
+          {{if this.selectedUser this.selectedUser.name 'None'}}
+        </p>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @selectionMode='single'
+          @selectedKeys={{this.selectedKeys}}
+          @onSelectionChange={{this.handleSelectionChange}}
+        />
+      </div>
     </div>
   </template>
 }
@@ -1097,18 +1149,20 @@ export default class DemoComponent extends Component {
   };
 
   <template>
-    <div>
-      <p class='mb-4 text-sm'>
-        Note: Admin users cannot be selected
-      </p>
-      <Table
-        @columns={{this.columns}}
-        @items={{this.items}}
-        @selectionMode='multiple'
-        @selectedKeys={{this.selectedKeys}}
-        @onSelectionChange={{this.handleSelectionChange}}
-        @disabledKeys={{this.disabledKeys}}
-      />
+    <div class='demo-stack demo-stack--wide'>
+      <div>
+        <p class='mb-4 text-sm'>
+          Note: Admin users cannot be selected
+        </p>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @selectionMode='multiple'
+          @selectedKeys={{this.selectedKeys}}
+          @onSelectionChange={{this.handleSelectionChange}}
+          @disabledKeys={{this.disabledKeys}}
+        />
+      </div>
     </div>
   </template>
 }
@@ -1151,14 +1205,16 @@ export default class DemoComponent extends Component {
   };
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{this.items}}
-      @selectionMode='multiple'
-      @selectedKeys={{this.selectedKeys}}
-      @onSelectionChange={{this.handleSelectionChange}}
-      @getKey={{this.getItemKey}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @selectionMode='multiple'
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.handleSelectionChange}}
+        @getKey={{this.getItemKey}}
+      />
+    </div>
   </template>
 }
 ```
@@ -1190,12 +1246,14 @@ export default class DemoComponent extends Component {
   };
 
   <template>
-    <Table
-      @columns={{this.columns}}
-      @items={{this.items}}
-      @selectionMode='multiple'
-      @onSelectionChange={{this.handleSelectionChange}}
-    />
+    <div class='demo-stack demo-stack--wide'>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @selectionMode='multiple'
+        @onSelectionChange={{this.handleSelectionChange}}
+      />
+    </div>
   </template>
 }
 ```
@@ -1245,15 +1303,17 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig<User>[];
 
   <template>
-    <div>
-      <p class='mb-4 text-sm text-neutral-strong'>
-        Focus a row and press Space or Enter to select it
-      </p>
-      <Table
-        @columns={{this.columns}}
-        @items={{this.items}}
-        @selectionMode='multiple'
-      />
+    <div class='demo-stack demo-stack--wide'>
+      <div>
+        <p class='mb-4 text-sm text-neutral-strong'>
+          Focus a row and press Space or Enter to select it
+        </p>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @selectionMode='multiple'
+        />
+      </div>
     </div>
   </template>
 }
@@ -1304,25 +1364,27 @@ export default class DemoComponent extends Component {
   }
 
   <template>
-    <div class='space-y-4'>
-      <div class='flex items-end justify-center'>
-        <Select
-          @inputSize='sm'
-          @label='Selection Color'
-          @items={{this.colorOptions}}
-          @selectedKey={{this.selectionColor}}
-          @onSelectionChange={{this.updateSelectionColor}}
-          class='w-40'
+    <div class='demo-stack demo-stack--wide'>
+      <div class='space-y-4'>
+        <div class='flex items-end justify-center'>
+          <Select
+            @inputSize='sm'
+            @label='Selection Color'
+            @items={{this.colorOptions}}
+            @selectedKey={{this.selectionColor}}
+            @onSelectionChange={{this.updateSelectionColor}}
+            class='w-40'
+          />
+        </div>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @selectionMode='multiple'
+          @selectedKeys={{this.selectedKeys}}
+          @onSelectionChange={{this.handleSelectionChange}}
+          @selectionColor={{this.selectionColor}}
         />
       </div>
-      <Table
-        @columns={{this.columns}}
-        @items={{this.items}}
-        @selectionMode='multiple'
-        @selectedKeys={{this.selectedKeys}}
-        @onSelectionChange={{this.handleSelectionChange}}
-        @selectionColor={{this.selectionColor}}
-      />
     </div>
   </template>
 }

@@ -44,7 +44,7 @@ import type {
   NotificationsContainer
 } from './components/notifications';
 
-import type { ProgressBar } from './components/status';
+import type { Alert, ProgressBar } from './components/status';
 
 import type {
   VisuallyHidden,
@@ -100,6 +100,7 @@ export default interface Registry {
   NotificationsContainer: typeof NotificationsContainer;
 
   // Status
+  Alert: typeof Alert;
   ProgressBar: typeof ProgressBar;
 
   // Utilities

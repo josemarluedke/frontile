@@ -38,24 +38,26 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <SimpleTable as |t|>
-      <t.Header>
-        <t.Column>ID</t.Column>
-        <t.Column>Name</t.Column>
-        <t.Column>Email</t.Column>
-        <t.Column>Role</t.Column>
-      </t.Header>
-      <t.Body>
-        {{#each this.items as |item|}}
-          <t.Row>
-            <t.Cell>{{item.id}}</t.Cell>
-            <t.Cell>{{item.name}}</t.Cell>
-            <t.Cell>{{item.email}}</t.Cell>
-            <t.Cell>{{item.role}}</t.Cell>
-          </t.Row>
-        {{/each}}
-      </t.Body>
-    </SimpleTable>
+    <div class='demo-stack demo-stack--wide'>
+      <SimpleTable as |t|>
+        <t.Header>
+          <t.Column>ID</t.Column>
+          <t.Column>Name</t.Column>
+          <t.Column>Email</t.Column>
+          <t.Column>Role</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.items as |item|}}
+            <t.Row>
+              <t.Cell>{{item.id}}</t.Cell>
+              <t.Cell>{{item.name}}</t.Cell>
+              <t.Cell>{{item.email}}</t.Cell>
+              <t.Cell>{{item.role}}</t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </SimpleTable>
+    </div>
   </template>
 }
 ```
@@ -97,53 +99,55 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <SimpleTable as |t|>
-      <t.Header>
-        <t.Column>
-          <span class='flex items-center gap-2'>
-            👤 User Info
-          </span>
-        </t.Column>
-        <t.Column>
-          <span class='flex items-center gap-2'>
-            📧 Contact
-          </span>
-        </t.Column>
-        <t.Column>
-          <span class='flex items-center gap-2'>
-            🔄 Status
-          </span>
-        </t.Column>
-        <t.Column>
-          <span class='flex items-center gap-2'>
-            ⚡ Actions
-          </span>
-        </t.Column>
-      </t.Header>
-      <t.Body>
-        {{#each this.users as |user|}}
-          <t.Row>
-            <t.Cell>
-              <div>
-                <div class='font-medium'>{{user.name}}</div>
-                <div class='text-sm text-neutral-soft'>ID: {{user.id}}</div>
-              </div>
-            </t.Cell>
-            <t.Cell>{{user.email}}</t.Cell>
-            <t.Cell>
-              <Chip @intent={{user.chipIntent}} @size='sm'>
-                {{user.status}}
-              </Chip>
-            </t.Cell>
-            <t.Cell>
-              <Button @variant='link' @size='sm'>
-                Edit
-              </Button>
-            </t.Cell>
-          </t.Row>
-        {{/each}}
-      </t.Body>
-    </SimpleTable>
+    <div class='demo-stack demo-stack--wide'>
+      <SimpleTable as |t|>
+        <t.Header>
+          <t.Column>
+            <span class='flex items-center gap-2'>
+              👤 User Info
+            </span>
+          </t.Column>
+          <t.Column>
+            <span class='flex items-center gap-2'>
+              📧 Contact
+            </span>
+          </t.Column>
+          <t.Column>
+            <span class='flex items-center gap-2'>
+              🔄 Status
+            </span>
+          </t.Column>
+          <t.Column>
+            <span class='flex items-center gap-2'>
+              ⚡ Actions
+            </span>
+          </t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.users as |user|}}
+            <t.Row>
+              <t.Cell>
+                <div>
+                  <div class='font-medium'>{{user.name}}</div>
+                  <div class='text-sm text-neutral-soft'>ID: {{user.id}}</div>
+                </div>
+              </t.Cell>
+              <t.Cell>{{user.email}}</t.Cell>
+              <t.Cell>
+                <Chip @intent={{user.chipIntent}} @size='sm'>
+                  {{user.status}}
+                </Chip>
+              </t.Cell>
+              <t.Cell>
+                <Button @variant='link' @size='sm'>
+                  Edit
+                </Button>
+              </t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </SimpleTable>
+    </div>
   </template>
 }
 ```
@@ -186,47 +190,49 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <SimpleTable as |t|>
-      <t.Header>
-        <t.Column>Product</t.Column>
-        <t.Column>Price</t.Column>
-        <t.Column>Stock</t.Column>
-        <t.Column>Actions</t.Column>
-      </t.Header>
-      <t.Body>
-        {{#each this.products as |product|}}
-          <t.Row>
-            <t.Cell>
-              <div>
-                <div class='font-medium'>{{product.name}}</div>
-                <div class='text-sm text-neutral-soft'>ID: {{product.id}}</div>
-              </div>
-            </t.Cell>
-            <t.Cell>
-              <span class='font-medium'>${{product.price}}</span>
-            </t.Cell>
-            <t.Cell>
-              <div class='flex flex-col gap-1'>
-                <div class='font-medium'>{{product.stock}} units</div>
-                <Chip @intent={{product.stockChipIntent}} @size='sm'>
-                  {{product.stockStatus}}
-                </Chip>
-              </div>
-            </t.Cell>
-            <t.Cell>
-              <div class='flex gap-2'>
-                <Button @intent='primary' @size='sm'>
-                  Edit
-                </Button>
-                <Button @intent='danger' @size='sm'>
-                  Delete
-                </Button>
-              </div>
-            </t.Cell>
-          </t.Row>
-        {{/each}}
-      </t.Body>
-    </SimpleTable>
+    <div class='demo-stack demo-stack--wide'>
+      <SimpleTable as |t|>
+        <t.Header>
+          <t.Column>Product</t.Column>
+          <t.Column>Price</t.Column>
+          <t.Column>Stock</t.Column>
+          <t.Column>Actions</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.products as |product|}}
+            <t.Row>
+              <t.Cell>
+                <div>
+                  <div class='font-medium'>{{product.name}}</div>
+                  <div class='text-sm text-neutral-soft'>ID: {{product.id}}</div>
+                </div>
+              </t.Cell>
+              <t.Cell>
+                <span class='font-medium'>${{product.price}}</span>
+              </t.Cell>
+              <t.Cell>
+                <div class='flex flex-col gap-1'>
+                  <div class='font-medium'>{{product.stock}} units</div>
+                  <Chip @intent={{product.stockChipIntent}} @size='sm'>
+                    {{product.stockStatus}}
+                  </Chip>
+                </div>
+              </t.Cell>
+              <t.Cell>
+                <div class='flex gap-2'>
+                  <Button @intent='primary' @size='sm'>
+                    Edit
+                  </Button>
+                  <Button @intent='danger' @size='sm'>
+                    Delete
+                  </Button>
+                </div>
+              </t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </SimpleTable>
+    </div>
   </template>
 }
 ```
@@ -248,59 +254,61 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <div class='space-y-6'>
-      <div>
-        <h4 class='font-medium mb-2'>Small (sm) - Compact spacing</h4>
-        <SimpleTable @size='sm' as |t|>
-          <t.Header>
-            <t.Column>Name</t.Column>
-            <t.Column>Role</t.Column>
-          </t.Header>
-          <t.Body>
-            {{#each this.data as |item|}}
-              <t.Row>
-                <t.Cell>{{item.name}}</t.Cell>
-                <t.Cell>{{item.role}}</t.Cell>
-              </t.Row>
-            {{/each}}
-          </t.Body>
-        </SimpleTable>
-      </div>
+    <div class='demo-stack demo-stack--wide'>
+      <div class='space-y-6'>
+        <div>
+          <h4 class='font-medium mb-2'>Small (sm) - Compact spacing</h4>
+          <SimpleTable @size='sm' as |t|>
+            <t.Header>
+              <t.Column>Name</t.Column>
+              <t.Column>Role</t.Column>
+            </t.Header>
+            <t.Body>
+              {{#each this.data as |item|}}
+                <t.Row>
+                  <t.Cell>{{item.name}}</t.Cell>
+                  <t.Cell>{{item.role}}</t.Cell>
+                </t.Row>
+              {{/each}}
+            </t.Body>
+          </SimpleTable>
+        </div>
 
-      <div>
-        <h4 class='font-medium mb-2'>Medium (md) - Default spacing</h4>
-        <SimpleTable @size='md' as |t|>
-          <t.Header>
-            <t.Column>Name</t.Column>
-            <t.Column>Role</t.Column>
-          </t.Header>
-          <t.Body>
-            {{#each this.data as |item|}}
-              <t.Row>
-                <t.Cell>{{item.name}}</t.Cell>
-                <t.Cell>{{item.role}}</t.Cell>
-              </t.Row>
-            {{/each}}
-          </t.Body>
-        </SimpleTable>
-      </div>
+        <div>
+          <h4 class='font-medium mb-2'>Medium (md) - Default spacing</h4>
+          <SimpleTable @size='md' as |t|>
+            <t.Header>
+              <t.Column>Name</t.Column>
+              <t.Column>Role</t.Column>
+            </t.Header>
+            <t.Body>
+              {{#each this.data as |item|}}
+                <t.Row>
+                  <t.Cell>{{item.name}}</t.Cell>
+                  <t.Cell>{{item.role}}</t.Cell>
+                </t.Row>
+              {{/each}}
+            </t.Body>
+          </SimpleTable>
+        </div>
 
-      <div>
-        <h4 class='font-medium mb-2'>Large (lg) - Spacious layout</h4>
-        <SimpleTable @size='lg' as |t|>
-          <t.Header>
-            <t.Column>Name</t.Column>
-            <t.Column>Role</t.Column>
-          </t.Header>
-          <t.Body>
-            {{#each this.data as |item|}}
-              <t.Row>
-                <t.Cell>{{item.name}}</t.Cell>
-                <t.Cell>{{item.role}}</t.Cell>
-              </t.Row>
-            {{/each}}
-          </t.Body>
-        </SimpleTable>
+        <div>
+          <h4 class='font-medium mb-2'>Large (lg) - Spacious layout</h4>
+          <SimpleTable @size='lg' as |t|>
+            <t.Header>
+              <t.Column>Name</t.Column>
+              <t.Column>Role</t.Column>
+            </t.Header>
+            <t.Body>
+              {{#each this.data as |item|}}
+                <t.Row>
+                  <t.Cell>{{item.name}}</t.Cell>
+                  <t.Cell>{{item.role}}</t.Cell>
+                </t.Row>
+              {{/each}}
+            </t.Body>
+          </SimpleTable>
+        </div>
       </div>
     </div>
   </template>
@@ -332,50 +340,52 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <div class='space-y-6'>
-      <div>
-        <h4 class='font-medium mb-2'>Auto Layout (default) - Content-based
-          sizing</h4>
-        <SimpleTable @layout='auto' as |t|>
-          <t.Header>
-            <t.Column>ID</t.Column>
-            <t.Column>Name</t.Column>
-            <t.Column>Email</t.Column>
-            <t.Column>Department</t.Column>
-          </t.Header>
-          <t.Body>
-            {{#each this.data as |item|}}
-              <t.Row>
-                <t.Cell>{{item.id}}</t.Cell>
-                <t.Cell>{{item.name}}</t.Cell>
-                <t.Cell>{{item.email}}</t.Cell>
-                <t.Cell>{{item.department}}</t.Cell>
-              </t.Row>
-            {{/each}}
-          </t.Body>
-        </SimpleTable>
-      </div>
+    <div class='demo-stack demo-stack--wide'>
+      <div class='space-y-6'>
+        <div>
+          <h4 class='font-medium mb-2'>Auto Layout (default) - Content-based
+            sizing</h4>
+          <SimpleTable @layout='auto' as |t|>
+            <t.Header>
+              <t.Column>ID</t.Column>
+              <t.Column>Name</t.Column>
+              <t.Column>Email</t.Column>
+              <t.Column>Department</t.Column>
+            </t.Header>
+            <t.Body>
+              {{#each this.data as |item|}}
+                <t.Row>
+                  <t.Cell>{{item.id}}</t.Cell>
+                  <t.Cell>{{item.name}}</t.Cell>
+                  <t.Cell>{{item.email}}</t.Cell>
+                  <t.Cell>{{item.department}}</t.Cell>
+                </t.Row>
+              {{/each}}
+            </t.Body>
+          </SimpleTable>
+        </div>
 
-      <div>
-        <h4 class='font-medium mb-2'>Fixed Layout - Equal column widths</h4>
-        <SimpleTable @layout='fixed' as |t|>
-          <t.Header>
-            <t.Column>ID</t.Column>
-            <t.Column>Name</t.Column>
-            <t.Column>Email</t.Column>
-            <t.Column>Department</t.Column>
-          </t.Header>
-          <t.Body>
-            {{#each this.data as |item|}}
-              <t.Row>
-                <t.Cell>{{item.id}}</t.Cell>
-                <t.Cell>{{item.name}}</t.Cell>
-                <t.Cell>{{item.email}}</t.Cell>
-                <t.Cell>{{item.department}}</t.Cell>
-              </t.Row>
-            {{/each}}
-          </t.Body>
-        </SimpleTable>
+        <div>
+          <h4 class='font-medium mb-2'>Fixed Layout - Equal column widths</h4>
+          <SimpleTable @layout='fixed' as |t|>
+            <t.Header>
+              <t.Column>ID</t.Column>
+              <t.Column>Name</t.Column>
+              <t.Column>Email</t.Column>
+              <t.Column>Department</t.Column>
+            </t.Header>
+            <t.Body>
+              {{#each this.data as |item|}}
+                <t.Row>
+                  <t.Cell>{{item.id}}</t.Cell>
+                  <t.Cell>{{item.name}}</t.Cell>
+                  <t.Cell>{{item.email}}</t.Cell>
+                  <t.Cell>{{item.department}}</t.Cell>
+                </t.Row>
+              {{/each}}
+            </t.Body>
+          </SimpleTable>
+        </div>
       </div>
     </div>
   </template>
@@ -420,26 +430,28 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <SimpleTable @isStriped={{true}} as |t|>
-      <t.Header>
-        <t.Column>Name</t.Column>
-        <t.Column>Email</t.Column>
-        <t.Column>Status</t.Column>
-      </t.Header>
-      <t.Body>
-        {{#each this.users as |user|}}
-          <t.Row>
-            <t.Cell>{{user.name}}</t.Cell>
-            <t.Cell>{{user.email}}</t.Cell>
-            <t.Cell>
-              <Chip @intent={{user.statusIntent}} @size='sm'>
-                {{user.status}}
-              </Chip>
-            </t.Cell>
-          </t.Row>
-        {{/each}}
-      </t.Body>
-    </SimpleTable>
+    <div class='demo-stack demo-stack--wide'>
+      <SimpleTable @isStriped={{true}} as |t|>
+        <t.Header>
+          <t.Column>Name</t.Column>
+          <t.Column>Email</t.Column>
+          <t.Column>Status</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.users as |user|}}
+            <t.Row>
+              <t.Cell>{{user.name}}</t.Cell>
+              <t.Cell>{{user.email}}</t.Cell>
+              <t.Cell>
+                <Chip @intent={{user.statusIntent}} @size='sm'>
+                  {{user.status}}
+                </Chip>
+              </t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </SimpleTable>
+    </div>
   </template>
 }
 ```
@@ -477,36 +489,38 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <SimpleTable
-      @classes={{hash
-        wrapper='border-2 border-primary-soft rounded-lg overflow-hidden'
-        table='border-separate border-spacing-0'
-        thead='bg-gradient-to-r from-primary-subtle to-primary-soft'
-        th='font-bold text-primary-strong border-b border-primary-soft'
-        tr='hover:bg-primary-subtle transition-colors'
-        td='border-b border-primary-subtle'
-      }}
-      as |t|
-    >
-      <t.Header>
-        <t.Column>Task Name</t.Column>
-        <t.Column>Estimated Value</t.Column>
-        <t.Column>Priority</t.Column>
-      </t.Header>
-      <t.Body>
-        {{#each this.items as |item|}}
-          <t.Row>
-            <t.Cell>{{item.name}}</t.Cell>
-            <t.Cell class='font-mono'>{{item.value}}</t.Cell>
-            <t.Cell>
-              <Chip @intent={{item.priorityIntent}} @size='sm'>
-                {{item.priority}}
-              </Chip>
-            </t.Cell>
-          </t.Row>
-        {{/each}}
-      </t.Body>
-    </SimpleTable>
+    <div class='demo-stack demo-stack--wide'>
+      <SimpleTable
+        @classes={{hash
+          wrapper='border-2 border-primary-soft rounded-lg overflow-hidden'
+          table='border-separate border-spacing-0'
+          thead='bg-gradient-to-r from-primary-subtle to-primary-soft'
+          th='font-bold text-primary-strong border-b border-primary-soft'
+          tr='hover:bg-primary-subtle transition-colors'
+          td='border-b border-primary-subtle'
+        }}
+        as |t|
+      >
+        <t.Header>
+          <t.Column>Task Name</t.Column>
+          <t.Column>Estimated Value</t.Column>
+          <t.Column>Priority</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.items as |item|}}
+            <t.Row>
+              <t.Cell>{{item.name}}</t.Cell>
+              <t.Cell class='font-mono'>{{item.value}}</t.Cell>
+              <t.Cell>
+                <Chip @intent={{item.priorityIntent}} @size='sm'>
+                  {{item.priority}}
+                </Chip>
+              </t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </SimpleTable>
+    </div>
   </template>
 }
 ```
@@ -540,32 +554,34 @@ export default class DemoComponent extends Component {
   calculateTotal = (quantity, price) => (quantity * price).toFixed(2);
 
   <template>
-    <SimpleTable as |t|>
-      <t.Header>
-        <t.Column>Order ID</t.Column>
-        <t.Column>Product</t.Column>
-        <t.Column>Quantity</t.Column>
-        <t.Column>Unit Price</t.Column>
-        <t.Column>Total</t.Column>
-      </t.Header>
-      <t.Body>
-        {{#each this.orders as |order|}}
-          <t.Row>
-            <t.Cell>{{order.id}}</t.Cell>
-            <t.Cell>{{order.product}}</t.Cell>
-            <t.Cell>{{order.quantity}}</t.Cell>
-            <t.Cell>${{order.price}}</t.Cell>
-            <t.Cell>${{this.calculateTotal order.quantity order.price}}</t.Cell>
-          </t.Row>
-        {{/each}}
-      </t.Body>
-      <t.Footer>
-        <t.Column colspan='2' class='font-semibold'>Order Summary</t.Column>
-        <t.Column class='font-semibold'>{{this.totalQuantity}} items</t.Column>
-        <t.Column />
-        <t.Column class='font-bold text-lg'>${{this.totalValue}}</t.Column>
-      </t.Footer>
-    </SimpleTable>
+    <div class='demo-stack demo-stack--wide'>
+      <SimpleTable as |t|>
+        <t.Header>
+          <t.Column>Order ID</t.Column>
+          <t.Column>Product</t.Column>
+          <t.Column>Quantity</t.Column>
+          <t.Column>Unit Price</t.Column>
+          <t.Column>Total</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.orders as |order|}}
+            <t.Row>
+              <t.Cell>{{order.id}}</t.Cell>
+              <t.Cell>{{order.product}}</t.Cell>
+              <t.Cell>{{order.quantity}}</t.Cell>
+              <t.Cell>${{order.price}}</t.Cell>
+              <t.Cell>${{this.calculateTotal order.quantity order.price}}</t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+        <t.Footer>
+          <t.Column colspan='2' class='font-semibold'>Order Summary</t.Column>
+          <t.Column class='font-semibold'>{{this.totalQuantity}} items</t.Column>
+          <t.Column />
+          <t.Column class='font-bold text-lg'>${{this.totalValue}}</t.Column>
+        </t.Footer>
+      </SimpleTable>
+    </div>
   </template>
 }
 ```
@@ -624,49 +640,51 @@ export default class DemoComponent extends Component {
   }
 
   <template>
-    <div class='space-y-4'>
-      <div class='flex items-end space-x-4 justify-center'>
-        <Button
-          @onPress={{this.toggleLoading}}
-          @size='sm'
-          @appearance='outlined'
-          @intent={{if this.isLoading 'danger' 'primary'}}
+    <div class='demo-stack demo-stack--wide'>
+      <div class='space-y-4'>
+        <div class='flex items-end space-x-4 justify-center'>
+          <Button
+            @onPress={{this.toggleLoading}}
+            @size='sm'
+            @appearance='outlined'
+            @intent={{if this.isLoading 'danger' 'primary'}}
+          >
+            {{if this.isLoading 'Stop Loading' 'Start Loading'}}
+          </Button>
+
+          <Select
+            @inputSize='sm'
+            @label='Color'
+            @items={{this.colorOptions}}
+            @selectedKey={{this.loadingColor}}
+            @onSelectionChange={{this.updateLoadingColor}}
+            class='w-32'
+          />
+        </div>
+
+        <SimpleTable
+          @isLoading={{this.isLoading}}
+          @loadingColor={{this.loadingColor}}
+          as |t|
         >
-          {{if this.isLoading 'Stop Loading' 'Start Loading'}}
-        </Button>
-
-        <Select
-          @inputSize='sm'
-          @label='Color'
-          @items={{this.colorOptions}}
-          @selectedKey={{this.loadingColor}}
-          @onSelectionChange={{this.updateLoadingColor}}
-          class='w-32'
-        />
+          <t.Header>
+            <t.Column>ID</t.Column>
+            <t.Column>Product</t.Column>
+            <t.Column>Price</t.Column>
+            <t.Column>Category</t.Column>
+          </t.Header>
+          <t.Body>
+            {{#each this.items as |item|}}
+              <t.Row>
+                <t.Cell>{{item.id}}</t.Cell>
+                <t.Cell>{{item.name}}</t.Cell>
+                <t.Cell>${{item.price}}</t.Cell>
+                <t.Cell>{{item.category}}</t.Cell>
+              </t.Row>
+            {{/each}}
+          </t.Body>
+        </SimpleTable>
       </div>
-
-      <SimpleTable
-        @isLoading={{this.isLoading}}
-        @loadingColor={{this.loadingColor}}
-        as |t|
-      >
-        <t.Header>
-          <t.Column>ID</t.Column>
-          <t.Column>Product</t.Column>
-          <t.Column>Price</t.Column>
-          <t.Column>Category</t.Column>
-        </t.Header>
-        <t.Body>
-          {{#each this.items as |item|}}
-            <t.Row>
-              <t.Cell>{{item.id}}</t.Cell>
-              <t.Cell>{{item.name}}</t.Cell>
-              <t.Cell>${{item.price}}</t.Cell>
-              <t.Cell>{{item.category}}</t.Cell>
-            </t.Row>
-          {{/each}}
-        </t.Body>
-      </SimpleTable>
     </div>
   </template>
 }

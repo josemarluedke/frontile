@@ -47,7 +47,9 @@ const countries = [
 ];
 
 <template>
-  <Autocomplete @placeholder='Search countries' @items={{countries}} />
+  <div class='demo-stack'>
+    <Autocomplete @placeholder='Search countries' @items={{countries}} />
+  </div>
 </template>
 ```
 
@@ -78,14 +80,16 @@ export default class LanguagePicker extends Component {
   };
 
   <template>
-    <Autocomplete
-      @label='Primary language'
-      @placeholder='Search languages'
-      @items={{languages}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
-    <p class='mt-4'>Selected: {{if this.selectedKey this.selectedKey 'none'}}</p>
+    <div class='demo-stack'>
+      <Autocomplete
+        @label='Primary language'
+        @placeholder='Search languages'
+        @items={{languages}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+      <p class='mt-4'>Selected: {{if this.selectedKey this.selectedKey 'none'}}</p>
+    </div>
   </template>
 }
 ```
@@ -142,16 +146,18 @@ export default class CitySearch extends Component {
   };
 
   <template>
-    <Autocomplete
-      @label='Destination'
-      @placeholder='Search cities'
-      @searchMessage='Type to search for a city...'
-      @onSearch={{searchCities}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    >
-      <:emptyContent>No cities match your search.</:emptyContent>
-    </Autocomplete>
+    <div class='demo-stack'>
+      <Autocomplete
+        @label='Destination'
+        @placeholder='Search cities'
+        @searchMessage='Type to search for a city...'
+        @onSearch={{searchCities}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      >
+        <:emptyContent>No cities match your search.</:emptyContent>
+      </Autocomplete>
+    </div>
   </template>
 }
 ```
@@ -191,13 +197,15 @@ export default class TimezonePicker extends Component {
   };
 
   <template>
-    <Autocomplete
-      @label='Time zone'
-      @placeholder='Search time zones'
-      @items={{this.items}}
-      @disableFiltering={{true}}
-      @onInputChange={{this.onInputChange}}
-    />
+    <div class='demo-stack'>
+      <Autocomplete
+        @label='Time zone'
+        @placeholder='Search time zones'
+        @items={{this.items}}
+        @disableFiltering={{true}}
+        @onInputChange={{this.onInputChange}}
+      />
+    </div>
   </template>
 }
 ```
@@ -215,11 +223,13 @@ const startsWith = (itemValue: string, inputValue: string) =>
   itemValue.toLowerCase().startsWith(inputValue.toLowerCase());
 
 <template>
-  <Autocomplete
-    @placeholder="Try typing 'ap'"
-    @items={{fruits}}
-    @filter={{startsWith}}
-  />
+  <div class='demo-stack'>
+    <Autocomplete
+      @placeholder="Try typing 'ap'"
+      @items={{fruits}}
+      @filter={{startsWith}}
+    />
+  </div>
 </template>
 ```
 
@@ -248,19 +258,21 @@ export default class AssigneePicker extends Component {
   };
 
   <template>
-    <Autocomplete
-      @label='Assignee'
-      @placeholder='Search teammates'
-      @items={{teammates}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    >
-      <:item as |l|>
-        <l.Item @key={{l.key}} @description={{l.item.role}}>
-          {{l.label}}
-        </l.Item>
-      </:item>
-    </Autocomplete>
+    <div class='demo-stack'>
+      <Autocomplete
+        @label='Assignee'
+        @placeholder='Search teammates'
+        @items={{teammates}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      >
+        <:item as |l|>
+          <l.Item @key={{l.key}} @description={{l.item.role}}>
+            {{l.label}}
+          </l.Item>
+        </:item>
+      </Autocomplete>
+    </div>
   </template>
 }
 ```
@@ -284,14 +296,16 @@ export default class RoleInput extends Component {
   };
 
   <template>
-    <Autocomplete
-      @label='Role'
-      @description='Pick a suggestion or type your own'
-      @items={{commonRoles}}
-      @allowsCustomValue={{true}}
-      @onInputChange={{this.onInputChange}}
-    />
-    <p class='mt-4'>Value: {{this.value}}</p>
+    <div class='demo-stack'>
+      <Autocomplete
+        @label='Role'
+        @description='Pick a suggestion or type your own'
+        @items={{commonRoles}}
+        @allowsCustomValue={{true}}
+        @onInputChange={{this.onInputChange}}
+      />
+      <p class='mt-4'>Value: {{this.value}}</p>
+    </div>
   </template>
 }
 ```
@@ -318,13 +332,15 @@ export default class BrowserPicker extends Component {
   };
 
   <template>
-    <Autocomplete
-      @label='Browser'
-      @items={{browsers}}
-      @isClearable={{true}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
+    <div class='demo-stack'>
+      <Autocomplete
+        @label='Browser'
+        @items={{browsers}}
+        @isClearable={{true}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+    </div>
   </template>
 }
 ```
@@ -344,7 +360,7 @@ import { array } from '@ember/helper';
 const plans = ['Free', 'Pro', 'Enterprise'];
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <Autocomplete @inputSize='sm' @placeholder='Small' @items={{plans}} />
     <Autocomplete @inputSize='md' @placeholder='Medium' @items={{plans}} />
     <Autocomplete @inputSize='lg' @placeholder='Large' @items={{plans}} />

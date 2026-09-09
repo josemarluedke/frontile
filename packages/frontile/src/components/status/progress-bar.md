@@ -18,7 +18,11 @@ import { ProgressBar } from 'frontile';
 ```gts preview
 import { ProgressBar } from 'frontile';
 
-<template><ProgressBar @progress={{50}} @label='Progress' /></template>
+<template>
+  <div class='demo-stack'>
+    <ProgressBar @progress={{50}} @label='Progress' />
+  </div>
+</template>
 ```
 
 ## ProgressBar Intents
@@ -27,38 +31,40 @@ import { ProgressBar } from 'frontile';
 import { ProgressBar } from 'frontile';
 
 <template>
-  <div class='grid grid-cols-6 gap-4'>
-    <ProgressBar @progress={{50}} @label='Default' @showValueLabel={{false}} />
-    <ProgressBar
-      @progress={{50}}
-      @label='Primary'
-      @intent='primary'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @progress={{50}}
-      @label='Secondary'
-      @intent='secondary'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @progress={{50}}
-      @label='Success'
-      @intent='success'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @progress={{50}}
-      @label='Warning'
-      @intent='warning'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @progress={{50}}
-      @label='Danger'
-      @intent='danger'
-      @showValueLabel={{false}}
-    />
+  <div class='demo-stack'>
+    <div class='grid grid-cols-6 gap-4'>
+      <ProgressBar @progress={{50}} @label='Default' @showValueLabel={{false}} />
+      <ProgressBar
+        @progress={{50}}
+        @label='Primary'
+        @intent='primary'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @progress={{50}}
+        @label='Secondary'
+        @intent='secondary'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @progress={{50}}
+        @label='Success'
+        @intent='success'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @progress={{50}}
+        @label='Warning'
+        @intent='warning'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @progress={{50}}
+        @label='Danger'
+        @intent='danger'
+        @showValueLabel={{false}}
+      />
+    </div>
   </div>
 </template>
 ```
@@ -69,26 +75,28 @@ import { ProgressBar } from 'frontile';
 import { ProgressBar } from 'frontile';
 
 <template>
-  <div class='mt-6 grid grid-cols-4 gap-4 items-center'>
-    <ProgressBar
-      @progress={{50}}
-      @size='xs'
-      @label='XSmall'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @progress={{50}}
-      @size='sm'
-      @label='Small'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar @progress={{50}} @label='Normal' @showValueLabel={{false}} />
-    <ProgressBar
-      @progress={{50}}
-      @size='lg'
-      @label='Large'
-      @showValueLabel={{false}}
-    />
+  <div class='demo-stack'>
+    <div class='mt-6 grid grid-cols-4 gap-4 items-center'>
+      <ProgressBar
+        @progress={{50}}
+        @size='xs'
+        @label='XSmall'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @progress={{50}}
+        @size='sm'
+        @label='Small'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar @progress={{50}} @label='Normal' @showValueLabel={{false}} />
+      <ProgressBar
+        @progress={{50}}
+        @size='lg'
+        @label='Large'
+        @showValueLabel={{false}}
+      />
+    </div>
   </div>
 </template>
 ```
@@ -99,35 +107,37 @@ import { ProgressBar } from 'frontile';
 import { ProgressBar } from 'frontile';
 
 <template>
-  <div class='mt-6 grid grid-cols-4 gap-4'>
-    <ProgressBar
-      @size='lg'
-      @progress={{50}}
-      @radius='none'
-      @label='None'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @size='lg'
-      @progress={{50}}
-      @radius='sm'
-      @label='Small'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @size='lg'
-      @progress={{50}}
-      @radius='lg'
-      @label='Large'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @size='lg'
-      @progress={{50}}
-      @radius='full'
-      @label='Full'
-      @showValueLabel={{false}}
-    />
+  <div class='demo-stack'>
+    <div class='mt-6 grid grid-cols-4 gap-4'>
+      <ProgressBar
+        @size='lg'
+        @progress={{50}}
+        @radius='none'
+        @label='None'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @size='lg'
+        @progress={{50}}
+        @radius='sm'
+        @label='Small'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @size='lg'
+        @progress={{50}}
+        @radius='lg'
+        @label='Large'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @size='lg'
+        @progress={{50}}
+        @radius='full'
+        @label='Full'
+        @showValueLabel={{false}}
+      />
+    </div>
   </div>
 </template>
 ```
@@ -139,23 +149,25 @@ import { ProgressBar } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <div class='mt-6 grid grid-cols-2 gap-4 items-end'>
-    <ProgressBar @progress={{50}} @label='With label' />
-    <ProgressBar
-      @progress={{50}}
-      @label='Hiding label value'
-      @showValueLabel={{false}}
-    />
-    <ProgressBar
-      @progress={{50}}
-      @label='Custom label value'
-      @valueLabel='4 out of 8'
-    />
-    <ProgressBar
-      @progress={{50}}
-      @label='Custom formatter'
-      @formatOptions={{(hash style='currency' currency='USD')}}
-    />
+  <div class='demo-stack'>
+    <div class='mt-6 grid grid-cols-2 gap-4 items-end'>
+      <ProgressBar @progress={{50}} @label='With label' />
+      <ProgressBar
+        @progress={{50}}
+        @label='Hiding label value'
+        @showValueLabel={{false}}
+      />
+      <ProgressBar
+        @progress={{50}}
+        @label='Custom label value'
+        @valueLabel='4 out of 8'
+      />
+      <ProgressBar
+        @progress={{50}}
+        @label='Custom formatter'
+        @formatOptions={{(hash style='currency' currency='USD')}}
+      />
+    </div>
   </div>
 </template>
 ```
@@ -180,19 +192,21 @@ import { ProgressBar } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <div class='mt-6 grid grid-cols-2 gap-4 items-end'>
-    <ProgressBar
-      @progress={{50}}
-      @label='Percent style'
-      @formatOptions={{(hash style='percent')}}
-    />
-    <ProgressBar
-      @progress={{20}}
-      @minValue={{10}}
-      @maxValue={{30}}
-      @label='Percent style, 10–30 scale'
-      @formatOptions={{(hash style='percent')}}
-    />
+  <div class='demo-stack'>
+    <div class='mt-6 grid grid-cols-2 gap-4 items-end'>
+      <ProgressBar
+        @progress={{50}}
+        @label='Percent style'
+        @formatOptions={{(hash style='percent')}}
+      />
+      <ProgressBar
+        @progress={{20}}
+        @minValue={{10}}
+        @maxValue={{30}}
+        @label='Percent style, 10–30 scale'
+        @formatOptions={{(hash style='percent')}}
+      />
+    </div>
   </div>
 </template>
 ```
@@ -221,9 +235,11 @@ matching what they render.
 import { ProgressBar } from 'frontile';
 
 <template>
-  <div class='grid grid-cols-2 gap-4 items-end'>
-    <ProgressBar @progress={{150}} @label='Progress of 150' />
-    <ProgressBar @progress={{-20}} @label='Progress of -20' />
+  <div class='demo-stack'>
+    <div class='grid grid-cols-2 gap-4 items-end'>
+      <ProgressBar @progress={{150}} @label='Progress of 150' />
+      <ProgressBar @progress={{-20}} @label='Progress of -20' />
+    </div>
   </div>
 </template>
 ```
@@ -239,11 +255,13 @@ signal.
 import { ProgressBar } from 'frontile';
 
 <template>
-  <ProgressBar
-    @progress={{50}}
-    @label='Uploading'
-    @description='Estimated time left'
-  />
+  <div class='demo-stack'>
+    <ProgressBar
+      @progress={{50}}
+      @label='Uploading'
+      @description='Estimated time left'
+    />
+  </div>
 </template>
 ```
 
@@ -255,7 +273,9 @@ You can pass the argument `@isIndeterminate` to represent when the effort or dur
 import { ProgressBar } from 'frontile';
 
 <template>
-  <ProgressBar @size='md' @label='Progress' @isIndeterminate={{true}} />
+  <div class='demo-stack'>
+    <ProgressBar @size='md' @label='Progress' @isIndeterminate={{true}} />
+  </div>
 </template>
 ```
 
@@ -268,13 +288,15 @@ conflicting utility replaces the theme's rather than fighting it.
 import { ProgressBar } from 'frontile';
 
 <template>
-  <div class='grid grid-cols-2 gap-4'>
-    <ProgressBar @progress={{70}} @label='Default track' />
-    <ProgressBar
-      @progress={{70}}
-      @label='Taller track'
-      @class='h-6 rounded-none'
-    />
+  <div class='demo-stack'>
+    <div class='grid grid-cols-2 gap-4'>
+      <ProgressBar @progress={{70}} @label='Default track' />
+      <ProgressBar
+        @progress={{70}}
+        @label='Taller track'
+        @class='h-6 rounded-none'
+      />
+    </div>
   </div>
 </template>
 ```
@@ -308,7 +330,7 @@ value; keep `@label` and hide the whole row visually instead:
 import { ProgressBar, VisuallyHidden } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <ProgressBar @progress={{40}} @label='Visible label' />
 
     <VisuallyHidden>

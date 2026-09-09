@@ -1,5 +1,5 @@
 import { tv } from '../tw';
-import { focusVisibleRing } from './shared';
+import { statusRowCloseButton } from './shared';
 
 const notificationCard = tv({
   slots: {
@@ -68,12 +68,7 @@ const notificationCard = tv({
     description: 'text-body-2xs',
     customActions: 'flex flex-nowrap shrink-0 items-center gap-2 self-center',
     customActionButton: '',
-    closeButton: [
-      'shrink-0 self-center -mr-1 inline-block p-1.5 rounded-full',
-      'transition duration-200',
-      'hover:bg-surface-overlay-soft',
-      ...focusVisibleRing
-    ]
+    closeButton: statusRowCloseButton
   },
 
   variants: {

@@ -70,34 +70,36 @@ export default class BasicFieldExample extends Component {
   }
 
   <template>
-    <Form
-      @data={{this.formData}}
-      @schema={{schema}}
-      @onChange={{this.handleFormChange}}
-      @onSubmit={{this.handleFormSubmit}}
-      as |form|
-    >
-      <div class='flex flex-col gap-4'>
-        {{! Field component automatically handles error binding }}
-        <form.Field @name='username' as |field|>
-          <field.Input @label='Username' @isRequired={{true}} />
-        </form.Field>
+    <div class='demo-stack'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          {{! Field component automatically handles error binding }}
+          <form.Field @name='username' as |field|>
+            <field.Input @label='Username' @isRequired={{true}} />
+          </form.Field>
 
-        <form.Field @name='email' as |field|>
-          <field.Input
-            @label='Email Address'
-            @type='email'
-            @isRequired={{true}}
-          />
-        </form.Field>
+          <form.Field @name='email' as |field|>
+            <field.Input
+              @label='Email Address'
+              @type='email'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        <Button type='submit'>
-          Submit
-        </Button>
+          <Button type='submit'>
+            Submit
+          </Button>
 
-        <Button @onPress={{this.changeEmail}}>Update Email via formData</Button>
-      </div>
-    </Form>
+          <Button @onPress={{this.changeEmail}}>Update Email via formData</Button>
+        </div>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -150,52 +152,54 @@ export default class FieldComponentTypes extends Component {
   };
 
   <template>
-    <Form
-      @data={{this.data}}
-      @schema={{schema}}
-      @onSubmit={{this.handleFormSubmit}}
-      as |form|
-    >
-      <div class='flex flex-col gap-4'>
-        {{! Input field }}
-        <form.Field @name='name' as |field|>
-          <field.Input @label='Full Name' @isRequired={{true}} />
-        </form.Field>
+    <div class='demo-stack'>
+      <Form
+        @data={{this.data}}
+        @schema={{schema}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          {{! Input field }}
+          <form.Field @name='name' as |field|>
+            <field.Input @label='Full Name' @isRequired={{true}} />
+          </form.Field>
 
-        {{! Textarea field }}
-        <form.Field @name='bio' as |field|>
-          <field.Textarea
-            @label='Biography'
-            @description='Tell us about yourself'
-            @isRequired={{true}}
-            rows='4'
-          />
-        </form.Field>
+          {{! Textarea field }}
+          <form.Field @name='bio' as |field|>
+            <field.Textarea
+              @label='Biography'
+              @description='Tell us about yourself'
+              @isRequired={{true}}
+              rows='4'
+            />
+          </form.Field>
 
-        {{! Select field }}
-        <form.Field @name='accountType' as |field|>
-          <field.SingleSelect
-            @label='Account Type'
-            @items={{this.accountTypes}}
-            @placeholder='Choose account type'
-            @allowEmpty={{true}}
-            @isRequired={{true}}
-          />
-        </form.Field>
+          {{! Select field }}
+          <form.Field @name='accountType' as |field|>
+            <field.SingleSelect
+              @label='Account Type'
+              @items={{this.accountTypes}}
+              @placeholder='Choose account type'
+              @allowEmpty={{true}}
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        {{! Checkbox field }}
-        <form.Field @name='newsletter' as |field|>
-          <field.Checkbox
-            @label='Subscribe to newsletter'
-            @isRequired={{true}}
-          />
-        </form.Field>
+          {{! Checkbox field }}
+          <form.Field @name='newsletter' as |field|>
+            <field.Checkbox
+              @label='Subscribe to newsletter'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        <Button type='submit'>
-          Create Account
-        </Button>
-      </div>
-    </Form>
+          <Button type='submit'>
+            Create Account
+          </Button>
+        </div>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -245,35 +249,37 @@ export default class CustomValidationField extends Component {
   };
 
   <template>
-    <Form
-      @schema={{schema}}
-      @validate={{this.customValidator}}
-      @onSubmit={{this.handleFormSubmit}}
-      as |form|
-    >
-      <div class='flex flex-col gap-4'>
-        <form.Field @name='password' as |field|>
-          <field.Input
-            @label='Password'
-            @type='password'
-            @description='Must be 8+ characters with uppercase and number'
-            @isRequired={{true}}
-          />
-        </form.Field>
+    <div class='demo-stack'>
+      <Form
+        @schema={{schema}}
+        @validate={{this.customValidator}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='password' as |field|>
+            <field.Input
+              @label='Password'
+              @type='password'
+              @description='Must be 8+ characters with uppercase and number'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        <form.Field @name='confirmPassword' as |field|>
-          <field.Input
-            @label='Confirm Password'
-            @type='password'
-            @isRequired={{true}}
-          />
-        </form.Field>
+          <form.Field @name='confirmPassword' as |field|>
+            <field.Input
+              @label='Confirm Password'
+              @type='password'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        <Button type='submit'>
-          Set Password
-        </Button>
-      </div>
-    </Form>
+          <Button type='submit'>
+            Set Password
+          </Button>
+        </div>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -313,42 +319,44 @@ export default class FieldWithGroups extends Component {
   };
 
   <template>
-    <Form @schema={{schema}} @onSubmit={{this.handleFormSubmit}} as |form|>
-      <div class='flex flex-col gap-4'>
-        {{! RadioGroup field }}
-        <form.Field @name='experience' as |field|>
-          <field.RadioGroup
-            @label='Experience Level'
-            @isRequired={{true}}
-            as |Radio|
-          >
-            <Radio @label='Junior (0-2 years)' @value='junior' />
-            <Radio @label='Mid-level (3-5 years)' @value='mid' />
-            <Radio @label='Senior (6+ years)' @value='senior' />
-            <Radio @label='Lead/Principal' @value='lead' />
-          </field.RadioGroup>
-        </form.Field>
+    <div class='demo-stack'>
+      <Form @schema={{schema}} @onSubmit={{this.handleFormSubmit}} as |form|>
+        <div class='flex flex-col gap-4'>
+          {{! RadioGroup field }}
+          <form.Field @name='experience' as |field|>
+            <field.RadioGroup
+              @label='Experience Level'
+              @isRequired={{true}}
+              as |Radio|
+            >
+              <Radio @label='Junior (0-2 years)' @value='junior' />
+              <Radio @label='Mid-level (3-5 years)' @value='mid' />
+              <Radio @label='Senior (6+ years)' @value='senior' />
+              <Radio @label='Lead/Principal' @value='lead' />
+            </field.RadioGroup>
+          </form.Field>
 
-        {{! CheckboxGroup field }}
-        <form.Field @name='skills' as |field|>
-          <field.CheckboxGroup
-            @label='Technical Skills'
-            @description='Select at least 2 skills'
-            @isRequired={{true}}
-            as |Checkbox|
-          >
-            <Checkbox @label='Frontend Development' value='skill-frontend' />
-            <Checkbox @label='Backend Development' value='skill-backend' />
-            <Checkbox @label='Mobile Development' value='skill-mobile' />
-            <Checkbox @label='DevOps & Infrastructure' value='skill-infra' />
-          </field.CheckboxGroup>
-        </form.Field>
+          {{! CheckboxGroup field }}
+          <form.Field @name='skills' as |field|>
+            <field.CheckboxGroup
+              @label='Technical Skills'
+              @description='Select at least 2 skills'
+              @isRequired={{true}}
+              as |Checkbox|
+            >
+              <Checkbox @label='Frontend Development' value='skill-frontend' />
+              <Checkbox @label='Backend Development' value='skill-backend' />
+              <Checkbox @label='Mobile Development' value='skill-mobile' />
+              <Checkbox @label='DevOps & Infrastructure' value='skill-infra' />
+            </field.CheckboxGroup>
+          </form.Field>
 
-        <Button type='submit'>
-          Submit Application
-        </Button>
-      </div>
-    </Form>
+          <Button type='submit'>
+            Submit Application
+          </Button>
+        </div>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -442,7 +450,7 @@ export default class CompleteFieldForm extends Component {
   };
 
   <template>
-    <div class='max-w-2xl'>
+    <div class='demo-stack'>
       <Form @schema={{schema}} @onSubmit={{this.handleFormSubmit}} as |form|>
         <div class='flex flex-col gap-6'>
           {{! Personal Information Section }}

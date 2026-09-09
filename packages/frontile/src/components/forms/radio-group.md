@@ -23,11 +23,13 @@ The most basic usage of the RadioGroup component with a label and options.
 import { RadioGroup } from 'frontile';
 
 <template>
-  <RadioGroup @name='interests' @label='Interests' as |Radio|>
-    <Radio @label='Music' @value='music' />
-    <Radio @label='Sports' @value='sports' />
-    <Radio @label='Technology' @value='technology' />
-  </RadioGroup>
+  <div class='demo-stack'>
+    <RadioGroup @name='interests' @label='Interests' as |Radio|>
+      <Radio @label='Music' @value='music' />
+      <Radio @label='Sports' @value='sports' />
+      <Radio @label='Technology' @value='technology' />
+    </RadioGroup>
+  </div>
 </template>
 ```
 
@@ -52,7 +54,7 @@ export default class ControlledRadioGroup extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
         <form.Field @name='theme' as |field|>
           <field.RadioGroup @label='Theme Preference' as |Radio|>
@@ -116,48 +118,50 @@ export default class FormValidation extends Component {
   };
 
   <template>
-    <Form
-      @data={{this.formData}}
-      @schema={{schema}}
-      @onChange={{this.handleFormChange}}
-      @onSubmit={{this.handleSubmit}}
-      @validateOn={{array 'change' 'submit'}}
-      as |form|
-    >
-      <form.Field @name='fullName' as |field|>
-        <field.Input @label='Full Name' @isRequired={{true}} />
-      </form.Field>
+    <div class='demo-stack'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleSubmit}}
+        @validateOn={{array 'change' 'submit'}}
+        as |form|
+      >
+        <form.Field @name='fullName' as |field|>
+          <field.Input @label='Full Name' @isRequired={{true}} />
+        </form.Field>
 
-      <form.Field @name='experience' as |field|>
-        <field.RadioGroup
-          @label='Experience Level'
-          @isRequired={{true}}
-          as |Radio|
-        >
-          <Radio
-            @label='Junior'
-            @value='junior'
-            @description='0-2 years of experience'
-          />
-          <Radio
-            @label='Mid-level'
-            @value='mid'
-            @description='3-5 years of experience'
-          />
-          <Radio
-            @label='Senior'
-            @value='senior'
-            @description='5+ years of experience'
-          />
-        </field.RadioGroup>
-      </form.Field>
+        <form.Field @name='experience' as |field|>
+          <field.RadioGroup
+            @label='Experience Level'
+            @isRequired={{true}}
+            as |Radio|
+          >
+            <Radio
+              @label='Junior'
+              @value='junior'
+              @description='0-2 years of experience'
+            />
+            <Radio
+              @label='Mid-level'
+              @value='mid'
+              @description='3-5 years of experience'
+            />
+            <Radio
+              @label='Senior'
+              @value='senior'
+              @description='5+ years of experience'
+            />
+          </field.RadioGroup>
+        </form.Field>
 
-      <form.Field @name='newsletter' as |field|>
-        <field.Checkbox @label='Subscribe to our newsletter' />
-      </form.Field>
+        <form.Field @name='newsletter' as |field|>
+          <field.Checkbox @label='Subscribe to our newsletter' />
+        </form.Field>
 
-      <Button type='submit'>Submit Application</Button>
-    </Form>
+        <Button type='submit'>Submit Application</Button>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -171,7 +175,7 @@ import { RadioGroup } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <div class='flex flex-col gap-6'>
+  <div class='demo-stack'>
     {{! Orientation }}
     <div>
       <h4 class='text-sm font-medium mb-2'>Orientation</h4>

@@ -33,7 +33,7 @@ export default class SimpleForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4 w-80'>
+    <div class='demo-stack'>
       <Form @onSubmit={{this.handleSubmit}}>
         <div class='flex flex-col gap-4'>
           <Input @name='firstName' @label='First Name' />
@@ -97,7 +97,7 @@ export default class BasicForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4 w-80'>
+    <div class='demo-stack'>
       <Form
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
@@ -201,7 +201,7 @@ export default class ComprehensiveForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
@@ -413,7 +413,7 @@ export default class ValidatedForm extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4 w-80'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -576,7 +576,7 @@ export default class DirtyTrackingForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4 w-96'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onChange={{this.handleFormChange}}
@@ -761,7 +761,7 @@ export default class CustomHandlingForm extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
@@ -873,7 +873,7 @@ export default class NestedForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4 w-96'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onChange={{this.handleFormChange}}
@@ -1007,7 +1007,7 @@ export default class ValidatedNestedForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4 w-96'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{userSchema}}
@@ -1109,7 +1109,7 @@ export default class MixedFieldsForm extends Component {
   };
 
   <template>
-    <div class='w-96'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onSubmit={{this.handleFormSubmit}}
@@ -1183,7 +1183,7 @@ export default class ResetForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4 w-96'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onChange={{this.handleChange}}
@@ -1275,7 +1275,7 @@ export default class ResetValidationForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4 w-96'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -1377,7 +1377,7 @@ export default class DisabledForm extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4 w-80'>
+    <div class='demo-stack'>
       <div class='flex items-center gap-2 p-3 bg-neutral-subtle rounded'>
         <label class='flex items-center gap-2 cursor-pointer'>
           <input
@@ -1452,7 +1452,7 @@ cases where you want to turn announcing back on.
 import { FormFeedback } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-2'>
+  <div class='demo-stack'>
     <FormFeedback @intent='primary' @messages='Your changes are being saved.' />
     <FormFeedback
       @intent='secondary'
