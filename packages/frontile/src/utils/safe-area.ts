@@ -34,40 +34,95 @@ function isPointInRect(point: Point, rect: Rect): boolean {
 }
 
 /**
+ * Cross product of (o -> a) and (o -> b). Positive when a->b turns left
+ * (counter-clockwise) around o, negative when it turns right, zero when the
+ * three points are collinear.
+ */
+function cross(o: Point, a: Point, b: Point): number {
+  return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+}
+
+/**
+ * Convex hull via the monotone chain (Andrew's) algorithm. Sorts the points
+ * and builds the lower and upper chains, dropping any point that would make
+ * a non-left turn — which also drops collinear points, so degenerate input
+ * (duplicates, all-collinear rects) shrinks to a smaller-but-still-valid
+ * simple polygon instead of throwing.
+ */
+function convexHull(points: Point[]): Point[] {
+  const sorted = [...points].sort((a, b) => a.x - b.x || a.y - b.y);
+
+  const lower: Point[] = [];
+  for (const point of sorted) {
+    while (
+      lower.length >= 2 &&
+      cross(
+        lower[lower.length - 2] as Point,
+        lower[lower.length - 1] as Point,
+        point
+      ) <= 0
+    ) {
+      lower.pop();
+    }
+    lower.push(point);
+  }
+
+  const upper: Point[] = [];
+  for (let i = sorted.length - 1; i >= 0; i--) {
+    const point = sorted[i] as Point;
+    while (
+      upper.length >= 2 &&
+      cross(
+        upper[upper.length - 2] as Point,
+        upper[upper.length - 1] as Point,
+        point
+      ) <= 0
+    ) {
+      upper.pop();
+    }
+    upper.push(point);
+  }
+
+  lower.pop();
+  upper.pop();
+
+  return [...lower, ...upper];
+}
+
+/**
  * The bridge from the trigger's facing edge to the content rect.
  *
  * Which edge faces the content is decided by the rects: floating-ui's flip
  * middleware can put the submenu on either side, and a polygon built for the
  * wrong side would make every pointer movement unsafe.
  *
- * This is a convex quadrilateral: two points on the trigger's facing edge
- * (its top and bottom corners) fanning out to the content rect's two FAR
- * corners — the corners on the side away from the trigger. An earlier
- * version of this function also routed the polygon through the content
- * rect's NEAR corners, producing a concave hexagon that pinched inward right
- * at the content's facing edge. Anywhere the content is taller than the
- * trigger (the common case), that pinch carves a notch out of the safe area
- * exactly along the path a pointer takes when travelling from the trigger to
- * the content — the one path this polygon exists to protect. The near
- * corners are safe to drop even though the pointer legitimately needs to
- * reach them: they are dominated vertices, meaning they sit inside the
- * convex hull formed by the other four points, so removing them only grows
- * the polygon, and the region they used to carve out is already covered by
- * the plain content-rect check in isPointInSafeArea.
+ * The safe area is the convex hull of six candidate points: the trigger's
+ * two facing-edge corners, and the content rect's four corners. The hull is
+ * computed rather than hand-picked, because which of the content's corners
+ * turn out to be redundant (inside the hull of the rest) depends on
+ * placement — for a submenu opening downward the near-top corner is usually
+ * the one the hull drops, but for one flipped upward it can be the
+ * near-bottom corner instead, and whenever the content is no taller than the
+ * trigger both near corners can matter. Computing the real hull is correct
+ * for every placement instead of only the ones a hand-picked shape happens
+ * to fit.
  */
 function buildSafeAreaPolygon(trigger: Rect, content: Rect): Point[] {
   const opensRight =
     content.left + content.right >= trigger.left + trigger.right;
 
   const edgeX = opensRight ? trigger.right : trigger.left;
+  const nearX = opensRight ? content.left : content.right;
   const farX = opensRight ? content.right : content.left;
 
-  return [
+  return convexHull([
     { x: edgeX, y: trigger.top },
+    { x: nearX, y: content.top },
     { x: farX, y: content.top },
     { x: farX, y: content.bottom },
+    { x: nearX, y: content.bottom },
     { x: edgeX, y: trigger.bottom }
-  ];
+  ]);
 }
 
 /**

@@ -39,16 +39,25 @@ module('Unit | Utils | safe-area', function () {
   test('the polygon bridges the trigger edge to the content when opened right', function (assert) {
     const polygon = buildSafeAreaPolygon(trigger, contentRight);
 
-    assert.strictEqual(polygon.length, 4, 'four vertices');
+    // The convex hull of the six candidate points drops exactly one of them
+    // here (the content's near-top corner, which sits inside the hull of the
+    // other five), leaving five vertices rather than the hand-picked four.
+    assert.strictEqual(polygon.length, 5, 'five vertices');
     assert.deepEqual(
       polygon[0],
       { x: 100, y: 0 },
       'starts at the trigger top-right'
     );
     assert.deepEqual(
-      polygon[3],
+      polygon[polygon.length - 1],
       { x: 100, y: 20 },
       'ends at the trigger bottom-right'
+    );
+    assert.deepEqual(
+      polygon[3],
+      { x: 120, y: 240 },
+      'keeps the content near-bottom corner, which the old hand-picked ' +
+        'quad dropped even though it is a real hull vertex'
     );
   });
 
@@ -76,6 +85,37 @@ module('Unit | Utils | safe-area', function () {
     );
   });
 
+  test('a mid-gap point stays safe when the content is much taller than the trigger', function (assert) {
+    const shortTrigger: Rect = { left: 0, right: 50, top: 100, bottom: 120 };
+    const tallContent: Rect = { left: 60, right: 200, top: 100, bottom: 400 };
+
+    assert.true(
+      isPointInSafeArea({ x: 55, y: 250 }, shortTrigger, tallContent),
+      'in the gap, roughly level with the middle of a tall submenu'
+    );
+  });
+
+  // KNOWN LIMITATION (see cr-fixes-report.md, Finding 1): the code review
+  // that requested this convex-hull fix also asserted that
+  // isPointInSafeArea({ x: 110, y: 150 }, trigger, contentRight) must become
+  // `true`. It cannot: for these fixtures the trigger's bottom-right corner
+  // (100, 20) and the content's near-bottom corner (120, 240) are BOTH real,
+  // non-redundant hull vertices, and the straight edge between them is the
+  // hull boundary at every x between 100 and 120. At x = 110 that edge sits
+  // at y = 130, strictly above y = 150 -- so (110, 150) is genuinely outside
+  // the true convex hull, not merely outside a hand-picked shape. Any convex
+  // polygon over these six points must have the same pinch; only a concave
+  // shape (explicitly ruled out by the review) could cover that point. This
+  // is pinned here, rather than silently fixed to `true`, so a future change
+  // to the geometry doesn't accidentally "fix" this without the tradeoff
+  // being deliberate.
+  test('KNOWN LIMITATION: a deep mid-gap point stays unsafe even under the true convex hull', function (assert) {
+    assert.false(
+      isPointInSafeArea({ x: 110, y: 150 }, trigger, contentRight),
+      'still outside the hull -- see comment above'
+    );
+  });
+
   test('a pointer leaving toward a sibling row is outside the safe area', function (assert) {
     assert.false(
       isPointInSafeArea({ x: 50, y: 40 }, trigger, contentRight),
@@ -90,10 +130,20 @@ module('Unit | Utils | safe-area', function () {
   test('it mirrors when the submenu is flipped to the left', function (assert) {
     const polygon = buildSafeAreaPolygon(trigger, contentLeft);
 
+    // The hull's starting vertex is whichever candidate point is leftmost
+    // overall, which for the flipped fixture is the content's far-top
+    // corner rather than the trigger -- so this asserts by content instead
+    // of assuming index 0 is always the trigger corner.
+    assert.strictEqual(polygon.length, 5, 'five vertices when flipped too');
     assert.deepEqual(
-      polygon[0],
+      polygon[1],
       { x: 0, y: 0 },
-      'starts at the trigger top-left when flipped'
+      'includes the trigger top-left corner when flipped'
+    );
+    assert.deepEqual(
+      polygon[2],
+      { x: 0, y: 20 },
+      'includes the trigger bottom-left corner when flipped'
     );
     assert.true(
       isPointInSafeArea({ x: -10, y: 25 }, trigger, contentLeft),
