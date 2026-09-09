@@ -68,6 +68,8 @@ export interface DrawerArgs extends Pick<
 
   /**
    * The Close Button size.
+   *
+   * @defaultValue 'lg'
    */
   closeButtonSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -130,6 +132,7 @@ export interface DrawerSignature {
           | 'iconClass'
           | 'titleClass'
           | 'descriptionClass'
+          | 'closeButton'
         >;
         Body: WithBoundArgs<
           ComponentLike<DrawerBodySignature>,
@@ -222,6 +225,19 @@ export default class Drawer extends Component<DrawerSignature> {
     return (
       this.args.allowClosing !== false && this.args.allowCloseButton !== false
     );
+  }
+
+  // When a header is rendered, the close button lives inside it (see
+  // `DrawerHeader`'s `@closeButton` arg below) so it can be centred against
+  // the header's actual height. The standalone, absolutely-positioned close
+  // button is only needed as a fallback for drawers with no header at all --
+  // rendering both at once would show two close buttons.
+  get showStandaloneCloseButton(): boolean {
+    return this.showCloseButton && !this.hasHeader;
+  }
+
+  get closeButtonSize(): NonNullable<DrawerArgs['closeButtonSize']> {
+    return this.args.closeButtonSize || 'lg';
   }
 
   get placement() {
@@ -330,10 +346,10 @@ export default class Drawer extends Component<DrawerSignature> {
           />
         {{/if}}
 
-        {{#if this.showCloseButton}}
+        {{#if this.showStandaloneCloseButton}}
           <CloseButton
             @onPress={{@onClose}}
-            @size={{@closeButtonSize}}
+            @size={{this.closeButtonSize}}
             @class={{this.classes.closeButton class=@classes.closeButton}}
           />
         {{/if}}
@@ -343,6 +359,7 @@ export default class Drawer extends Component<DrawerSignature> {
             CloseButton=(component
               CloseButton
               onPress=@onClose
+              size=this.closeButtonSize
               class=(this.classes.closeButton class=@classes.closeButton)
             )
             Header=(component
@@ -354,6 +371,17 @@ export default class Drawer extends Component<DrawerSignature> {
               titleClass=(this.classes.title class=@classes.title)
               descriptionClass=(this.classes.description
                 class=@classes.description
+              )
+              closeButton=(if
+                this.showCloseButton
+                (component
+                  CloseButton
+                  onPress=@onClose
+                  size=this.closeButtonSize
+                  class=(this.classes.headerCloseButton
+                    class=@classes.headerCloseButton
+                  )
+                )
               )
             )
             Body=(component

@@ -925,6 +925,11 @@ Drawer yields the pieces you assemble it from:
 | `CloseButton` | Styled close button wired to `@onClose`                         |
 | `headerId`    | The id `Header` uses, for labelling your own heading instead    |
 
+The default close button (shown unless `@allowClosing`/`@allowCloseButton` is `false`) is
+rendered inside `<d.Header>` when one is present, vertically centered against it regardless of
+whether the header is title-only or has a description too. Only a drawer with no `Header` at
+all falls back to the standalone, absolutely-positioned close button in the top right corner.
+
 ## Accessibility
 
 The drawer renders as `role="dialog"` with `tabindex="0"` and `aria-modal="true"`, labelled

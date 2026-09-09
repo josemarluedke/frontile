@@ -59,6 +59,20 @@ const drawer = tv({
   slots: {
     base: 'flex flex-col absolute rounded-2xl outline-hidden overflow-clip border border-neutral-muted shadow-elevation-5',
     closeButton: 'absolute top-3 right-3',
+    // The close button rendered *inside* the header (see `drawer.gts`) lives
+    // in its own grid column rather than being absolutely positioned: it
+    // spans both header rows like `icon` does, so `self-center` centres it
+    // against the header's actual content height whether that's a
+    // title-only header or a title + description one.
+    // `row-start-1` is required, not just decorative: this button is the
+    // *last* DOM child of the header (after title/description), so CSS
+    // grid's auto-placement cursor -- which only moves forward -- has
+    // already advanced past row 1 by the time it gets here and would
+    // otherwise place it at row 2 spanning a new row 3, off-centre from the
+    // title+description block. `icon` doesn't need this because it's the
+    // *first* child, so the cursor still starts at row 1 when it is placed.
+    headerCloseButton:
+      'col-start-3 row-start-1 row-span-2 self-center justify-self-end shrink-0',
     header: '',
     body: 'grow overflow-y-auto',
     footer: 'flex justify-end items-center relative gap-4',
@@ -73,11 +87,11 @@ const drawer = tv({
     appearance: {
       default: {
         base: 'bg-surface-drawer text-on-surface-drawer',
-        body: 'bg-surface-drawer px-6 py-4',
+        body: 'bg-surface-drawer px-8 py-6',
         header:
-          'grid grid-cols-[auto_1fr] items-center gap-x-3 bg-black text-white px-6 py-4 pr-14',
+          'grid grid-cols-[auto_1fr_auto] items-center gap-x-3 bg-black text-white px-8 py-6',
         footer:
-          'bg-surface-app text-on-surface-app border-t border-neutral-muted px-6 py-4',
+          'bg-surface-app text-on-surface-app border-t border-neutral-muted px-8 py-6',
         // The close button's own `transparent` variant hovers to
         // `surface-overlay-subtle` (black at 3% opacity), which is invisible
         // against this band's `bg-black` (itself black in both schemes, by
@@ -86,6 +100,7 @@ const drawer = tv({
         // used here -- unlike `surface-lift-*`, which is white in light mode
         // but black in dark mode and would vanish on this band in dark.
         closeButton: 'text-white hover:bg-white/10',
+        headerCloseButton: 'text-white hover:bg-white/10',
         icon: 'text-white',
         title: 'text-header-sm font-semibold text-white',
         description: 'text-sm text-white/70',
@@ -100,14 +115,13 @@ const drawer = tv({
       },
       ghost: {
         base: 'bg-surface-modal text-on-surface-modal',
-        body: 'px-8 py-4',
-        // Same grid layout as `default` (left-aligned, icon column, room
-        // reserved for the close button) but ghost's own colours -- no
-        // `bg-black`/`text-white` here, this stays on `surface-modal` -- and
-        // its more generous padding scale.
+        body: 'px-8 py-6',
+        // Same grid layout as `default` (left-aligned, icon column, close
+        // button column) but ghost's own colours -- no `bg-black`/`text-white`
+        // here, this stays on `surface-modal`.
         header:
-          'grid grid-cols-[auto_1fr] items-center gap-x-3 font-header px-8 pt-10 pb-2 pr-14',
-        footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal p-8`,
+          'grid grid-cols-[auto_1fr_auto] items-center gap-x-3 font-header px-8 py-6',
+        footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal px-8 py-6`,
         title: 'text-header-lg',
         description: 'text-sm text-neutral',
         // `bg-neutral-soft` (gray-200 light / gray-700 dark) reads too faint

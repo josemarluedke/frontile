@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import {
   render,
   find,
+  findAll,
   click,
   triggerKeyEvent,
   settled
@@ -35,6 +36,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
       slots: {
         base: '',
         closeButton: 'drawer__close-btn',
+        headerCloseButton: 'drawer__header-close-btn',
         header: 'drawer__header',
         body: 'drawer__body',
         footer: 'drawer__footer',
@@ -169,10 +171,20 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     );
 
     assert.dom('[data-test-id="drawer"]').exists();
-    assert.dom('[data-test-id="drawer"] .drawer__header').hasText('My Header');
+    // The header now also contains the visually-hidden "Close" text of the
+    // close button rendered inside it, so this checks for the title text
+    // rather than an exact match.
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header')
+      .includesText('My Header');
     assert.dom('[data-test-id="drawer"] .drawer__body').hasText('My Content');
     assert.dom('[data-test-id="drawer"] .drawer__footer').hasText('My Footer');
-    assert.dom('[data-test-id="drawer"] .drawer__close-btn').hasText('Close');
+    // A header is present, so the close button renders inside it (see
+    // `DrawerHeader`'s `@closeButton`) rather than as the standalone,
+    // absolutely-positioned button.
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header-close-btn')
+      .hasText('Close');
   });
 
   test('it renders accessibility attributes', async function (assert) {
@@ -318,7 +330,8 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
 
     assert.dom('[data-test-id="drawer"]').exists();
 
-    await click('[data-test-id="drawer"] .drawer__close-btn');
+    // A header is present, so the close button renders inside it.
+    await click('[data-test-id="drawer"] .drawer__header-close-btn');
     assert.dom('[data-test-id="drawer"]').doesNotExist();
   });
 
@@ -348,6 +361,9 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
 
     assert.dom('[data-test-id="drawer"]').exists();
     assert.dom('[data-test-id="drawer"] .drawer__close-btn').doesNotExist();
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header-close-btn')
+      .doesNotExist();
   });
 
   test('it closes drawer when backdrop is clicked', async function (assert) {
@@ -469,7 +485,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   });
 
   test('when @allowClosing={{false}} does not close drawer', async function (assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     const isOpen = cell(true);
     const allowClosing = cell(false);
@@ -497,6 +513,9 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
 
     assert.dom('[data-test-id="drawer"]').exists();
     assert.dom('[data-test-id="drawer"] .drawer__close-btn').doesNotExist();
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header-close-btn')
+      .doesNotExist();
 
     await click('.overlay__backdrop');
     assert.dom('[data-test-id="drawer"]').exists();
@@ -1037,6 +1056,43 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     assert
       .dom('[data-test-id="drawer"] .drawer__description')
       .hasText('Supporting text');
+  });
+
+  test('it renders exactly one close button when a header is present', async function (assert) {
+    // Guards against the double-render risk of rendering the close button
+    // inside the header (for centring) while also conditionally rendering
+    // the standalone, absolutely-positioned one based on the same `hasHeader`
+    // flag the header's own registration modifier sets.
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header @title="Drawer title" />
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    const closeButtons = findAll('[data-test-id="drawer"] button').filter(
+      (button) => button.textContent?.trim() === 'Close'
+    );
+    assert.strictEqual(
+      closeButtons.length,
+      1,
+      'exactly one close button renders'
+    );
+    assert
+      .dom('[data-test-id="drawer"] .drawer__close-btn')
+      .doesNotExist('the standalone close button does not also render');
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header-close-btn')
+      .exists({ count: 1 }, 'the header-embedded close button renders');
   });
 
   test('the real theme keeps the drawer flush with its inset, without a phantom cross-axis scroll', async function (assert) {

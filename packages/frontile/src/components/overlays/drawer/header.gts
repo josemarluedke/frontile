@@ -4,6 +4,7 @@ import { modifier } from 'ember-modifier';
 import { twMerge } from '@frontile/theme';
 import type { TOC } from '@ember/component/template-only';
 import type { ComponentLike } from '@glint/template';
+import type { CloseButtonSignature } from '../../buttons/close-button';
 
 export interface DrawerHeaderIconSignature {
   Args: {
@@ -119,6 +120,15 @@ export interface DrawerHeaderArgs {
    * @internal
    */
   registerSelf?: (isRendered: boolean) => void;
+
+  /**
+   * The Drawer's close button, fully bound and rendered inside the header's
+   * own grid so it can be centred against the header's actual height. Only
+   * present when the Drawer should show a close button at all.
+   *
+   * @internal
+   */
+  closeButton?: ComponentLike<CloseButtonSignature>;
 }
 
 export interface DrawerHeaderSignature {
@@ -172,6 +182,10 @@ export default class DrawerHeader extends Component<DrawerHeaderSignature> {
         {{#if @description}}
           <div class={{@descriptionClass}}>{{@description}}</div>
         {{/if}}
+      {{/if}}
+
+      {{#if @closeButton}}
+        <@closeButton />
       {{/if}}
     </div>
   </template>
