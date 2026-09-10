@@ -209,5 +209,112 @@ module(
         .dom('[data-fr-calendar-title]')
         .hasText('March 2027', 'opens on the selection, not on today');
     });
+
+    test('it selects a day when uncontrolled', async function (assert) {
+      const seen: (Date | null)[] = [];
+      const onChange = (d: Date | null) => seen.push(d);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute('data-selected', 'true');
+      // `aria-selected` belongs on the gridcell, not the button inside it.
+      const selectedCell = find(
+        '[data-fr-calendar-day][data-key="2026-09-09"]'
+      )!.closest('td');
+      assert.dom(selectedCell).hasAria('selected', 'true');
+      assert.strictEqual(seen.length, 1);
+      assert.strictEqual(seen[0]!.getDate(), 9);
+    });
+
+    test('@value makes selection controlled', async function (assert) {
+      const value = cell<Date | null>(null);
+      const seen: (Date | null)[] = [];
+      const onChange = (d: Date | null) => seen.push(d);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @value={{value.current}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute(
+          'data-selected',
+          'false',
+          'controlled mode does not self-select'
+        );
+      assert.strictEqual(seen.length, 1, 'but it does report the request');
+
+      value.current = new Date(2026, 8, 9);
+      await settled();
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute('data-selected', 'true');
+    });
+
+    test('@defaultValue seeds the selection', async function (assert) {
+      const value = new Date(2026, 8, 12);
+
+      await render(
+        <template>
+          <Calendar @defaultValue={{value}} @locale="en-US" />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-12"]')
+        .hasAttribute('data-selected', 'true');
+    });
+
+    test('selecting an outside day scrolls to its month', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-10-01"]');
+
+      assert
+        .dom('[data-fr-calendar-title]')
+        .hasText(
+          'October 2026',
+          'the newly selected day is never left off screen'
+        );
+    });
+
+    test('explicitly controlled month with no value falls back to seedMonth via @value', async function (assert) {
+      const value = new Date(2027, 5, 20);
+
+      await render(
+        <template>
+          <Calendar @month={{undefined}} @value={{value}} @locale="en-US" />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-title]')
+        .hasText('June 2027', 'opens on the selection, not on today');
+    });
   }
 );

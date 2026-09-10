@@ -1,4 +1,6 @@
 import type { TOC } from '@ember/component/template-only';
+import { on } from '@ember/modifier';
+import { fn } from '@ember/helper';
 import type { CalendarDay, DayState } from './types';
 
 export interface DayCellSignature {
@@ -7,6 +9,7 @@ export interface DayCellSignature {
     state: DayState;
     showOutsideDays: boolean;
     hasCustomContent: boolean;
+    onSelect: (date: Date) => void;
     cellClass: string;
     bandClass: string;
     dayClass: string;
@@ -57,6 +60,7 @@ const DayCell: TOC<DayCellSignature> = <template>
           aria-disabled={{if @state.isDisabled "true" "false"}}
           aria-current={{if @state.isToday "date"}}
           tabindex={{if @state.isFocused "0" "-1"}}
+          {{on "click" (fn @onSelect @day.date)}}
         >
           {{#if @hasCustomContent}}
             {{yield @state}}

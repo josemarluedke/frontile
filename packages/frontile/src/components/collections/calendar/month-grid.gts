@@ -15,6 +15,7 @@ export interface MonthGridSignature {
     stateFor: (day: CalendarDay) => DayState;
     showOutsideDays: boolean;
     hasDayContent: boolean;
+    onSelect: (date: Date) => void;
     classes: {
       monthGrid: string;
       weekdaysRow: string;
@@ -62,6 +63,7 @@ const MonthGrid: TOC<MonthGridSignature> = <template>
                 @state={{state}}
                 @showOutsideDays={{@showOutsideDays}}
                 @hasCustomContent={{@hasDayContent}}
+                @onSelect={{@onSelect}}
                 @cellClass={{@classes.cell}}
                 @bandClass={{@classes.cellBand}}
                 @dayClass={{@classes.day}}

@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked, cached } from '@glimmer/tracking';
-import { addMonths, startOfMonth } from 'date-fns';
+import { addMonths, startOfMonth, isSameMonth } from 'date-fns';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import { MonthGrid } from './month-grid';
 import { CalendarHeader, type CalendarHeaderContext } from './header';
@@ -16,13 +16,17 @@ import {
 import type { CalendarSlots, CalendarVariants } from '@frontile/theme';
 import type {
   CalendarDay,
+  CalendarMode,
   CalendarMonthData,
-  DateRange,
+  CalendarValue,
   DayState,
   WeekDay
 } from './types';
 
-export interface CalendarArgs {
+export interface CalendarArgs<M extends CalendarMode = 'single'> {
+  /** @defaultValue 'single' */
+  mode?: M;
+
   /** Seeds the visible month when uncontrolled. */
   defaultMonth?: Date;
 
@@ -40,13 +44,15 @@ export interface CalendarArgs {
   onMonthChange?: (month: Date) => void;
 
   /**
-   * Controlled selected value. Not implemented until Task 5 -- declared here
-   * only because `seedMonth` reads it to open on the current selection.
+   * Controlled selection. *Passing* this argument at all puts selection in
+   * controlled mode -- passing it as `undefined` included.
    */
-  value?: Date | DateRange | null;
+  value?: CalendarValue<M>;
 
-  /** Uncontrolled seed for the selected value. See `@value`. */
-  defaultValue?: Date | DateRange | null;
+  /** Seeds the selection when uncontrolled. */
+  defaultValue?: CalendarValue<M>;
+
+  onChange?: (value: CalendarValue<M>) => void;
 
   /** BCP-47 tag. All human-readable text is produced by `Intl` from this. */
   locale?: string;
@@ -66,13 +72,15 @@ export interface CalendarArgs {
   classes?: SlotsToClasses<CalendarSlots>;
 }
 
-export interface CalendarSignature {
-  Args: CalendarArgs;
+export interface CalendarSignature<M extends CalendarMode = 'single'> {
+  Args: CalendarArgs<M>;
   Blocks: { day: [DayState] };
   Element: HTMLDivElement;
 }
 
-class Calendar extends Component<CalendarSignature> {
+class Calendar<M extends CalendarMode = 'single'> extends Component<
+  CalendarSignature<M>
+> {
   get locale(): string {
     return this.args.locale ?? navigator.language;
   }
@@ -98,7 +106,7 @@ class Calendar extends Component<CalendarSignature> {
 
   get visibleMonth(): Date {
     if (this.isMonthControlled) {
-      return startOfMonth(this.args.month ?? new Date());
+      return startOfMonth(this.args.month ?? this.seedMonth);
     }
     if (this._month) {
       return startOfMonth(this._month);
@@ -134,6 +142,53 @@ class Calendar extends Component<CalendarSignature> {
     }
     this.args.onMonthChange?.(next);
   };
+
+  /**
+   * Uncontrolled mode's own selection. `undefined` means "not selected yet",
+   * mirroring `_month` above so the seed getter can resolve without a
+   * tracked write during render.
+   */
+  @tracked private _value: CalendarValue<M> | undefined;
+
+  private get isValueControlled(): boolean {
+    return 'value' in this.args;
+  }
+
+  get selection(): CalendarValue<M> | null {
+    if (this.isValueControlled) {
+      return (this.args.value ?? null) as CalendarValue<M>;
+    }
+    if (this._value !== undefined) {
+      return this._value;
+    }
+    return (this.args.defaultValue ?? null) as CalendarValue<M>;
+  }
+
+  private commit(value: CalendarValue<M>): void {
+    if (!this.isValueControlled) {
+      this._value = value;
+    }
+    this.args.onChange?.(value);
+  }
+
+  selectDay = (date: Date): void => {
+    // An outside day belongs to a neighbouring month; follow it so the
+    // newly selected day is never left off screen.
+    if (!isSameMonth(date, this.visibleMonth)) {
+      this.goToMonth(date);
+    }
+
+    this.commit(startOfDay(date) as CalendarValue<M>);
+  };
+
+  private isDaySelected(date: Date): boolean {
+    const selected = this.selection;
+
+    if (selected instanceof Date) {
+      return isSameDay(selected, date);
+    }
+    return false;
+  }
 
   goToPrevious = (): void => this.goToMonth(addMonths(this.visibleMonth, -1));
   goToNext = (): void => this.goToMonth(addMonths(this.visibleMonth, 1));
@@ -229,7 +284,7 @@ class Calendar extends Component<CalendarSignature> {
       dayOfMonth: day.dayOfMonth,
       isOutside: day.isOutside,
       isToday: isSameDay(day.date, startOfDay(new Date())),
-      isSelected: false,
+      isSelected: this.isDaySelected(day.date),
       isDisabled: false,
       isUnavailable: false,
       isRangeStart: false,
@@ -263,6 +318,7 @@ class Calendar extends Component<CalendarSignature> {
           @caption={{this.caption}}
           @stateFor={{this.stateFor}}
           @showOutsideDays={{this.showOutsideDays}}
+          @onSelect={{this.selectDay}}
           @hasDayContent={{has-block "day"}}
           @classes={{this.gridClasses}}
         >
