@@ -103,7 +103,21 @@ const calendar = tv({
     // between two positioned elements with auto z-index document order already
     // decides. Giving the day a positive index instead let it escape into the
     // page and paint over a host site's header.
-    cellBand: 'absolute inset-0 pointer-events-none',
+    cellBand: [
+      'absolute inset-0 pointer-events-none',
+      // The band fills the whole cell so adjacent bands touch, but at the two
+      // ends of a range it must stop under the endpoint's circle rather than
+      // running past it into empty grid. Clipping to half width leaves the
+      // ribbon meeting the fill and going no further.
+      'data-[range-start=true]:start-1/2',
+      'data-[range-end=true]:end-1/2',
+      // A single-day range is both ends at once: nothing to connect, so no
+      // band at all.
+      'data-[range-start=true]:data-[range-end=true]:hidden',
+      // The pending preview is the same ribbon, quieter -- it shows where the
+      // range *would* land, not where it is.
+      'data-[preview=true]:opacity-60'
+    ],
 
     day: [
       ...focusVisibleRing,

@@ -173,16 +173,21 @@ export function normalizeRange(a: Date, b: Date): DateRange {
  * one day short of the nearest unavailable date, which is what stops a booking
  * range from straddling an already-booked night.
  *
- * The 366-day walk bounds the search: a range longer than a year is not a
- * calendar interaction.
+ * The 366-day walk is a real limit on selection, not just on the search: when
+ * nothing else blocks, the returned bounds are `anchor ± 366` and the calendar
+ * refuses endpoints beyond them. A range longer than a year is not a calendar
+ * interaction, and walking unbounded would mean an open-ended loop per hover.
+ *
+ * Both bounds are always dates -- the walk starts at the anchor itself, so
+ * there is no "unbounded" result to represent.
  */
 export function rangeLimits(
   anchor: Date,
   isDateUnavailable?: (date: Date) => boolean,
   min?: Date,
   max?: Date
-): { min: Date | null; max: Date | null } {
-  const walk = (direction: 1 | -1): Date | null => {
+): { min: Date; max: Date } {
+  const walk = (direction: 1 | -1): Date => {
     let furthest = startOfDay(anchor);
 
     for (let i = 1; i <= 366; i++) {

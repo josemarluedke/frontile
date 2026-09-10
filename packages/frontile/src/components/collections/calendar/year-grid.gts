@@ -87,6 +87,14 @@ export default class YearGrid extends Component<YearGridSignature> {
         []
     );
     const index = buttons.indexOf(document.activeElement as HTMLElement);
+
+    // `indexOf` returns -1 when focus is not on a year button. Stepping from
+    // -1 would land on `buttons[0]` or `buttons[2]` rather than doing nothing,
+    // so bail before the arithmetic.
+    if (index < 0) {
+      return;
+    }
+
     const next = buttons[index + step];
 
     if (next) {

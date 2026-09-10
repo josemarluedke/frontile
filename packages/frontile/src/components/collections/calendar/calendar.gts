@@ -156,6 +156,17 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
    */
   autofocus?: boolean;
 
+  /**
+   * The id of an element naming this calendar, forwarded to each month grid's
+   * `aria-labelledby`. Use it when something outside the calendar already
+   * names it -- a date picker's own label, say -- so the grid is announced
+   * with that name instead of its month caption.
+   *
+   * An `aria-labelledby` passed through `...attributes` lands on the root
+   * element, which has no role, so it would not reach the grid.
+   */
+  labelledBy?: string;
+
   /** Overrides the classes applied to individual slots. */
   classes?: SlotsToClasses<CalendarSlots>;
 
@@ -256,13 +267,26 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   });
 
   @cached
-  get monthOptions(): { value: number; label: string }[] {
+  get monthOptions(): { value: number; label: string; isDisabled: boolean }[] {
     const fmt = new Intl.DateTimeFormat(this.locale, { month: 'long' });
+    const year = this.visibleMonth.getFullYear();
 
-    return Array.from({ length: 12 }, (_, value) => ({
-      value,
-      label: fmt.format(new Date(this.visibleMonth.getFullYear(), value, 1))
-    }));
+    // A month is offered only when some day in it is in range. `yearOptions`
+    // already clamps this way; without the same treatment the month picker is
+    // a hole in the `@minValue`/`@maxValue` clamp, since it can navigate to a
+    // month the prev/next buttons refuse to reach.
+    return Array.from({ length: 12 }, (_, value) => {
+      const month = new Date(year, value, 1);
+
+      return {
+        value,
+        label: fmt.format(month),
+        isDisabled: !(
+          isWithinBounds(endOfMonth(month), this.args.minValue, undefined) &&
+          isWithinBounds(month, undefined, this.args.maxValue)
+        )
+      };
+    });
   }
 
   /**
@@ -278,8 +302,21 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   @cached
   get yearOptions(): number[] {
     const current = this.visibleMonth.getFullYear();
-    const first = this.args.minValue?.getFullYear() ?? current - 100;
-    const last = this.args.maxValue?.getFullYear() ?? current + 10;
+
+    // The visible year is always included, even when it sits outside
+    // `@minValue`/`@maxValue`. The panel marks and scrolls to the *current*
+    // year on open; omitting it leaves nothing to select, so the panel would
+    // open unfocused and scrolled to an arbitrary decade. `Math.min`/`max`
+    // also keep the range non-empty if the bounds are inverted, which would
+    // otherwise render an empty listbox.
+    const first = Math.min(
+      this.args.minValue?.getFullYear() ?? current - 100,
+      current
+    );
+    const last = Math.max(
+      this.args.maxValue?.getFullYear() ?? current + 10,
+      current
+    );
 
     return Array.from({ length: last - first + 1 }, (_, i) => first + i);
   }
@@ -339,6 +376,25 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   goToMonth = (month: Date): void => {
     const next = startOfMonth(month);
 
+    // The clamp lives here, not only in `canGoPrevious`/`canGoNext`. Those
+    // disable the default buttons, but `goToMonth` is also reachable through
+    // `setMonth`/`setYear` and through the `goToPrevious`/`goToNext` yielded
+    // to a `<:header>` block -- a custom header that ignores `canGoPrevious`
+    // would otherwise page straight past `@minValue`.
+    //
+    // The test is against the whole landing *window*, matching
+    // `canGoPrevious`/`canGoNext`: with several months visible a bound can
+    // fall inside a later month of the window, which is still a legitimate
+    // place to land. Testing `next` alone would refuse that move.
+    const windowEnd = endOfMonth(addMonths(next, this.visibleMonths - 1));
+
+    if (
+      !isWithinBounds(windowEnd, this.args.minValue, undefined) ||
+      !isWithinBounds(next, undefined, this.args.maxValue)
+    ) {
+      return;
+    }
+
     if (!this.isMonthControlled) {
       this._month = next;
     }
@@ -385,9 +441,11 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
 
   /** How far the pending range may reach before it hits an unavailable day. */
   @cached
-  private get pendingLimits() {
+  private get pendingLimits(): { min: Date; max: Date } | null {
+    // `null` means "no range being built", which is what confines these limits
+    // to an anchored interaction -- idle browsing must not disable anything.
     if (!this._anchor) {
-      return { min: null, max: null };
+      return null;
     }
     return rangeLimits(
       this._anchor,
@@ -408,13 +466,14 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       // (the disabled cell would sit inside a band that promises it is
       // reachable). Clamp here, once, for both the pointer and keyboard
       // paths.
-      const { min, max } = this.pendingLimits;
+      // `_anchor` is set, so `pendingLimits` is never null here.
+      const pending = this.pendingLimits;
       let clamped = startOfDay(to);
-      if (min && isBefore(clamped, min)) {
-        clamped = min;
+      if (pending && isBefore(clamped, pending.min)) {
+        clamped = pending.min;
       }
-      if (max && isAfter(clamped, max)) {
-        clamped = max;
+      if (pending && isAfter(clamped, pending.max)) {
+        clamped = pending.max;
       }
       return normalizeRange(this._anchor, clamped);
     }
@@ -531,8 +590,8 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       return true;
     }
 
-    const { min, max } = this.pendingLimits;
-    if (min && max && !isWithinBounds(date, min, max)) {
+    const pending = this.pendingLimits;
+    if (pending && !isWithinBounds(date, pending.min, pending.max)) {
       return true;
     }
 
@@ -762,7 +821,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     // since outside days are suppressed for multi-month windows) while the
     // first month alone has nothing selectable. Checking only the first
     // month would leave Previous disabled even though the window is
-    // partially reachable. Symmetric with `canGoNext` below.
+    // partially reachable. `canGoNext` needs no such walk -- see there.
     const landingFirst = startOfMonth(
       addMonths(this.visibleMonth, -this.pageSize)
     );
@@ -776,11 +835,11 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     if (this.args.isDisabled) {
       return false;
     }
-    // Bound the check against the whole landing window, not just its first
-    // month -- otherwise the next button could stay enabled for a jump
-    // that lands entirely past `@maxValue`, or (symmetric with
-    // `canGoPrevious` above) stay disabled when a later month of the
-    // window is still reachable.
+    // Only the landing window's *first* day is tested, and that is enough
+    // going forward: it is the nearest day to `@maxValue`, so if it is out of
+    // range every later month of the window is too. This is not symmetric with
+    // `canGoPrevious`, which has to walk to the window's far end because
+    // paging backwards puts the nearest day to `@minValue` at that end.
     const landingFirst = startOfMonth(
       addMonths(this.visibleMonth, this.pageSize)
     );
@@ -991,6 +1050,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
                 @stateFor={{this.stateFor}}
                 @showOutsideDays={{this.showOutsideDays}}
                 @isReadOnly={{this.isReadOnly}}
+                @labelledBy={{@labelledBy}}
                 @onSelect={{this.selectDay}}
                 @onHover={{this.hoverDay}}
                 @hasDayContent={{has-block "day"}}

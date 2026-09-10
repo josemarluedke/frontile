@@ -115,7 +115,7 @@ module('Unit | collections | calendar utils', function () {
     );
   });
 
-  test('buildMonthGrid does not drop the last day of the month when it falls on a week-start day (February 2027, Sunday start, four-week month)', function (assert) {
+  test('buildMonthGrid does not drop the last day of the month when it falls on a week-start day (February 2027, Sunday start)', function (assert) {
     const grid = buildMonthGrid({
       month: new Date(2027, 1, 1),
       weekStartsOn: 0,

@@ -1139,7 +1139,7 @@ module(
         );
     });
 
-    test('Escape cancels a pending range without emitting', async function (assert) {
+    test('Escape cancels a pending range and retracts the half-open value', async function (assert) {
       const seen: (DateRange | null)[] = [];
       const onChange = (r: DateRange | null) => seen.push(r);
 
@@ -1740,6 +1740,138 @@ module(
       assert
         .dom('[data-fr-calendar-year-trigger]')
         .isFocused('focus returns to the trigger after a keyboard pick');
+    });
+
+    test('the year grid always offers the visible year, even outside min/max', async function (assert) {
+      // Bounds that exclude the visible year entirely. If the grid omitted it,
+      // nothing would be marked selected and the panel would open unfocused
+      // and scrolled to an arbitrary decade.
+      const min = new Date(2030, 0, 1);
+      const max = new Date(2035, 11, 31);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+            @minValue={{min}}
+            @maxValue={{max}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-year-trigger]');
+
+      assert
+        .dom('[data-fr-calendar-year][data-year="2026"]')
+        .exists('the visible year is still offered');
+      assert
+        .dom('[data-fr-calendar-year][data-selected="true"]')
+        .hasText('2026', 'and it is the one marked selected');
+      assert
+        .dom('[data-fr-calendar-year][data-selected="true"]')
+        .isFocused('so the panel opens with focus on it');
+    });
+
+    test('the month select disables months outside min/max', async function (assert) {
+      const min = new Date(2026, 3, 10); // April 2026
+      const max = new Date(2026, 9, 20); // October 2026
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+            @minValue={{min}}
+            @maxValue={{max}}
+          />
+        </template>
+      );
+
+      const options = findAll(
+        '[data-fr-calendar-month-select] option'
+      ) as HTMLOptionElement[];
+
+      assert.false(options[3]!.disabled, 'April is partly in range');
+      assert.false(options[9]!.disabled, 'October is partly in range');
+      assert.true(options[2]!.disabled, 'March is entirely before minValue');
+      assert.true(options[10]!.disabled, 'November is entirely after maxValue');
+    });
+
+    test('goToMonth itself clamps, not just the nav buttons', async function (assert) {
+      // A custom header ignores `canGoPrevious` and calls `goToPrevious`
+      // directly -- the clamp has to live in `goToMonth` or this pages past
+      // the bound.
+      const min = new Date(2026, 8, 1);
+      const seen: Date[] = [];
+      const onMonthChange = (m: Date) => seen.push(m);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @minValue={{min}}
+            @onMonthChange={{onMonthChange}}
+          >
+            <:header as |ctx|>
+              <h2 data-test-caption>{{ctx.title}}</h2>
+              <button
+                type="button"
+                data-test-prev
+                {{on "click" ctx.goToPrevious}}
+              >prev</button>
+            </:header>
+          </Calendar>
+        </template>
+      );
+
+      await click('[data-test-prev]');
+
+      assert
+        .dom('[data-test-caption]')
+        .hasText('September 2026', 'did not page past @minValue');
+      assert.strictEqual(seen.length, 0, 'and reported no month change');
+    });
+
+    test('the range band clips at its endpoints and dims while previewing', async function (assert) {
+      await render(
+        <template>
+          <Calendar @mode="range" @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await triggerEvent(
+        '[data-fr-calendar-day][data-key="2026-09-14"]',
+        'mouseenter'
+      );
+
+      const bandFor = (key: string) =>
+        find(`[data-fr-calendar-day][data-key="${key}"]`)!
+          .closest('td')!
+          .querySelector('[data-fr-calendar-band]')!;
+
+      // A band that ran full width at the ends would extend past the endpoint
+      // circle into empty grid.
+      const start = bandFor('2026-09-09').getBoundingClientRect();
+      const middle = bandFor('2026-09-12').getBoundingClientRect();
+      const end = bandFor('2026-09-14').getBoundingClientRect();
+
+      assert.ok(
+        start.width < middle.width,
+        'the start endpoint clips its band to half the cell'
+      );
+      assert.ok(
+        end.width < middle.width,
+        'the end endpoint clips its band to half the cell'
+      );
+      assert.ok(
+        Number(getComputedStyle(bandFor('2026-09-12')).opacity) < 1,
+        'a pending preview band is dimmed'
+      );
     });
 
     test('the year grid is clamped by min/max', async function (assert) {

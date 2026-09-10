@@ -15,6 +15,8 @@ export interface MonthGridSignature {
     stateFor: (day: CalendarDay) => DayState;
     showOutsideDays: boolean;
     isReadOnly: boolean;
+    /** Forwarded from the calendar's own `aria-labelledby`, if any. */
+    labelledBy?: string;
     hasDayContent: boolean;
     hasWeekdayContent: boolean;
     onSelect: (date: Date) => void;
@@ -40,7 +42,10 @@ const MonthGrid: TOC<MonthGridSignature> = <template>
     role="grid"
     data-fr-calendar-grid
     class={{@classes.monthGrid}}
+    {{! aria-labelledby wins over aria-label, so a picker passing one on the
+        calendar relabels every grid without this having to choose. }}
     aria-label={{@caption}}
+    aria-labelledby={{@labelledBy}}
     aria-readonly={{if @isReadOnly "true" "false"}}
     ...attributes
   >

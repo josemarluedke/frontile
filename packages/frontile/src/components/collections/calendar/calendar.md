@@ -87,7 +87,10 @@ in each adjacent grid. Passing an explicit value always wins, in either directio
 ## Min and max
 
 `@minValue` and `@maxValue` bound which days are selectable. Navigation is bounded too: the
-previous/next buttons disable once paging would leave no selectable month in view.
+previous/next buttons disable once paging would land entirely outside the bounds, and the
+month and year pickers offer only months and years the bounds allow. Note this is about the
+bounds alone — `@isDateUnavailable` never disables navigation, so you can still page to a
+month whose every day happens to be unavailable.
 
 ```gts preview
 import { Calendar } from 'frontile/collections';
@@ -302,6 +305,10 @@ visible month pages the calendar to bring the new day into view.
 `Escape` works no matter which control inside the calendar has focus — a day cell, the
 Previous/Next buttons, or the month `<select>` — so a pending range can always be
 canceled without first tabbing back into the grid.
+
+In range mode the first click emits a half-open `{ start, end: null }`, so `Escape` emits
+once more with `null` to retract it. A controlled consumer needs that second call to clear
+the value it was handed; without it, cancelling would leave a start date stranded.
 
 Each month grid has `role="grid"` with an accessible label naming the month and year, and
 day cells use `role="gridcell"` with `aria-selected`. Each day button also carries a full

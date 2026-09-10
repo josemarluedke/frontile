@@ -19,7 +19,7 @@ export interface CalendarHeaderSignature {
   Args: {
     context: CalendarHeaderContext;
     captionLayout: 'label' | 'dropdown';
-    months: { value: number; label: string }[];
+    months: { value: number; label: string; isDisabled: boolean }[];
     isYearGridOpen: boolean;
     onToggleYearGrid: () => void;
     classes: {
@@ -105,6 +105,7 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
                 <option
                   value={{m.value}}
                   selected={{this.isCurrentMonth m.value}}
+                  disabled={{m.isDisabled}}
                 >
                   {{m.label}}
                 </option>
