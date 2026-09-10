@@ -83,6 +83,20 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
   /** @defaultValue false */
   fixedWeeks?: boolean;
 
+  /**
+   * How many months to render side by side, starting from the visible
+   * month. @defaultValue 1
+   */
+  visibleMonths?: number;
+
+  /**
+   * How far prev/next paging advances. `'visible'` moves by the whole
+   * window (`@visibleMonths`); `'single'` always moves by one month.
+   *
+   * @defaultValue 'visible'
+   */
+  pageBehavior?: 'visible' | 'single';
+
   intent?: CalendarVariants['intent'];
   size?: CalendarVariants['size'];
   isDisabled?: boolean;
@@ -275,9 +289,9 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
 
     const day = startOfDay(date);
 
-    // An outside day belongs to a neighbouring month; follow it so the
-    // newly selected day is never left off screen.
-    if (!isSameMonth(day, this.visibleMonth)) {
+    // An outside day belongs to a month outside the visible window; follow
+    // it so the newly selected day is never left off screen.
+    if (!this.isWithinWindow(day)) {
       this.goToMonth(day);
     }
 
@@ -404,9 +418,14 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     // hands control right back to the pointer via `hoverDay`.
     this._hovered = undefined;
 
-    if (!isSameMonth(next, this.visibleMonth)) {
+    if (!this.isWithinWindow(next)) {
       this.goToMonth(next);
     }
+  }
+
+  /** Is `date` inside any of the currently visible months' window? */
+  private isWithinWindow(date: Date): boolean {
+    return this.months.some((m) => isSameMonth(date, m.month));
   }
 
   /**
@@ -517,14 +536,28 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       ?.focus();
   });
 
-  goToPrevious = (): void => this.goToMonth(addMonths(this.visibleMonth, -1));
-  goToNext = (): void => this.goToMonth(addMonths(this.visibleMonth, 1));
+  /** How many months to render, starting at `visibleMonth`. */
+  get visibleMonths(): number {
+    return Math.max(1, this.args.visibleMonths ?? 1);
+  }
+
+  /** How far prev/next paging moves the window. */
+  private get pageSize(): number {
+    return this.args.pageBehavior === 'single' ? 1 : this.visibleMonths;
+  }
+
+  goToPrevious = (): void =>
+    this.goToMonth(addMonths(this.visibleMonth, -this.pageSize));
+  goToNext = (): void =>
+    this.goToMonth(addMonths(this.visibleMonth, this.pageSize));
 
   get canGoPrevious(): boolean {
     if (this.args.isDisabled) {
       return false;
     }
-    const previous = endOfMonth(addMonths(this.visibleMonth, -1));
+    // Symmetric with `canGoNext`: bound the check against where
+    // `goToPrevious` actually lands.
+    const previous = endOfMonth(addMonths(this.visibleMonth, -this.pageSize));
     return isWithinBounds(previous, this.args.minValue, undefined);
   }
 
@@ -532,7 +565,11 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     if (this.args.isDisabled) {
       return false;
     }
-    const next = startOfMonth(addMonths(this.visibleMonth, 1));
+    // Bound the check against where `goToNext` actually lands (the whole
+    // window, unless `@pageBehavior="single"`), not just one month out --
+    // otherwise the next button could stay enabled for a jump that lands
+    // past `@maxValue`.
+    const next = startOfMonth(addMonths(this.visibleMonth, this.pageSize));
     return isWithinBounds(next, undefined, this.args.maxValue);
   }
 
@@ -555,13 +592,19 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   }
 
   @cached
-  get monthData(): CalendarMonthData {
-    return buildMonthGrid({
-      month: this.visibleMonth,
-      weekStartsOn: this.weekStartsOn,
-      fixedWeeks: this.args.fixedWeeks ?? false
-    });
+  get months(): CalendarMonthData[] {
+    return Array.from({ length: this.visibleMonths }, (_, i) =>
+      buildMonthGrid({
+        month: addMonths(this.visibleMonth, i),
+        weekStartsOn: this.weekStartsOn,
+        fixedWeeks: this.args.fixedWeeks ?? false
+      })
+    );
   }
+
+  captionFor = (month: Date): string => {
+    return formatMonthCaption(month, this.locale);
+  };
 
   @cached
   get weekdays() {
@@ -658,19 +701,21 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       </VisuallyHidden>
 
       <div class={{this.styles.monthsWrapper class=@classes.monthsWrapper}}>
-        <MonthGrid
-          @month={{this.monthData}}
-          @weekdays={{this.weekdays}}
-          @caption={{this.caption}}
-          @stateFor={{this.stateFor}}
-          @showOutsideDays={{this.showOutsideDays}}
-          @onSelect={{this.selectDay}}
-          @onHover={{this.hoverDay}}
-          @hasDayContent={{has-block "day"}}
-          @classes={{this.gridClasses}}
-        >
-          <:day as |day|>{{yield day to="day"}}</:day>
-        </MonthGrid>
+        {{#each this.months key="month" as |monthData|}}
+          <MonthGrid
+            @month={{monthData}}
+            @weekdays={{this.weekdays}}
+            @caption={{this.captionFor monthData.month}}
+            @stateFor={{this.stateFor}}
+            @showOutsideDays={{this.showOutsideDays}}
+            @onSelect={{this.selectDay}}
+            @onHover={{this.hoverDay}}
+            @hasDayContent={{has-block "day"}}
+            @classes={{this.gridClasses}}
+          >
+            <:day as |day|>{{yield day to="day"}}</:day>
+          </MonthGrid>
+        {{/each}}
       </div>
     </div>
   </template>

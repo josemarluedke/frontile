@@ -928,5 +928,122 @@ module(
         .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
         .hasAttribute('data-disabled', 'true', 'unreachable past it');
     });
+
+    test('@visibleMonths renders side-by-side grids', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+          />
+        </template>
+      );
+
+      const grids = findAll('[data-fr-calendar-grid]');
+      assert.strictEqual(grids.length, 2);
+      assert.dom(grids[0]!).hasAria('label', 'September 2026');
+      assert.dom(grids[1]!).hasAria('label', 'October 2026');
+    });
+
+    test('@pageBehavior controls how far next advances', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-next]');
+      assert
+        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .hasAria('label', 'November 2026', 'default advances by the window');
+    });
+
+    test('@pageBehavior="single" advances one month at a time', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+            @pageBehavior="single"
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-next]');
+      assert
+        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .hasAria('label', 'October 2026');
+    });
+
+    test('clicking a day in the second visible month does not scroll the window', async function (assert) {
+      const seen: Date[] = [];
+      const onMonthChange = (m: Date) => seen.push(m);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+            @onMonthChange={{onMonthChange}}
+          />
+        </template>
+      );
+
+      // "2026-10-05" only exists inside the second grid -- it is not an
+      // "outside day" of the first grid, since both months are fully
+      // within the visible window.
+      await click('[data-fr-calendar-day][data-key="2026-10-05"]');
+
+      assert.strictEqual(
+        seen.length,
+        0,
+        'selecting a day already inside the window must not page it'
+      );
+      const grids = findAll('[data-fr-calendar-grid]');
+      assert.dom(grids[0]!).hasAria('label', 'September 2026');
+      assert.dom(grids[1]!).hasAria('label', 'October 2026');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-10-05"]')
+        .hasAttribute('data-selected', 'true');
+    });
+
+    test('arrow keys crossing into the second visible month do not re-page', async function (assert) {
+      const seen: Date[] = [];
+      const onMonthChange = (m: Date) => seen.push(m);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+            @onMonthChange={{onMonthChange}}
+          />
+        </template>
+      );
+
+      const last = '[data-fr-calendar-day][data-key="2026-09-30"]';
+      await focus(last);
+      await triggerKeyEvent(last, 'keydown', 'ArrowRight');
+
+      assert.strictEqual(
+        seen.length,
+        0,
+        'moving focus into a month already inside the window must not page it'
+      );
+      const grids = findAll('[data-fr-calendar-grid]');
+      assert.dom(grids[0]!).hasAria('label', 'September 2026');
+      assert.dom(grids[1]!).hasAria('label', 'October 2026');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
+        .isFocused('focus moved into the second grid');
+    });
   }
 );
