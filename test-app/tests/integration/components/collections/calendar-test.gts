@@ -526,6 +526,53 @@ module(
         .isDisabled('no month after September');
     });
 
+    test('min/max clamp month navigation against the whole multi-month landing window, not just its first month', async function (assert) {
+      // Window is Mar+Apr 2026. Going back one window (@pageBehavior
+      // defaults to 'visible', so the whole window moves) lands on
+      // Jan+Feb 2026. @minValue falls inside February, the *second* month
+      // of that landing window -- checking only January (the first month)
+      // would wrongly leave Previous disabled even though Feb 15-28 are
+      // reachable and selectable.
+      const min = new Date(2026, 1, 15); // Feb 15 2026
+      const mar2026 = new Date(2026, 2, 1);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{mar2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+            @minValue={{min}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-prev]')
+        .isNotDisabled(
+          'February 15-28 are still reachable, so Previous must stay enabled'
+        );
+
+      await click('[data-fr-calendar-prev]');
+
+      assert
+        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .hasAria('label', 'January 2026');
+      assert
+        .dom(findAll('[data-fr-calendar-grid]')[1]!)
+        .hasAria('label', 'February 2026');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-02-15"]')
+        .hasAttribute(
+          'data-disabled',
+          'false',
+          'the min bound itself is reachable and selectable'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-01-31"]')
+        .hasAttribute('data-disabled', 'true', 'January is fully out of range');
+    });
+
     test('@isDateUnavailable marks days unavailable but not out of range', async function (assert) {
       const isWeekend = (d: Date) => d.getDay() === 0 || d.getDay() === 6;
 

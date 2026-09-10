@@ -718,22 +718,36 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     if (this.args.isDisabled) {
       return false;
     }
-    // Symmetric with `canGoNext`: bound the check against where
-    // `goToPrevious` actually lands.
-    const previous = endOfMonth(addMonths(this.visibleMonth, -this.pageSize));
-    return isWithinBounds(previous, this.args.minValue, undefined);
+    // Bound the check against the *whole* landing window (all
+    // `@visibleMonths` of it), not just its first month -- with
+    // `@visibleMonths` greater than one, a `@minValue` can fall inside a
+    // later month of that window (still reachable, and still rendered,
+    // since outside days are suppressed for multi-month windows) while the
+    // first month alone has nothing selectable. Checking only the first
+    // month would leave Previous disabled even though the window is
+    // partially reachable. Symmetric with `canGoNext` below.
+    const landingFirst = startOfMonth(
+      addMonths(this.visibleMonth, -this.pageSize)
+    );
+    const landingLast = endOfMonth(
+      addMonths(landingFirst, this.visibleMonths - 1)
+    );
+    return isWithinBounds(landingLast, this.args.minValue, undefined);
   }
 
   get canGoNext(): boolean {
     if (this.args.isDisabled) {
       return false;
     }
-    // Bound the check against where `goToNext` actually lands (the whole
-    // window, unless `@pageBehavior="single"`), not just one month out --
-    // otherwise the next button could stay enabled for a jump that lands
-    // past `@maxValue`.
-    const next = startOfMonth(addMonths(this.visibleMonth, this.pageSize));
-    return isWithinBounds(next, undefined, this.args.maxValue);
+    // Bound the check against the whole landing window, not just its first
+    // month -- otherwise the next button could stay enabled for a jump
+    // that lands entirely past `@maxValue`, or (symmetric with
+    // `canGoPrevious` above) stay disabled when a later month of the
+    // window is still reachable.
+    const landingFirst = startOfMonth(
+      addMonths(this.visibleMonth, this.pageSize)
+    );
+    return isWithinBounds(landingFirst, undefined, this.args.maxValue);
   }
 
   @cached
