@@ -193,15 +193,19 @@ const today = new Date();
 ## Custom weekday labels
 
 The `<:weekday>` block replaces the column headers, receiving `short`, `long`, `narrow`, and
-the weekday `index`.
+the weekday `index`. Pairing the narrow label with a [Tooltip](../overlays/tooltip.md)
+carrying the long one keeps the columns tight without losing the full weekday name.
 
 ```gts preview
 import { Calendar } from 'frontile/collections';
+import { Tooltip } from 'frontile';
 
 <template>
   <Calendar>
     <:weekday as |weekday|>
-      <abbr title={{weekday.long}}>{{weekday.narrow}}</abbr>
+      <Tooltip @content={{weekday.long}} as |t|>
+        <span {{t.trigger}}>{{weekday.narrow}}</span>
+      </Tooltip>
     </:weekday>
   </Calendar>
 </template>
@@ -312,6 +316,57 @@ const septemberFirst = new Date(2026, 8, 1);
 </template>
 ```
 
+## Custom header
+
+The `<:header>` block replaces the month caption and navigation entirely. It receives
+`month`, `title`, `goToPrevious`, `goToNext`, `canGoPrevious`, `canGoNext`, `setMonth`,
+`setYear`, `isYearGridOpen`, and `toggleYearGrid` — the same context the default header
+uses, so nothing about paging or bounds has to be reimplemented.
+
+Nothing is rendered for you, including the year-grid trigger: call `toggleYearGrid` from
+your own control to keep it, as below, or leave it out for a calendar with no year picker.
+
+```gts preview
+import { Calendar } from 'frontile/collections';
+import { Button } from 'frontile';
+import { on } from '@ember/modifier';
+
+<template>
+  <Calendar>
+    <:header as |header|>
+      <div class='flex items-center justify-between gap-2 pb-2'>
+        <Button
+          @size='sm'
+          @appearance='outlined'
+          disabled={{unless header.canGoPrevious true false}}
+          {{on 'click' header.goToPrevious}}
+        >
+          Back
+        </Button>
+
+        <Button
+          @size='sm'
+          @appearance='minimal'
+          aria-expanded={{if header.isYearGridOpen 'true' 'false'}}
+          {{on 'click' header.toggleYearGrid}}
+        >
+          {{header.title}}
+        </Button>
+
+        <Button
+          @size='sm'
+          @appearance='outlined'
+          disabled={{unless header.canGoNext true false}}
+          {{on 'click' header.goToNext}}
+        >
+          Next
+        </Button>
+      </div>
+    </:header>
+  </Calendar>
+</template>
+```
+
 ## Localization
 
 `@locale` is a BCP-47 language tag (`"nl-NL"`, `"ja-JP"`) — Calendar formats months,
@@ -377,11 +432,6 @@ region when navigation changes it, so month changes reach screen reader users ev
 focus stays on the grid. `@autofocus` moves DOM focus into the grid on insert and
 only then; rendering a calendar otherwise never moves focus. `@isReadOnly` marks each grid
 `aria-readonly="true"` so assistive technology knows the days are inert.
-
-Replacing the header with a `<:header>` block hands you the same context Calendar uses
-internally — `month`, `title`, `goToPrevious`, `goToNext`, `canGoPrevious`, `canGoNext`,
-`setMonth`, `setYear`, `isYearGridOpen`, and `toggleYearGrid` — but you're then responsible
-for rebuilding any year-picker trigger yourself if you want one.
 
 ## API
 
