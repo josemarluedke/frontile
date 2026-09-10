@@ -10,6 +10,13 @@ import { modifier } from 'ember-modifier';
 import { focusTrap, type FocusTrapModifierSignature } from 'ember-focus-trap';
 import onClickOutside from 'ember-click-outside/modifiers/on-click-outside';
 import { Backdrop, type BackdropSignature } from './backdrop';
+import {
+  afterFirstPaint,
+  hasPainted,
+  shouldDeferMount,
+  shouldSkipEnterTransition,
+  withoutEnterTransition
+} from './mount-animation';
 import { Portal, findParentPortal, type PortalSignature } from './portal';
 import type { ModifierLike } from '@glint/template';
 import type { CssTransitionSignature } from 'ember-css-transitions/modifiers/css-transition';
@@ -127,6 +134,21 @@ interface Args extends Pick<
   disableTransitions?: boolean;
 
   /**
+   * Whether an overlay that is *already open the first time it renders* --
+   * deep-linked open, or restored by a page refresh -- animates in.
+   *
+   * When true (the default) the overlay waits for the browser's first paint
+   * before mounting, so the animation plays against a page the user has
+   * already seen instead of starting before anything has been painted. Set it
+   * to false for an already-open overlay that should simply be there, with no
+   * reveal. Either way, an overlay opened later by interaction animates
+   * normally, and the close animation is unaffected.
+   *
+   * @defaultValue true
+   */
+  animateOnMount?: boolean;
+
+  /**
    * Whether the focus trap is disabled or not
    *
    * @defaultValue false
@@ -236,6 +258,26 @@ interface OverlaySignature {
 class Overlay extends Component<OverlaySignature> {
   @tracked keepOpen = false;
 
+  // Whether the browser has painted since this overlay was created. Only ever
+  // consulted while the mount is being deferred; see `mount-animation.ts`.
+  @tracked hasWaitedForPaint = false;
+
+  // Whether the page had already painted when this overlay was created.
+  hadPaintedAtMount = false;
+
+  // Whether `@isOpen` was already true on the very first render. Captured once
+  // rather than derived, because the whole question is about what the args
+  // looked like at mount.
+  isOpenAtMount = this.args.isOpen === true;
+
+  // Latched when the first open tears down, so a *reopen* of the same overlay
+  // animates normally. It is written from the content modifier's destructor,
+  // which runs after the render transaction has closed, rather than during the
+  // first open: flipping it while the overlay is still up would swap the enter
+  // class names out from under the running modifier, which cleans up using
+  // whatever names it holds when the transition ends.
+  @tracked hasMountedOnce = false;
+
   contentElement: HTMLElement | undefined;
   focusedElement: Element | null | undefined;
   mouseDownContentElement: EventTarget | null = null;
@@ -245,6 +287,32 @@ class Overlay extends Component<OverlaySignature> {
   // teardown, because the args can change while the overlay is open and an
   // asymmetric lock/unlock would leak the reference count.
   didLockBodyScroll = false;
+
+  cancelPaintWait: (() => void) | undefined;
+
+  constructor(owner: unknown, args: Args) {
+    super(owner as never, args);
+
+    // Captured once, before any waiting: whether the page had painted at the
+    // moment this overlay was created is what decides if there is anything to
+    // wait for.
+    this.hadPaintedAtMount = hasPainted();
+
+    if (!this.shouldDeferMount) {
+      return;
+    }
+
+    this.cancelPaintWait = afterFirstPaint(() => {
+      if (!this.isDestroying && !this.isDestroyed) {
+        this.hasWaitedForPaint = true;
+      }
+    });
+  }
+
+  willDestroy(): void {
+    super.willDestroy();
+    this.cancelPaintWait?.();
+  }
 
   handleClose(): void {
     if (this.args.isOpen && typeof this.args.onClose === 'function') {
@@ -320,6 +388,7 @@ class Overlay extends Component<OverlaySignature> {
     }
     return () => {
       this.contentElement = undefined;
+      this.hasMountedOnce = true;
 
       if (this.didLockBodyScroll) {
         this.didLockBodyScroll = false;
@@ -346,7 +415,29 @@ class Overlay extends Component<OverlaySignature> {
     };
   });
 
+  get mountAnimationState() {
+    return {
+      isOpenAtMount: this.isOpenAtMount && !this.hasMountedOnce,
+      animationsEnabled: this.isAnimationEnabled,
+      animateOnMount: this.args.animateOnMount,
+      canWaitForFrame: typeof requestAnimationFrame === 'function',
+      hasPainted: this.hadPaintedAtMount
+    };
+  }
+
+  get shouldDeferMount(): boolean {
+    return shouldDeferMount(this.mountAnimationState);
+  }
+
+  get skipEnterTransition(): boolean {
+    return shouldSkipEnterTransition(this.mountAnimationState);
+  }
+
   get isVisible(): boolean {
+    if (this.shouldDeferMount && !this.hasWaitedForPaint) {
+      return false;
+    }
+
     return this.args.isOpen || this.keepOpen;
   }
 
@@ -392,11 +483,15 @@ class Overlay extends Component<OverlaySignature> {
   }
 
   get backdropTransition() {
-    if (this.args.backdropTransition) {
-      return this.args.backdropTransition;
+    const options = this.args.backdropTransition || {
+      isEnabled: this.isAnimationEnabled
+    };
+
+    if (this.skipEnterTransition) {
+      return withoutEnterTransition(options);
     }
 
-    return { isEnabled: this.isAnimationEnabled };
+    return options;
   }
 
   get transition() {
@@ -406,7 +501,11 @@ class Overlay extends Component<OverlaySignature> {
     };
 
     if (typeof this.args.transition === 'object') {
-      return { ...options, ...this.args.transition };
+      options = { ...options, ...this.args.transition };
+    }
+
+    if (this.skipEnterTransition) {
+      return withoutEnterTransition(options);
     }
 
     return options;

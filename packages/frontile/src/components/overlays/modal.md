@@ -797,6 +797,14 @@ export default class NestedModals extends Component {
 }
 ```
 
+### Modals that start open
+
+A modal whose `@isOpen` is already true the first time it renders — deep-linked open, or
+restored by a page refresh — waits for the browser's first paint before appearing, so its
+animation plays against the page rather than starting before anything has been drawn. Pass
+`@animateOnMount={{false}}` when an already-open modal should simply be there, with no
+reveal.
+
 ## Anatomy
 
 Modal yields the pieces you assemble the dialog from:

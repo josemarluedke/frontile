@@ -961,6 +961,14 @@ export default class NonDismissibleDrawer extends Component {
 }
 ```
 
+### Drawers that start open
+
+A drawer whose `@isOpen` is already true the first time it renders — deep-linked open, or
+restored by a page refresh — waits for the browser's first paint before appearing, so its
+animation plays against the page rather than starting before anything has been drawn. Pass
+`@animateOnMount={{false}}` when an already-open drawer should simply be there, with no
+reveal.
+
 ## Patterns
 
 ### Form in Drawer

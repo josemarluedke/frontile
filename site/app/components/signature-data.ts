@@ -9452,6 +9452,19 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> for </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">`top`/</span><span style="--shiki-light:#032F62;--shiki-dark:#DBEDFF">`bottom`, false for `left`</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">/`right`</span></span>',
       },
       {
+        identifier: 'animateOnMount',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen instead of starting before anything has been painted. Set it\nto false for an already-open overlay that should simply be there, with no\nreveal. Either way, an overlay opened later by interaction animates\nnormally, and the close animation is unaffected.</p>",
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
         identifier: 'appearance',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -10071,6 +10084,19 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
       },
       {
+        identifier: 'animateOnMount',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen instead of starting before anything has been painted. Set it\nto false for an already-open overlay that should simply be there, with no\nreveal. Either way, an overlay opened later by interaction animates\nnormally, and the close animation is unaffected.</p>",
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
         identifier: 'backdrop',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -10643,6 +10669,19 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'Whether it is open or not',
         tags: {},
+      },
+      {
+        identifier: 'animateOnMount',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen instead of starting before anything has been painted. Set it\nto false for an already-open overlay that should simply be there, with no\nreveal. Either way, an overlay opened later by interaction animates\nnormally, and the close animation is unaffected.</p>",
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
       },
       {
         identifier: 'backdrop',

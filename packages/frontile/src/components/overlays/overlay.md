@@ -481,6 +481,83 @@ export default class AnimationsAndTransitions extends Component {
 }
 ```
 
+### Overlays that start open
+
+An overlay whose `@isOpen` is already true the first time it renders — one that is
+deep-linked open, or that a page refresh restored — waits for the browser's first paint
+before appearing, so its animation plays against the page rather than starting before
+anything has been drawn.
+
+Pass `@animateOnMount={{false}}` when an already-open overlay should simply be there, with
+no reveal. Overlays opened later by interaction animate either way, and the close animation
+is never affected.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
+
+export default class OverlaysThatStartOpen extends Component {
+  @tracked showAnimated = false;
+  @tracked showImmediate = false;
+
+  @action mountAnimated() {
+    this.showAnimated = true;
+  }
+
+  @action mountImmediate() {
+    this.showImmediate = true;
+  }
+
+  @action closeAnimated() {
+    this.showAnimated = false;
+  }
+
+  @action closeImmediate() {
+    this.showImmediate = false;
+  }
+
+  <template>
+    <div class='demo-stack demo-stack--wide items-center'>
+      <div class='flex gap-2'>
+        <Button @onPress={{this.mountAnimated}}>
+          Render already open
+        </Button>
+        <Button @onPress={{this.mountImmediate}}>
+          Render already open, no animation
+        </Button>
+      </div>
+
+      {{#if this.showAnimated}}
+        <Overlay @isOpen={{true}} @onClose={{this.closeAnimated}}>
+          <div class='bg-content1 p-6 rounded-lg shadow-lg'>
+            <h3 class='font-semibold mb-2'>Animated</h3>
+            <p class='mb-4'>Rendered with @isOpen already true.</p>
+            <Button @onPress={{this.closeAnimated}}>Close</Button>
+          </div>
+        </Overlay>
+      {{/if}}
+
+      {{#if this.showImmediate}}
+        <Overlay
+          @isOpen={{true}}
+          @onClose={{this.closeImmediate}}
+          @animateOnMount={{false}}
+        >
+          <div class='bg-content1 p-6 rounded-lg shadow-lg'>
+            <h3 class='font-semibold mb-2'>No mount animation</h3>
+            <p class='mb-4'>It is simply there. Closing still animates.</p>
+            <Button @onPress={{this.closeImmediate}}>Close</Button>
+          </div>
+        </Overlay>
+      {{/if}}
+    </div>
+  </template>
+}
+```
+
 ### Outside Click vs Overlay Element Click
 
 The Overlay component has two different click-to-close mechanisms that work together:
