@@ -57,13 +57,129 @@ const modal = tv({
 
 const drawer = tv({
   slots: {
-    base: 'flex flex-col absolute text-on-surface-modal bg-surface-modal border border-surface-overlay-mild rounded-2xl w-full h-full outline-hidden overflow-clip',
+    base: 'flex flex-col absolute rounded-2xl outline-hidden overflow-clip border border-neutral-muted shadow-elevation-5',
     closeButton: 'absolute top-3 right-3',
-    header: 'font-header text-header-lg text-center px-8 pt-10 pb-2',
-    body: 'px-8 py-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-surface-overlay-mild bg-surface-modal p-8 gap-4`
+    // The close button rendered *inside* the header (see `drawer.gts`) is
+    // absolutely positioned rather than placed as a grid item. Making it a
+    // grid item was tried and reverted: as a spanning item it forces the
+    // header's row track count up, so a header with only a title grew a
+    // phantom second row and the band became far taller than its content.
+    // Out of flow, it centres against whatever height the header's own
+    // content produces -- title-only or title + description alike -- and
+    // contributes nothing to that height. The header reserves space for it
+    // with right padding instead, since an out-of-flow element cannot push
+    // the text out of its own way.
+    //
+    // `right-5` rather than `right-8` is optical alignment, not a mistake.
+    // The button's hit area is its icon plus 12px of padding on each side --
+    // padding that exists for the hover and focus rings, and that is
+    // invisible at rest. Pinning the button's *box* to the header's 32px
+    // padding would leave the visible glyph sitting 12px further in than the
+    // body text below it. Offsetting by that padding (32 - 12 = 20px) lines
+    // the glyph's edge up with the content instead of the box's.
+    headerCloseButton: 'absolute top-1/2 right-5 -translate-y-1/2 shrink-0',
+    // The header is a flex row of two regions, not a grid: the grid lives one
+    // level down in `headerContent`. Consumer actions have to be able to sit
+    // beside the close button and be centred against a header that may be one
+    // or two text rows tall, and a grid item that spans both rows forces the
+    // row track count up -- which is what previously made a title-only header
+    // grow a phantom second row. As a flex sibling there are no row tracks to
+    // inflate.
+    header: 'relative flex items-center gap-4',
+    // `min-w-0` lets a long title shrink (and truncate, if the consumer asks
+    // for it) instead of shoving the actions past the edge -- a flex item's
+    // default `min-width: auto` refuses to shrink below its content.
+    headerContent: 'grid grid-cols-[auto_1fr] items-center grow min-w-0',
+    // Actions are in flow, deliberately, unlike the close button. The close
+    // button is chrome this component owns and should not dictate the band's
+    // height; whatever a consumer puts here is content, so a taller control
+    // legitimately makes the band taller.
+    headerActions: 'flex items-center gap-2 shrink-0',
+    // `touch-pan-y` (not `touch-none`) tells the browser it may still handle
+    // vertical panning natively -- matching `overflow-y-auto` above -- while
+    // continuing to deliver pointer events to `dragToDismiss` for the first
+    // few pixels of a touch drag. That's what lets the modifier decide
+    // (before the browser commits to a native scroll) whether a body press
+    // is a scroll or a dismiss drag; `touch-none` would suppress the native
+    // scroll it's supposed to fall back to, and the default `touch-auto`
+    // would let the browser claim the gesture for panning *and* pinch-zoom,
+    // which fires `pointercancel` more eagerly than plain vertical panning.
+    body: 'grow overflow-y-auto touch-pan-y',
+    footer: 'flex justify-end items-center relative gap-4',
+    // Sized from the design: a 40px icon box with a 16px gap to the text.
+    // `self-start` matches the design's `align-items: flex-start` -- the icon
+    // tops out with the title rather than centring across both text rows.
+    //
+    // The gap between the icon column and the text column lives here rather
+    // than as `gap-x-*` on the header grid. A column gap applies between the
+    // two tracks whether or not the icon track has anything in it, so a
+    // header with no icon still had its title indented past the body text
+    // below it. As a margin it only exists when an icon does.
+    icon: 'row-span-2 col-start-1 self-start mr-4 size-10 shrink-0 flex items-center justify-center',
+    title: 'col-start-2 font-header',
+    description: 'col-start-2',
+    dragHandle:
+      'absolute z-10 flex items-center justify-center touch-none cursor-grab active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+    dragHandleBar: 'rounded-pill'
   },
   variants: {
+    appearance: {
+      default: {
+        base: 'bg-surface-drawer text-on-surface-drawer',
+        body: 'bg-surface-drawer px-8 py-6',
+        header: 'bg-black text-white px-8 py-6',
+        footer:
+          'bg-surface-app text-on-surface-app border-t border-neutral-muted px-8 py-6',
+        // The close button's own `transparent` variant hovers to
+        // `surface-overlay-subtle` (black at 3% opacity), which is invisible
+        // against this band's `bg-black` (itself black in both schemes, by
+        // design). A fixed white tint reads against black in both light and
+        // dark, matching the `text-white` / `text-white/70` treatment already
+        // used here -- unlike `surface-lift-*`, which is white in light mode
+        // but black in dark mode and would vanish on this band in dark.
+        closeButton: 'text-white hover:bg-white/10',
+        headerCloseButton: 'text-white hover:bg-white/10',
+        icon: 'text-white',
+        title: 'text-header-md text-white',
+        description: 'text-body-sm text-white/80',
+        // The handle can sit over the black header band (bottom placement)
+        // or the surface-app footer (top placement) -- white in light mode,
+        // black in dark mode. `bg-neutral` (gray-500 light / gray-400 dark)
+        // is the one level that reads against both, plus the surface-drawer
+        // body a side-placement handle runs down. See the "compound variant
+        // vs. single semantic level" note on the `ghost` bar below -- same
+        // reasoning applies here.
+        dragHandleBar: 'bg-neutral'
+      },
+      ghost: {
+        base: 'bg-surface-modal text-on-surface-modal',
+        body: 'px-8 py-6',
+        // Same grid layout as `default` (left-aligned, icon column) but
+        // ghost's own colours -- no `bg-black`/`text-white` here, this stays
+        // on `surface-modal`.
+        header: 'font-header px-8 py-6',
+        footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal px-8 py-6`,
+        title: 'text-header-lg',
+        description: 'text-sm text-neutral',
+        // `bg-neutral-soft` (gray-200 light / gray-700 dark) reads too faint
+        // against `surface-modal` (white light / gray-950 dark) -- verified
+        // in the browser. `bg-neutral` (gray-500 / gray-400) gives clear
+        // contrast against surface-modal in both placements/schemes, and
+        // matches the level used for the `default` appearance above, which
+        // a matrix of appearance x placement compound variants would not
+        // buy us anything over -- every surface the handle can land on
+        // (black header, surface-app, surface-drawer, surface-modal)
+        // contrasts against this one level.
+        dragHandleBar: 'bg-neutral'
+      }
+    },
+    // The close button is absolutely positioned, so it cannot reserve its own
+    // space -- the header pads a lane for it instead. That lane is only worth
+    // paying for when the button is actually rendered; with
+    // `@allowCloseButton={{false}}` it would be dead whitespace.
+    hasCloseButton: {
+      true: { header: 'pr-24' }
+    },
     size: {
       xs: '',
       sm: '',
@@ -73,10 +189,10 @@ const drawer = tv({
       full: ''
     },
     placement: {
-      top: 'top-0 right-0 left-0',
-      bottom: 'bottom-0 right-0 left-0',
-      left: 'top-0 bottom-0 left-0',
-      right: 'top-0 bottom-0 right-0'
+      top: 'top-2 right-2 left-2 h-full',
+      bottom: 'bottom-2 right-2 left-2 h-full',
+      left: 'top-2 bottom-2 left-2 w-full',
+      right: 'top-2 bottom-2 right-2 w-full'
     }
   },
   compoundVariants: [
@@ -142,6 +258,37 @@ const drawer = tv({
       placement: ['right', 'left'],
       size: 'full',
       class: 'drawer--horizontal-full'
+    },
+
+    // Drag handle placement: the bar sits on the edge facing the viewport
+    // centre, so the user grabs the side they would pull from.
+    {
+      placement: 'bottom',
+      class: {
+        dragHandle: 'top-0 left-0 right-0 h-6',
+        dragHandleBar: 'h-1 w-12'
+      }
+    },
+    {
+      placement: 'top',
+      class: {
+        dragHandle: 'bottom-0 left-0 right-0 h-6',
+        dragHandleBar: 'h-1 w-12'
+      }
+    },
+    {
+      placement: 'right',
+      class: {
+        dragHandle: 'left-0 top-0 bottom-0 w-6',
+        dragHandleBar: 'w-1 h-12'
+      }
+    },
+    {
+      placement: 'left',
+      class: {
+        dragHandle: 'right-0 top-0 bottom-0 w-6',
+        dragHandleBar: 'w-1 h-12'
+      }
     }
   ]
 });

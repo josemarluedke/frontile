@@ -114,6 +114,7 @@ const themeColorsLight: ThemeColors = {
     canvas: palette.gray['50'],
     card: absolute.white,
     table: absolute.white,
+    drawer: palette.gray['50'],
     input: absolute.white,
     modal: absolute.white
   }
@@ -220,6 +221,7 @@ const themeColorsDark: ThemeColors = {
     canvas: palette.gray['950'],
     card: `${absolute.white}12`, // absolute.white @ 7%
     table: palette.gray['900'],
+    drawer: palette.gray['900'],
     input: absolute.black,
     modal: palette.gray['950']
   }

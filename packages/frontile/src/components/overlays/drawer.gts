@@ -8,6 +8,15 @@ import Overlay, { type OverlaySignature } from './overlay';
 import DrawerBody, { type DrawerBodySignature } from './drawer/body';
 import DrawerFooter, { type DrawerFooterSignature } from './drawer/footer';
 import DrawerHeader, { type DrawerHeaderSignature } from './drawer/header';
+import DrawerDragHandle from './drawer/drag-handle';
+import {
+  DRAWER_BODY_SELECTOR,
+  DRAWER_DRAG_HANDLE_SELECTOR
+} from './drawer/selectors';
+import dragToDismiss, {
+  type DragAxis,
+  type DragDirection
+} from '../../modifiers/drag-to-dismiss';
 import {
   CloseButton,
   type CloseButtonSignature
@@ -63,6 +72,8 @@ export interface DrawerArgs extends Pick<
 
   /**
    * The Close Button size.
+   *
+   * @defaultValue 'lg'
    */
   closeButtonSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -82,6 +93,27 @@ export interface DrawerArgs extends Pick<
   size?: DrawerVariants['size'];
 
   /**
+   * The Drawer visual appearance.
+   *
+   * `default` gives the drawer a black header band, a distinct body surface and
+   * a solid footer. `ghost` keeps every region on the modal surface.
+   *
+   * @defaultValue 'default'
+   */
+  appearance?: DrawerVariants['appearance'];
+
+  /**
+   * Enables the drag-to-close gesture and its grab handle.
+   *
+   * Omit it and the gesture is on for `top` and `bottom` placements and off for
+   * `left` and `right`. Pass `true` to opt a side drawer in, or `false` to turn
+   * it off entirely. Always off when `allowClosing` is `false`.
+   *
+   * @defaultValue true for `top`/`bottom`, false for `left`/`right`
+   */
+  allowDragToClose?: boolean;
+
+  /**
    * Class names for each slot of the component, merged with the theme's.
    */
   classes?: SlotsToClasses<DrawerSlots>;
@@ -98,7 +130,15 @@ export interface DrawerSignature {
         >;
         Header: WithBoundArgs<
           ComponentLike<DrawerHeaderSignature>,
-          'labelledById' | 'classFromParent' | 'registerSelf'
+          | 'labelledById'
+          | 'classFromParent'
+          | 'registerSelf'
+          | 'iconClass'
+          | 'titleClass'
+          | 'descriptionClass'
+          | 'contentClass'
+          | 'actionsClass'
+          | 'closeButton'
         >;
         Body: WithBoundArgs<
           ComponentLike<DrawerBodySignature>,
@@ -193,16 +233,65 @@ export default class Drawer extends Component<DrawerSignature> {
     );
   }
 
+  // When a header is rendered, the close button lives inside it (see
+  // `DrawerHeader`'s `@closeButton` arg below) so it can be centred against
+  // the header's actual height. The standalone, absolutely-positioned close
+  // button is only needed as a fallback for drawers with no header at all --
+  // rendering both at once would show two close buttons.
+  get showStandaloneCloseButton(): boolean {
+    return this.showCloseButton && !this.hasHeader;
+  }
+
+  get closeButtonSize(): NonNullable<DrawerArgs['closeButtonSize']> {
+    return this.args.closeButtonSize || 'lg';
+  }
+
   get placement() {
     return this.args.placement || 'right';
   }
+
+  get appearance(): NonNullable<DrawerVariants['appearance']> {
+    return this.args.appearance || 'default';
+  }
+
+  get isVerticalPlacement(): boolean {
+    return this.placement === 'top' || this.placement === 'bottom';
+  }
+
+  get allowDragToClose(): boolean {
+    if (this.args.allowClosing === false) {
+      return false;
+    }
+
+    if (typeof this.args.allowDragToClose === 'boolean') {
+      return this.args.allowDragToClose;
+    }
+
+    return this.isVerticalPlacement;
+  }
+
+  get dragAxis(): DragAxis {
+    return this.isVerticalPlacement ? 'y' : 'x';
+  }
+
+  // The drawer is dismissed by pushing it back toward the edge it came from:
+  // a bottom drawer moves down (+y), a top drawer up (-y).
+  get dragDirection(): DragDirection {
+    return this.placement === 'bottom' || this.placement === 'right' ? 1 : -1;
+  }
+
+  handleDragDismiss = (): void => {
+    this.args.onClose?.();
+  };
 
   get classes() {
     const { drawer } = useStyles();
 
     return drawer({
       placement: this.placement,
-      size: this.args.size || 'md'
+      size: this.args.size || 'md',
+      appearance: this.appearance,
+      hasCloseButton: this.showCloseButton
     });
   }
   get transition() {
@@ -243,13 +332,31 @@ export default class Drawer extends Component<DrawerSignature> {
         role="dialog"
         aria-modal={{this.ariaModal}}
         aria-labelledby={{this.labelledById}}
+        {{dragToDismiss
+          axis=this.dragAxis
+          direction=this.dragDirection
+          isEnabled=this.allowDragToClose
+          onDismiss=this.handleDragDismiss
+          handleSelector=DRAWER_DRAG_HANDLE_SELECTOR
+          scrollSelector=DRAWER_BODY_SELECTOR
+        }}
         {{this.warnIfUnnamed}}
         ...attributes
       >
-        {{#if this.showCloseButton}}
+        {{#if this.allowDragToClose}}
+          <DrawerDragHandle
+            @onPress={{@onClose}}
+            @class={{this.classes.dragHandle class=@classes.dragHandle}}
+            @barClass={{this.classes.dragHandleBar
+              class=@classes.dragHandleBar
+            }}
+          />
+        {{/if}}
+
+        {{#if this.showStandaloneCloseButton}}
           <CloseButton
             @onPress={{@onClose}}
-            @size={{@closeButtonSize}}
+            @size={{this.closeButtonSize}}
             @class={{this.classes.closeButton class=@classes.closeButton}}
           />
         {{/if}}
@@ -259,6 +366,7 @@ export default class Drawer extends Component<DrawerSignature> {
             CloseButton=(component
               CloseButton
               onPress=@onClose
+              size=this.closeButtonSize
               class=(this.classes.closeButton class=@classes.closeButton)
             )
             Header=(component
@@ -266,6 +374,28 @@ export default class Drawer extends Component<DrawerSignature> {
               labelledById=this.headerId
               registerSelf=this.registerHeader
               classFromParent=(this.classes.header class=@classes.header)
+              iconClass=(this.classes.icon class=@classes.icon)
+              titleClass=(this.classes.title class=@classes.title)
+              descriptionClass=(this.classes.description
+                class=@classes.description
+              )
+              contentClass=(this.classes.headerContent
+                class=@classes.headerContent
+              )
+              actionsClass=(this.classes.headerActions
+                class=@classes.headerActions
+              )
+              closeButton=(if
+                this.showCloseButton
+                (component
+                  CloseButton
+                  onPress=@onClose
+                  size=this.closeButtonSize
+                  class=(this.classes.headerCloseButton
+                    class=@classes.headerCloseButton
+                  )
+                )
+              )
             )
             Body=(component
               DrawerBody

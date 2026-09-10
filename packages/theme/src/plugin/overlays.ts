@@ -14,14 +14,18 @@ function drawerSizes(
     addComponents({
       [`.drawer--vertical-${key}`]: {
         maxHeight:
-          key === 'full' ? sizeVar : `min(${sizeVar}, calc(100vh - ${margin}))`
+          key === 'full'
+            ? `calc(${sizeVar} - 1rem)`
+            : `min(${sizeVar}, calc(100vh - ${margin}))`
       }
     });
 
     addComponents({
       [`.drawer--horizontal-${key}`]: {
         maxWidth:
-          key === 'full' ? sizeVar : `min(${sizeVar}, calc(100vw - ${margin}))`
+          key === 'full'
+            ? `calc(${sizeVar} - 1rem)`
+            : `min(${sizeVar}, calc(100vw - ${margin}))`
       }
     });
   });
