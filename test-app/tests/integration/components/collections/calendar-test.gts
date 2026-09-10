@@ -316,5 +316,140 @@ module(
         .dom('[data-fr-calendar-title]')
         .hasText('June 2027', 'opens on the selection, not on today');
     });
+
+    test('@minValue and @maxValue disable out-of-range days', async function (assert) {
+      const min = new Date(2026, 8, 5);
+      const max = new Date(2026, 8, 20);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @minValue={{min}}
+            @maxValue={{max}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-04"]')
+        .hasAttribute('data-disabled', 'true');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-05"]')
+        .hasAttribute(
+          'data-disabled',
+          'false',
+          'the bound itself is selectable'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-21"]')
+        .hasAttribute('data-disabled', 'true');
+
+      await click('[data-fr-calendar-day][data-key="2026-09-04"]');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-04"]')
+        .hasAttribute(
+          'data-selected',
+          'false',
+          'a disabled day cannot be selected'
+        );
+    });
+
+    test('min/max clamp month navigation', async function (assert) {
+      const min = new Date(2026, 8, 5);
+      const max = new Date(2026, 8, 20);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @minValue={{min}}
+            @maxValue={{max}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-prev]')
+        .isDisabled('no month before September');
+      assert
+        .dom('[data-fr-calendar-next]')
+        .isDisabled('no month after September');
+    });
+
+    test('@isDateUnavailable marks days unavailable but not out of range', async function (assert) {
+      const isWeekend = (d: Date) => d.getDay() === 0 || d.getDay() === 6;
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @isDateUnavailable={{isWeekend}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-05"]')
+        .hasAttribute('data-unavailable', 'true', 'Saturday');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-05"]')
+        .hasAttribute(
+          'data-outside-range',
+          'false',
+          'unavailable is not out of range'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute('data-unavailable', 'false', 'Wednesday');
+
+      await click('[data-fr-calendar-day][data-key="2026-09-05"]');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-05"]')
+        .hasAttribute('data-selected', 'false');
+    });
+
+    test('@isReadOnly allows navigation but blocks selection', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @isReadOnly={{true}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute('data-selected', 'false', 'not selectable');
+
+      await click('[data-fr-calendar-next]');
+      assert
+        .dom('[data-fr-calendar-title]')
+        .hasText('October 2026', 'still navigable');
+    });
+
+    test('@isDisabled blocks everything', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @isDisabled={{true}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-prev]').isDisabled();
+      assert.dom('[data-fr-calendar-next]').isDisabled();
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute('data-disabled', 'true');
+    });
   }
 );

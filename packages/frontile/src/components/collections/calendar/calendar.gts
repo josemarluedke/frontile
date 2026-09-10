@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked, cached } from '@glimmer/tracking';
-import { addMonths, startOfMonth, isSameMonth } from 'date-fns';
+import { addMonths, startOfMonth, endOfMonth, isSameMonth } from 'date-fns';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import { MonthGrid } from './month-grid';
 import { CalendarHeader, type CalendarHeaderContext } from './header';
@@ -11,6 +11,7 @@ import {
   formatWeekdays,
   resolveWeekStart,
   isSameDay,
+  isWithinBounds,
   startOfDay
 } from './utils';
 import type { CalendarSlots, CalendarVariants } from '@frontile/theme';
@@ -69,6 +70,23 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
   intent?: CalendarVariants['intent'];
   size?: CalendarVariants['size'];
   isDisabled?: boolean;
+
+  /** Earliest selectable date. Also clamps month navigation. */
+  minValue?: Date;
+
+  /** Latest selectable date. Also clamps month navigation. */
+  maxValue?: Date;
+
+  /**
+   * Marks a date as present but unselectable -- a holiday, a booked night.
+   * Distinct from `@minValue`/`@maxValue`, which put a date out of range
+   * entirely.
+   */
+  isDateUnavailable?: (date: Date) => boolean;
+
+  /** @defaultValue false */
+  isReadOnly?: boolean;
+
   classes?: SlotsToClasses<CalendarSlots>;
 }
 
@@ -172,6 +190,10 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   }
 
   selectDay = (date: Date): void => {
+    if (this.args.isReadOnly || this.isDayDisabled(date)) {
+      return;
+    }
+
     // An outside day belongs to a neighbouring month; follow it so the
     // newly selected day is never left off screen.
     if (!isSameMonth(date, this.visibleMonth)) {
@@ -190,15 +212,39 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     return false;
   }
 
+  isDayUnavailable = (date: Date): boolean => {
+    return this.args.isDateUnavailable?.(date) ?? false;
+  };
+
+  isDayOutsideRange = (date: Date): boolean => {
+    return !isWithinBounds(date, this.args.minValue, this.args.maxValue);
+  };
+
+  isDayDisabled = (date: Date): boolean => {
+    return (
+      (this.args.isDisabled ?? false) ||
+      this.isDayOutsideRange(date) ||
+      this.isDayUnavailable(date)
+    );
+  };
+
   goToPrevious = (): void => this.goToMonth(addMonths(this.visibleMonth, -1));
   goToNext = (): void => this.goToMonth(addMonths(this.visibleMonth, 1));
 
   get canGoPrevious(): boolean {
-    return true;
+    if (this.args.isDisabled) {
+      return false;
+    }
+    const previous = endOfMonth(addMonths(this.visibleMonth, -1));
+    return isWithinBounds(previous, this.args.minValue, undefined);
   }
 
   get canGoNext(): boolean {
-    return true;
+    if (this.args.isDisabled) {
+      return false;
+    }
+    const next = startOfMonth(addMonths(this.visibleMonth, 1));
+    return isWithinBounds(next, undefined, this.args.maxValue);
   }
 
   @cached
@@ -285,14 +331,14 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       isOutside: day.isOutside,
       isToday: isSameDay(day.date, startOfDay(new Date())),
       isSelected: this.isDaySelected(day.date),
-      isDisabled: false,
-      isUnavailable: false,
+      isDisabled: this.isDayDisabled(day.date),
+      isUnavailable: this.isDayUnavailable(day.date),
       isRangeStart: false,
       isRangeEnd: false,
       isInRange: false,
       isPreview: false,
       isFocused: false,
-      isOutsideRange: false
+      isOutsideRange: this.isDayOutsideRange(day.date)
     };
   };
 

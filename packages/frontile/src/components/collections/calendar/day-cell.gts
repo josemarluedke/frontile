@@ -54,6 +54,7 @@ const DayCell: TOC<DayCellSignature> = <template>
           data-today={{if @state.isToday "true" "false"}}
           data-disabled={{if @state.isDisabled "true" "false"}}
           data-unavailable={{if @state.isUnavailable "true" "false"}}
+          data-outside-range={{if @state.isOutsideRange "true" "false"}}
           data-in-range={{if @state.isInRange "true" "false"}}
           data-preview={{if @state.isPreview "true" "false"}}
           data-focused={{if @state.isFocused "true" "false"}}
