@@ -869,7 +869,12 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       header: s.header({ class: c.header }),
       title: s.title({ class: c.title }),
       nav: s.nav({ class: c.nav }),
-      navButton: s.navButton({ class: c.navButton })
+      navButton: s.navButton({ class: c.navButton }),
+      monthSelectWrapper: s.monthSelectWrapper({ class: c.monthSelectWrapper }),
+      monthSelect: s.monthSelect({ class: c.monthSelect }),
+      monthSelectValue: s.monthSelectValue({ class: c.monthSelectValue }),
+      monthSelectIcon: s.monthSelectIcon({ class: c.monthSelectIcon }),
+      yearTrigger: s.yearTrigger({ class: c.yearTrigger })
     };
   }
 

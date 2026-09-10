@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
-import { ChevronLeftIcon, ChevronRightIcon } from './icons';
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
 
 export interface CalendarHeaderContext {
   month: Date;
@@ -27,6 +27,11 @@ export interface CalendarHeaderSignature {
       title: string;
       nav: string;
       navButton: string;
+      monthSelectWrapper: string;
+      monthSelect: string;
+      monthSelectValue: string;
+      monthSelectIcon: string;
+      yearTrigger: string;
     };
   };
   Element: HTMLDivElement;
@@ -49,6 +54,16 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
   isCurrentMonth = (value: number): boolean =>
     this.args.context.month.getMonth() === value;
 
+  /**
+   * The visible caption for the month picker. Read from the same `@months`
+   * list the `<select>` is built from, so the label a user sees and the option
+   * that is selected can never disagree -- and it is already localized.
+   */
+  get monthLabel(): string {
+    const current = this.args.context.month.getMonth();
+    return this.args.months.find((m) => m.value === current)?.label ?? '';
+  }
+
   onMonthSelect = (event: Event): void => {
     const target = event.target as HTMLSelectElement;
     this.args.context.setMonth(Number(target.value));
@@ -68,26 +83,40 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
 
       {{#if this.isDropdown}}
         <div class={{@classes.nav}}>
-          <select
-            data-fr-calendar-month-select
-            aria-label="Month"
-            {{on "change" this.onMonthSelect}}
-          >
-            {{#each @months key="value" as |m|}}
-              <option
-                value={{m.value}}
-                selected={{this.isCurrentMonth m.value}}
-              >
-                {{m.label}}
-              </option>
-            {{/each}}
-          </select>
+          {{! The visible label sizes this box to the current month; the real
+              <select> is laid transparently over it, so the control stays
+              native without dictating the width. }}
+          <span class={{@classes.monthSelectWrapper}}>
+            <span
+              aria-hidden="true"
+              data-fr-calendar-month-value
+              class={{@classes.monthSelectValue}}
+            >{{this.monthLabel}}</span>
+
+            <ChevronDownIcon class={{@classes.monthSelectIcon}} />
+
+            <select
+              data-fr-calendar-month-select
+              aria-label="Month"
+              class={{@classes.monthSelect}}
+              {{on "change" this.onMonthSelect}}
+            >
+              {{#each @months key="value" as |m|}}
+                <option
+                  value={{m.value}}
+                  selected={{this.isCurrentMonth m.value}}
+                >
+                  {{m.label}}
+                </option>
+              {{/each}}
+            </select>
+          </span>
 
           <button
             type="button"
             data-fr-calendar-year-trigger
             aria-expanded={{if @isYearGridOpen "true" "false"}}
-            class={{@classes.navButton}}
+            class={{@classes.yearTrigger}}
             {{on "click" @onToggleYearGrid}}
           >{{this.year}}</button>
         </div>

@@ -220,6 +220,13 @@ circle by default, which crops anything wider than a numeral, so content like a 
 a smaller radius. `--calendar-cell-size` scales the whole grid, and content with a second
 line needs the extra room.
 
+Let custom content **inherit its color** rather than setting a fixed one. A selected day
+swaps its text to the contrast color for the current `@intent`, and anything inside it
+inherits that automatically — so `opacity-70` gives you a muted second line that stays
+readable on both the resting surface and the selected fill. A fixed color like
+`text-neutral` looks right until the day is selected, then sits grey on a saturated
+background.
+
 ```gts preview
 import { Calendar } from 'frontile/collections';
 import { get } from '@ember/helper';
@@ -235,7 +242,7 @@ const septemberFirst = new Date(2026, 8, 1);
     <:day as |day|>
       <span class='text-body-sm'>{{day.dayOfMonth}}</span>
       {{#if (get prices day.dayOfMonth)}}
-        <span class='text-caption-2xs text-neutral'>
+        <span class='text-caption-sm opacity-70'>
           ${{get prices day.dayOfMonth}}
         </span>
       {{/if}}

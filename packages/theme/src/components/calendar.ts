@@ -1,11 +1,15 @@
 import { tv } from '../tw';
-import { focusVisibleRing } from './shared';
+import { focusVisibleRing, focusVisibleWithinRing } from './shared';
 import type { VariantProps } from '../tw';
 
 const calendar = tv({
   slots: {
     base: [
-      'inline-flex flex-col gap-3 p-3',
+      // `isolate` keeps every z-index the calendar uses inside the calendar.
+      // The shared focus ring raises a focused control to `z-10`; without a
+      // stacking context here that lands in the page's own stacking order and
+      // paints over a site header.
+      'isolate inline-flex flex-col gap-3 p-3',
       // The two knobs that let a consumer resize cells and reshape them
       // without any new API. `--calendar-cell-radius` is how a `<:day>` block
       // with custom content escapes the circle.
@@ -26,6 +30,37 @@ const calendar = tv({
     title: 'text-label-xs text-neutral-bolder',
 
     nav: 'flex items-center gap-1',
+
+    // A native `<select>` sizes itself to its *widest* option, so the caption
+    // would sit at "September" width even in May. Instead the visible label is
+    // a span that sizes to the current month, with a transparent full-size
+    // `<select>` laid over it -- the control stays native for the keyboard and
+    // for assistive tech, but no longer dictates the width, and its built-in
+    // arrow (which cannot be spaced) is replaced by our own chevron.
+    monthSelectWrapper: [
+      ...focusVisibleWithinRing,
+      'relative inline-flex items-center gap-1',
+      'rounded-full px-2 py-1 cursor-pointer',
+      'transition-colors duration-200 motion-reduce:transition-none',
+      'hover:bg-surface-overlay-soft'
+    ],
+
+    monthSelectValue: 'text-label-xs text-neutral-bolder',
+
+    monthSelect: 'absolute inset-0 w-full opacity-0 cursor-pointer',
+
+    monthSelectIcon: 'pointer-events-none size-3.5 shrink-0 text-neutral-firm',
+
+    // Its own slot rather than `navButton`: that one is a fixed square sized
+    // for a chevron, which would clip a four-digit year.
+    yearTrigger: [
+      ...focusVisibleRing,
+      'inline-flex items-center gap-1',
+      'rounded-full px-2 py-1 cursor-pointer',
+      'text-label-xs text-neutral-bolder',
+      'transition-colors duration-200 motion-reduce:transition-none',
+      'hover:bg-surface-overlay-soft'
+    ],
 
     navButton: [
       ...focusVisibleRing,
@@ -64,18 +99,29 @@ const calendar = tv({
 
     // The continuous range ribbon, behind the day. Absolutely positioned and
     // filling the whole cell, which is what removes the gap between days.
-    cellBand: 'absolute inset-0 z-0 pointer-events-none',
+    // No z-index: the band is painted before the day in document order, and
+    // between two positioned elements with auto z-index document order already
+    // decides. Giving the day a positive index instead let it escape into the
+    // page and paint over a host site's header.
+    cellBand: 'absolute inset-0 pointer-events-none',
 
     day: [
       ...focusVisibleRing,
-      'relative z-1',
+      // `relative` is the positioning context for the today dot. Deliberately
+      // no z-index -- see `cellBand`.
+      'relative',
       'inline-flex items-center justify-center',
       'size-[calc(var(--calendar-cell-size)-0.25rem)]',
       'rounded-[var(--calendar-cell-radius)]',
       'text-body-sm text-neutral-strong',
       'cursor-pointer select-none',
       'transition-colors duration-200 motion-reduce:transition-none',
-      'not-data-[disabled=true]:hover:bg-surface-overlay-soft',
+      // Selected days are excluded here and get their own hover per intent.
+      // Without the exclusion this rule wins on specificity -- it carries an
+      // extra `:hover` over the intent's plain `data-[selected=true]` -- so
+      // hovering the selected day replaced its fill with a grey overlay and
+      // made it look deselected.
+      'not-data-[disabled=true]:not-data-[selected=true]:hover:bg-surface-overlay-soft',
       'data-[outside=true]:text-neutral-mild',
       'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-neutral-mild',
       'data-[unavailable=true]:line-through data-[unavailable=true]:cursor-not-allowed',
@@ -118,31 +164,31 @@ const calendar = tv({
   variants: {
     intent: {
       default: {
-        day: 'data-[selected=true]:bg-neutral-strong data-[selected=true]:text-on-neutral-strong',
+        day: 'data-[selected=true]:bg-neutral-strong data-[selected=true]:text-on-neutral-strong data-[selected=true]:hover:bg-neutral-bolder',
         cellBand: 'data-[in-range=true]:bg-neutral-soft'
       },
       primary: {
-        day: 'data-[selected=true]:bg-primary data-[selected=true]:text-on-primary',
+        day: 'data-[selected=true]:bg-primary data-[selected=true]:text-on-primary data-[selected=true]:hover:bg-primary-firm',
         cellBand: 'data-[in-range=true]:bg-primary-soft'
       },
       secondary: {
-        day: 'data-[selected=true]:bg-secondary data-[selected=true]:text-on-secondary',
+        day: 'data-[selected=true]:bg-secondary data-[selected=true]:text-on-secondary data-[selected=true]:hover:bg-secondary-firm',
         cellBand: 'data-[in-range=true]:bg-secondary-soft'
       },
       tertiary: {
-        day: 'data-[selected=true]:bg-tertiary data-[selected=true]:text-on-tertiary',
+        day: 'data-[selected=true]:bg-tertiary data-[selected=true]:text-on-tertiary data-[selected=true]:hover:bg-tertiary-firm',
         cellBand: 'data-[in-range=true]:bg-tertiary-soft'
       },
       success: {
-        day: 'data-[selected=true]:bg-success data-[selected=true]:text-on-success',
+        day: 'data-[selected=true]:bg-success data-[selected=true]:text-on-success data-[selected=true]:hover:bg-success-firm',
         cellBand: 'data-[in-range=true]:bg-success-soft'
       },
       warning: {
-        day: 'data-[selected=true]:bg-warning data-[selected=true]:text-on-warning',
+        day: 'data-[selected=true]:bg-warning data-[selected=true]:text-on-warning data-[selected=true]:hover:bg-warning-firm',
         cellBand: 'data-[in-range=true]:bg-warning-soft'
       },
       danger: {
-        day: 'data-[selected=true]:bg-danger data-[selected=true]:text-on-danger',
+        day: 'data-[selected=true]:bg-danger data-[selected=true]:text-on-danger data-[selected=true]:hover:bg-danger-firm',
         cellBand: 'data-[in-range=true]:bg-danger-soft'
       }
     },
