@@ -211,11 +211,14 @@ export default class PresetsExample extends Component {
 
 ## Custom day content
 
-The `<:day>` block replaces a day cell's content entirely, receiving the day's state
-(selection, availability, focus, and more). By default a day fills a circular cell —
-`--calendar-cell-radius` is the CSS variable that shapes it, so custom content that needs
-more than a numeral, like a price, can set it to a smaller radius instead of being cropped
-to a circle.
+The `<:day>` block replaces a day cell's content, receiving the day's state (selection,
+availability, focus, and more). It renders inside the cell's content wrapper, so a numeral
+plus a second line stacks and centres without you rebuilding that layout.
+
+Two CSS variables size the cell around it. `--calendar-cell-radius` shapes it — a day is a
+circle by default, which crops anything wider than a numeral, so content like a price wants
+a smaller radius. `--calendar-cell-size` scales the whole grid, and content with a second
+line needs the extra room.
 
 ```gts preview
 import { Calendar } from 'frontile/collections';
@@ -227,7 +230,7 @@ const septemberFirst = new Date(2026, 8, 1);
 <template>
   <Calendar
     @defaultMonth={{septemberFirst}}
-    style='--calendar-cell-radius: var(--radius-lg)'
+    style='--calendar-cell-radius: var(--radius-lg); --calendar-cell-size: 3.5rem'
   >
     <:day as |day|>
       <span class='text-body-sm'>{{day.dayOfMonth}}</span>

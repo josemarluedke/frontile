@@ -69,11 +69,18 @@ module(
 
       const days = findAll('[data-fr-calendar-day]');
       assert
-        .dom(days[2]!.querySelector('[data-fr-calendar-day-content]'))
-        .doesNotExist('default day-number content is not also rendered');
-      assert
         .dom(days[2]!.querySelector('[data-test-custom-day]'))
-        .hasText('Day 1!', 'the supplied block content renders instead');
+        .hasText('Day 1!', 'the supplied block content renders');
+      // The cell's whole text is the block's -- a bare "1" alongside it would
+      // mean the default numeral rendered too.
+      assert
+        .dom(days[2]!)
+        .hasText('Day 1!', 'the default day number is not also rendered');
+      // The content wrapper is layout shared by both branches, so a block's
+      // content still gets the column that stacks a numeral over a second line.
+      assert
+        .dom(days[2]!.querySelector('[data-fr-calendar-day-content]'))
+        .exists('custom content still sits inside the layout wrapper');
     });
 
     test('the <:day> block replaces cell content and yields day state', async function (assert) {
@@ -1562,6 +1569,106 @@ module(
       assert
         .dom(findAll('[data-fr-calendar-grid]')[0]!)
         .hasAria('label', 'December 2026');
+    });
+
+    test('the year grid stands in for the day grid rather than stacking above it', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-grid]')
+        .exists('the day grid starts visible');
+
+      await click('[data-fr-calendar-year-trigger]');
+
+      assert.dom('[data-fr-calendar-year-grid]').exists();
+      assert
+        .dom('[data-fr-calendar-grid]')
+        .doesNotExist('the day grid is replaced, not pushed down');
+
+      await click('[data-fr-calendar-year][data-year="2029"]');
+
+      assert
+        .dom('[data-fr-calendar-grid]')
+        .exists('the day grid comes back once a year is picked');
+    });
+
+    test('the year grid is a single tab stop', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-year-trigger]');
+
+      // The list spans a century by default; without roving tabindex every one
+      // of those years would be its own tab stop.
+      assert.ok(
+        findAll('[data-fr-calendar-year]').length > 50,
+        'the default range really is long enough for this to matter'
+      );
+      assert
+        .dom('[data-fr-calendar-year][tabindex="0"]')
+        .exists({ count: 1 }, 'exactly one year is tabbable');
+      assert
+        .dom('[data-fr-calendar-year][tabindex="0"]')
+        .hasAttribute('data-year', '2026', 'and it is the selected one');
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-year][data-year="2026"]',
+        'keydown',
+        'ArrowRight'
+      );
+
+      assert
+        .dom('[data-fr-calendar-year][tabindex="0"]')
+        .exists({ count: 1 }, 'still exactly one after moving');
+      assert
+        .dom('[data-fr-calendar-year][data-year="2027"]')
+        .hasAttribute('tabindex', '0', 'tabbability follows focus');
+    });
+
+    test('a wide footer does not stretch the header away from the grid', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US">
+            <:footer>
+              <button type="button">A deliberately very wide preset button</button>
+            </:footer>
+          </Calendar>
+        </template>
+      );
+
+      // The header shares a column with the grids it pages, so its width tracks
+      // the grid rather than the widest sibling.
+      const header = find('[data-fr-calendar-header]')!;
+      const grid = find('[data-fr-calendar-grid]')!;
+      const footer = find('[data-fr-calendar-footer]')!;
+
+      assert.ok(
+        footer.getBoundingClientRect().width >
+          grid.getBoundingClientRect().width,
+        'the footer really is wider than the grid'
+      );
+      assert.ok(
+        Math.abs(
+          header.getBoundingClientRect().width -
+            grid.getBoundingClientRect().width
+        ) <= 2,
+        'the header still matches the grid width, so the paging arrows stay put'
+      );
     });
 
     test('the year grid opens from the trigger and picks a year', async function (assert) {

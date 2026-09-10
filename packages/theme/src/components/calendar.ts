@@ -13,6 +13,12 @@ const calendar = tv({
       '[--calendar-cell-radius:9999px]'
     ],
 
+    // Header, year panel and month grids share one column sized to the grids
+    // themselves. Without this the header stretches to the width of the
+    // widest sibling -- a `<:footer>` of preset buttons, say -- and the prev
+    // and next arrows drift away from the days they page.
+    body: 'flex flex-col gap-3 w-fit',
+
     header: 'flex items-center justify-between gap-2 px-1',
     title: 'text-label-sm text-neutral-bolder',
     nav: 'flex items-center gap-1',
@@ -63,17 +69,36 @@ const calendar = tv({
       'data-[unavailable=true]:hover:bg-transparent'
     ],
 
-    dayContent: 'flex flex-col items-center justify-center leading-none',
+    // Wraps default *and* `<:day>` content, so a block that renders more than
+    // a numeral -- a price, an event count -- stacks and centres without
+    // having to rebuild this layout itself.
+    dayContent:
+      'flex flex-col items-center justify-center leading-none overflow-hidden',
+
+    // Sits below the grids, outside the column that sizes to them, so wide
+    // content here wraps instead of stretching the header.
+    footer: 'flex flex-wrap items-center gap-2 pt-1',
 
     // The today marker: a dot under the numeral rather than a ring, which
     // would compete with the selected fill.
     indicator: 'absolute bottom-1 size-1 rounded-full bg-current opacity-70',
 
-    yearGrid: 'grid grid-cols-3 gap-1',
+    // The year panel stands in for the day grid rather than sitting above it,
+    // so it is sized to the grid it replaces: seven cells wide, six tall. The
+    // year list is long by design (a century back, for dates of birth), which
+    // is exactly why it has to scroll inside that box instead of growing the
+    // component to the height of its longest possible list.
+    yearGrid: [
+      'grid grid-cols-3 gap-1',
+      'w-[calc(var(--calendar-cell-size)*7)]',
+      'max-h-[calc(var(--calendar-cell-size)*6)] overflow-y-auto',
+      'overscroll-contain'
+    ],
     yearCell: [
       ...focusVisibleRing,
       'rounded-full px-3 py-2 text-body-sm cursor-pointer',
-      'hover:bg-surface-overlay-soft'
+      'hover:bg-surface-overlay-soft',
+      'data-[selected=true]:bg-surface-overlay-soft data-[selected=true]:font-medium'
     ]
   },
 

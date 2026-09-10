@@ -945,56 +945,66 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       {{this.registerRoot}}
       ...attributes
     >
-      {{#if (has-block "header")}}
-        {{yield this.headerContext to="header"}}
-      {{else}}
-        <CalendarHeader
-          @context={{this.headerContext}}
-          @captionLayout={{this.captionLayout}}
-          @months={{this.monthOptions}}
-          @isYearGridOpen={{this.isYearGridOpen}}
-          @onToggleYearGrid={{this.toggleYearGrid}}
-          @classes={{this.headerClasses}}
-        />
-      {{/if}}
+      {{! Header, year panel and grids share one column sized to the grids,
+          so a wide footer block cannot stretch the header and pull the paging
+          arrows away from the days they page. }}
+      <div class={{this.styles.body class=@classes.body}}>
+        {{#if (has-block "header")}}
+          {{yield this.headerContext to="header"}}
+        {{else}}
+          <CalendarHeader
+            @context={{this.headerContext}}
+            @captionLayout={{this.captionLayout}}
+            @months={{this.monthOptions}}
+            @isYearGridOpen={{this.isYearGridOpen}}
+            @onToggleYearGrid={{this.toggleYearGrid}}
+            @classes={{this.headerClasses}}
+          />
+        {{/if}}
 
-      {{#if this.isYearGridOpen}}
-        <YearGrid
-          @years={{this.yearOptions}}
-          @currentYear={{this.visibleYear}}
-          @onSelect={{this.pickYear}}
-          @onDismiss={{this.dismissYearGrid}}
-          @classes={{this.yearGridClasses}}
-        />
-      {{/if}}
+        <VisuallyHidden>
+          <div data-fr-calendar-live aria-live="polite">{{this.caption}}</div>
+        </VisuallyHidden>
 
-      <VisuallyHidden>
-        <div data-fr-calendar-live aria-live="polite">{{this.caption}}</div>
-      </VisuallyHidden>
-
-      <div class={{this.styles.monthsWrapper class=@classes.monthsWrapper}}>
-        {{#each this.months key="key" as |monthData|}}
-          <MonthGrid
-            @month={{monthData}}
-            @weekdays={{this.weekdays}}
-            @caption={{this.captionFor monthData.month}}
-            @stateFor={{this.stateFor}}
-            @showOutsideDays={{this.showOutsideDays}}
-            @isReadOnly={{this.isReadOnly}}
-            @onSelect={{this.selectDay}}
-            @onHover={{this.hoverDay}}
-            @hasDayContent={{has-block "day"}}
-            @hasWeekdayContent={{has-block "weekday"}}
-            @classes={{this.gridClasses}}
-          >
-            <:day as |day|>{{yield day to="day"}}</:day>
-            <:weekday as |wd|>{{yield wd to="weekday"}}</:weekday>
-          </MonthGrid>
-        {{/each}}
+        {{! The year panel stands in for the grids rather than stacking
+            above them; otherwise picking a year pushes the days off screen. }}
+        {{#if this.isYearGridOpen}}
+          <YearGrid
+            @years={{this.yearOptions}}
+            @currentYear={{this.visibleYear}}
+            @onSelect={{this.pickYear}}
+            @onDismiss={{this.dismissYearGrid}}
+            @classes={{this.yearGridClasses}}
+          />
+        {{else}}
+          <div class={{this.styles.monthsWrapper class=@classes.monthsWrapper}}>
+            {{#each this.months key="key" as |monthData|}}
+              <MonthGrid
+                @month={{monthData}}
+                @weekdays={{this.weekdays}}
+                @caption={{this.captionFor monthData.month}}
+                @stateFor={{this.stateFor}}
+                @showOutsideDays={{this.showOutsideDays}}
+                @isReadOnly={{this.isReadOnly}}
+                @onSelect={{this.selectDay}}
+                @onHover={{this.hoverDay}}
+                @hasDayContent={{has-block "day"}}
+                @hasWeekdayContent={{has-block "weekday"}}
+                @classes={{this.gridClasses}}
+              >
+                <:day as |day|>{{yield day to="day"}}</:day>
+                <:weekday as |wd|>{{yield wd to="weekday"}}</:weekday>
+              </MonthGrid>
+            {{/each}}
+          </div>
+        {{/if}}
       </div>
 
       {{#if (has-block "footer")}}
-        <div data-fr-calendar-footer>{{yield to="footer"}}</div>
+        <div
+          data-fr-calendar-footer
+          class={{this.styles.footer class=@classes.footer}}
+        >{{yield to="footer"}}</div>
       {{/if}}
     </div>
   </template>

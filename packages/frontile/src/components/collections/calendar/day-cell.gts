@@ -68,15 +68,24 @@ const DayCell: TOC<DayCellSignature> = <template>
           {{on "click" (fn @onSelect @day.date)}}
           {{on "mouseenter" (fn @onHover @day.date)}}
         >
-          {{#if @hasCustomContent}}
-            {{yield @state}}
-          {{else}}
-            <span data-fr-calendar-day-content class={{@contentClass}}>
+          {{! The content wrapper is layout, not content: it stacks and
+              centres whatever sits inside it. A day block goes inside it
+              rather than replacing it, so a block rendering a numeral plus a
+              price gets that column for free instead of laying out inline. }}
+          <span data-fr-calendar-day-content class={{@contentClass}}>
+            {{#if @hasCustomContent}}
+              {{yield @state}}
+            {{else}}
               {{@day.dayOfMonth}}
-            </span>
-            {{#if @state.isToday}}
-              <span data-fr-calendar-indicator class={{@indicatorClass}}></span>
             {{/if}}
+          </span>
+
+          {{! Default content only: a day block owns its own affordances,
+              which is what the docs promise. }}
+          {{#if @state.isToday}}
+            {{#unless @hasCustomContent}}
+              <span data-fr-calendar-indicator class={{@indicatorClass}}></span>
+            {{/unless}}
           {{/if}}
         </button>
       {{/if}}

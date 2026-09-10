@@ -29,12 +29,34 @@ export default class YearGrid extends Component<YearGridSignature> {
    */
   setup = modifier((element: HTMLElement) => {
     this.#element = element;
-    element
-      .querySelector<HTMLElement>(
-        '[data-fr-calendar-year][data-selected="true"]'
-      )
-      ?.focus();
+
+    const selected = element.querySelector<HTMLElement>(
+      '[data-fr-calendar-year][data-selected="true"]'
+    );
+
+    // The list spans a century, so the selected year is usually far down a
+    // scrolling panel. Bring it into view before focusing, or the panel opens
+    // showing whichever decade happens to be at the top.
+    selected?.scrollIntoView({ block: 'center' });
+    selected?.focus();
   });
+
+  /**
+   * The panel is a single tab stop: only the year focus currently rests on is
+   * tabbable, and arrow keys move both focus and that tabbability together.
+   * Without this, tabbing through the calendar walks all hundred-odd years.
+   *
+   * Written imperatively from the keydown handler rather than derived from
+   * tracked state, so focus and `tabindex` change in the same turn and neither
+   * waits on a render.
+   */
+  #setActive(buttons: HTMLElement[], next: HTMLElement): void {
+    for (const button of buttons) {
+      button.tabIndex = -1;
+    }
+    next.tabIndex = 0;
+    next.focus();
+  }
 
   handleKeydown = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
@@ -65,7 +87,11 @@ export default class YearGrid extends Component<YearGridSignature> {
         []
     );
     const index = buttons.indexOf(document.activeElement as HTMLElement);
-    buttons[index + step]?.focus();
+    const next = buttons[index + step];
+
+    if (next) {
+      this.#setActive(buttons, next);
+    }
   };
 
   <template>
@@ -90,6 +116,7 @@ export default class YearGrid extends Component<YearGridSignature> {
           data-year={{year}}
           data-selected={{if (this.isCurrent year) "true" "false"}}
           aria-selected={{if (this.isCurrent year) "true" "false"}}
+          tabindex={{if (this.isCurrent year) "0" "-1"}}
           class={{@classes.yearCell}}
           {{on "click" (fn @onSelect year)}}
         >{{year}}</button>
