@@ -10,6 +10,7 @@ export interface DayCellSignature {
     showOutsideDays: boolean;
     hasCustomContent: boolean;
     onSelect: (date: Date) => void;
+    onHover: (date: Date | null) => void;
     cellClass: string;
     bandClass: string;
     dayClass: string;
@@ -57,11 +58,14 @@ const DayCell: TOC<DayCellSignature> = <template>
           data-outside-range={{if @state.isOutsideRange "true" "false"}}
           data-in-range={{if @state.isInRange "true" "false"}}
           data-preview={{if @state.isPreview "true" "false"}}
+          data-range-start={{if @state.isRangeStart "true" "false"}}
+          data-range-end={{if @state.isRangeEnd "true" "false"}}
           data-focused={{if @state.isFocused "true" "false"}}
           aria-disabled={{if @state.isDisabled "true" "false"}}
           aria-current={{if @state.isToday "date"}}
           tabindex={{if @state.isFocused "0" "-1"}}
           {{on "click" (fn @onSelect @day.date)}}
+          {{on "mouseenter" (fn @onHover @day.date)}}
         >
           {{#if @hasCustomContent}}
             {{yield @state}}

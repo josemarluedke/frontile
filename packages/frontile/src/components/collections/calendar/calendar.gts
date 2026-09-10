@@ -25,6 +25,8 @@ import {
   fromDayKey,
   isSameDay,
   isWithinBounds,
+  normalizeRange,
+  rangeLimits,
   startOfDay
 } from './utils';
 import type { CalendarSlots, CalendarVariants } from '@frontile/theme';
@@ -33,6 +35,7 @@ import type {
   CalendarMode,
   CalendarMonthData,
   CalendarValue,
+  DateRange,
   DayState,
   WeekDay
 } from './types';
@@ -211,18 +214,89 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     this.args.onChange?.(value);
   }
 
+  /** The first endpoint of a range being built. `undefined` means idle. */
+  @tracked private _anchor: Date | undefined;
+
+  /** The day currently hovered or focused while anchored. */
+  @tracked private _hovered: Date | undefined;
+
+  private get isRange(): boolean {
+    return this.args.mode === 'range';
+  }
+
+  /** How far the pending range may reach before it hits an unavailable day. */
+  @cached
+  private get pendingLimits() {
+    if (!this._anchor) {
+      return { min: null, max: null };
+    }
+    return rangeLimits(
+      this._anchor,
+      this.args.isDateUnavailable,
+      this.args.minValue,
+      this.args.maxValue
+    );
+  }
+
+  /** The range to paint: the pending preview if anchored, else the committed one. */
+  @cached
+  private get displayRange(): DateRange | null {
+    if (this._anchor) {
+      const to = this._hovered ?? this.focusedDate;
+      return normalizeRange(this._anchor, to);
+    }
+
+    const selected = this.selection;
+    return selected && !(selected instanceof Date)
+      ? (selected as DateRange)
+      : null;
+  }
+
+  hoverDay = (date: Date | null): void => {
+    this._hovered = date ?? undefined;
+  };
+
+  cancelPending = (): void => {
+    this._anchor = undefined;
+    this._hovered = undefined;
+  };
+
   selectDay = (date: Date): void => {
     if (this.args.isReadOnly || this.isDayDisabled(date)) {
       return;
     }
 
+    const day = startOfDay(date);
+
     // An outside day belongs to a neighbouring month; follow it so the
     // newly selected day is never left off screen.
-    if (!isSameMonth(date, this.visibleMonth)) {
-      this.goToMonth(date);
+    if (!isSameMonth(day, this.visibleMonth)) {
+      this.goToMonth(day);
     }
 
-    this.commit(startOfDay(date) as CalendarValue<M>);
+    if (!this.isRange) {
+      this.commit(day as CalendarValue<M>);
+      return;
+    }
+
+    if (!this._anchor) {
+      this._anchor = day;
+      this._hovered = day;
+      // Notify only -- deliberately does NOT go through `commit()`, which
+      // would write this half-open range into the internal `_value` (in
+      // uncontrolled mode) and leave it there after `cancelPending()`
+      // clears the anchor. The pending range is displayed entirely via
+      // `displayRange`'s `_anchor` branch above; nothing needs it stored as
+      // "the selection" too, and storing it would make Escape unable to
+      // fully revert the visible state (the `data-range-start` flag would
+      // stay on).
+      this.args.onChange?.({ start: day, end: null } as CalendarValue<M>);
+      return;
+    }
+
+    this.commit(normalizeRange(this._anchor, day) as CalendarValue<M>);
+    this._anchor = undefined;
+    this._hovered = undefined;
   };
 
   private isDaySelected(date: Date): boolean {
@@ -230,6 +304,12 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
 
     if (selected instanceof Date) {
       return isSameDay(selected, date);
+    }
+    if (selected && 'start' in selected) {
+      return (
+        isSameDay(selected.start, date) ||
+        Boolean(selected.end && isSameDay(selected.end, date))
+      );
     }
     return false;
   }
@@ -243,11 +323,19 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   };
 
   isDayDisabled = (date: Date): boolean => {
-    return (
-      (this.args.isDisabled ?? false) ||
-      this.isDayOutsideRange(date) ||
-      this.isDayUnavailable(date)
-    );
+    if (this.args.isDisabled) {
+      return true;
+    }
+    if (this.isDayOutsideRange(date) || this.isDayUnavailable(date)) {
+      return true;
+    }
+
+    const { min, max } = this.pendingLimits;
+    if (min && max && !isWithinBounds(date, min, max)) {
+      return true;
+    }
+
+    return false;
   };
 
   /**
@@ -370,6 +458,9 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       case ' ':
         event.preventDefault();
         this.selectDay(from);
+        return;
+      case 'Escape':
+        this.cancelPending();
         return;
       default:
         return;
@@ -507,6 +598,11 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   }
 
   stateFor = (day: CalendarDay): DayState => {
+    const range = this.displayRange;
+    const inRange = Boolean(
+      range?.end && isWithinBounds(day.date, range.start, range.end)
+    );
+
     return {
       date: day.date,
       dayOfMonth: day.dayOfMonth,
@@ -515,10 +611,10 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       isSelected: this.isDaySelected(day.date),
       isDisabled: this.isDayDisabled(day.date),
       isUnavailable: this.isDayUnavailable(day.date),
-      isRangeStart: false,
-      isRangeEnd: false,
-      isInRange: false,
-      isPreview: false,
+      isRangeStart: Boolean(range && isSameDay(range.start, day.date)),
+      isRangeEnd: Boolean(range?.end && isSameDay(range.end, day.date)),
+      isInRange: inRange,
+      isPreview: inRange && this._anchor !== undefined,
       isFocused: isSameDay(day.date, this.focusedDate),
       isOutsideRange: this.isDayOutsideRange(day.date)
     };
@@ -553,6 +649,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
           @stateFor={{this.stateFor}}
           @showOutsideDays={{this.showOutsideDays}}
           @onSelect={{this.selectDay}}
+          @onHover={{this.hoverDay}}
           @hasDayContent={{has-block "day"}}
           @classes={{this.gridClasses}}
         >

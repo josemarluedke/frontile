@@ -7,10 +7,12 @@ import {
   click,
   settled,
   focus,
-  triggerKeyEvent
+  triggerKeyEvent,
+  triggerEvent
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Calendar } from 'frontile';
+import type { DateRange } from 'frontile';
 
 const sep2026 = new Date(2026, 8, 1);
 
@@ -661,6 +663,149 @@ module(
       );
 
       assert.dom('[data-fr-calendar-day][tabindex="0"]').isFocused();
+    });
+
+    test('range mode commits on the second click', async function (assert) {
+      const seen: (DateRange | null)[] = [];
+      const onChange = (r: DateRange | null) => seen.push(r);
+
+      await render(
+        <template>
+          <Calendar
+            @mode="range"
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute('data-range-start', 'true');
+
+      await click('[data-fr-calendar-day][data-key="2026-09-18"]');
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
+        .hasAttribute('data-range-end', 'true');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .hasAttribute('data-in-range', 'true');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-19"]')
+        .hasAttribute('data-in-range', 'false');
+
+      const committed = seen.at(-1)!;
+      assert.strictEqual(committed.start.getDate(), 9);
+      assert.strictEqual(committed.end!.getDate(), 18);
+    });
+
+    test('a backwards drag still yields an ordered range', async function (assert) {
+      const seen: (DateRange | null)[] = [];
+      const onChange = (r: DateRange | null) => seen.push(r);
+
+      await render(
+        <template>
+          <Calendar
+            @mode="range"
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-18"]');
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+
+      const committed = seen.at(-1)!;
+      assert.strictEqual(
+        committed.start.getDate(),
+        9,
+        'start is the earlier day'
+      );
+      assert.strictEqual(committed.end!.getDate(), 18);
+    });
+
+    test('hovering previews the pending range', async function (assert) {
+      await render(
+        <template>
+          <Calendar @mode="range" @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await triggerEvent(
+        '[data-fr-calendar-day][data-key="2026-09-14"]',
+        'mouseenter'
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-12"]')
+        .hasAttribute('data-preview', 'true');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-16"]')
+        .hasAttribute('data-preview', 'false');
+    });
+
+    test('Escape cancels a pending range without emitting', async function (assert) {
+      const seen: (DateRange | null)[] = [];
+      const onChange = (r: DateRange | null) => seen.push(r);
+
+      await render(
+        <template>
+          <Calendar
+            @mode="range"
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      const afterFirst = seen.length;
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-day][data-key="2026-09-09"]',
+        'keydown',
+        'Escape'
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute('data-range-start', 'false', 'the anchor is cleared');
+      assert.strictEqual(seen.length, afterFirst, 'nothing further is emitted');
+    });
+
+    test('a range cannot straddle an unavailable date', async function (assert) {
+      const isBooked = (d: Date) => d.getMonth() === 8 && d.getDate() === 14;
+
+      await render(
+        <template>
+          <Calendar
+            @mode="range"
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @isDateUnavailable={{isBooked}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .hasAttribute(
+          'data-disabled',
+          'false',
+          'reachable before the booked night'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
+        .hasAttribute('data-disabled', 'true', 'unreachable past it');
     });
   }
 );
