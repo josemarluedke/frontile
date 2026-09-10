@@ -289,12 +289,20 @@ visible month pages the calendar to bring the new day into view.
 | `Enter` / `Space` | Select the focused day |
 | `Escape` | Cancel a pending range selection |
 
+`Escape` works no matter which control inside the calendar has focus — a day cell, the
+Previous/Next buttons, or the month `<select>` — so a pending range can always be
+canceled without first tabbing back into the grid.
+
 Each month grid has `role="grid"` with an accessible label naming the month and year, and
-day cells use `role="gridcell"` with `aria-selected`. The month caption is also announced
-through a visually hidden live region when navigation changes it, so month changes reach
-screen reader users even though focus stays on the grid. `@autofocus` moves DOM focus into
-the grid on insert — it's the only thing that may do so, since rendering a calendar must
-never otherwise steal focus.
+day cells use `role="gridcell"` with `aria-selected`. Each day button also carries a full
+`aria-label` (weekday, month, day, and year) built from `Intl.DateTimeFormat`, so crossing
+a month boundary with the arrow keys announces the complete new date rather than a bare
+day-of-month number. The month caption is also announced through a visually hidden live
+region when navigation changes it, so month changes reach screen reader users even though
+focus stays on the grid. `@autofocus` moves DOM focus into the grid on insert, once — it's
+the only thing that may do so, since rendering a calendar must never otherwise steal
+focus, and it does not re-steal focus on subsequent renders. `@isReadOnly` marks each grid
+`aria-readonly="true"` so assistive technology knows the days are inert.
 
 Replacing the header with a `<:header>` block hands you the same context Calendar uses
 internally — `month`, `title`, `goToPrevious`, `goToNext`, `canGoPrevious`, `canGoNext`,
