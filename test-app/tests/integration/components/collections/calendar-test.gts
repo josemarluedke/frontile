@@ -750,6 +750,81 @@ module(
         .hasAttribute('data-preview', 'false');
     });
 
+    test('arrow-key movement advances the range preview after anchoring', async function (assert) {
+      await render(
+        <template>
+          <Calendar @mode="range" @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      const anchor = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      await click(anchor);
+      await focus(anchor);
+
+      // Move focus two days forward: 9 -> 10 -> 11.
+      await triggerKeyEvent(anchor, 'keydown', 'ArrowRight');
+      await triggerKeyEvent(
+        '[data-fr-calendar-day][data-key="2026-09-10"]',
+        'keydown',
+        'ArrowRight'
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-11"]')
+        .hasAttribute(
+          'data-range-end',
+          'true',
+          'the preview end follows the focused day'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-10"]')
+        .hasAttribute(
+          'data-in-range',
+          'true',
+          'a day newly covered by the extended preview is marked in-range'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-12"]')
+        .hasAttribute(
+          'data-in-range',
+          'false',
+          'a day beyond the preview is not covered'
+        );
+
+      // Pointer hover still works after keyboard movement took over.
+      await triggerEvent(
+        '[data-fr-calendar-day][data-key="2026-09-14"]',
+        'mouseenter'
+      );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-12"]')
+        .hasAttribute(
+          'data-in-range',
+          'true',
+          'hover regains control of the preview'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-11"]')
+        .hasAttribute('data-range-end', 'false', 'hover replaced the end day');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-14"]')
+        .hasAttribute('data-range-end', 'true');
+
+      // And keyboard movement can take control back from a hover.
+      await triggerKeyEvent(
+        '[data-fr-calendar-day][data-key="2026-09-10"]',
+        'keydown',
+        'ArrowRight'
+      );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-11"]')
+        .hasAttribute(
+          'data-range-end',
+          'true',
+          'arrow-key movement regains control of the preview from hover'
+        );
+    });
+
     test('Escape cancels a pending range without emitting', async function (assert) {
       const seen: (DateRange | null)[] = [];
       const onChange = (r: DateRange | null) => seen.push(r);
@@ -778,6 +853,52 @@ module(
         .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
         .hasAttribute('data-range-start', 'false', 'the anchor is cleared');
       assert.strictEqual(seen.length, afterFirst, 'nothing further is emitted');
+    });
+
+    test('controlled range mode does not self-select; @onChange receives a normalized range', async function (assert) {
+      const seen: (DateRange | null)[] = [];
+      const onChange = (r: DateRange | null) => seen.push(r);
+      const value = cell<DateRange | null>(null);
+
+      await render(
+        <template>
+          <Calendar
+            @mode="range"
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @value={{value.current}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-18"]');
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+
+      // The component never wrote its own selection: with @value still
+      // null, nothing is painted as selected/in-range.
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute(
+          'data-range-start',
+          'false',
+          'painted selection stays driven by @value, not internal state'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .hasAttribute('data-in-range', 'false');
+
+      const anchored = seen[0]!;
+      assert.strictEqual(anchored?.start.getDate(), 18, 'anchor step emits');
+      assert.strictEqual(anchored?.end, null);
+
+      const committed = seen.at(-1)!;
+      assert.strictEqual(
+        committed.start.getDate(),
+        9,
+        'the normalized range starts at the earlier day'
+      );
+      assert.strictEqual(committed.end!.getDate(), 18);
     });
 
     test('a range cannot straddle an unavailable date', async function (assert) {

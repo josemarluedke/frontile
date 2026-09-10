@@ -247,7 +247,14 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     }
 
     const selected = this.selection;
-    return selected && !(selected instanceof Date)
+    // A committed selection only counts once it has a real `end` -- a
+    // half-open `{ start, end: null }` (written by the anchor step below)
+    // must not surface here, or it would outlive `cancelPending()` clearing
+    // `_anchor`/`_hovered` and leave a stale single-day range painted after
+    // Escape.
+    return selected &&
+      !(selected instanceof Date) &&
+      (selected as DateRange).end
       ? (selected as DateRange)
       : null;
   }
@@ -282,15 +289,16 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     if (!this._anchor) {
       this._anchor = day;
       this._hovered = day;
-      // Notify only -- deliberately does NOT go through `commit()`, which
-      // would write this half-open range into the internal `_value` (in
-      // uncontrolled mode) and leave it there after `cancelPending()`
-      // clears the anchor. The pending range is displayed entirely via
-      // `displayRange`'s `_anchor` branch above; nothing needs it stored as
-      // "the selection" too, and storing it would make Escape unable to
-      // fully revert the visible state (the `data-range-start` flag would
-      // stay on).
-      this.args.onChange?.({ start: day, end: null } as CalendarValue<M>);
+      // Goes through the normal `commit()` path, same as the final commit
+      // below -- there is no need to special-case the anchor step. A
+      // half-open `{ start, end: null }` selection is filtered out of
+      // `displayRange`'s idle-branch fallback above, so even though it is
+      // written to `_value` (uncontrolled mode) it never outlives
+      // `cancelPending()` clearing `_anchor`/`_hovered`: once the anchor is
+      // gone, `displayRange` no longer reads through to `_value` for a
+      // null-`end` selection, and `isDaySelected`/`stateFor` treat a
+      // null-`end` range as unselected.
+      this.commit({ start: day, end: null } as CalendarValue<M>);
       return;
     }
 
@@ -387,6 +395,14 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
 
     this._focusedDate = next;
     this.#shouldFocus = true;
+
+    // Keyboard movement takes over the range preview from pointer hover:
+    // clear any hovered day so `displayRange` falls back to `focusedDate`.
+    // Without this, `_hovered` (set once at anchor time, or by a prior
+    // `mouseenter`) would permanently shadow `focusedDate` and arrow-key
+    // navigation would never move the preview. A later `mouseenter` still
+    // hands control right back to the pointer via `hoverDay`.
+    this._hovered = undefined;
 
     if (!isSameMonth(next, this.visibleMonth)) {
       this.goToMonth(next);
