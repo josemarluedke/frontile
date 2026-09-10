@@ -145,6 +145,12 @@ export const inventory: InventoryCategory[] = [
           'A lightweight helper for tracking boolean state with a toggle() method.',
       },
       {
+        name: 'Kbd',
+        path: '/docs/components/utilities/kbd',
+        description:
+          'Renders keyboard keys and shortcuts, correct on every platform.',
+      },
+      {
         name: 'Press',
         path: '/docs/components/utilities/press',
         description:
@@ -249,6 +255,12 @@ export const inventory: InventoryCategory[] = [
         description:
           'Renders content into a different part of the DOM tree, escaping clipped or stacked parents.',
       },
+      {
+        name: 'Tooltip',
+        path: '/docs/components/overlays/tooltip',
+        description:
+          'A short, non-interactive hint shown next to whatever a user hovers or focuses.',
+      },
     ],
   },
   {
@@ -279,12 +291,30 @@ export const inventory: InventoryCategory[] = [
         description:
           'Combines a trigger button with a floating panel of actions or options.',
       },
+      {
+        name: 'Calendar',
+        path: '/docs/components/collections/calendar',
+        description:
+          'A month-grid date picker for choosing a single day or a range, with full keyboard navigation.',
+      },
+      {
+        name: 'Command',
+        path: '/docs/components/collections/command',
+        description:
+          'A command palette: a search field over a ranked, optionally grouped list of commands.',
+      },
     ],
   },
   {
     name: 'Feedback',
     summary: 'Progress and notifications, with the live regions wired up.',
     items: [
+      {
+        name: 'Alert',
+        path: '/docs/components/status/alert',
+        description:
+          'Displays an important message inline in the page until removed.',
+      },
       {
         name: 'ProgressBar',
         path: '/docs/components/status/progress-bar',
