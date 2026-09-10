@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { action } from '@ember/object';
 import { VisuallyHidden } from 'frontile';
@@ -56,18 +57,25 @@ export default class SidebarNav extends Component<Signature> {
       <IconMenu class="size-8" />
     </button>
 
+    {{! Drag-to-close is opt-in for side placements, so ask for it here: this
+        panel is opened by thumb on a phone, and a swipe back toward the edge
+        it came from is the gesture people already expect there. The handle it
+        adds is a real button, so nothing depends on the gesture alone.
+
+        The body padding is tightened from the component default (24px/32px).
+        That default is sized for prose in a content drawer; this body is a
+        nav list whose rows carry their own touch targets, and the full
+        padding pushed the first item a long way below the header. }}
     <Drawer
       @isOpen={{this.isOpen}}
       @onClose={{this.toggle}}
       @size="xs"
-      @allowCloseButton={{false}}
-      class="backdrop-filter backdrop-blur bg-opacity-80 outline-none focus-visible:ring ring-inset"
+      @allowDragToClose={{true}}
+      @classes={{hash body="px-4 py-2"}}
+      class="outline-none focus-visible:ring ring-inset"
       as |m|
     >
-      <m.CloseButton
-        class="text-neutral-strong hover:bg-surface-overlay-soft outline-none focus-visible:ring"
-      />
-      <m.Header class="text-neutral-bolder">
+      <m.Header>
         Contents
       </m.Header>
       <m.Body class="text-neutral-strong">

@@ -68,7 +68,8 @@ const SEMANTIC_COLOR_PREFIXES = [
   'danger',
   'warning',
   'surface-input',
-  'surface-modal'
+  'surface-modal',
+  'surface-drawer'
 ];
 
 const EXCLUDED_COLORS = ['background', 'focus', 'divider'];

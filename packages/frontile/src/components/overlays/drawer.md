@@ -1,4 +1,5 @@
 ---
+label: Updated
 url: drawer
 imports:
   - import Signature from 'site/components/signature';
@@ -13,6 +14,23 @@ The Drawer component is a slide-out panel that appears from any edge of the scre
 ```js
 import { Drawer } from 'frontile';
 ```
+
+## Anatomy
+
+Drawer yields the pieces you assemble it from:
+
+| Yielded       | Purpose                                                         |
+| ------------- | --------------------------------------------------------------- |
+| `Header`      | Heading region; applies the id that `aria-labelledby` points at |
+| `Body`        | Main content area                                               |
+| `Footer`      | Action row                                                      |
+| `CloseButton` | Styled close button wired to `@onClose`                         |
+| `headerId`    | The id `Header` uses, for labelling your own heading instead    |
+
+The default close button (shown unless `@allowClosing`/`@allowCloseButton` is `false`) is
+rendered inside `<d.Header>` when one is present, vertically centered against it regardless of
+whether the header is title-only or has a description too. Only a drawer with no `Header` at
+all falls back to the standalone, absolutely-positioned close button in the top right corner.
 
 ## Usage
 
@@ -36,7 +54,7 @@ export default class BasicDrawer extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
-      <Button @onPress={{this.toggle}}>
+      <Button @size='sm' @onPress={{this.toggle}}>
         Open Drawer
       </Button>
 
@@ -51,10 +69,10 @@ export default class BasicDrawer extends Component {
             close button in the top right corner.</p>
         </d.Body>
         <d.Footer @class='flex gap-2'>
-          <Button @onPress={{this.toggle}}>
+          <Button @size='sm' @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @intent='primary'>
+          <Button @size='sm' @intent='primary'>
             Save
           </Button>
         </d.Footer>
@@ -64,7 +82,333 @@ export default class BasicDrawer extends Component {
 }
 ```
 
-### Different Placements
+### Appearance
+
+`@appearance` controls how the header, body and footer relate to each other. `default` gives
+the drawer a black header band, a body on its own surface and a solid footer — this is the
+banded treatment. `ghost` keeps every region on the same surface as the modal — the flat look
+Drawer used before v0.18, kept for consumers who don't want the restyle.
+
+The header API is identical in both appearances: `@title`/`@description` and a block yielding
+`h.Icon`, `h.Title` and `h.Description` work the same way regardless of which appearance is
+selected.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { fn } from '@ember/helper';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+
+export default class DrawerAppearances extends Component {
+  @tracked isOpen = false;
+  @tracked selectedAppearance = 'default';
+
+  appearances = ['default', 'ghost'];
+
+  @action openDrawer(appearance) {
+    this.selectedAppearance = appearance;
+    this.isOpen = true;
+  }
+
+  @action closeDrawer() {
+    this.isOpen = false;
+  }
+
+  <template>
+    <div class='flex gap-2'>
+      {{#each this.appearances as |appearance|}}
+        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
+          {{appearance}}
+        </Button>
+      {{/each}}
+    </div>
+
+    <Drawer
+      @isOpen={{this.isOpen}}
+      @onClose={{this.closeDrawer}}
+      @appearance={{this.selectedAppearance}}
+      as |d|
+    >
+      <d.Header
+        @title='{{this.selectedAppearance}} appearance'
+        @description='Switch appearances with the buttons above.'
+      />
+      <d.Body>
+        <p>This is the body content, on its own surface in `default` and flat in
+          `ghost`.</p>
+      </d.Body>
+      <d.Footer @class='flex gap-2'>
+        <Button @size='sm' @onPress={{this.closeDrawer}}>Close</Button>
+      </d.Footer>
+    </Drawer>
+  </template>
+}
+```
+
+The same switch works with the block form of `<d.Header>`, including an icon:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { fn } from '@ember/helper';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+import { SettingsIcon } from 'site/components/icons';
+
+export default class DrawerAppearancesIcon extends Component {
+  @tracked isOpen = false;
+  @tracked selectedAppearance = 'default';
+
+  appearances = ['default', 'ghost'];
+
+  @action openDrawer(appearance) {
+    this.selectedAppearance = appearance;
+    this.isOpen = true;
+  }
+
+  @action closeDrawer() {
+    this.isOpen = false;
+  }
+
+  <template>
+    <div class='flex gap-2'>
+      {{#each this.appearances as |appearance|}}
+        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
+          {{appearance}}
+          with icon
+        </Button>
+      {{/each}}
+    </div>
+
+    <Drawer
+      @isOpen={{this.isOpen}}
+      @onClose={{this.closeDrawer}}
+      @appearance={{this.selectedAppearance}}
+      as |d|
+    >
+      <d.Header
+        @title='{{this.selectedAppearance}} with an icon'
+        @description='The icon and text placement come from the block form.'
+        as |h|
+      >
+        <h.Icon><SettingsIcon /></h.Icon>
+        <h.Title />
+        <h.Description />
+      </d.Header>
+      <d.Body>
+        <p>Icon, title and description are placed by the block, unaffected by
+          which appearance is active.</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
+### Header
+
+`<d.Header>` accepts `@title` and `@description` directly, or a block yielding `h.Icon`,
+`h.Title` and `h.Description` for when you need to place them yourself — a blockless
+`<h.Title />` or `<h.Description />` falls back to `@title` / `@description`.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+
+export default class DrawerHeaderArgs extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @size='sm' @onPress={{this.toggle}}>
+      Open Drawer
+    </Button>
+
+    <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+      <d.Header
+        @title='Account settings'
+        @description='Update your name, email and password.'
+      />
+      <d.Body>
+        <p>The title and description above came from `@title` and
+          `@description`, with no block needed.</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+import { SettingsIcon } from 'site/components/icons';
+
+export default class DrawerHeaderBlock extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @size='sm' @onPress={{this.toggle}}>
+      Open Drawer
+    </Button>
+
+    <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+      <d.Header
+        @title='Account settings'
+        @description='Update your name, email and password.'
+        as |h|
+      >
+        <h.Icon><SettingsIcon /></h.Icon>
+        <h.Title />
+        <h.Description />
+      </d.Header>
+      <d.Body>
+        <p>The title and description here are still the same `@title` and
+          `@description`, only placed alongside an icon by the block.</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
+### Header actions
+
+Use the `:actions` named block to put controls beside the close button.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer, Button } from 'frontile';
+
+export default class DrawerHeaderActions extends Component {
+  @tracked isOpen = false;
+  @tracked onlyStarred = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  @action toggleStarred() {
+    this.onlyStarred = !this.onlyStarred;
+  }
+
+  <template>
+    <Button @size='sm' @onPress={{this.toggle}}>Open Drawer</Button>
+
+    <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+      <d.Header @title='Filters' @description='Narrow the results below.'>
+        <:actions>
+          <Button @size='sm' @intent='primary' @onPress={{this.toggleStarred}}>
+            {{if this.onlyStarred 'Show all' 'Only starred'}}
+          </Button>
+        </:actions>
+      </d.Header>
+      <d.Body>
+        <p>{{if
+            this.onlyStarred
+            'Showing starred results.'
+            'Showing all results.'
+          }}</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
+Actions sit **in flow**, so a taller control makes the header band taller: a title-only
+header is 72px on its own and grows to fit whatever you add. The close button does not
+affect the band's height.
+
+The header keeps a lane clear on its right for the close button, and drops it when
+`@allowCloseButton={{false}}`.
+
+Using `:actions` means your main header content moves into an explicit `:default` block:
+
+```gjs
+<d.Header as |h|>
+  <:default>
+    <h.Title>Filters</h.Title>
+  </:default>
+  <:actions>
+    <Button @size="sm">Reset</Button>
+  </:actions>
+</d.Header>
+```
+
+### Banner under the header
+
+`Header`, `Body` and `Footer` are yielded components, not fixed slots — anything you
+render between them becomes a sibling in the drawer's column. The drawer applies no
+padding of its own, so a full-bleed element placed there spans the panel edge to edge.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer, Button, Alert } from 'frontile';
+import { SettingsIcon } from 'site/components/icons';
+
+export default class DrawerWithBanner extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @size='sm' @onPress={{this.toggle}}>Open Drawer</Button>
+
+    <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+      <d.Header as |h|>
+        <h.Icon><SettingsIcon /></h.Icon>
+        <h.Title>Drawer title</h.Title>
+        <h.Description>Supporting text</h.Description>
+      </d.Header>
+
+      <Alert
+        @layout='banner'
+        @variant='solid'
+        @intent='warning'
+        @title='This is the banner text'
+      />
+
+      <d.Body>
+        <p>The banner sits between the header and this content, spanning the
+          full width of the drawer.</p>
+      </d.Body>
+
+      <d.Footer>
+        <Button
+          @size='sm'
+          @intent='primary'
+          @appearance='outlined'
+          @onPress={{this.toggle}}
+        >
+          Secondary
+        </Button>
+        <Button @size='sm' @intent='primary'>Primary</Button>
+      </d.Footer>
+    </Drawer>
+  </template>
+}
+```
+
+### Placement
 
 Drawers can slide in from any edge of the screen.
 
@@ -126,7 +470,7 @@ export default class DrawerPlacements extends Component {
     <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.placements as |placement|}}
-          <Button @onPress={{fn this.openDrawer placement.key}}>
+          <Button @size='sm' @onPress={{fn this.openDrawer placement.key}}>
             {{placement.label}}
           </Button>
         {{/each}}
@@ -148,7 +492,7 @@ export default class DrawerPlacements extends Component {
 }
 ```
 
-### Different Sizes
+### Size
 
 Control the drawer size with the `@size` argument.
 
@@ -221,7 +565,7 @@ export default class DrawerSizes extends Component {
     <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-3 gap-2'>
         {{#each this.sizeOptions as |option|}}
-          <Button @onPress={{fn this.openDrawer option.key}}>
+          <Button @size='sm' @onPress={{fn this.openDrawer option.key}}>
             {{option.label}}
           </Button>
         {{/each}}
@@ -239,6 +583,111 @@ export default class DrawerSizes extends Component {
         </d.Body>
       </Drawer>
     </div>
+  </template>
+}
+```
+
+### Drag to close
+
+`@allowDragToClose` is on by default for `top`/`bottom` and off by default for `left`/`right`.
+Passing `true` opts any placement in; passing `false` turns it off for any placement. It has no
+effect when `@allowClosing={{false}}` — a non-dismissible drawer stays non-dismissible either
+way. Side placements default to off because a horizontal drag starting at a screen edge is
+easy to miss; pass `@allowDragToClose={{true}}` to enable it there too.
+The handle is a real button (labelled "Close drawer"), so keyboard and assistive-technology
+users can close the drawer by activating it, without performing a gesture at all — and it
+closes on click as well as on drag for everyone else.
+
+A press on the body itself (not just the handle) can also dismiss the drawer, once the body's
+own scroll position is already at the edge the drag pulls away from — so a drag toward the
+handle's side dismisses, while scrolling through a longer body still scrolls normally instead
+of being hijacked. This distinction is decided a few pixels into the gesture, not at the very
+first touch, so tapping or starting to scroll never has a false start.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { fn } from '@ember/helper';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+
+export default class DrawerDragBottom extends Component {
+  @tracked isOpen = false;
+  @tracked selectedAppearance = 'default';
+
+  appearances = ['default', 'ghost'];
+
+  @action openDrawer(appearance) {
+    this.selectedAppearance = appearance;
+    this.isOpen = true;
+  }
+
+  @action closeDrawer() {
+    this.isOpen = false;
+  }
+
+  <template>
+    <div class='flex gap-2'>
+      {{#each this.appearances as |appearance|}}
+        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
+          Open Bottom Drawer ({{appearance}})
+        </Button>
+      {{/each}}
+    </div>
+
+    <Drawer
+      @isOpen={{this.isOpen}}
+      @onClose={{this.closeDrawer}}
+      @placement='bottom'
+      @appearance={{this.selectedAppearance}}
+      as |d|
+    >
+      <d.Header @title='Drag me down' @description='Or use the close button.' />
+      <d.Body>
+        <p>Drag the handle at the top of this drawer down to dismiss it, or
+          release early to have it spring back. The handle bar looks the same in
+          `default` and `ghost`.</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+
+export default class DrawerDragRight extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @size='sm' @onPress={{this.toggle}}>
+      Open Right Drawer
+    </Button>
+
+    <Drawer
+      @isOpen={{this.isOpen}}
+      @onClose={{this.toggle}}
+      @placement='right'
+      @allowDragToClose={{true}}
+      as |d|
+    >
+      <d.Header
+        @title='Opted in'
+        @description='Right drawers need @allowDragToClose to get the handle.'
+      />
+      <d.Body>
+        <p>Drag the handle on the left edge toward the left to dismiss.</p>
+      </d.Body>
+    </Drawer>
   </template>
 }
 ```
@@ -299,7 +748,7 @@ export default class DrawerBackdrops extends Component {
     <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.backdropOptions as |option|}}
-          <Button @onPress={{fn this.openDrawer option.key}}>
+          <Button @size='sm' @onPress={{fn this.openDrawer option.key}}>
             {{option.label}}
           </Button>
         {{/each}}
@@ -320,7 +769,7 @@ export default class DrawerBackdrops extends Component {
             behind this drawer changes based on the selected type.</p>
         </d.Body>
         <d.Footer>
-          <Button @onPress={{this.closeDrawer}}>Close</Button>
+          <Button @size='sm' @onPress={{this.closeDrawer}}>Close</Button>
         </d.Footer>
       </Drawer>
     </div>
@@ -359,13 +808,13 @@ export default class DrawerCloseButton extends Component {
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
-        <Button @onPress={{this.toggleNormal}}>
+        <Button @size='sm' @onPress={{this.toggleNormal}}>
           Normal Close Button
         </Button>
-        <Button @onPress={{this.toggleNoCloseButton}}>
+        <Button @size='sm' @onPress={{this.toggleNoCloseButton}}>
           No Close Button
         </Button>
-        <Button @onPress={{this.toggleCustomClose}}>
+        <Button @size='sm' @onPress={{this.toggleCustomClose}}>
           Custom Close Button
         </Button>
       </div>
@@ -389,7 +838,7 @@ export default class DrawerCloseButton extends Component {
             the backdrop or pressing Escape.</p>
         </d.Body>
         <d.Footer>
-          <Button @onPress={{this.toggleNoCloseButton}}>
+          <Button @size='sm' @onPress={{this.toggleNoCloseButton}}>
             Close from Footer
           </Button>
         </d.Footer>
@@ -409,105 +858,6 @@ export default class DrawerCloseButton extends Component {
           <p>This drawer uses a custom close button placed in the header using
             the yielded CloseButton component.</p>
         </d.Body>
-      </Drawer>
-    </div>
-  </template>
-}
-```
-
-### Form in Drawer
-
-A practical example showing a form inside a drawer.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
-import { Drawer } from 'frontile';
-import { Button } from 'frontile';
-import { Input, Textarea } from 'frontile';
-import { on } from '@ember/modifier';
-
-export default class DrawerForm extends Component {
-  @tracked isOpen = false;
-  @tracked name = '';
-  @tracked email = '';
-  @tracked message = '';
-
-  @action toggle() {
-    this.isOpen = !this.isOpen;
-  }
-
-  @action handleSubmit(event) {
-    event.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', {
-      name: this.name,
-      email: this.email,
-      message: this.message
-    });
-    this.toggle();
-  }
-
-  @action updateName(value) {
-    this.name = value;
-  }
-
-  @action updateEmail(value) {
-    this.email = value;
-  }
-
-  @action updateMessage(value) {
-    this.message = value;
-  }
-
-  <template>
-    <div class='demo-stack demo-stack--wide items-center'>
-      <Button @onPress={{this.toggle}}>
-        Open Contact Form
-      </Button>
-
-      <Drawer
-        @isOpen={{this.isOpen}}
-        @onClose={{this.toggle}}
-        @size='lg'
-        as |d|
-      >
-        <d.Header>
-          Contact Us
-        </d.Header>
-        <d.Body>
-          <form {{on 'submit' this.handleSubmit}} class='space-y-4'>
-            <Input
-              @label='Name'
-              @value={{this.name}}
-              @onInput={{this.updateName}}
-              required
-            />
-            <Input
-              @label='Email'
-              @type='email'
-              @value={{this.email}}
-              @onInput={{this.updateEmail}}
-              required
-            />
-            <Textarea
-              @label='Message'
-              @value={{this.message}}
-              @onInput={{this.updateMessage}}
-              @rows={{5}}
-              required
-            />
-          </form>
-        </d.Body>
-        <d.Footer @class='flex gap-2'>
-          <Button @onPress={{this.toggle}}>
-            Cancel
-          </Button>
-          <Button @intent='primary' @onPress={{this.handleSubmit}}>
-            Send Message
-          </Button>
-        </d.Footer>
       </Drawer>
     </div>
   </template>
@@ -560,7 +910,7 @@ export default class NonDismissibleDrawer extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
-      <Button @onPress={{this.toggle}}>
+      <Button @size='sm' @onPress={{this.toggle}}>
         Open Processing Drawer
       </Button>
 
@@ -590,20 +940,121 @@ export default class NonDismissibleDrawer extends Component {
         </d.Body>
         <d.Footer @class='flex gap-2'>
           {{#if this.isProcessing}}
-            <Button disabled={{true}}>
+            <Button @size='sm' disabled={{true}}>
               Processing...
             </Button>
-            <Button @intent='danger' @onPress={{this.forceClose}}>
+            <Button @size='sm' @intent='danger' @onPress={{this.forceClose}}>
               Force Close
             </Button>
           {{else}}
-            <Button @onPress={{this.toggle}}>
+            <Button @size='sm' @onPress={{this.toggle}}>
               Cancel
             </Button>
-            <Button @intent='primary' @onPress={{this.startProcess}}>
+            <Button @size='sm' @intent='primary' @onPress={{this.startProcess}}>
               Start Processing
             </Button>
           {{/if}}
+        </d.Footer>
+      </Drawer>
+    </div>
+  </template>
+}
+```
+
+## Patterns
+
+### Form in Drawer
+
+A practical example showing a form inside a drawer.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+import { Input, Textarea } from 'frontile';
+import { on } from '@ember/modifier';
+
+export default class DrawerForm extends Component {
+  @tracked isOpen = false;
+  @tracked name = '';
+  @tracked email = '';
+  @tracked message = '';
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  @action handleSubmit(event) {
+    event.preventDefault();
+    // Handle form submission
+    console.log('Form submitted:', {
+      name: this.name,
+      email: this.email,
+      message: this.message
+    });
+    this.toggle();
+  }
+
+  @action updateName(value) {
+    this.name = value;
+  }
+
+  @action updateEmail(value) {
+    this.email = value;
+  }
+
+  @action updateMessage(value) {
+    this.message = value;
+  }
+
+  <template>
+    <div class='demo-stack demo-stack--wide items-center'>
+      <Button @size='sm' @onPress={{this.toggle}}>
+        Open Contact Form
+      </Button>
+
+      <Drawer
+        @isOpen={{this.isOpen}}
+        @onClose={{this.toggle}}
+        @size='lg'
+        as |d|
+      >
+        <d.Header>
+          Contact Us
+        </d.Header>
+        <d.Body>
+          <form {{on 'submit' this.handleSubmit}} class='space-y-4'>
+            <Input
+              @label='Name'
+              @value={{this.name}}
+              @onInput={{this.updateName}}
+              required
+            />
+            <Input
+              @label='Email'
+              @type='email'
+              @value={{this.email}}
+              @onInput={{this.updateEmail}}
+              required
+            />
+            <Textarea
+              @label='Message'
+              @value={{this.message}}
+              @onInput={{this.updateMessage}}
+              @rows={{5}}
+              required
+            />
+          </form>
+        </d.Body>
+        <d.Footer @class='flex gap-2'>
+          <Button @size='sm' @onPress={{this.toggle}}>
+            Cancel
+          </Button>
+          <Button @size='sm' @intent='primary' @onPress={{this.handleSubmit}}>
+            Send Message
+          </Button>
         </d.Footer>
       </Drawer>
     </div>
@@ -639,7 +1090,7 @@ export default class NavigationDrawer extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
-      <Button @onPress={{this.toggle}}>
+      <Button @size='sm' @onPress={{this.toggle}}>
         Open Navigation
       </Button>
 
@@ -693,18 +1144,6 @@ export default class NavigationDrawer extends Component {
   </template>
 }
 ```
-
-## Anatomy
-
-Drawer yields the pieces you assemble it from:
-
-| Yielded       | Purpose                                                         |
-| ------------- | --------------------------------------------------------------- |
-| `Header`      | Heading region; applies the id that `aria-labelledby` points at |
-| `Body`        | Main content area                                               |
-| `Footer`      | Action row                                                      |
-| `CloseButton` | Styled close button wired to `@onClose`                         |
-| `headerId`    | The id `Header` uses, for labelling your own heading instead    |
 
 ## Accessibility
 
