@@ -77,7 +77,11 @@ const calendar = tv({
       'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
     ],
 
-    monthsWrapper: 'flex gap-4',
+    // Centered because the calendar is only ever as wide as its widest part:
+    // a `<:header>` block wider than the grid (long month names, extra
+    // controls) stretches the component, and the months would otherwise sit
+    // flush left under it. A no-op whenever the grid is the widest part.
+    monthsWrapper: 'flex justify-center gap-4',
     monthGrid: 'border-collapse',
     weekdaysRow: '',
 
