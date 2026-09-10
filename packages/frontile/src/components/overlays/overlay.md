@@ -481,6 +481,83 @@ export default class AnimationsAndTransitions extends Component {
 }
 ```
 
+### Overlays that start open
+
+An overlay whose `@isOpen` is already true the first time it renders — one that is
+deep-linked open, or that a page refresh restored — waits for the browser's first paint
+before appearing, so its animation plays against the page rather than starting before
+anything has been drawn.
+
+Pass `@animateOnMount={{false}}` when an already-open overlay should simply be there, with
+no reveal — Modal and Drawer forward it too. An overlay opened later by interaction animates
+either way, and so does closing.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
+
+export default class OverlaysThatStartOpen extends Component {
+  @tracked showAnimated = false;
+  @tracked showImmediate = false;
+
+  @action mountAnimated() {
+    this.showAnimated = true;
+  }
+
+  @action mountImmediate() {
+    this.showImmediate = true;
+  }
+
+  @action closeAnimated() {
+    this.showAnimated = false;
+  }
+
+  @action closeImmediate() {
+    this.showImmediate = false;
+  }
+
+  <template>
+    <div class='demo-stack demo-stack--wide items-center'>
+      <div class='flex gap-2'>
+        <Button @onPress={{this.mountAnimated}}>
+          Render already open
+        </Button>
+        <Button @onPress={{this.mountImmediate}}>
+          Render already open, no animation
+        </Button>
+      </div>
+
+      {{#if this.showAnimated}}
+        <Overlay @isOpen={{true}} @onClose={{this.closeAnimated}}>
+          <div class='bg-surface-modal p-6 rounded-lg shadow-lg'>
+            <h3 class='font-semibold mb-2'>Animated</h3>
+            <p class='mb-4'>Rendered with @isOpen already true.</p>
+            <Button @onPress={{this.closeAnimated}}>Close</Button>
+          </div>
+        </Overlay>
+      {{/if}}
+
+      {{#if this.showImmediate}}
+        <Overlay
+          @isOpen={{true}}
+          @onClose={{this.closeImmediate}}
+          @animateOnMount={{false}}
+        >
+          <div class='bg-surface-modal p-6 rounded-lg shadow-lg'>
+            <h3 class='font-semibold mb-2'>No mount animation</h3>
+            <p class='mb-4'>It is simply there. Closing still animates.</p>
+            <Button @onPress={{this.closeImmediate}}>Close</Button>
+          </div>
+        </Overlay>
+      {{/if}}
+    </div>
+  </template>
+}
+```
+
 ### Outside Click vs Overlay Element Click
 
 The Overlay component has two different click-to-close mechanisms that work together:
@@ -605,6 +682,11 @@ Overlays that block scroll are reference counted, so a Modal that opens a Drawer
 locked until the last of them closes. Whatever inline `overflow` the page had before the
 first lock is restored, rather than blanked. Overlays rendered with `@renderInPlace={{true}}`
 or `@blockScroll={{false}}` never take part in that count.
+
+Under `prefers-reduced-motion: reduce`, the built-in transitions drop their movement and
+keep only the fade: `fade` is unchanged, `zoom` and `scale` stop scaling, and the
+`slideFrom*` transitions fade in place instead of travelling. A custom `@transition` is
+yours to adapt.
 
 Frontile does not set `aria-modal`, `aria-labelledby` or `aria-describedby` at this level.
 

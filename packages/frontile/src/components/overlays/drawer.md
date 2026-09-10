@@ -961,6 +961,14 @@ export default class NonDismissibleDrawer extends Component {
 }
 ```
 
+### Drawers that start open
+
+A drawer whose `@isOpen` is already true the first time it renders — deep-linked open, or
+restored by a page refresh — waits for the browser's first paint before appearing, so its
+animation plays against the page rather than starting before anything has been drawn. Pass
+`@animateOnMount={{false}}` when an already-open drawer should simply be there, with no
+reveal.
+
 ## Patterns
 
 ### Form in Drawer
@@ -1193,6 +1201,8 @@ The drawer needs at least one focusable element inside it, or the focus trap has
 put focus. `@allowClosing={{false}}` disables Escape, backdrop click and the close button at
 once, leaving a keyboard user no way out — the Non-Dismissible example above pairs it with
 explicit footer actions for that reason.
+
+Under `prefers-reduced-motion: reduce`, the drawer fades in place instead of sliding.
 
 Note that `@placement` is purely visual: a drawer sliding in from the left is announced no
 differently from one on the right, and nothing about the placement reaches assistive

@@ -797,6 +797,14 @@ export default class NestedModals extends Component {
 }
 ```
 
+### Modals that start open
+
+A modal whose `@isOpen` is already true the first time it renders — deep-linked open, or
+restored by a page refresh — waits for the browser's first paint before appearing, so its
+animation plays against the page rather than starting before anything has been drawn. Pass
+`@animateOnMount={{false}}` when an already-open modal should simply be there, with no
+reveal.
+
 ## Anatomy
 
 Modal yields the pieces you assemble the dialog from:
@@ -857,6 +865,8 @@ The modal needs at least one focusable element inside it, or the focus trap has 
 put focus. Note that `@allowClosing={{false}}` disables Escape, backdrop click and the close
 button together, which leaves a keyboard user no way out — reserve it for flows that provide
 their own explicit resolution.
+
+Under `prefers-reduced-motion: reduce`, the modal fades in without the zoom.
 
 Frontile does not set `aria-describedby`. Add it yourself if your dialog needs it.
 

@@ -31,6 +31,7 @@ export interface ModalArgs extends Pick<
   | 'transitionDuration'
   | 'backdrop'
   | 'disableTransitions'
+  | 'animateOnMount'
   | 'disableFocusTrap'
   | 'focusTrapOptions'
   | 'closeOnOutsideClick'
@@ -228,6 +229,7 @@ export default class Modal extends Component<ModalSignature> {
       @transitionDuration={{@transitionDuration}}
       @backdrop={{@backdrop}}
       @disableTransitions={{@disableTransitions}}
+      @animateOnMount={{@animateOnMount}}
       @disableFocusTrap={{@disableFocusTrap}}
       @focusTrapOptions={{@focusTrapOptions}}
       @closeOnOutsideClick={{if this.preventClosing false @closeOnOutsideClick}}

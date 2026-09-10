@@ -40,6 +40,7 @@ export interface DrawerArgs extends Pick<
   | 'transitionDuration'
   | 'backdrop'
   | 'disableTransitions'
+  | 'animateOnMount'
   | 'disableFocusTrap'
   | 'focusTrapOptions'
   | 'closeOnOutsideClick'
@@ -317,6 +318,7 @@ export default class Drawer extends Component<DrawerSignature> {
       @transitionDuration={{@transitionDuration}}
       @backdrop={{@backdrop}}
       @disableTransitions={{@disableTransitions}}
+      @animateOnMount={{@animateOnMount}}
       @disableFocusTrap={{@disableFocusTrap}}
       @focusTrapOptions={{@focusTrapOptions}}
       @closeOnOutsideClick={{if this.preventClosing false @closeOnOutsideClick}}

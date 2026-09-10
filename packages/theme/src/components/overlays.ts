@@ -293,13 +293,46 @@ const drawer = tv({
   ]
 });
 
+// One policy, spelled once: reduced motion drops the travel and keeps the
+// fade. `addTransitions` derives `-leave-to` from `enter` and `-enter-to` from
+// `leave`, so a state block covers two of the four generated classes.
+//
+// A slide is *only* travel, so it has no fade to keep -- `slideHidden` and
+// `slideShown` supply one rather than leaving the drawer to appear with no
+// transition at all. The `-active` blocks stay written per transition, because
+// each has to override its own timing in its own spelling.
+const reducedMotion = {
+  dropTransform: {
+    '@media (prefers-reduced-motion: reduce)': {
+      transform: 'none'
+    }
+  },
+  slideHidden: {
+    '@media (prefers-reduced-motion: reduce)': {
+      transform: 'none',
+      opacity: '0'
+    }
+  },
+  slideShown: {
+    '@media (prefers-reduced-motion: reduce)': {
+      opacity: '1'
+    }
+  }
+};
+
 const slideTransition = {
   enterActive: {
-    transition: 'transform 0.2s cubic-bezier(0.37, 0, 0.63, 1)'
+    transition: 'transform 0.2s cubic-bezier(0.37, 0, 0.63, 1)',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'opacity 0.2s linear'
+    }
   },
 
   leaveActive: {
-    transition: 'transform 0.2s cubic-bezier(0.37, 0, 0.63, 1)'
+    transition: 'transform 0.2s cubic-bezier(0.37, 0, 0.63, 1)',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'opacity 0.2s linear'
+    }
   }
 };
 
@@ -318,6 +351,12 @@ const overlayArrow = tv({
 });
 
 const overlayTransitions = {
+  /**
+   * Deliberately has no `prefers-reduced-motion` branch: a cross-fade is not
+   * motion. Reduced motion asks for movement to be removed, not for state
+   * changes to become instant, so the other transitions below drop their
+   * travel and keep exactly this fade.
+   */
   fade: {
     enter: {
       opacity: '0'
@@ -335,53 +374,68 @@ const overlayTransitions = {
   zoom: {
     enter: {
       opacity: '0',
-      transform: 'scale(0.8)'
+      transform: 'scale(0.8)',
+      ...reducedMotion.dropTransform
     },
     enterActive: {
-      transition: 'all 0.2s ease-in-out'
+      transition: 'all 0.2s ease-in-out',
+      '@media (prefers-reduced-motion: reduce)': {
+        transition: 'opacity 0.2s ease-in-out'
+      }
     },
     leave: {
       opacity: '1',
       transform: 'scale(1)'
     },
     leaveActive: {
-      transition: 'all 0.2s ease-in-out'
+      transition: 'all 0.2s ease-in-out',
+      '@media (prefers-reduced-motion: reduce)': {
+        transition: 'opacity 0.2s ease-in-out'
+      }
     }
   },
   slideFromLeft: {
     enter: {
-      transform: 'translateX(-100%)'
+      transform: 'translateX(-100%)',
+      ...reducedMotion.slideHidden
     },
     leave: {
-      transform: 'translateX(0%)'
+      transform: 'translateX(0%)',
+      ...reducedMotion.slideShown
     },
     ...slideTransition
   },
   slideFromRight: {
     enter: {
-      transform: 'translateX(100%)'
+      transform: 'translateX(100%)',
+      ...reducedMotion.slideHidden
     },
     leave: {
-      transform: 'translateX(0%)'
+      transform: 'translateX(0%)',
+      ...reducedMotion.slideShown
     },
     ...slideTransition
   },
 
   slideFromTop: {
     enter: {
-      transform: 'translateY(-100%)'
+      transform: 'translateY(-100%)',
+      ...reducedMotion.slideHidden
     },
     leave: {
-      transform: 'translateY(0%)'
+      transform: 'translateY(0%)',
+      ...reducedMotion.slideShown
     },
     ...slideTransition
   },
   slideFromBottom: {
     enter: {
-      transform: 'translateY(100%)'
+      transform: 'translateY(100%)',
+      ...reducedMotion.slideHidden
     },
     leave: {
-      transform: 'translateY(0%)'
+      transform: 'translateY(0%)',
+      ...reducedMotion.slideShown
     },
     ...slideTransition
   },
@@ -485,12 +539,16 @@ const overlayTransitions = {
   scale: {
     enter: {
       opacity: '0',
-      transform: 'scale(0.95)'
+      transform: 'scale(0.95)',
+      ...reducedMotion.dropTransform
     },
     enterActive: {
       transitionProperty: 'transform, opacity',
       transitionDuration: '200ms',
-      transitionTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
+      transitionTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transitionProperty: 'opacity'
+      }
     },
     enterTo: {
       opacity: '1',
@@ -503,11 +561,15 @@ const overlayTransitions = {
     leaveActive: {
       transitionProperty: 'transform, opacity',
       transitionDuration: '100ms',
-      transitionTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)'
+      transitionTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transitionProperty: 'opacity'
+      }
     },
     leaveTo: {
       opacity: '0',
-      transform: 'scale(0.95)'
+      transform: 'scale(0.95)',
+      ...reducedMotion.dropTransform
     }
   }
 };

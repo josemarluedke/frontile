@@ -1,6 +1,6 @@
 /* eslint-disable ember/no-runloop */
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
@@ -10,7 +10,15 @@ import { modifier } from 'ember-modifier';
 import { focusTrap, type FocusTrapModifierSignature } from 'ember-focus-trap';
 import onClickOutside from 'ember-click-outside/modifiers/on-click-outside';
 import { Backdrop, type BackdropSignature } from './backdrop';
+import {
+  afterFirstPaint,
+  hasPainted,
+  shouldDeferMount,
+  shouldSkipEnterTransition,
+  withoutEnterTransition
+} from './mount-animation';
 import { Portal, findParentPortal, type PortalSignature } from './portal';
+import type Owner from '@ember/owner';
 import type { ModifierLike } from '@glint/template';
 import type { CssTransitionSignature } from 'ember-css-transitions/modifiers/css-transition';
 import { isTesting, macroCondition } from '@embroider/macros';
@@ -127,6 +135,20 @@ interface Args extends Pick<
   disableTransitions?: boolean;
 
   /**
+   * Whether an overlay that is *already open the first time it renders* --
+   * deep-linked open, or restored by a page refresh -- animates in.
+   *
+   * When true (the default) the overlay waits for the browser's first paint
+   * before mounting, so the animation plays against a page the user has
+   * already seen. Set it to false for an already-open overlay that should
+   * simply be there, with no reveal. An overlay opened later by interaction
+   * animates either way, and so does closing.
+   *
+   * @defaultValue true
+   */
+  animateOnMount?: boolean;
+
+  /**
    * Whether the focus trap is disabled or not
    *
    * @defaultValue false
@@ -236,6 +258,28 @@ interface OverlaySignature {
 class Overlay extends Component<OverlaySignature> {
   @tracked keepOpen = false;
 
+  // Whether the browser has painted since this overlay was created. Only ever
+  // consulted while the mount is being deferred; see `mount-animation.ts`.
+  @tracked hasWaitedForPaint = false;
+
+  // Whether `@isOpen` was already true on the very first render. Captured once
+  // rather than derived, because the whole question is about what the args
+  // looked like at mount.
+  isOpenAtMount = this.args.isOpen === true;
+
+  // Whether the page had already painted when this overlay was created, which
+  // only an overlay that mounts open ever has to know -- and every Dropdown,
+  // Select and Tooltip in the app builds an Overlay too.
+  hadPaintedAtMount = this.isOpenAtMount ? hasPainted() : false;
+
+  // Latched when the first open closes, so a *reopen* of the same overlay
+  // animates normally. Only a genuine close counts: the content element is
+  // also torn down and rebuilt when the portal destination changes under an
+  // open overlay, and flipping this then would swap the enter class names out
+  // from under the running modifier, which cleans up using whatever names it
+  // holds when the transition ends.
+  @tracked hasClosedOnce = false;
+
   contentElement: HTMLElement | undefined;
   focusedElement: Element | null | undefined;
   mouseDownContentElement: EventTarget | null = null;
@@ -245,6 +289,27 @@ class Overlay extends Component<OverlaySignature> {
   // teardown, because the args can change while the overlay is open and an
   // asymmetric lock/unlock would leak the reference count.
   didLockBodyScroll = false;
+
+  cancelPaintWait: (() => void) | undefined;
+
+  constructor(owner: Owner, args: Args) {
+    super(owner, args);
+
+    if (!this.shouldDeferMount) {
+      return;
+    }
+
+    this.cancelPaintWait = afterFirstPaint(() => {
+      if (!this.isDestroying && !this.isDestroyed) {
+        this.hasWaitedForPaint = true;
+      }
+    });
+  }
+
+  willDestroy(): void {
+    super.willDestroy();
+    this.cancelPaintWait?.();
+  }
 
   handleClose(): void {
     if (this.args.isOpen && typeof this.args.onClose === 'function') {
@@ -321,6 +386,10 @@ class Overlay extends Component<OverlaySignature> {
     return () => {
       this.contentElement = undefined;
 
+      if (this.args.isOpen !== true) {
+        this.hasClosedOnce = true;
+      }
+
       if (this.didLockBodyScroll) {
         this.didLockBodyScroll = false;
         unlockBodyScroll();
@@ -346,7 +415,30 @@ class Overlay extends Component<OverlaySignature> {
     };
   });
 
+  @cached
+  get mountAnimationState() {
+    return {
+      isFirstOpen: this.isOpenAtMount && !this.hasClosedOnce,
+      animationsEnabled: this.isAnimationEnabled,
+      animateOnMount: this.args.animateOnMount,
+      canWaitForFrame: typeof requestAnimationFrame === 'function',
+      hasPainted: this.hadPaintedAtMount
+    };
+  }
+
+  get shouldDeferMount(): boolean {
+    return shouldDeferMount(this.mountAnimationState);
+  }
+
+  get skipEnterTransition(): boolean {
+    return shouldSkipEnterTransition(this.mountAnimationState);
+  }
+
   get isVisible(): boolean {
+    if (this.shouldDeferMount && !this.hasWaitedForPaint) {
+      return false;
+    }
+
     return this.args.isOpen || this.keepOpen;
   }
 
@@ -391,12 +483,16 @@ class Overlay extends Component<OverlaySignature> {
     return modifier(() => {});
   }
 
-  get backdropTransition() {
-    if (this.args.backdropTransition) {
-      return this.args.backdropTransition;
-    }
+  // Applied to both the content and the backdrop, so they never disagree about
+  // whether this mount animates.
+  maybeWithoutEnter<T extends object>(options: T): T {
+    return this.skipEnterTransition ? withoutEnterTransition(options) : options;
+  }
 
-    return { isEnabled: this.isAnimationEnabled };
+  get backdropTransition() {
+    return this.maybeWithoutEnter(
+      this.args.backdropTransition || { isEnabled: this.isAnimationEnabled }
+    );
   }
 
   get transition() {
@@ -406,10 +502,10 @@ class Overlay extends Component<OverlaySignature> {
     };
 
     if (typeof this.args.transition === 'object') {
-      return { ...options, ...this.args.transition };
+      options = { ...options, ...this.args.transition };
     }
 
-    return options;
+    return this.maybeWithoutEnter(options);
   }
 
   <template>
