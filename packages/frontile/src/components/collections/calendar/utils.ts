@@ -113,7 +113,7 @@ export function buildMonthGrid(opts: {
     weeks.push({ key: toDayKey(cursor), days });
     cursor = addWeeks(cursor, 1);
 
-    if (!opts.fixedWeeks && !isBefore(startOfDay(cursor), startOfDay(last))) {
+    if (!opts.fixedWeeks && isAfter(startOfDay(cursor), startOfDay(last))) {
       break;
     }
   }

@@ -96,6 +96,44 @@ module('Unit | collections | calendar utils', function () {
     );
   });
 
+  test('buildMonthGrid does not drop the last day of the month when it falls on a week-start day (May 2026, Sunday start)', function (assert) {
+    const grid = buildMonthGrid({
+      month: new Date(2026, 4, 1),
+      weekStartsOn: 0,
+      fixedWeeks: false
+    });
+
+    const inMonth = grid.weeks
+      .flatMap((w) => w.days)
+      .filter((d) => !d.isOutside)
+      .map((d) => d.dayOfMonth);
+
+    assert.deepEqual(
+      inMonth,
+      Array.from({ length: 31 }, (_, i) => i + 1),
+      'May 2026 yields exactly 1..31 with no gap -- May 31 2026 is a Sunday'
+    );
+  });
+
+  test('buildMonthGrid does not drop the last day of the month when it falls on a week-start day (February 2027, Sunday start, four-week month)', function (assert) {
+    const grid = buildMonthGrid({
+      month: new Date(2027, 1, 1),
+      weekStartsOn: 0,
+      fixedWeeks: false
+    });
+
+    const inMonth = grid.weeks
+      .flatMap((w) => w.days)
+      .filter((d) => !d.isOutside)
+      .map((d) => d.dayOfMonth);
+
+    assert.deepEqual(
+      inMonth,
+      Array.from({ length: 28 }, (_, i) => i + 1),
+      'February 2027 yields exactly 1..28 with no gap'
+    );
+  });
+
   test('formatMonthCaption and formatWeekdays use Intl', function (assert) {
     assert.strictEqual(formatMonthCaption(sep2026, 'en-US'), 'September 2026');
     assert.strictEqual(formatMonthCaption(sep2026, 'nl-NL'), 'september 2026');
