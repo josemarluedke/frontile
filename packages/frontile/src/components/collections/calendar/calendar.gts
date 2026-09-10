@@ -201,6 +201,10 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   pickYear = (year: number): void => {
     this.headerContext.setYear(year);
     this.isYearGridOpen = false;
+    // Same as `dismissYearGrid`: closing the grid removes the just-activated
+    // year button from the DOM, so focus must be restored explicitly or it
+    // falls to the body.
+    this.returnFocusToYearTrigger(this.#root ?? null);
   };
 
   #root: HTMLElement | undefined;

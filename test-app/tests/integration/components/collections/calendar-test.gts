@@ -1171,6 +1171,44 @@ module(
       assert
         .dom(findAll('[data-fr-calendar-grid]')[0]!)
         .hasAria('label', 'September 2029');
+      assert
+        .dom('[data-fr-calendar-year-trigger]')
+        .isFocused('focus returns to the trigger after a click pick');
+    });
+
+    test('picking a year via keyboard (Enter) also returns focus to the trigger', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-year-trigger]');
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-year][data-year="2026"]',
+        'keydown',
+        'ArrowRight'
+      );
+      assert.dom('[data-fr-calendar-year][data-year="2027"]').isFocused();
+
+      // A focused native <button> fires a click when Enter is pressed on
+      // it; test-helper `triggerKeyEvent` dispatches an untrusted event, so
+      // it does not trigger that native default action -- fire the click
+      // that a real keyboard commit would produce.
+      await triggerEvent('[data-fr-calendar-year][data-year="2027"]', 'click');
+
+      assert.dom('[data-fr-calendar-year-grid]').doesNotExist('closes on pick');
+      assert
+        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .hasAria('label', 'September 2027');
+      assert
+        .dom('[data-fr-calendar-year-trigger]')
+        .isFocused('focus returns to the trigger after a keyboard pick');
     });
 
     test('the year grid is clamped by min/max', async function (assert) {
