@@ -1645,7 +1645,9 @@ module(
         <template>
           <Calendar @defaultMonth={{sep2026}} @locale="en-US">
             <:footer>
-              <button type="button">A deliberately very wide preset button</button>
+              {{! A fixed width, so this stays wider than the grid no matter
+                  what `--calendar-cell-size` is set to. }}
+              <div style="width: 520px" data-test-wide-footer>presets</div>
             </:footer>
           </Calendar>
         </template>

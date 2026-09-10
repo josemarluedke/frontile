@@ -5,11 +5,11 @@ import type { VariantProps } from '../tw';
 const calendar = tv({
   slots: {
     base: [
-      'inline-flex flex-col gap-3',
+      'inline-flex flex-col gap-3 p-3',
       // The two knobs that let a consumer resize cells and reshape them
       // without any new API. `--calendar-cell-radius` is how a `<:day>` block
       // with custom content escapes the circle.
-      '[--calendar-cell-size:2.25rem]',
+      '[--calendar-cell-size:2.5rem]',
       '[--calendar-cell-radius:9999px]'
     ],
 
@@ -19,17 +19,26 @@ const calendar = tv({
     // and next arrows drift away from the days they page.
     body: 'flex flex-col gap-3 w-fit',
 
-    header: 'flex items-center justify-between gap-2 px-1',
-    title: 'text-label-sm text-neutral-bolder',
+    header: 'flex items-center justify-between gap-2',
+
+    // `label-sm` is 1rem, which reads as heavy as a heading next to 14px day
+    // numbers; `label-xs` is the 14px the caption wants.
+    title: 'text-label-xs text-neutral-bolder',
+
     nav: 'flex items-center gap-1',
 
     navButton: [
       ...focusVisibleRing,
       'inline-flex items-center justify-center',
-      'size-7 rounded-full',
+      'size-8 rounded-full',
+      // The chevron inside is sized here rather than on the icon, so the
+      // button stays the hit area and the glyph stays optically balanced
+      // against the caption.
+      '[&_svg]:size-4',
       'text-neutral-firm cursor-pointer',
       'transition-colors duration-200 motion-reduce:transition-none',
       'not-data-[disabled=true]:hover:bg-surface-overlay-soft',
+      'not-data-[disabled=true]:hover:text-neutral-bolder',
       'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
     ],
 
@@ -37,9 +46,13 @@ const calendar = tv({
     monthGrid: 'border-collapse',
     weekdaysRow: '',
 
+    // `caption-2xs` does not exist in the type scale -- the smallest caption
+    // is `caption-sm` -- so the old value generated nothing and these labels
+    // inherited 16px, rendering *larger* than the day numbers beneath them.
+    // The row is also shorter than a day row: it is a label, not a cell.
     weekday: [
-      'text-caption-2xs text-neutral font-normal',
-      'size-[var(--calendar-cell-size)]',
+      'text-caption-sm text-neutral font-normal',
+      'h-8 w-[var(--calendar-cell-size)]',
       'text-center align-middle'
     ],
 
@@ -135,9 +148,17 @@ const calendar = tv({
     },
 
     size: {
-      sm: { base: '[--calendar-cell-size:2rem]', title: 'text-label-xs' },
-      md: { base: '[--calendar-cell-size:2.25rem]' },
-      lg: { base: '[--calendar-cell-size:2.75rem]', title: 'text-label-md' }
+      sm: {
+        base: 'p-2 [--calendar-cell-size:2.25rem]',
+        title: 'text-label-2xs',
+        navButton: 'size-7 [&_svg]:size-3.5'
+      },
+      md: { base: '[--calendar-cell-size:2.5rem]' },
+      lg: {
+        base: 'p-4 [--calendar-cell-size:3rem]',
+        title: 'text-label-sm',
+        navButton: 'size-9 [&_svg]:size-5'
+      }
     },
 
     isDisabled: {

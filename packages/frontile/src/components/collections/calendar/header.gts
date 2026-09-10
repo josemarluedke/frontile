@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
+import { ChevronLeftIcon, ChevronRightIcon } from './icons';
 
 export interface CalendarHeaderContext {
   month: Date;
@@ -63,7 +64,7 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
         data-disabled={{if @context.canGoPrevious "false" "true"}}
         aria-label="Previous month"
         {{on "click" @context.goToPrevious}}
-      >&lsaquo;</button>
+      ><ChevronLeftIcon /></button>
 
       {{#if this.isDropdown}}
         <div class={{@classes.nav}}>
@@ -105,7 +106,7 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
         data-disabled={{if @context.canGoNext "false" "true"}}
         aria-label="Next month"
         {{on "click" @context.goToNext}}
-      >&rsaquo;</button>
+      ><ChevronRightIcon /></button>
     </div>
   </template>
 }
