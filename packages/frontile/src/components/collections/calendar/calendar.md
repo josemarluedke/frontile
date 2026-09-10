@@ -81,16 +81,20 @@ Calendar won't paint a range from it. Pass a full `{ start, end }` object once b
 are chosen.
 
 `@showOutsideDays` defaults to `true` with one visible month and `false` once
-`@visibleMonths` is greater than one — otherwise a boundary date would render twice, once
-in each adjacent grid. Passing an explicit value always wins, in either direction.
+`@visibleMonths` is greater than one, where a boundary date would otherwise appear in both
+grids. Passing an explicit value always wins, in either direction.
+
+`@pageBehavior` controls how far the previous/next buttons move: `'visible'` (the default)
+pages by the whole window, `'single'` always by one month. `@fixedWeeks` renders six week
+rows in every month, so the calendar's height doesn't change as you page.
 
 ## Min and max
 
 `@minValue` and `@maxValue` bound which days are selectable. Navigation is bounded too: the
 previous/next buttons disable once paging would land entirely outside the bounds, and the
-month and year pickers offer only months and years the bounds allow. Note this is about the
-bounds alone — `@isDateUnavailable` never disables navigation, so you can still page to a
-month whose every day happens to be unavailable.
+month and year pickers offer only the months and years the bounds allow.
+`@isDateUnavailable` does not affect navigation — you can still page to a month whose every
+day is unavailable.
 
 ```gts preview
 import { Calendar } from 'frontile/collections';
@@ -130,11 +134,13 @@ function isWeekend(date: Date): boolean {
 In range mode, an unavailable date also blocks any range from being drawn across it — once
 one endpoint is chosen, days on the far side of an unavailable day become unreachable.
 
-A day can look dimmed for two different reasons, and one dimmed day is still clickable.
-Days outside `@minValue`/`@maxValue` and unavailable days are both unselectable, but shown
-differently — out-of-range days are dimmed, unavailable days are struck through. A day from
-a neighbouring month is also dimmed, the same as an out-of-range day, but it is not
-unselectable: clicking it selects that day and navigates the calendar to its month.
+Three kinds of day look muted, and they don't all behave the same way:
+
+| Day | Looks | Selectable |
+| --- | --- | --- |
+| Outside `@minValue`/`@maxValue` | Dimmed | No |
+| Matched by `@isDateUnavailable` | Struck through | No |
+| Belonging to a neighbouring month | Dimmed | Yes — selecting it pages the calendar to that month |
 
 ## Month and year dropdowns
 
@@ -146,6 +152,58 @@ import { Calendar } from 'frontile/collections';
 
 <template>
   <Calendar @captionLayout='dropdown' />
+</template>
+```
+
+## Intents and sizes
+
+`@intent` sets the color of the selected day and the range band; `@size` scales the cells
+and caption together.
+
+```gts preview
+import { Calendar } from 'frontile/collections';
+import { array } from '@ember/helper';
+
+const today = new Date();
+
+<template>
+  <div class='flex flex-wrap gap-6'>
+    {{#each (array 'primary' 'success' 'danger') as |intent|}}
+      <Calendar @intent={{intent}} @size='sm' @defaultValue={{today}} />
+    {{/each}}
+  </div>
+</template>
+```
+
+```gts preview
+import { Calendar } from 'frontile/collections';
+import { array } from '@ember/helper';
+
+const today = new Date();
+
+<template>
+  <div class='flex flex-wrap items-start gap-6'>
+    {{#each (array 'sm' 'md' 'lg') as |size|}}
+      <Calendar @size={{size}} @defaultValue={{today}} />
+    {{/each}}
+  </div>
+</template>
+```
+
+## Custom weekday labels
+
+The `<:weekday>` block replaces the column headers, receiving `short`, `long`, `narrow`, and
+the weekday `index`.
+
+```gts preview
+import { Calendar } from 'frontile/collections';
+
+<template>
+  <Calendar>
+    <:weekday as |weekday|>
+      <abbr title={{weekday.long}}>{{weekday.narrow}}</abbr>
+    </:weekday>
+  </Calendar>
 </template>
 ```
 
@@ -306,9 +364,9 @@ visible month pages the calendar to bring the new day into view.
 Previous/Next buttons, or the month `<select>` — so a pending range can always be
 canceled without first tabbing back into the grid.
 
-In range mode the first click emits a half-open `{ start, end: null }`, so `Escape` emits
-once more with `null` to retract it. A controlled consumer needs that second call to clear
-the value it was handed; without it, cancelling would leave a start date stranded.
+In range mode the first click emits a half-open `{ start, end: null }`, and `Escape` emits
+`null` to retract it — so a controlled `@value` is cleared rather than left holding a start
+date.
 
 Each month grid has `role="grid"` with an accessible label naming the month and year, and
 day cells use `role="gridcell"` with `aria-selected`. Each day button also carries a full
@@ -316,9 +374,8 @@ day cells use `role="gridcell"` with `aria-selected`. Each day button also carri
 a month boundary with the arrow keys announces the complete new date rather than a bare
 day-of-month number. The month caption is also announced through a visually hidden live
 region when navigation changes it, so month changes reach screen reader users even though
-focus stays on the grid. `@autofocus` moves DOM focus into the grid on insert, once — it's
-the only thing that may do so, since rendering a calendar must never otherwise steal
-focus, and it does not re-steal focus on subsequent renders. `@isReadOnly` marks each grid
+focus stays on the grid. `@autofocus` moves DOM focus into the grid on insert and
+only then; rendering a calendar otherwise never moves focus. `@isReadOnly` marks each grid
 `aria-readonly="true"` so assistive technology knows the days are inert.
 
 Replacing the header with a `<:header>` block hands you the same context Calendar uses

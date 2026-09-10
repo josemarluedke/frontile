@@ -45,7 +45,11 @@ import type {
 } from './types';
 
 export interface CalendarArgs<M extends CalendarMode = 'single'> {
-  /** @defaultValue 'single' */
+  /**
+   * Whether a click selects one day or the two ends of a range.
+   *
+   * @defaultValue 'single'
+   */
   mode?: M;
 
   /**
@@ -93,7 +97,12 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
    */
   showOutsideDays?: boolean;
 
-  /** @defaultValue false */
+  /**
+   * Renders six week rows in every month, so the calendar keeps the same
+   * height as you page between months of different lengths.
+   *
+   * @defaultValue false
+   */
   fixedWeeks?: boolean;
 
   /**
@@ -144,7 +153,13 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
    */
   isDateUnavailable?: (date: Date) => boolean;
 
-  /** @defaultValue false */
+  /**
+   * Allows paging between months but blocks selecting a day. Unlike
+   * `@isDisabled`, the days stay focusable so the calendar can still be read
+   * with the keyboard.
+   *
+   * @defaultValue false
+   */
   isReadOnly?: boolean;
 
   /**

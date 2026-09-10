@@ -16423,7 +16423,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'header\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'nav\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'title\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'cell\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'indicator\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'navButton\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'monthsWrapper\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'monthGrid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'weekdaysRow\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'weekday\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'week\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'cellBand\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'day\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'dayContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'yearGrid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'yearCell\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'body\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'footer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'header\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'nav\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'title\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'cell\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'indicator\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'monthSelectWrapper\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'monthSelectValue\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'monthSelect\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'monthSelectIcon\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'yearTrigger\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> ...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 10</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'yearCell\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
         },
         isRequired: false,
         isInternal: false,
@@ -17082,7 +17082,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Renders six week rows in every month, so the calendar keeps the same\nheight as you page between months of different lengths.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
@@ -17140,10 +17141,22 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Allows paging between months but blocks selecting a day. Unlike\n<code>@isDisabled</code>, the days stay focusable so the calendar can still be read\nwith the keyboard.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'labelledBy',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>The id of an element naming this calendar, forwarded to each month grid's\n<code>aria-labelledby</code>. Use it when something outside the calendar already\nnames it -- a date picker's own label, say -- so the grid is announced\nwith that name instead of its month caption.</p>\n<p>An <code>aria-labelledby</code> passed through <code>...attributes</code> lands on the root\nelement, which has no role, so it would not reach the grid.</p>",
+        tags: {},
       },
       {
         identifier: 'locale',
@@ -18432,7 +18445,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Whether a click selects one day or the two ends of a range.',
         tags: { defaultValue: { name: 'defaultValue', value: "'single'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'single\'</span></span>',
@@ -19957,6 +19971,28 @@ const data: ComponentDoc[] = [
                       "Outside `@minValue`/`@maxValue`. Distinct from `isUnavailable`, which is\nin range but not selectable, and from `isOutside`, which is a\nneighbouring month's day.",
                     tags: {},
                   },
+                  {
+                    identifier: 'rendersDay',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Whether this cell renders a day at all. An outside-month day for which\n`@showOutsideDays` is off keeps its `<td>` so the grid stays aligned, but\nrenders no band, no button and no gridcell role.\n\nDecided by `Calendar`, which is the only place that knows both\n`@showOutsideDays` and how many months are on screen -- the cell template\nmust not re-derive it.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'ariaLabel',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The day\'s full human-readable date (weekday, month, day, year),\nproduced by `Intl.DateTimeFormat` from `@locale` -- the day button\'s\naccessible name. Without it a screen reader announces only the bare\nday-of-month number, so crossing a month boundary with the arrow keys\nhas nothing to distinguish "the 1st" of one month from another.',
+                    tags: {},
+                  },
                 ],
               },
               isRequired: true,
@@ -20834,29 +20870,61 @@ const data: ComponentDoc[] = [
       'packages/frontile/declarations/components/collections/calendar/day-cell.d.ts',
     Args: [
       {
-        identifier: 'bandClass',
+        identifier: 'classes',
         type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'cellClass',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'contentClass',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'cell',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'cellBand',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'day',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'dayContent',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'indicator',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
         },
         isRequired: true,
         isInternal: false,
@@ -21548,29 +21616,9 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'dayClass',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
         identifier: 'hasCustomContent',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'indicatorClass',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
         },
         isRequired: true,
         isInternal: false,
@@ -21593,16 +21641,6 @@ const data: ComponentDoc[] = [
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
           raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Date</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'showOutsideDays',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
         },
         isRequired: true,
         isInternal: false,
@@ -22373,6 +22411,28 @@ const data: ComponentDoc[] = [
               isInternal: false,
               description:
                 "Outside `@minValue`/`@maxValue`. Distinct from `isUnavailable`, which is\nin range but not selectable, and from `isOutside`, which is a\nneighbouring month's day.",
+              tags: {},
+            },
+            {
+              identifier: 'rendersDay',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether this cell renders a day at all. An outside-month day for which\n`@showOutsideDays` is off keeps its `<td>` so the grid stays aligned, but\nrenders no band, no button and no gridcell role.\n\nDecided by `Calendar`, which is the only place that knows both\n`@showOutsideDays` and how many months are on screen -- the cell template\nmust not re-derive it.',
+              tags: {},
+            },
+            {
+              identifier: 'ariaLabel',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'The day\'s full human-readable date (weekday, month, day, year),\nproduced by `Intl.DateTimeFormat` from `@locale` -- the day button\'s\naccessible name. Without it a screen reader announces only the bare\nday-of-month number, so crossing a month boundary with the arrow keys\nhas nothing to distinguish "the 1st" of one month from another.',
               tags: {},
             },
           ],
@@ -23159,6 +23219,28 @@ const data: ComponentDoc[] = [
                       "Outside `@minValue`/`@maxValue`. Distinct from `isUnavailable`, which is\nin range but not selectable, and from `isOutside`, which is a\nneighbouring month's day.",
                     tags: {},
                   },
+                  {
+                    identifier: 'rendersDay',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Whether this cell renders a day at all. An outside-month day for which\n`@showOutsideDays` is off keeps its `<td>` so the grid stays aligned, but\nrenders no band, no button and no gridcell role.\n\nDecided by `Calendar`, which is the only place that knows both\n`@showOutsideDays` and how many months are on screen -- the cell template\nmust not re-derive it.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'ariaLabel',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The day\'s full human-readable date (weekday, month, day, year),\nproduced by `Intl.DateTimeFormat` from `@locale` -- the day button\'s\naccessible name. Without it a screen reader announces only the bare\nday-of-month number, so crossing a month boundary with the arrow keys\nhas nothing to distinguish "the 1st" of one month from another.',
+                    tags: {},
+                  },
                 ],
               },
               isRequired: true,
@@ -23241,6 +23323,56 @@ const data: ComponentDoc[] = [
             },
             {
               identifier: 'navButton',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'monthSelectWrapper',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'monthSelect',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'monthSelectValue',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'monthSelectIcon',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'yearTrigger',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
               },
@@ -24017,7 +24149,7 @@ const data: ComponentDoc[] = [
         identifier: 'months',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">value</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: number; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">label</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: string; }[]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">value</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: number; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">label</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: string; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">isDisabled</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: boolean; }[]</span></span>',
         },
         isRequired: true,
         isInternal: false,
@@ -24044,6 +24176,44 @@ const data: ComponentDoc[] = [
       },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronLeftIcon',
+    fileName:
+      'packages/frontile/declarations/components/collections/calendar/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronRightIcon',
+    fileName:
+      'packages/frontile/declarations/components/collections/calendar/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
     },
     description: '',
     tags: {},
@@ -24179,6 +24349,16 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'hasWeekdayContent',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isReadOnly',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
         },
@@ -24884,16 +25064,6 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'showOutsideDays',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
         identifier: 'stateFor',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
@@ -24913,6 +25083,17 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description: '',
+        tags: {},
+      },
+      {
+        identifier: 'labelledBy',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Forwarded from the calendar's own <code>aria-labelledby</code>, if any.",
         tags: {},
       },
     ],
@@ -25690,6 +25871,28 @@ const data: ComponentDoc[] = [
                     isInternal: false,
                     description:
                       "Outside `@minValue`/`@maxValue`. Distinct from `isUnavailable`, which is\nin range but not selectable, and from `isOutside`, which is a\nneighbouring month's day.",
+                    tags: {},
+                  },
+                  {
+                    identifier: 'rendersDay',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Whether this cell renders a day at all. An outside-month day for which\n`@showOutsideDays` is off keeps its `<td>` so the grid stays aligned, but\nrenders no band, no button and no gridcell role.\n\nDecided by `Calendar`, which is the only place that knows both\n`@showOutsideDays` and how many months are on screen -- the cell template\nmust not re-derive it.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'ariaLabel',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The day\'s full human-readable date (weekday, month, day, year),\nproduced by `Intl.DateTimeFormat` from `@locale` -- the day button\'s\naccessible name. Without it a screen reader announces only the bare\nday-of-month number, so crossing a month boundary with the arrow keys\nhas nothing to distinguish "the 1st" of one month from another.',
                     tags: {},
                   },
                 ],
