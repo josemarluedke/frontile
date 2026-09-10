@@ -84,6 +84,32 @@ const alert = tv({
         base: 'border-transparent'
       }
     },
+    // Shape and alignment, independent of the colour `variant` above.
+    //
+    // `banner` is a full-bleed announcement bar spanning its container: no
+    // radius, no border, content centred. Width is not part of it — `base`
+    // is already `w-full`, so an Alert fills its container either way.
+    layout: {
+      inline: {},
+      banner: {
+        // `relative` is the positioning context for the pinned close button
+        // below. `rounded-none` and `border-0` beat the base slot's
+        // `rounded-lg` and `border` through tailwind-merge.
+        base: 'relative rounded-none border-0',
+        inner: 'justify-center',
+        // `grow-0` is what actually centres the row. `content`'s `grow` is
+        // what pins the text left and pushes trailing items right, so
+        // without dropping it `justify-center` has no free space to
+        // distribute and silently does nothing.
+        content: 'grow-0 text-center',
+        // Out of the flex flow entirely, so the text stays centred on the
+        // full banner whether or not the alert is dismissible — a
+        // dismissible and a non-dismissible banner stacked together line up.
+        // `mr-0` cancels the inline layout's `-mr-1`, which would otherwise
+        // pull the pinned button past the edge.
+        closeButton: 'absolute right-3 top-1/2 -translate-y-1/2 mr-0'
+      }
+    },
     // With a description the icon centres on the *title's* line box rather
     // than on the whole (now multi-line) row, hence the negative offset.
     hasDescription: {
@@ -94,17 +120,24 @@ const alert = tv({
       false: {
         inner: 'items-center'
       }
+    },
+    // Paints nothing alone — it only matters combined with `layout: 'banner'`
+    // below, where a present close button needs room reserved for it.
+    hasCloseButton: {
+      true: {},
+      false: {}
     }
   },
 
   compoundVariants: [
     // default: neutral surface, colour carried by the icon and title.
-    // The `default` intent has no accent — icon and title stay neutral at
-    // the same `firm` level the other intents use for their accent text.
+    // The `default` intent has no accent colour to lend the title emphasis,
+    // so the title earns its prominence from weight of ink instead, sitting
+    // a level above the icon.
     {
       variant: 'default',
       intent: 'default',
-      class: { icon: 'text-neutral-firm', title: 'text-neutral-firm' }
+      class: { icon: 'text-neutral-firm', title: 'text-neutral-bolder' }
     },
     {
       variant: 'default',
@@ -233,13 +266,41 @@ const alert = tv({
         title: 'text-on-danger',
         description: 'text-on-danger'
       }
+    },
+
+    // A banner centres its text, so the inline layout's top-aligned icon and
+    // its calculated negative offset (see the `hasDescription` variant) read
+    // as misaligned. Centre the row instead, whether or not it wraps.
+    {
+      layout: 'banner',
+      hasDescription: true,
+      class: { inner: 'items-center', icon: 'mt-0' }
+    },
+    // The pinned close button (see `layout.banner.closeButton` above) sits
+    // outside the flex flow, so nothing about the row's own layout makes
+    // room for it — a centred, wrapping title can run underneath it. Reserve
+    // space on both sides rather than only the trailing edge: the button is
+    // 28px wide starting 12px from the edge (occupying the outer 40px),
+    // `px-11` (44px) clears it with a little breathing room, and doing it
+    // symmetrically keeps the centring axis at the banner's true centre —
+    // padding only on the right would clear the button but drag the text off
+    // centre, undoing the reason the button is pinned in the first place.
+    // `px-11` only touches the horizontal axis, so `inner`'s vertical `p-4`
+    // is untouched. Conditional on `hasCloseButton` so a non-dismissible
+    // banner keeps using its full width.
+    {
+      layout: 'banner',
+      hasCloseButton: true,
+      class: { inner: 'px-11' }
     }
   ],
 
   defaultVariants: {
     intent: 'default',
     variant: 'default',
-    hasDescription: false
+    layout: 'inline',
+    hasDescription: false,
+    hasCloseButton: false
   }
 });
 
