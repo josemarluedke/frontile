@@ -74,6 +74,7 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
   /** Seeds the selection when uncontrolled. */
   defaultValue?: CalendarValue<M>;
 
+  /** Called with the new selection when the user picks or clears a day. */
   onChange?: (value: CalendarValue<M>) => void;
 
   /** BCP-47 tag. All human-readable text is produced by `Intl` from this. */
@@ -107,8 +108,25 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
    */
   pageBehavior?: 'visible' | 'single';
 
+  /**
+   * The color used for the selected day and the range band.
+   *
+   * @defaultValue 'primary'
+   */
   intent?: CalendarVariants['intent'];
+
+  /**
+   * The size of the calendar cells and caption text.
+   *
+   * @defaultValue 'md'
+   */
   size?: CalendarVariants['size'];
+
+  /**
+   * Blocks navigation and selection entirely.
+   *
+   * @defaultValue false
+   */
   isDisabled?: boolean;
 
   /** Earliest selectable date. Also clamps month navigation. */
@@ -136,6 +154,7 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
    */
   autofocus?: boolean;
 
+  /** Overrides the classes applied to individual slots. */
   classes?: SlotsToClasses<CalendarSlots>;
 
   /**

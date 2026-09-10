@@ -16427,7 +16427,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Overrides the classes applied to individual slots.',
         tags: {},
       },
       {
@@ -17104,8 +17104,10 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The color used for the selected day and the range band.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'primary'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'primary\'</span></span>',
       },
       {
         identifier: 'isDateUnavailable',
@@ -17126,8 +17128,10 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'Blocks navigation and selection entirely.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
       },
       {
         identifier: 'isReadOnly',
@@ -19076,7 +19080,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Called with the new selection when the user picks or clears a day.',
         tags: {},
       },
       {
@@ -19133,8 +19138,10 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the calendar cells and caption text.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
       },
       {
         identifier: 'value',

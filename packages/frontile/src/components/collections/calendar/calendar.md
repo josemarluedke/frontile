@@ -29,6 +29,10 @@ const today = new Date();
 </template>
 ```
 
+The first visible month is resolved in this order: `@defaultMonth`, then the month of
+`@defaultValue`, then the month of `@value`, then today. A calendar seeded with a selection
+opens showing that selection rather than today.
+
 ## Controlled
 
 Pass `@value` and `@onChange` to own the selection yourself. Passing `@value` at all —
@@ -76,6 +80,10 @@ A controlled range `@value` whose `end` is `null` is a half-open, mid-interactio
 Calendar won't paint a range from it. Pass a full `{ start, end }` object once both ends
 are chosen.
 
+`@showOutsideDays` defaults to `true` with one visible month and `false` once
+`@visibleMonths` is greater than one — otherwise a boundary date would render twice, once
+in each adjacent grid. Passing an explicit value always wins, in either direction.
+
 ## Min and max
 
 `@minValue` and `@maxValue` bound which days are selectable. Navigation is bounded too: the
@@ -118,6 +126,12 @@ function isWeekend(date: Date): boolean {
 
 In range mode, an unavailable date also blocks any range from being drawn across it — once
 one endpoint is chosen, days on the far side of an unavailable day become unreachable.
+
+A day can look dimmed for two different reasons, and one dimmed day is still clickable.
+Days outside `@minValue`/`@maxValue` and unavailable days are both unselectable, but shown
+differently — out-of-range days are dimmed, unavailable days are struck through. A day from
+a neighbouring month is also dimmed, the same as an out-of-range day, but it is not
+unselectable: clicking it selects that day and navigates the calendar to its month.
 
 ## Month and year dropdowns
 
