@@ -911,9 +911,7 @@ module(
       await click('[data-fr-calendar-next]');
       assert
         .dom('[data-fr-calendar-next]')
-        .isFocused(
-          'focus stays on the nav button after paging once'
-        );
+        .isFocused('focus stays on the nav button after paging once');
 
       await click('[data-fr-calendar-next]');
       assert
@@ -1497,7 +1495,9 @@ module(
           'the real in-month cell owns the roving tab stop, not its outside-day duplicate'
         );
 
-      await click('[data-fr-calendar-day][data-key="2026-10-01"][data-outside="false"]');
+      await click(
+        '[data-fr-calendar-day][data-key="2026-10-01"][data-outside="false"]'
+      );
 
       const selectedCells = findAll('[data-fr-calendar-cell]').filter(
         (cell) => cell.getAttribute('aria-selected') === 'true'
