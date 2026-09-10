@@ -1,6 +1,18 @@
 import Component from '@glimmer/component';
 import { tracked, cached } from '@glimmer/tracking';
-import { addMonths, startOfMonth, endOfMonth, isSameMonth } from 'date-fns';
+import { on } from '@ember/modifier';
+import { modifier } from 'ember-modifier';
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  addYears,
+  startOfMonth,
+  endOfMonth,
+  endOfWeek,
+  startOfWeek,
+  isSameMonth
+} from 'date-fns';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import { MonthGrid } from './month-grid';
 import { CalendarHeader, type CalendarHeaderContext } from './header';
@@ -10,6 +22,7 @@ import {
   formatMonthCaption,
   formatWeekdays,
   resolveWeekStart,
+  fromDayKey,
   isSameDay,
   isWithinBounds,
   startOfDay
@@ -86,6 +99,15 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
 
   /** @defaultValue false */
   isReadOnly?: boolean;
+
+  /**
+   * Moves DOM focus into the grid on insert. This is the *only* thing that
+   * may focus the calendar on mount -- rendering a calendar must never
+   * otherwise steal focus.
+   *
+   * @defaultValue false
+   */
+  autofocus?: boolean;
 
   classes?: SlotsToClasses<CalendarSlots>;
 }
@@ -228,6 +250,156 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     );
   };
 
+  /**
+   * Focus management is hand-rolled rather than delegated to the repo's
+   * `rovingFocus` utility (`packages/frontile/src/utils/roving-focus.ts`),
+   * and the reason is structural: arrow keys must cross month boundaries --
+   * Right on Sept 30 lands on Oct 1 -- and at the moment the key fires that
+   * element does not exist in the DOM yet. `rovingFocus` navigates among
+   * already-rendered siblings sorted by document position and cannot move
+   * focus into an element a re-render has yet to create.
+   */
+  @tracked private _focusedDate: Date | undefined;
+
+  /**
+   * Only keyboard interaction (or `@autofocus`) sets this. Mounting
+   * therefore never steals focus, and we never write to the DOM during a
+   * render pass -- which is what caused the synchronous-focusout flake in
+   * `ListManager`. This is deliberately a plain field, not `@tracked`: it is
+   * read and cleared from inside the `applyFocus` modifier, which runs
+   * after render, not during it, so tracking it would only invite a
+   * backtracking-write assertion for no benefit.
+   */
+  #shouldFocus = false;
+
+  get focusedDate(): Date {
+    return this._focusedDate ?? this.defaultFocusedDate;
+  }
+
+  private get defaultFocusedDate(): Date {
+    const selected = this.selection;
+
+    if (selected instanceof Date) {
+      return selected;
+    }
+    if (selected && 'start' in selected) {
+      return selected.start;
+    }
+
+    const today = startOfDay(new Date());
+    return isSameMonth(today, this.visibleMonth) ? today : this.visibleMonth;
+  }
+
+  private moveFocus(date: Date): void {
+    const next = startOfDay(date);
+
+    if (this.isDayOutsideRange(next)) {
+      return;
+    }
+
+    this._focusedDate = next;
+    this.#shouldFocus = true;
+
+    if (!isSameMonth(next, this.visibleMonth)) {
+      this.goToMonth(next);
+    }
+  }
+
+  /**
+   * The date to navigate *from*. Read off the actual DOM-focused day button
+   * (via the event target) rather than trusting `this.focusedDate` alone --
+   * that tracked value only advances when `moveFocus` runs, so it can lag
+   * behind wherever the browser's real focus happens to be (a direct
+   * `.focus()` call, or focus arriving by Tab into a cell this render
+   * hasn't marked as the roving tabstop yet). The DOM is the source of
+   * truth for "where is focus right now"; the tracked value exists only to
+   * tell `applyFocus` which element to re-focus after a rerender.
+   */
+  private focusOrigin(event: KeyboardEvent): Date {
+    const key = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+      '[data-fr-calendar-day]'
+    )?.dataset['key'];
+
+    return key ? fromDayKey(key) : this.focusedDate;
+  }
+
+  handleKeydown = (event: KeyboardEvent): void => {
+    if (this.args.isDisabled) {
+      return;
+    }
+
+    const from = this.focusOrigin(event);
+    let next: Date | undefined;
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        next = addDays(from, -1);
+        break;
+      case 'ArrowRight':
+        next = addDays(from, 1);
+        break;
+      case 'ArrowUp':
+        next = addWeeks(from, -1);
+        break;
+      case 'ArrowDown':
+        next = addWeeks(from, 1);
+        break;
+      case 'Home':
+        next = startOfWeek(from, { weekStartsOn: this.weekStartsOn });
+        break;
+      case 'End':
+        next = endOfWeek(from, { weekStartsOn: this.weekStartsOn });
+        break;
+      case 'PageUp':
+        next = event.shiftKey ? addYears(from, -1) : addMonths(from, -1);
+        break;
+      case 'PageDown':
+        next = event.shiftKey ? addYears(from, 1) : addMonths(from, 1);
+        break;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        this.selectDay(from);
+        return;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    this.moveFocus(next);
+  };
+
+  /**
+   * Applies DOM focus after a render, but only when a keypress asked for it
+   * (or `@autofocus` did on insert). Never called from a getter or a
+   * tracked setter -- only from this modifier, which Glimmer schedules
+   * after the DOM has been updated.
+   *
+   * `ember-modifier`'s function-based modifiers only rerun when the
+   * function actually *reads* one of its arguments during autotracking --
+   * merely passing `this.focusedDate` from the template does nothing on
+   * its own. The destructured `[]` here is what makes that read happen, so
+   * every focus move (including one that crosses a month boundary) causes
+   * this modifier to run again after the corresponding rerender.
+   */
+  applyFocus = modifier((element: HTMLElement, [focusedDate]: [Date]) => {
+    // Referenced only to establish the autotracking dependency described
+    // above -- the actual target element is looked up fresh below.
+    void focusedDate;
+
+    if (this.args.autofocus) {
+      this.#shouldFocus = true;
+    }
+    if (!this.#shouldFocus) {
+      return;
+    }
+
+    this.#shouldFocus = false;
+    element
+      .querySelector<HTMLElement>('[data-fr-calendar-day][tabindex="0"]')
+      ?.focus();
+  });
+
   goToPrevious = (): void => this.goToMonth(addMonths(this.visibleMonth, -1));
   goToNext = (): void => this.goToMonth(addMonths(this.visibleMonth, 1));
 
@@ -337,15 +509,21 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       isRangeEnd: false,
       isInRange: false,
       isPreview: false,
-      isFocused: false,
+      isFocused: isSameDay(day.date, this.focusedDate),
       isOutsideRange: this.isDayOutsideRange(day.date)
     };
   };
 
   <template>
+    {{! template-lint-disable no-invalid-interactive }}
+    {{! The keydown listener implements the roving-tabindex grid pattern for
+         the day buttons nested inside; the root itself stays a plain,
+         non-focusable container. }}
     <div
       data-fr-calendar
       class={{this.styles.base class=@classes.base}}
+      {{on "keydown" this.handleKeydown}}
+      {{this.applyFocus this.focusedDate}}
       ...attributes
     >
       <CalendarHeader

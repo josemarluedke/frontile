@@ -30,6 +30,20 @@ export function toDayKey(date: Date): string {
 }
 
 /**
+ * Inverse of {@link toDayKey}. Parsed from local calendar fields (never
+ * `new Date(key)`, which reads the string as UTC and can land on the wrong
+ * local day near midnight), so it round-trips exactly.
+ */
+export function fromDayKey(key: string): Date {
+  const [year, month, day] = key.split('-').map(Number) as [
+    number,
+    number,
+    number
+  ];
+  return new Date(year, month - 1, day);
+}
+
+/**
  * `getWeekInfo()` is the standard API but shipped late; older Safari exposes
  * the same data as a `weekInfo` property. Sunday is the last resort.
  */

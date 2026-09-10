@@ -1,6 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find, click, settled } from '@ember/test-helpers';
+import {
+  render,
+  findAll,
+  find,
+  click,
+  settled,
+  focus,
+  triggerKeyEvent
+} from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Calendar } from 'frontile';
 
@@ -450,6 +458,184 @@ module(
       assert
         .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
         .hasAttribute('data-disabled', 'true');
+    });
+
+    test('the grid is a single tab stop', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      const tabbable = findAll('[data-fr-calendar-day][tabindex="0"]');
+      assert.strictEqual(tabbable.length, 1, 'exactly one day is tabbable');
+    });
+
+    test('it does not steal focus on render', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-day]').isNotFocused();
+      assert.notOk(
+        document.activeElement?.matches?.('[data-fr-calendar-day]'),
+        'no calendar day is the active element'
+      );
+    });
+
+    test('arrow keys move focus by day and by week', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      await focus(start);
+
+      await triggerKeyEvent(start, 'keydown', 'ArrowRight');
+      assert
+        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .hasAttribute('data-key', '2026-09-10');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-10"]')
+        .isFocused('DOM focus actually moved, not just the data attribute');
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-day][data-key="2026-09-10"]',
+        'keydown',
+        'ArrowDown'
+      );
+      assert
+        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .hasAttribute('data-key', '2026-09-17');
+      assert.dom('[data-fr-calendar-day][data-key="2026-09-17"]').isFocused();
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-day][data-key="2026-09-17"]',
+        'keydown',
+        'ArrowUp'
+      );
+      assert
+        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .hasAttribute('data-key', '2026-09-10');
+      assert.dom('[data-fr-calendar-day][data-key="2026-09-10"]').isFocused();
+    });
+
+    test('Home and End move to the week bounds', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      await focus(start);
+
+      await triggerKeyEvent(start, 'keydown', 'Home');
+      assert
+        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .hasAttribute('data-key', '2026-09-06');
+      assert.dom('[data-fr-calendar-day][data-key="2026-09-06"]').isFocused();
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-day][data-key="2026-09-06"]',
+        'keydown',
+        'End'
+      );
+      assert
+        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .hasAttribute('data-key', '2026-09-12');
+      assert.dom('[data-fr-calendar-day][data-key="2026-09-12"]').isFocused();
+    });
+
+    test('arrow keys cross the month boundary and move the window', async function (assert) {
+      const seen: Date[] = [];
+      const onMonthChange = (m: Date) => seen.push(m);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @onMonthChange={{onMonthChange}}
+          />
+        </template>
+      );
+
+      const last = '[data-fr-calendar-day][data-key="2026-09-30"]';
+      await focus(last);
+      await triggerKeyEvent(last, 'keydown', 'ArrowRight');
+
+      assert.dom('[data-fr-calendar-title]').hasText('October 2026');
+      assert.strictEqual(seen.length, 1, 'the month change is reported');
+      assert
+        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .hasAttribute('data-key', '2026-10-01');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
+        .isFocused(
+          'focus followed the re-rendered grid across the month boundary'
+        );
+    });
+
+    test('PageUp/PageDown move a month, with Shift a year', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      await focus(start);
+
+      await triggerKeyEvent(start, 'keydown', 'PageDown');
+      assert.dom('[data-fr-calendar-title]').hasText('October 2026');
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-day][data-key="2026-10-09"]',
+        'keydown',
+        'PageUp'
+      );
+      assert.dom('[data-fr-calendar-title]').hasText('September 2026');
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-day][data-key="2026-09-09"]',
+        'keydown',
+        'PageDown',
+        { shiftKey: true }
+      );
+      assert.dom('[data-fr-calendar-title]').hasText('September 2027');
+    });
+
+    test('Enter selects the focused day', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      await focus(start);
+      await triggerKeyEvent(start, 'keydown', 'Enter');
+
+      assert.dom(start).hasAttribute('data-selected', 'true');
+    });
+
+    test('@autofocus focuses the grid on insert', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @autofocus={{true}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-day][tabindex="0"]').isFocused();
     });
   }
 );
