@@ -314,13 +314,20 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
    * hasn't marked as the roving tabstop yet). The DOM is the source of
    * truth for "where is focus right now"; the tracked value exists only to
    * tell `applyFocus` which element to re-focus after a rerender.
+   *
+   * Returns `null` when the event did not originate from a day cell --
+   * `handleKeydown` is bound on the calendar's root element, so it also
+   * receives keydowns bubbling up from the header's nav buttons (and, later,
+   * a month `<select>`). Those controls have their own keyboard behavior
+   * (arrow keys operate a native `<select>`, for instance) and must not be
+   * hijacked by the day-grid's roving-focus handling.
    */
-  private focusOrigin(event: KeyboardEvent): Date {
+  private focusOrigin(event: KeyboardEvent): Date | null {
     const key = (event.target as HTMLElement | null)?.closest<HTMLElement>(
       '[data-fr-calendar-day]'
     )?.dataset['key'];
 
-    return key ? fromDayKey(key) : this.focusedDate;
+    return key ? fromDayKey(key) : null;
   }
 
   handleKeydown = (event: KeyboardEvent): void => {
@@ -329,6 +336,9 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     }
 
     const from = this.focusOrigin(event);
+    if (!from) {
+      return;
+    }
     let next: Date | undefined;
 
     switch (event.key) {

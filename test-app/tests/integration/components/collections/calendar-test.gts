@@ -524,6 +524,31 @@ module(
       assert.dom('[data-fr-calendar-day][data-key="2026-09-10"]').isFocused();
     });
 
+    test('arrow keys focused on a header nav button do not hijack the day grid', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      await focus(start);
+
+      await focus('[data-fr-calendar-next]');
+      await triggerKeyEvent('[data-fr-calendar-next]', 'keydown', 'ArrowRight');
+
+      assert
+        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .hasAttribute(
+          'data-key',
+          '2026-09-09',
+          'the day-grid focused day did not change'
+        );
+      assert
+        .dom('[data-fr-calendar-next]')
+        .isFocused('the nav button kept DOM focus');
+    });
+
     test('Home and End move to the week bounds', async function (assert) {
       await render(
         <template>
