@@ -38,7 +38,8 @@ import type {
   CalendarValue,
   DateRange,
   DayState,
-  WeekDay
+  WeekDay,
+  WeekdayLabel
 } from './types';
 
 export interface CalendarArgs<M extends CalendarMode = 'single'> {
@@ -149,7 +150,12 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
 
 export interface CalendarSignature<M extends CalendarMode = 'single'> {
   Args: CalendarArgs<M>;
-  Blocks: { day: [DayState] };
+  Blocks: {
+    day: [DayState];
+    header: [CalendarHeaderContext];
+    weekday: [WeekdayLabel];
+    footer: [];
+  };
   Element: HTMLDivElement;
 }
 
@@ -795,14 +801,18 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       {{this.registerRoot}}
       ...attributes
     >
-      <CalendarHeader
-        @context={{this.headerContext}}
-        @captionLayout={{this.captionLayout}}
-        @months={{this.monthOptions}}
-        @isYearGridOpen={{this.isYearGridOpen}}
-        @onToggleYearGrid={{this.toggleYearGrid}}
-        @classes={{this.headerClasses}}
-      />
+      {{#if (has-block "header")}}
+        {{yield this.headerContext to="header"}}
+      {{else}}
+        <CalendarHeader
+          @context={{this.headerContext}}
+          @captionLayout={{this.captionLayout}}
+          @months={{this.monthOptions}}
+          @isYearGridOpen={{this.isYearGridOpen}}
+          @onToggleYearGrid={{this.toggleYearGrid}}
+          @classes={{this.headerClasses}}
+        />
+      {{/if}}
 
       {{#if this.isYearGridOpen}}
         <YearGrid
@@ -829,12 +839,18 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
             @onSelect={{this.selectDay}}
             @onHover={{this.hoverDay}}
             @hasDayContent={{has-block "day"}}
+            @hasWeekdayContent={{has-block "weekday"}}
             @classes={{this.gridClasses}}
           >
             <:day as |day|>{{yield day to="day"}}</:day>
+            <:weekday as |wd|>{{yield wd to="weekday"}}</:weekday>
           </MonthGrid>
         {{/each}}
       </div>
+
+      {{#if (has-block "footer")}}
+        <div data-fr-calendar-footer>{{yield to="footer"}}</div>
+      {{/if}}
     </div>
   </template>
 }

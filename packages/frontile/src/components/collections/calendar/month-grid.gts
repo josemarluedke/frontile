@@ -15,6 +15,7 @@ export interface MonthGridSignature {
     stateFor: (day: CalendarDay) => DayState;
     showOutsideDays: boolean;
     hasDayContent: boolean;
+    hasWeekdayContent: boolean;
     onSelect: (date: Date) => void;
     onHover: (date: Date | null) => void;
     classes: {
@@ -29,7 +30,7 @@ export interface MonthGridSignature {
       indicator: string;
     };
   };
-  Blocks: { day: [DayState] };
+  Blocks: { day: [DayState]; weekday: [WeekdayLabel] };
   Element: HTMLTableElement;
 }
 
@@ -49,7 +50,13 @@ const MonthGrid: TOC<MonthGridSignature> = <template>
             data-fr-calendar-weekday
             class={{@classes.weekday}}
             abbr={{weekday.long}}
-          >{{weekday.short}}</th>
+          >
+            {{#if @hasWeekdayContent}}
+              {{yield weekday to="weekday"}}
+            {{else}}
+              {{weekday.short}}
+            {{/if}}
+          </th>
         {{/each}}
       </tr>
     </thead>

@@ -11,6 +11,7 @@ import {
   triggerKeyEvent,
   triggerEvent
 } from '@ember/test-helpers';
+import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
 import { Calendar } from 'frontile';
 import type { DateRange } from 'frontile';
@@ -73,6 +74,90 @@ module(
       assert
         .dom(days[2]!.querySelector('[data-test-custom-day]'))
         .hasText('Day 1!', 'the supplied block content renders instead');
+    });
+
+    test('the <:day> block replaces cell content and yields day state', async function (assert) {
+      const priceFor = (date: Date) =>
+        date.getDay() === 0 || date.getDay() === 6 ? '$120' : '$100';
+
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US">
+            <:day as |day|>
+              <span data-test-num>{{day.dayOfMonth}}</span>
+              {{#unless day.isOutside}}
+                <span data-test-price>{{priceFor day.date}}</span>
+              {{/unless}}
+            </:day>
+          </Calendar>
+        </template>
+      );
+
+      const cellSel = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      assert.dom(`${cellSel} [data-test-num]`).hasText('9');
+      assert.dom(`${cellSel} [data-test-price]`).hasText('$100');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-05"] [data-test-price]')
+        .hasText('$120', 'Saturday is priced higher');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-08-30"] [data-test-price]')
+        .doesNotExist('outside days opt out');
+    });
+
+    test('the <:header> block replaces the header and yields navigation', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US">
+            <:header as |ctx|>
+              <h2 data-test-caption>{{ctx.title}}</h2>
+              <button
+                type="button"
+                data-test-next
+                {{on "click" ctx.goToNext}}
+              >next</button>
+            </:header>
+          </Calendar>
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-prev]')
+        .doesNotExist('default header replaced');
+      assert.dom('[data-test-caption]').hasText('September 2026');
+
+      await click('[data-test-next]');
+      assert.dom('[data-test-caption]').hasText('October 2026');
+    });
+
+    test('the <:weekday> block customizes the column headers', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US">
+            <:weekday as |wd|><abbr
+                title={{wd.long}}
+              >{{wd.narrow}}</abbr></:weekday>
+          </Calendar>
+        </template>
+      );
+
+      const first = findAll('[data-fr-calendar-weekday]')[0]!;
+      assert.dom(first.querySelector('abbr')).hasText('S');
+      assert.dom(first.querySelector('abbr')).hasAttribute('title', 'Sunday');
+    });
+
+    test('the <:footer> block renders below the grids', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US">
+            <:footer><button
+                type="button"
+                data-test-today
+              >Today</button></:footer>
+          </Calendar>
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-footer] [data-test-today]').exists();
     });
 
     test('@weekStartsOn overrides the locale', async function (assert) {
