@@ -1371,6 +1371,56 @@ module(
         );
     });
 
+    test('multi-month @showOutsideDays={{true}} still yields exactly one tab stop and one selected cell at the boundary', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+            @showOutsideDays={{true}}
+          />
+        </template>
+      );
+
+      // Oct 1 renders twice: as a real day in the October grid, and as a
+      // trailing outside day in the September grid.
+      const boundaryCopies = findAll(
+        '[data-fr-calendar-day][data-key="2026-10-01"]'
+      );
+      assert.strictEqual(boundaryCopies.length, 2, 'the boundary duplicates');
+
+      // Move focus onto the real (non-outside) Oct 1 cell via the keyboard,
+      // crossing the month boundary the same way a real user would.
+      const last = '[data-fr-calendar-day][data-key="2026-09-30"]';
+      await focus(last);
+      await triggerKeyEvent(last, 'keydown', 'ArrowRight');
+
+      assert.strictEqual(
+        findAll('[data-fr-calendar-day][tabindex="0"]').length,
+        1,
+        'exactly one tabbable day despite the duplicated boundary cell'
+      );
+      assert
+        .dom(find('[data-fr-calendar-day][tabindex="0"]'))
+        .hasAttribute(
+          'data-outside',
+          'false',
+          'the real in-month cell owns the roving tab stop, not its outside-day duplicate'
+        );
+
+      await click('[data-fr-calendar-day][data-key="2026-10-01"][data-outside="false"]');
+
+      const selectedCells = findAll('[data-fr-calendar-cell]').filter(
+        (cell) => cell.getAttribute('aria-selected') === 'true'
+      );
+      assert.strictEqual(
+        selectedCells.length,
+        1,
+        'exactly one gridcell is marked aria-selected for the boundary date'
+      );
+    });
+
     test('single-month default still shows outside days', async function (assert) {
       await render(
         <template>

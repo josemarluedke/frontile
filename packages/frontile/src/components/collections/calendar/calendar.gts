@@ -870,19 +870,36 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       range?.end && isWithinBounds(day.date, range.start, range.end)
     );
 
+    // With more than one month visible and an explicit
+    // `@showOutsideDays={{true}}`, a boundary date renders twice: once as
+    // a real day in its own month's grid, once as a leading/trailing
+    // outside day in the neighbouring grid. Both copies would otherwise
+    // get an identical `DayState`, producing two `tabindex="0"` day
+    // buttons (breaking the single-tab-stop invariant) and two
+    // `aria-selected="true"` gridcells for one date. Suppressing the
+    // roving tabstop and selected state on the outside-month copy lets the
+    // real in-month cell own both. This only matters when the outside
+    // copy actually renders as a duplicate -- a single visible month never
+    // reaches this branch with `isOutside` true and a matching in-month
+    // cell elsewhere, since there is no neighbouring grid to duplicate
+    // into.
+    const isOutsideDuplicate = day.isOutside && this.visibleMonths > 1;
+
     return {
       date: day.date,
       dayOfMonth: day.dayOfMonth,
       isOutside: day.isOutside,
       isToday: isSameDay(day.date, startOfDay(new Date())),
-      isSelected: this.isDaySelected(day.date),
+      isSelected: isOutsideDuplicate ? false : this.isDaySelected(day.date),
       isDisabled: this.isDayDisabled(day.date),
       isUnavailable: this.isDayUnavailable(day.date),
       isRangeStart: Boolean(range && isSameDay(range.start, day.date)),
       isRangeEnd: Boolean(range?.end && isSameDay(range.end, day.date)),
       isInRange: inRange,
       isPreview: inRange && this._anchor !== undefined,
-      isFocused: isSameDay(day.date, this.focusedDate),
+      isFocused: isOutsideDuplicate
+        ? false
+        : isSameDay(day.date, this.focusedDate),
       isOutsideRange: this.isDayOutsideRange(day.date)
     };
   };
