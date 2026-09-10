@@ -293,19 +293,27 @@ const drawer = tv({
   ]
 });
 
-// A slide is *only* travel, so there is no fade left to keep once the
-// translate is dropped. Reduced motion therefore swaps the movement for the
-// fade the other transitions keep, instead of leaving the drawer to appear
-// with no transition at all. `addTransitions` derives `-leave-to` from `enter`
-// and `-enter-to` from `leave`, so these two cover all four state classes.
-const slideReducedMotion = {
-  hidden: {
+// One policy, spelled once: reduced motion drops the travel and keeps the
+// fade. `addTransitions` derives `-leave-to` from `enter` and `-enter-to` from
+// `leave`, so a state block covers two of the four generated classes.
+//
+// A slide is *only* travel, so it has no fade to keep -- `slideHidden` and
+// `slideShown` supply one rather than leaving the drawer to appear with no
+// transition at all. The `-active` blocks stay written per transition, because
+// each has to override its own timing in its own spelling.
+const reducedMotion = {
+  dropTransform: {
+    '@media (prefers-reduced-motion: reduce)': {
+      transform: 'none'
+    }
+  },
+  slideHidden: {
     '@media (prefers-reduced-motion: reduce)': {
       transform: 'none',
       opacity: '0'
     }
   },
-  shown: {
+  slideShown: {
     '@media (prefers-reduced-motion: reduce)': {
       opacity: '1'
     }
@@ -367,11 +375,7 @@ const overlayTransitions = {
     enter: {
       opacity: '0',
       transform: 'scale(0.8)',
-      // Reduced motion keeps the fade and drops the scale, rather than
-      // removing the transition -- the overlay should still read as appearing.
-      '@media (prefers-reduced-motion: reduce)': {
-        transform: 'none'
-      }
+      ...reducedMotion.dropTransform
     },
     enterActive: {
       transition: 'all 0.2s ease-in-out',
@@ -393,22 +397,22 @@ const overlayTransitions = {
   slideFromLeft: {
     enter: {
       transform: 'translateX(-100%)',
-      ...slideReducedMotion.hidden
+      ...reducedMotion.slideHidden
     },
     leave: {
       transform: 'translateX(0%)',
-      ...slideReducedMotion.shown
+      ...reducedMotion.slideShown
     },
     ...slideTransition
   },
   slideFromRight: {
     enter: {
       transform: 'translateX(100%)',
-      ...slideReducedMotion.hidden
+      ...reducedMotion.slideHidden
     },
     leave: {
       transform: 'translateX(0%)',
-      ...slideReducedMotion.shown
+      ...reducedMotion.slideShown
     },
     ...slideTransition
   },
@@ -416,22 +420,22 @@ const overlayTransitions = {
   slideFromTop: {
     enter: {
       transform: 'translateY(-100%)',
-      ...slideReducedMotion.hidden
+      ...reducedMotion.slideHidden
     },
     leave: {
       transform: 'translateY(0%)',
-      ...slideReducedMotion.shown
+      ...reducedMotion.slideShown
     },
     ...slideTransition
   },
   slideFromBottom: {
     enter: {
       transform: 'translateY(100%)',
-      ...slideReducedMotion.hidden
+      ...reducedMotion.slideHidden
     },
     leave: {
       transform: 'translateY(0%)',
-      ...slideReducedMotion.shown
+      ...reducedMotion.slideShown
     },
     ...slideTransition
   },
@@ -536,10 +540,7 @@ const overlayTransitions = {
     enter: {
       opacity: '0',
       transform: 'scale(0.95)',
-      // Reduced motion keeps the fade and drops the scale, as in `zoom`.
-      '@media (prefers-reduced-motion: reduce)': {
-        transform: 'none'
-      }
+      ...reducedMotion.dropTransform
     },
     enterActive: {
       transitionProperty: 'transform, opacity',
@@ -568,9 +569,7 @@ const overlayTransitions = {
     leaveTo: {
       opacity: '0',
       transform: 'scale(0.95)',
-      '@media (prefers-reduced-motion: reduce)': {
-        transform: 'none'
-      }
+      ...reducedMotion.dropTransform
     }
   }
 };

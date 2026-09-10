@@ -1,6 +1,8 @@
 import { module, test } from 'qunit';
+import { waitUntil } from '@ember/test-helpers';
 import {
   afterFirstPaint,
+  FIRST_PAINT_TIMEOUT,
   shouldDeferMount,
   shouldSkipEnterTransition,
   withoutEnterTransition,
@@ -125,6 +127,10 @@ module('Unit | Overlays | mount-animation', function () {
       };
     }
 
+    // Long enough for the backstop to have fired, whatever it is set to.
+    const pastTheBackstop = (): Promise<void> =>
+      new Promise((resolve) => setTimeout(resolve, FIRST_PAINT_TIMEOUT + 50));
+
     test('still runs when frames never arrive, as in a hidden tab', async function (assert) {
       withoutFrames();
 
@@ -133,7 +139,7 @@ module('Unit | Overlays | mount-animation', function () {
         ran = true;
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 400));
+      await waitUntil(() => ran, { timeout: FIRST_PAINT_TIMEOUT * 3 });
 
       assert.true(
         ran,
@@ -147,9 +153,14 @@ module('Unit | Overlays | mount-animation', function () {
         calls += 1;
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 400));
+      await waitUntil(() => calls > 0, { timeout: FIRST_PAINT_TIMEOUT * 3 });
+      await pastTheBackstop();
 
-      assert.strictEqual(calls, 1);
+      assert.strictEqual(
+        calls,
+        1,
+        'the paint and the backstop do not both fire'
+      );
     });
 
     test('cancelling prevents the callback', async function (assert) {
@@ -161,7 +172,7 @@ module('Unit | Overlays | mount-animation', function () {
       });
       cancel();
 
-      await new Promise((resolve) => setTimeout(resolve, 400));
+      await pastTheBackstop();
 
       assert.false(ran, 'a destroyed overlay must not be woken up later');
     });

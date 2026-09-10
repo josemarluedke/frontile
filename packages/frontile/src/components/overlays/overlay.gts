@@ -1,6 +1,6 @@
 /* eslint-disable ember/no-runloop */
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
@@ -262,13 +262,15 @@ class Overlay extends Component<OverlaySignature> {
   // consulted while the mount is being deferred; see `mount-animation.ts`.
   @tracked hasWaitedForPaint = false;
 
-  // Whether the page had already painted when this overlay was created.
-  hadPaintedAtMount = false;
-
   // Whether `@isOpen` was already true on the very first render. Captured once
   // rather than derived, because the whole question is about what the args
   // looked like at mount.
   isOpenAtMount = this.args.isOpen === true;
+
+  // Whether the page had already painted when this overlay was created, which
+  // only an overlay that mounts open ever has to know -- and every Dropdown,
+  // Select and Tooltip in the app builds an Overlay too.
+  hadPaintedAtMount = this.isOpenAtMount ? hasPainted() : false;
 
   // Latched when the first open closes, so a *reopen* of the same overlay
   // animates normally. Only a genuine close counts: the content element is
@@ -292,11 +294,6 @@ class Overlay extends Component<OverlaySignature> {
 
   constructor(owner: Owner, args: Args) {
     super(owner, args);
-
-    // Captured once, before any waiting: whether the page had painted at the
-    // moment this overlay was created is what decides if there is anything to
-    // wait for.
-    this.hadPaintedAtMount = hasPainted();
 
     if (!this.shouldDeferMount) {
       return;
@@ -418,6 +415,7 @@ class Overlay extends Component<OverlaySignature> {
     };
   });
 
+  @cached
   get mountAnimationState() {
     return {
       isFirstOpen: this.isOpenAtMount && !this.hasClosedOnce,
@@ -485,16 +483,16 @@ class Overlay extends Component<OverlaySignature> {
     return modifier(() => {});
   }
 
+  // Applied to both the content and the backdrop, so they never disagree about
+  // whether this mount animates.
+  maybeWithoutEnter<T extends object>(options: T): T {
+    return this.skipEnterTransition ? withoutEnterTransition(options) : options;
+  }
+
   get backdropTransition() {
-    const options = this.args.backdropTransition || {
-      isEnabled: this.isAnimationEnabled
-    };
-
-    if (this.skipEnterTransition) {
-      return withoutEnterTransition(options);
-    }
-
-    return options;
+    return this.maybeWithoutEnter(
+      this.args.backdropTransition || { isEnabled: this.isAnimationEnabled }
+    );
   }
 
   get transition() {
@@ -507,11 +505,7 @@ class Overlay extends Component<OverlaySignature> {
       options = { ...options, ...this.args.transition };
     }
 
-    if (this.skipEnterTransition) {
-      return withoutEnterTransition(options);
-    }
-
-    return options;
+    return this.maybeWithoutEnter(options);
   }
 
   <template>

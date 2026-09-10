@@ -489,7 +489,8 @@ before appearing, so its animation plays against the page rather than starting b
 anything has been drawn.
 
 Pass `@animateOnMount={{false}}` when an already-open overlay should simply be there, with
-no reveal. An overlay opened later by interaction animates either way, and so does closing.
+no reveal — Modal and Drawer forward it too. An overlay opened later by interaction animates
+either way, and so does closing.
 
 ```gts preview
 import Component from '@glimmer/component';

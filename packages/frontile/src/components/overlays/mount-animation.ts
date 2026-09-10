@@ -42,17 +42,24 @@ interface MountAnimationState {
 }
 
 /**
+ * Whether a mount animation is in question at all. Everything below is a
+ * choice about how to treat one, so an overlay opened by interaction, or one
+ * whose transitions are off, is none of their business.
+ */
+function hasMountAnimation(state: MountAnimationState): boolean {
+  return state.isFirstOpen && state.animationsEnabled;
+}
+
+/**
  * Whether to hold the overlay out of the DOM until the browser has painted.
  *
- * Turning the animation off, by argument or because animations are disabled
- * entirely, means rendering immediately: there is nothing to make visible, and
- * in tests a deferred mount would expose a frame of empty DOM that `settled`
- * does not wait for.
+ * Turning the animation off means rendering immediately: there is nothing to
+ * make visible, and in tests a deferred mount would expose a frame of empty
+ * DOM that `settled` does not wait for.
  */
 function shouldDeferMount(state: MountAnimationState): boolean {
   return (
-    state.isFirstOpen &&
-    state.animationsEnabled &&
+    hasMountAnimation(state) &&
     state.animateOnMount !== false &&
     state.canWaitForFrame &&
     !state.hasPainted
@@ -61,11 +68,7 @@ function shouldDeferMount(state: MountAnimationState): boolean {
 
 /** Whether the enter half of the transition is neutered for this mount. */
 function shouldSkipEnterTransition(state: MountAnimationState): boolean {
-  return (
-    state.isFirstOpen &&
-    state.animationsEnabled &&
-    state.animateOnMount === false
-  );
+  return hasMountAnimation(state) && state.animateOnMount === false;
 }
 
 // How long to wait for a paint that may never come: a page loaded in a
@@ -73,13 +76,18 @@ function shouldSkipEnterTransition(state: MountAnimationState): boolean {
 // has to exist in the DOM before then.
 const FIRST_PAINT_TIMEOUT = 300;
 
+// Detection is cached: it cannot change within a page, and every overlay ever
+// constructed asks.
+let paintTimingSupport: boolean | undefined;
+
 /** Whether the browser records paint timings, which Safari does not. */
 function supportsPaintTiming(): boolean {
-  return (
+  paintTimingSupport ??=
     typeof PerformanceObserver === 'function' &&
     Array.isArray(PerformanceObserver.supportedEntryTypes) &&
-    PerformanceObserver.supportedEntryTypes.includes('paint')
-  );
+    PerformanceObserver.supportedEntryTypes.includes('paint');
+
+  return paintTimingSupport;
 }
 
 /** Whether the browser has painted already. */
@@ -177,6 +185,7 @@ function withoutEnterTransition<T extends object>(
 
 export {
   afterFirstPaint,
+  FIRST_PAINT_TIMEOUT,
   hasPainted,
   shouldDeferMount,
   shouldSkipEnterTransition,
