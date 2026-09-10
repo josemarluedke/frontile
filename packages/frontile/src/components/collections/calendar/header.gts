@@ -10,6 +10,8 @@ export interface CalendarHeaderContext {
   canGoNext: boolean;
   setMonth: (monthIndex: number) => void;
   setYear: (year: number) => void;
+  isYearGridOpen: boolean;
+  toggleYearGrid: () => void;
 }
 
 export interface CalendarHeaderSignature {

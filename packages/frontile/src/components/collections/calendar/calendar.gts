@@ -696,7 +696,9 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
           new Date(this.visibleMonth.getFullYear(), monthIndex, 1)
         ),
       setYear: (year: number) =>
-        this.goToMonth(new Date(year, this.visibleMonth.getMonth(), 1))
+        this.goToMonth(new Date(year, this.visibleMonth.getMonth(), 1)),
+      isYearGridOpen: this.isYearGridOpen,
+      toggleYearGrid: this.toggleYearGrid
     };
   }
 

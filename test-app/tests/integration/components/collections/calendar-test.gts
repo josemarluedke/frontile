@@ -129,6 +129,37 @@ module(
       assert.dom('[data-test-caption]').hasText('October 2026');
     });
 
+    test('a custom <:header> block can open the year grid via the yielded context', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US">
+            <:header as |ctx|>
+              <h2 data-test-caption>{{ctx.title}}</h2>
+              <button
+                type="button"
+                data-test-year-trigger
+                aria-expanded={{if ctx.isYearGridOpen "true" "false"}}
+                {{on "click" ctx.toggleYearGrid}}
+              >year</button>
+            </:header>
+          </Calendar>
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-year-grid]').doesNotExist();
+      assert.dom('[data-test-year-trigger]').hasAria('expanded', 'false');
+
+      await click('[data-test-year-trigger]');
+
+      assert.dom('[data-fr-calendar-year-grid]').exists('year grid opens');
+      assert.dom('[data-test-year-trigger]').hasAria('expanded', 'true');
+
+      await click('[data-fr-calendar-year][data-year="2029"]');
+
+      assert.dom('[data-fr-calendar-year-grid]').doesNotExist('closes on pick');
+      assert.dom('[data-test-caption]').hasText('September 2029');
+    });
+
     test('the <:weekday> block customizes the column headers', async function (assert) {
       await render(
         <template>
@@ -158,6 +189,16 @@ module(
       );
 
       assert.dom('[data-fr-calendar-footer] [data-test-today]').exists();
+    });
+
+    test('no footer wrapper renders when no <:footer> block is supplied', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-footer]').doesNotExist();
     });
 
     test('@weekStartsOn overrides the locale', async function (assert) {
