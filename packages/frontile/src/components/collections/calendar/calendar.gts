@@ -697,12 +697,25 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
    * every focus move (including one that crosses a month boundary) causes
    * this modifier to run again after the corresponding rerender.
    */
+  /**
+   * Set the first time `applyFocus` runs, then left `true` forever after.
+   * `@autofocus`'s contract is "focus the grid on insert", not "focus the
+   * grid every time this modifier reruns" -- and it reruns on every
+   * `focusedDate` change, including ones the calendar causes itself (e.g.
+   * paging a month away moves `defaultFocusedDate`, since it depends on
+   * whether today is still in the visible window). Without this guard,
+   * `@autofocus` would re-steal focus off of whatever the user just
+   * interacted with (a nav button, in that example) on every such change.
+   */
+  #autofocusApplied = false;
+
   applyFocus = modifier((element: HTMLElement, [focusedDate]: [Date]) => {
     // Referenced only to establish the autotracking dependency described
     // above -- the actual target element is looked up fresh below.
     void focusedDate;
 
-    if (this.args.autofocus) {
+    if (this.args.autofocus && !this.#autofocusApplied) {
+      this.#autofocusApplied = true;
       this.#shouldFocus = true;
     }
     if (!this.#shouldFocus) {

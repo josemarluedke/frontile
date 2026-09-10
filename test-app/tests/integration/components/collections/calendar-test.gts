@@ -849,6 +849,38 @@ module(
       assert.dom('[data-fr-calendar-day][tabindex="0"]').isFocused();
     });
 
+    test('@autofocus only focuses the grid once, not on every subsequent focus recompute', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @autofocus={{true}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][tabindex="0"]')
+        .isFocused('the initial insert still autofocuses the grid');
+
+      // Paging away from today moves `defaultFocusedDate` (today is no
+      // longer in the visible window), which reruns the focus modifier --
+      // `@autofocus` must not use that rerun as a fresh excuse to yank
+      // focus back into the grid.
+      await click('[data-fr-calendar-next]');
+      assert
+        .dom('[data-fr-calendar-next]')
+        .isFocused(
+          'focus stays on the nav button after paging once'
+        );
+
+      await click('[data-fr-calendar-next]');
+      assert
+        .dom('[data-fr-calendar-next]')
+        .isFocused('focus stays on the nav button after paging twice');
+    });
+
     test('range mode commits on the second click', async function (assert) {
       const seen: (DateRange | null)[] = [];
       const onChange = (r: DateRange | null) => seen.push(r);
