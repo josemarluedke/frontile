@@ -18,6 +18,7 @@ import {
   withoutEnterTransition
 } from './mount-animation';
 import { Portal, findParentPortal, type PortalSignature } from './portal';
+import type Owner from '@ember/owner';
 import type { ModifierLike } from '@glint/template';
 import type { CssTransitionSignature } from 'ember-css-transitions/modifiers/css-transition';
 import { isTesting, macroCondition } from '@embroider/macros';
@@ -139,10 +140,9 @@ interface Args extends Pick<
    *
    * When true (the default) the overlay waits for the browser's first paint
    * before mounting, so the animation plays against a page the user has
-   * already seen instead of starting before anything has been painted. Set it
-   * to false for an already-open overlay that should simply be there, with no
-   * reveal. Either way, an overlay opened later by interaction animates
-   * normally, and the close animation is unaffected.
+   * already seen. Set it to false for an already-open overlay that should
+   * simply be there, with no reveal. An overlay opened later by interaction
+   * animates either way, and so does closing.
    *
    * @defaultValue true
    */
@@ -270,13 +270,13 @@ class Overlay extends Component<OverlaySignature> {
   // looked like at mount.
   isOpenAtMount = this.args.isOpen === true;
 
-  // Latched when the first open tears down, so a *reopen* of the same overlay
-  // animates normally. It is written from the content modifier's destructor,
-  // which runs after the render transaction has closed, rather than during the
-  // first open: flipping it while the overlay is still up would swap the enter
-  // class names out from under the running modifier, which cleans up using
-  // whatever names it holds when the transition ends.
-  @tracked hasMountedOnce = false;
+  // Latched when the first open closes, so a *reopen* of the same overlay
+  // animates normally. Only a genuine close counts: the content element is
+  // also torn down and rebuilt when the portal destination changes under an
+  // open overlay, and flipping this then would swap the enter class names out
+  // from under the running modifier, which cleans up using whatever names it
+  // holds when the transition ends.
+  @tracked hasClosedOnce = false;
 
   contentElement: HTMLElement | undefined;
   focusedElement: Element | null | undefined;
@@ -290,8 +290,8 @@ class Overlay extends Component<OverlaySignature> {
 
   cancelPaintWait: (() => void) | undefined;
 
-  constructor(owner: unknown, args: Args) {
-    super(owner as never, args);
+  constructor(owner: Owner, args: Args) {
+    super(owner, args);
 
     // Captured once, before any waiting: whether the page had painted at the
     // moment this overlay was created is what decides if there is anything to
@@ -388,7 +388,10 @@ class Overlay extends Component<OverlaySignature> {
     }
     return () => {
       this.contentElement = undefined;
-      this.hasMountedOnce = true;
+
+      if (this.args.isOpen !== true) {
+        this.hasClosedOnce = true;
+      }
 
       if (this.didLockBodyScroll) {
         this.didLockBodyScroll = false;
@@ -417,7 +420,7 @@ class Overlay extends Component<OverlaySignature> {
 
   get mountAnimationState() {
     return {
-      isOpenAtMount: this.isOpenAtMount && !this.hasMountedOnce,
+      isFirstOpen: this.isOpenAtMount && !this.hasClosedOnce,
       animationsEnabled: this.isAnimationEnabled,
       animateOnMount: this.args.animateOnMount,
       canWaitForFrame: typeof requestAnimationFrame === 'function',

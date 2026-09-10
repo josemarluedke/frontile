@@ -866,6 +866,8 @@ put focus. Note that `@allowClosing={{false}}` disables Escape, backdrop click a
 button together, which leaves a keyboard user no way out — reserve it for flows that provide
 their own explicit resolution.
 
+Under `prefers-reduced-motion: reduce`, the modal fades in without the zoom.
+
 Frontile does not set `aria-describedby`. Add it yourself if your dialog needs it.
 
 ## API

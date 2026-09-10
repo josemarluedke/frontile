@@ -1202,6 +1202,8 @@ put focus. `@allowClosing={{false}}` disables Escape, backdrop click and the clo
 once, leaving a keyboard user no way out — the Non-Dismissible example above pairs it with
 explicit footer actions for that reason.
 
+Under `prefers-reduced-motion: reduce`, the drawer fades in place instead of sliding.
+
 Note that `@placement` is purely visual: a drawer sliding in from the left is announced no
 differently from one on the right, and nothing about the placement reaches assistive
 technology. Frontile also does not set `aria-describedby`.

@@ -9459,7 +9459,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen instead of starting before anything has been painted. Set it\nto false for an already-open overlay that should simply be there, with no\nreveal. Either way, an overlay opened later by interaction animates\nnormally, and the close animation is unaffected.</p>",
+          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen. Set it to false for an already-open overlay that should\nsimply be there, with no reveal. An overlay opened later by interaction\nanimates either way, and so does closing.</p>",
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
@@ -10091,7 +10091,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen instead of starting before anything has been painted. Set it\nto false for an already-open overlay that should simply be there, with no\nreveal. Either way, an overlay opened later by interaction animates\nnormally, and the close animation is unaffected.</p>",
+          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen. Set it to false for an already-open overlay that should\nsimply be there, with no reveal. An overlay opened later by interaction\nanimates either way, and so does closing.</p>",
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
@@ -10678,7 +10678,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen instead of starting before anything has been painted. Set it\nto false for an already-open overlay that should simply be there, with no\nreveal. Either way, an overlay opened later by interaction animates\nnormally, and the close animation is unaffected.</p>",
+          "<p>Whether an overlay that is <em>already open the first time it renders</em> --\ndeep-linked open, or restored by a page refresh -- animates in.</p>\n<p>When true (the default) the overlay waits for the browser's first paint\nbefore mounting, so the animation plays against a page the user has\nalready seen. Set it to false for an already-open overlay that should\nsimply be there, with no reveal. An overlay opened later by interaction\nanimates either way, and so does closing.</p>",
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',

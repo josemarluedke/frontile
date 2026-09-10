@@ -293,13 +293,28 @@ const drawer = tv({
   ]
 });
 
+// A slide is *only* travel, so there is no fade left to keep once the
+// translate is dropped. Reduced motion therefore swaps the movement for the
+// fade the other transitions keep, instead of leaving the drawer to appear
+// with no transition at all. `addTransitions` derives `-leave-to` from `enter`
+// and `-enter-to` from `leave`, so these two cover all four state classes.
+const slideReducedMotion = {
+  hidden: {
+    '@media (prefers-reduced-motion: reduce)': {
+      transform: 'none',
+      opacity: '0'
+    }
+  },
+  shown: {
+    '@media (prefers-reduced-motion: reduce)': {
+      opacity: '1'
+    }
+  }
+};
+
 const slideTransition = {
   enterActive: {
     transition: 'transform 0.2s cubic-bezier(0.37, 0, 0.63, 1)',
-    // A slide is *only* travel, so there is no fade left to keep once the
-    // translate is dropped. Reduced motion therefore swaps the movement for
-    // the fade the other transitions keep, instead of leaving the drawer to
-    // appear with no transition at all.
     '@media (prefers-reduced-motion: reduce)': {
       transition: 'opacity 0.2s linear'
     }
@@ -378,32 +393,22 @@ const overlayTransitions = {
   slideFromLeft: {
     enter: {
       transform: 'translateX(-100%)',
-      '@media (prefers-reduced-motion: reduce)': {
-        transform: 'none',
-        opacity: '0'
-      }
+      ...slideReducedMotion.hidden
     },
     leave: {
       transform: 'translateX(0%)',
-      '@media (prefers-reduced-motion: reduce)': {
-        opacity: '1'
-      }
+      ...slideReducedMotion.shown
     },
     ...slideTransition
   },
   slideFromRight: {
     enter: {
       transform: 'translateX(100%)',
-      '@media (prefers-reduced-motion: reduce)': {
-        transform: 'none',
-        opacity: '0'
-      }
+      ...slideReducedMotion.hidden
     },
     leave: {
       transform: 'translateX(0%)',
-      '@media (prefers-reduced-motion: reduce)': {
-        opacity: '1'
-      }
+      ...slideReducedMotion.shown
     },
     ...slideTransition
   },
@@ -411,32 +416,22 @@ const overlayTransitions = {
   slideFromTop: {
     enter: {
       transform: 'translateY(-100%)',
-      '@media (prefers-reduced-motion: reduce)': {
-        transform: 'none',
-        opacity: '0'
-      }
+      ...slideReducedMotion.hidden
     },
     leave: {
       transform: 'translateY(0%)',
-      '@media (prefers-reduced-motion: reduce)': {
-        opacity: '1'
-      }
+      ...slideReducedMotion.shown
     },
     ...slideTransition
   },
   slideFromBottom: {
     enter: {
       transform: 'translateY(100%)',
-      '@media (prefers-reduced-motion: reduce)': {
-        transform: 'none',
-        opacity: '0'
-      }
+      ...slideReducedMotion.hidden
     },
     leave: {
       transform: 'translateY(0%)',
-      '@media (prefers-reduced-motion: reduce)': {
-        opacity: '1'
-      }
+      ...slideReducedMotion.shown
     },
     ...slideTransition
   },

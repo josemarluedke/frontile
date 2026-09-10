@@ -2,25 +2,20 @@
  * When an overlay's enter animation is worth playing, and what to do when it
  * is not.
  *
- * An overlay that is already open the first time it renders -- one that is
- * deep-linked open, or that a page refresh restored -- has nothing to animate
- * away from. Its enter transition starts before the browser has painted
- * anything at all, so the first pixels the user ever sees already contain a
- * half-faded overlay, and the backdrop fades in at the same moment as the page
- * it is meant to be dimming. Measured on a cold load, the transition ran from
- * 126ms to 311ms while first paint landed at 152ms: technically animated,
- * perceptually absent -- and on a heavier app the whole 200ms can be spent
- * before first paint, at which point it really is invisible.
- *
- * So the overlay waits for that first paint before mounting, and the animation
- * then plays against a page the user has already seen. Consumers who would
- * rather an already-open overlay simply be there can opt out with
- * `@animateOnMount={{false}}`.
+ * An overlay that is already open the first time it renders -- deep-linked
+ * open, or restored by a page refresh -- starts its enter transition before
+ * the browser has painted anything, so the first pixels the user sees already
+ * contain a half-faded overlay over a page that is itself only appearing. It
+ * waits for that first paint instead, and animates against a page the user has
+ * already seen.
  */
 
 interface MountAnimationState {
-  /** Whether `@isOpen` was already true the first time the overlay rendered. */
-  isOpenAtMount: boolean;
+  /**
+   * Whether this is the overlay's first open *and* it was already open when
+   * the overlay first rendered.
+   */
+  isFirstOpen: boolean;
 
   /**
    * Whether transitions run at all -- false in tests and when
@@ -33,15 +28,15 @@ interface MountAnimationState {
 
   /**
    * Whether there is a frame to wait for. False without
-   * `requestAnimationFrame` (prerendering), where there is no paint to animate
-   * against and waiting would mean never rendering.
+   * `requestAnimationFrame` (prerendering), where waiting would mean never
+   * rendering.
    */
   canWaitForFrame: boolean;
 
   /**
-   * Whether the browser has already painted. True for the overlay of a slow
-   * boot that rendered well after the page appeared -- there is nothing left
-   * to wait for, and its animation is already visible.
+   * Whether the browser had already painted. True for the overlay of a boot
+   * slow enough to render after the page appeared, which has nothing left to
+   * wait for.
    */
   hasPainted: boolean;
 }
@@ -49,17 +44,14 @@ interface MountAnimationState {
 /**
  * Whether to hold the overlay out of the DOM until the browser has painted.
  *
- * Only the mount-open case waits, and only before the first paint: an overlay
- * opened by interaction, or rendered by a boot slow enough that the page is
- * already on screen, is animating against something the user can see.
  * Turning the animation off, by argument or because animations are disabled
- * entirely, means rendering immediately -- there is nothing to make visible,
- * and in tests a deferred mount would expose a frame of empty DOM that
- * `settled` does not wait for.
+ * entirely, means rendering immediately: there is nothing to make visible, and
+ * in tests a deferred mount would expose a frame of empty DOM that `settled`
+ * does not wait for.
  */
 function shouldDeferMount(state: MountAnimationState): boolean {
   return (
-    state.isOpenAtMount &&
+    state.isFirstOpen &&
     state.animationsEnabled &&
     state.animateOnMount !== false &&
     state.canWaitForFrame &&
@@ -67,22 +59,18 @@ function shouldDeferMount(state: MountAnimationState): boolean {
   );
 }
 
-/**
- * Whether the enter half of the transition should be neutered for this mount.
- */
+/** Whether the enter half of the transition is neutered for this mount. */
 function shouldSkipEnterTransition(state: MountAnimationState): boolean {
   return (
-    state.isOpenAtMount &&
+    state.isFirstOpen &&
     state.animationsEnabled &&
     state.animateOnMount === false
   );
 }
 
-/**
- * How long to wait for a paint that may never be recorded -- a page loaded in
- * a background tab paints nothing until it is looked at, and the overlay still
- * has to exist in the DOM before then.
- */
+// How long to wait for a paint that may never come: a page loaded in a
+// background tab paints nothing until it is looked at, and the overlay still
+// has to exist in the DOM before then.
 const FIRST_PAINT_TIMEOUT = 300;
 
 /** Whether the browser records paint timings, which Safari does not. */
@@ -107,11 +95,10 @@ function hasPainted(): boolean {
  * Runs `callback` once the browser has painted, and returns a function that
  * cancels the wait.
  *
- * Where paint timings exist they are the honest signal, because a frame is
- * not a paint: two frames can pass on a page that has drawn nothing yet, which
- * puts the overlay back in the very first painted frame -- exactly what the
- * wait is for avoiding. Browsers without paint timings fall back to two
- * frames, which is the best approximation available there.
+ * Paint timings are the signal where they exist, because a frame is not a
+ * paint: two frames can pass on a page that has drawn nothing yet, which puts
+ * the overlay back in the very first painted frame. Browsers without them fall
+ * back to two frames.
  */
 function afterFirstPaint(callback: () => void): () => void {
   let isDone = false;
@@ -122,10 +109,14 @@ function afterFirstPaint(callback: () => void): () => void {
       return;
     }
     isDone = true;
+    clearTimeout(timer);
     observer?.disconnect();
     callback();
   };
 
+  // Deliberately left running by `settle`: the frame it waits on never arrives
+  // in a hidden tab, and the overlay cannot be left unrendered until the tab
+  // is looked at. `finish` runs once, for whichever gets there first.
   const timer = setTimeout(finish, FIRST_PAINT_TIMEOUT);
 
   const nextFrame = (fn: () => void): void => {
@@ -136,10 +127,9 @@ function afterFirstPaint(callback: () => void): () => void {
     }
   };
 
-  // One frame past the paint, so the overlay mounts into a frame after the one
-  // the user saw the page in.
+  // One frame past the paint, so the overlay mounts after the frame the user
+  // saw the page in.
   const settle = (): void => {
-    clearTimeout(timer);
     nextFrame(finish);
   };
 

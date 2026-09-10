@@ -489,8 +489,7 @@ before appearing, so its animation plays against the page rather than starting b
 anything has been drawn.
 
 Pass `@animateOnMount={{false}}` when an already-open overlay should simply be there, with
-no reveal. Overlays opened later by interaction animate either way, and the close animation
-is never affected.
+no reveal. An overlay opened later by interaction animates either way, and so does closing.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -532,7 +531,7 @@ export default class OverlaysThatStartOpen extends Component {
 
       {{#if this.showAnimated}}
         <Overlay @isOpen={{true}} @onClose={{this.closeAnimated}}>
-          <div class='bg-content1 p-6 rounded-lg shadow-lg'>
+          <div class='bg-surface-modal p-6 rounded-lg shadow-lg'>
             <h3 class='font-semibold mb-2'>Animated</h3>
             <p class='mb-4'>Rendered with @isOpen already true.</p>
             <Button @onPress={{this.closeAnimated}}>Close</Button>
@@ -546,7 +545,7 @@ export default class OverlaysThatStartOpen extends Component {
           @onClose={{this.closeImmediate}}
           @animateOnMount={{false}}
         >
-          <div class='bg-content1 p-6 rounded-lg shadow-lg'>
+          <div class='bg-surface-modal p-6 rounded-lg shadow-lg'>
             <h3 class='font-semibold mb-2'>No mount animation</h3>
             <p class='mb-4'>It is simply there. Closing still animates.</p>
             <Button @onPress={{this.closeImmediate}}>Close</Button>
@@ -682,6 +681,11 @@ Overlays that block scroll are reference counted, so a Modal that opens a Drawer
 locked until the last of them closes. Whatever inline `overflow` the page had before the
 first lock is restored, rather than blanked. Overlays rendered with `@renderInPlace={{true}}`
 or `@blockScroll={{false}}` never take part in that count.
+
+Under `prefers-reduced-motion: reduce`, the built-in transitions drop their movement and
+keep only the fade: `fade` is unchanged, `zoom` and `scale` stop scaling, and the
+`slideFrom*` transitions fade in place instead of travelling. A custom `@transition` is
+yours to adapt.
 
 Frontile does not set `aria-modal`, `aria-labelledby` or `aria-describedby` at this level.
 

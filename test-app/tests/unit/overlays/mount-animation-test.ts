@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import {
+  afterFirstPaint,
   shouldDeferMount,
   shouldSkipEnterTransition,
   withoutEnterTransition,
@@ -10,7 +11,7 @@ import {
 // The situation this feature exists for: an overlay that is already open the
 // first time it renders, in a real browser, with animations on.
 const openAtMount: MountAnimationState = {
-  isOpenAtMount: true,
+  isFirstOpen: true,
   animationsEnabled: true,
   animateOnMount: undefined,
   canWaitForFrame: true,
@@ -25,7 +26,7 @@ module('Unit | Overlays | mount-animation', function () {
 
     test('does not defer an overlay that opens later', function (assert) {
       assert.false(
-        shouldDeferMount({ ...openAtMount, isOpenAtMount: false }),
+        shouldDeferMount({ ...openAtMount, isFirstOpen: false }),
         'an overlay opened by interaction already animates against a painted page'
       );
     });
@@ -75,7 +76,7 @@ module('Unit | Overlays | mount-animation', function () {
       assert.false(
         shouldSkipEnterTransition({
           ...openAtMount,
-          isOpenAtMount: false,
+          isFirstOpen: false,
           animateOnMount: false
         }),
         'an overlay opened by interaction is not a mount, so it still animates'
@@ -101,6 +102,68 @@ module('Unit | Overlays | mount-animation', function () {
         }),
         'the opt-out is about the mount, not about when the mount happens'
       );
+    });
+  });
+
+  module('afterFirstPaint', function (hooks) {
+    // The page under test has already painted, so a `buffered: true` paint
+    // observer resolves immediately -- which is exactly the ordering that used
+    // to strand the wait: it cancelled its own timeout and then waited on a
+    // frame.
+    let restoreFrame: (() => void) | undefined;
+
+    hooks.afterEach(function () {
+      restoreFrame?.();
+      restoreFrame = undefined;
+    });
+
+    function withoutFrames(): void {
+      const original = window.requestAnimationFrame;
+      window.requestAnimationFrame = (() => 0) as typeof original;
+      restoreFrame = (): void => {
+        window.requestAnimationFrame = original;
+      };
+    }
+
+    test('still runs when frames never arrive, as in a hidden tab', async function (assert) {
+      withoutFrames();
+
+      let ran = false;
+      afterFirstPaint(() => {
+        ran = true;
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 400));
+
+      assert.true(
+        ran,
+        'the timeout is the backstop for a page that never paints a frame'
+      );
+    });
+
+    test('runs its callback once', async function (assert) {
+      let calls = 0;
+      afterFirstPaint(() => {
+        calls += 1;
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 400));
+
+      assert.strictEqual(calls, 1);
+    });
+
+    test('cancelling prevents the callback', async function (assert) {
+      withoutFrames();
+
+      let ran = false;
+      const cancel = afterFirstPaint(() => {
+        ran = true;
+      });
+      cancel();
+
+      await new Promise((resolve) => setTimeout(resolve, 400));
+
+      assert.false(ran, 'a destroyed overlay must not be woken up later');
     });
   });
 
