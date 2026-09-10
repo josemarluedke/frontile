@@ -7,6 +7,7 @@ import {
   click,
   settled,
   focus,
+  fillIn,
   triggerKeyEvent,
   triggerEvent
 } from '@ember/test-helpers';
@@ -1096,6 +1097,148 @@ module(
       assert
         .dom('[data-fr-calendar-day][data-key="2026-08-30"]')
         .exists('single-month window keeps showing outside days by default');
+    });
+
+    test('@captionLayout="dropdown" renders a month select and a year trigger', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-month-select]').exists();
+      assert
+        .dom('[data-fr-calendar-month-select]')
+        .hasValue('8', 'September is month index 8');
+
+      assert.dom('[data-fr-calendar-year-trigger]').hasText('2026');
+      assert
+        .dom('[data-fr-calendar-year-trigger]')
+        .hasAria('expanded', 'false', 'the grid starts closed');
+      assert
+        .dom('[data-fr-calendar-title]')
+        .doesNotExist('the plain label is replaced');
+    });
+
+    test('choosing a month from the dropdown navigates', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      await fillIn('[data-fr-calendar-month-select]', '11');
+
+      assert
+        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .hasAria('label', 'December 2026');
+    });
+
+    test('the year grid opens from the trigger and picks a year', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-year-grid]')
+        .doesNotExist('closed by default');
+
+      await click('[data-fr-calendar-year-trigger]');
+
+      assert.dom('[data-fr-calendar-year-grid]').exists();
+      assert.dom('[data-fr-calendar-year-trigger]').hasAria('expanded', 'true');
+      assert
+        .dom('[data-fr-calendar-year][data-selected="true"]')
+        .hasText('2026', 'the current year is marked');
+
+      await click('[data-fr-calendar-year][data-year="2029"]');
+
+      assert.dom('[data-fr-calendar-year-grid]').doesNotExist('closes on pick');
+      assert
+        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .hasAria('label', 'September 2029');
+    });
+
+    test('the year grid is clamped by min/max', async function (assert) {
+      const min = new Date(2025, 0, 1);
+      const max = new Date(2027, 11, 31);
+
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+            @minValue={{min}}
+            @maxValue={{max}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-year-trigger]');
+
+      assert.deepEqual(
+        findAll('[data-fr-calendar-year]').map((el) => el.textContent?.trim()),
+        ['2025', '2026', '2027']
+      );
+    });
+
+    test('the year grid is keyboard navigable and Escape closes it', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-year-trigger]');
+
+      assert
+        .dom('[data-fr-calendar-year][data-year="2026"]')
+        .isFocused('opening moves focus to the current year');
+
+      // The grid is three columns wide, so Down moves by three years.
+      await triggerKeyEvent(
+        '[data-fr-calendar-year][data-year="2026"]',
+        'keydown',
+        'ArrowRight'
+      );
+      assert.dom('[data-fr-calendar-year][data-year="2027"]').isFocused();
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-year][data-year="2027"]',
+        'keydown',
+        'ArrowDown'
+      );
+      assert.dom('[data-fr-calendar-year][data-year="2030"]').isFocused();
+
+      await triggerKeyEvent(
+        '[data-fr-calendar-year][data-year="2030"]',
+        'keydown',
+        'Escape'
+      );
+
+      assert.dom('[data-fr-calendar-year-grid]').doesNotExist('Escape closes');
+      assert
+        .dom('[data-fr-calendar-year-trigger]')
+        .isFocused('focus returns to the trigger');
     });
   }
 );

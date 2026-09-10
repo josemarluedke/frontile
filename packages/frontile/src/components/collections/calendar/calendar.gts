@@ -16,6 +16,7 @@ import {
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import { MonthGrid } from './month-grid';
 import { CalendarHeader, type CalendarHeaderContext } from './header';
+import { YearGrid } from './year-grid';
 import { VisuallyHidden } from '../../utilities/visually-hidden';
 import {
   buildMonthGrid,
@@ -135,6 +136,15 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
   autofocus?: boolean;
 
   classes?: SlotsToClasses<CalendarSlots>;
+
+  /**
+   * `'label'` renders the plain month/year caption; `'dropdown'` swaps it for
+   * a native month `<select>` plus a year trigger that opens a year-grid
+   * picker.
+   *
+   * @defaultValue 'label'
+   */
+  captionLayout?: 'label' | 'dropdown';
 }
 
 export interface CalendarSignature<M extends CalendarMode = 'single'> {
@@ -163,6 +173,80 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
    */
   get showOutsideDays(): boolean {
     return this.args.showOutsideDays ?? this.visibleMonths === 1;
+  }
+
+  get captionLayout(): 'label' | 'dropdown' {
+    return this.args.captionLayout ?? 'label';
+  }
+
+  @tracked isYearGridOpen = false;
+
+  toggleYearGrid = (): void => {
+    this.isYearGridOpen = !this.isYearGridOpen;
+  };
+
+  private returnFocusToYearTrigger(element: HTMLElement | null): void {
+    element
+      ?.querySelector<HTMLElement>('[data-fr-calendar-year-trigger]')
+      ?.focus();
+  }
+
+  dismissYearGrid = (): void => {
+    this.isYearGridOpen = false;
+    // Dismissing a panel that took focus must give it back, or focus falls to
+    // the body and the keyboard user loses their place.
+    this.returnFocusToYearTrigger(this.#root ?? null);
+  };
+
+  pickYear = (year: number): void => {
+    this.headerContext.setYear(year);
+    this.isYearGridOpen = false;
+  };
+
+  #root: HTMLElement | undefined;
+
+  registerRoot = modifier((element: HTMLElement) => {
+    this.#root = element;
+  });
+
+  @cached
+  get monthOptions(): { value: number; label: string }[] {
+    const fmt = new Intl.DateTimeFormat(this.locale, { month: 'long' });
+
+    return Array.from({ length: 12 }, (_, value) => ({
+      value,
+      label: fmt.format(new Date(this.visibleMonth.getFullYear(), value, 1))
+    }));
+  }
+
+  /**
+   * A getter, not a bare `{{this.visibleMonth.getFullYear}}` in the
+   * template -- Glimmer does not auto-invoke a plain method reference in
+   * argument position, it would pass the function itself instead of a
+   * number.
+   */
+  get visibleYear(): number {
+    return this.visibleMonth.getFullYear();
+  }
+
+  @cached
+  get yearOptions(): number[] {
+    const current = this.visibleMonth.getFullYear();
+    const first = this.args.minValue?.getFullYear() ?? current - 100;
+    const last = this.args.maxValue?.getFullYear() ?? current + 10;
+
+    return Array.from({ length: last - first + 1 }, (_, i) => first + i);
+  }
+
+  @cached
+  get yearGridClasses() {
+    const s = this.styles;
+    const c = this.args.classes ?? {};
+
+    return {
+      yearGrid: s.yearGrid({ class: c.yearGrid }),
+      yearCell: s.yearCell({ class: c.yearCell })
+    };
   }
 
   /**
@@ -704,12 +788,27 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       class={{this.styles.base class=@classes.base}}
       {{on "keydown" this.handleKeydown}}
       {{this.applyFocus this.focusedDate}}
+      {{this.registerRoot}}
       ...attributes
     >
       <CalendarHeader
         @context={{this.headerContext}}
+        @captionLayout={{this.captionLayout}}
+        @months={{this.monthOptions}}
+        @isYearGridOpen={{this.isYearGridOpen}}
+        @onToggleYearGrid={{this.toggleYearGrid}}
         @classes={{this.headerClasses}}
       />
+
+      {{#if this.isYearGridOpen}}
+        <YearGrid
+          @years={{this.yearOptions}}
+          @currentYear={{this.visibleYear}}
+          @onSelect={{this.pickYear}}
+          @onDismiss={{this.dismissYearGrid}}
+          @classes={{this.yearGridClasses}}
+        />
+      {{/if}}
 
       <VisuallyHidden>
         <div data-fr-calendar-live aria-live="polite">{{this.caption}}</div>
