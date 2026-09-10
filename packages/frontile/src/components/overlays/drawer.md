@@ -54,7 +54,7 @@ export default class BasicDrawer extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
-      <Button @onPress={{this.toggle}}>
+      <Button @size='sm' @onPress={{this.toggle}}>
         Open Drawer
       </Button>
 
@@ -69,10 +69,10 @@ export default class BasicDrawer extends Component {
             close button in the top right corner.</p>
         </d.Body>
         <d.Footer @class='flex gap-2'>
-          <Button @onPress={{this.toggle}}>
+          <Button @size='sm' @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @intent='primary'>
+          <Button @size='sm' @intent='primary'>
             Save
           </Button>
         </d.Footer>
@@ -119,7 +119,7 @@ export default class DrawerAppearances extends Component {
   <template>
     <div class='flex gap-2'>
       {{#each this.appearances as |appearance|}}
-        <Button @onPress={{fn this.openDrawer appearance}}>
+        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
           {{appearance}}
         </Button>
       {{/each}}
@@ -140,7 +140,7 @@ export default class DrawerAppearances extends Component {
           `ghost`.</p>
       </d.Body>
       <d.Footer @class='flex gap-2'>
-        <Button @onPress={{this.closeDrawer}}>Close</Button>
+        <Button @size='sm' @onPress={{this.closeDrawer}}>Close</Button>
       </d.Footer>
     </Drawer>
   </template>
@@ -176,7 +176,7 @@ export default class DrawerAppearancesIcon extends Component {
   <template>
     <div class='flex gap-2'>
       {{#each this.appearances as |appearance|}}
-        <Button @onPress={{fn this.openDrawer appearance}}>
+        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
           {{appearance}}
           with icon
         </Button>
@@ -228,7 +228,7 @@ export default class DrawerHeaderArgs extends Component {
   }
 
   <template>
-    <Button @onPress={{this.toggle}}>
+    <Button @size='sm' @onPress={{this.toggle}}>
       Open Drawer
     </Button>
 
@@ -262,7 +262,7 @@ export default class DrawerHeaderBlock extends Component {
   }
 
   <template>
-    <Button @onPress={{this.toggle}}>
+    <Button @size='sm' @onPress={{this.toggle}}>
       Open Drawer
     </Button>
 
@@ -308,7 +308,7 @@ export default class DrawerHeaderActions extends Component {
   }
 
   <template>
-    <Button @onPress={{this.toggle}}>Open Drawer</Button>
+    <Button @size='sm' @onPress={{this.toggle}}>Open Drawer</Button>
 
     <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
       <d.Header @title='Filters' @description='Narrow the results below.'>
@@ -330,15 +330,12 @@ export default class DrawerHeaderActions extends Component {
 }
 ```
 
-Actions are laid out **in flow**, so a taller control makes the header band taller — that
-is deliberate. The close button is the exception: it is positioned out of flow precisely
-so component chrome never changes the band's height. A title-only header stays 72px tall
-with no actions, and grows to fit whatever you add.
+Actions sit **in flow**, so a taller control makes the header band taller: a title-only
+header is 72px on its own and grows to fit whatever you add. The close button does not
+affect the band's height.
 
-The header reserves a lane on its right for the close button, since an absolutely
-positioned element cannot push text out of its own way. That reservation is dropped
-automatically when `@allowCloseButton={{false}}`, so you do not pay for whitespace you
-are not using.
+The header keeps a lane clear on its right for the close button, and drops it when
+`@allowCloseButton={{false}}`.
 
 Using `:actions` means your main header content moves into an explicit `:default` block:
 
@@ -351,6 +348,64 @@ Using `:actions` means your main header content moves into an explicit `:default
     <Button @size="sm">Reset</Button>
   </:actions>
 </d.Header>
+```
+
+### Banner under the header
+
+`Header`, `Body` and `Footer` are yielded components, not fixed slots — anything you
+render between them becomes a sibling in the drawer's column. The drawer applies no
+padding of its own, so a full-bleed element placed there spans the panel edge to edge.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer, Button, Alert } from 'frontile';
+import { SettingsIcon } from 'site/components/icons';
+
+export default class DrawerWithBanner extends Component {
+  @tracked isOpen = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  <template>
+    <Button @size='sm' @onPress={{this.toggle}}>Open Drawer</Button>
+
+    <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+      <d.Header as |h|>
+        <h.Icon><SettingsIcon /></h.Icon>
+        <h.Title>Drawer title</h.Title>
+        <h.Description>Supporting text</h.Description>
+      </d.Header>
+
+      <Alert
+        @layout='banner'
+        @variant='solid'
+        @intent='warning'
+        @title='This is the banner text'
+      />
+
+      <d.Body>
+        <p>The banner sits between the header and this content, spanning the
+          full width of the drawer.</p>
+      </d.Body>
+
+      <d.Footer>
+        <Button
+          @size='sm'
+          @intent='primary'
+          @appearance='outlined'
+          @onPress={{this.toggle}}
+        >
+          Secondary
+        </Button>
+        <Button @size='sm' @intent='primary'>Primary</Button>
+      </d.Footer>
+    </Drawer>
+  </template>
+}
 ```
 
 ### Placement
@@ -415,7 +470,7 @@ export default class DrawerPlacements extends Component {
     <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.placements as |placement|}}
-          <Button @onPress={{fn this.openDrawer placement.key}}>
+          <Button @size='sm' @onPress={{fn this.openDrawer placement.key}}>
             {{placement.label}}
           </Button>
         {{/each}}
@@ -510,7 +565,7 @@ export default class DrawerSizes extends Component {
     <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-3 gap-2'>
         {{#each this.sizeOptions as |option|}}
-          <Button @onPress={{fn this.openDrawer option.key}}>
+          <Button @size='sm' @onPress={{fn this.openDrawer option.key}}>
             {{option.label}}
           </Button>
         {{/each}}
@@ -575,7 +630,7 @@ export default class DrawerDragBottom extends Component {
   <template>
     <div class='flex gap-2'>
       {{#each this.appearances as |appearance|}}
-        <Button @onPress={{fn this.openDrawer appearance}}>
+        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
           Open Bottom Drawer ({{appearance}})
         </Button>
       {{/each}}
@@ -614,7 +669,7 @@ export default class DrawerDragRight extends Component {
   }
 
   <template>
-    <Button @onPress={{this.toggle}}>
+    <Button @size='sm' @onPress={{this.toggle}}>
       Open Right Drawer
     </Button>
 
@@ -693,7 +748,7 @@ export default class DrawerBackdrops extends Component {
     <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.backdropOptions as |option|}}
-          <Button @onPress={{fn this.openDrawer option.key}}>
+          <Button @size='sm' @onPress={{fn this.openDrawer option.key}}>
             {{option.label}}
           </Button>
         {{/each}}
@@ -714,7 +769,7 @@ export default class DrawerBackdrops extends Component {
             behind this drawer changes based on the selected type.</p>
         </d.Body>
         <d.Footer>
-          <Button @onPress={{this.closeDrawer}}>Close</Button>
+          <Button @size='sm' @onPress={{this.closeDrawer}}>Close</Button>
         </d.Footer>
       </Drawer>
     </div>
@@ -753,13 +808,13 @@ export default class DrawerCloseButton extends Component {
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
-        <Button @onPress={{this.toggleNormal}}>
+        <Button @size='sm' @onPress={{this.toggleNormal}}>
           Normal Close Button
         </Button>
-        <Button @onPress={{this.toggleNoCloseButton}}>
+        <Button @size='sm' @onPress={{this.toggleNoCloseButton}}>
           No Close Button
         </Button>
-        <Button @onPress={{this.toggleCustomClose}}>
+        <Button @size='sm' @onPress={{this.toggleCustomClose}}>
           Custom Close Button
         </Button>
       </div>
@@ -783,7 +838,7 @@ export default class DrawerCloseButton extends Component {
             the backdrop or pressing Escape.</p>
         </d.Body>
         <d.Footer>
-          <Button @onPress={{this.toggleNoCloseButton}}>
+          <Button @size='sm' @onPress={{this.toggleNoCloseButton}}>
             Close from Footer
           </Button>
         </d.Footer>
@@ -855,7 +910,7 @@ export default class NonDismissibleDrawer extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
-      <Button @onPress={{this.toggle}}>
+      <Button @size='sm' @onPress={{this.toggle}}>
         Open Processing Drawer
       </Button>
 
@@ -885,17 +940,17 @@ export default class NonDismissibleDrawer extends Component {
         </d.Body>
         <d.Footer @class='flex gap-2'>
           {{#if this.isProcessing}}
-            <Button disabled={{true}}>
+            <Button @size='sm' disabled={{true}}>
               Processing...
             </Button>
-            <Button @intent='danger' @onPress={{this.forceClose}}>
+            <Button @size='sm' @intent='danger' @onPress={{this.forceClose}}>
               Force Close
             </Button>
           {{else}}
-            <Button @onPress={{this.toggle}}>
+            <Button @size='sm' @onPress={{this.toggle}}>
               Cancel
             </Button>
-            <Button @intent='primary' @onPress={{this.startProcess}}>
+            <Button @size='sm' @intent='primary' @onPress={{this.startProcess}}>
               Start Processing
             </Button>
           {{/if}}
@@ -956,7 +1011,7 @@ export default class DrawerForm extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
-      <Button @onPress={{this.toggle}}>
+      <Button @size='sm' @onPress={{this.toggle}}>
         Open Contact Form
       </Button>
 
@@ -994,10 +1049,10 @@ export default class DrawerForm extends Component {
           </form>
         </d.Body>
         <d.Footer @class='flex gap-2'>
-          <Button @onPress={{this.toggle}}>
+          <Button @size='sm' @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @intent='primary' @onPress={{this.handleSubmit}}>
+          <Button @size='sm' @intent='primary' @onPress={{this.handleSubmit}}>
             Send Message
           </Button>
         </d.Footer>
@@ -1035,7 +1090,7 @@ export default class NavigationDrawer extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
-      <Button @onPress={{this.toggle}}>
+      <Button @size='sm' @onPress={{this.toggle}}>
         Open Navigation
       </Button>
 
