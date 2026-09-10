@@ -25183,6 +25183,419 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'icons',
+    name: 'ChevronLeftIcon',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronRightIcon',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronDoubleLeftIcon',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronDoubleRightIcon',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'pagination',
+    name: 'Pagination',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/pagination.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'summary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'item\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'list\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'page\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'prev\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'next\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ellipsis\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
+        tags: {},
+      },
+      {
+        identifier: 'defaultPage',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The page to start on when uncontrolled. Ignored in controlled mode.',
+        tags: { defaultValue: { name: 'defaultValue', value: '1' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span></span>',
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The colour of the active page chip.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Disables every control.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'label',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Accessible name for the nav landmark. Worth setting when a page has more\nthan one pagination on it.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'pagination'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'pagination\'</span></span>',
+      },
+      {
+        identifier: 'onChange',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">page</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Called with the new page on every navigation, in both modes. Never called\nwith an out-of-range page, and never called when the page would not\nchange.',
+        tags: {},
+      },
+      {
+        identifier: 'page',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The current page, 1-based.</p>\n<p><em>Passing</em> this argument at all puts the component in controlled mode: the\nrendered page then only ever reflects what you pass, so pair it with\n<code>@onChange</code> and update your own state. Omit it entirely to let the\ncomponent track the page itself, seeded by <code>@defaultPage</code>.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'pageSize',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Items shown per page. Values below 1 are treated as 1.',
+        tags: { defaultValue: { name: 'defaultValue', value: '10' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">10</span></span>',
+      },
+      {
+        identifier: 'showEdges',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Adds jump-to-first and jump-to-last controls at the ends of the row.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'showPages',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Set to false for a previous/next-only control, with no page chips -- for\ncursor-style paging where the total is not known up front.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
+        identifier: 'siblingCount',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'How many page chips to show either side of the current one. The first and\nlast pages are always shown; that boundary is not configurable.',
+        tags: { defaultValue: { name: 'defaultValue', value: '1' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span></span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+      },
+      {
+        identifier: 'total',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Total number of items across all pages -- an <em>item</em> count, not a page\ncount. <code>@pageSize</code> divides it. This is what lets the <code>summary</code> block be\nhanded a real item range instead of making the caller compute one.',
+        tags: { defaultValue: { name: 'defaultValue', value: '0' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">0</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'summary',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[PaginationSummary]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'from',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      '1-based index of the first item on the current page; 0 when empty.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'to',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      '1-based index of the last item on the current page; 0 when empty.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'total',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'page',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'totalPages',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'What the `summary` block receives.',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'item',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[PaginationItemContext]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'page',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isActive',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'classNames',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'setupItem',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Args</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: { </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Positional</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: [boolean]; }; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'What the `item` block receives, once per page chip.',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description:
+      '<p>A row of controls for moving through a paged list.</p>\n<p>It deliberately does <strong>not</strong> use <code>rovingFocus</code>: these are navigation\ntargets, not a composite widget, so every control stays individually\nreachable by Tab. The ARIA tabs pattern does not apply, and applying it\nwould remove destinations from the tab order for no gain -- the same\nreasoning <code>TabNav</code> documents.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'item',
     name: 'TabNavItem',
     fileName:

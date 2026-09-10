@@ -55,7 +55,12 @@ import type {
   Kbd
 } from './components/utilities';
 
-import type { Tabs, TabNav, ExternalLink } from './components/navigation';
+import type {
+  Tabs,
+  TabNav,
+  ExternalLink,
+  Pagination
+} from './components/navigation';
 
 import type { Accordion } from './components/disclosure';
 
@@ -117,6 +122,7 @@ export default interface Registry {
   Tabs: typeof Tabs;
   TabNav: typeof TabNav;
   ExternalLink: typeof ExternalLink;
+  Pagination: typeof Pagination;
 
   // Disclosure
   Accordion: typeof Accordion;
