@@ -28,7 +28,8 @@ import type {
   Listbox,
   Dropdown,
   Table,
-  SimpleTable
+  SimpleTable,
+  Calendar
 } from './components/collections';
 
 import type {
@@ -89,6 +90,7 @@ export default interface Registry {
   Dropdown: typeof Dropdown;
   Table: typeof Table;
   SimpleTable: typeof SimpleTable;
+  Calendar: typeof Calendar;
 
   // Overlays
   Overlay: typeof Overlay;
