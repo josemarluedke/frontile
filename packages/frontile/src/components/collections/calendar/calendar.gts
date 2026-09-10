@@ -20,6 +20,7 @@ import { MonthGrid } from './month-grid';
 import { CalendarHeader, type CalendarHeaderContext } from './header';
 import { YearGrid } from './year-grid';
 import { VisuallyHidden } from '../../utilities/visually-hidden';
+import { ref } from '../../../utils/ref';
 import {
   buildMonthGrid,
   formatMonthCaption,
@@ -266,7 +267,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     this.isYearGridOpen = false;
     // Dismissing a panel that took focus must give it back, or focus falls to
     // the body and the keyboard user loses their place.
-    this.returnFocusToYearTrigger(this.#root ?? null);
+    this.returnFocusToYearTrigger(this.rootRef.current ?? null);
   };
 
   pickYear = (year: number): void => {
@@ -275,14 +276,15 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     // Same as `dismissYearGrid`: closing the grid removes the just-activated
     // year button from the DOM, so focus must be restored explicitly or it
     // falls to the body.
-    this.returnFocusToYearTrigger(this.#root ?? null);
+    this.returnFocusToYearTrigger(this.rootRef.current ?? null);
   };
 
-  #root: HTMLElement | undefined;
-
-  registerRoot = modifier((element: HTMLElement) => {
-    this.#root = element;
-  });
+  /**
+   * The root element, for the imperative focus restores above: closing the
+   * year grid unmounts the button focus was on, so the element to move focus
+   * to has to be looked up rather than rendered into.
+   */
+  rootRef = ref<HTMLElement>();
 
   @cached
   get monthOptions(): { value: number; label: string; isDisabled: boolean }[] {
@@ -1042,7 +1044,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       class={{this.styles.base class=@classes.base}}
       {{on "keydown" this.handleKeydown}}
       {{this.applyFocus this.focusedDate this.isYearGridOpen}}
-      {{this.registerRoot}}
+      {{this.rootRef.setup}}
       ...attributes
     >
       {{! Header, year panel and grids share one column sized to the grids,
