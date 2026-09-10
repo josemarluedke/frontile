@@ -44,15 +44,33 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
         tonal: 'variant-tonal',
         solid: 'variant-solid'
       },
+      layout: {
+        inline: 'layout-inline',
+        banner: {
+          base: ['layout-banner'],
+          inner: ['banner-inner'],
+          content: ['banner-content'],
+          closeButton: ['banner-close']
+        }
+      },
       hasDescription: {
         true: { inner: ['has-description'] },
         false: { inner: ['no-description'] }
+      },
+      // The component always passes `hasCloseButton` (see alert.gts), so the
+      // placeholder recipe needs the variant declared even though none of
+      // these tests assert on it.
+      hasCloseButton: {
+        true: {},
+        false: {}
       }
     },
     defaultVariants: {
       intent: 'default',
       variant: 'default',
-      hasDescription: false
+      layout: 'inline',
+      hasDescription: false,
+      hasCloseButton: false
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
@@ -310,6 +328,75 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         `expected the shipped base slot to clip the tonal tint with overflow-hidden, got: ${classes}`
       );
     });
+
+    test('the real banner layout drops the radius and the border', function (assert) {
+      // `rounded-none` and `border-0` are bare classes in a theme string, and
+      // every other test in this file renders against the placeholder recipe
+      // registered at module scope — so nothing else here can see whether the
+      // shipped recipe still carries them. Same reasoning as the
+      // `overflow-hidden` and icon-clamp guards above. The close-button
+      // classes are pinned down here too: pulling the button out of the flex
+      // flow is what keeps the centred text from shifting when the alert is
+      // dismissible, so a dismissible and a non-dismissible banner still line
+      // up — losing `absolute` or `mr-0` would silently undo that.
+      const banner = shippedAlert({ layout: 'banner' });
+      const base = banner.base();
+
+      assert.true(
+        base.includes('rounded-none'),
+        `expected the shipped banner base to drop the radius, got: ${base}`
+      );
+      assert.true(
+        base.includes('border-0'),
+        `expected the shipped banner base to drop the border, got: ${base}`
+      );
+      assert.true(
+        banner.inner().includes('justify-center'),
+        `expected the shipped banner inner slot to centre the row, got: ${banner.inner()}`
+      );
+      assert.true(
+        banner.content().includes('grow-0'),
+        `expected the shipped banner content slot to drop grow, got: ${banner.content()}`
+      );
+      assert.true(
+        banner.content().includes('text-center'),
+        `expected the shipped banner content slot to centre its text, got: ${banner.content()}`
+      );
+      assert.true(
+        banner.closeButton().includes('absolute'),
+        `expected the shipped banner close button to be pinned out of the flex flow with absolute, got: ${banner.closeButton()}`
+      );
+      assert.true(
+        banner.closeButton().includes('mr-0'),
+        `expected the shipped banner close button to cancel the inline layout's margin with mr-0, got: ${banner.closeButton()}`
+      );
+    });
+
+    test('the real banner layout reserves symmetric padding only when a close button is present', function (assert) {
+      // The close button is pinned out of flow (see the test above), so
+      // nothing about the row's own layout keeps a centred, wrapping title
+      // from running underneath it. `inner` must gain horizontal padding
+      // wide enough to clear the button when one is present, and must not
+      // gain it — losing the alert's usable width for nothing — when it
+      // isn't.
+      const withCloseButton = shippedAlert({
+        layout: 'banner',
+        hasCloseButton: true
+      }).inner();
+      const withoutCloseButton = shippedAlert({
+        layout: 'banner',
+        hasCloseButton: false
+      }).inner();
+
+      assert.true(
+        withCloseButton.includes('px-11'),
+        `expected a dismissible banner's inner slot to reserve horizontal padding for the close button, got: ${withCloseButton}`
+      );
+      assert.false(
+        withoutCloseButton.includes('px-11'),
+        `expected a non-dismissible banner's inner slot to not reserve padding for a close button, got: ${withoutCloseButton}`
+      );
+    });
   });
 
   module('actions and closing', function () {
@@ -537,6 +624,70 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       assert.dom('[data-test-id="alert-icon"]').hasClass('my-icon');
       assert.dom('[data-test-id="alert-actions"]').hasClass('my-actions');
       assert.dom('[data-test-id="alert-close-button"]').hasClass('my-close');
+    });
+  });
+
+  module('layout', function () {
+    test('it renders the inline layout by default', async function (assert) {
+      await render(<template><Alert @title="Saved" /></template>);
+
+      assert.dom('[data-test-id="alert"]').hasClass('layout-inline');
+      assert.dom('[data-test-id="alert"]').doesNotHaveClass('layout-banner');
+    });
+
+    test('@layout=banner puts the banner classes on the right slots', async function (assert) {
+      const onClose = () => {};
+
+      await render(
+        <template>
+          <Alert
+            @layout="banner"
+            @title="Scheduled maintenance"
+            @onClose={{onClose}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="alert"]').hasClass('layout-banner');
+      assert.dom('[data-test-id="alert"] .banner-inner').exists();
+      assert.dom('[data-test-id="alert-content"]').hasClass('banner-content');
+      assert
+        .dom('[data-test-id="alert-close-button"]')
+        .hasClass('banner-close');
+    });
+
+    test('a banner still renders its actions and calls @onClose', async function (assert) {
+      let closed = 0;
+      const onClose = () => {
+        closed++;
+      };
+
+      await render(
+        <template>
+          <Alert
+            @layout="banner"
+            @title="Update available"
+            @onClose={{onClose}}
+          >
+            <:actions><button
+                type="button"
+                data-test-id="refresh"
+              >Refresh</button></:actions>
+          </Alert>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="alert-actions"] [data-test-id="refresh"]')
+        .exists('the actions block still renders in banner mode');
+
+      await click('[data-test-id="alert-close-button"]');
+
+      assert.strictEqual(
+        closed,
+        1,
+        'the pinned close button still fires @onClose'
+      );
     });
   });
 });

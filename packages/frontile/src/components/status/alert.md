@@ -126,6 +126,93 @@ import { Alert } from 'frontile';
 </template>
 ```
 
+## Banner
+
+`@layout='banner'` drops the radius and border and centres the content, for an
+announcement spanning the width of its container — a notice under a Drawer's
+header, or across the top of a panel.
+
+Width is not what the argument controls: an Alert is full-width in either
+layout. What changes is that a banner has no edges of its own, so it reads as
+part of the surface it sits on rather than as a card resting on it.
+
+```gts preview
+import { Alert } from 'frontile';
+
+<template>
+  <div class='demo-stack'>
+    <div
+      class='w-full overflow-hidden rounded-lg border border-surface-overlay-mild'
+    >
+      <div class='bg-surface-modal px-4 py-3 font-label text-label-xs'>
+        Panel header
+      </div>
+      <Alert
+        @layout='banner'
+        @variant='tonal'
+        @intent='warning'
+        @title='This is the banner text'
+      />
+      <div class='bg-surface-modal px-4 py-6 text-body-2xs text-neutral-firm'>
+        Panel content
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+A banner's close button is pinned to the trailing edge instead of sitting in
+the row, so the centred text stays put whether or not the alert is
+dismissible — two banners, one dismissible and one not, still line up with
+each other.
+
+```gts preview
+import { Alert, Button } from 'frontile';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+
+export default class BannerCloseExample extends Component {
+  @tracked isVisible = true;
+
+  close = () => {
+    this.isVisible = false;
+  };
+
+  reset = () => {
+    this.isVisible = true;
+  };
+
+  <template>
+    <div class='demo-stack'>
+      <div
+        class='w-full overflow-hidden rounded-lg border border-surface-overlay-mild'
+      >
+        <Alert
+          @layout='banner'
+          @variant='tonal'
+          @intent='info'
+          @title='Not dismissible'
+        />
+        {{#if this.isVisible}}
+          <Alert
+            @layout='banner'
+            @variant='tonal'
+            @intent='info'
+            @title='Dismissible'
+            @onClose={{this.close}}
+            @closeButtonTitle='Dismiss the banner'
+          />
+        {{/if}}
+      </div>
+
+      {{#unless this.isVisible}}
+        <Button @size='xs' @onPress={{this.reset}}>Show the banner again</Button>
+      {{/unless}}
+    </div>
+  </template>
+}
+```
+
 ## Icon
 
 The `icon` block replaces the intent glyph with anything you pass it — a `Spinner` is a

@@ -12,13 +12,23 @@ export {
 } from './modal/footer';
 export {
   default as DrawerHeader,
-  type DrawerHeaderSignature
+  DrawerHeaderIcon,
+  DrawerHeaderTitle,
+  DrawerHeaderDescription,
+  type DrawerHeaderSignature,
+  type DrawerHeaderIconSignature,
+  type DrawerHeaderTitleSignature,
+  type DrawerHeaderDescriptionSignature
 } from './drawer/header';
 export { default as DrawerBody, type DrawerBodySignature } from './drawer/body';
 export {
   default as DrawerFooter,
   type DrawerFooterSignature
 } from './drawer/footer';
+export {
+  default as DrawerDragHandle,
+  type DrawerDragHandleSignature
+} from './drawer/drag-handle';
 export * from './portal';
 export * from './portal-target';
 export * from './popover';
