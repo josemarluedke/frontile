@@ -162,7 +162,10 @@ const calendar = tv({
     // is exactly why it has to scroll inside that box instead of growing the
     // component to the height of its longest possible list.
     yearGrid: [
-      'grid grid-cols-3 gap-1',
+      // Positioned so the year buttons measure their `offsetTop` against the
+      // panel: the component scrolls the selected year into view itself,
+      // rather than letting `scrollIntoView` drag the whole page with it.
+      'relative grid grid-cols-3 gap-1',
       'w-[calc(var(--calendar-cell-size)*7)]',
       'max-h-[calc(var(--calendar-cell-size)*6)] overflow-y-auto',
       'overscroll-contain'

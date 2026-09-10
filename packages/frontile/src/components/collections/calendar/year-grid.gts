@@ -17,6 +17,43 @@ export interface YearGridSignature {
 /** The grid is three columns wide, so vertical movement is by three. */
 const COLUMNS = 3;
 
+/**
+ * Scroll `target` into view inside `panel` and nowhere else.
+ *
+ * `scrollIntoView` and a plain `focus()` both scroll *every* scrollable
+ * ancestor up to the document, so either one makes the host page jump when the
+ * panel opens or when arrow keys walk past its edge. Adjusting `scrollTop`
+ * directly keeps the movement inside the panel.
+ *
+ * The measurements come from `offsetTop`, not `getBoundingClientRect()`:
+ * client rects are in transformed pixels, so under any ancestor `scale()` they
+ * would not agree with `scrollTop`. This relies on the panel being the
+ * `offsetParent` -- the `yearGrid` slot is positioned for exactly that reason.
+ *
+ * `center` places the target mid-panel, for the opening jump to a year that is
+ * usually a long way down the list; otherwise the target is brought just far
+ * enough into view, which is what stepping key by key wants.
+ */
+function revealWithin(
+  panel: HTMLElement,
+  target: HTMLElement,
+  center: boolean
+): void {
+  const top = target.offsetTop;
+  const bottom = top + target.offsetHeight;
+
+  if (center) {
+    panel.scrollTop = top - (panel.clientHeight - target.offsetHeight) / 2;
+    return;
+  }
+
+  if (top < panel.scrollTop) {
+    panel.scrollTop = top;
+  } else if (bottom > panel.scrollTop + panel.clientHeight) {
+    panel.scrollTop = bottom - panel.clientHeight;
+  }
+}
+
 export default class YearGrid extends Component<YearGridSignature> {
   #element: HTMLElement | undefined;
 
@@ -37,8 +74,10 @@ export default class YearGrid extends Component<YearGridSignature> {
     // The list spans a century, so the selected year is usually far down a
     // scrolling panel. Bring it into view before focusing, or the panel opens
     // showing whichever decade happens to be at the top.
-    selected?.scrollIntoView({ block: 'center' });
-    selected?.focus();
+    if (selected) {
+      revealWithin(element, selected, true);
+      selected.focus({ preventScroll: true });
+    }
   });
 
   /**
@@ -55,7 +94,11 @@ export default class YearGrid extends Component<YearGridSignature> {
       button.tabIndex = -1;
     }
     next.tabIndex = 0;
-    next.focus();
+    next.focus({ preventScroll: true });
+
+    if (this.#element) {
+      revealWithin(this.#element, next, false);
+    }
   }
 
   handleKeydown = (event: KeyboardEvent): void => {

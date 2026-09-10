@@ -1717,6 +1717,54 @@ module(
         .isFocused('focus returns to the trigger after a click pick');
     });
 
+    test('opening the year grid scrolls the panel, not the page', async function (assert) {
+      await render(
+        <template>
+          {{! A tall spacer makes the test container scroll, the way a real
+              page does. Opening the panel must not move that scroll. }}
+          <div style="height: 400px"></div>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+          <div style="height: 400px"></div>
+        </template>
+      );
+
+      const scroller = document.getElementById('ember-testing-container')!;
+      const trigger = find('[data-fr-calendar-year-trigger]')!;
+      trigger.scrollIntoView({ block: 'center' });
+
+      const scrollTopBefore = scroller.scrollTop;
+      assert.ok(
+        scrollTopBefore > 0,
+        'the page is scrolled to reach the calendar'
+      );
+
+      await click('[data-fr-calendar-year-trigger]');
+
+      assert.strictEqual(
+        scroller.scrollTop,
+        scrollTopBefore,
+        'the page scroll position is unchanged'
+      );
+
+      // Measured in layout pixels, the space `scrollTop` is in -- the test
+      // container is CSS-scaled, so client rects would not agree with it.
+      const panel = find('[data-fr-calendar-year-grid]')!;
+      const selected = find(
+        '[data-fr-calendar-year][data-selected="true"]'
+      ) as HTMLElement;
+
+      assert.ok(
+        selected.offsetTop >= panel.scrollTop &&
+          selected.offsetTop + selected.offsetHeight <=
+            panel.scrollTop + panel.clientHeight,
+        'the selected year is scrolled into view inside the panel'
+      );
+    });
+
     test('picking a year via keyboard (Enter) also returns focus to the trigger', async function (assert) {
       await render(
         <template>
