@@ -75,6 +75,17 @@ export interface DayState {
    * neighbouring month's day.
    */
   isOutsideRange: boolean;
+
+  /**
+   * Whether this cell renders a day at all. An outside-month day for which
+   * `@showOutsideDays` is off keeps its `<td>` so the grid stays aligned, but
+   * renders no band, no button and no gridcell role.
+   *
+   * Decided by `Calendar`, which is the only place that knows both
+   * `@showOutsideDays` and how many months are on screen -- the cell template
+   * must not re-derive it.
+   */
+  rendersDay: boolean;
   /**
    * The day's full human-readable date (weekday, month, day, year),
    * produced by `Intl.DateTimeFormat` from `@locale` -- the day button's
@@ -83,4 +94,13 @@ export interface DayState {
    * has nothing to distinguish "the 1st" of one month from another.
    */
   ariaLabel: string;
+}
+
+/** The slot classes a day cell needs, passed as one object rather than five. */
+export interface DayCellClasses {
+  cell: string;
+  cellBand: string;
+  day: string;
+  dayContent: string;
+  indicator: string;
 }

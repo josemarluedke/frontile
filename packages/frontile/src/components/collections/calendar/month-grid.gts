@@ -13,7 +13,6 @@ export interface MonthGridSignature {
     weekdays: WeekdayLabel[];
     caption: string;
     stateFor: (day: CalendarDay) => DayState;
-    showOutsideDays: boolean;
     isReadOnly: boolean;
     /** Forwarded from the calendar's own `aria-labelledby`, if any. */
     labelledBy?: string;
@@ -76,15 +75,10 @@ const MonthGrid: TOC<MonthGridSignature> = <template>
               <DayCell
                 @day={{day}}
                 @state={{state}}
-                @showOutsideDays={{@showOutsideDays}}
                 @hasCustomContent={{@hasDayContent}}
                 @onSelect={{@onSelect}}
                 @onHover={{@onHover}}
-                @cellClass={{@classes.cell}}
-                @bandClass={{@classes.cellBand}}
-                @dayClass={{@classes.day}}
-                @contentClass={{@classes.dayContent}}
-                @indicatorClass={{@classes.indicator}}
+                @classes={{@classes}}
               >
                 {{#if @hasDayContent}}
                   {{yield state to="day"}}

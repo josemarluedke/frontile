@@ -121,20 +121,42 @@ export function buildMonthGrid(opts: {
   return { month, weeks, key: toMonthKey(month) };
 }
 
+/**
+ * `Intl.DateTimeFormat` is expensive to construct and cheap to reuse, and the
+ * calendar re-renders on every hover while a range is being dragged. Cache one
+ * formatter per locale-and-options rather than building a new one per render.
+ *
+ * The key set is bounded by the locales and option shapes a page actually
+ * uses, so this cannot grow without bound.
+ */
+const formatterCache = new Map<string, Intl.DateTimeFormat>();
+
+function formatter(
+  locale: string,
+  options: Intl.DateTimeFormatOptions
+): Intl.DateTimeFormat {
+  const key = `${locale}|${JSON.stringify(options)}`;
+  let cached = formatterCache.get(key);
+
+  if (!cached) {
+    cached = new Intl.DateTimeFormat(locale, options);
+    formatterCache.set(key, cached);
+  }
+
+  return cached;
+}
+
 export function formatMonthCaption(month: Date, locale: string): string {
-  return new Intl.DateTimeFormat(locale, {
-    month: 'long',
-    year: 'numeric'
-  }).format(month);
+  return formatter(locale, { month: 'long', year: 'numeric' }).format(month);
 }
 
 export function formatWeekdays(
   locale: string,
   weekStartsOn: WeekDay
 ): WeekdayLabel[] {
-  const short = new Intl.DateTimeFormat(locale, { weekday: 'short' });
-  const long = new Intl.DateTimeFormat(locale, { weekday: 'long' });
-  const narrow = new Intl.DateTimeFormat(locale, { weekday: 'narrow' });
+  const short = formatter(locale, { weekday: 'short' });
+  const long = formatter(locale, { weekday: 'long' });
+  const narrow = formatter(locale, { weekday: 'narrow' });
 
   // 2026-11-01 is a Sunday, so offsetting from it lands on each weekday in turn.
   const sunday = new Date(2026, 10, 1);

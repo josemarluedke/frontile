@@ -238,10 +238,13 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     // without this fallback, the just-removed year button leaves focus on
     // `<body>`. Fall back to the roving day cell instead, same element
     // `applyFocus` would target.
+    //
+    // Requesting focus rather than taking it: the year panel stands in for
+    // the day grid, so at this moment there is no day cell in the DOM to
+    // focus. `applyFocus` takes over once the grid is back -- it depends on
+    // `isYearGridOpen`, so closing the panel is what wakes it, and the flag
+    // is consumed on that same rerender rather than lingering.
     this.#shouldFocus = true;
-    element
-      ?.querySelector<HTMLElement>('[data-fr-calendar-day][tabindex="0"]')
-      ?.focus();
   }
 
   dismissYearGrid = (): void => {
@@ -268,7 +271,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
 
   @cached
   get monthOptions(): { value: number; label: string; isDisabled: boolean }[] {
-    const fmt = new Intl.DateTimeFormat(this.locale, { month: 'long' });
+    const fmt = this.monthNameFormatter;
     const year = this.visibleMonth.getFullYear();
 
     // A month is offered only when some day in it is in range. `yearOptions`
@@ -281,10 +284,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       return {
         value,
         label: fmt.format(month),
-        isDisabled: !(
-          isWithinBounds(endOfMonth(month), this.args.minValue, undefined) &&
-          isWithinBounds(month, undefined, this.args.maxValue)
-        )
+        isDisabled: !this.canShowWindow(month)
       };
     });
   }
@@ -381,17 +381,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     // `setMonth`/`setYear` and through the `goToPrevious`/`goToNext` yielded
     // to a `<:header>` block -- a custom header that ignores `canGoPrevious`
     // would otherwise page straight past `@minValue`.
-    //
-    // The test is against the whole landing *window*, matching
-    // `canGoPrevious`/`canGoNext`: with several months visible a bound can
-    // fall inside a later month of the window, which is still a legitimate
-    // place to land. Testing `next` alone would refuse that move.
-    const windowEnd = endOfMonth(addMonths(next, this.visibleMonths - 1));
-
-    if (
-      !isWithinBounds(windowEnd, this.args.minValue, undefined) ||
-      !isWithinBounds(next, undefined, this.args.maxValue)
-    ) {
+    if (!this.canShowWindow(next)) {
       return;
     }
 
@@ -620,10 +610,12 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
    */
   #shouldFocus = false;
 
+  @cached
   get focusedDate(): Date {
     return this._focusedDate ?? this.defaultFocusedDate;
   }
 
+  @cached
   private get defaultFocusedDate(): Date {
     const selected = this.selection;
 
@@ -776,24 +768,31 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
    */
   #autofocusApplied = false;
 
-  applyFocus = modifier((element: HTMLElement, [focusedDate]: [Date]) => {
-    // Referenced only to establish the autotracking dependency described
-    // above -- the actual target element is looked up fresh below.
-    void focusedDate;
+  applyFocus = modifier(
+    (element: HTMLElement, [focusedDate, isYearGridOpen]: [Date, boolean]) => {
+      // Referenced only to establish the autotracking dependencies described
+      // above -- the actual target element is looked up fresh below.
+      // `isYearGridOpen` is one of them because the day grid is unmounted
+      // while the year panel is up: focus requested during that time has to
+      // wait for the grid to come back, and this is what wakes the modifier
+      // when it does.
+      void focusedDate;
+      void isYearGridOpen;
 
-    if (this.args.autofocus && !this.#autofocusApplied) {
-      this.#autofocusApplied = true;
-      this.#shouldFocus = true;
-    }
-    if (!this.#shouldFocus) {
-      return;
-    }
+      if (this.args.autofocus && !this.#autofocusApplied) {
+        this.#autofocusApplied = true;
+        this.#shouldFocus = true;
+      }
+      if (!this.#shouldFocus) {
+        return;
+      }
 
-    this.#shouldFocus = false;
-    element
-      .querySelector<HTMLElement>('[data-fr-calendar-day][tabindex="0"]')
-      ?.focus();
-  });
+      this.#shouldFocus = false;
+      element
+        .querySelector<HTMLElement>('[data-fr-calendar-day][tabindex="0"]')
+        ?.focus();
+    }
+  );
 
   /** How many months to render, starting at `visibleMonth`. */
   get visibleMonths(): number {
@@ -810,40 +809,42 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   goToNext = (): void =>
     this.goToMonth(addMonths(this.visibleMonth, this.pageSize));
 
+  /**
+   * Whether a window whose first month is `firstMonth` has any day inside
+   * `@minValue`/`@maxValue`.
+   *
+   * The single source of truth for month-level bounds. Every entry point that
+   * can move the window -- the prev/next buttons, `goToMonth` (and so the
+   * `setMonth`/`setYear` and `<:header>` paths through it), and the month
+   * picker's option list -- asks this, so an affordance can never offer a
+   * month the enforcement would then refuse.
+   *
+   * The whole window is tested, not just its first month: with several months
+   * visible a bound can fall inside a later month, which is still a legitimate
+   * place to land.
+   */
+  private canShowWindow(firstMonth: Date): boolean {
+    const first = startOfMonth(firstMonth);
+    const last = endOfMonth(addMonths(first, this.visibleMonths - 1));
+
+    return (
+      isWithinBounds(last, this.args.minValue, undefined) &&
+      isWithinBounds(first, undefined, this.args.maxValue)
+    );
+  }
+
   get canGoPrevious(): boolean {
     if (this.args.isDisabled) {
       return false;
     }
-    // Bound the check against the *whole* landing window (all
-    // `@visibleMonths` of it), not just its first month -- with
-    // `@visibleMonths` greater than one, a `@minValue` can fall inside a
-    // later month of that window (still reachable, and still rendered,
-    // since outside days are suppressed for multi-month windows) while the
-    // first month alone has nothing selectable. Checking only the first
-    // month would leave Previous disabled even though the window is
-    // partially reachable. `canGoNext` needs no such walk -- see there.
-    const landingFirst = startOfMonth(
-      addMonths(this.visibleMonth, -this.pageSize)
-    );
-    const landingLast = endOfMonth(
-      addMonths(landingFirst, this.visibleMonths - 1)
-    );
-    return isWithinBounds(landingLast, this.args.minValue, undefined);
+    return this.canShowWindow(addMonths(this.visibleMonth, -this.pageSize));
   }
 
   get canGoNext(): boolean {
     if (this.args.isDisabled) {
       return false;
     }
-    // Only the landing window's *first* day is tested, and that is enough
-    // going forward: it is the nearest day to `@maxValue`, so if it is out of
-    // range every later month of the window is too. This is not symmetric with
-    // `canGoPrevious`, which has to walk to the window's far end because
-    // paging backwards puts the nearest day to `@minValue` at that end.
-    const landingFirst = startOfMonth(
-      addMonths(this.visibleMonth, this.pageSize)
-    );
-    return isWithinBounds(landingFirst, undefined, this.args.maxValue);
+    return this.canShowWindow(addMonths(this.visibleMonth, this.pageSize));
   }
 
   @cached
@@ -895,6 +896,12 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
    * `Intl.DateTimeFormat` construction is not free, and `stateFor` runs
    * once per rendered day.
    */
+  /** Reused across all twelve options rather than rebuilt per render. */
+  @cached
+  private get monthNameFormatter(): Intl.DateTimeFormat {
+    return new Intl.DateTimeFormat(this.locale, { month: 'long' });
+  }
+
   @cached
   private get dayLabelFormatter(): Intl.DateTimeFormat {
     return new Intl.DateTimeFormat(this.locale, {
@@ -903,6 +910,16 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       month: 'long',
       day: 'numeric'
     });
+  }
+
+  /**
+   * One `Date` per render rather than one per cell. `stateFor` runs for every
+   * rendered day -- 35 to 42 of them, more with several months visible -- and
+   * they all need the same "today".
+   */
+  @cached
+  private get today(): Date {
+    return startOfDay(new Date());
   }
 
   get isReadOnly(): boolean {
@@ -977,10 +994,14 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     const isOutsideDuplicate = day.isOutside && this.visibleMonths > 1;
 
     return {
+      // The one place that decides whether a cell renders a day. `DayCell`
+      // cannot work this out: it sees neither `@showOutsideDays` nor how many
+      // months are on screen.
+      rendersDay: day.isOutside ? this.showOutsideDays : true,
       date: day.date,
       dayOfMonth: day.dayOfMonth,
       isOutside: day.isOutside,
-      isToday: isSameDay(day.date, startOfDay(new Date())),
+      isToday: isSameDay(day.date, this.today),
       isSelected: isOutsideDuplicate ? false : this.isDaySelected(day.date),
       isDisabled: this.isDayDisabled(day.date),
       isUnavailable: this.isDayUnavailable(day.date),
@@ -1005,7 +1026,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       data-fr-calendar
       class={{this.styles.base class=@classes.base}}
       {{on "keydown" this.handleKeydown}}
-      {{this.applyFocus this.focusedDate}}
+      {{this.applyFocus this.focusedDate this.isYearGridOpen}}
       {{this.registerRoot}}
       ...attributes
     >
@@ -1048,7 +1069,6 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
                 @weekdays={{this.weekdays}}
                 @caption={{this.captionFor monthData.month}}
                 @stateFor={{this.stateFor}}
-                @showOutsideDays={{this.showOutsideDays}}
                 @isReadOnly={{this.isReadOnly}}
                 @labelledBy={{@labelledBy}}
                 @onSelect={{this.selectDay}}
