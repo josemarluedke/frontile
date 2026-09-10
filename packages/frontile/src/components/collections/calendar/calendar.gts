@@ -150,6 +150,7 @@ class Calendar extends Component<CalendarSignature> {
           @caption={{this.caption}}
           @stateFor={{this.stateFor}}
           @showOutsideDays={{this.showOutsideDays}}
+          @hasDayContent={{has-block "day"}}
           @classes={{this.gridClasses}}
         >
           <:day as |day|>{{yield day to="day"}}</:day>

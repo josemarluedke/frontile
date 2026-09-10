@@ -38,6 +38,29 @@ module(
       assert.dom(days[0]!).hasAttribute('data-outside', 'true');
       assert.dom(days[2]!).hasAttribute('data-key', '2026-09-01');
       assert.dom(days[2]!).hasAttribute('data-outside', 'false');
+      assert.dom(days[2]!).hasText('1', 'the day number renders');
+      assert.dom(days[9]!).hasText('8');
+    });
+
+    test('a supplied <:day> block overrides the default day content', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US">
+            <:day as |day|>
+              <span data-test-custom-day>Day
+                {{day.dayOfMonth}}!</span>
+            </:day>
+          </Calendar>
+        </template>
+      );
+
+      const days = findAll('[data-fr-calendar-day]');
+      assert
+        .dom(days[2]!.querySelector('[data-fr-calendar-day-content]'))
+        .doesNotExist('default day-number content is not also rendered');
+      assert
+        .dom(days[2]!.querySelector('[data-test-custom-day]'))
+        .hasText('Day 1!', 'the supplied block content renders instead');
     });
 
     test('@weekStartsOn overrides the locale', async function (assert) {

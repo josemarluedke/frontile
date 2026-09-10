@@ -14,6 +14,7 @@ export interface MonthGridSignature {
     caption: string;
     stateFor: (day: CalendarDay) => DayState;
     showOutsideDays: boolean;
+    hasDayContent: boolean;
     classes: {
       monthGrid: string;
       weekdaysRow: string;
@@ -55,20 +56,23 @@ const MonthGrid: TOC<MonthGridSignature> = <template>
       {{#each @month.weeks key="key" as |week|}}
         <tr data-fr-calendar-week class={{@classes.week}}>
           {{#each week.days key="key" as |day|}}
-            <DayCell
-              @day={{day}}
-              @state={{@stateFor day}}
-              @showOutsideDays={{@showOutsideDays}}
-              @cellClass={{@classes.cell}}
-              @bandClass={{@classes.cellBand}}
-              @dayClass={{@classes.day}}
-              @contentClass={{@classes.dayContent}}
-              @indicatorClass={{@classes.indicator}}
-            >
-              {{#if (has-block "day")}}
-                {{yield (@stateFor day) to="day"}}
-              {{/if}}
-            </DayCell>
+            {{#let (@stateFor day) as |state|}}
+              <DayCell
+                @day={{day}}
+                @state={{state}}
+                @showOutsideDays={{@showOutsideDays}}
+                @hasCustomContent={{@hasDayContent}}
+                @cellClass={{@classes.cell}}
+                @bandClass={{@classes.cellBand}}
+                @dayClass={{@classes.day}}
+                @contentClass={{@classes.dayContent}}
+                @indicatorClass={{@classes.indicator}}
+              >
+                {{#if @hasDayContent}}
+                  {{yield state to="day"}}
+                {{/if}}
+              </DayCell>
+            {{/let}}
           {{/each}}
         </tr>
       {{/each}}
