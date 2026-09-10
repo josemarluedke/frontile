@@ -157,6 +157,12 @@ export const inventory: InventoryCategory[] = [
           'A modifier that normalizes press interactions across mouse, touch, keyboard, and screen readers.',
       },
       {
+        name: 'dragToDismiss',
+        path: '/docs/components/utilities/drag-to-dismiss',
+        description:
+          'A modifier that turns pointer drags into a dismiss gesture along a single axis.',
+      },
+      {
         name: 'Ref',
         path: '/docs/components/utilities/ref',
         description:
