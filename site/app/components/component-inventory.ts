@@ -315,6 +315,18 @@ export const inventory: InventoryCategory[] = [
         description:
           'A navigation bar styled like Tabs, for links that change the page.',
       },
+      {
+        name: 'Pagination',
+        path: '/docs/components/navigation/pagination',
+        description:
+          'A row of controls for moving through a paged list, with page numbers and prev/next.',
+      },
+      {
+        name: 'ExternalLink',
+        path: '/docs/components/navigation/external-link',
+        description:
+          'A link to another site, marked with an icon and opened in a new tab.',
+      },
     ],
   },
   {

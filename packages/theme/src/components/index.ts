@@ -18,6 +18,7 @@ export * from './segmented-control';
 export * from './tabs';
 export * from './accordion';
 export * from './calendar';
+export * from './pagination';
 export * from './tooltip';
 
 export * from './notifications-container';
