@@ -158,6 +158,16 @@ module(
 
       assert.dom('[data-fr-calendar-year-grid]').doesNotExist('closes on pick');
       assert.dom('[data-test-caption]').hasText('September 2029');
+      assert.notStrictEqual(
+        document.activeElement,
+        document.body,
+        'focus does not fall to <body> -- there is no default year trigger to restore it to'
+      );
+      assert
+        .dom('[data-fr-calendar-day][tabindex="0"]')
+        .isFocused(
+          'focus falls back to the roving day cell when a custom <:header> replaced the year trigger'
+        );
     });
 
     test('the <:weekday> block customizes the column headers', async function (assert) {
@@ -979,7 +989,23 @@ module(
       assert
         .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
         .hasAttribute('data-range-start', 'false', 'the anchor is cleared');
-      assert.strictEqual(seen.length, afterFirst, 'nothing further is emitted');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute(
+          'data-selected',
+          'false',
+          'the half-open commit made at anchor time is retracted, not just hidden from the range band'
+        );
+      assert.strictEqual(
+        seen.length,
+        afterFirst + 1,
+        'the retraction is reported via @onChange'
+      );
+      assert.strictEqual(
+        seen.at(-1),
+        null,
+        'the retraction commits null, clearing the half-open range'
+      );
     });
 
     test('controlled range mode does not self-select; @onChange receives a normalized range', async function (assert) {

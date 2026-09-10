@@ -211,8 +211,23 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   };
 
   private returnFocusToYearTrigger(element: HTMLElement | null): void {
+    const trigger = element?.querySelector<HTMLElement>(
+      '[data-fr-calendar-year-trigger]'
+    );
+
+    if (trigger) {
+      trigger.focus();
+      return;
+    }
+
+    // A `<:header>` block replaces the default header entirely, so there is
+    // no year trigger to find -- the selector above matches nothing and,
+    // without this fallback, the just-removed year button leaves focus on
+    // `<body>`. Fall back to the roving day cell instead, same element
+    // `applyFocus` would target.
+    this.#shouldFocus = true;
     element
-      ?.querySelector<HTMLElement>('[data-fr-calendar-year-trigger]')
+      ?.querySelector<HTMLElement>('[data-fr-calendar-day][tabindex="0"]')
       ?.focus();
   }
 
@@ -406,6 +421,26 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   };
 
   cancelPending = (): void => {
+    // The anchor step below commits a half-open `{ start, end: null }`
+    // range so a controlled consumer sees the anchor immediately. That
+    // commit must be retracted here, or a half-open range stays selected
+    // (and `@onChange`-reported) forever with no way to clear it: `Escape`
+    // only clears `_anchor`/`_hovered`, and `isDaySelected`/`stateFor` do
+    // *not* special-case a null `end` -- only `displayRange`'s idle-branch
+    // fallback does, and that fallback only matters once `_anchor` is
+    // already gone. Retracting to `null` is the one unambiguous rollback
+    // that works the same in controlled and uncontrolled mode.
+    if (this.isRange && this._anchor) {
+      const selected = this.selection;
+      if (
+        selected &&
+        !(selected instanceof Date) &&
+        (selected as DateRange).end === null
+      ) {
+        this.commit(null as CalendarValue<M>);
+      }
+    }
+
     this._anchor = undefined;
     this._hovered = undefined;
   };
@@ -434,12 +469,12 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       // Goes through the normal `commit()` path, same as the final commit
       // below -- there is no need to special-case the anchor step. A
       // half-open `{ start, end: null }` selection is filtered out of
-      // `displayRange`'s idle-branch fallback above, so even though it is
-      // written to `_value` (uncontrolled mode) it never outlives
-      // `cancelPending()` clearing `_anchor`/`_hovered`: once the anchor is
-      // gone, `displayRange` no longer reads through to `_value` for a
-      // null-`end` selection, and `isDaySelected`/`stateFor` treat a
-      // null-`end` range as unselected.
+      // `displayRange`'s idle-branch fallback above, but `isDaySelected`/
+      // `stateFor` do *not* treat a null-`end` range as unselected -- they
+      // paint `selected.start` regardless. That is only safe here because
+      // `cancelPending()` explicitly retracts this half-open commit (see
+      // its comment); if the anchor is abandoned any other way, this day
+      // stays selected with no way to clear it.
       this.commit({ start: day, end: null } as CalendarValue<M>);
       return;
     }
