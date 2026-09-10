@@ -44,7 +44,10 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
   /** @defaultValue 'single' */
   mode?: M;
 
-  /** Seeds the visible month when uncontrolled. */
+  /**
+   * Seeds the visible month when uncontrolled -- the *first* month of the
+   * window when `@visibleMonths` is greater than one.
+   */
   defaultMonth?: Date;
 
   /**
@@ -77,7 +80,12 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
   /** Overrides the first day of week implied by `@locale`. */
   weekStartsOn?: WeekDay;
 
-  /** @defaultValue true */
+  /**
+   * Whether days from the adjacent month fill out a grid's leading/trailing
+   * weeks. @defaultValue `true` when a single month is visible, `false`
+   * once `@visibleMonths` is greater than one -- otherwise a boundary date
+   * would render twice, once per adjacent grid.
+   */
   showOutsideDays?: boolean;
 
   /** @defaultValue false */
@@ -146,8 +154,15 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     return resolveWeekStart(this.locale, this.args.weekStartsOn);
   }
 
+  /**
+   * Default is `true` for a single visible month, `false` once more than
+   * one month is visible -- a boundary date would otherwise render twice
+   * (once as a trailing/leading outside day, once as a real day in the
+   * neighbouring grid). An explicit `@showOutsideDays` always wins, in
+   * either direction.
+   */
   get showOutsideDays(): boolean {
-    return this.args.showOutsideDays ?? true;
+    return this.args.showOutsideDays ?? this.visibleMonths === 1;
   }
 
   /**
@@ -397,7 +412,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     }
 
     const today = startOfDay(new Date());
-    return isSameMonth(today, this.visibleMonth) ? today : this.visibleMonth;
+    return this.isWithinWindow(today) ? today : this.visibleMonth;
   }
 
   private moveFocus(date: Date): void {
@@ -701,7 +716,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       </VisuallyHidden>
 
       <div class={{this.styles.monthsWrapper class=@classes.monthsWrapper}}>
-        {{#each this.months key="month" as |monthData|}}
+        {{#each this.months key="key" as |monthData|}}
           <MonthGrid
             @month={{monthData}}
             @weekdays={{this.weekdays}}

@@ -38,6 +38,13 @@ export interface CalendarMonthData {
   /** First day of the month this grid represents. */
   month: Date;
   weeks: CalendarWeek[];
+  /**
+   * `yyyy-MM`, stable across renders -- used as the `{{#each}}` key so a
+   * month that stays visible after paging is reused rather than torn down
+   * and rebuilt (Glimmer would otherwise key on `month`'s object identity,
+   * and a fresh `Date` instance is produced on every recompute).
+   */
+  key: string;
 }
 
 export interface WeekdayLabel {

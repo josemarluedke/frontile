@@ -30,6 +30,17 @@ export function toDayKey(date: Date): string {
 }
 
 /**
+ * A machine key for a month, not display text -- same rationale as
+ * {@link toDayKey}: stable across recomputes so `{{#each}}` can key on it
+ * instead of a `Date` object's `guidFor` identity.
+ */
+export function toMonthKey(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
+}
+
+/**
  * Inverse of {@link toDayKey}. Parsed from local calendar fields (never
  * `new Date(key)`, which reads the string as UTC and can land on the wrong
  * local day near midnight), so it round-trips exactly.
@@ -107,7 +118,7 @@ export function buildMonthGrid(opts: {
     }
   }
 
-  return { month, weeks };
+  return { month, weeks, key: toMonthKey(month) };
 }
 
 export function formatMonthCaption(month: Date, locale: string): string {

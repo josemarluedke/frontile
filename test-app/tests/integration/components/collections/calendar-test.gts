@@ -1045,5 +1045,57 @@ module(
         .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
         .isFocused('focus moved into the second grid');
     });
+
+    test('@visibleMonths={{2}} hides outside days by default so a boundary date renders exactly once', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+          />
+        </template>
+      );
+
+      // "2026-10-01" is a real day in the October grid and, with outside
+      // days shown, would also render as a trailing outside day in the
+      // September grid -- the default for a multi-month window must
+      // suppress that duplicate.
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
+        .exists({ count: 1 });
+    });
+
+    test('explicit @showOutsideDays={{true}} overrides the multi-month default', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @visibleMonths={{2}}
+            @showOutsideDays={{true}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
+        .exists(
+          { count: 2 },
+          'an explicit true must still render the boundary day in both grids'
+        );
+    });
+
+    test('single-month default still shows outside days', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-08-30"]')
+        .exists('single-month window keeps showing outside days by default');
+    });
   }
 );
