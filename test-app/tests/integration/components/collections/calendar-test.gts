@@ -1180,6 +1180,54 @@ module(
       );
     });
 
+    test('Escape cancels a pending range from the nav buttons and the month select, not just from a day cell', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @mode="range"
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute('data-range-start', 'true', 'the anchor step committed');
+
+      await focus('[data-fr-calendar-next]');
+      await triggerKeyEvent('[data-fr-calendar-next]', 'keydown', 'Escape');
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute(
+          'data-range-start',
+          'false',
+          'Escape from the next button still cancels the pending range'
+        );
+      assert
+        .dom('[data-fr-calendar-next]')
+        .isFocused('Escape did not disturb focus on the nav button');
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await focus('[data-fr-calendar-month-select]');
+      await triggerKeyEvent(
+        '[data-fr-calendar-month-select]',
+        'keydown',
+        'Escape'
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAttribute(
+          'data-range-start',
+          'false',
+          'Escape from the month <select> also cancels the pending range'
+        );
+    });
+
     test('controlled range mode does not self-select; @onChange receives a normalized range', async function (assert) {
       const seen: (DateRange | null)[] = [];
       const onChange = (r: DateRange | null) => seen.push(r);

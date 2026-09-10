@@ -637,6 +637,17 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       return;
     }
 
+    // Escape must cancel a pending range regardless of where focus is --
+    // the Previous/Next buttons and the month `<select>` also live under
+    // this listener, and a range can be left pending while focus is on any
+    // of them. This runs before the origin guard below (and still without
+    // calling `preventDefault()`, same as before), so it does not disturb
+    // that guard's job of leaving arrow keys on non-day controls alone.
+    if (event.key === 'Escape') {
+      this.cancelPending();
+      return;
+    }
+
     const from = this.focusOrigin(event);
     if (!from) {
       return;
@@ -672,9 +683,6 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       case ' ':
         event.preventDefault();
         this.selectDay(from);
-        return;
-      case 'Escape':
-        this.cancelPending();
         return;
       default:
         return;
