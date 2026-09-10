@@ -1,4 +1,5 @@
 ---
+label: New
 ---
 
 # dragToDismiss
@@ -15,7 +16,7 @@ draggable-to-dismiss surface.
 ## Import
 
 ```js
-import { dragToDismiss } from 'frontile/modifiers/drag-to-dismiss';
+import { dragToDismiss } from 'frontile';
 ```
 
 ## Example
@@ -24,7 +25,7 @@ import { dragToDismiss } from 'frontile/modifiers/drag-to-dismiss';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { dragToDismiss } from 'frontile/modifiers/drag-to-dismiss';
+import { dragToDismiss } from 'frontile';
 
 export default class DragToDismissExample extends Component {
   @tracked isOpen = true;

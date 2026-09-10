@@ -13,3 +13,4 @@ export * from '../../utils/toggle';
 export * from '../../utils/selection-indicator';
 export * from '../../utils/roving-focus';
 export * from '../../modifiers/press';
+export * from '../../modifiers/drag-to-dismiss';
