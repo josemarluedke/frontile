@@ -934,6 +934,59 @@ module(
         .hasAttribute('data-preview', 'false');
     });
 
+    test('the range preview stops at an unavailable day it cannot select', async function (assert) {
+      const isBooked = (d: Date) => d.getMonth() === 8 && d.getDate() === 14;
+
+      await render(
+        <template>
+          <Calendar
+            @mode="range"
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @isDateUnavailable={{isBooked}}
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await triggerEvent(
+        '[data-fr-calendar-day][data-key="2026-09-18"]',
+        'mouseenter'
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .hasAttribute(
+          'data-in-range',
+          'true',
+          'the preview reaches right up to the day before the blocked date'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .hasAttribute(
+          'data-range-end',
+          'true',
+          'the preview band ends at the last reachable day, not the hovered one'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-14"]')
+        .hasAttribute(
+          'data-in-range',
+          'false',
+          'the booked night itself is never painted as reachable'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
+        .hasAttribute(
+          'data-in-range',
+          'false',
+          'the band does not paint through to the actually-hovered day'
+        );
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
+        .hasAttribute('data-disabled', 'true', 'and it cannot be selected');
+    });
+
     test('arrow-key movement advances the range preview after anchoring', async function (assert) {
       await render(
         <template>

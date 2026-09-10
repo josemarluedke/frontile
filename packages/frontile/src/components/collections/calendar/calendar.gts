@@ -11,7 +11,9 @@ import {
   endOfMonth,
   endOfWeek,
   startOfWeek,
-  isSameMonth
+  isSameMonth,
+  isAfter,
+  isBefore
 } from 'date-fns';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import { MonthGrid } from './month-grid';
@@ -400,7 +402,21 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   private get displayRange(): DateRange | null {
     if (this._anchor) {
       const to = this._hovered ?? this.focusedDate;
-      return normalizeRange(this._anchor, to);
+      // Neither `hoverDay` nor `moveFocus` consults `pendingLimits` -- only
+      // `selectDay` does -- so an unclamped `to` would paint the band
+      // straight through an unavailable day it cannot actually select
+      // (the disabled cell would sit inside a band that promises it is
+      // reachable). Clamp here, once, for both the pointer and keyboard
+      // paths.
+      const { min, max } = this.pendingLimits;
+      let clamped = startOfDay(to);
+      if (min && isBefore(clamped, min)) {
+        clamped = min;
+      }
+      if (max && isAfter(clamped, max)) {
+        clamped = max;
+      }
+      return normalizeRange(this._anchor, clamped);
     }
 
     const selected = this.selection;
