@@ -14,6 +14,7 @@ export interface MonthGridSignature {
     caption: string;
     stateFor: (day: CalendarDay) => DayState;
     showOutsideDays: boolean;
+    isReadOnly: boolean;
     hasDayContent: boolean;
     hasWeekdayContent: boolean;
     onSelect: (date: Date) => void;
@@ -40,6 +41,7 @@ const MonthGrid: TOC<MonthGridSignature> = <template>
     data-fr-calendar-grid
     class={{@classes.monthGrid}}
     aria-label={{@caption}}
+    aria-readonly={{if @isReadOnly "true" "false"}}
     ...attributes
   >
     <thead>

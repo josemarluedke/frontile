@@ -75,4 +75,12 @@ export interface DayState {
    * neighbouring month's day.
    */
   isOutsideRange: boolean;
+  /**
+   * The day's full human-readable date (weekday, month, day, year),
+   * produced by `Intl.DateTimeFormat` from `@locale` -- the day button's
+   * accessible name. Without it a screen reader announces only the bare
+   * day-of-month number, so crossing a month boundary with the arrow keys
+   * has nothing to distinguish "the 1st" of one month from another.
+   */
+  ariaLabel: string;
 }

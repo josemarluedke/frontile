@@ -283,6 +283,46 @@ module(
         .hasAria('current', 'date', 'exactly one day is today');
     });
 
+    test('day buttons have a full accessible name via aria-label', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .hasAria(
+          'label',
+          'Wednesday, September 9, 2026',
+          'the day button announces the full date, not just the bare number'
+        );
+    });
+
+    test('@isReadOnly marks the grid aria-readonly', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @isReadOnly={{true}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-grid]').hasAria('readonly', 'true');
+    });
+
+    test('the grid is not aria-readonly by default', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-grid]').hasAria('readonly', 'false');
+    });
+
     test('it navigates months when uncontrolled', async function (assert) {
       await render(
         <template>

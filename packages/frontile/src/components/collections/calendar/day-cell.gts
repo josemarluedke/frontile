@@ -63,6 +63,7 @@ const DayCell: TOC<DayCellSignature> = <template>
           data-focused={{if @state.isFocused "true" "false"}}
           aria-disabled={{if @state.isDisabled "true" "false"}}
           aria-current={{if @state.isToday "date"}}
+          aria-label={{@state.ariaLabel}}
           tabindex={{if @state.isFocused "0" "-1"}}
           {{on "click" (fn @onSelect @day.date)}}
           {{on "mouseenter" (fn @onHover @day.date)}}

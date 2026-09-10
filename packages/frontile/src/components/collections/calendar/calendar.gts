@@ -823,6 +823,25 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     return formatMonthCaption(this.visibleMonth, this.locale);
   }
 
+  /**
+   * Memoized per `@locale` rather than constructed fresh in `stateFor` --
+   * `Intl.DateTimeFormat` construction is not free, and `stateFor` runs
+   * once per rendered day.
+   */
+  @cached
+  private get dayLabelFormatter(): Intl.DateTimeFormat {
+    return new Intl.DateTimeFormat(this.locale, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  get isReadOnly(): boolean {
+    return this.args.isReadOnly ?? false;
+  }
+
   @cached
   get styles() {
     const { calendar } = useStyles();
@@ -900,7 +919,8 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       isFocused: isOutsideDuplicate
         ? false
         : isSameDay(day.date, this.focusedDate),
-      isOutsideRange: this.isDayOutsideRange(day.date)
+      isOutsideRange: this.isDayOutsideRange(day.date),
+      ariaLabel: this.dayLabelFormatter.format(day.date)
     };
   };
 
@@ -952,6 +972,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
             @caption={{this.captionFor monthData.month}}
             @stateFor={{this.stateFor}}
             @showOutsideDays={{this.showOutsideDays}}
+            @isReadOnly={{this.isReadOnly}}
             @onSelect={{this.selectDay}}
             @onHover={{this.hoverDay}}
             @hasDayContent={{has-block "day"}}
