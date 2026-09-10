@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find } from '@ember/test-helpers';
+import { render, findAll, find, click, settled } from '@ember/test-helpers';
+import { cell } from 'ember-resources';
 import { Calendar } from 'frontile';
 
 const sep2026 = new Date(2026, 8, 1);
@@ -133,6 +134,80 @@ module(
       assert
         .dom('[data-fr-calendar-day][data-today="true"]')
         .hasAria('current', 'date', 'exactly one day is today');
+    });
+
+    test('it navigates months when uncontrolled', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      assert.dom('[data-fr-calendar-title]').hasText('September 2026');
+
+      await click('[data-fr-calendar-next]');
+      assert.dom('[data-fr-calendar-title]').hasText('October 2026');
+
+      await click('[data-fr-calendar-prev]');
+      await click('[data-fr-calendar-prev]');
+      assert.dom('[data-fr-calendar-title]').hasText('August 2026');
+    });
+
+    test('@month makes the visible month controlled', async function (assert) {
+      const month = cell(sep2026);
+      const seen: Date[] = [];
+      const onMonthChange = (m: Date) => seen.push(m);
+
+      await render(
+        <template>
+          <Calendar
+            @month={{month.current}}
+            @onMonthChange={{onMonthChange}}
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      await click('[data-fr-calendar-next]');
+
+      assert
+        .dom('[data-fr-calendar-title]')
+        .hasText('September 2026', 'controlled mode does not move on its own');
+      assert.strictEqual(seen.length, 1, 'it reports the requested month');
+      assert.strictEqual(seen[0]!.getMonth(), 9, 'October');
+
+      month.current = new Date(2026, 9, 1);
+      await settled();
+      assert.dom('[data-fr-calendar-title]').hasText('October 2026');
+    });
+
+    test('month changes are announced politely', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      const live = find('[data-fr-calendar-live]');
+      assert.dom(live).hasAttribute('aria-live', 'polite');
+      assert.dom(live).hasText('September 2026');
+
+      await click('[data-fr-calendar-next]');
+      assert.dom('[data-fr-calendar-live]').hasText('October 2026');
+    });
+
+    test('the initial month falls back to the month of the value', async function (assert) {
+      const value = new Date(2027, 2, 15);
+
+      await render(
+        <template>
+          <Calendar @defaultValue={{value}} @locale="en-US" />
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-calendar-title]')
+        .hasText('March 2027', 'opens on the selection, not on today');
     });
   }
 );

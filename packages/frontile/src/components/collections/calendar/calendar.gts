@@ -1,7 +1,10 @@
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
+import { addMonths, startOfMonth } from 'date-fns';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import { MonthGrid } from './month-grid';
+import { CalendarHeader, type CalendarHeaderContext } from './header';
+import { VisuallyHidden } from '../../utilities/visually-hidden';
 import {
   buildMonthGrid,
   formatMonthCaption,
@@ -14,6 +17,7 @@ import type { CalendarSlots, CalendarVariants } from '@frontile/theme';
 import type {
   CalendarDay,
   CalendarMonthData,
+  DateRange,
   DayState,
   WeekDay
 } from './types';
@@ -21,6 +25,28 @@ import type {
 export interface CalendarArgs {
   /** Seeds the visible month when uncontrolled. */
   defaultMonth?: Date;
+
+  /**
+   * Controlled visible month -- the *first* month of the window when
+   * `@visibleMonths` is greater than one.
+   *
+   * *Passing* this argument at all puts the month axis in controlled mode --
+   * passing it as `undefined` included. Omit it entirely to let `Calendar`
+   * track the visible month itself.
+   */
+  month?: Date;
+
+  /** Called with the month the user asked to move to. */
+  onMonthChange?: (month: Date) => void;
+
+  /**
+   * Controlled selected value. Not implemented until Task 5 -- declared here
+   * only because `seedMonth` reads it to open on the current selection.
+   */
+  value?: Date | DateRange | null;
+
+  /** Uncontrolled seed for the selected value. See `@value`. */
+  defaultValue?: Date | DateRange | null;
 
   /** BCP-47 tag. All human-readable text is produced by `Intl` from this. */
   locale?: string;
@@ -59,8 +85,83 @@ class Calendar extends Component<CalendarSignature> {
     return this.args.showOutsideDays ?? true;
   }
 
+  /**
+   * Uncontrolled mode's own state. `undefined` means "not navigated yet",
+   * which is what lets the seed getters below resolve without a tracked
+   * write during render.
+   */
+  @tracked private _month: Date | undefined;
+
+  private get isMonthControlled(): boolean {
+    return 'month' in this.args;
+  }
+
   get visibleMonth(): Date {
-    return this.args.defaultMonth ?? new Date();
+    if (this.isMonthControlled) {
+      return startOfMonth(this.args.month ?? new Date());
+    }
+    if (this._month) {
+      return startOfMonth(this._month);
+    }
+    return startOfMonth(this.seedMonth);
+  }
+
+  /**
+   * A calendar seeded with a selection should open showing that selection,
+   * not today.
+   */
+  private get seedMonth(): Date {
+    if (this.args.defaultMonth) {
+      return this.args.defaultMonth;
+    }
+
+    const seed = this.args.defaultValue ?? this.args.value;
+
+    if (seed instanceof Date) {
+      return seed;
+    }
+    if (seed && 'start' in seed) {
+      return seed.start;
+    }
+    return new Date();
+  }
+
+  goToMonth = (month: Date): void => {
+    const next = startOfMonth(month);
+
+    if (!this.isMonthControlled) {
+      this._month = next;
+    }
+    this.args.onMonthChange?.(next);
+  };
+
+  goToPrevious = (): void => this.goToMonth(addMonths(this.visibleMonth, -1));
+  goToNext = (): void => this.goToMonth(addMonths(this.visibleMonth, 1));
+
+  get canGoPrevious(): boolean {
+    return true;
+  }
+
+  get canGoNext(): boolean {
+    return true;
+  }
+
+  @cached
+  get headerContext(): CalendarHeaderContext {
+    return {
+      month: this.visibleMonth,
+      title: this.caption,
+      goToPrevious: this.goToPrevious,
+      goToNext: this.goToNext,
+      canGoPrevious: this.canGoPrevious,
+      canGoNext: this.canGoNext,
+      setMonth: (monthIndex: number) =>
+        this.goToMonth(
+          new Date(this.visibleMonth.getFullYear(), monthIndex, 1)
+        ),
+      setYear: (year: number) =>
+        this.goToMonth(new Date(year, this.visibleMonth.getMonth(), 1))
+    };
   }
 
   @cached
@@ -89,6 +190,19 @@ class Calendar extends Component<CalendarSignature> {
       size: this.args.size,
       isDisabled: this.args.isDisabled
     });
+  }
+
+  @cached
+  get headerClasses() {
+    const s = this.styles;
+    const c = this.args.classes ?? {};
+
+    return {
+      header: s.header({ class: c.header }),
+      title: s.title({ class: c.title }),
+      nav: s.nav({ class: c.nav }),
+      navButton: s.navButton({ class: c.navButton })
+    };
   }
 
   @cached
@@ -133,15 +247,14 @@ class Calendar extends Component<CalendarSignature> {
       class={{this.styles.base class=@classes.base}}
       ...attributes
     >
-      <div
-        data-fr-calendar-header
-        class={{this.styles.header class=@classes.header}}
-      >
-        <div
-          data-fr-calendar-title
-          class={{this.styles.title class=@classes.title}}
-        >{{this.caption}}</div>
-      </div>
+      <CalendarHeader
+        @context={{this.headerContext}}
+        @classes={{this.headerClasses}}
+      />
+
+      <VisuallyHidden>
+        <div data-fr-calendar-live aria-live="polite">{{this.caption}}</div>
+      </VisuallyHidden>
 
       <div class={{this.styles.monthsWrapper class=@classes.monthsWrapper}}>
         <MonthGrid
