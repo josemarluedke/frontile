@@ -24,6 +24,7 @@ export interface DrawerHeaderIconSignature {
 // `overlays.ts`). They are structural hooks, not state, so they are always on.
 const DrawerHeaderIcon: TOC<DrawerHeaderIconSignature> = <template>
   <div
+    data-part="icon"
     class={{twMerge @classFromParent @class}}
     data-drawer-header-icon
     ...attributes
@@ -51,7 +52,11 @@ export interface DrawerHeaderTitleSignature {
 
 class DrawerHeaderTitle extends Component<DrawerHeaderTitleSignature> {
   <template>
-    <div class={{twMerge @classFromParent @class}} ...attributes>
+    <div
+      data-part="title"
+      class={{twMerge @classFromParent @class}}
+      ...attributes
+    >
       {{#if (has-block)}}{{yield}}{{else}}{{@value}}{{/if}}
     </div>
   </template>
@@ -77,6 +82,7 @@ export interface DrawerHeaderDescriptionSignature {
 class DrawerHeaderDescription extends Component<DrawerHeaderDescriptionSignature> {
   <template>
     <div
+      data-part="description"
       class={{twMerge @classFromParent @class}}
       data-drawer-header-description
       ...attributes
@@ -186,11 +192,12 @@ export default class DrawerHeader extends Component<DrawerHeaderSignature> {
   <template>
     <div
       id={{@labelledById}}
+      data-part="header"
       class={{twMerge @classFromParent @class}}
       {{this.register}}
       ...attributes
     >
-      <div class={{@contentClass}}>
+      <div data-part="header-content" class={{@contentClass}}>
         {{#if (has-block)}}
           {{yield
             (hash
@@ -207,10 +214,14 @@ export default class DrawerHeader extends Component<DrawerHeaderSignature> {
           }}
         {{else}}
           {{#if @title}}
-            <div class={{@titleClass}}>{{@title}}</div>
+            <div data-part="title" class={{@titleClass}}>{{@title}}</div>
           {{/if}}
           {{#if @description}}
-            <div class={{@descriptionClass}} data-drawer-header-description>
+            <div
+              data-part="description"
+              class={{@descriptionClass}}
+              data-drawer-header-description
+            >
               {{@description}}
             </div>
           {{/if}}
@@ -221,13 +232,13 @@ export default class DrawerHeader extends Component<DrawerHeaderSignature> {
       child would still consume the header's gap, leaving a phantom space to
       the right of the title on every plain header. }}
       {{#if (has-block "actions")}}
-        <div class={{@actionsClass}}>
+        <div data-part="header-actions" class={{@actionsClass}}>
           {{yield to="actions"}}
         </div>
       {{/if}}
 
       {{#if @closeButton}}
-        <@closeButton />
+        <@closeButton data-part="header-close-button" />
       {{/if}}
     </div>
   </template>

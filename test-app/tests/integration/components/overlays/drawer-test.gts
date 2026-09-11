@@ -1269,4 +1269,80 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
       });
     }
   });
+
+  test('renders data-component="drawer" on the root only, with data-part on every slot', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @placement="bottom"
+          @disableTransitions={{true}}
+          as |d|
+        >
+          <d.Header @description="My description">
+            <:default as |h|>
+              <h.Icon>I</h.Icon>
+              <h.Title>My Header</h.Title>
+              <h.Description />
+            </:default>
+            <:actions>
+              <button type="button">Action</button>
+            </:actions>
+          </d.Header>
+          <d.Body>My Content</d.Body>
+          <d.Footer>My Footer</d.Footer>
+        </Drawer>
+      </template>
+    );
+
+    const root = document.querySelector('[data-component="drawer"]') as Element;
+    assert.ok(root, 'the drawer root renders');
+    assert.strictEqual(root.getAttribute('data-part'), 'base');
+
+    // A header is present, so the close button renders inside it (as
+    // header-close-button) rather than as the standalone base close-button
+    // -- see the separate "no header" assertion below for that case.
+    assert
+      .dom('[data-component="drawer"] [data-part="header-close-button"]')
+      .exists();
+    assert.dom('[data-component="drawer"] [data-part="header"]').exists();
+    assert
+      .dom('[data-component="drawer"] [data-part="header-content"]')
+      .exists();
+    assert
+      .dom('[data-component="drawer"] [data-part="header-actions"]')
+      .exists();
+    assert.dom('[data-component="drawer"] [data-part="icon"]').exists();
+    assert.dom('[data-component="drawer"] [data-part="title"]').exists();
+    assert.dom('[data-component="drawer"] [data-part="description"]').exists();
+    assert.dom('[data-component="drawer"] [data-part="body"]').exists();
+    assert.dom('[data-component="drawer"] [data-part="footer"]').exists();
+    // `top`/`bottom` placements default @allowDragToClose to true.
+    assert.dom('[data-component="drawer"] [data-part="drag-handle"]').exists();
+    assert
+      .dom('[data-component="drawer"] [data-part="drag-handle-bar"]')
+      .exists();
+
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="drawer"]').length,
+      1,
+      'data-component="drawer" marks the root only, never a part'
+    );
+  });
+
+  test('renders data-part="close-button" on the standalone close button when there is no header', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer @isOpen={{isOpen.current}} @disableTransitions={{true}} as |d|>
+          <d.Body>My Content</d.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert.dom('[data-component="drawer"] [data-part="close-button"]').exists();
+  });
 });

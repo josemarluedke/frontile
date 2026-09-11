@@ -649,5 +649,73 @@ module(
           `--frontile-toast-fade custom property. Got: "${style}"`
       );
     });
+
+    test('renders data-component="notification-card" on the root only, with data-part on every slot', async function (assert) {
+      notification.current = new Notification({}, 'My message', {
+        description: 'My description',
+        customActions: [{ label: 'Undo', onClick: () => {} }]
+      });
+
+      await render(template);
+
+      const root = document.querySelector(
+        '[data-component="notification-card"]'
+      ) as Element;
+      assert.ok(root, 'the notification-card root renders');
+      assert.strictEqual(root.getAttribute('data-part'), 'base');
+
+      assert
+        .dom('[data-component="notification-card"] [data-part="inner"]')
+        .exists();
+      assert
+        .dom('[data-component="notification-card"] [data-part="icon"]')
+        .exists();
+      assert
+        .dom('[data-component="notification-card"] [data-part="content"]')
+        .exists();
+      assert
+        .dom('[data-component="notification-card"] [data-part="title"]')
+        .exists();
+      assert
+        .dom('[data-component="notification-card"] [data-part="description"]')
+        .exists();
+      assert
+        .dom(
+          '[data-component="notification-card"] [data-part="custom-actions"]'
+        )
+        .exists();
+      assert
+        .dom(
+          '[data-component="notification-card"] [data-part="custom-action-button"]'
+        )
+        .exists();
+      assert
+        .dom('[data-component="notification-card"] [data-part="close-button"]')
+        .exists();
+
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="notification-card"]')
+          .length,
+        1,
+        'data-component="notification-card" marks the root only, never a part'
+      );
+    });
+
+    test('renders data-part="spinner" while loading', async function (assert) {
+      notification.current = new Notification({}, 'Saving…', {
+        isLoading: true
+      });
+
+      await render(template);
+
+      assert
+        .dom('[data-component="notification-card"] [data-part="spinner"]')
+        .exists();
+      // The spinner and icon slots are mutually exclusive: while loading,
+      // the icon does not render at all.
+      assert
+        .dom('[data-component="notification-card"] [data-part="icon"]')
+        .doesNotExist();
+    });
   }
 );

@@ -266,6 +266,46 @@ const KNOWN_UNRENDERED_SLOTS = {
   textarea: new Set(['inner-container', 'start-content', 'end-content'])
 };
 
+/**
+ * Manual `(file, data-part value) -> owning config` overrides, for a
+ * data-part that genuinely renders but that neither the same-file
+ * attribution (the file carries no data-component of its own) nor the
+ * directory-name fallback can resolve.
+ *
+ * `overlays/popover.gts` renders the arrow `<span data-part="arrow">` shared
+ * by every consumer of `Popover.Content` (Popover itself, Tooltip, Select,
+ * Autocomplete, Dropdown, ...). It deliberately carries no data-component of
+ * its own -- `popover`'s tv() config has no `slots:` key at all (see
+ * `popover.ts`), so `popover` is not a slot-bearing config this script
+ * tracks, and `overlay`/`popover`/`portal`/`backdrop` are explicitly out of
+ * scope for the current migration (see Task 8's brief). Of `tooltip`'s two
+ * slots (`base`, `arrow`), `base` is attributed automatically -- Tooltip's
+ * own file (`tooltip.gts`) carries `data-component="tooltip"` on the
+ * `<@PopoverContent>` invocation, whose attributes flow through onto
+ * Overlay's rendered `<div>` via the ...attributes chain (see the comment
+ * there) -- but `arrow` is physical markup that only exists in
+ * `popover.gts`, one file away, so the same-file heuristic above cannot see
+ * it. This is exactly the "sub-template whose owner cannot be inferred" case
+ * the comment below already anticipates, made concrete for the one file
+ * where it actually occurs today.
+ */
+const MANUAL_PART_OWNERS = {
+  'overlays/popover.gts': [{ part: 'arrow', owner: 'tooltip' }]
+};
+
+function applyManualPartOwners(file, parts, ensure) {
+  const relKey = Object.keys(MANUAL_PART_OWNERS).find((suffix) =>
+    file.replace(/\\/g, '/').endsWith(suffix)
+  );
+  if (!relKey) return;
+  for (const { part, owner: ownerName } of MANUAL_PART_OWNERS[relKey]) {
+    if (!parts.some((p) => p.value === part)) continue;
+    const entry = ensure(ownerName);
+    entry.parts.add(part);
+    entry.files.add(file);
+  }
+}
+
 function findOwnerByDirectory(file, componentsDir, knownConfigNames) {
   let dir = dirname(file);
   for (;;) {
@@ -316,9 +356,11 @@ export function readRenderedParts(componentsDir, knownConfigNames) {
         const entry = ensure(owner);
         for (const part of parts) entry.parts.add(part.value);
         entry.files.add(file);
+      } else {
+        // A sub-template whose owner cannot be inferred from its directory --
+        // check the narrow manual override map before giving up on it.
+        applyManualPartOwners(file, parts, ensure);
       }
-      // Else: a sub-template whose owner cannot be inferred. Left
-      // unattributed rather than guessed at.
     }
   }
   return byComponent;

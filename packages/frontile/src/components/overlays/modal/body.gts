@@ -20,7 +20,11 @@ export interface ModalBodySignature {
 
 export default class ModalBody extends Component<ModalBodySignature> {
   <template>
-    <div class={{twMerge @classFromParent @class}} ...attributes>
+    <div
+      data-part="body"
+      class={{twMerge @classFromParent @class}}
+      ...attributes
+    >
       {{yield}}
     </div>
   </template>

@@ -688,6 +688,18 @@ class TooltipContent extends Component<TooltipContentSignature> {
     );
   }
 
+  /**
+   * `data-component`/`data-part` below are written before ...attributes, so
+   * they flow through Popover.Content's own ...attributes forwarding onto
+   * Overlay's rendered div and override its default data-component="overlay"
+   * -- the standard splattributes-override pattern Overlay's own template is
+   * written to support (its literal data-component="overlay" is likewise
+   * placed before its own ...attributes). Tooltip has no element of its own:
+   * its "base"/"arrow" slots render on the exact same portaled div
+   * Overlay/Popover.Content own, so this is the only way to mark it
+   * data-component="tooltip" without touching overlay.gts/popover.gts, which
+   * are out of scope for this migration.
+   */
   <template>
     <@PopoverContent
       @class={{@classNames.base}}
@@ -699,6 +711,8 @@ class TooltipContent extends Component<TooltipContentSignature> {
       @backdrop="none"
       role="tooltip"
       tabindex="-1"
+      data-component="tooltip"
+      data-part="base"
       ...attributes
     >
       {{yield}}

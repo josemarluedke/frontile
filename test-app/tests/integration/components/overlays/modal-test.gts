@@ -762,6 +762,35 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     );
   });
 
+  test('renders data-component="modal" on the root only, with data-part on every slot', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Modal @isOpen={{isOpen.current}} @disableTransitions={{true}} as |m|>
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+          <m.Footer>My Footer</m.Footer>
+        </Modal>
+      </template>
+    );
+
+    const root = document.querySelector('[data-component="modal"]') as Element;
+    assert.ok(root, 'the modal root renders');
+    assert.strictEqual(root.getAttribute('data-part'), 'base');
+
+    assert.dom('[data-component="modal"] [data-part="close-button"]').exists();
+    assert.dom('[data-component="modal"] [data-part="header"]').exists();
+    assert.dom('[data-component="modal"] [data-part="body"]').exists();
+    assert.dom('[data-component="modal"] [data-part="footer"]').exists();
+
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="modal"]').length,
+      1,
+      'data-component="modal" marks the root only, never a part'
+    );
+  });
+
   test('the warning capture window does not outlive the test that opened it', async function (assert) {
     const inside = await captureFrontileWarnings(async () => {
       warn('inside the window', false, {

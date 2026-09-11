@@ -329,6 +329,8 @@ export default class Drawer extends Component<DrawerSignature> {
       @preventAutoFocus={{@preventAutoFocus}}
     >
       <div
+        data-component="drawer"
+        data-part="base"
         class={{this.classes.base class=@classes.base}}
         tabindex="0"
         role="dialog"
@@ -347,6 +349,7 @@ export default class Drawer extends Component<DrawerSignature> {
       >
         {{#if this.allowDragToClose}}
           <DrawerDragHandle
+            data-part="drag-handle"
             @onPress={{@onClose}}
             @class={{this.classes.dragHandle class=@classes.dragHandle}}
             @barClass={{this.classes.dragHandleBar
@@ -357,6 +360,7 @@ export default class Drawer extends Component<DrawerSignature> {
 
         {{#if this.showStandaloneCloseButton}}
           <CloseButton
+            data-part="close-button"
             @onPress={{@onClose}}
             @size={{this.closeButtonSize}}
             @class={{this.classes.closeButton class=@classes.closeButton}}

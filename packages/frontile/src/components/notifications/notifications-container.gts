@@ -347,6 +347,8 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
   <template>
     {{! template-lint-disable no-inline-styles }}
     <div
+      data-component="notifications-container"
+      data-part="base"
       class={{this.classes.base}}
       role="region"
       aria-label="Notifications"
@@ -359,6 +361,7 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
       ...attributes
     >
       <div
+        data-part="stack"
         class={{this.classes.stack}}
         style={{this.stackStyle}}
         data-expanded={{this.expandedAttribute}}

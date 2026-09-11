@@ -20,7 +20,11 @@ export interface ModalFooterSignature {
 
 export default class ModalFooter extends Component<ModalFooterSignature> {
   <template>
-    <div class={{twMerge @classFromParent @class}} ...attributes>
+    <div
+      data-part="footer"
+      class={{twMerge @classFromParent @class}}
+      ...attributes
+    >
       {{yield}}
     </div>
   </template>

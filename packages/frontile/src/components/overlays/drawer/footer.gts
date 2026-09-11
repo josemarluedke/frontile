@@ -19,7 +19,11 @@ export interface DrawerFooterSignature {
 
 export default class DrawerFooter extends Component<DrawerFooterSignature> {
   <template>
-    <div class={{twMerge @classFromParent @class}} ...attributes>
+    <div
+      data-part="footer"
+      class={{twMerge @classFromParent @class}}
+      ...attributes
+    >
       {{yield}}
     </div>
   </template>
