@@ -213,6 +213,9 @@ export default class DrawerAppearancesIcon extends Component {
 `h.Title` and `h.Description` for when you need to place them yourself — a blockless
 `<h.Title />` or `<h.Description />` falls back to `@title` / `@description`.
 
+An icon tops out with the title when there is a description under it, and centers against
+the title when there isn't.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';

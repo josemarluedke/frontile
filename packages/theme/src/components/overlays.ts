@@ -89,7 +89,21 @@ const drawer = tv({
     // `min-w-0` lets a long title shrink (and truncate, if the consumer asks
     // for it) instead of shoving the actions past the edge -- a flex item's
     // default `min-width: auto` refuses to shrink below its content.
-    headerContent: 'grid grid-cols-[auto_1fr] items-center grow min-w-0',
+    headerContent: [
+      'grid grid-cols-[auto_1fr] items-center grow min-w-0',
+      // The icon only spans two rows when there are two rows of text to span.
+      // A spanning grid item's height is distributed across every track it
+      // covers, so a 40px icon spanning rows in a header with only a title
+      // pushed half its height into a phantom second row: the title (and the
+      // close button, centred against the band) ended up ~10px above the
+      // band's centre with dead space underneath. Keyed off the description
+      // element's own presence with `:has()` -- the same trick `pagination.ts`
+      // and `table.ts` use -- so it follows the rendered structure rather than
+      // a variant the header has to compute and thread through, and it holds
+      // for `@description` and a yielded `<h.Description />` alike.
+      '[&:has([data-drawer-header-description])_[data-drawer-header-icon]]:row-span-2',
+      '[&:has([data-drawer-header-description])_[data-drawer-header-icon]]:self-start'
+    ],
     // Actions are in flow, deliberately, unlike the close button. The close
     // button is chrome this component owns and should not dictate the band's
     // height; whatever a consumer puts here is content, so a taller control
@@ -107,15 +121,18 @@ const drawer = tv({
     body: 'grow overflow-y-auto touch-pan-y',
     footer: 'flex justify-end items-center relative gap-4',
     // Sized from the design: a 40px icon box with a 16px gap to the text.
-    // `self-start` matches the design's `align-items: flex-start` -- the icon
-    // tops out with the title rather than centring across both text rows.
+    //
+    // With a title and a description the icon tops out with the title rather
+    // than centring across both text rows, matching the design's
+    // `align-items: flex-start`; that pairing lives on `headerContent`, which
+    // can see whether a description exists. Title-only, it centres.
     //
     // The gap between the icon column and the text column lives here rather
     // than as `gap-x-*` on the header grid. A column gap applies between the
     // two tracks whether or not the icon track has anything in it, so a
     // header with no icon still had its title indented past the body text
     // below it. As a margin it only exists when an icon does.
-    icon: 'row-span-2 col-start-1 self-start mr-4 size-10 shrink-0 flex items-center justify-center',
+    icon: 'col-start-1 self-center mr-4 size-10 shrink-0 flex items-center justify-center',
     title: 'col-start-2 font-header',
     description: 'col-start-2',
     dragHandle:
