@@ -182,6 +182,21 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
     assert.dom('[data-component="form-feedback"]').doesNotExist();
   });
 
+  test('the thumb gets a contrast ring for intents whose track color is too light for a plain white knob (e.g. success)', async function (assert) {
+    await render(
+      <template>
+        <Switch @label="Name" @intent="success" @defaultSelected={{true}} />
+      </template>
+    );
+
+    const thumb = find('[data-test-id="switch-thumb-content"]') as HTMLElement;
+
+    assert.ok(
+      thumb.className.includes('ring-on-success'),
+      `thumb should include a ring class using the on-success contrast token (classes: ${thumb.className})`
+    );
+  });
+
   test('it add classes to all slots', async function (assert) {
     const classes = {
       base: 'my-base-class',

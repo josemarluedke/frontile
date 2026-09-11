@@ -617,42 +617,76 @@ const switchInput = tv({
         wrapper: [
           'group-data-[selected=true]:bg-neutral-firm',
           'group-data-[selected=true]:text-on-neutral-firm'
+        ],
+        thumb: [
+          'group-data-[selected=true]:ring-1',
+          'group-data-[selected=true]:ring-on-neutral-firm'
         ]
       },
       primary: {
         wrapper: [
           'group-data-[selected=true]:bg-primary',
           'group-data-[selected=true]:text-on-primary'
+        ],
+        thumb: [
+          'group-data-[selected=true]:ring-1',
+          'group-data-[selected=true]:ring-on-primary'
         ]
       },
       secondary: {
         wrapper: [
           'group-data-[selected=true]:bg-secondary',
           'group-data-[selected=true]:text-on-secondary'
+        ],
+        thumb: [
+          'group-data-[selected=true]:ring-1',
+          'group-data-[selected=true]:ring-on-secondary'
         ]
       },
       tertiary: {
         wrapper: [
           'group-data-[selected=true]:bg-tertiary',
           'group-data-[selected=true]:text-on-tertiary'
+        ],
+        thumb: [
+          'group-data-[selected=true]:ring-1',
+          'group-data-[selected=true]:ring-on-tertiary'
         ]
       },
       success: {
         wrapper: [
           'group-data-[selected=true]:bg-success',
           'group-data-[selected=true]:text-on-success'
+        ],
+        // `success` DEFAULT (green-400) is close enough in luminance to white
+        // that a plain white thumb almost disappears into the track -- ~1.3:1
+        // contrast, far under the 3:1 UI-component minimum. The ring reuses
+        // the same on-success contrast token the wrapper's text already
+        // relies on, so it only becomes visible where the track is too light
+        // for the thumb to read on its own.
+        thumb: [
+          'group-data-[selected=true]:ring-1',
+          'group-data-[selected=true]:ring-on-success'
         ]
       },
       warning: {
         wrapper: [
           'group-data-[selected=true]:bg-warning',
           'group-data-[selected=true]:text-on-warning'
+        ],
+        thumb: [
+          'group-data-[selected=true]:ring-1',
+          'group-data-[selected=true]:ring-on-warning'
         ]
       },
       danger: {
         wrapper: [
           'group-data-[selected=true]:bg-danger',
           'group-data-[selected=true]:text-on-danger'
+        ],
+        thumb: [
+          'group-data-[selected=true]:ring-1',
+          'group-data-[selected=true]:ring-on-danger'
         ]
       }
     }
