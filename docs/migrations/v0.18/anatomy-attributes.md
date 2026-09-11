@@ -123,6 +123,7 @@ deliberately left alone — e.g. `data-test-intent` on `Alert`.
 | `command-loading` | `data-part="loading"` |
 | `command-prompt` | `data-part="empty"` |
 | `divider` | `data-component="divider"` |
+| `empty-content` | `data-part="empty-content"` (on Select's and Autocomplete's "no results" element) |
 | `external-link` | `data-component="external-link"` |
 | `external-link-icon` | `data-part="icon"` |
 | `input-clear-button` | `data-part="clear-button"` |

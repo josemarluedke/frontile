@@ -33,10 +33,14 @@ of its CSS classes. Two attributes carry it:
   select it with `[data-part="start-content"]`.
 
 By convention the root element's part is `base` — but only by convention, not
-by rule. It carries whichever slot it actually renders. `Table`'s root is the
-`<table>` element, which renders the `table` slot, so it carries
-`data-part="table"`, not `data-part="base"`. `ProgressBar`'s outer `<div>`
-renders no slot at all, so it carries `data-component="progress-bar"` with no
+by rule. It carries whichever slot it actually renders. `SimpleTable`, used
+standalone, renders its `<table>` element as the root, which renders the
+`table` slot, so it carries `data-part="table"`, not `data-part="base"`.
+(`Table`'s own root is different: it's the wrapper `<div>`, which carries
+`data-part="wrapper"` — `Table` composes `SimpleTable` internally with
+`@isRoot={{false}}`, so the inner `<table>` keeps `data-part="table"` but no
+longer carries `data-component`.) `ProgressBar`'s outer `<div>` renders no
+slot at all, so it carries `data-component="progress-bar"` with no
 `data-part`.
 
 Both attributes are written **before** `...attributes` in every component's
