@@ -587,7 +587,11 @@ export default class FormModal extends Component {
 
 ### Close Button Control
 
-Control the visibility and behavior of the close button.
+Control the visibility and behavior of the close button. When you render the
+yielded `m.CloseButton` yourself (the "Custom Close Button" example below),
+add `data-part="close-button"` to it explicitly — Modal cannot inject that
+attribute into markup you write in your own template, so it is on you to
+carry it forward for anatomy consumers styling or querying by `data-part`.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -664,7 +668,7 @@ export default class ModalCloseButton extends Component {
         <m.Header>
           <div class='flex justify-between items-center'>
             <span>Custom Close Button</span>
-            <m.CloseButton />
+            <m.CloseButton data-part="close-button" />
           </div>
         </m.Header>
         <m.Body>

@@ -782,7 +782,11 @@ export default class DrawerBackdrops extends Component {
 
 ### Close Button Control
 
-Control the visibility and behavior of the close button.
+Control the visibility and behavior of the close button. When you render the
+yielded `d.CloseButton` yourself (the "Custom Close Button" example below),
+add `data-part="close-button"` to it explicitly — Drawer cannot inject that
+attribute into markup you write in your own template, so it is on you to
+carry it forward for anatomy consumers styling or querying by `data-part`.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -855,7 +859,7 @@ export default class DrawerCloseButton extends Component {
       >
         <d.Header>
           Custom Close Button
-          <d.CloseButton />
+          <d.CloseButton data-part="close-button" />
         </d.Header>
         <d.Body>
           <p>This drawer uses a custom close button placed in the header using

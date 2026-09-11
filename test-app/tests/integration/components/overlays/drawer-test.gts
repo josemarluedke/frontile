@@ -1345,4 +1345,39 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
 
     assert.dom('[data-component="drawer"] [data-part="close-button"]').exists();
   });
+
+  test('a consumer-rendered yielded d.CloseButton carries data-part="close-button" when the consumer adds it explicitly (the documented custom-close-button pattern)', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          @allowCloseButton={{false}}
+          as |d|
+        >
+          <d.Header>
+            Custom Close Button
+            <d.CloseButton data-part="close-button" />
+          </d.Header>
+          <d.Body>My Content</d.Body>
+        </Drawer>
+      </template>
+    );
+
+    // Same rationale as Modal's equivalent test: Drawer cannot inject
+    // data-part into a consumer's own <d.CloseButton /> invocation, so the
+    // consumer adds it themselves, same as drawer.md's "Custom Close
+    // Button" demo now does -- and it does land, via CloseButton's own
+    // ...attributes splat.
+    assert.dom('[data-component="drawer"] [data-part="close-button"]').exists();
+    assert.strictEqual(
+      document.querySelectorAll(
+        '[data-component="drawer"] [data-part="close-button"]'
+      ).length,
+      1,
+      'exactly one close-button part renders (no duplicate from the default close button, since @allowCloseButton={{false}})'
+    );
+  });
 });

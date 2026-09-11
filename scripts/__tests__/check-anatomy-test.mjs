@@ -302,3 +302,142 @@ test('a sub-template whose owner cannot be inferred is left unattributed rather 
   const rendered = readRenderedParts(componentsDir, new Set(['modal']));
   assert.ok(!rendered.mystery);
 });
+
+// --- MANUAL_PART_OWNERS: the tooltip/popover-arrow escape hatch -------------
+//
+// `MANUAL_PART_OWNERS` hard-codes exactly one entry today: the `arrow` part
+// physically rendered in `overlays/popover.gts` belongs to the `tooltip`
+// config, not to `popover` (which has no data-component of its own) and not
+// to whatever the directory-walk-up fallback would guess. These tests drive
+// `readRenderedParts`/`checkAnatomy` against a real `overlays/popover.gts`
+// path (the map key is a path suffix) to prove the mechanism attributes
+// exactly the named part to the named owner -- not every part in that file,
+// and not by disabling the missing/orphan checks for `tooltip` generally.
+
+test('MANUAL_PART_OWNERS attributes only the mapped part to the mapped owner, not other parts in the same file', () => {
+  const { componentsDir } = bareRoot();
+  mkdirSync(join(componentsDir, 'overlays'), { recursive: true });
+  writeFileSync(
+    join(componentsDir, 'overlays', 'popover.gts'),
+    `<span data-part="arrow"></span>
+     <span data-part="sparkle"></span>`
+  );
+
+  const rendered = readRenderedParts(componentsDir, new Set(['tooltip']));
+
+  // The mapped part lands on the mapped owner.
+  assert.deepEqual([...rendered.tooltip.parts], ['arrow']);
+  // A second, unmapped part in the very same file is not swept in too --
+  // it has no data-component, its directory ("overlays") doesn't kebab-match
+  // any known config, and it isn't in MANUAL_PART_OWNERS, so it must be left
+  // unattributed rather than silently folded into "tooltip" or any other
+  // config.
+  assert.ok(
+    !rendered.sparkle,
+    'an unmapped part must not be attributed to a config named after itself'
+  );
+  for (const [name, entry] of Object.entries(rendered)) {
+    assert.ok(
+      !entry.parts.has('sparkle'),
+      `"sparkle" must not be attributed to "${name}"`
+    );
+  }
+});
+
+test('MANUAL_PART_OWNERS makes checkAnatomy report zero missing/orphan for tooltip when the arrow is rendered only in popover.gts', () => {
+  const { themeDir, componentsDir } = bareRoot();
+  writeFileSync(
+    join(themeDir, 'tooltip.ts'),
+    `const tooltip = tv({
+  slots: {
+    base: '',
+    arrow: ''
+  }
+});
+`
+  );
+  writeFileSync(
+    join(componentsDir, 'tooltip.gts'),
+    '<div data-component="tooltip" data-part="base"></div>'
+  );
+  mkdirSync(join(componentsDir, 'overlays'), { recursive: true });
+  writeFileSync(
+    join(componentsDir, 'overlays', 'popover.gts'),
+    '<span data-part="arrow"></span>'
+  );
+
+  const r = checkAnatomy({ themeDir, componentsDir });
+  assert.deepEqual(
+    r.missing.filter((m) => m.config === 'tooltip'),
+    []
+  );
+  assert.deepEqual(
+    r.orphan.filter((o) => o.config === 'tooltip'),
+    []
+  );
+});
+
+test('MANUAL_PART_OWNERS does not blanket-exempt tooltip: a genuinely unrendered tooltip slot is still reported missing', () => {
+  const { themeDir, componentsDir } = bareRoot();
+  writeFileSync(
+    join(themeDir, 'tooltip.ts'),
+    `const tooltip = tv({
+  slots: {
+    base: '',
+    arrow: '',
+    glow: ''
+  }
+});
+`
+  );
+  writeFileSync(
+    join(componentsDir, 'tooltip.gts'),
+    '<div data-component="tooltip" data-part="base"></div>'
+  );
+  mkdirSync(join(componentsDir, 'overlays'), { recursive: true });
+  writeFileSync(
+    join(componentsDir, 'overlays', 'popover.gts'),
+    '<span data-part="arrow"></span>'
+  );
+
+  // "glow" is a real slot on the tooltip config but is never rendered
+  // anywhere -- the manual-owner map for "arrow" must not paper over it.
+  const r = checkAnatomy({ themeDir, componentsDir });
+  assert.deepEqual(
+    r.missing.filter((m) => m.config === 'tooltip'),
+    [{ config: 'tooltip', slot: 'glow' }]
+  );
+});
+
+test('MANUAL_PART_OWNERS does not silently swallow a genuine orphan: a mapped part that names no real slot is still reported', () => {
+  const { themeDir, componentsDir } = bareRoot();
+  // tooltip's config here has no "arrow" slot at all -- MANUAL_PART_OWNERS
+  // still attributes popover.gts's "arrow" data-part to tooltip, so it must
+  // surface as an orphan rather than being dropped because the attribution
+  // came from the manual-owner escape hatch instead of a normal same-file
+  // data-component.
+  writeFileSync(
+    join(themeDir, 'tooltip.ts'),
+    `const tooltip = tv({
+  slots: {
+    base: ''
+  }
+});
+`
+  );
+  writeFileSync(
+    join(componentsDir, 'tooltip.gts'),
+    '<div data-component="tooltip" data-part="base"></div>'
+  );
+  mkdirSync(join(componentsDir, 'overlays'), { recursive: true });
+  writeFileSync(
+    join(componentsDir, 'overlays', 'popover.gts'),
+    '<span data-part="arrow"></span>'
+  );
+
+  const r = checkAnatomy({ themeDir, componentsDir });
+  assert.equal(
+    r.orphan.filter((o) => o.config === 'tooltip' && o.part === 'arrow').length,
+    1
+  );
+});
