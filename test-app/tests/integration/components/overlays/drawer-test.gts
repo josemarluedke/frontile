@@ -18,6 +18,7 @@ import {
 } from 'test-app/tests/helpers/frontile-warnings';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 import { warn } from '@ember/debug';
+import { ownParts } from 'frontile/test-support';
 
 module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   setupRenderingTest(hooks);
@@ -1314,7 +1315,12 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     assert
       .dom('[data-component="drawer"] [data-part="header-actions"]')
       .exists();
-    assert.dom('[data-component="drawer"] [data-part="icon"]').exists();
+    // The default close button also renders inside the header here (no
+    // @allowCloseButton={{false}}), and its internal fallback svg carries
+    // its own `data-part="icon"` -- so drawer's own header icon (`h.Icon`)
+    // must be resolved via `ownParts`, not a plain descendant selector,
+    // which would also match the close button's unrelated icon.
+    assert.strictEqual(ownParts(root, 'icon').length, 1);
     assert.dom('[data-component="drawer"] [data-part="title"]').exists();
     assert.dom('[data-component="drawer"] [data-part="description"]').exists();
     assert.dom('[data-component="drawer"] [data-part="body"]').exists();

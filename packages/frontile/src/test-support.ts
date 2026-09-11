@@ -63,3 +63,35 @@ function changeOption(
 }
 
 export { setPrefersReducedMotion } from './utils/prefers-reduced-motion';
+
+/**
+ * Selects the elements bearing `[data-part="${part}"]` whose *own* anatomy
+ * root is `root` — i.e. `root` is the nearest `[data-component]` ancestor.
+ *
+ * `[data-component="X"] [data-part="Y"]` (plain CSS descendant combinator)
+ * matches "any descendant", which is ambiguous whenever a component with a
+ * part named `Y` renders a nested component that also has an element
+ * carrying `data-part="Y"` (its own part, or a caller-supplied one on the
+ * nested component's root). CSS has no "nearest enclosing" combinator, so
+ * this helper resolves ownership the same way behavioural code would have
+ * to: walk up from the part element and confirm the nearest
+ * `[data-component]` ancestor is `root`.
+ *
+ * The walk starts at `el.parentElement`, not `el` itself, deliberately:
+ * `el` may itself be a nested component's root (e.g. `CloseButton`, which
+ * carries its own `data-component="close-button"` on the very element that
+ * also carries a caller-supplied `data-part="clear-button"` or
+ * `data-part="close-button"`). Starting `closest()`/the walk from `el`
+ * would match `el` itself and never reach `root`, wrongly excluding a part
+ * that legitimately belongs to `root`.
+ */
+export function ownParts(root: Element, part: string): Element[] {
+  return [...root.querySelectorAll(`[data-part="${part}"]`)].filter((el) => {
+    let node = el.parentElement;
+    while (node && node !== root) {
+      if (node.hasAttribute('data-component')) return false;
+      node = node.parentElement;
+    }
+    return node === root;
+  });
+}

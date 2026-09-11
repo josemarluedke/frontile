@@ -5,6 +5,7 @@ import { hash } from '@ember/helper';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Alert } from 'frontile';
+import { ownParts } from 'frontile/test-support';
 
 // Captured before the registerCustomStyles call below swaps the recipe
 // out for the placeholder these tests render against — this is the real
@@ -539,11 +540,18 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-component="alert"]').hasClass('alert-base');
+      // Scoped via `ownParts`, not a plain `[data-part="icon"]` selector:
+      // the `<CloseButton>` this test also renders (via @onClose) has its
+      // own `icon` part on its internal fallback svg, which a plain
+      // descendant/global selector would also match.
+      const root = document.querySelector(
+        '[data-component="alert"]'
+      ) as Element;
+      assert.dom(root).hasClass('alert-base');
       assert.dom('[data-part="content"]').hasClass('alert-content');
       assert.dom('[data-part="title"]').hasClass('alert-title');
       assert.dom('[data-part="description"]').hasClass('alert-description');
-      assert.dom('[data-part="icon"]').hasClass('alert-icon');
+      assert.dom(ownParts(root, 'icon')[0]).hasClass('alert-icon');
       assert.dom('[data-part="actions"]').hasClass('alert-actions');
       assert.dom('[data-part="close-button"]').hasClass('alert-close-button');
     });
@@ -602,10 +610,15 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-component="alert"]').hasClass('my-base');
+      // See `ownParts` note above: @onClose renders a `<CloseButton>` with
+      // its own `icon` part, so `icon` must be selected via `ownParts`.
+      const root = document.querySelector(
+        '[data-component="alert"]'
+      ) as Element;
+      assert.dom(root).hasClass('my-base');
       assert.dom('[data-part="title"]').hasClass('my-title');
       assert.dom('[data-part="description"]').hasClass('my-description');
-      assert.dom('[data-part="icon"]').hasClass('my-icon');
+      assert.dom(ownParts(root, 'icon')[0]).hasClass('my-icon');
       assert.dom('[data-part="actions"]').hasClass('my-actions');
       assert.dom('[data-part="close-button"]').hasClass('my-close');
     });
@@ -689,9 +702,17 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-component="alert"]').hasAttribute('data-part', 'base');
+      const root = document.querySelector(
+        '[data-component="alert"]'
+      ) as Element;
+      assert.dom(root).hasAttribute('data-part', 'base');
       assert.dom('[data-component="alert"] [data-part="inner"]').exists();
-      assert.dom('[data-component="alert"] [data-part="icon"]').exists();
+      // The `<CloseButton>` rendered below (via @onClose) has its own
+      // `icon` part on its internal fallback svg, so alert's own `icon`
+      // part must be resolved via `ownParts`, not a plain descendant
+      // selector — otherwise this assertion would pass even if alert's own
+      // icon never rendered at all.
+      assert.strictEqual(ownParts(root, 'icon').length, 1);
       assert.dom('[data-component="alert"] [data-part="content"]').exists();
       assert.dom('[data-component="alert"] [data-part="title"]').exists();
       assert.dom('[data-component="alert"] [data-part="description"]').exists();

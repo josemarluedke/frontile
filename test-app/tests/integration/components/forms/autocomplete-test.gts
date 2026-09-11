@@ -12,6 +12,7 @@ import { cell } from 'ember-resources';
 import { Autocomplete } from 'frontile';
 import { array } from '@ember/helper';
 import { on } from '@ember/modifier';
+import { ownParts } from 'frontile/test-support';
 
 module(
   'Integration | Component | Autocomplete | @frontile/forms',
@@ -1141,32 +1142,13 @@ module(
       );
     });
 
-    /**
-     * Autocomplete nests a hidden native `<select>` (its own `native-select`
-     * component, with its own `data-component="native-select"` root) that
-     * shares several part names with `autocomplete` itself (inner-container,
-     * start-content, end-content, input, icon). A plain
-     * `[data-component="autocomplete"] [data-part="x"]` descendant selector
-     * cannot tell the two apart, so ownership is resolved the same way
-     * behavioural code has to: the nearest `[data-component]` ancestor must
-     * be `root`.
-     *
-     * The walk starts at `el.parentElement`, not `el` itself: the clear
-     * button is `CloseButton`, which now carries its own
-     * `data-component="close-button"` on the very element that also carries
-     * `data-part="clear-button"`. Starting `closest()` from `el` would match
-     * itself and never reach `root`, wrongly excluding a part that
-     * legitimately belongs to `autocomplete`.
-     */
-    const ownParts = (root: Element, part: string): Element[] =>
-      [...root.querySelectorAll(`[data-part="${part}"]`)].filter((el) => {
-        let node = el.parentElement;
-        while (node && node !== root) {
-          if (node.hasAttribute('data-component')) return false;
-          node = node.parentElement;
-        }
-        return node === root;
-      });
+    // Autocomplete nests a hidden native `<select>` (its own `native-select`
+    // component) that shares several part names with `autocomplete` itself
+    // (inner-container, start-content, end-content, input, icon), and its
+    // clear button is `CloseButton`, which carries its own
+    // `data-component="close-button"` alongside the caller-supplied
+    // `data-part="clear-button"`. See `ownParts` in `frontile/test-support`
+    // for why a plain descendant selector can't tell these apart.
 
     test('renders data-component="autocomplete" on the root only, with data-part on every slot', async function (assert) {
       const items = ['Apple', 'Banana', 'Cherry'];

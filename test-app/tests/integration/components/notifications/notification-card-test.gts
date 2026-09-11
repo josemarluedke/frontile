@@ -10,6 +10,7 @@ import sinon from 'sinon';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
+import { ownParts } from 'frontile/test-support';
 
 // Captured before the `registerCustomStyles` call below replaces
 // `notificationCard` for the rest of this module — `notificationCard` itself
@@ -667,9 +668,12 @@ module(
       assert
         .dom('[data-component="notification-card"] [data-part="inner"]')
         .exists();
-      assert
-        .dom('[data-component="notification-card"] [data-part="icon"]')
-        .exists();
+      // The default close button also renders here (allowClosing defaults
+      // true), and its internal fallback svg carries its own
+      // `data-part="icon"` -- so the card's own `icon` part must be
+      // resolved via `ownParts`, not a plain descendant selector, which
+      // would also match the close button's unrelated icon.
+      assert.strictEqual(ownParts(root, 'icon').length, 1);
       assert
         .dom('[data-component="notification-card"] [data-part="content"]')
         .exists();
@@ -708,14 +712,18 @@ module(
 
       await render(template);
 
-      assert
-        .dom('[data-component="notification-card"] [data-part="spinner"]')
-        .exists();
+      const root = document.querySelector(
+        '[data-component="notification-card"]'
+      ) as Element;
+      assert.strictEqual(ownParts(root, 'spinner').length, 1);
       // The spinner and icon slots are mutually exclusive: while loading,
-      // the icon does not render at all.
-      assert
-        .dom('[data-component="notification-card"] [data-part="icon"]')
-        .doesNotExist();
+      // the card's own icon part does not render at all. This must check
+      // the card's *own* `icon` part, not just "no `[data-part="icon"]`
+      // descendant" — `CloseButton` (rendered when the notification is
+      // closable) has its own `icon` slot on its internal fallback `<svg>`,
+      // and a plain `[data-component="notification-card"] [data-part="icon"]`
+      // descendant selector would also match that, unrelated element.
+      assert.strictEqual(ownParts(root, 'icon').length, 0);
     });
   }
 );
