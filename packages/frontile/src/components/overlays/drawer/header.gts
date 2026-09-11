@@ -18,8 +18,16 @@ export interface DrawerHeaderIconSignature {
   Blocks: { default: [] };
 }
 
+// `data-drawer-header-icon` and `data-drawer-header-description` are what the
+// theme's header grid keys its icon alignment off: the icon spans both text
+// rows only when a description is actually rendered (see `headerContent` in
+// `overlays.ts`). They are structural hooks, not state, so they are always on.
 const DrawerHeaderIcon: TOC<DrawerHeaderIconSignature> = <template>
-  <div class={{twMerge @classFromParent @class}} ...attributes>
+  <div
+    class={{twMerge @classFromParent @class}}
+    data-drawer-header-icon
+    ...attributes
+  >
     {{yield}}
   </div>
 </template>;
@@ -68,7 +76,11 @@ export interface DrawerHeaderDescriptionSignature {
 
 class DrawerHeaderDescription extends Component<DrawerHeaderDescriptionSignature> {
   <template>
-    <div class={{twMerge @classFromParent @class}} ...attributes>
+    <div
+      class={{twMerge @classFromParent @class}}
+      data-drawer-header-description
+      ...attributes
+    >
       {{#if (has-block)}}{{yield}}{{else}}{{@value}}{{/if}}
     </div>
   </template>
@@ -198,7 +210,9 @@ export default class DrawerHeader extends Component<DrawerHeaderSignature> {
             <div class={{@titleClass}}>{{@title}}</div>
           {{/if}}
           {{#if @description}}
-            <div class={{@descriptionClass}}>{{@description}}</div>
+            <div class={{@descriptionClass}} data-drawer-header-description>
+              {{@description}}
+            </div>
           {{/if}}
         {{/if}}
       </div>

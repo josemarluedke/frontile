@@ -167,6 +167,52 @@ module(
         .hasText('Supporting text');
     });
 
+    // The theme centres a title-only header's icon and only spans it across
+    // both text rows when a description is there, keyed off these attributes
+    // with `:has()`. A template cannot bind an attribute's *name*, so renaming
+    // one here would silently break that alignment -- hence asserting on the
+    // rendered markup, the same way `drawer-selectors-test` does.
+    test('the icon and description carry the hooks the theme aligns them by', async function (assert) {
+      await render(
+        <template>
+          <Header @labelledById="hello" data-test-id="block" as |h|>
+            <h.Icon>icon</h.Icon>
+            <h.Title>Block title</h.Title>
+            <h.Description>Block description</h.Description>
+          </Header>
+
+          <Header
+            @labelledById="hello"
+            @title="Arg title"
+            @description="Arg description"
+            data-test-id="args"
+          />
+
+          <Header
+            @labelledById="hello"
+            @title="Title only"
+            data-test-id="titleOnly"
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="block"] [data-drawer-header-icon]')
+        .hasText('icon');
+      assert
+        .dom('[data-test-id="block"] [data-drawer-header-description]')
+        .hasText('Block description');
+      assert
+        .dom('[data-test-id="args"] [data-drawer-header-description]')
+        .hasText('Arg description');
+
+      // Nothing marks a description that was never rendered, which is what
+      // lets the theme tell the two shapes apart.
+      assert
+        .dom('[data-test-id="titleOnly"] [data-drawer-header-description]')
+        .doesNotExist();
+    });
+
     test('a block suppresses the args form', async function (assert) {
       await render(
         <template>
