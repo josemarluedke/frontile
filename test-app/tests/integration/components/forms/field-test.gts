@@ -130,10 +130,15 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     // Individual checkboxes within the group have the name attribute
     assert.dom('[data-component="checkbox"]').exists({ count: 3 });
 
-    // Test that checkbox group works
-    const checkboxes = document.querySelectorAll('[data-component="checkbox"]');
-    await click(checkboxes[0] as Element); // Option 1
-    await click(checkboxes[2] as Element); // Option 3
+    // Test that checkbox group works. Clicking the actual <input> (data-part
+    // "input" inside each checkbox's root), not the root itself: the root
+    // now carries data-component="checkbox" and is a <div>, so clicking it
+    // would no longer toggle anything.
+    const checkboxInputs = document.querySelectorAll(
+      '[data-component="checkbox"] [data-part="input"]'
+    );
+    await click(checkboxInputs[0] as Element); // Option 1
+    await click(checkboxInputs[2] as Element); // Option 3
     assert.true(opt1Checked.current, 'Option 1 is checked');
     assert.false(opt2Checked.current, 'Option 2 is not checked');
     assert.true(opt3Checked.current, 'Option 3 is checked');
@@ -231,7 +236,9 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     assert.dom('[data-test-select]').exists('Select component is yielded');
     assert.dom('[data-component="label"]').hasText('Choose Fruit');
     // Select components use internal structure, verify it's working
-    assert.dom('[data-component="select-trigger"]').exists();
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .exists();
 
     // Test that select works
     await selectOptionByKey('[data-test-select]', 'Banana');
@@ -265,10 +272,12 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
       .dom('[data-test-multi-select]')
       .exists('MultiSelect component is yielded');
     assert.dom('[data-component="label"]').hasText('Choose Fruits');
-    assert.dom('[data-component="select-trigger"]').exists();
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .exists();
 
     // Test that multi-select works
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="Banana"]');
     await click('[data-component="listbox"] [data-key="Orange"]');
 
@@ -305,7 +314,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify trigger button shows the pre-selected value
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Banana', 'Trigger shows pre-selected value from formData');
 
     // Verify native select has the correct value selected
@@ -343,7 +352,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify initial value
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Apple', 'Trigger shows initial value');
 
     // Change formData externally
@@ -352,7 +361,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify trigger updated
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Cherry', 'Trigger updates to new formData value');
 
     // Verify native select updated
@@ -389,14 +398,14 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify trigger shows comma-separated values in items array order
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText(
         'Banana, Cherry',
         'Trigger shows pre-selected values from formData'
       );
 
     // Open listbox to verify selected items
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     // Verify Banana and Cherry are selected
     assert
@@ -454,7 +463,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify initial value
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Apple', 'Trigger shows initial value');
 
     // Change formData externally
@@ -463,11 +472,11 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify trigger updated to show new values
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Banana, Date', 'Trigger updates to new formData values');
 
     // Open listbox to verify correct items are selected
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     // Verify Banana and Date are now selected
     assert
@@ -502,11 +511,11 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
       );
 
     // Close listbox
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     // Verify trigger still shows updated values
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText(
         'Banana, Date',
         'Trigger maintains updated values after closing'
@@ -549,7 +558,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     );
 
     // Open listbox and select multiple items
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="Banana"]');
     await click('[data-component="listbox"] [data-key="Cherry"]');
     await click('[data-component="listbox"] [data-key="Date"]');
@@ -563,7 +572,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify trigger shows all selections
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Banana, Cherry, Date', 'Trigger shows all selected items');
 
     // Verify listbox shows correct selections
@@ -615,11 +624,11 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify initial selections
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Apple, Cherry', 'Trigger shows initial selections');
 
     // Open listbox
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     // Verify initial selections in listbox
     assert
@@ -652,7 +661,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify trigger shows updated selections (in items array order)
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText(
         'Banana, Cherry, Date',
         'Trigger shows updated selections in items array order'
@@ -687,7 +696,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     );
 
     assert
-      .dom('[data-component="switch"]')
+      .dom('[data-component="switch-input"]')
       .exists('Switch component is yielded');
     assert.dom('[data-component="label"]').hasText('Enable Feature');
     assert.dom('[data-test-switch]').hasAttribute('name', 'testSwitch');
@@ -816,7 +825,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Verify Select error
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .exists('Select trigger exists');
     assert.equal(
       feedbacks[3]?.textContent?.trim(),
@@ -1086,7 +1095,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
       .dom('[data-test-checkbox]')
       .isNotDisabled('Checkbox is not disabled');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .isNotDisabled('Select is not disabled');
     assert
       .dom('[data-test-textarea]')
@@ -1100,7 +1109,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     assert.dom('[data-test-input]').isDisabled('Input is disabled');
     assert.dom('[data-test-checkbox]').isDisabled('Checkbox is disabled');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .isDisabled('Select is disabled');
     assert.dom('[data-test-textarea]').isDisabled('Textarea is disabled');
   });

@@ -37,7 +37,13 @@ class ButtonGroup extends Component<ButtonGroupSignature> {
   }
 
   <template>
-    <div class={{this.classNames}} role="group" ...attributes>
+    <div
+      class={{this.classNames}}
+      role="group"
+      data-component="button-group"
+      data-part="base"
+      ...attributes
+    >
       {{yield
         (hash
           Button=(component

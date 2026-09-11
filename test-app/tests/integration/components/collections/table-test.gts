@@ -41,50 +41,79 @@ module(
         <template><Table @columns={{columns}} @items={{items}} /></template>
       );
 
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-header"]').exists();
-      assert.dom('[data-test-id="table-body"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="thead"]').exists();
+      assert.dom('[data-part="tbody"]').exists();
 
       // Check columns
-      assert.dom('[data-test-id="table-column"][data-key="id"]').exists();
-      assert.dom('[data-test-id="table-column"][data-key="name"]').exists();
-      assert.dom('[data-test-id="table-column"][data-key="email"]').exists();
+      assert.dom('[data-part="th"][data-key="id"]').exists();
+      assert.dom('[data-part="th"][data-key="name"]').exists();
+      assert.dom('[data-part="th"][data-key="email"]').exists();
 
       // Check column labels
-      assert
-        .dom('[data-test-id="table-column"][data-key="id"]')
-        .containsText('ID');
-      assert
-        .dom('[data-test-id="table-column"][data-key="name"]')
-        .containsText('Name');
-      assert
-        .dom('[data-test-id="table-column"][data-key="email"]')
-        .containsText('Email');
+      assert.dom('[data-part="th"][data-key="id"]').containsText('ID');
+      assert.dom('[data-part="th"][data-key="name"]').containsText('Name');
+      assert.dom('[data-part="th"][data-key="email"]').containsText('Email');
 
       // Check rows
-      assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
-      assert.dom('[data-test-id="table-row"][data-key="2"]').exists();
+      assert.dom('[data-part="tr"][data-key="1"]').exists();
+      assert.dom('[data-part="tr"][data-key="2"]').exists();
 
       // Check cells content
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="id"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="id"]')
         .containsText('1');
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="name"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="name"]')
         .containsText('John Doe');
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="email"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="email"]')
         .containsText('john@example.com');
 
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="id"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="id"]')
         .containsText('2');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="name"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="name"]')
         .containsText('Jane Smith');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="email"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="email"]')
         .containsText('jane@example.com');
+    });
+
+    test('it renders the anatomy attributes', async function (assert) {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template><Table @columns={{columns}} @items={{items}} /></template>
+      );
+
+      // Table's real, outermost rendered element is the `<div data-part="wrapper">`
+      // (it also encloses the optional `toolbar` slot, a sibling of the
+      // `<table>` itself) -- so that is the component's anatomy root and the
+      // only element that may carry `data-component="table"`. There must be
+      // exactly one such element: the `<table>` tag underneath (rendered by
+      // the composed SimpleTable) is a part of this same "table" instance,
+      // not a second root, and must carry `data-part="table"` only.
+      assert.dom('[data-component="table"]').exists({ count: 1 });
+      assert
+        .dom('[data-component="table"]')
+        .hasAttribute('data-part', 'wrapper');
+      assert.dom('[data-part="table"]').exists();
+      assert.dom('[data-part="table"]').doesNotHaveAttribute('data-component');
+      assert.dom('[data-part="wrapper"]').exists();
+      assert.dom('[data-part="thead"]').exists();
+      assert.dom('[data-part="tbody"]').exists();
+      assert.dom('[data-part="th"]').exists({ count: columns.length });
+      assert.dom('[data-part="tr"]').exists();
+      assert.dom('[data-part="td"]').exists();
     });
 
     test('it handles empty data', async function (assert) {
@@ -99,19 +128,19 @@ module(
         <template><Table @columns={{columns}} @items={{empty}} /></template>
       );
 
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-header"]').exists();
-      assert.dom('[data-test-id="table-body"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="thead"]').exists();
+      assert.dom('[data-part="tbody"]').exists();
 
       // Headers should exist
-      assert.dom('[data-test-id="table-column"]').exists({ count: 2 });
+      assert.dom('[data-part="th"]').exists({ count: 2 });
 
-      // No rows should exist
-      assert.dom('[data-test-id="table-row"]').doesNotExist();
+      // No body rows should exist (the header still renders its own row)
+      assert.dom('[data-part="tbody"] [data-part="tr"]').doesNotExist();
 
       // No empty content should be shown when not provided
       assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
-      assert.dom('[data-test-id="table-empty-cell"]').doesNotExist();
+      assert.dom('[data-part="empty"]').doesNotExist();
     });
 
     test('it displays empty content with string', async function (assert) {
@@ -132,30 +161,28 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-header"]').exists();
-      assert.dom('[data-test-id="table-body"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="thead"]').exists();
+      assert.dom('[data-part="tbody"]').exists();
 
       // Headers should exist
-      assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
+      assert.dom('[data-part="th"]').exists({ count: 3 });
 
       // Empty row should exist
       assert.dom('[data-test-id="table-empty-row"]').exists();
-      assert.dom('[data-test-id="table-empty-cell"]').exists();
+      assert.dom('[data-part="empty"]').exists();
 
       // Empty cell should span all columns
-      assert
-        .dom('[data-test-id="table-empty-cell"]')
-        .hasAttribute('colspan', '3');
+      assert.dom('[data-part="empty"]').hasAttribute('colspan', '3');
 
       // Empty content should be displayed
-      assert
-        .dom('[data-test-id="table-empty-cell"]')
-        .containsText('No data available');
+      assert.dom('[data-part="empty"]').containsText('No data available');
 
       // No regular rows should exist
       assert
-        .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
+        .dom(
+          '[data-part="tbody"] [data-part="tr"]:not([data-test-id="table-empty-row"])'
+        )
         .doesNotExist();
     });
 
@@ -183,22 +210,22 @@ module(
     //   );
     //
     //   assert.dom('[data-test-id="table-empty-row"]').exists();
-    //   assert.dom('[data-test-id="table-empty-cell"]').exists();
+    //   assert.dom('[data-part="empty"]').exists();
     //
     //   // Empty cell should span both columns
     //   assert
-    //     .dom('[data-test-id="table-empty-cell"]')
+    //     .dom('[data-part="empty"]')
     //     .hasAttribute('colspan', '2');
     //
     //   // Component content should be rendered
     //   assert
-    //     .dom('[data-test-id="table-empty-cell"] .custom-empty-component')
+    //     .dom('[data-part="empty"] .custom-empty-component')
     //     .exists();
     //   assert
-    //     .dom('[data-test-id="table-empty-cell"] strong')
+    //     .dom('[data-part="empty"] strong')
     //     .containsText('No results found');
     //   assert
-    //     .dom('[data-test-id="table-empty-cell"] p')
+    //     .dom('[data-part="empty"] p')
     //     .containsText('Try adjusting your search criteria.');
     // });
 
@@ -223,11 +250,11 @@ module(
       );
 
       // Regular content should be displayed
-      assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+      assert.dom('[data-part="tr"][data-key="1"]').exists();
 
       // Empty content should not be displayed
       assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
-      assert.dom('[data-test-id="table-empty-cell"]').doesNotExist();
+      assert.dom('[data-part="empty"]').doesNotExist();
     });
 
     test('it updates empty content visibility reactively', async function (assert) {
@@ -250,11 +277,11 @@ module(
 
       // Initially empty - should show empty content
       assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert.dom('[data-part="empty"]').containsText('No data available');
       assert
-        .dom('[data-test-id="table-empty-cell"]')
-        .containsText('No data available');
-      assert
-        .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
+        .dom(
+          '[data-part="tbody"] [data-part="tr"]:not([data-test-id="table-empty-row"])'
+        )
         .doesNotExist();
 
       // Add data - should hide empty content and show data
@@ -264,18 +291,18 @@ module(
 
       await settled();
       assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
-      assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+      assert.dom('[data-part="tr"][data-key="1"]').exists();
 
       // Remove data - should show empty content again
       items.current = [];
 
       await settled();
       assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert.dom('[data-part="empty"]').containsText('No data available');
       assert
-        .dom('[data-test-id="table-empty-cell"]')
-        .containsText('No data available');
-      assert
-        .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
+        .dom(
+          '[data-part="tbody"] [data-part="tr"]:not([data-test-id="table-empty-row"])'
+        )
         .doesNotExist();
     });
 
@@ -301,7 +328,7 @@ module(
 
       // Should show the custom empty block content
       assert.dom('[data-test-id="table-empty-row"]').exists();
-      assert.dom('[data-test-id="table-empty-cell"]').exists();
+      assert.dom('[data-part="empty"]').exists();
       assert.dom('[data-test-id="custom-empty"]').exists();
       assert
         .dom('[data-test-id="custom-empty"] h3')
@@ -310,7 +337,9 @@ module(
         .dom('[data-test-id="custom-empty"] p')
         .containsText('Try adjusting your search criteria.');
       assert
-        .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
+        .dom(
+          '[data-part="tbody"] [data-part="tr"]:not([data-test-id="table-empty-row"])'
+        )
         .doesNotExist();
     });
 
@@ -342,7 +371,7 @@ module(
         .dom('[data-test-id="priority-empty"]')
         .containsText('Named block content');
       assert
-        .dom('[data-test-id="table-empty-cell"]')
+        .dom('[data-part="empty"]')
         .doesNotContainText('This should not show');
     });
 
@@ -365,9 +394,7 @@ module(
 
       // Should show parameter content when no block is provided
       assert.dom('[data-test-id="table-empty-row"]').exists();
-      assert
-        .dom('[data-test-id="table-empty-cell"]')
-        .containsText('Fallback content');
+      assert.dom('[data-part="empty"]').containsText('Fallback content');
     });
 
     test('it hides empty block when items exist', async function (assert) {
@@ -392,7 +419,7 @@ module(
       // Should not show empty block when items exist
       assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
       assert.dom('[data-test-id="should-not-show"]').doesNotExist();
-      assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+      assert.dom('[data-part="tr"][data-key="1"]').exists();
     });
 
     test('it handles items with different data types', async function (assert) {
@@ -412,16 +439,16 @@ module(
       );
 
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="active"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="active"]')
         .containsText('true');
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="count"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="count"]')
         .containsText('42');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="active"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="active"]')
         .containsText('false');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="count"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="count"]')
         .containsText('0');
     });
 
@@ -440,9 +467,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table-row"]').exists({ count: 1 });
+      assert.dom('[data-part="tbody"] [data-part="tr"]').exists({ count: 1 });
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="name"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="name"]')
         .containsText('John');
 
       // Update the data
@@ -457,12 +484,12 @@ module(
       ];
 
       await settled();
-      assert.dom('[data-test-id="table-row"]').exists({ count: 2 });
+      assert.dom('[data-part="tbody"] [data-part="tr"]').exists({ count: 2 });
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="name"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="name"]')
         .containsText('John Updated');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="name"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="name"]')
         .containsText('Jane');
     });
 
@@ -492,26 +519,26 @@ module(
 
       // Check that custom value function is used for name column
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="name"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="name"]')
         .containsText('John Doe (admin)');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="name"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="name"]')
         .containsText('Jane Smith (user)');
 
       // Check that custom value function is used for email column
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="email"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="email"]')
         .containsText('JOHN@EXAMPLE.COM');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="email"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="email"]')
         .containsText('JANE@EXAMPLE.COM');
 
       // Check that direct key access still works for id column
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="id"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="id"]')
         .containsText('1');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="id"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="id"]')
         .containsText('2');
     });
 
@@ -545,26 +572,26 @@ module(
 
       // Check number return type
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="id"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="id"]')
         .containsText('100');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="id"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="id"]')
         .containsText('200');
 
       // Check boolean return type
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="active"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="active"]')
         .containsText('true');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="active"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="active"]')
         .containsText('false');
 
       // Check null return type (should render empty)
       assert
-        .dom('[data-test-id="table-row"][data-key="1"] [data-column="missing"]')
+        .dom('[data-part="tr"][data-key="1"] [data-column="missing"]')
         .hasText('');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"] [data-column="missing"]')
+        .dom('[data-part="tr"][data-key="2"] [data-column="missing"]')
         .hasText('');
     });
 
@@ -584,7 +611,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-component="table-wrapper"]').hasClass('overflow-auto');
+      assert.dom('[data-part="wrapper"]').hasClass('overflow-auto');
     });
 
     test('it supports sticky header', async function (assert) {
@@ -607,9 +634,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table-header"]').hasClass('sticky');
-      assert.dom('[data-test-id="table-header"]').hasClass('top-0');
-      assert.dom('[data-test-id="table-header"]').hasClass('z-2');
+      assert.dom('[data-part="thead"]').hasClass('sticky');
+      assert.dom('[data-part="thead"]').hasClass('top-0');
+      assert.dom('[data-part="thead"]').hasClass('z-2');
     });
 
     test('it supports sticky columns from ColumnConfig', async function (assert) {
@@ -633,30 +660,18 @@ module(
       );
 
       // Check sticky ID column (left)
-      assert
-        .dom('[data-test-id="table-column"][data-key="id"]')
-        .hasClass('sticky');
-      assert
-        .dom('[data-test-id="table-column"][data-key="id"]')
-        .hasClass('left-0');
-      assert
-        .dom('[data-test-id="table-column"][data-key="id"]')
-        .hasClass('z-3');
+      assert.dom('[data-part="th"][data-key="id"]').hasClass('sticky');
+      assert.dom('[data-part="th"][data-key="id"]').hasClass('left-0');
+      assert.dom('[data-part="th"][data-key="id"]').hasClass('z-3');
 
       // Check sticky actions column (right)
-      assert
-        .dom('[data-test-id="table-column"][data-key="actions"]')
-        .hasClass('sticky');
-      assert
-        .dom('[data-test-id="table-column"][data-key="actions"]')
-        .hasClass('right-0');
-      assert
-        .dom('[data-test-id="table-column"][data-key="actions"]')
-        .hasClass('z-3');
+      assert.dom('[data-part="th"][data-key="actions"]').hasClass('sticky');
+      assert.dom('[data-part="th"][data-key="actions"]').hasClass('right-0');
+      assert.dom('[data-part="th"][data-key="actions"]').hasClass('z-3');
 
       // Check non-sticky column
       assert
-        .dom('[data-test-id="table-column"][data-key="name"]')
+        .dom('[data-part="th"][data-key="name"]')
         .doesNotHaveClass('sticky');
     });
 
@@ -690,15 +705,13 @@ module(
       );
 
       // Check that specified rows are sticky
-      assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('sticky');
-      assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('z-1');
-      assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('sticky');
-      assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('z-1');
+      assert.dom('[data-part="tr"][data-key="1"]').hasClass('sticky');
+      assert.dom('[data-part="tr"][data-key="1"]').hasClass('z-1');
+      assert.dom('[data-part="tr"][data-key="3"]').hasClass('sticky');
+      assert.dom('[data-part="tr"][data-key="3"]').hasClass('z-1');
 
       // Check that non-sticky row is not sticky
-      assert
-        .dom('[data-test-id="table-row"][data-key="2"]')
-        .doesNotHaveClass('sticky');
+      assert.dom('[data-part="tr"][data-key="2"]').doesNotHaveClass('sticky');
     });
 
     test('it combines scrolling with sticky elements', async function (assert) {
@@ -732,22 +745,18 @@ module(
       );
 
       // Check scrollable wrapper
-      assert.dom('[data-component="table-wrapper"]').hasClass('overflow-auto');
+      assert.dom('[data-part="wrapper"]').hasClass('overflow-auto');
 
       // Check sticky header
-      assert.dom('[data-test-id="table-header"]').hasClass('sticky');
-      assert.dom('[data-test-id="table-header"]').hasClass('top-0');
+      assert.dom('[data-part="thead"]').hasClass('sticky');
+      assert.dom('[data-part="thead"]').hasClass('top-0');
 
       // Check sticky columns
-      assert
-        .dom('[data-test-id="table-column"][data-key="id"]')
-        .hasClass('left-0');
-      assert
-        .dom('[data-test-id="table-column"][data-key="actions"]')
-        .hasClass('right-0');
+      assert.dom('[data-part="th"][data-key="id"]').hasClass('left-0');
+      assert.dom('[data-part="th"][data-key="actions"]').hasClass('right-0');
 
       // Check sticky row
-      assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('sticky');
+      assert.dom('[data-part="tr"][data-key="1"]').hasClass('sticky');
     });
 
     test('sticky surfaces are opaque so scrolled content cannot show through', async function (assert) {
@@ -797,7 +806,7 @@ module(
 
       const stickyElements = [
         ...document.querySelectorAll<HTMLElement>(
-          '[data-component="table-wrapper"] .sticky'
+          '[data-part="wrapper"] .sticky'
         )
       ].filter((el) => el.tagName !== 'TR' || el.children.length > 0);
 
@@ -850,7 +859,7 @@ module(
       );
 
       const row = document.querySelector<HTMLElement>(
-        '[data-test-id="table-row"][data-key="1"]'
+        '[data-part="tr"][data-key="1"]'
       )!;
       const cell = row.querySelector<HTMLElement>('[data-column="id"]')!;
 
@@ -906,41 +915,29 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-footer"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="tfoot"]').exists();
 
       // Check footer columns
       assert
-        .dom(
-          '[data-test-id="table-footer"] [data-test-id="table-column"][data-key="total"]'
-        )
+        .dom('[data-part="tfoot"] [data-part="th"][data-key="total"]')
         .exists();
       assert
-        .dom(
-          '[data-test-id="table-footer"] [data-test-id="table-column"][data-key="items"]'
-        )
+        .dom('[data-part="tfoot"] [data-part="th"][data-key="items"]')
         .exists();
       assert
-        .dom(
-          '[data-test-id="table-footer"] [data-test-id="table-column"][data-key="sum"]'
-        )
+        .dom('[data-part="tfoot"] [data-part="th"][data-key="sum"]')
         .exists();
 
       // Check footer column labels
       assert
-        .dom(
-          '[data-test-id="table-footer"] [data-test-id="table-column"][data-key="total"]'
-        )
+        .dom('[data-part="tfoot"] [data-part="th"][data-key="total"]')
         .containsText('Total');
       assert
-        .dom(
-          '[data-test-id="table-footer"] [data-test-id="table-column"][data-key="items"]'
-        )
+        .dom('[data-part="tfoot"] [data-part="th"][data-key="items"]')
         .containsText('Items');
       assert
-        .dom(
-          '[data-test-id="table-footer"] [data-test-id="table-column"][data-key="sum"]'
-        )
+        .dom('[data-part="tfoot"] [data-part="th"][data-key="sum"]')
         .containsText('$1000');
     });
 
@@ -972,9 +969,9 @@ module(
       );
 
       // Check that footer has sticky styling
-      assert.dom('[data-test-id="table-footer"]').hasClass('sticky');
-      assert.dom('[data-test-id="table-footer"]').hasClass('bottom-0');
-      assert.dom('[data-test-id="table-footer"]').hasClass('z-2');
+      assert.dom('[data-part="tfoot"]').hasClass('sticky');
+      assert.dom('[data-part="tfoot"]').hasClass('bottom-0');
+      assert.dom('[data-part="tfoot"]').hasClass('z-2');
     });
 
     // Styling and Class Tests
@@ -997,7 +994,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="table"]').hasClass('custom-table-class');
+        assert.dom('[data-part="table"]').hasClass('custom-table-class');
       });
 
       test('it applies classes to all table elements', async function (assert) {
@@ -1031,29 +1028,27 @@ module(
         );
 
         // Check wrapper class
-        assert
-          .dom('[data-component="table-wrapper"].custom-wrapper-class')
-          .exists();
+        assert.dom('[data-part="wrapper"].custom-wrapper-class').exists();
 
         // Check table class
-        assert.dom('[data-test-id="table"].custom-table-class').exists();
+        assert.dom('[data-part="table"].custom-table-class').exists();
 
         // Check thead class
-        assert.dom('[data-test-id="table-header"].custom-thead-class').exists();
+        assert.dom('[data-part="thead"].custom-thead-class').exists();
 
         // Check tbody class
-        assert.dom('[data-test-id="table-body"].custom-tbody-class').exists();
+        assert.dom('[data-part="tbody"].custom-tbody-class').exists();
 
         // Check tfoot class
-        assert.dom('[data-test-id="table-footer"].custom-tfoot-class').exists();
+        assert.dom('[data-part="tfoot"].custom-tfoot-class').exists();
 
         // Check tr classes are merged (should apply to header, body, and footer rows)
-        assert.dom('[data-test-id="table-header"] tr.custom-tr-class').exists();
-        assert.dom('[data-test-id="table-body"] tr.custom-tr-class').exists();
-        assert.dom('[data-test-id="table-footer"] tr.custom-tr-class').exists();
+        assert.dom('[data-part="thead"] tr.custom-tr-class').exists();
+        assert.dom('[data-part="tbody"] tr.custom-tr-class').exists();
+        assert.dom('[data-part="tfoot"] tr.custom-tr-class').exists();
 
         // Check td classes are merged (should apply to all cells)
-        assert.dom('[data-test-id="table-body"] td.custom-td-class').exists();
+        assert.dom('[data-part="tbody"] td.custom-td-class').exists();
       });
 
       // Block form class tests moved to SimpleTable since Table no longer supports block usage
@@ -1087,21 +1082,11 @@ module(
         );
 
         // Check multiple string classes are applied
-        assert
-          .dom('[data-test-id="table"].table-class-1.table-class-2')
-          .exists();
-        assert
-          .dom('[data-test-id="table-header"].thead-class-1.thead-class-2')
-          .exists();
-        assert
-          .dom('[data-test-id="table-body"].tbody-class-1.tbody-class-2')
-          .exists();
-        assert
-          .dom('[data-test-id="table-header"] tr.tr-class-1.tr-class-2')
-          .exists();
-        assert
-          .dom('[data-test-id="table-body"] td.td-class-1.td-class-2')
-          .exists();
+        assert.dom('[data-part="table"].table-class-1.table-class-2').exists();
+        assert.dom('[data-part="thead"].thead-class-1.thead-class-2').exists();
+        assert.dom('[data-part="tbody"].tbody-class-1.tbody-class-2').exists();
+        assert.dom('[data-part="thead"] tr.tr-class-1.tr-class-2').exists();
+        assert.dom('[data-part="tbody"] td.td-class-1.td-class-2').exists();
       });
 
       test('it handles array classes correctly', async function (assert) {
@@ -1129,21 +1114,11 @@ module(
         );
 
         // Check array classes are applied
-        assert
-          .dom('[data-test-id="table"].table-array-1.table-array-2')
-          .exists();
-        assert
-          .dom('[data-test-id="table-header"].thead-array-1.thead-array-2')
-          .exists();
-        assert
-          .dom('[data-test-id="table-body"].tbody-array-1.tbody-array-2')
-          .exists();
-        assert
-          .dom('[data-test-id="table-header"] tr.tr-array-1.tr-array-2')
-          .exists();
-        assert
-          .dom('[data-test-id="table-body"] td.td-array-1.td-array-2')
-          .exists();
+        assert.dom('[data-part="table"].table-array-1.table-array-2').exists();
+        assert.dom('[data-part="thead"].thead-array-1.thead-array-2').exists();
+        assert.dom('[data-part="tbody"].tbody-array-1.tbody-array-2').exists();
+        assert.dom('[data-part="thead"] tr.tr-array-1.tr-array-2').exists();
+        assert.dom('[data-part="tbody"] td.td-array-1.td-array-2').exists();
       });
 
       // Block form class merging test moved to SimpleTable since Table no longer supports block usage
@@ -1162,9 +1137,9 @@ module(
         );
 
         // Table should render without errors
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table-header"]').exists();
-        assert.dom('[data-test-id="table-body"]').exists();
+        assert.dom('[data-component="table"]').exists();
+        assert.dom('[data-part="thead"]').exists();
+        assert.dom('[data-part="tbody"]').exists();
       });
 
       test('it handles empty/null classes gracefully', async function (assert) {
@@ -1192,13 +1167,13 @@ module(
         );
 
         // Table should render without errors
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table-header"]').exists();
-        assert.dom('[data-test-id="table-body"]').exists();
+        assert.dom('[data-component="table"]').exists();
+        assert.dom('[data-part="thead"]').exists();
+        assert.dom('[data-part="tbody"]').exists();
 
         // Elements should still function normally
-        assert.dom('[data-test-id="table-cell"]').exists();
-        assert.dom('[data-test-id="table-column"]').exists();
+        assert.dom('[data-part="td"]').exists();
+        assert.dom('[data-part="th"]').exists();
       });
 
       // Footer classes test - automatic rendering only
@@ -1225,12 +1200,12 @@ module(
         );
 
         // Check footer gets class
-        assert.dom('[data-test-id="table-footer"].footer-class').exists();
+        assert.dom('[data-part="tfoot"].footer-class').exists();
 
         // Check tr class is applied to all row types
-        assert.dom('[data-test-id="table-header"] tr.shared-tr-class').exists();
-        assert.dom('[data-test-id="table-body"] tr.shared-tr-class').exists();
-        assert.dom('[data-test-id="table-footer"] tr.shared-tr-class').exists();
+        assert.dom('[data-part="thead"] tr.shared-tr-class').exists();
+        assert.dom('[data-part="tbody"] tr.shared-tr-class').exists();
+        assert.dom('[data-part="tfoot"] tr.shared-tr-class').exists();
       });
 
       test('it preserves theme-provided styling while merging custom classes', async function (assert) {
@@ -1252,18 +1227,16 @@ module(
         );
 
         // Check that custom classes are applied alongside default theme classes
-        const tableElement = document.querySelector('[data-test-id="table"]');
-        const theadElement = document.querySelector(
-          '[data-test-id="table-header"]'
-        );
+        const tableElement = document.querySelector('[data-part="table"]');
+        const theadElement = document.querySelector('[data-part="thead"]');
 
         assert.dom(tableElement).hasClass('custom-table');
         assert.dom(theadElement).hasClass('custom-header');
 
         // Should also have theme-provided classes (these will vary based on theme)
         // We mainly want to ensure the element exists and functions
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table-header"]').exists();
+        assert.dom('[data-component="table"]').exists();
+        assert.dom('[data-part="thead"]').exists();
       });
 
       test('it supports complex class combinations with falsy values', async function (assert) {
@@ -1290,8 +1263,8 @@ module(
         );
 
         // Only valid classes should be applied
-        assert.dom('[data-test-id="table"].valid-class.another-valid').exists();
-        assert.dom('[data-test-id="table-header"].only-valid-class').exists();
+        assert.dom('[data-part="table"].valid-class.another-valid').exists();
+        assert.dom('[data-part="thead"].only-valid-class').exists();
       });
 
       // Footer with automatic rendering test
@@ -1319,8 +1292,8 @@ module(
         );
 
         // Check that automatic footer generation applies table-level classes
-        assert.dom('[data-test-id="table-footer"].table-level-footer').exists();
-        assert.dom('[data-test-id="table-footer"] tr.table-level-tr').exists();
+        assert.dom('[data-part="tfoot"].table-level-footer').exists();
+        assert.dom('[data-part="tfoot"] tr.table-level-tr').exists();
       });
     });
 
@@ -1362,7 +1335,7 @@ module(
         );
 
         // Should render the table
-        assert.dom('[data-test-id="table"]').exists();
+        assert.dom('[data-component="table"]').exists();
 
         // Should render the toolbar content
         assert.dom('h2').containsText('User Management');
@@ -1375,20 +1348,22 @@ module(
 
         // Should show all columns in the dropdown menu when opened
         await click('[data-test-id="dropdown-trigger"]');
-        assert.dom('[data-test-id="listbox"]').exists();
-        assert.dom('[data-test-id="listbox-item"][data-key="id"]').exists();
-        assert.dom('[data-test-id="listbox-item"][data-key="name"]').exists();
-        assert.dom('[data-test-id="listbox-item"][data-key="email"]').exists();
+        assert.dom('[data-component="listbox"]').exists();
+        assert.dom('[data-component="listbox-item"][data-key="id"]').exists();
+        assert.dom('[data-component="listbox-item"][data-key="name"]').exists();
+        assert
+          .dom('[data-component="listbox-item"][data-key="email"]')
+          .exists();
 
         // Column names should be displayed
         assert
-          .dom('[data-test-id="listbox-item"][data-key="id"]')
+          .dom('[data-component="listbox-item"][data-key="id"]')
           .containsText('ID');
         assert
-          .dom('[data-test-id="listbox-item"][data-key="name"]')
+          .dom('[data-component="listbox-item"][data-key="name"]')
           .containsText('Name');
         assert
-          .dom('[data-test-id="listbox-item"][data-key="email"]')
+          .dom('[data-component="listbox-item"][data-key="email"]')
           .containsText('Email');
       });
 
@@ -1467,14 +1442,14 @@ module(
         );
 
         // Initially all columns should be visible in the table
-        assert.dom('[data-test-id="table-column"][data-key="id"]').exists();
-        assert.dom('[data-test-id="table-column"][data-key="name"]').exists();
-        assert.dom('[data-test-id="table-column"][data-key="email"]').exists();
+        assert.dom('[data-part="th"][data-key="id"]').exists();
+        assert.dom('[data-part="th"][data-key="name"]').exists();
+        assert.dom('[data-part="th"][data-key="email"]').exists();
 
         // All corresponding data cells should be visible
-        assert.dom('[data-test-id="table-row"] [data-column="id"]').exists();
-        assert.dom('[data-test-id="table-row"] [data-column="name"]').exists();
-        assert.dom('[data-test-id="table-row"] [data-column="email"]').exists();
+        assert.dom('[data-part="tr"] [data-column="id"]').exists();
+        assert.dom('[data-part="tr"] [data-column="name"]').exists();
+        assert.dom('[data-part="tr"] [data-column="email"]').exists();
 
         // Open the column visibility dropdown
         await click('[data-test-id="dropdown-trigger"]');
@@ -1482,61 +1457,59 @@ module(
         // All items should be selected initially (showing selected icons)
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="id"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="id"] [data-part="selected-icon"]'
           )
           .exists('ID should show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="name"] [data-part="selected-icon"]'
           )
           .exists('Name should show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="email"] [data-part="selected-icon"]'
           )
           .exists('Email should show selected icon');
 
         // Hide the name column
-        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
 
         // Name column should be hidden from the table
         assert
-          .dom('[data-test-id="table-column"][data-key="id"]')
+          .dom('[data-part="th"][data-key="id"]')
           .exists('ID column should still be visible');
         assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
+          .dom('[data-part="th"][data-key="name"]')
           .doesNotExist('Name column should be hidden');
         assert
-          .dom('[data-test-id="table-column"][data-key="email"]')
+          .dom('[data-part="th"][data-key="email"]')
           .exists('Email column should still be visible');
 
         // Name data cells should also be hidden
-        assert.dom('[data-test-id="table-row"] [data-column="id"]').exists();
-        assert
-          .dom('[data-test-id="table-row"] [data-column="name"]')
-          .doesNotExist();
-        assert.dom('[data-test-id="table-row"] [data-column="email"]').exists();
+        assert.dom('[data-part="tr"] [data-column="id"]').exists();
+        assert.dom('[data-part="tr"] [data-column="name"]').doesNotExist();
+        assert.dom('[data-part="tr"] [data-column="email"]').exists();
 
         // The menu item should not show selected icon
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="name"] [data-part="selected-icon"]'
           )
           .doesNotExist('Name should not show selected icon');
 
         // Show the column again
-        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
 
         // Name column should be visible again
         assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
+          .dom('[data-part="th"][data-key="name"]')
           .exists('Name column should be visible again');
         assert
-          .dom('[data-test-id="table-row"] [data-column="name"]')
+          .dom('[data-part="tr"] [data-column="name"]')
           .exists('Name data should be visible again');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="name"] [data-part="selected-icon"]'
           )
           .exists('Name should show selected icon again');
       });
@@ -1569,45 +1542,41 @@ module(
         );
 
         // Initially all columns should be visible
-        assert.dom('[data-test-id="table-column"]').exists({ count: 4 });
+        assert.dom('[data-part="th"]').exists({ count: 4 });
 
         // Open the dropdown and hide multiple columns
         await click('[data-test-id="dropdown-trigger"]');
-        await click('[data-test-id="listbox-item"][data-key="name"]');
-        await click('[data-test-id="listbox-item"][data-key="role"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="role"]');
 
         // Only ID and Email columns should be visible
-        assert.dom('[data-test-id="table-column"][data-key="id"]').exists();
-        assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
-          .doesNotExist();
-        assert.dom('[data-test-id="table-column"][data-key="email"]').exists();
-        assert
-          .dom('[data-test-id="table-column"][data-key="role"]')
-          .doesNotExist();
+        assert.dom('[data-part="th"][data-key="id"]').exists();
+        assert.dom('[data-part="th"][data-key="name"]').doesNotExist();
+        assert.dom('[data-part="th"][data-key="email"]').exists();
+        assert.dom('[data-part="th"][data-key="role"]').doesNotExist();
 
         // Check total visible columns
-        assert.dom('[data-test-id="table-column"]').exists({ count: 2 });
+        assert.dom('[data-part="th"]').exists({ count: 2 });
 
         // Check menu item selection states
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="id"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="id"] [data-part="selected-icon"]'
           )
           .exists('ID should show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="name"] [data-part="selected-icon"]'
           )
           .doesNotExist('Name should not show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="email"] [data-part="selected-icon"]'
           )
           .exists('Email should show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="role"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="role"] [data-part="selected-icon"]'
           )
           .doesNotExist('Role should not show selected icon');
       });
@@ -1639,26 +1608,26 @@ module(
         );
 
         // Should render only 2 columns initially (email is pre-hidden)
-        assert.dom('[data-test-id="table-column"]').exists({ count: 2 });
+        assert.dom('[data-part="th"]').exists({ count: 2 });
         assert
-          .dom('[data-test-id="table-column"][data-key="email"]')
+          .dom('[data-part="th"][data-key="email"]')
           .doesNotExist('Email column should be pre-hidden');
 
         // Column visibility dropdown should reflect the pre-hidden state
         await click('[data-test-id="dropdown-trigger"]');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="email"] [data-part="selected-icon"]'
           )
           .doesNotExist('Email should not show selected icon in dropdown');
 
         // Show the email column
-        await click('[data-test-id="listbox-item"][data-key="email"]');
+        await click('[data-component="listbox-item"][data-key="email"]');
 
         // Email column should now be visible
-        assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
+        assert.dom('[data-part="th"]').exists({ count: 3 });
         assert
-          .dom('[data-test-id="table-column"][data-key="email"]')
+          .dom('[data-part="th"][data-key="email"]')
           .exists('Email column should now be visible');
       });
 
@@ -1706,7 +1675,7 @@ module(
 
         // Toggle columns and verify toolbar remains intact
         await click('[data-test-id="dropdown-trigger"]');
-        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
 
         // Toolbar should still be there and functional
         assert.dom('[data-test-id="toolbar"]').exists();
@@ -1717,9 +1686,7 @@ module(
           .exists();
 
         // Table should reflect the column change
-        assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
-          .doesNotExist();
+        assert.dom('[data-part="th"][data-key="name"]').doesNotExist();
       });
 
       test('it maintains dropdown open state when toggling columns in toolbar', async function (assert) {
@@ -1750,21 +1717,19 @@ module(
         // Open the dropdown
         await click('[data-test-id="dropdown-trigger"]');
         assert
-          .dom('[data-test-id="listbox"]')
+          .dom('[data-component="listbox"]')
           .exists('dropdown should be open');
 
         // Toggle a column
-        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
 
         // Dropdown should remain open because closeOnItemSelect is false
         assert
-          .dom('[data-test-id="listbox"]')
+          .dom('[data-component="listbox"]')
           .exists('dropdown should remain open after toggling column');
 
         // Verify the column was actually toggled
-        assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
-          .doesNotExist();
+        assert.dom('[data-part="th"][data-key="name"]').doesNotExist();
       });
     });
 
@@ -1790,8 +1755,8 @@ module(
         );
 
         // Should render default content
-        assert.dom('[data-test-id="table-cell"]').exists({ count: 2 });
-        const cells = document.querySelectorAll('[data-test-id="table-cell"]');
+        assert.dom('[data-part="td"]').exists({ count: 2 });
+        const cells = document.querySelectorAll('[data-part="td"]');
         assert.dom(cells[0]).containsText('John Doe');
         assert.dom(cells[1]).containsText('john@example.com');
       });
@@ -1835,8 +1800,8 @@ module(
         );
 
         // Should have 3 cells
-        assert.dom('[data-test-id="table-cell"]').exists({ count: 3 });
-        const cells = document.querySelectorAll('[data-test-id="table-cell"]');
+        assert.dom('[data-part="td"]').exists({ count: 3 });
+        const cells = document.querySelectorAll('[data-part="td"]');
 
         // Name column should use custom rendering
         assert.dom(cells[0]).containsText('Custom Name: John Doe');
@@ -2259,10 +2224,10 @@ module(
 
         // Should show default column names
         assert
-          .dom('[data-test-id="table-header"] th[data-key="name"]')
+          .dom('[data-part="thead"] th[data-key="name"]')
           .containsText('Full Name');
         assert
-          .dom('[data-test-id="table-header"] th[data-key="email"]')
+          .dom('[data-part="thead"] th[data-key="email"]')
           .containsText('Email Address');
       });
 
@@ -2436,7 +2401,7 @@ module(
           .containsText('📌 Email');
 
         // Should maintain sticky positioning
-        assert.dom('[data-test-id="table-header"]').hasClass(/sticky|fixed/);
+        assert.dom('[data-part="thead"]').hasClass(/sticky|fixed/);
       });
 
       test('it works with column visibility', async function (assert) {
@@ -2498,9 +2463,9 @@ module(
         );
 
         // Table should render with loading state
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table"][data-loading="true"]').exists();
-        assert.dom('[data-test-id="table-cell"]').exists();
+        assert.dom('[data-component="table"]').exists();
+        assert.dom('[data-part="table"][data-loading="true"]').exists();
+        assert.dom('[data-part="td"]').exists();
       });
 
       test('it supports loading state with color variants', async function (assert) {
@@ -2537,9 +2502,9 @@ module(
           );
 
           // Table should render with loading state and color variant
-          assert.dom('[data-test-id="table"]').exists();
-          assert.dom('[data-test-id="table"][data-loading="true"]').exists();
-          assert.dom('[data-test-id="table-cell"]').exists();
+          assert.dom('[data-component="table"]').exists();
+          assert.dom('[data-part="table"][data-loading="true"]').exists();
+          assert.dom('[data-part="td"]').exists();
         }
       });
 
@@ -2568,9 +2533,9 @@ module(
         );
 
         // Table should not have loading state
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table"][data-loading="false"]').exists();
-        assert.dom('[data-test-id="table-cell"]').exists();
+        assert.dom('[data-component="table"]').exists();
+        assert.dom('[data-part="table"][data-loading="false"]').exists();
+        assert.dom('[data-part="td"]').exists();
       });
 
       test('it supports custom loading block', async function (assert) {
@@ -2597,8 +2562,8 @@ module(
         );
 
         // Table should render with custom loading indicator inside a table row/cell
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table"][data-loading="true"]').exists();
+        assert.dom('[data-component="table"]').exists();
+        assert.dom('[data-part="table"][data-loading="true"]').exists();
         assert.dom('[data-test-id="table-loading-row"]').exists();
         assert.dom('[data-test-id="table-loading-cell"]').exists();
         assert.dom('[data-test-id="custom-loading"]').exists();
@@ -2635,7 +2600,7 @@ module(
 
         // The CSS loading indicator should be disabled (tested by the styles not applying the isLoading variant)
         // This is handled internally by the component logic
-        assert.dom('[data-test-id="table"]').exists();
+        assert.dom('[data-component="table"]').exists();
       });
 
       test('it hides empty content when loading block is provided and isLoading is true', async function (assert) {
@@ -2691,7 +2656,7 @@ module(
         );
 
         // Both data rows and loading block should be shown
-        assert.dom('[data-test-id="table-cell"]').exists();
+        assert.dom('[data-part="td"]').exists();
         assert.dom('[data-test-id="table-loading-row"]').exists();
         assert.dom('[data-test-id="custom-loading"]').exists();
       });
@@ -2724,7 +2689,7 @@ module(
         assert.dom('[data-test-id="custom-loading"]').doesNotExist();
 
         // Normal table data should be shown
-        assert.dom('[data-test-id="table-cell"]').exists();
+        assert.dom('[data-part="td"]').exists();
       });
 
       test('it shows empty content when isLoading is false and no items', async function (assert) {
@@ -2861,7 +2826,7 @@ module(
         assert.dom('[data-test-id="body-bottom-row"]').exists();
 
         // Data rows should exist between them
-        assert.dom('[data-test-id="table-cell"]').exists();
+        assert.dom('[data-part="td"]').exists();
       });
 
       test('it does not render bodyTop/bodyBottom when blocks not provided', async function (assert) {
@@ -2882,7 +2847,7 @@ module(
         );
 
         // Data rows should still exist
-        assert.dom('[data-test-id="table-cell"]').exists();
+        assert.dom('[data-part="td"]').exists();
 
         // Only data cells should be present (1 row × 1 column = 1 cell)
         assert.dom('tbody tr').exists({ count: 1 });
@@ -2943,34 +2908,28 @@ module(
 
         // Sortable columns should have data-sortable attribute
         assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
+          .dom('[data-part="th"][data-key="name"]')
           .hasAttribute('data-sortable', 'true');
         assert
-          .dom('[data-test-id="table-column"][data-key="email"]')
+          .dom('[data-part="th"][data-key="email"]')
           .hasAttribute('data-sortable', 'true');
 
         // Non-sortable column should not have data-sortable attribute or should be false
         assert
-          .dom('[data-test-id="table-column"][data-key="role"]')
+          .dom('[data-part="th"][data-key="role"]')
           .hasAttribute('data-sortable', 'false');
 
         // Sortable columns should have sort buttons
         assert
-          .dom(
-            '[data-test-id="table-column"][data-key="name"] button[type="button"]'
-          )
+          .dom('[data-part="th"][data-key="name"] button[type="button"]')
           .exists();
         assert
-          .dom(
-            '[data-test-id="table-column"][data-key="email"] button[type="button"]'
-          )
+          .dom('[data-part="th"][data-key="email"] button[type="button"]')
           .exists();
 
         // Non-sortable column should not have a sort button
         assert
-          .dom(
-            '[data-test-id="table-column"][data-key="role"] button[type="button"]'
-          )
+          .dom('[data-part="th"][data-key="role"] button[type="button"]')
           .doesNotExist();
       });
 
@@ -3034,7 +2993,7 @@ module(
 
         // Initial order (unsorted)
         const rows = this.element.querySelectorAll(
-          '[data-test-id="table-row"]'
+          '[data-part="tbody"] [data-part="tr"]'
         );
         assert.strictEqual(rows.length, 3);
         assert
@@ -3048,13 +3007,11 @@ module(
           .hasText('Bob');
 
         // Click to sort by name ascending
-        await click(
-          '[data-test-id="table-column"][data-key="name"] button[type="button"]'
-        );
+        await click('[data-part="th"][data-key="name"] button[type="button"]');
 
         // Check sorted order (ascending)
         const rowsAfterSort = this.element.querySelectorAll(
-          '[data-test-id="table-row"]'
+          '[data-part="tbody"] [data-part="tr"]'
         );
         assert
           .dom(rowsAfterSort[0]?.querySelector('[data-column="name"]'))
@@ -3111,7 +3068,7 @@ module(
         );
 
         const sortButton =
-          '[data-test-id="table-column"][data-key="name"] button[type="button"]';
+          '[data-part="th"][data-key="name"] button[type="button"]';
 
         // Click 1: Sort descending (universal-ember starts with descending)
         await click(sortButton);
@@ -3183,7 +3140,7 @@ module(
         );
 
         await click(
-          '[data-test-id="table-column"][data-key="displayName"] button[type="button"]'
+          '[data-part="th"][data-key="displayName"] button[type="button"]'
         );
 
         // Should use sortProperty instead of key
@@ -3237,22 +3194,14 @@ module(
 
         // Columns should just show text, not buttons
         assert
-          .dom(
-            '[data-test-id="table-column"][data-key="name"] button[type="button"]'
-          )
+          .dom('[data-part="th"][data-key="name"] button[type="button"]')
           .doesNotExist();
-        assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
-          .containsText('Name');
+        assert.dom('[data-part="th"][data-key="name"]').containsText('Name');
 
         assert
-          .dom(
-            '[data-test-id="table-column"][data-key="email"] button[type="button"]'
-          )
+          .dom('[data-part="th"][data-key="email"] button[type="button"]')
           .doesNotExist();
-        assert
-          .dom('[data-test-id="table-column"][data-key="email"]')
-          .containsText('Email');
+        assert.dom('[data-part="th"][data-key="email"]').containsText('Email');
       });
 
       test('it handles sorting with empty items array', async function (assert) {
@@ -3279,15 +3228,11 @@ module(
 
         // Should render sort button even with empty items
         assert
-          .dom(
-            '[data-test-id="table-column"][data-key="name"] button[type="button"]'
-          )
+          .dom('[data-part="th"][data-key="name"] button[type="button"]')
           .exists();
 
         // Click should work without error
-        await click(
-          '[data-test-id="table-column"][data-key="name"] button[type="button"]'
-        );
+        await click('[data-part="th"][data-key="name"] button[type="button"]');
 
         assert.verifySteps(['onSort called']);
       });
@@ -3306,7 +3251,7 @@ module(
         );
 
         const sortButton =
-          '[data-test-id="table-column"][data-key="name"] button[type="button"]';
+          '[data-part="th"][data-key="name"] button[type="button"]';
 
         // Sort button should be a button element for accessibility
         assert.dom(sortButton).hasTagName('button');
@@ -3359,7 +3304,7 @@ module(
         );
 
         const sortButton =
-          '[data-test-id="table-column"][data-key="name"] button[type="button"]';
+          '[data-part="th"][data-key="name"] button[type="button"]';
 
         // Should start with ascending sort applied
         assert.dom(sortButton).hasAttribute('data-sort-direction', 'ascending');
@@ -3452,7 +3397,7 @@ module(
         );
 
         const rows = this.element.querySelectorAll(
-          '[data-test-id="table-row"]'
+          '[data-part="tbody"] [data-part="tr"]'
         );
         assert.strictEqual(rows.length, 3);
 
@@ -3469,11 +3414,11 @@ module(
 
         // Click to sort by name descending
         await click(
-          '[data-test-id="table-column"][data-key="profile"] button[type="button"]'
+          '[data-part="th"][data-key="profile"] button[type="button"]'
         );
 
         const rowsAfterSort = this.element.querySelectorAll(
-          '[data-test-id="table-row"]'
+          '[data-part="tbody"] [data-part="tr"]'
         );
 
         // Descending order: Charlie, Bob, Alice
@@ -3489,11 +3434,11 @@ module(
 
         // Click again to sort ascending
         await click(
-          '[data-test-id="table-column"][data-key="profile"] button[type="button"]'
+          '[data-part="th"][data-key="profile"] button[type="button"]'
         );
 
         const rowsAfterSecondSort = this.element.querySelectorAll(
-          '[data-test-id="table-row"]'
+          '[data-part="tbody"] [data-part="tr"]'
         );
 
         // Ascending order: Alice, Bob, Charlie
@@ -3508,12 +3453,10 @@ module(
           .hasText('Charlie');
 
         // Test sorting by nested age property
-        await click(
-          '[data-test-id="table-column"][data-key="age"] button[type="button"]'
-        );
+        await click('[data-part="th"][data-key="age"] button[type="button"]');
 
         const rowsAfterAgeSort = this.element.querySelectorAll(
-          '[data-test-id="table-row"]'
+          '[data-part="tbody"] [data-part="tr"]'
         );
 
         // Descending order by age: Bob (42), Charlie (35), Alice (28)
@@ -3752,7 +3695,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="table-skeleton-row"]').exists({ count: 5 });
+        assert.dom('[data-part="skeleton-row"]').exists({ count: 5 });
       });
 
       test('each skeleton row has one cell per rendered column', async function (assert) {
@@ -3770,17 +3713,13 @@ module(
         );
 
         assert
-          .dom('[data-test-id="table-skeleton-row"]:first-child td')
+          .dom('[data-part="skeleton-row"]:first-child td')
           .exists({ count: 2 });
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"]:first-child [data-column="id"]'
-          )
+          .dom('[data-part="skeleton-row"]:first-child [data-column="id"]')
           .exists();
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"]:first-child [data-column="name"]'
-          )
+          .dom('[data-part="skeleton-row"]:first-child [data-column="name"]')
           .exists();
       });
 
@@ -3804,12 +3743,12 @@ module(
 
         assert
           .dom(
-            '[data-test-id="table-skeleton-row"] [data-column="id"] [data-component="skeleton"]'
+            '[data-part="skeleton-row"] [data-column="id"] [data-component="skeleton"]'
           )
           .hasClass('rounded-full', 'the shaped column renders a circle');
         assert
           .dom(
-            '[data-test-id="table-skeleton-row"] [data-column="name"] [data-component="skeleton"]'
+            '[data-part="skeleton-row"] [data-column="name"] [data-component="skeleton"]'
           )
           .hasClass('rounded-default', 'unshaped columns stay text bars');
       });
@@ -3834,7 +3773,7 @@ module(
         );
 
         const el = this.element.querySelector(
-          '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          '[data-part="skeleton-row"] [data-component="skeleton"]'
         ) as HTMLElement;
         const rect = el.getBoundingClientRect();
 
@@ -3863,14 +3802,10 @@ module(
         );
 
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
-          )
+          .dom('[data-part="skeleton-row"] [data-component="skeleton"]')
           .hasClass('animate-pulse');
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
-          )
+          .dom('[data-part="skeleton-row"] [data-component="skeleton"]')
           .doesNotHaveClass('animate-shimmer');
       });
 
@@ -3889,7 +3824,7 @@ module(
         );
 
         const rows = Array.from(
-          this.element.querySelectorAll('[data-test-id="table-skeleton-row"]')
+          this.element.querySelectorAll('[data-part="skeleton-row"]')
         ) as HTMLElement[];
 
         assert.dom(rows[0]!).hasClass('animate-skeleton-enter');
@@ -3918,7 +3853,7 @@ module(
         );
 
         const rows = Array.from(
-          this.element.querySelectorAll('[data-test-id="table-skeleton-row"]')
+          this.element.querySelectorAll('[data-part="skeleton-row"]')
         ) as HTMLElement[];
 
         assert.strictEqual(rows.length, 20);
@@ -3944,7 +3879,7 @@ module(
         );
 
         assert
-          .dom('[data-test-id="table-skeleton-row"]')
+          .dom('[data-part="skeleton-row"]')
           .hasAttribute('aria-hidden', 'true');
       });
 
@@ -3964,9 +3899,7 @@ module(
         );
 
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
-          )
+          .dom('[data-part="skeleton-row"] [data-component="skeleton"]')
           .hasClass('h-3', 'sm table yields an sm skeleton');
       });
 
@@ -3986,13 +3919,9 @@ module(
         );
 
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"] [data-column="__selection__"]'
-          )
+          .dom('[data-part="skeleton-row"] [data-column="__selection__"]')
           .exists();
-        assert
-          .dom('[data-test-id="table-skeleton-row"] td')
-          .exists({ count: 3 });
+        assert.dom('[data-part="skeleton-row"] td').exists({ count: 3 });
       });
 
       test('skeleton cells exclude a hidden column', async function (assert) {
@@ -4014,11 +3943,9 @@ module(
           </template>
         );
 
+        assert.dom('[data-part="skeleton-row"] td').exists({ count: 2 });
         assert
-          .dom('[data-test-id="table-skeleton-row"] td')
-          .exists({ count: 2 });
-        assert
-          .dom('[data-test-id="table-skeleton-row"] [data-column="email"]')
+          .dom('[data-part="skeleton-row"] [data-column="email"]')
           .doesNotExist();
       });
 
@@ -4043,8 +3970,8 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
-        assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+        assert.dom('[data-part="skeleton-row"]').doesNotExist();
+        assert.dom('[data-part="tr"][data-key="1"]').exists();
       });
 
       test('it renders nothing when not loading', async function (assert) {
@@ -4061,7 +3988,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+        assert.dom('[data-part="skeleton-row"]').doesNotExist();
       });
 
       test('empty content does not render alongside skeletons', async function (assert) {
@@ -4079,7 +4006,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="table-skeleton-row"]').exists({ count: 3 });
+        assert.dom('[data-part="skeleton-row"]').exists({ count: 3 });
         assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
       });
 
@@ -4102,7 +4029,7 @@ module(
         );
 
         assert.dom('[data-test-id="custom-loading"]').exists();
-        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+        assert.dom('[data-part="skeleton-row"]').doesNotExist();
       });
 
       test('omitting skeletonRows preserves current behavior', async function (assert) {
@@ -4119,7 +4046,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+        assert.dom('[data-part="skeleton-row"]').doesNotExist();
         assert
           .dom('[data-test-id="table-empty-row"]')
           .doesNotExist('empty content stays suppressed while loading');
@@ -4141,9 +4068,7 @@ module(
         );
 
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
-          )
+          .dom('[data-part="skeleton-row"] [data-component="skeleton"]')
           .hasClass('custom-skeleton-class');
       });
 
@@ -4163,14 +4088,10 @@ module(
         );
 
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
-          )
+          .dom('[data-part="skeleton-row"] [data-component="skeleton"]')
           .hasClass('h-3');
         assert
-          .dom(
-            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
-          )
+          .dom('[data-part="skeleton-row"] [data-component="skeleton"]')
           .doesNotHaveClass('h-4');
       });
     });
@@ -4223,7 +4144,7 @@ module(
           </template>
         );
 
-        const nameHeader = '[data-test-id="table-column"][data-key="name"]';
+        const nameHeader = '[data-part="th"][data-key="name"]';
 
         assert
           .dom(nameHeader)
@@ -4255,7 +4176,7 @@ module(
         );
 
         assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
+          .dom('[data-part="th"][data-key="name"]')
           .hasAttribute('scope', 'col');
       });
     });

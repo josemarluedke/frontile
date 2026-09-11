@@ -121,12 +121,15 @@ class TabNav extends Component<TabNavSignature> {
 
   <template>
     <nav
+      data-component="tabs"
+      data-part="list"
       aria-label={{@label}}
       class="group/tabs {{this.styles.list class=@classes.list}}"
       {{this.indicator.setupContainer}}
       ...attributes
     >
       <span
+        data-part="indicator"
         aria-hidden="true"
         class={{this.styles.indicator class=@classes.indicator}}
       ></span>

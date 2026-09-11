@@ -36,5 +36,18 @@ module(
 
       assert.dom('[data-test-id="spinner"]').hasClass('fill-secondary');
     });
+
+    test('renders data-component="spinner" on the root only, with data-part="base"', async function (assert) {
+      await render(<template><Spinner /></template>);
+
+      assert
+        .dom('[data-component="spinner"]')
+        .hasAttribute('data-part', 'base');
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="spinner"]').length,
+        1,
+        'data-component="spinner" marks the root only'
+      );
+    });
   }
 );

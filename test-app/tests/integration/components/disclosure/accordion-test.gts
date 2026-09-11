@@ -29,9 +29,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-accordion]').exists('renders the root');
+      assert.dom('[data-component="accordion"]').exists('renders the root');
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       assert.strictEqual(triggers.length, 2, 'renders one trigger per item');
 
       const first = triggers[0]!;
@@ -42,7 +42,7 @@ module(
       assert.dom(first).containsText('Shipping');
 
       assert
-        .dom('h3 > [data-fr-accordion-trigger]')
+        .dom('h3 > [data-part="trigger"]')
         .exists('the trigger sits inside an h3 by default');
 
       const panelId = first.getAttribute('aria-controls');
@@ -64,8 +64,8 @@ module(
         </template>
       );
 
-      assert.dom('h2 > [data-fr-accordion-trigger]').exists();
-      assert.dom('h3 > [data-fr-accordion-trigger]').doesNotExist();
+      assert.dom('h2 > [data-part="trigger"]').exists();
+      assert.dom('h3 > [data-part="trigger"]').doesNotExist();
     });
 
     test('@subtitle renders alongside the title', async function (assert) {
@@ -80,10 +80,8 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-accordion-trigger]').containsText('Billing');
-      assert
-        .dom('[data-fr-accordion-trigger]')
-        .containsText('Plans and invoices');
+      assert.dom('[data-part="trigger"]').containsText('Billing');
+      assert.dom('[data-part="trigger"]').containsText('Plans and invoices');
     });
 
     test('each item gets a unique id without any @key', async function (assert) {
@@ -96,14 +94,14 @@ module(
         </template>
       );
 
-      const [a, b] = findAll('[data-fr-accordion-trigger]');
+      const [a, b] = findAll('[data-part="trigger"]');
       assert.notStrictEqual(a!.id, b!.id, 'trigger ids differ');
       assert.notStrictEqual(
         a!.getAttribute('aria-controls'),
         b!.getAttribute('aria-controls'),
         'panel ids differ'
       );
-      assert.ok(find('[data-fr-accordion]'), 'root still renders');
+      assert.ok(find('[data-component="accordion"]'), 'root still renders');
     });
 
     test('single mode: opening one item closes the previous', async function (assert) {
@@ -116,7 +114,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
 
       await click(triggers[0]!);
       assert.dom(triggers[0]!).hasAria('expanded', 'true');
@@ -136,7 +134,7 @@ module(
         </template>
       );
 
-      const trigger = find('[data-fr-accordion-trigger]')!;
+      const trigger = find('[data-part="trigger"]')!;
 
       await click(trigger);
       assert.dom(trigger).hasAria('expanded', 'true');
@@ -155,7 +153,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
 
       await click(triggers[0]!);
       await click(triggers[0]!);
@@ -178,7 +176,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       assert.dom(triggers[1]!).hasAria('expanded', 'true');
       assert.dom(triggers[0]!).hasAria('expanded', 'false');
     });
@@ -193,7 +191,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       assert.dom(triggers[0]!).hasAria('expanded', 'true');
       assert.dom(triggers[1]!).hasAria('expanded', 'false');
     });
@@ -208,7 +206,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
 
       await click(triggers[0]!);
       await click(triggers[1]!);
@@ -234,7 +232,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       assert.dom(triggers[0]!).hasAria('expanded', 'true');
       assert.dom(triggers[1]!).hasAria('expanded', 'true');
       assert.dom(triggers[2]!).hasAria('expanded', 'false');
@@ -250,7 +248,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       assert
         .dom(triggers[1]!)
         .hasAria('expanded', 'true', '@defaultKeys took precedence');
@@ -272,7 +270,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       await click(triggers[0]!);
       await click(triggers[1]!);
       await click(triggers[0]!);
@@ -292,7 +290,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       assert.dom(triggers[1]!).hasAria('expanded', 'true');
 
       await click(triggers[0]!);
@@ -315,7 +313,7 @@ module(
         </template>
       );
 
-      const trigger = find('[data-fr-accordion-trigger]')!;
+      const trigger = find('[data-part="trigger"]')!;
       assert
         .dom(trigger)
         .hasAria(
@@ -343,7 +341,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       assert.dom(triggers[0]!).hasAria('disabled', 'true');
       assert.dom(triggers[0]!).hasAttribute('data-disabled', 'true');
 
@@ -373,7 +371,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       assert.dom(triggers[0]!).hasAria('disabled', 'true');
       assert.dom(triggers[1]!).hasAria('disabled', 'true');
 
@@ -406,7 +404,7 @@ module(
         </template>
       );
 
-      const trigger = find('[data-fr-accordion-trigger]')!;
+      const trigger = find('[data-part="trigger"]')!;
       await focus(trigger);
 
       for (const key of ['Enter', ' ']) {
@@ -440,7 +438,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
 
       await focus(triggers[0]!);
       await triggerKeyEvent(triggers[0]!, 'keydown', 'ArrowDown');
@@ -475,7 +473,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
 
       await focus(triggers[1]!);
       await triggerKeyEvent(triggers[1]!, 'keydown', 'End');
@@ -496,7 +494,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
 
       await focus(triggers[0]!);
       await triggerKeyEvent(triggers[0]!, 'keydown', 'ArrowDown');
@@ -523,7 +521,7 @@ module(
       // a header disabled natively or made unreachable via an ancestor's
       // tabindex="-1" would still pass this assertion -- but the harness has
       // no reliable synthetic Tab traversal to check the stronger property.
-      for (const trigger of findAll('[data-fr-accordion-trigger]')) {
+      for (const trigger of findAll('[data-part="trigger"]')) {
         assert.dom(trigger).doesNotHaveAttribute('tabindex');
       }
     });
@@ -543,7 +541,7 @@ module(
         </template>
       );
 
-      const triggers = findAll('[data-fr-accordion-trigger]');
+      const triggers = findAll('[data-part="trigger"]');
       const byLabel = (label: string): HTMLElement =>
         triggers.find((trigger) =>
           trigger.textContent?.includes(label)
@@ -598,7 +596,7 @@ module(
         </template>
       );
 
-      const trigger = find('[data-fr-accordion-trigger]')!;
+      const trigger = find('[data-part="trigger"]')!;
       const panel = document.getElementById(
         trigger.getAttribute('aria-controls')!
       )!;
@@ -651,7 +649,7 @@ module(
       assert.dom('#indicator').hasText('+', 'indicator sees isOpen');
       assert.dom('#content').hasText('Body');
 
-      await click(find('[data-fr-accordion-trigger]')!);
+      await click(find('[data-part="trigger"]')!);
       assert.dom('#indicator').hasText('-', 'indicator re-renders on toggle');
     });
 
@@ -664,7 +662,7 @@ module(
         </template>
       );
 
-      const trigger = find('[data-fr-accordion-trigger]')!;
+      const trigger = find('[data-part="trigger"]')!;
       const panel = document.getElementById(
         trigger.getAttribute('aria-controls')!
       )!;
@@ -693,7 +691,7 @@ module(
         </template>
       );
 
-      const trigger = find('[data-fr-accordion-trigger]')!;
+      const trigger = find('[data-part="trigger"]')!;
       assert.dom('#state').hasText('closed');
 
       await click(trigger);
@@ -716,7 +714,7 @@ module(
       // "no svg" would pass against a component that never rendered an
       // indicator at all, which is the regression this test exists to catch.
       assert
-        .dom('[data-fr-accordion-trigger] svg')
+        .dom('[data-part="trigger"] svg')
         .exists('the chevron renders by default');
 
       await render(
@@ -728,7 +726,7 @@ module(
       );
 
       assert
-        .dom('[data-fr-accordion-trigger] svg')
+        .dom('[data-part="trigger"] svg')
         .doesNotExist('@hideIndicator removes it');
     });
 
@@ -748,11 +746,11 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-accordion]').hasClass('custom-base');
-      assert.dom('[data-fr-accordion-trigger]').hasClass('custom-trigger');
+      assert.dom('[data-component="accordion"]').hasClass('custom-base');
+      assert.dom('[data-part="trigger"]').hasClass('custom-trigger');
       assert.dom('.custom-body').exists('contentBody got the class');
       assert
-        .dom('[data-fr-accordion-trigger]')
+        .dom('[data-part="trigger"]')
         .hasClass('flex', 'theme classes survive the merge');
     });
 
@@ -776,6 +774,74 @@ module(
         .hasClass(
           'border-b',
           'the default outlined variant theme class survives alongside it'
+        );
+    });
+
+    test('it renders the anatomy attributes', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">Body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      assert.dom('[data-component="accordion"]').exists();
+      assert
+        .dom('[data-component="accordion"]')
+        .hasAttribute('data-part', 'base');
+      assert.dom('[data-part="item"]').exists();
+      assert.dom('[data-part="heading"]').exists();
+      assert.dom('[data-part="trigger"]').exists();
+      assert.dom('[data-part="content"]').exists();
+    });
+
+    test('a caller-supplied data-component wins on the root', async function (assert) {
+      await render(
+        <template>
+          <Accordion data-component="my-accordion" as |a|>
+            <a.Item @title="One">Body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      assert.dom('[data-component="my-accordion"]').exists();
+      assert.dom('[data-component="accordion"]').doesNotExist();
+    });
+
+    test('roving focus ignores triggers belonging to a nested component', async function (assert) {
+      // A real `Dropdown` does not yet carry `data-part="trigger"` -- it is
+      // migrated in a later task -- so nesting one here could not exercise
+      // the collision this test guards against. This inline stand-in mimics
+      // what a migrated component looks like: its own `data-component` root
+      // wrapping an element whose `data-part` happens to also be "trigger".
+      // Without the `closest('[data-component]') === root` filter in
+      // `#triggers()`, the accordion's `querySelectorAll('[data-part="trigger"]')`
+      // would pick this up too and roving focus would land on it instead of
+      // the second accordion header.
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One" @isDefaultOpen={{true}}>
+              <div data-component="fake-nested-widget">
+                <button type="button" data-part="trigger">Nested</button>
+              </div>
+            </a.Item>
+            <a.Item @title="Two">Body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      await focus(
+        '[data-component="accordion"] [data-part="heading"] [data-part="trigger"]'
+      );
+      await triggerKeyEvent(document.activeElement!, 'keydown', 'ArrowDown');
+
+      assert
+        .dom(document.activeElement)
+        .hasText(
+          'Two',
+          'focus moved to the second accordion trigger, not the nested widget trigger'
         );
     });
   }

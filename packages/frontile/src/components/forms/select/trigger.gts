@@ -93,9 +93,11 @@ interface SelectTriggerSignature {
  * The Select's trigger: a filter `<input>` when `@isFilterable`, otherwise a
  * `<button>`.
  *
- * Both carry `data-component="select-trigger"` and the same `input` slot, whose
- * `hasChips` variant is what gives the trigger a hittable box when it has to
- * share a flex line with the chips instead of being the whole field.
+ * Both carry `data-part="input"` (the Select's own `input` slot -- this is a
+ * part of the `select` component, not a component of its own) and the same
+ * `input` slot classes, whose `hasChips` variant is what gives the trigger a
+ * hittable box when it has to share a flex line with the chips instead of
+ * being the whole field.
  */
 const SelectTrigger: TOC<SelectTriggerSignature> = <template>
   {{#if @isFilterable}}
@@ -108,8 +110,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
       type="text"
       {{@trigger}}
       {{@triggerRef}}
-      data-test-id="trigger"
-      data-component="select-trigger"
+      data-part="input"
       disabled={{@isDisabled}}
       aria-label={{if @showChips @accessibleName}}
       placeholder={{valueUnless (and @showChips @hasSelection) @placeholder}}
@@ -129,8 +130,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
       type="button"
       {{@trigger}}
       {{@triggerRef}}
-      data-test-id="trigger"
-      data-component="select-trigger"
+      data-part="input"
       disabled={{@isDisabled}}
       aria-label={{if (or @showChips @hasCustomContent) @accessibleName}}
       class={{@classes.input
@@ -152,7 +152,10 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
           </SelectedText>
         {{/unless}}
       {{else}}
-        <span class={{@classes.placeholder class=@userClasses.placeholder}}>
+        <span
+          data-part="placeholder"
+          class={{@classes.placeholder class=@userClasses.placeholder}}
+        >
           {{#if @placeholder}}{{@placeholder}}{{else}}&nbsp;{{/if}}
         </span>
       {{/if}}

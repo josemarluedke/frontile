@@ -223,9 +223,9 @@ class ProgressBar extends Component<ProgressBarSignature> {
   }
 
   <template>
-    <div ...attributes>
+    <div data-component="progress-bar" ...attributes>
       {{#if @label}}
-        <div class={{this.classNames.label}}>
+        <div data-part="label" class={{this.classNames.label}}>
           <label id={{this.id}}>
             {{@label}}
           </label>
@@ -237,13 +237,14 @@ class ProgressBar extends Component<ProgressBarSignature> {
         </div>
       {{/if}}
       {{#if @description}}
-        <div class={{this.classNames.description}}>
+        <div data-part="description" class={{this.classNames.description}}>
           {{@description}}
         </div>
       {{/if}}
-      <div class={{this.classNames.base}}>
+      <div data-part="base" class={{this.classNames.base}}>
         <div
           role="progressbar"
+          data-part="progress"
           aria-labelledby={{if @label this.id}}
           aria-valuenow={{this.ariaValueNow}}
           aria-valuemin={{this.minValue}}

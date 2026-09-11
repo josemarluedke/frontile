@@ -39,7 +39,7 @@ export interface MonthGridSignature {
 const MonthGrid: TOC<MonthGridSignature> = <template>
   <table
     role="grid"
-    data-fr-calendar-grid
+    data-part="month-grid"
     class={{@classes.monthGrid}}
     {{! aria-labelledby wins over aria-label, so a picker passing one on the
         calendar relabels every grid without this having to choose. }}
@@ -49,11 +49,11 @@ const MonthGrid: TOC<MonthGridSignature> = <template>
     ...attributes
   >
     <thead>
-      <tr data-fr-calendar-weekdays class={{@classes.weekdaysRow}}>
+      <tr data-part="weekdays-row" class={{@classes.weekdaysRow}}>
         {{#each @weekdays key="index" as |weekday|}}
           <th
             scope="col"
-            data-fr-calendar-weekday
+            data-part="weekday"
             class={{@classes.weekday}}
             abbr={{weekday.long}}
           >
@@ -69,7 +69,7 @@ const MonthGrid: TOC<MonthGridSignature> = <template>
 
     <tbody>
       {{#each @month.weeks key="key" as |week|}}
-        <tr data-fr-calendar-week class={{@classes.week}}>
+        <tr data-part="week" class={{@classes.week}}>
           {{#each week.days key="key" as |day|}}
             {{#let (@stateFor day) as |state|}}
               <DayCell

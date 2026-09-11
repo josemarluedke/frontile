@@ -62,13 +62,14 @@ class CommandInput extends Component<CommandInputSignature> {
   <template>
     <div
       class={{this.classNames.inputWrapper class=@classes.inputWrapper}}
-      data-test-id="command-input-wrapper"
+      data-part="input-wrapper"
     >
       {{#if (has-block "icon")}}
         {{yield to="icon"}}
       {{else}}
         <SearchIcon
           class={{this.classNames.inputIcon class=@classes.inputIcon}}
+          data-part="input-icon"
         />
       {{/if}}
 
@@ -93,8 +94,7 @@ class CommandInput extends Component<CommandInputSignature> {
         spellcheck="false"
         value={{@value}}
         placeholder={{@placeholder}}
-        data-test-id="command-input"
-        data-component="command-input"
+        data-part="input"
         class={{this.classNames.input class=@classes.input}}
         {{@setup}}
         {{on "input" this.handleInput}}

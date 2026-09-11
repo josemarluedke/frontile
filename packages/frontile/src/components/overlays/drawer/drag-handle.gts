@@ -40,7 +40,7 @@ const DrawerDragHandle: TOC<DrawerDragHandleSignature> = <template>
     {{on "click" (handlePress @onPress)}}
     ...attributes
   >
-    <span class={{@barClass}}></span>
+    <span data-part="drag-handle-bar" class={{@barClass}}></span>
   </button>
 </template>;
 

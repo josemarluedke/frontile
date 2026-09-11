@@ -85,6 +85,30 @@ module(
       assert.dom('.my-label-class').exists();
     });
 
+    test('renders data-component="checkbox-group" on the root only, with data-part on every slot', async function (assert) {
+      assert
+        .dom('[data-component="checkbox-group"]')
+        .hasAttribute('data-part', 'base');
+      assert
+        .dom(
+          '[data-component="checkbox-group"] [data-part="options-container"]'
+        )
+        .exists();
+      // Scoped with the direct-child combinator: a checkbox-group's
+      // options-container yields full Checkbox components, and each
+      // Checkbox has its own [data-part="label"] for its own label slot.
+      // An unscoped descendant selector for [data-part="label"] would match
+      // both the group's own label and every nested checkbox's label.
+      assert
+        .dom('[data-component="checkbox-group"] > [data-part="label"]')
+        .exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="checkbox-group"]').length,
+        1,
+        'data-component="checkbox-group" marks the root only, never a part'
+      );
+    });
+
     test('it renders the description after the label', async function (assert) {
       await render(
         <template>

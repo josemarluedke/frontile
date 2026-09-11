@@ -92,13 +92,13 @@ module(
       // otherwise assistive technology is not observing it when the error
       // arrives and the message is never announced.
       assert
-        .dom('[data-component="form-feedback-live-region"]')
+        .dom('[data-test-id="form-feedback-live-region"]')
         .exists('the live region is rendered while the field is still valid');
       assert
-        .dom('[data-component="form-feedback-live-region"]')
+        .dom('[data-test-id="form-feedback-live-region"]')
         .hasAria('live', 'assertive');
       assert
-        .dom('[data-component="form-feedback-live-region"]')
+        .dom('[data-test-id="form-feedback-live-region"]')
         .hasText('', 'the live region starts empty');
       assert
         .dom('[data-component="form-feedback"]')
@@ -108,7 +108,7 @@ module(
       await settled();
 
       assert
-        .dom('[data-component="form-feedback-live-region"]')
+        .dom('[data-test-id="form-feedback-live-region"]')
         .hasText(
           'Email is required',
           'the pre-existing live region is filled with the message'
@@ -127,7 +127,7 @@ module(
       await settled();
 
       assert
-        .dom('[data-component="form-feedback-live-region"]')
+        .dom('[data-test-id="form-feedback-live-region"]')
         .hasText('', 'the live region empties again when the field is valid');
     });
 
@@ -142,7 +142,7 @@ module(
       );
 
       assert
-        .dom('[data-component="form-feedback-live-region"]')
+        .dom('[data-test-id="form-feedback-live-region"]')
         .hasText('Email is required; Email is invalid');
     });
 
@@ -161,7 +161,7 @@ module(
         .dom('[data-component="form-feedback"]')
         .doesNotExist('the automatic visible feedback is suppressed');
       assert
-        .dom('[data-component="form-feedback-live-region"]')
+        .dom('[data-test-id="form-feedback-live-region"]')
         .hasText(
           'Email is required',
           'the announcement is still made from the live region'

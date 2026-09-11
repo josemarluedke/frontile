@@ -66,6 +66,8 @@ class Checkbox extends Component<CheckboxSignature> {
       checked={{this.isChecked}}
       disabled={{@disabled}}
       class={{this.classes.input class=@classes.input}}
+      data-component="checkbox"
+      data-part="input"
       aria-label={{@ariaLabel}}
       aria-labelledby={{@ariaLabelledby}}
       aria-checked={{if

@@ -69,7 +69,7 @@ const SpinnerOrIcon: TOC<{
   };
 }> = <template>
   {{#if @isLoading}}
-    <Spinner @class={{@spinnerClass}} data-test-id="loading-spinner" />
+    <Spinner @class={{@spinnerClass}} />
   {{else}}
     {{yield}}
   {{/if}}
@@ -227,6 +227,8 @@ class Button extends Component<ButtonSignature> {
         aria-busy={{if this.isLoading "true"}}
         data-loading={{if this.isLoading "true"}}
         data-pressed={{if this.isPressed "true"}}
+        data-component="button"
+        data-part="base"
         {{press this.onPress onPressChange=this.handlePressChange}}
         ...attributes
         {{disableWhile this.isLoading}}

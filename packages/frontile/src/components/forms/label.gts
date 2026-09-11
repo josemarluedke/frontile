@@ -56,11 +56,15 @@ class Label extends Component<LabelSignature> {
       for={{@for}}
       class={{this.classes.base class=@class}}
       data-component="label"
+      data-part="base"
       ...attributes
     >
       {{yield}}
       {{#if @isRequired}}
-        <span class={{this.classes.asterisk class=@classes.asterisk}}>*</span>
+        <span
+          class={{this.classes.asterisk class=@classes.asterisk}}
+          data-part="asterisk"
+        >*</span>
       {{/if}}
     </label>
   </template>

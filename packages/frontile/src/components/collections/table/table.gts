@@ -636,8 +636,11 @@ class Table<
       hasStickyHeader: this.args.isStickyHeader || false,
       isLoading: this.args.isLoading || false,
       loadingColor: this.args.loadingColor,
-      selectionColor: this.args.selectionColor,
-      class: this.args.classes?.base
+      selectionColor: this.args.selectionColor
+      // No `class: this.args.classes?.base` here: `table` has no `base`
+      // slot (deleted -- it was never rendered by anything, see
+      // packages/theme/src/components/table.ts), so passing a class here
+      // was already a no-op.
     });
   }
 
@@ -657,6 +660,10 @@ class Table<
 
   get skeletonClassNames() {
     return this.styles.skeleton({ class: this.args.classes?.skeleton });
+  }
+
+  get toolbarClassNames() {
+    return this.styles.toolbar({ class: this.args.classes?.toolbar });
   }
 
   get headlessColumns() {
@@ -680,13 +687,14 @@ class Table<
 
   <template>
     <div
+      data-component="table"
+      data-part="wrapper"
       class={{this.wrapperClassNames}}
       {{calculateHeaderHeight @isStickyHeader}}
       {{this.tableInstance.modifiers.container}}
-      data-component="table-wrapper"
     >
       {{#if (has-block "toolbar")}}
-        <div class="table-toolbar px-4 pt-3" data-component="table-toolbar">
+        <div data-part="toolbar" class={{this.toolbarClassNames}}>
           {{yield
             (hash
               ColumnVisibility=(component
@@ -705,6 +713,7 @@ class Table<
         @isStriped={{@isStriped}}
         @isScrollable={{@isScrollable}}
         @hasWrapper={{false}}
+        @isRoot={{false}}
         @isLoading={{@isLoading}}
         @loadingColor={{@loadingColor}}
         @selectionColor={{@selectionColor}}
@@ -828,10 +837,10 @@ class Table<
               {{#unless (has-block "loading")}}
                 {{#each this.skeletonRowsArray as |rowIndex|}}
                   <t.Row
+                    data-part="skeleton-row"
                     @class={{this.skeletonRowClassNames}}
                     style={{skeletonRowDelay rowIndex}}
                     aria-hidden="true"
-                    data-test-id="table-skeleton-row"
                   >
                     {{#each this.headlessColumns as |column|}}
                       <t.Cell
@@ -840,6 +849,7 @@ class Table<
                         data-column={{column.key}}
                       >
                         <Skeleton
+                          data-part="skeleton"
                           @shape={{columnSkeletonShape column}}
                           @size={{@size}}
                           @animation="pulse"
@@ -855,9 +865,9 @@ class Table<
                 {{#if (has-block "empty")}}
                   <t.Row data-test-id="table-empty-row">
                     <t.Cell
+                      data-part="empty"
                       @class={{(this.styles.empty)}}
                       colspan={{this.headlessColumns.length}}
-                      data-test-id="table-empty-cell"
                     >
                       {{yield to="empty"}}
                     </t.Cell>
@@ -865,9 +875,9 @@ class Table<
                 {{else if @emptyContent}}
                   <t.Row data-test-id="table-empty-row">
                     <t.Cell
+                      data-part="empty"
                       @class={{(this.styles.empty)}}
                       colspan={{this.headlessColumns.length}}
-                      data-test-id="table-empty-cell"
                     >
                       {{@emptyContent}}
                     </t.Cell>

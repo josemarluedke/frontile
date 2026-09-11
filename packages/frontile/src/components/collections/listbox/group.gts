@@ -80,20 +80,20 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
     <li
       role="group"
       aria-labelledby={{if @title this.titleId}}
-      data-test-id="listbox-group"
       data-component="listbox-group"
+      data-part="base"
       class={{this.classNames.base}}
       ...attributes
     >
       {{#if @title}}
         <span
           id={{this.titleId}}
-          data-test-id="listbox-group-title"
+          data-part="title"
           class={{this.classNames.title}}
         >{{@title}}</span>
       {{/if}}
 
-      <ul role="none" class={{this.classNames.list}}>
+      <ul role="none" data-part="list" class={{this.classNames.list}}>
         {{yield
           (hash
             Item=(component
@@ -110,7 +110,11 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
     </li>
 
     {{#if @withDivider}}
-      <Divider @as="li" @class={{this.classNames.divider}} />
+      <Divider
+        @as="li"
+        @class={{this.classNames.divider}}
+        data-part="divider"
+      />
     {{/if}}
   </template>
 }

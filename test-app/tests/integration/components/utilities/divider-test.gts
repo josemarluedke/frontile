@@ -11,14 +11,16 @@ module(
     test('it renders an hr by default', async function (assert) {
       await render(<template><Divider /></template>);
 
-      assert.dom('[data-test-id="divider"]').hasTagName('hr');
-      assert.dom('[data-test-id="divider"]').hasAttribute('role', 'separator');
+      assert.dom('[data-component="divider"]').hasTagName('hr');
+      assert
+        .dom('[data-component="divider"]')
+        .hasAttribute('role', 'separator');
     });
 
     test('a vertical divider renders a div', async function (assert) {
       await render(<template><Divider @orientation="vertical" /></template>);
 
-      assert.dom('[data-test-id="divider"]').hasTagName('div');
+      assert.dom('[data-component="divider"]').hasTagName('div');
     });
 
     // The separator role defaults to horizontal, so a vertical divider that
@@ -58,7 +60,20 @@ module(
     test('@as overrides the rendered tag', async function (assert) {
       await render(<template><Divider @as="span" /></template>);
 
-      assert.dom('[data-test-id="divider"]').hasTagName('span');
+      assert.dom('[data-component="divider"]').hasTagName('span');
+    });
+
+    test('renders data-component="divider" on the root only, with data-part="base"', async function (assert) {
+      await render(<template><Divider /></template>);
+
+      assert
+        .dom('[data-component="divider"]')
+        .hasAttribute('data-part', 'base');
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="divider"]').length,
+        1,
+        'data-component="divider" marks the root only'
+      );
     });
   }
 );

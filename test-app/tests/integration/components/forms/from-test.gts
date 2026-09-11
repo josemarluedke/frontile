@@ -85,7 +85,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await selectNativeOptionByKey('[name="country"]', 'Brazil');
     assert.equal(inputData.current['country'], 'Brazil');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="Chile"]');
     await click('[data-component="listbox"] [data-key="Argentina"]');
     assert.deepEqual(inputData.current['traveledTo'], ['Argentina', 'Chile']);
@@ -98,7 +98,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[name="bio"]', 'My bio');
     await selectNativeOptionByKey('[name="country"]', 'Brazil');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="Chile"]');
     await click('[data-component="listbox"] [data-key="Argentina"]');
     await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Escape'); // Close the select
@@ -1188,7 +1188,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
       .dom('[data-test-checkbox]')
       .isNotDisabled('Checkbox is not disabled');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .isNotDisabled('Select is not disabled');
     assert
       .dom('[data-test-textarea]')
@@ -1202,7 +1202,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     assert.dom('[data-test-username]').isDisabled('Input is disabled');
     assert.dom('[data-test-checkbox]').isDisabled('Checkbox is disabled');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .isDisabled('Select is disabled');
   });
 

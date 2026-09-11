@@ -20,13 +20,15 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
     test('it nests one kbd per key inside a wrapper kbd', async function (assert) {
       await render(<template><Kbd @keys="mod+shift+p" /></template>);
 
-      assert.dom('[data-test-id="kbd"]').hasTagName('kbd');
-      assert.dom('[data-test-id="kbd"]').hasAttribute('data-component', 'kbd');
-      assert.dom('[data-test-id="kbd-key"]').exists({ count: 3 });
+      assert.dom('[data-component="kbd"]').hasTagName('kbd');
+      assert
+        .dom('[data-component="kbd"]')
+        .hasAttribute('data-component', 'kbd');
+      assert.dom('[data-part="key"]').exists({ count: 3 });
 
-      const caps = [
-        ...document.querySelectorAll('[data-test-id="kbd-key"]')
-      ].map((el) => el.textContent?.replace(/\s+/g, ' ').trim());
+      const caps = [...document.querySelectorAll('[data-part="key"]')].map(
+        (el) => el.textContent?.replace(/\s+/g, ' ').trim()
+      );
 
       // Symbol keys carry their spoken name alongside the glyph; a plain
       // letter needs none.
@@ -36,9 +38,9 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
     test('a single key still renders a wrapper and one cap', async function (assert) {
       await render(<template><Kbd @keys="esc" /></template>);
 
-      assert.dom('[data-test-id="kbd"]').hasTagName('kbd');
-      assert.dom('[data-test-id="kbd-key"]').exists({ count: 1 });
-      assert.dom('[data-test-id="kbd-key"]').hasText('Esc');
+      assert.dom('[data-component="kbd"]').hasTagName('kbd');
+      assert.dom('[data-part="key"]').exists({ count: 1 });
+      assert.dom('[data-part="key"]').hasText('Esc');
     });
 
     test('block content renders as a single cap and wins over @keys', async function (assert) {
@@ -48,8 +50,8 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="kbd-key"]').exists({ count: 1 });
-      assert.dom('[data-test-id="kbd-key"]').hasText('Custom');
+      assert.dom('[data-part="key"]').exists({ count: 1 });
+      assert.dom('[data-part="key"]').hasText('Custom');
     });
 
     test('merged puts every glyph in one cap', async function (assert) {
@@ -57,12 +59,12 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
         <template><Kbd @keys="mod+k" @display="merged" /></template>
       );
 
-      assert.dom('[data-test-id="kbd-key"]').exists({ count: 1 });
+      assert.dom('[data-part="key"]').exists({ count: 1 });
       assert
-        .dom('[data-test-id="kbd-key"] [aria-hidden="true"]')
+        .dom('[data-part="key"] [aria-hidden="true"]')
         .hasText('⌘K', 'glyphs concatenate with no gap between them');
       assert
-        .dom('[data-test-id="kbd-key"] .sr-only')
+        .dom('[data-part="key"] .sr-only')
         .hasText(
           'Command K',
           'a run of glyphs is unintelligible aloud, so the names are spoken'
@@ -72,18 +74,16 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
     test('a separator renders between caps but not before the first', async function (assert) {
       await render(<template><Kbd @keys="ctrl+b" @separator="+" /></template>);
 
-      assert.dom('[data-test-id="kbd-separator"]').exists({ count: 1 });
-      assert.dom('[data-test-id="kbd-separator"]').hasText('+');
-      assert
-        .dom('[data-test-id="kbd-separator"]')
-        .hasAttribute('aria-hidden', 'true');
+      assert.dom('[data-part="separator"]').exists({ count: 1 });
+      assert.dom('[data-part="separator"]').hasText('+');
+      assert.dom('[data-part="separator"]').hasAttribute('aria-hidden', 'true');
     });
 
     test('no keys renders no caps', async function (assert) {
       await render(<template><Kbd @keys="" /></template>);
 
-      assert.dom('[data-test-id="kbd"]').exists();
-      assert.dom('[data-test-id="kbd-key"]').doesNotExist();
+      assert.dom('[data-component="kbd"]').exists();
+      assert.dom('[data-part="key"]').doesNotExist();
     });
   });
 
@@ -92,16 +92,16 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
       await render(<template><Kbd @keys="mod" /></template>);
 
       assert
-        .dom('[data-test-id="kbd-key"] [aria-hidden="true"]')
+        .dom('[data-part="key"] [aria-hidden="true"]')
         .hasText('⌘', 'the glyph itself says nothing useful aloud');
-      assert.dom('[data-test-id="kbd-key"] .sr-only').hasText('Command');
+      assert.dom('[data-part="key"] .sr-only').hasText('Command');
     });
 
     test('a readable glyph gets no spoken label', async function (assert) {
       await render(<template><Kbd @keys="esc" /></template>);
 
       assert
-        .dom('[data-test-id="kbd-key"] .sr-only')
+        .dom('[data-part="key"] .sr-only')
         .doesNotExist(
           'labelling Esc would make a screen reader say "Escape Escape"'
         );
@@ -111,28 +111,26 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
       await render(<template><Kbd @keys="esc" @display="merged" /></template>);
 
       assert
-        .dom('[data-test-id="kbd-key"] .sr-only')
+        .dom('[data-part="key"] .sr-only')
         .doesNotExist(
           'Esc reads correctly on its own, so merging must not make it say "Esc Escape"'
         );
-      assert.dom('[data-test-id="kbd-key"]').hasAttribute('title', 'Escape');
+      assert.dom('[data-part="key"]').hasAttribute('title', 'Escape');
 
       await render(
         <template><Kbd @keys="mod+shift+p" @display="merged" /></template>
       );
 
       assert
-        .dom('[data-test-id="kbd-key"] .sr-only')
+        .dom('[data-part="key"] .sr-only')
         .hasText('Command Shift P', 'a run containing symbols is spoken');
-      assert
-        .dom('[data-test-id="kbd-key"]')
-        .hasAttribute('title', 'Command Shift');
+      assert.dom('[data-part="key"]').hasAttribute('title', 'Command Shift');
     });
 
     test('named keys carry a title; literals do not', async function (assert) {
       await render(<template><Kbd @keys="mod+k" /></template>);
 
-      const caps = document.querySelectorAll('[data-test-id="kbd-key"]');
+      const caps = document.querySelectorAll('[data-part="key"]');
 
       assert.dom(caps[0]).hasAttribute('title', 'Command');
       assert.dom(caps[1]).doesNotHaveAttribute('title');
@@ -143,9 +141,9 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
     test('@platform overrides the module setting for this keycap only', async function (assert) {
       await render(<template><Kbd @keys="mod" @platform="other" /></template>);
 
-      assert.dom('[data-test-id="kbd-key"]').hasText('Ctrl');
+      assert.dom('[data-part="key"]').hasText('Ctrl');
       assert
-        .dom('[data-test-id="kbd-key"]')
+        .dom('[data-part="key"]')
         .hasAttribute(
           'title',
           'Control',
@@ -162,9 +160,9 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="kbd-key"]').hasClass('h-7');
-      assert.dom('[data-test-id="kbd-key"]').hasClass('bg-danger-subtle');
-      assert.dom('[data-test-id="kbd-key"]').hasClass('border-danger-soft');
+      assert.dom('[data-part="key"]').hasClass('h-7');
+      assert.dom('[data-part="key"]').hasClass('bg-danger-subtle');
+      assert.dom('[data-part="key"]').hasClass('border-danger-soft');
     });
 
     test('inherit and plain follow the surrounding colour', async function (assert) {
@@ -176,10 +174,10 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
       );
 
       assert
-        .dom('[data-test-inherit] [data-test-id="kbd-key"]')
+        .dom('[data-test-inherit] [data-part="key"]')
         .hasClass('text-current');
       assert
-        .dom('[data-test-plain] [data-test-id="kbd-key"]')
+        .dom('[data-test-plain] [data-part="key"]')
         .hasClass('border-0', 'plain drops the box entirely');
     });
 
@@ -194,8 +192,23 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="kbd"]').hasClass('custom-base');
-      assert.dom('[data-test-id="kbd-key"]').hasClass('custom-key');
+      assert.dom('[data-component="kbd"]').hasClass('custom-base');
+      assert.dom('[data-part="key"]').hasClass('custom-key');
+    });
+  });
+
+  module('anatomy', function () {
+    test('renders data-component="kbd" on the root only, with data-part on every slot', async function (assert) {
+      await render(<template><Kbd @keys="ctrl+b" @separator="+" /></template>);
+
+      assert.dom('[data-component="kbd"]').hasAttribute('data-part', 'base');
+      assert.dom('[data-component="kbd"] [data-part="key"]').exists();
+      assert.dom('[data-component="kbd"] [data-part="separator"]').exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="kbd"]').length,
+        1,
+        'data-component="kbd" marks the root only, never a part'
+      );
     });
   });
 });

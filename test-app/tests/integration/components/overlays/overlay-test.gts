@@ -61,6 +61,31 @@ module(
       assert.dom('[data-test-id="overlay"]').doesNotExist();
     });
 
+    test('renders data-component="overlay" on the root only, with data-part="base"', async function (assert) {
+      const disableTransitions = cell(true);
+
+      await render(
+        <template>
+          <Overlay
+            @isOpen={{true}}
+            @disableTransitions={{disableTransitions.current}}
+          >
+            My Content
+            <button type="button">Something focusable</button>
+          </Overlay>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="overlay"]')
+        .hasAttribute('data-part', 'base');
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="overlay"]').length,
+        1,
+        'data-component="overlay" marks the root only'
+      );
+    });
+
     test('when @renderInPlace={{true}} renders in place', async function (assert) {
       const disableTransitions = cell(true);
       const renderInPlace = cell(true);

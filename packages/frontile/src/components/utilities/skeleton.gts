@@ -38,6 +38,7 @@ const Skeleton: TOC<{
       }}
       aria-hidden="true"
       data-component="skeleton"
+      data-part="base"
       ...attributes
     ></div>
   {{/let}}

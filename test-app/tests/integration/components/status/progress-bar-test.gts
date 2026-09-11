@@ -579,5 +579,35 @@ module(
           .containsText('Please wait while we process your request');
       });
     });
+
+    test('renders data-component="progress-bar" on the root only, with data-part on every slot', async function (assert) {
+      await render(
+        <template>
+          <ProgressBar
+            data-test-id="progress-bar"
+            @label="Loading files"
+            @description="Please wait"
+            @progress={{50}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-component="progress-bar"]').exists();
+      assert
+        .dom('[data-component="progress-bar"] [data-part="label"]')
+        .exists();
+      assert
+        .dom('[data-component="progress-bar"] [data-part="description"]')
+        .exists();
+      assert.dom('[data-component="progress-bar"] [data-part="base"]').exists();
+      assert
+        .dom('[data-component="progress-bar"] [data-part="progress"]')
+        .exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="progress-bar"]').length,
+        1,
+        'data-component="progress-bar" marks the root only, never a part'
+      );
+    });
   }
 );

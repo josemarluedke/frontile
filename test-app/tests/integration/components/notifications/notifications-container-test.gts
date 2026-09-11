@@ -1061,5 +1061,32 @@ module(
             'of every notification ever shown'
         );
     });
+
+    test('renders data-component="notifications-container" on the root only, with data-part="stack" on the stack', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      service.add('Message 1', options);
+
+      await render(template);
+
+      const root = document.querySelector(
+        '[data-component="notifications-container"]'
+      ) as Element;
+      assert.ok(root, 'the notifications-container root renders');
+      assert.strictEqual(root.getAttribute('data-part'), 'base');
+
+      assert
+        .dom('[data-component="notifications-container"] [data-part="stack"]')
+        .exists();
+
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="notifications-container"]')
+          .length,
+        1,
+        'data-component="notifications-container" marks the root only, never a part'
+      );
+    });
   }
 );

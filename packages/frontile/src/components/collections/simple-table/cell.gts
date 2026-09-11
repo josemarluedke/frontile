@@ -48,12 +48,7 @@ class SimpleTableCell extends Component<SimpleTableCellSignature> {
   }
 
   <template>
-    <td
-      class={{this.classNames}}
-      data-test-id="table-cell"
-      data-component="table-cell"
-      ...attributes
-    >
+    <td data-part="td" class={{this.classNames}} ...attributes>
       {{yield}}
     </td>
   </template>

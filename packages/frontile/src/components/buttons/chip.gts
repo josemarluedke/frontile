@@ -114,11 +114,16 @@ class Chip extends Component<ChipSignature> {
   }
 
   <template>
-    <div class={{this.classNames.base}} ...attributes>
+    <div
+      class={{this.classNames.base}}
+      data-component="chip"
+      data-part="base"
+      ...attributes
+    >
       {{#if @withDot}}
-        <span class={{this.classNames.dot}}></span>
+        <span class={{this.classNames.dot}} data-part="dot"></span>
       {{/if}}
-      <span class={{this.classNames.content}}>
+      <span class={{this.classNames.content}} data-part="content">
         {{yield}}
       </span>
       {{#if @onClose}}
@@ -128,6 +133,7 @@ class Chip extends Component<ChipSignature> {
           @onPress={{@onClose}}
           tabindex={{@closeButtonTabIndex}}
           disabled={{@isDisabled}}
+          data-part="close-button"
         />
       {{/if}}
     </div>

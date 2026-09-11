@@ -33,6 +33,17 @@ interface SimpleTableSignature {
     selectionColor?: TableVariants['selectionColor'];
     /** Whether a custom loading block is provided (disables CSS loading indicator) */
     hasCustomLoading?: boolean;
+    /**
+     * @internal Whether this instance owns the "table" anatomy root
+     * (`data-component="table"`). Defaults to `true` for standalone/public
+     * usage. `Table` sets this to `false` when it composes `SimpleTable`
+     * internally, since `Table`'s own outer wrapper is already the anatomy
+     * root for that combined instance -- without this, the `<table>` element
+     * rendered here would be a second, nested `data-component="table"`
+     * inside Table's own root, breaking the one-root-per-instance contract.
+     * @ignore
+     */
+    isRoot?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -72,6 +83,10 @@ class SimpleTable extends Component<SimpleTableSignature> {
     return this.args.hasWrapper ?? true;
   }
 
+  get isRoot() {
+    return this.args.isRoot ?? true;
+  }
+
   get styles() {
     const { table } = useStyles();
     return table({
@@ -84,8 +99,11 @@ class SimpleTable extends Component<SimpleTableSignature> {
         ? false
         : this.args.isLoading || false,
       loadingColor: this.args.loadingColor,
-      selectionColor: this.args.selectionColor,
-      class: this.args.classes?.base
+      selectionColor: this.args.selectionColor
+      // No `class: this.args.classes?.base` here: `table` has no `base`
+      // slot (deleted -- it was never rendered by anything, see
+      // packages/theme/src/components/table.ts), so passing a class here
+      // was already a no-op.
     });
   }
 
@@ -101,11 +119,11 @@ class SimpleTable extends Component<SimpleTableSignature> {
 
   <template>
     {{#if this.hasWrapper}}
-      <div class={{this.wrapperClassNames}} data-component="table-wrapper">
+      <div data-part="wrapper" class={{this.wrapperClassNames}}>
         <table
+          data-component={{if this.isRoot "table"}}
+          data-part="table"
           class={{this.tableClassNames}}
-          data-test-id="table"
-          data-component="table"
           data-loading={{if this.args.isLoading "true" "false"}}
           ...attributes
         >
@@ -133,9 +151,9 @@ class SimpleTable extends Component<SimpleTableSignature> {
       </div>
     {{else}}
       <table
+        data-component={{if this.isRoot "table"}}
+        data-part="table"
         class={{this.tableClassNames}}
-        data-test-id="table"
-        data-component="table"
         data-loading={{if this.args.isLoading "true" "false"}}
         ...attributes
       >

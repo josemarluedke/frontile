@@ -919,6 +919,15 @@ These are a supported contract, stable across minor versions:
 
 Use them for column-targeted styling and test selectors.
 
+Every element rendering one of Table's styled parts also carries a stable
+`data-part` attribute (kebab-cased from the slot name — e.g. `wrapper`,
+`table`, `thead`, `tbody`, `tr`, `th`, `td`, `sort-button`, `skeleton-row`),
+and the outermost wrapping `<div>` carries `data-component="table"` (it is
+the element that encloses everything Table renders, including the optional
+toolbar, so it is the one stable anchor for `[data-component="table"] ...`
+scoping). These mirror the slot names accepted by `@classes` and are safe
+to use as test selectors, e.g. `[data-part="tr"]`.
+
 ## Column Visibility
 
 Enable users to show/hide columns with the toolbar:
@@ -952,6 +961,10 @@ export default class DemoComponent extends Component {
 ```
 
 **Initial State:** Set `isVisible: false` in column config to hide by default.
+
+The `<:toolbar>` block's own wrapping element is styled through the
+`toolbar` key on `@classes` (e.g. `@classes={{hash toolbar='...'}}`), the
+same way `wrapper` and `table` are.
 
 ## Sorting
 

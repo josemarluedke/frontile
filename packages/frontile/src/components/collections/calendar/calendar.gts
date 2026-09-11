@@ -241,7 +241,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
 
   private returnFocusToYearTrigger(element: HTMLElement | null): void {
     const trigger = element?.querySelector<HTMLElement>(
-      '[data-fr-calendar-year-trigger]'
+      '[data-part="year-trigger"]'
     );
 
     if (trigger) {
@@ -694,7 +694,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
    */
   private focusOrigin(event: KeyboardEvent): Date | null {
     const key = (event.target as HTMLElement | null)?.closest<HTMLElement>(
-      '[data-fr-calendar-day]'
+      '[data-part="day"]'
     )?.dataset['key'];
 
     return key ? fromDayKey(key) : null;
@@ -805,8 +805,12 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       }
 
       this.#shouldFocus = false;
+      // No nested component renders a `day` part, so unlike the general
+      // `closest('[data-component]') === root` guard used elsewhere, this
+      // query cannot pick up a descendant component's own day-shaped cell --
+      // there is nothing else in the tree it could collide with.
       element
-        .querySelector<HTMLElement>('[data-fr-calendar-day][tabindex="0"]')
+        .querySelector<HTMLElement>('[data-part="day"][tabindex="0"]')
         ?.focus();
     }
   );
@@ -1040,7 +1044,8 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
          the day buttons nested inside; the root itself stays a plain,
          non-focusable container. }}
     <div
-      data-fr-calendar
+      data-component="calendar"
+      data-part="base"
       class={{this.styles.base class=@classes.base}}
       {{on "keydown" this.handleKeydown}}
       {{this.applyFocus this.focusedDate this.isYearGridOpen}}
@@ -1050,7 +1055,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       {{! Header, year panel and grids share one column sized to the grids,
           so a wide footer block cannot stretch the header and pull the paging
           arrows away from the days they page. }}
-      <div class={{this.styles.body class=@classes.body}}>
+      <div data-part="body" class={{this.styles.body class=@classes.body}}>
         {{#if (has-block "header")}}
           {{yield this.headerContext to="header"}}
         {{else}}
@@ -1079,7 +1084,10 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
             @classes={{this.yearGridClasses}}
           />
         {{else}}
-          <div class={{this.styles.monthsWrapper class=@classes.monthsWrapper}}>
+          <div
+            data-part="months-wrapper"
+            class={{this.styles.monthsWrapper class=@classes.monthsWrapper}}
+          >
             {{#each this.months key="key" as |monthData|}}
               <MonthGrid
                 @month={{monthData}}
@@ -1104,7 +1112,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
 
       {{#if (has-block "footer")}}
         <div
-          data-fr-calendar-footer
+          data-part="footer"
           class={{this.styles.footer class=@classes.footer}}
         >{{yield to="footer"}}</div>
       {{/if}}

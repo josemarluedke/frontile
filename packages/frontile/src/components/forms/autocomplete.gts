@@ -668,6 +668,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
       data-component="autocomplete"
+      data-part="base"
       ...attributes
     >
       <FormControl
@@ -721,10 +722,11 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
 
           <div
             class={{this.classes.innerContainer class=@classes.innerContainer}}
+            data-part="inner-container"
           >
             {{#if (has-block "startContent")}}
               <div
-                data-test-id="input-start-content"
+                data-part="start-content"
                 class={{this.classes.startContent
                   class=@classes.startContent
                   startContentPointerEvents=(if
@@ -751,8 +753,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               {{p.trigger}}
               {{p.anchor}}
               {{this.triggerRef.setup}}
-              data-test-id="trigger"
-              data-component="autocomplete-trigger"
+              data-part="input"
               disabled={{@isDisabled}}
               placeholder={{@placeholder}}
               class={{this.classes.input
@@ -766,7 +767,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               {{on "focusout" this.blurTracker.handleFocusOut}}
             />
             <div
-              data-test-id="input-end-content"
+              data-part="end-content"
               class={{this.classes.endContent
                 class=@classes.endContent
                 endContentPointerEvents=(if
@@ -777,21 +778,19 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               {{yield to="endContent"}}
 
               {{#if this.isLoading}}
-                <Spinner
-                  @size={{if (isSm @inputSize) "xs" "sm"}}
-                  data-test-id="loading-spinner"
-                />
+                <Spinner @size={{if (isSm @inputSize) "xs" "sm"}} />
               {{else if this.isClearable}}
                 <CloseButton
                   @title="Clear"
                   @variant="subtle"
                   @size="xs"
                   @class={{this.classes.clearButton class=@classes.clearButton}}
-                  data-test-id="input-clear-button"
+                  data-part="clear-button"
                   @onPress={{this.clearSelectedKeys}}
                 />
               {{else}}
                 <IconChevronUpDown
+                  data-part="icon"
                   class={{this.classes.icon class=@classes.icon}}
                 />
               {{/if}}
@@ -830,6 +829,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               @class={{this.classes.listbox class=@classes.listbox}}
               @elementToAddKeyboardEvents={{this.triggerRef.current}}
               @autoActivateMode={{this.autoActivateMode}}
+              data-part="listbox"
             >
               <:item as |l|>
                 {{#if (has-block "item")}}
@@ -856,7 +856,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
             }}
               <div
                 class={{this.classes.emptyContent class=@classes.emptyContent}}
-                data-test-id="search-message"
+                data-part="empty-content"
               >
                 {{#if (has-block "searchMessage")}}
                   {{yield to="searchMessage"}}
@@ -867,7 +867,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
             {{else if this.showEmptyContent}}
               <div
                 class={{this.classes.emptyContent class=@classes.emptyContent}}
-                data-test-id="empty-content"
+                data-part="empty-content"
               >
                 {{#if (has-block "emptyContent")}}
                   {{yield to="emptyContent"}}

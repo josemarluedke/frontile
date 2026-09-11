@@ -271,5 +271,33 @@ module(
         `href resolves the dynamic segment to 0, got: ${link.getAttribute('href')}`
       );
     });
+
+    // TabNav is a second renderer of the shared `tabs` theme config (a
+    // nav-link variant of Tabs), not a config of its own -- so its root
+    // <nav> carries data-component="tabs" with data-part="list" (it plays
+    // the list role directly; there is no separate base wrapper the way
+    // Tabs has one), and its indicator/items carry the same
+    // indicator/tab parts Tabs itself uses.
+    test('renders data-component="tabs" on the root only, with data-part on every slot it renders', async function (assert) {
+      await render(
+        <template>
+          <TabNav @label="Sections" as |nav|>
+            <nav.Item @href="/one" @isActive={{true}}>One</nav.Item>
+            <nav.Item @href="/two" @isActive={{false}}>Two</nav.Item>
+          </TabNav>
+        </template>
+      );
+
+      assert.dom('[data-component="tabs"]').hasAttribute('data-part', 'list');
+      assert.dom('[data-component="tabs"] [data-part="indicator"]').exists();
+      assert
+        .dom('[data-component="tabs"] [data-part="tab"]')
+        .exists({ count: 2 });
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="tabs"]').length,
+        1,
+        'data-component="tabs" marks the root only, never a part'
+      );
+    });
   }
 );

@@ -138,5 +138,26 @@ module(
       assert.dom('[data-test-avatar] img').exists();
       assert.dom('[data-test-avatar]').doesNotContainText('JS');
     });
+
+    test('renders data-component="avatar" on the root only, with data-part on every slot', async function (assert) {
+      await render(
+        <template>
+          <Avatar data-test-initials @name="John Smith" @alt="John Smith" />
+          <Avatar data-test-image @src="/avatar.jpg" @alt="John Smith" />
+        </template>
+      );
+
+      assert
+        .dom('[data-test-initials]')
+        .hasAttribute('data-component', 'avatar');
+      assert.dom('[data-test-initials]').hasAttribute('data-part', 'base');
+      assert.dom('[data-test-initials] [data-part="name"]').exists();
+      assert.dom('[data-test-image] [data-part="img"]').exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="avatar"]').length,
+        2,
+        'data-component="avatar" marks each root only, never a part'
+      );
+    });
   }
 );

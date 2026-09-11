@@ -355,12 +355,15 @@ class Pagination extends Component<PaginationSignature> {
 
   <template>
     <nav
+      data-component="pagination"
+      data-part="base"
       aria-label={{this.label}}
       class={{this.styles.base class=@classes.base}}
       ...attributes
     >
       {{#if (has-block "summary")}}
         <div
+          data-part="summary"
           class={{this.styles.summary class=@classes.summary}}
           data-pagination-summary
         >
@@ -368,11 +371,12 @@ class Pagination extends Component<PaginationSignature> {
         </div>
       {{/if}}
 
-      <ul class={{this.styles.list class=@classes.list}}>
+      <ul data-part="list" class={{this.styles.list class=@classes.list}}>
         {{#if @showEdges}}
-          <li class={{this.styles.item class=@classes.item}}>
+          <li data-part="item" class={{this.styles.item class=@classes.item}}>
             <button
               type="button"
+              data-part="prev"
               class={{this.styles.prev class=@classes.prev}}
               aria-label="Go to first page"
               disabled={{this.isPrevDisabled}}
@@ -384,9 +388,10 @@ class Pagination extends Component<PaginationSignature> {
           </li>
         {{/if}}
 
-        <li class={{this.styles.item class=@classes.item}}>
+        <li data-part="item" class={{this.styles.item class=@classes.item}}>
           <button
             type="button"
+            data-part="prev"
             class={{this.styles.prev class=@classes.prev}}
             aria-label="Go to previous page"
             disabled={{this.isPrevDisabled}}
@@ -400,9 +405,10 @@ class Pagination extends Component<PaginationSignature> {
 
         {{#if this.showPages}}
           {{#each this.renderedItems key="key" as |item|}}
-            <li class={{this.styles.item class=@classes.item}}>
+            <li data-part="item" class={{this.styles.item class=@classes.item}}>
               {{#if item.isEllipsis}}
                 <span
+                  data-part="ellipsis"
                   class={{this.styles.ellipsis class=@classes.ellipsis}}
                   aria-hidden="true"
                   data-test-ellipsis
@@ -413,6 +419,7 @@ class Pagination extends Component<PaginationSignature> {
               {{else}}
                 <button
                   type="button"
+                  data-part="page"
                   class={{this.pageClass}}
                   aria-label={{item.label}}
                   aria-current={{if item.isActive "page"}}
@@ -426,9 +433,10 @@ class Pagination extends Component<PaginationSignature> {
           {{/each}}
         {{/if}}
 
-        <li class={{this.styles.item class=@classes.item}}>
+        <li data-part="item" class={{this.styles.item class=@classes.item}}>
           <button
             type="button"
+            data-part="next"
             class={{this.styles.next class=@classes.next}}
             aria-label="Go to next page"
             disabled={{this.isNextDisabled}}
@@ -441,9 +449,10 @@ class Pagination extends Component<PaginationSignature> {
         </li>
 
         {{#if @showEdges}}
-          <li class={{this.styles.item class=@classes.item}}>
+          <li data-part="item" class={{this.styles.item class=@classes.item}}>
             <button
               type="button"
+              data-part="next"
               class={{this.styles.next class=@classes.next}}
               aria-label="Go to last page"
               disabled={{this.isNextDisabled}}

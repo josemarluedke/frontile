@@ -22,19 +22,19 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox-group"]').exists();
+      assert.dom('[data-component="listbox-group"]').exists();
       assert
-        .dom('[data-test-id="listbox-group"]')
+        .dom('[data-component="listbox-group"]')
         .hasAttribute('role', 'group');
-      assert.dom('[data-test-id="listbox-group-title"]').hasText('Suggestions');
+      assert.dom('[data-part="title"]').hasText('Suggestions');
 
       // The group must be labelled by its own heading, so a screen reader
       // announces "Suggestions" when entering the group.
       const group = document.querySelector(
-        '[data-test-id="listbox-group"]'
+        '[data-component="listbox-group"]'
       ) as HTMLElement;
       const title = document.querySelector(
-        '[data-test-id="listbox-group-title"]'
+        '[data-part="title"]'
       ) as HTMLElement;
       assert.strictEqual(
         group.getAttribute('aria-labelledby'),
@@ -67,9 +67,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox-group-title"]').doesNotExist();
+      assert.dom('[data-part="title"]').doesNotExist();
       assert
-        .dom('[data-test-id="listbox-group"]')
+        .dom('[data-component="listbox-group"]')
         .doesNotHaveAttribute(
           'aria-labelledby',
           'no dangling reference when there is no heading'
@@ -103,7 +103,7 @@ module(
       const visited: (string | undefined)[] = [];
       for (let i = 0; i < 4; i++) {
         await triggerKeyEvent(
-          '[data-test-id="listbox"]',
+          '[data-component="listbox"]',
           'keydown',
           'ArrowDown'
         );
@@ -162,7 +162,7 @@ module(
       // Walk to the last item of the first group, then across the boundary.
       for (const expected of ['calendar', 'emoji', 'profile', 'billing']) {
         await triggerKeyEvent(
-          '[data-test-id="listbox"]',
+          '[data-component="listbox"]',
           'keydown',
           'ArrowDown'
         );
@@ -176,7 +176,7 @@ module(
 
       // The group wrapper itself must never become focusable.
       assert.strictEqual(
-        document.querySelectorAll('[data-test-id="listbox-group"][tabindex]')
+        document.querySelectorAll('[data-component="listbox-group"][tabindex]')
           .length,
         0,
         'the group element carries no tabindex'

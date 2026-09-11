@@ -146,6 +146,7 @@ class TabNavItem extends Component<TabNavItemSignature> {
         @route={{@route}}
         @models={{this.models}}
         @query={{this.query}}
+        data-part="tab"
         class="{{@itemClass}} {{@class}}"
         aria-disabled="false"
         data-disabled="false"
@@ -157,6 +158,7 @@ class TabNavItem extends Component<TabNavItemSignature> {
     {{else}}
       {{! template-lint-disable no-unsupported-role-attributes }}
       <a
+        data-part="tab"
         href={{unless this.isDisabled @href}}
         class="{{@itemClass}} {{@class}}"
         aria-disabled="{{this.isDisabled}}"

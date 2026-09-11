@@ -103,6 +103,7 @@ class FormFeedback extends Component<FormFeedbackSignature> {
       id={{@id}}
       class={{this.classes}}
       data-component="form-feedback"
+      data-part="base"
       aria-live={{this.ariaLive}}
       ...attributes
     >

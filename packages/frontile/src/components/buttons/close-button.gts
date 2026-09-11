@@ -107,6 +107,8 @@ class CloseButton extends Component<CloseButtonSignature> {
       type="button"
       class={{this.classes.base}}
       data-pressed={{if this.isPressed "true"}}
+      data-component="close-button"
+      data-part="base"
       ...attributes
       {{press this.handlePress onPressChange=this.handlePressChange}}
       {{on "click" this.handleClick}}
@@ -117,6 +119,7 @@ class CloseButton extends Component<CloseButtonSignature> {
       {{else}}
         <svg
           class={{this.classes.icon}}
+          data-part="icon"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

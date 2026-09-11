@@ -705,5 +705,56 @@ module(
         `closing took at least close to the 40ms @closeDelay (took ${closeElapsed}ms)`
       );
     });
+
+    test('renders data-component="tooltip" on the root only, with data-part on every slot', async function (assert) {
+      await render(
+        <template>
+          <Tooltip
+            @content="Add to library"
+            @arrow={{true}}
+            @openDelay={{0}}
+            @closeDelay={{0}}
+            as |t|
+          >
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{t.trigger}}
+            >Top</button>
+          </Tooltip>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+
+      // Tooltip renders its content through Popover/Overlay's portal: it has
+      // no element of its own, so its "base" slot is the exact same
+      // document.body-portaled <div> Overlay renders (see tooltip.gts's
+      // comment on the `<@PopoverContent>` invocation). `root` is therefore
+      // found the same way any consumer would, not as a descendant of
+      // anything in this test's own render tree.
+      const root = document.querySelector(
+        '[data-component="tooltip"]'
+      ) as Element;
+      assert.ok(root, 'the tooltip root renders');
+      assert.strictEqual(root.getAttribute('data-part'), 'base');
+      assert.dom('[data-component="tooltip"] [data-part="arrow"]').exists();
+
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="tooltip"]').length,
+        1,
+        'data-component="tooltip" marks the root only, never a part'
+      );
+      // The same physical <div> also carries data-component="overlay" in
+      // Overlay's own template, written before ...attributes so a caller
+      // (Tooltip, here) can override it -- see the comment in tooltip.gts.
+      // Confirms the override actually took effect rather than merely
+      // co-existing.
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="overlay"]').length,
+        0,
+        'the portaled div is claimed by tooltip, not left as data-component="overlay"'
+      );
+    });
   }
 );

@@ -16,6 +16,94 @@ A **slot** represents a specific part of a component that can be styled or custo
 
 When customizing styles in Frontile, you can either apply styles globally using `registerCustomStyles` or customize individual components using class arguments. You can override default component styles by passing your own class names to the `class` or `classes` argument, depending on whether the component has slots.
 
+## DOM Anatomy: `data-component` and `data-part`
+
+Every Frontile component renders a stable, documented DOM anatomy, independent
+of its CSS classes. Two attributes carry it:
+
+- **`data-component="<name>"`** — the kebab-cased `tv()` config name (e.g. the
+  `notificationCard` config produces `notification-card`), written on the
+  component's **outermost rendered element only**. This is the name the
+  component is registered under, not its filename — `commandDialog` →
+  `command-dialog`.
+- **`data-part="<name>"`** — the kebab-cased `tv()` slot key, written on
+  **every** element that renders a slot (`startContent` → `start-content`).
+  Slot names are exactly the keys you already pass to `@classes`, so if you
+  can style a part with `@classes={{hash startContent='...'}}`, you can also
+  select it with `[data-part="start-content"]`.
+
+The root element's part is usually `base`, but not always — it carries
+whichever slot it actually renders. `Table`'s root is its wrapper `<div>`, so
+that element is `data-part="wrapper"`; `SimpleTable` used on its own roots on
+the `<table>` element, so that one is `data-part="table"`. `ProgressBar`'s
+outer `<div>` renders no slot at all, so it has `data-component="progress-bar"`
+and no `data-part`. Check the component's page if you need the exact shape.
+
+Both attributes can be overridden: a `data-component` or `data-part` you pass
+to a component wins over the one it would render itself.
+
+A nested component's root legitimately carries **both** its own
+`data-component` and a `data-part` belonging to its parent. `CloseButton`
+rendered inside `Alert`, for instance, is simultaneously
+`data-component="close-button"` (its own root) and `data-part="close-button"`
+(the part it fills in `Alert`'s anatomy).
+
+Two components can also render the same `data-component` value: `TabNav` is a
+second renderer of the `tabs` config, alongside `Tabs` itself.
+
+### Selecting by anatomy
+
+Scope a selector to one component's own parts with:
+
+```css
+[data-component="modal"] [data-part="header"] {
+  /* ... */
+}
+```
+
+### Known limitation: a nested component can share a part name
+
+`[data-component="x"] [data-part="y"]` is a plain CSS descendant combinator —
+it matches **any** descendant, not just `y` parts that belong directly to
+`x`. That's ambiguous whenever a nested component happens to have a part
+with the same name. `Alert` renders a `CloseButton`, and `CloseButton` has
+its own `icon` part (its SVG); `Alert` also has its own `icon` part (the
+alert's leading icon). `[data-component="alert"] [data-part="icon"]` matches
+both — the alert's own icon *and* the close button's icon glyph, because the
+close button is a descendant of the alert's root.
+
+What you usually mean is "the parts whose nearest `[data-component]` ancestor
+is `x`". CSS has no "nearest enclosing" combinator, so in a stylesheet you
+narrow the selector yourself, using child combinators down the path you want:
+
+```css
+/* The alert's own icon. The close button's icon is nested one level
+   deeper, inside the close button, so it doesn't match. */
+[data-component="alert"] > [data-part="inner"] > [data-part="icon"] {
+  /* ... */
+}
+```
+
+In tests, use the `ownParts(root, part)` helper from `frontile/test-support`,
+which returns only the parts belonging to `root` itself:
+
+```ts
+import { ownParts } from 'frontile/test-support';
+
+// Only Alert's own `icon` part, not CloseButton's.
+const icons = ownParts(alertRootElement, 'icon');
+```
+
+### Not `data-slot`
+
+If you're coming from shadcn/ui, Nuxt UI, or HeroUI, this convention will look
+familiar but the attribute name differs — those use `data-slot`, Frontile uses
+`data-part`. In Ember, "slot" already means a named block (`{{yield to="title"}}`),
+which is a different thing from a styleable piece of the DOM.
+
+`@frontile/forms-legacy` predates this convention and does not carry these
+attributes.
+
 ## Customizing Styles
 
 ### Setting Up Global Customization

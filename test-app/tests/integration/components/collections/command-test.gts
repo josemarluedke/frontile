@@ -41,9 +41,9 @@ function renderedKeys(): (string | undefined)[] {
 }
 
 function groupTitles(): string[] {
-  return [
-    ...document.querySelectorAll('[data-test-id="listbox-group-title"]')
-  ].map((el) => (el as HTMLElement).textContent?.trim() ?? '');
+  return [...document.querySelectorAll('[data-part="title"]')].map(
+    (el) => (el as HTMLElement).textContent?.trim() ?? ''
+  );
 }
 
 module(
@@ -65,9 +65,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="command-input"]').exists();
+      assert.dom('[data-component="command"] [data-part="input"]').exists();
       assert
-        .dom('[data-test-id="command-input"]')
+        .dom('[data-component="command"] [data-part="input"]')
         .hasAttribute('placeholder', 'Type a command or search…');
       assert.strictEqual(
         renderedKeys().length,
@@ -92,7 +92,7 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="command-input"]', 'button');
+      await fillIn('[data-component="command"] [data-part="input"]', 'button');
 
       assert.strictEqual(
         renderedKeys()[0],
@@ -121,12 +121,12 @@ module(
         'all three groups render initially'
       );
       assert.strictEqual(
-        document.querySelectorAll('[data-test-id="divider"]').length,
+        document.querySelectorAll('[data-component="divider"]').length,
         2,
         'separators render between the 3 groups, never after the last'
       );
 
-      await fillIn('[data-test-id="command-input"]', 'calen');
+      await fillIn('[data-component="command"] [data-part="input"]', 'calen');
 
       assert.deepEqual(
         groupTitles(),
@@ -135,7 +135,7 @@ module(
       );
       assert.deepEqual(renderedKeys(), ['calendar']);
       assert.strictEqual(
-        document.querySelectorAll('[data-test-id="divider"]').length,
+        document.querySelectorAll('[data-component="divider"]').length,
         0,
         'and the separators go with them'
       );
@@ -201,7 +201,7 @@ module(
         </template>
       );
 
-      const input = '[data-test-id="command-input"]';
+      const input = '[data-component="command"] [data-part="input"]';
 
       // Down twice, crossing from one group into the next where relevant.
       await triggerKeyEvent(input, 'keydown', 'ArrowDown');
@@ -254,9 +254,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="command"]').hasClass('my-palette');
+      assert.dom('[data-component="command"]').hasClass('my-palette');
       assert
-        .dom('[data-test-id="command"]')
+        .dom('[data-component="command"]')
         .hasClass('flex', 'without dropping the theme classes');
     });
 
@@ -279,7 +279,7 @@ module(
       );
 
       const input = document.querySelector(
-        '[data-test-id="command-input"]'
+        '[data-component="command"] [data-part="input"]'
       ) as HTMLInputElement;
 
       assert.dom(input).hasAttribute('aria-expanded', 'true');
@@ -290,10 +290,10 @@ module(
         'and it points at an element that exists'
       );
 
-      await fillIn('[data-test-id="command-input"]', 'zzzzzz');
+      await fillIn('[data-component="command"] [data-part="input"]', 'zzzzzz');
 
       assert
-        .dom('[data-test-id="command-list"]')
+        .dom('[data-component="listbox"][data-part="list"]')
         .doesNotExist('the listbox is gone');
       assert.dom(input).hasAttribute('aria-expanded', 'false');
       assert.strictEqual(
@@ -325,7 +325,7 @@ module(
       assert.dom(announcer).hasAttribute('aria-live', 'polite');
       assert.dom(announcer).hasAttribute('role', 'status');
 
-      await fillIn('[data-test-id="command-input"]', 'button');
+      await fillIn('[data-component="command"] [data-part="input"]', 'button');
       assert
         .dom(announcer)
         .hasText(
@@ -333,7 +333,7 @@ module(
           'it reports how many matched (Button, ButtonGroup, ToggleButton)'
         );
 
-      await fillIn('[data-test-id="command-input"]', 'zzzzzz');
+      await fillIn('[data-component="command"] [data-part="input"]', 'zzzzzz');
       assert.dom(announcer).hasText('No results found');
     });
 
@@ -352,14 +352,16 @@ module(
       );
 
       const input = document.querySelector(
-        '[data-test-id="command-input"]'
+        '[data-component="command"] [data-part="input"]'
       ) as HTMLInputElement;
 
       assert.dom(input).hasAttribute('role', 'combobox');
       assert.dom(input).hasAttribute('aria-autocomplete', 'list');
 
       // aria-controls must point at the list that actually rendered.
-      const list = document.querySelector('[data-test-id="command-list"]');
+      const list = document.querySelector(
+        '[data-component="listbox"][data-part="list"]'
+      );
       assert.strictEqual(
         input.getAttribute('aria-controls'),
         list?.id,
@@ -401,11 +403,9 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="command-input"]', 'zzzzzz');
+      await fillIn('[data-component="command"] [data-part="input"]', 'zzzzzz');
 
-      assert
-        .dom('[data-test-id="command-empty"]')
-        .hasText('Nothing for "zzzzzz"');
+      assert.dom('[data-part="empty"]').hasText('Nothing for "zzzzzz"');
       assert.strictEqual(renderedKeys().length, 0);
     });
 
@@ -452,19 +452,19 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="command-footer"]').exists();
+      assert.dom('[data-part="footer"]').exists();
       assert
-        .dom('[data-test-id="command-footer"]')
+        .dom('[data-part="footer"]')
         .includesText('Navigate')
         .includesText('Select')
         .includesText('Close');
       assert.strictEqual(
-        document.querySelectorAll('[data-test-id="command-kbd"]').length,
+        document.querySelectorAll('[data-part="kbd"]').length,
         4,
         'up, down, enter and escape keycaps'
       );
       assert.deepEqual(
-        [...document.querySelectorAll('[data-test-id="command-kbd"]')].map(
+        [...document.querySelectorAll('[data-part="kbd"]')].map(
           (el) =>
             el.querySelector('[aria-hidden="true"]')?.textContent?.trim() ??
             el.textContent?.trim()
@@ -484,15 +484,13 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="command-footer"]').includesText('Copy link');
+      assert.dom('[data-part="footer"]').includesText('Copy link');
       assert.strictEqual(
-        document.querySelectorAll('[data-test-id="command-kbd"]').length,
+        document.querySelectorAll('[data-part="kbd"]').length,
         2,
         'custom keycaps render through the yielded Kbd'
       );
-      assert
-        .dom('[data-test-id="command-footer"]')
-        .doesNotIncludeText('Navigate');
+      assert.dom('[data-part="footer"]').doesNotIncludeText('Navigate');
     });
 
     test('the active item resets to the first result when the list re-ranks', async function (assert) {
@@ -518,18 +516,18 @@ module(
 
       // Move off the first item, then re-rank by typing.
       await triggerKeyEvent(
-        '[data-test-id="command-input"]',
+        '[data-component="command"] [data-part="input"]',
         'keydown',
         'ArrowDown'
       );
       await triggerKeyEvent(
-        '[data-test-id="command-input"]',
+        '[data-component="command"] [data-part="input"]',
         'keydown',
         'ArrowDown'
       );
       const before = activeKey();
 
-      await fillIn('[data-test-id="command-input"]', 'button');
+      await fillIn('[data-component="command"] [data-part="input"]', 'button');
 
       assert.notStrictEqual(
         activeKey(),
@@ -561,7 +559,7 @@ module(
       );
 
       for (const query of ['b', 'bu', 'but', 'butt', 'butto', 'button']) {
-        await fillIn('[data-test-id="command-input"]', query);
+        await fillIn('[data-component="command"] [data-part="input"]', query);
 
         assert.strictEqual(
           document.querySelectorAll(
@@ -605,7 +603,10 @@ module(
 
       // "Settings" is a category on two items and also the label of none here,
       // so a category-only query must still find them.
-      await fillIn('[data-test-id="command-input"]', 'settings');
+      await fillIn(
+        '[data-component="command"] [data-part="input"]',
+        'settings'
+      );
       assert.deepEqual(
         renderedKeys().sort(),
         ['billing', 'profile'],
@@ -613,7 +614,7 @@ module(
       );
 
       // But an exact label hit still beats a category hit.
-      await fillIn('[data-test-id="command-input"]', 'button');
+      await fillIn('[data-component="command"] [data-part="input"]', 'button');
       assert.strictEqual(
         renderedKeys()[0],
         'button',
@@ -639,13 +640,16 @@ module(
           </template>
         );
 
+        // The search prompt and the "no results" message are mutually
+        // exclusive renderings of the same `empty` slot, so only one
+        // `[data-part="empty"]` element ever exists at a time.
+        assert.dom('[data-part="empty"]').exists({ count: 1 });
         assert
-          .dom('[data-test-id="command-prompt"]')
+          .dom('[data-part="empty"]')
           .hasText(
             'Start typing to search.',
             'not "no results" before searching'
           );
-        assert.dom('[data-test-id="command-empty"]').doesNotExist();
       });
     });
 
@@ -727,7 +731,7 @@ module(
           'a blank query shows only the static entries'
         );
 
-        await fillIn('[data-test-id="command-input"]', 'acme');
+        await fillIn('[data-component="command"] [data-part="input"]', 'acme');
 
         assert.deepEqual(
           groupTitles(),
@@ -776,7 +780,7 @@ module(
         }
 
         await render(<template><Naive /></template>);
-        await fillIn('[data-test-id="command-input"]', 'acme');
+        await fillIn('[data-component="command"] [data-part="input"]', 'acme');
 
         assert.notOk(
           renderedKeys().includes('acct:1'),
@@ -836,7 +840,7 @@ module(
         );
 
         const panel = document.querySelector(
-          '[data-test-id="command-dialog-panel"]'
+          '[data-part="panel"]'
         ) as HTMLElement;
         assert.ok(panel, 'the panel rendered');
         assert.ok(
@@ -845,7 +849,7 @@ module(
           `the panel carries its theme classes (got "${panel.className.slice(0, 80)}")`
         );
         assert
-          .dom('[data-test-id="command-footer"]')
+          .dom('[data-part="footer"]')
           .exists('the footer is yielded in the dialog too');
       });
 
@@ -876,7 +880,7 @@ module(
         );
 
         assert
-          .dom('[data-test-id="command-input"]')
+          .dom('[data-component="command"] [data-part="input"]')
           .doesNotExist('closed initially');
 
         // The shortcut is global, so it fires on the document, not on the palette.
@@ -892,7 +896,7 @@ module(
         await settled();
 
         assert
-          .dom('[data-test-id="command-input"]')
+          .dom('[data-component="command"] [data-part="input"]')
           .exists('the shortcut opened it');
         assert.strictEqual(renderedKeys().length, DOCS.length);
 
@@ -1100,15 +1104,15 @@ module(
           </template>
         );
 
-        fillIn('[data-test-id="command-input"]', 'but');
+        fillIn('[data-component="command"] [data-part="input"]', 'but');
         await new Promise((r) => setTimeout(r, 20));
 
-        assert.dom('[data-test-id="command-loading"]').exists('shows loading');
+        assert.dom('[data-part="loading"]').exists('shows loading');
 
         resolveSearch([DOCS[2]!]);
         await settled();
 
-        assert.dom('[data-test-id="command-loading"]').doesNotExist();
+        assert.dom('[data-part="loading"]').doesNotExist();
         assert.deepEqual(renderedKeys(), ['button']);
         assert.verifySteps(['search:but']);
       });
@@ -1131,9 +1135,9 @@ module(
           </template>
         );
 
-        fillIn('[data-test-id="command-input"]', 'a');
+        fillIn('[data-component="command"] [data-part="input"]', 'a');
         await new Promise((r) => setTimeout(r, 20));
-        fillIn('[data-test-id="command-input"]', 'ab');
+        fillIn('[data-component="command"] [data-part="input"]', 'ab');
         await new Promise((r) => setTimeout(r, 20));
 
         assert.strictEqual(resolvers.length, 2, 'both searches were issued');
@@ -1148,6 +1152,98 @@ module(
           renderedKeys(),
           ['button'],
           'the latest query wins, not the last response to arrive'
+        );
+      });
+    });
+
+    module('anatomy', function () {
+      test('command renders its anatomy', async function (assert) {
+        await render(
+          <template>
+            <Command @items={{DOCS}} as |c|>
+              <c.Input />
+              <c.List>
+                <:item as |ctx|>
+                  <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+                </:item>
+              </c.List>
+              <c.Footer />
+            </Command>
+          </template>
+        );
+
+        assert
+          .dom('[data-component="command"]')
+          .hasAttribute('data-part', 'base');
+        assert
+          .dom(
+            '[data-component="command"] [data-part="input-wrapper"] [data-part="input"]'
+          )
+          .exists();
+        assert
+          .dom(
+            '[data-component="command"] [data-part="input-wrapper"] [data-part="input-icon"]'
+          )
+          .exists();
+        assert.dom('[data-component="command"] [data-part="list"]').exists();
+        assert.dom('[data-component="command"] [data-part="footer"]').exists();
+        assert
+          .dom('[data-component="command"] [data-part="footer-hint"]')
+          .exists();
+        assert.dom('[data-component="command"] [data-part="kbd"]').exists();
+        assert.strictEqual(
+          document.querySelectorAll('[data-component="command"]').length,
+          1,
+          'data-component="command" marks the root only, never a part'
+        );
+      });
+
+      test('command renders data-part="empty" and data-part="loading"', async function (assert) {
+        await render(
+          <template>
+            <Command @items={{array}} as |c|>
+              <c.Input />
+              <c.List>
+                <:item as |ctx|>
+                  <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+                </:item>
+              </c.List>
+            </Command>
+          </template>
+        );
+
+        assert.dom('[data-component="command"] [data-part="empty"]').exists();
+      });
+
+      test('command dialog renders its own anatomy, separately from command', async function (assert) {
+        const isOpen = cell(true);
+
+        await render(
+          <template>
+            <CommandDialog @isOpen={{isOpen.current}} @items={{DOCS}} as |c|>
+              <c.Input />
+              <c.List>
+                <:item as |ctx|>
+                  <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+                </:item>
+              </c.List>
+            </CommandDialog>
+          </template>
+        );
+
+        assert
+          .dom('[data-component="command-dialog"]')
+          .hasAttribute('data-part', 'base');
+        assert
+          .dom('[data-component="command-dialog"] [data-part="panel"]')
+          .exists();
+        assert
+          .dom('[data-component="command-dialog"] [data-component="command"]')
+          .exists('the palette itself keeps its own anatomy root');
+        assert.strictEqual(
+          document.querySelectorAll('[data-component="command-dialog"]').length,
+          1,
+          'data-component="command-dialog" marks the root only, never a part'
         );
       });
     });

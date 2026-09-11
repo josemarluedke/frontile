@@ -34,6 +34,8 @@ const Spinner: TOC<{
       viewBox="0 0 16 16"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
+      data-component="spinner"
+      data-part="base"
       class={{styles.spinner class=@class size=@size intent=@intent}}
       ...attributes
     >

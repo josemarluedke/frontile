@@ -301,6 +301,8 @@ class NotificationCard extends Component<NotificationCardSignature> {
   <template>
     {{! template-lint-disable no-inline-styles style-concatenation }}
     <div
+      data-component="notification-card"
+      data-part="base"
       class={{this.classes.base}}
       style={{this.style}}
       role={{this.role}}
@@ -310,10 +312,11 @@ class NotificationCard extends Component<NotificationCardSignature> {
       ...attributes
     >
       {{! measure reads offsetHeight off this inner element, not the outer one above, since the outer carries the collapsed-stack height clamp. See notification-stack.ts. }}
-      <div class={{this.classes.inner}} {{this.measure}}>
+      <div data-part="inner" class={{this.classes.inner}} {{this.measure}}>
         {{#unless @notification.hideIcon}}
           {{#if @notification.isLoading}}
             <Spinner
+              data-part="spinner"
               @class={{this.classes.spinner}}
               @intent={{this.actionIntent}}
               @size="sm"
@@ -321,25 +324,29 @@ class NotificationCard extends Component<NotificationCardSignature> {
             />
           {{else}}
             {{#let this.icon as |Icon|}}
-              <Icon class={{this.classes.icon}} />
+              <Icon data-part="icon" class={{this.classes.icon}} />
             {{/let}}
           {{/if}}
         {{/unless}}
 
-        <div class={{this.classes.content}}>
-          <div class={{this.classes.title}}>{{@notification.title}}</div>
+        <div data-part="content" class={{this.classes.content}}>
+          <div
+            data-part="title"
+            class={{this.classes.title}}
+          >{{@notification.title}}</div>
 
           {{#if @notification.description}}
-            <div class={{this.classes.description}}>
+            <div data-part="description" class={{this.classes.description}}>
               {{@notification.description}}
             </div>
           {{/if}}
         </div>
 
         {{#if @notification.customActions}}
-          <div class={{this.classes.customActions}}>
+          <div data-part="custom-actions" class={{this.classes.customActions}}>
             {{#each @notification.customActions as |customAction index|}}
               <Button
+                data-part="custom-action-button"
                 @size="xs"
                 @intent={{if index "default" this.actionIntent}}
                 @appearance={{if index "minimal" "default"}}
@@ -354,6 +361,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
 
         {{#if @notification.allowClosing}}
           <CloseButton
+            data-part="close-button"
             @onPress={{this.remove}}
             @size="sm"
             @class={{this.classes.closeButton}}

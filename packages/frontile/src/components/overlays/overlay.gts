@@ -548,6 +548,7 @@ class Overlay extends Component<OverlaySignature> {
             {{! Keep this custom modifer by last}}
             {{this.customContentModifier}}
             data-component="overlay"
+            data-part="base"
             tabindex="0"
             ...attributes
           >

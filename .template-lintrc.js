@@ -2,7 +2,14 @@
 
 module.exports = {
   extends: ['recommended'],
+  // `frontile/require-data-part` implements this repo's DOM anatomy
+  // invariant (see .superpowers/sdd/2026-09-10-component-anatomy-attributes)
+  // -- a Node/ESM plugin, loaded via dynamic `import()` by ember-template-lint
+  // even though this config file itself is CommonJS.
+  plugins: ['./lint/frontile-template-lint-plugin.mjs'],
   rules: {
+    'frontile/require-data-part': true,
+    'frontile/require-root-data-component': true,
     // Only the html half. Every template in this repo lives in a .gts/.gjs
     // template tag (there are no .hbs files), so prettier, via
     // prettier-plugin-ember-template-tag, already formats all of them: it
@@ -31,5 +38,17 @@ module.exports = {
     'require-input-label': false,
     'no-positive-tabindex': false,
     'table-groups': false
-  }
+  },
+  overrides: [
+    {
+      // forms-legacy is excluded from the whole anatomy-attributes plan
+      // (see the project CLAUDE.md): it is not being migrated, so its
+      // templates carry no data-component/data-part and never will.
+      files: ['packages/forms-legacy/**'],
+      rules: {
+        'frontile/require-data-part': false,
+        'frontile/require-root-data-component': false
+      }
+    }
+  ]
 };

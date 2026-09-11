@@ -32,6 +32,7 @@ export default class SortButton<T> extends Component<SortButtonSignature<T>> {
   <template>
     <button
       type="button"
+      data-part="sort-button"
       class="{{(this.styles.sortButton)}}"
       data-sort-direction={{@sortDirection}}
       data-sorted="{{@isSorted}}"
@@ -43,12 +44,14 @@ export default class SortButton<T> extends Component<SortButtonSignature<T>> {
       </span>
       {{#if this.showUpIcon}}
         <ChevronUpIcon
+          data-part="sort-icon"
           class={{(this.styles.sortIcon)}}
           data-sorted="{{@isSorted}}"
           aria-hidden="true"
         />
       {{else}}
         <ChevronDownIcon
+          data-part="sort-icon"
           class={{(this.styles.sortIcon)}}
           data-sorted="{{@isSorted}}"
           aria-hidden="true"

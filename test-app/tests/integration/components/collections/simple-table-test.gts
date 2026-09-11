@@ -16,6 +16,56 @@ module(
   function (hooks) {
     setupRenderingTest(hooks);
 
+    test('it renders the anatomy attributes with the wrapper (default)', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable as |t|>
+            <t.Header>
+              <t.Column>ID</t.Column>
+            </t.Header>
+            <t.Body>
+              <t.Row>
+                <t.Cell>1</t.Cell>
+              </t.Row>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      // SimpleTable is its own independently-public component (own doc, own
+      // tests) sharing the `table` theme config with `Table`. When used
+      // standalone, its `<table>` element -- not the wrapper div -- is the
+      // anatomy root: it is the element `...attributes` targets, and the
+      // wrapper div's only child in this configuration. There must be
+      // exactly one `data-component="table"` element.
+      assert.dom('[data-component="table"]').exists({ count: 1 });
+      assert.dom('[data-component="table"]').hasAttribute('data-part', 'table');
+      assert.dom('[data-part="wrapper"]').exists();
+    });
+
+    test('it renders the anatomy attributes without the wrapper', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @hasWrapper={{false}} as |t|>
+            <t.Header>
+              <t.Column>ID</t.Column>
+            </t.Header>
+            <t.Body>
+              <t.Row>
+                <t.Cell>1</t.Cell>
+              </t.Row>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      // With no wrapper, the `<table>` element is both the anatomy root and
+      // the only element rendered at that level.
+      assert.dom('[data-component="table"]').exists({ count: 1 });
+      assert.dom('[data-component="table"]').hasAttribute('data-part', 'table');
+      assert.dom('[data-part="wrapper"]').doesNotExist();
+    });
+
     test('it renders basic table structure with manual composition', async function (assert) {
       const items: TestItem[] = [
         { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
@@ -43,18 +93,18 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-header"]').exists();
-      assert.dom('[data-test-id="table-body"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="thead"]').exists();
+      assert.dom('[data-part="tbody"]').exists();
 
       // Check static columns
-      assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
+      assert.dom('[data-part="th"]').exists({ count: 3 });
 
       // Check rows
-      assert.dom('[data-test-id="table-row"]').exists({ count: 2 });
+      assert.dom('[data-part="tbody"] [data-part="tr"]').exists({ count: 2 });
 
       // Check cells content
-      const cells = document.querySelectorAll('[data-test-id="table-cell"]');
+      const cells = document.querySelectorAll('[data-part="td"]');
       assert.dom(cells[0]).containsText('1');
       assert.dom(cells[1]).containsText('John Doe');
       assert.dom(cells[2]).containsText('john@example.com');
@@ -87,7 +137,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table"]').exists();
+      assert.dom('[data-component="table"]').exists();
       assert.dom('thead.custom-header').exists();
       assert.dom('th.custom-column').exists({ count: 2 });
       assert.dom('th.custom-column').containsText('ID (Custom)');
@@ -117,7 +167,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table"]').exists();
+      assert.dom('[data-component="table"]').exists();
       assert.dom('td.custom-cell').exists({ count: 2 });
       assert.dom('td.custom-cell').containsText('Custom: 1');
     });
@@ -138,7 +188,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table"].custom-table-class').exists();
+      assert.dom('[data-component="table"].custom-table-class').exists();
     });
 
     test('it supports footer composition', async function (assert) {
@@ -160,12 +210,12 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-header"]').exists();
-      assert.dom('[data-test-id="table-body"]').exists();
-      assert.dom('[data-test-id="table-footer"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="thead"]').exists();
+      assert.dom('[data-part="tbody"]').exists();
+      assert.dom('[data-part="tfoot"]').exists();
       assert
-        .dom('[data-test-id="table-footer"] [data-test-id="table-column"]')
+        .dom('[data-part="tfoot"] [data-part="th"]')
         .containsText('Total: 1 item');
     });
 
@@ -186,8 +236,8 @@ module(
       );
 
       // The table should render successfully with size variant
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-cell"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="td"]').exists();
     });
 
     test('it supports layout variants', async function (assert) {
@@ -207,8 +257,8 @@ module(
       );
 
       // The table should render successfully with layout variant
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-cell"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="td"]').exists();
     });
 
     test('it supports striped variant', async function (assert) {
@@ -228,8 +278,8 @@ module(
       );
 
       // The table should render successfully with striped variant
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-cell"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-part="td"]').exists();
     });
 
     test('it supports loading state', async function (assert) {
@@ -249,9 +299,9 @@ module(
       );
 
       // The table should render successfully with loading state
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table"][data-loading="true"]').exists();
-      assert.dom('[data-test-id="table-cell"]').exists();
+      assert.dom('[data-component="table"]').exists();
+      assert.dom('[data-component="table"][data-loading="true"]').exists();
+      assert.dom('[data-part="td"]').exists();
     });
 
     test('it supports loading state with color variants', async function (assert) {
@@ -275,11 +325,9 @@ module(
         );
 
         // The table should render successfully with loading color variant
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table"][data-loading="true"]').exists();
-        assert
-          .dom('[data-test-id="table-cell"]')
-          .containsText(`Content for ${color}`);
+        assert.dom('[data-component="table"]').exists();
+        assert.dom('[data-component="table"][data-loading="true"]').exists();
+        assert.dom('[data-part="td"]').containsText(`Content for ${color}`);
       }
     });
 

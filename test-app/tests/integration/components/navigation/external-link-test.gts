@@ -17,14 +17,14 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="external-link"]').hasTagName('a');
+        assert.dom('[data-component="external-link"]').hasTagName('a');
         assert
-          .dom('[data-test-id="external-link"]')
-          .hasAttribute('data-component', 'external-link');
+          .dom('[data-component="external-link"]')
+          .hasAttribute('data-part', 'base');
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .hasAttribute('href', 'https://frontile.dev');
-        assert.dom('[data-test-id="external-link"]').containsText('Frontile');
+        assert.dom('[data-component="external-link"]').containsText('Frontile');
       });
 
       test('attributes are spread onto the anchor', async function (assert) {
@@ -52,10 +52,10 @@ module(
         );
 
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .hasAttribute('target', '_blank');
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .hasAttribute('rel', 'noopener noreferrer');
       });
 
@@ -72,9 +72,9 @@ module(
         );
 
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .hasAttribute('target', '_self');
-        assert.dom('[data-test-id="external-link"]').hasNoAttribute('rel');
+        assert.dom('[data-component="external-link"]').hasNoAttribute('rel');
       });
 
       // A named target is a new browsing context just as `_blank` is.
@@ -89,7 +89,7 @@ module(
         );
 
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .hasAttribute('rel', 'noopener noreferrer');
       });
 
@@ -105,7 +105,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="external-link"]').hasAttribute('rel', '');
+        assert.dom('[data-component="external-link"]').hasAttribute('rel', '');
       });
 
       test('@rel replaces the default verbatim', async function (assert) {
@@ -119,7 +119,7 @@ module(
         );
 
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .hasAttribute('rel', 'nofollow');
       });
     });
@@ -230,9 +230,7 @@ module(
           </template>
         );
 
-        assert
-          .dom('[data-test-id="external-link-icon"]')
-          .hasAttribute('aria-hidden', 'true');
+        assert.dom('[data-part="icon"]').hasAttribute('aria-hidden', 'true');
       });
     });
 
@@ -244,7 +242,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="external-link-icon"]').exists();
+        assert.dom('[data-part="icon"]').exists();
       });
 
       // Dropping the glyph keeps the target/rel/announcement correctness, for a
@@ -259,7 +257,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="external-link-icon"]').doesNotExist();
+        assert.dom('[data-part="icon"]').doesNotExist();
         assert.dom('[data-test-id="external-link-new-tab-label"]').exists();
       });
 
@@ -298,8 +296,8 @@ module(
         // glyph is expected at passes even if it renders on both sides, or if
         // the opposite end simply holds no element.
         assert.strictEqual(
-          atEnd?.lastElementChild?.getAttribute('data-test-id'),
-          'external-link-icon',
+          atEnd?.lastElementChild?.getAttribute('data-part'),
+          'icon',
           'the glyph is the last element when placed at the end'
         );
         assert.strictEqual(
@@ -308,8 +306,8 @@ module(
           'and is not also at the start'
         );
         assert.strictEqual(
-          atStart?.firstElementChild?.getAttribute('data-test-id'),
-          'external-link-icon',
+          atStart?.firstElementChild?.getAttribute('data-part'),
+          'icon',
           'the glyph is the first element when placed at the start'
         );
         assert.strictEqual(
@@ -337,16 +335,16 @@ module(
         );
 
         assert
-          .dom('[data-test-end] [data-test-id="external-link-icon"]')
+          .dom('[data-test-end] [data-part="icon"]')
           .hasClass('ml-0.5', 'a trailing glyph is spaced on its left');
         assert
-          .dom('[data-test-end] [data-test-id="external-link-icon"]')
+          .dom('[data-test-end] [data-part="icon"]')
           .doesNotHaveClass('mr-0.5');
         assert
-          .dom('[data-test-start] [data-test-id="external-link-icon"]')
+          .dom('[data-test-start] [data-part="icon"]')
           .hasClass('mr-0.5', 'a leading glyph is spaced on its right');
         assert
-          .dom('[data-test-start] [data-test-id="external-link-icon"]')
+          .dom('[data-test-start] [data-part="icon"]')
           .doesNotHaveClass('ml-0.5');
       });
     });
@@ -361,9 +359,9 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="external-link"]').hasClass('inline');
+        assert.dom('[data-component="external-link"]').hasClass('inline');
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .doesNotHaveClass('inline-flex');
       });
 
@@ -374,7 +372,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="external-link"]').hasClass('underline');
+        assert.dom('[data-component="external-link"]').hasClass('underline');
       });
 
       test('@underline="hover" reveals the underline on hover only', async function (assert) {
@@ -388,10 +386,10 @@ module(
         );
 
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .hasClass('hover:underline');
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .doesNotHaveClass('underline');
       });
 
@@ -406,10 +404,10 @@ module(
         );
 
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .hasClass('hover:no-underline');
         assert
-          .dom('[data-test-id="external-link"]')
+          .dom('[data-component="external-link"]')
           .doesNotHaveClass('underline');
       });
 
@@ -424,8 +422,30 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="external-link"]').hasClass('text-primary');
-        assert.dom('[data-test-id="external-link-icon"]').hasClass('size-4');
+        assert.dom('[data-component="external-link"]').hasClass('text-primary');
+        assert.dom('[data-part="icon"]').hasClass('size-4');
+      });
+    });
+
+    module('anatomy', function () {
+      test('renders data-component="external-link" on the root only, with data-part on every slot', async function (assert) {
+        await render(
+          <template>
+            <ExternalLink @href="https://frontile.dev">Frontile</ExternalLink>
+          </template>
+        );
+
+        assert
+          .dom('[data-component="external-link"]')
+          .hasAttribute('data-part', 'base');
+        assert
+          .dom('[data-component="external-link"] [data-part="icon"]')
+          .exists();
+        assert.strictEqual(
+          document.querySelectorAll('[data-component="external-link"]').length,
+          1,
+          'data-component="external-link" marks the root only, never a part'
+        );
       });
     });
   }

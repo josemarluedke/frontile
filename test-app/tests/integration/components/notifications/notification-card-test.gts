@@ -10,6 +10,7 @@ import sinon from 'sinon';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
+import { ownParts } from 'frontile/test-support';
 
 // Captured before the `registerCustomStyles` call below replaces
 // `notificationCard` for the rest of this module — `notificationCard` itself
@@ -648,6 +649,81 @@ module(
         `expected the fade duration to be passed through as the ` +
           `--frontile-toast-fade custom property. Got: "${style}"`
       );
+    });
+
+    test('renders data-component="notification-card" on the root only, with data-part on every slot', async function (assert) {
+      notification.current = new Notification({}, 'My message', {
+        description: 'My description',
+        customActions: [{ label: 'Undo', onClick: () => {} }]
+      });
+
+      await render(template);
+
+      const root = document.querySelector(
+        '[data-component="notification-card"]'
+      ) as Element;
+      assert.ok(root, 'the notification-card root renders');
+      assert.strictEqual(root.getAttribute('data-part'), 'base');
+
+      assert
+        .dom('[data-component="notification-card"] [data-part="inner"]')
+        .exists();
+      // The default close button also renders here (allowClosing defaults
+      // true), and its internal fallback svg carries its own
+      // `data-part="icon"` -- so the card's own `icon` part must be
+      // resolved via `ownParts`, not a plain descendant selector, which
+      // would also match the close button's unrelated icon.
+      assert.strictEqual(ownParts(root, 'icon').length, 1);
+      assert
+        .dom('[data-component="notification-card"] [data-part="content"]')
+        .exists();
+      assert
+        .dom('[data-component="notification-card"] [data-part="title"]')
+        .exists();
+      assert
+        .dom('[data-component="notification-card"] [data-part="description"]')
+        .exists();
+      assert
+        .dom(
+          '[data-component="notification-card"] [data-part="custom-actions"]'
+        )
+        .exists();
+      assert
+        .dom(
+          '[data-component="notification-card"] [data-part="custom-action-button"]'
+        )
+        .exists();
+      assert
+        .dom('[data-component="notification-card"] [data-part="close-button"]')
+        .exists();
+
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="notification-card"]')
+          .length,
+        1,
+        'data-component="notification-card" marks the root only, never a part'
+      );
+    });
+
+    test('renders data-part="spinner" while loading', async function (assert) {
+      notification.current = new Notification({}, 'Saving…', {
+        isLoading: true
+      });
+
+      await render(template);
+
+      const root = document.querySelector(
+        '[data-component="notification-card"]'
+      ) as Element;
+      assert.strictEqual(ownParts(root, 'spinner').length, 1);
+      // The spinner and icon slots are mutually exclusive: while loading,
+      // the card's own icon part does not render at all. This must check
+      // the card's *own* `icon` part, not just "no `[data-part="icon"]`
+      // descendant" — `CloseButton` (rendered when the notification is
+      // closable) has its own `icon` slot on its internal fallback `<svg>`,
+      // and a plain `[data-component="notification-card"] [data-part="icon"]`
+      // descendant selector would also match that, unrelated element.
+      assert.strictEqual(ownParts(root, 'icon').length, 0);
     });
   }
 );

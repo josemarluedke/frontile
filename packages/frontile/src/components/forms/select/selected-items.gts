@@ -131,13 +131,13 @@ interface SelectedChipsSignature {
 const SelectedChips: TOC<SelectedChipsSignature> = <template>
   <div
     {{@containerRef}}
-    data-test-id="selected-chips"
+    data-part="chips-container"
     class={{@classes.chipsContainer class=@userClasses.chipsContainer}}
     ...attributes
   >
     {{#each @items key="key" as |item|}}
       <Chip
-        data-test-id="selected-chip"
+        data-part="chip"
         data-key={{item.key}}
         @class={{@classes.chip class=@userClasses.chip}}
         @appearance={{@chipOptions.appearance}}

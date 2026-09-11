@@ -240,6 +240,8 @@ export default class Modal extends Component<ModalSignature> {
       @preventAutoFocus={{@preventAutoFocus}}
     >
       <div
+        data-component="modal"
+        data-part="base"
         class={{this.classes.base class=@classes.base}}
         tabindex="0"
         role="dialog"
@@ -250,6 +252,7 @@ export default class Modal extends Component<ModalSignature> {
       >
         {{#if this.showCloseButton}}
           <CloseButton
+            data-part="close-button"
             @onPress={{@onClose}}
             @size={{@closeButtonSize}}
             @class={{this.classes.closeButton class=@classes.closeButton}}

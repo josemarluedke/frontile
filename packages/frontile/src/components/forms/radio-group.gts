@@ -74,10 +74,15 @@ class RadioGroup<T extends string | number | boolean> extends Component<
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
       @class={{this.classes.base class=@classes.base}}
+      data-component="radio-group"
+      data-part="base"
       ...attributes
       as |c|
     >
-      <c.Label @class={{this.classes.label class=@classes.label}}>
+      <c.Label
+        @class={{this.classes.label class=@classes.label}}
+        data-part="label"
+      >
         {{@label}}
       </c.Label>
 
@@ -87,6 +92,7 @@ class RadioGroup<T extends string | number | boolean> extends Component<
 
       <div
         class={{this.classes.optionsContainer class=@classes.optionsContainer}}
+        data-part="options-container"
         data-orientation={{if @orientation @orientation "vertical"}}
       >
         {{! @glint-nocheck: Radio has a type param, glint cannt handle that with WithboundArgs}}

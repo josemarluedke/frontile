@@ -28,6 +28,7 @@ them is optional for the whole 0.18 line.
 | Filtered lists are ranked | `Autocomplete`/`Select` list the closest match first instead of source order | Visual only — nothing to fix |
 | `text-body-pico`/`-nano`/`-micro` | Those elements render unstyled | **Silently** |
 | Body text-scale font sizes corrected | Body text (`xs` through `xl`) renders larger than intended | Visual only — nothing to fix |
+| `data-fr-*` / mismatched `data-component` / most `data-test-id` selectors | Those selectors stop matching | **Silently**, if you select Frontile-rendered elements yourself |
 
 **The silent ones are the reason to take this in order.** A class Tailwind can't
 resolve produces no error, no warning, and no CSS — the element just renders
@@ -146,7 +147,25 @@ for the full section.
 **Impact:** visual only. **Time:** none required; a few minutes if you want to
 opt out.
 
-### 5. Body typography scale corrected
+### 5. DOM anatomy attributes — required only if you select internals
+
+Every component now carries a stable `data-component`/`data-part` DOM
+anatomy. The old `data-fr-*` attributes are gone, several mismatched
+`data-component` values were corrected, and most `data-test-id` attributes
+that existed only as anatomy selectors were replaced. This only affects you
+if your own CSS, `querySelector` calls, or tests select Frontile-rendered
+elements directly — the public component API (`@classes`, yielded blocks,
+etc.) is unchanged.
+
+**Impact:** required only if you select internals directly (silent — the
+selector just stops matching); otherwise none. **Time:** a few minutes to a
+couple hours, depending on how many selectors your app has.
+
+**See:** [DOM Anatomy Attributes Migration](./anatomy-attributes.md),
+[Customizing Component Styles](../../theming/component-styles.md) for the
+ongoing contract.
+
+### 6. Body typography scale corrected
 
 The `--text-body-*` tokens were mapped to the wrong steps of the modular scale,
 so `xs` through `xl` rendered larger than the design spec (e.g. `md` shipped at
@@ -185,6 +204,9 @@ for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
 - [ ] Migrated off `@frontile/forms-legacy` / `@frontile/changeset-form`, if used (required before 0.19)
 - [ ] Looked at any multi-selects — they now render chips and are taller
 - [ ] Replaced `text-body-pico`/`-nano`/`-micro` with `text-body-4xs`/`-3xs`/`-2xs`
+- [ ] Replaced any `data-fr-*`, mismatched `data-component`, or retired
+      `data-test-id` selectors with the new `data-component`/`data-part`
+      attributes (see [DOM Anatomy Attributes Migration](./anatomy-attributes.md))
 
 ## New projects
 

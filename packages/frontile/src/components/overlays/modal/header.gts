@@ -43,6 +43,7 @@ export default class ModalHeader extends Component<ModalHeaderSignature> {
   <template>
     <div
       id={{@labelledById}}
+      data-part="header"
       class={{twMerge @classFromParent @class}}
       {{this.register}}
       ...attributes

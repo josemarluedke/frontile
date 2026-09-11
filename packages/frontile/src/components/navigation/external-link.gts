@@ -39,7 +39,7 @@ const Glyph: TOC<{
   Args: { class: string; hasCustomIcon: boolean };
   Blocks: { default: [] };
 }> = <template>
-  <span class={{@class}} aria-hidden="true" data-test-id="external-link-icon">
+  <span class={{@class}} aria-hidden="true" data-part="icon">
     {{! The has-block keyword cannot be read from a getter, so the caller
         decides and passes the answer in. Whitespace here is free: flex layout
         discards whitespace-only children. }}
@@ -203,8 +203,8 @@ class ExternalLink extends Component<ExternalLinkSignature> {
       target={{this.target}}
       rel={{this.rel}}
       class={{this.classNames.base}}
-      data-test-id="external-link"
       data-component="external-link"
+      data-part="base"
       ...attributes
     >{{#if this.iconAtStart}}<Glyph @class={{this.classNames.icon}} @hasCustomIcon={{has-block "icon"}}>{{yield to="icon"}}</Glyph>{{/if}}{{yield}}{{#if this.newTabLabel}}<span class="sr-only" data-test-id="external-link-new-tab-label"> {{this.newTabLabel}}</span>{{/if}}{{#if this.iconAtEnd}}<Glyph @class={{this.classNames.icon}} @hasCustomIcon={{has-block "icon"}}>{{yield to="icon"}}</Glyph>{{/if}}</a>
   </template>

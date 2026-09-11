@@ -21,6 +21,7 @@ export default class DrawerBody extends Component<DrawerBodySignature> {
   <template>
     <div
       data-drawer-body
+      data-part="body"
       class={{twMerge @classFromParent @class}}
       ...attributes
     >
