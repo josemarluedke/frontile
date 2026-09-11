@@ -2,11 +2,11 @@ import { Rule } from 'ember-template-lint';
 
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
-/** `{{this.styles.trigger …}}` / `{{classNames.startContent}}` → the slot name. */
-function slotFromClassAttr(node) {
-  const attr = node.attributes.find((a) => a.name === 'class');
-  if (!attr || attr.value.type !== 'MustacheStatement') return null;
-  const path = attr.value.path;
+/** `this.styles.trigger` / `(this.styles.trigger)` → `"trigger"`, else `null`. */
+function slotFromPath(path) {
+  // `{{(this.styles.sortButton)}}` wraps the real PathExpression in a
+  // SubExpression; unwrap it before reading `.parts`.
+  if (path && path.type === 'SubExpression') path = path.path;
   if (!path || path.type !== 'PathExpression') return null;
   const parts = path.parts ?? [];
   const last = parts.at(-1);
@@ -14,6 +14,35 @@ function slotFromClassAttr(node) {
   if (!last || !owner) return null;
   if (!['styles', 'classNames', 'classes'].includes(owner)) return null;
   return last;
+}
+
+/** `{{this.styles.trigger …}}` / `{{classNames.startContent}}` → the slot name. */
+function slotFromClassAttr(node) {
+  const attr = node.attributes.find((a) => a.name === 'class');
+  if (!attr) return null;
+  const value = attr.value;
+
+  if (value.type === 'MustacheStatement') {
+    return slotFromPath(value.path);
+  }
+
+  // A static class token combined with the slot mustache
+  // (`class="group/segmented {{this.styles.base}}"`), or a single mustache
+  // with no adjoining text (`class="{{(this.styles.sortButton)}}"`), both
+  // parse as a ConcatStatement rather than a bare MustacheStatement.
+  if (value.type === 'ConcatStatement') {
+    // Ruling: if more than one part renders a slot, use the FIRST one in
+    // source order and ignore the rest. A single element declaring two
+    // slots at once isn't a supported pattern here; taking the first
+    // deterministically avoids double-reporting on the same element.
+    for (const part of value.parts) {
+      if (part.type !== 'MustacheStatement') continue;
+      const slot = slotFromPath(part.path);
+      if (slot) return slot;
+    }
+  }
+
+  return null;
 }
 
 const attrValue = (node, name) => {

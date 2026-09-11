@@ -76,3 +76,61 @@ test('flags a data-test-id duplicating data-part', async () => {
     ['data-test-id="trigger" duplicates data-part="trigger"; remove it']
   );
 });
+
+// ConcatStatement class attributes: a static class token combined with the slot
+// mustache (`class="group/segmented {{this.styles.base}}"`) parses as a
+// ConcatStatement, not a MustacheStatement. These cases previously fell through
+// `slotFromClassAttr`'s type check and were silently skipped.
+
+test('flags a concat class attribute missing data-part', async () => {
+  assert.deepEqual(
+    await lint('<div class="group/segmented {{this.styles.base}}"></div>'),
+    ['Element renders slot "base" but is missing data-part="base"']
+  );
+});
+
+test('accepts a concat class attribute with the correct data-part', async () => {
+  assert.deepEqual(
+    await lint('<div data-part="base" class="group/segmented {{this.styles.base}}"></div>'),
+    []
+  );
+});
+
+test('flags a concat class attribute with a hash-argument mustache missing data-part', async () => {
+  assert.deepEqual(
+    await lint('<div class="group/segmented {{this.styles.base class=@classes.base}}"></div>'),
+    ['Element renders slot "base" but is missing data-part="base"']
+  );
+});
+
+// SubExpression form: `class="{{(this.styles.sortButton)}}"` still parses as a
+// ConcatStatement (with a single MustacheStatement part) whose mustache path is
+// a SubExpression wrapping the real PathExpression, rather than a PathExpression
+// directly.
+
+test('flags a SubExpression-wrapped class attribute missing data-part', async () => {
+  assert.deepEqual(
+    await lint('<div class="{{(this.styles.sortButton)}}"></div>'),
+    ['Element renders slot "sortButton" but is missing data-part="sort-button"']
+  );
+});
+
+test('accepts a SubExpression-wrapped class attribute with the correct data-part', async () => {
+  assert.deepEqual(
+    await lint('<div data-part="sort-button" class="{{(this.styles.sortButton)}}"></div>'),
+    []
+  );
+});
+
+// Ruling: when a concat contains more than one slot mustache, the rule uses the
+// FIRST one in source order and ignores the rest. A single element declaring two
+// slots at once is not a supported pattern in this codebase; picking the first
+// deterministically avoids double-reporting and matches "the primary style call
+// comes first" convention seen in existing templates.
+
+test('uses the first slot mustache when a concat contains more than one', async () => {
+  assert.deepEqual(
+    await lint('<div class="{{this.styles.base}} {{this.styles.icon}}"></div>'),
+    ['Element renders slot "base" but is missing data-part="base"']
+  );
+});
