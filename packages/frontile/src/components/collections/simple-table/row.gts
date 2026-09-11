@@ -51,12 +51,7 @@ class SimpleTableRow extends Component<SimpleTableRowSignature> {
   }
 
   <template>
-    <tr
-      data-component="table"
-      data-part="tr"
-      class={{this.classNames}}
-      ...attributes
-    >
+    <tr data-part="tr" class={{this.classNames}} ...attributes>
       {{yield
         (hash
           Cell=(component SimpleTableCell styleFns=this.styles classes=@classes)

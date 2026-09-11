@@ -39,13 +39,7 @@ class SimpleTableColumn extends Component<SimpleTableColumnSignature> {
   }
 
   <template>
-    <th
-      data-component="table"
-      data-part="th"
-      scope="col"
-      class={{this.classNames}}
-      ...attributes
-    >
+    <th data-part="th" scope="col" class={{this.classNames}} ...attributes>
       {{yield}}
     </th>
   </template>

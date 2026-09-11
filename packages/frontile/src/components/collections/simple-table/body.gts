@@ -43,12 +43,7 @@ class SimpleTableBody extends Component<SimpleTableBodySignature> {
   }
 
   <template>
-    <tbody
-      data-component="table"
-      data-part="tbody"
-      class={{this.classNames}}
-      ...attributes
-    >
+    <tbody data-part="tbody" class={{this.classNames}} ...attributes>
       {{yield
         (hash
           Row=(component SimpleTableRow styleFns=this.styles classes=@classes)

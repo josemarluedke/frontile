@@ -231,11 +231,25 @@ function extractAttrOccurrences(src, attrName) {
  * the second config would be misattributed. No such case exists as of this
  * writing (nothing is migrated yet); flagged here for whoever hits it.
  */
+// Directories whose own (kebab-cased) name doesn't match any theme config,
+// but whose files still belong to one for anatomy-attribution purposes.
+// `simple-table/` renders the same `table` theme config as `table/` --
+// SimpleTable is split into its own directory purely for code organization
+// (and is independently public: its own doc, its own test file), not
+// because it is a different anatomy identity. Its non-root part files
+// (header/footer/row/body/column/cell) correctly carry no `data-component`
+// of their own (only their root, `simple-table/index.gts`'s `<table>`,
+// conditionally does), so they rely entirely on this directory fallback.
+const DIRECTORY_OWNER_ALIASES = {
+  'simple-table': 'table'
+};
+
 function findOwnerByDirectory(file, componentsDir, knownConfigNames) {
   let dir = dirname(file);
   for (;;) {
     const candidate = kebab(basename(dir));
-    if (knownConfigNames.has(candidate)) return candidate;
+    const resolved = DIRECTORY_OWNER_ALIASES[candidate] ?? candidate;
+    if (knownConfigNames.has(resolved)) return resolved;
     if (dir === componentsDir || dir === dirname(dir)) return null;
     dir = dirname(dir);
   }

@@ -95,11 +95,19 @@ module(
         <template><Table @columns={{columns}} @items={{items}} /></template>
       );
 
-      // The root of the anatomy is the `<table>` element: it is also the
-      // component's `table` slot (an HTML-named slot per this component's
-      // convention), so `data-part` reads "table" here rather than the
-      // generic "base" other components use for their root.
-      assert.dom('[data-component="table"]').hasAttribute('data-part', 'table');
+      // Table's real, outermost rendered element is the `<div data-part="wrapper">`
+      // (it also encloses the optional `toolbar` slot, a sibling of the
+      // `<table>` itself) -- so that is the component's anatomy root and the
+      // only element that may carry `data-component="table"`. There must be
+      // exactly one such element: the `<table>` tag underneath (rendered by
+      // the composed SimpleTable) is a part of this same "table" instance,
+      // not a second root, and must carry `data-part="table"` only.
+      assert.dom('[data-component="table"]').exists({ count: 1 });
+      assert
+        .dom('[data-component="table"]')
+        .hasAttribute('data-part', 'wrapper');
+      assert.dom('[data-part="table"]').exists();
+      assert.dom('[data-part="table"]').doesNotHaveAttribute('data-component');
       assert.dom('[data-part="wrapper"]').exists();
       assert.dom('[data-part="thead"]').exists();
       assert.dom('[data-part="tbody"]').exists();
@@ -986,7 +994,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-component="table"]').hasClass('custom-table-class');
+        assert.dom('[data-part="table"]').hasClass('custom-table-class');
       });
 
       test('it applies classes to all table elements', async function (assert) {
@@ -1023,7 +1031,7 @@ module(
         assert.dom('[data-part="wrapper"].custom-wrapper-class').exists();
 
         // Check table class
-        assert.dom('[data-component="table"].custom-table-class').exists();
+        assert.dom('[data-part="table"].custom-table-class').exists();
 
         // Check thead class
         assert.dom('[data-part="thead"].custom-thead-class').exists();
@@ -1074,9 +1082,7 @@ module(
         );
 
         // Check multiple string classes are applied
-        assert
-          .dom('[data-component="table"].table-class-1.table-class-2')
-          .exists();
+        assert.dom('[data-part="table"].table-class-1.table-class-2').exists();
         assert.dom('[data-part="thead"].thead-class-1.thead-class-2').exists();
         assert.dom('[data-part="tbody"].tbody-class-1.tbody-class-2').exists();
         assert.dom('[data-part="thead"] tr.tr-class-1.tr-class-2').exists();
@@ -1108,9 +1114,7 @@ module(
         );
 
         // Check array classes are applied
-        assert
-          .dom('[data-component="table"].table-array-1.table-array-2')
-          .exists();
+        assert.dom('[data-part="table"].table-array-1.table-array-2').exists();
         assert.dom('[data-part="thead"].thead-array-1.thead-array-2').exists();
         assert.dom('[data-part="tbody"].tbody-array-1.tbody-array-2').exists();
         assert.dom('[data-part="thead"] tr.tr-array-1.tr-array-2').exists();
@@ -1223,7 +1227,7 @@ module(
         );
 
         // Check that custom classes are applied alongside default theme classes
-        const tableElement = document.querySelector('[data-component="table"]');
+        const tableElement = document.querySelector('[data-part="table"]');
         const theadElement = document.querySelector('[data-part="thead"]');
 
         assert.dom(tableElement).hasClass('custom-table');
@@ -1259,9 +1263,7 @@ module(
         );
 
         // Only valid classes should be applied
-        assert
-          .dom('[data-component="table"].valid-class.another-valid')
-          .exists();
+        assert.dom('[data-part="table"].valid-class.another-valid').exists();
         assert.dom('[data-part="thead"].only-valid-class').exists();
       });
 
@@ -2460,7 +2462,7 @@ module(
 
         // Table should render with loading state
         assert.dom('[data-component="table"]').exists();
-        assert.dom('[data-component="table"][data-loading="true"]').exists();
+        assert.dom('[data-part="table"][data-loading="true"]').exists();
         assert.dom('[data-part="td"]').exists();
       });
 
@@ -2499,7 +2501,7 @@ module(
 
           // Table should render with loading state and color variant
           assert.dom('[data-component="table"]').exists();
-          assert.dom('[data-component="table"][data-loading="true"]').exists();
+          assert.dom('[data-part="table"][data-loading="true"]').exists();
           assert.dom('[data-part="td"]').exists();
         }
       });
@@ -2530,7 +2532,7 @@ module(
 
         // Table should not have loading state
         assert.dom('[data-component="table"]').exists();
-        assert.dom('[data-component="table"][data-loading="false"]').exists();
+        assert.dom('[data-part="table"][data-loading="false"]').exists();
         assert.dom('[data-part="td"]').exists();
       });
 
@@ -2559,7 +2561,7 @@ module(
 
         // Table should render with custom loading indicator inside a table row/cell
         assert.dom('[data-component="table"]').exists();
-        assert.dom('[data-component="table"][data-loading="true"]').exists();
+        assert.dom('[data-part="table"][data-loading="true"]').exists();
         assert.dom('[data-test-id="table-loading-row"]').exists();
         assert.dom('[data-test-id="table-loading-cell"]').exists();
         assert.dom('[data-test-id="custom-loading"]').exists();

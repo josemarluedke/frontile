@@ -16,6 +16,56 @@ module(
   function (hooks) {
     setupRenderingTest(hooks);
 
+    test('it renders the anatomy attributes with the wrapper (default)', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable as |t|>
+            <t.Header>
+              <t.Column>ID</t.Column>
+            </t.Header>
+            <t.Body>
+              <t.Row>
+                <t.Cell>1</t.Cell>
+              </t.Row>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      // SimpleTable is its own independently-public component (own doc, own
+      // tests) sharing the `table` theme config with `Table`. When used
+      // standalone, its `<table>` element -- not the wrapper div -- is the
+      // anatomy root: it is the element `...attributes` targets, and the
+      // wrapper div's only child in this configuration. There must be
+      // exactly one `data-component="table"` element.
+      assert.dom('[data-component="table"]').exists({ count: 1 });
+      assert.dom('[data-component="table"]').hasAttribute('data-part', 'table');
+      assert.dom('[data-part="wrapper"]').exists();
+    });
+
+    test('it renders the anatomy attributes without the wrapper', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @hasWrapper={{false}} as |t|>
+            <t.Header>
+              <t.Column>ID</t.Column>
+            </t.Header>
+            <t.Body>
+              <t.Row>
+                <t.Cell>1</t.Cell>
+              </t.Row>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      // With no wrapper, the `<table>` element is both the anatomy root and
+      // the only element rendered at that level.
+      assert.dom('[data-component="table"]').exists({ count: 1 });
+      assert.dom('[data-component="table"]').hasAttribute('data-part', 'table');
+      assert.dom('[data-part="wrapper"]').doesNotExist();
+    });
+
     test('it renders basic table structure with manual composition', async function (assert) {
       const items: TestItem[] = [
         { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },

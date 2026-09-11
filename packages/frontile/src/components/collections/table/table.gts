@@ -684,6 +684,7 @@ class Table<
 
   <template>
     <div
+      data-component="table"
       data-part="wrapper"
       class={{this.wrapperClassNames}}
       {{calculateHeaderHeight @isStickyHeader}}
@@ -709,6 +710,7 @@ class Table<
         @isStriped={{@isStriped}}
         @isScrollable={{@isScrollable}}
         @hasWrapper={{false}}
+        @isRoot={{false}}
         @isLoading={{@isLoading}}
         @loadingColor={{@loadingColor}}
         @selectionColor={{@selectionColor}}
