@@ -39,6 +39,7 @@ class TabsPanel<T> extends Component<TabsPanelSignature<T>> {
     {{#if this.isSelected}}
       <div
         role="tabpanel"
+        data-part="panel"
         id={{this.id}}
         aria-labelledby={{this.tabId}}
         tabindex="0"

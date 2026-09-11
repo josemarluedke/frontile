@@ -431,5 +431,44 @@ module(
 
       assert.ok(find('nav ul'), 'the controls sit in a list');
     });
+
+    test('renders data-component="pagination" on the root only, with data-part on every slot', async function (assert) {
+      await render(
+        <template>
+          <Pagination @total={{120}} @defaultPage={{2}} @showEdges={{true}}>
+            <:summary as |s|>{{s.from}}-{{s.to}}</:summary>
+          </Pagination>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="pagination"]')
+        .hasAttribute('data-part', 'base');
+      assert
+        .dom('[data-component="pagination"] [data-part="summary"]')
+        .exists();
+      assert.dom('[data-component="pagination"] [data-part="list"]').exists();
+      assert.dom('[data-component="pagination"] [data-part="item"]').exists();
+      assert.dom('[data-component="pagination"] [data-part="page"]').exists();
+      assert.dom('[data-component="pagination"] [data-part="prev"]').exists();
+      assert.dom('[data-component="pagination"] [data-part="next"]').exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="pagination"]').length,
+        1,
+        'data-component="pagination" marks the root only, never a part'
+      );
+    });
+
+    test('renders data-part="ellipsis" on the gap marker', async function (assert) {
+      await render(
+        <template>
+          <Pagination @total={{200}} @defaultPage={{10}} @siblingCount={{0}} />
+        </template>
+      );
+
+      assert
+        .dom('[data-component="pagination"] [data-part="ellipsis"]')
+        .exists();
+    });
   }
 );

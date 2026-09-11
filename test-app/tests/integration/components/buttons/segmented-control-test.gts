@@ -2196,5 +2196,52 @@ module(
         `the hover rule is scoped away from selected and disabled items (${hoverClass})`
       );
     });
+
+    test('renders data-component="segmented-control" on the root only, with data-part on every slot', async function (assert) {
+      const value = cell('week');
+
+      await render(
+        <template>
+          <SegmentedControl @value={{value.current}} as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="segmented-control"]')
+        .hasAttribute('data-part', 'base');
+      assert
+        .dom('[data-component="segmented-control"] [data-part="indicator"]')
+        .exists();
+      assert
+        .dom('[data-component="segmented-control"] [data-part="item"]')
+        .exists({ count: 2 });
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="segmented-control"]')
+          .length,
+        1,
+        'data-component="segmented-control" marks the root only, never a part'
+      );
+    });
+
+    test('renders data-part="item" on the label in form mode', async function (assert) {
+      const value = cell('week');
+
+      await render(
+        <template>
+          <SegmentedControl @value={{value.current}} @name="range" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="segmented-control"] [data-part="item"]')
+        .exists({ count: 2 });
+      assert.dom('[data-part="item"]').hasTagName('label');
+    });
   }
 );

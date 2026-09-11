@@ -89,6 +89,7 @@ class SegmentedControlItem<T> extends Component<
           behaviour for a same-named group, so RovingFocus deliberately stands
           down here rather than fighting the browser for control. }}
       <label
+        data-part="item"
         class="{{@context.itemClass}} {{@class}}"
         data-selected="{{this.isSelected}}"
         data-disabled="{{this.isDisabled}}"
@@ -111,6 +112,7 @@ class SegmentedControlItem<T> extends Component<
       <button
         type="button"
         role="radio"
+        data-part="item"
         aria-checked="{{this.isSelected}}"
         disabled={{this.isDisabled}}
         class="{{@context.itemClass}} {{@class}}"

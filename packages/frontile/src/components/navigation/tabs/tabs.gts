@@ -129,6 +129,7 @@ interface TabsListSignature<T> {
 class TabsList<T> extends Component<TabsListSignature<T>> {
   <template>
     <div
+      data-part="list"
       role="tablist"
       aria-orientation={{@context.orientation}}
       aria-label={{@label}}
@@ -136,7 +137,11 @@ class TabsList<T> extends Component<TabsListSignature<T>> {
       {{@context.indicator.setupContainer}}
       ...attributes
     >
-      <span aria-hidden="true" class={{@context.indicatorClass}}></span>
+      <span
+        data-part="indicator"
+        aria-hidden="true"
+        class={{@context.indicatorClass}}
+      ></span>
       {{yield}}
     </div>
   </template>
@@ -276,7 +281,12 @@ class Tabs<T> extends Component<TabsSignature<T>> {
   }
 
   <template>
-    <div class={{this.styles.base class=@classes.base}} ...attributes>
+    <div
+      data-component="tabs"
+      data-part="base"
+      class={{this.styles.base class=@classes.base}}
+      ...attributes
+    >
       {{#let
         (component TabsList context=this.context)
         (component TabsTab context=this.context)

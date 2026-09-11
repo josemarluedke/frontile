@@ -790,5 +790,33 @@ module(
           `tab's offsetTop (${secondTab.offsetTop}px)`
       );
     });
+
+    test('renders data-component="tabs" on the root only, with data-part on every slot', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+            <t.Panel @value="account">Account panel</t.Panel>
+            <t.Panel @value="security">Security panel</t.Panel>
+          </Tabs>
+        </template>
+      );
+
+      assert.dom('[data-component="tabs"]').hasAttribute('data-part', 'base');
+      assert.dom('[data-component="tabs"] [data-part="list"]').exists();
+      assert.dom('[data-component="tabs"] [data-part="indicator"]').exists();
+      assert
+        .dom('[data-component="tabs"] [data-part="tab"]')
+        .exists({ count: 2 });
+      assert.dom('[data-component="tabs"] [data-part="panel"]').exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="tabs"]').length,
+        1,
+        'data-component="tabs" marks the root only, never a part'
+      );
+    });
   }
 );

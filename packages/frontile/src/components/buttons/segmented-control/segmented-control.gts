@@ -289,6 +289,8 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
 
   <template>
     <div
+      data-component="segmented-control"
+      data-part="base"
       role="radiogroup"
       aria-orientation={{this.orientation}}
       aria-disabled={{if @isDisabled "true"}}
@@ -297,6 +299,7 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
       ...attributes
     >
       <span
+        data-part="indicator"
         aria-hidden="true"
         class={{this.styles.indicator class=@classes.indicator}}
       ></span>

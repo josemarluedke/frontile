@@ -69,6 +69,7 @@ class TabsTab<T> extends Component<TabsTabSignature<T>> {
     <button
       type="button"
       role="tab"
+      data-part="tab"
       id={{this.id}}
       aria-selected="{{this.isSelected}}"
       aria-controls={{this.panelId}}
