@@ -1348,20 +1348,22 @@ module(
 
         // Should show all columns in the dropdown menu when opened
         await click('[data-test-id="dropdown-trigger"]');
-        assert.dom('[data-test-id="listbox"]').exists();
-        assert.dom('[data-test-id="listbox-item"][data-key="id"]').exists();
-        assert.dom('[data-test-id="listbox-item"][data-key="name"]').exists();
-        assert.dom('[data-test-id="listbox-item"][data-key="email"]').exists();
+        assert.dom('[data-component="listbox"]').exists();
+        assert.dom('[data-component="listbox-item"][data-key="id"]').exists();
+        assert.dom('[data-component="listbox-item"][data-key="name"]').exists();
+        assert
+          .dom('[data-component="listbox-item"][data-key="email"]')
+          .exists();
 
         // Column names should be displayed
         assert
-          .dom('[data-test-id="listbox-item"][data-key="id"]')
+          .dom('[data-component="listbox-item"][data-key="id"]')
           .containsText('ID');
         assert
-          .dom('[data-test-id="listbox-item"][data-key="name"]')
+          .dom('[data-component="listbox-item"][data-key="name"]')
           .containsText('Name');
         assert
-          .dom('[data-test-id="listbox-item"][data-key="email"]')
+          .dom('[data-component="listbox-item"][data-key="email"]')
           .containsText('Email');
       });
 
@@ -1455,22 +1457,22 @@ module(
         // All items should be selected initially (showing selected icons)
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="id"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="id"] [data-part="selected-icon"]'
           )
           .exists('ID should show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="name"] [data-part="selected-icon"]'
           )
           .exists('Name should show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="email"] [data-part="selected-icon"]'
           )
           .exists('Email should show selected icon');
 
         // Hide the name column
-        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
 
         // Name column should be hidden from the table
         assert
@@ -1491,12 +1493,12 @@ module(
         // The menu item should not show selected icon
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="name"] [data-part="selected-icon"]'
           )
           .doesNotExist('Name should not show selected icon');
 
         // Show the column again
-        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
 
         // Name column should be visible again
         assert
@@ -1507,7 +1509,7 @@ module(
           .exists('Name data should be visible again');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="name"] [data-part="selected-icon"]'
           )
           .exists('Name should show selected icon again');
       });
@@ -1544,8 +1546,8 @@ module(
 
         // Open the dropdown and hide multiple columns
         await click('[data-test-id="dropdown-trigger"]');
-        await click('[data-test-id="listbox-item"][data-key="name"]');
-        await click('[data-test-id="listbox-item"][data-key="role"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="role"]');
 
         // Only ID and Email columns should be visible
         assert.dom('[data-part="th"][data-key="id"]').exists();
@@ -1559,22 +1561,22 @@ module(
         // Check menu item selection states
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="id"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="id"] [data-part="selected-icon"]'
           )
           .exists('ID should show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="name"] [data-part="selected-icon"]'
           )
           .doesNotExist('Name should not show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="email"] [data-part="selected-icon"]'
           )
           .exists('Email should show selected icon');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="role"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="role"] [data-part="selected-icon"]'
           )
           .doesNotExist('Role should not show selected icon');
       });
@@ -1615,12 +1617,12 @@ module(
         await click('[data-test-id="dropdown-trigger"]');
         assert
           .dom(
-            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+            '[data-component="listbox-item"][data-key="email"] [data-part="selected-icon"]'
           )
           .doesNotExist('Email should not show selected icon in dropdown');
 
         // Show the email column
-        await click('[data-test-id="listbox-item"][data-key="email"]');
+        await click('[data-component="listbox-item"][data-key="email"]');
 
         // Email column should now be visible
         assert.dom('[data-part="th"]').exists({ count: 3 });
@@ -1673,7 +1675,7 @@ module(
 
         // Toggle columns and verify toolbar remains intact
         await click('[data-test-id="dropdown-trigger"]');
-        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
 
         // Toolbar should still be there and functional
         assert.dom('[data-test-id="toolbar"]').exists();
@@ -1715,15 +1717,15 @@ module(
         // Open the dropdown
         await click('[data-test-id="dropdown-trigger"]');
         assert
-          .dom('[data-test-id="listbox"]')
+          .dom('[data-component="listbox"]')
           .exists('dropdown should be open');
 
         // Toggle a column
-        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-component="listbox-item"][data-key="name"]');
 
         // Dropdown should remain open because closeOnItemSelect is false
         assert
-          .dom('[data-test-id="listbox"]')
+          .dom('[data-component="listbox"]')
           .exists('dropdown should remain open after toggling column');
 
         // Verify the column was actually toggled

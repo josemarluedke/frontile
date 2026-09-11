@@ -308,7 +308,6 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
       {{this.setupEvents
         elementToAddKeyboardEvents=@elementToAddKeyboardEvents
       }}
-      data-test-id="listbox"
       data-component="listbox"
       data-part="base"
       class={{this.classNames}}

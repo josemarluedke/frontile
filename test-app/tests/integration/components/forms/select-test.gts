@@ -613,7 +613,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template><Select @items={{items}} @isLoading={{true}} /></template>
     );
 
-    assert.dom('[data-test-id="loading-spinner"]').exists();
+    assert.dom('[data-component="spinner"]').exists();
   });
 
   test('it hides loading spinner when isLoading is false', async function (assert) {
@@ -623,7 +623,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template><Select @items={{items}} @isLoading={{false}} /></template>
     );
 
-    assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
+    assert.dom('[data-component="spinner"]').doesNotExist();
   });
 
   test('TypeScript discriminated union works correctly for explicit single mode', async function (assert) {
@@ -1297,19 +1297,19 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert.dom('[data-test-id="chips-field"]').exists('chips wrapper renders');
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert.dom('[data-part="chip"]').exists({ count: 2 });
     assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .dom('[data-part="chip"][data-key="apple"]')
       .hasTextContaining('apple');
     assert
-      .dom('[data-test-id="selected-chip"][data-key="cherry"]')
+      .dom('[data-part="chip"][data-key="cherry"]')
       .hasTextContaining('cherry');
     assert
       .dom('[data-component="select"] [data-part="input"]:not(select)')
       .doesNotIncludeText('apple, cherry', 'joined text is not rendered');
     assert
       .dom(
-        '[data-component="select"] [data-part="input"]:not(select) [data-test-id="selected-chip"]'
+        '[data-component="select"] [data-part="input"]:not(select) [data-part="chip"]'
       )
       .doesNotExist('chips must not be nested inside the trigger');
     assert
@@ -1336,9 +1336,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     const trigger = document.querySelector(
       '[data-component="select"] [data-part="input"]:not(select)'
     ) as HTMLElement;
-    const chip = document.querySelector(
-      '[data-test-id="selected-chip"]'
-    ) as HTMLElement;
+    const chip = document.querySelector('[data-part="chip"]') as HTMLElement;
 
     const triggerRect = trigger.getBoundingClientRect();
     const chipRect = chip.getBoundingClientRect();
@@ -1407,12 +1405,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert
       .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Select fruits');
-    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-part="chip"]').doesNotExist();
 
     await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="apple"]');
 
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
+    assert.dom('[data-part="chip"]').exists({ count: 1 });
     assert
       .dom('[data-component="select"] [data-part="input"]:not(select)')
       .doesNotIncludeText('Select fruits', 'placeholder hides once chips show');
@@ -1435,7 +1433,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-part="chip"]').doesNotExist();
     assert.dom('[data-test-id="chips-field"]').doesNotExist();
     assert
       .dom('[data-component="select"] [data-part="input"]:not(select)')
@@ -1456,7 +1454,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-part="chip"]').doesNotExist();
     assert.dom('[data-test-id="chips-field"]').doesNotExist();
     assert
       .dom('[data-component="select"] [data-part="input"]:not(select)')
@@ -1480,7 +1478,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .dom('[data-part="chip"][data-key="apple"]')
       .exists('the chip renders before filtering');
 
     await fillIn(
@@ -1492,10 +1490,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-component="listbox"] [data-key="apple"]')
       .doesNotExist('apple is filtered out of the listbox');
     assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .dom('[data-part="chip"][data-key="apple"]')
       .exists('the chip for the filtered-out selection is still rendered');
     assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .dom('[data-part="chip"][data-key="apple"]')
       .hasTextContaining('apple', 'and it keeps its label');
   });
 
@@ -1647,7 +1645,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     await click('[data-component="listbox"] [data-key="apple"]');
 
     assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .dom('[data-part="chip"][data-key="apple"]')
       .exists('a chip now occupies the field');
     assert
       .dom('[data-component="select"] [data-part="input"]:not(select)')
@@ -1719,15 +1717,13 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+    assert.dom('[data-part="chip"]').exists({ count: 3 });
 
-    await click('[data-test-id="selected-chip"][data-key="banana"] button');
+    await click('[data-part="chip"][data-key="banana"] button');
 
     assert.deepEqual(selectedKeys.current, ['apple', 'cherry']);
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
-    assert
-      .dom('[data-test-id="selected-chip"][data-key="banana"]')
-      .doesNotExist();
+    assert.dom('[data-part="chip"]').exists({ count: 2 });
+    assert.dom('[data-part="chip"][data-key="banana"]').doesNotExist();
     isNotSelected(assert, '[value="banana"]');
     isSelected(assert, '[value="apple"]');
   });
@@ -1754,7 +1750,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert.dom('[data-component="listbox"]').doesNotExist();
 
-    await click('[data-test-id="selected-chip"][data-key="apple"]');
+    await click('[data-part="chip"][data-key="apple"]');
 
     assert
       .dom('[data-component="listbox"]')
@@ -1769,18 +1765,18 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
   });
 
-  test('Multiple mode: a chip close button works with no runtime dependency on data-test-id', async function (assert) {
+  test('Multiple mode: a chip close button works with no runtime dependency on data-part', async function (assert) {
     // `handleFieldClick` must tell a chip's close button apart from the
     // rest of the chip (and the field) without keying off
-    // `data-test-id="selected-chip"` -- that attribute is only a test
-    // hook, and tools like ember-test-selectors strip `data-test-*` from
-    // production builds. If the click forwarder ever regresses to a
-    // selector-based check, this simulates a stripped build by removing
-    // the attributes from the rendered chips before clicking, which would
-    // make a selector-based `closest(...)` return null and the click fall
-    // through to `trigger.click()` -- popping the dropdown open even
-    // though a chip was removed. The real detection (an ancestor `<button>`
-    // inside the chips container) does not depend on the attribute at all.
+    // `data-part="chip"` -- anatomy attributes are for tests and consumers
+    // to hook into, not for the component's own runtime logic to depend on.
+    // If the click forwarder ever regresses to a selector-based check, this
+    // simulates that attribute being absent by removing it from the
+    // rendered chips before clicking, which would make a selector-based
+    // `closest(...)` return null and the click fall through to
+    // `trigger.click()` -- popping the dropdown open even though a chip was
+    // removed. The real detection (an ancestor `<button>` inside the chips
+    // container) does not depend on the attribute at all.
     const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 
@@ -1795,18 +1791,18 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+    assert.dom('[data-part="chip"]').exists({ count: 3 });
 
     const closeButton = document.querySelector(
-      '[data-test-id="selected-chip"][data-key="banana"] button'
+      '[data-part="chip"][data-key="banana"] button'
     ) as HTMLButtonElement;
     if (!closeButton) {
       throw new Error('banana chip close button not found');
     }
 
     document
-      .querySelectorAll('[data-test-id="selected-chip"]')
-      .forEach((chip) => chip.removeAttribute('data-test-id'));
+      .querySelectorAll('[data-part="chip"]')
+      .forEach((chip) => chip.removeAttribute('data-part'));
 
     // `@ember/test-helpers`' `click()` awaits `settled()` between the
     // simulated `mousedown`/`mouseup`/`click` events. `onPress` fires
@@ -1888,10 +1884,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // deliberately has none, to avoid a duplicate accessible description
     // and an unwanted native tooltip).
     assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
+      .dom('[data-part="chip"][data-key="apple"] button')
       .hasText('Remove apple');
     assert
-      .dom('[data-test-id="selected-chip"][data-key="banana"] button')
+      .dom('[data-part="chip"][data-key="banana"] button')
       .hasText('Remove banana');
   });
 
@@ -1911,7 +1907,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
+      .dom('[data-part="chip"][data-key="apple"] button')
       .doesNotExist('no dead close button on the last required selection');
   });
 
@@ -1931,10 +1927,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-test-id="selected-chip"][data-key="apple"] button');
+    await click('[data-part="chip"][data-key="apple"] button');
 
     assert.deepEqual(selectedKeys.current, []);
-    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-part="chip"]').doesNotExist();
   });
 
   test('Multiple mode: chips are disabled when the select is disabled', async function (assert) {
@@ -1965,9 +1961,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // way to fire a "real" click on a disabled button, so that branch is
     // intentionally left uncovered rather than faked with a synthetic
     // event dispatch that would never occur from user interaction.
-    assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
-      .isDisabled();
+    assert.dom('[data-part="chip"][data-key="apple"] button').isDisabled();
     assert
       .dom('[data-test-id="chips-field"]')
       .hasAttribute('data-disabled', 'true');
@@ -1989,7 +1983,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert.dom('[data-part="chip"]').exists({ count: 2 });
     assert
       .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasValue('', 'the joined selection does not fill the filter input');
@@ -2074,7 +2068,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       ['apple'],
       'the last required selection is not removed by Backspace, matching the chip close-button rule'
     );
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
+    assert.dom('[data-part="chip"]').exists({ count: 1 });
   });
 
   /**
@@ -2120,18 +2114,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-test-id="selected-chip"] button')
+      .dom('[data-part="chip"] button')
       .exists({ count: 3 }, 'chips still have pointer-reachable close buttons');
 
-    document
-      .querySelectorAll('[data-test-id="selected-chip"] button')
-      .forEach((button) => {
-        assert.strictEqual(
-          button.getAttribute('tabindex'),
-          '-1',
-          'each chip close button is out of the tab order'
-        );
-      });
+    document.querySelectorAll('[data-part="chip"] button').forEach((button) => {
+      assert.strictEqual(
+        button.getAttribute('tabindex'),
+        '-1',
+        'each chip close button is out of the tab order'
+      );
+    });
   });
 
   /**
@@ -2169,7 +2161,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       ['apple', 'banana'],
       'Backspace removes the last chip from a non-filterable chips field'
     );
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert.dom('[data-part="chip"]').exists({ count: 2 });
     checkSelected(assert, '[data-key="cherry"]', false);
 
     await triggerKeyEvent(
@@ -2294,7 +2286,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       ['apple', 'banana', 'cherry'],
       'clicking a filtered option adds to the selection'
     );
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+    assert.dom('[data-part="chip"]').exists({ count: 3 });
   });
 
   /**
@@ -2359,7 +2351,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       '[data-component="select"] [data-part="input"]:not(select)'
     ) as HTMLElement;
     const chips = [
-      ...field.querySelectorAll('[data-test-id="selected-chip"]')
+      ...field.querySelectorAll('[data-part="chip"]')
     ] as HTMLElement[];
 
     assert.strictEqual(chips.length, 3, 'all three chips render');
@@ -2461,7 +2453,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // resolution), so `hasClass('bg-primary-subtle')` can never pass here.
     // Assert against the variant stubs instead, matching the convention used
     // by chip-test.gts / buttons-test.gts elsewhere in this suite.
-    const chip = '[data-test-id="selected-chip"][data-key="apple"]';
+    const chip = '[data-part="chip"][data-key="apple"]';
     assert.dom(chip).hasClass('chip-faded', 'defaults to appearance faded');
     assert.dom(chip).hasClass('intent-primary', 'inherits @intent="primary"');
   });
@@ -2490,7 +2482,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    const chip = '[data-test-id="selected-chip"][data-key="apple"]';
+    const chip = '[data-part="chip"][data-key="apple"]';
     assert.dom(chip).hasClass('radius-full', '@chip.radius applies');
     assert
       .dom(chip)
@@ -2533,9 +2525,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert.dom('[data-part="chip"]').exists({ count: 2 });
     assert
-      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .dom('[data-part="chip"][data-key="apple"]')
       .hasClass('test-chip-class');
     assert.dom('[data-test-id="chips-field"]').hasClass('test-field-class');
   });
@@ -2673,25 +2665,25 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert.dom('[data-part="chip"]').exists({ count: 2 });
     assert
       .dom(
-        '[data-test-id="selected-chip"][data-key="ana"] [data-test-id="custom-selected"]'
+        '[data-part="chip"][data-key="ana"] [data-test-id="custom-selected"]'
       )
       .hasText('Ana', 'the block renders inside the chip');
     assert
       .dom(
-        '[data-test-id="selected-chip"][data-key="cleo"] [data-test-id="custom-selected"]'
+        '[data-part="chip"][data-key="cleo"] [data-test-id="custom-selected"]'
       )
       .hasText('Cleo');
     assert
-      .dom('[data-test-id="selected-chip"][data-key="ana"] button')
+      .dom('[data-part="chip"][data-key="ana"] button')
       .exists('the chip keeps its close button');
     // CloseButton renders its @title as visually hidden *text*, not a `title`
     // attribute -- so this reads the accessible text, which is what a screen
     // reader announces.
     assert
-      .dom('[data-test-id="selected-chip"][data-key="ana"] button')
+      .dom('[data-part="chip"][data-key="ana"] button')
       .hasText(
         'Remove Ana',
         'the close button is still labelled from the option text'
@@ -2716,7 +2708,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-part="chip"]').doesNotExist();
     assert
       .dom(
         '[data-component="select"] [data-part="input"]:not(select) [data-test-id="custom-selected"]'
@@ -2790,13 +2782,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // so the close button's visually hidden `Remove Ana` cannot stand in for
     // the body, and case-sensitively so the key (`ana`) cannot either.
     assert
-      .dom('[data-test-id="selected-chip"][data-key="ana"]')
+      .dom('[data-part="chip"][data-key="ana"]')
       .hasText(/^\s*Ana\b/, 'the chip body is still the option label');
+    assert.dom('[data-part="chip"][data-key="cleo"]').hasText(/^\s*Cleo\b/);
     assert
-      .dom('[data-test-id="selected-chip"][data-key="cleo"]')
-      .hasText(/^\s*Cleo\b/);
-    assert
-      .dom('[data-test-id="selected-chip"][data-key="ana"] button')
+      .dom('[data-part="chip"][data-key="ana"] button')
       .hasText(
         'Remove Ana',
         'and the close button is still named from the option'
@@ -3139,23 +3129,21 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-test-id="selected-chip"][data-key="bruno"] button')
+      .dom('[data-part="chip"][data-key="bruno"] button')
       .hasAttribute(
         'tabindex',
         '-1',
         'close buttons stay out of the tab order'
       );
 
-    await click('[data-test-id="selected-chip"][data-key="bruno"] button');
+    await click('[data-part="chip"][data-key="bruno"] button');
 
     assert.deepEqual(
       selectedKeys.current,
       ['ana', 'cleo'],
       'the close button removed just that selection'
     );
-    assert
-      .dom('[data-test-id="selected-chip"][data-key="bruno"]')
-      .doesNotExist();
+    assert.dom('[data-part="chip"][data-key="bruno"]').doesNotExist();
 
     await triggerKeyEvent(
       '[data-component="select"] [data-part="input"]:not(select)',
@@ -3192,11 +3180,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert
       .dom(
-        '[data-test-id="selected-chip"][data-key="ana"] [data-test-id="custom-selected"]'
+        '[data-part="chip"][data-key="ana"] [data-test-id="custom-selected"]'
       )
       .exists('the chip carries the custom content');
     assert
-      .dom('[data-test-id="selected-chip"][data-key="ana"] button')
+      .dom('[data-part="chip"][data-key="ana"] button')
       .doesNotExist(
         'the last selection cannot be removed without @allowEmpty, so no dead close button'
       );

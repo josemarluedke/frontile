@@ -554,11 +554,11 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
+        assert.dom('[data-component="spinner"]').doesNotExist();
 
         await click('[data-test-id="start"]');
 
-        assert.dom('[data-test-id="loading-spinner"]').exists();
+        assert.dom('[data-component="spinner"]').exists();
       });
 
       test('the label stays visible while loading', async function (assert) {
@@ -579,9 +579,7 @@ module(
         );
 
         const button = document.querySelector('[data-test-id="button"]');
-        const spinner = button?.querySelector(
-          '[data-test-id="loading-spinner"]'
-        );
+        const spinner = button?.querySelector('[data-component="spinner"]');
 
         assert.ok(spinner, 'the spinner is inside the button');
         assert.strictEqual(
@@ -622,7 +620,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="loading-spinner"]').exists();
+        assert.dom('[data-component="spinner"]').exists();
         assert
           .dom('[data-test-id="icon"]')
           .doesNotExist('the icon is replaced, not joined, by the spinner');
@@ -670,7 +668,7 @@ module(
 
         assert.strictEqual(
           button?.lastElementChild,
-          button?.querySelector('[data-test-id="loading-spinner"]'),
+          button?.querySelector('[data-component="spinner"]'),
           'the spinner is the last element in the button'
         );
         assert.strictEqual(
@@ -687,7 +685,7 @@ module(
           </template>
         );
 
-        assert.dom('[data-test-id="loading-spinner"]').exists();
+        assert.dom('[data-component="spinner"]').exists();
       });
 
       test('the <:loading> block replaces the label while loading', async function (assert) {
@@ -775,7 +773,7 @@ module(
 
         assert.dom('[data-test-id="link"]').hasText('Loading…');
         assert.dom('[data-test-id="icon"]').doesNotExist();
-        assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
+        assert.dom('[data-component="spinner"]').doesNotExist();
       });
 
       test('plain content with no named blocks still renders', async function (assert) {

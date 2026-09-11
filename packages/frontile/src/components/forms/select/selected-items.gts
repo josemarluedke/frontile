@@ -137,7 +137,6 @@ const SelectedChips: TOC<SelectedChipsSignature> = <template>
   >
     {{#each @items key="key" as |item|}}
       <Chip
-        data-test-id="selected-chip"
         data-part="chip"
         data-key={{item.key}}
         @class={{@classes.chip class=@userClasses.chip}}

@@ -157,9 +157,7 @@ module(
 
       assert.dom('[data-component="listbox"]').exists();
       assert.dom('[data-key="item-1"]').exists();
-      assert
-        .dom('[data-key="item-1"] [data-test-id="listbox-item-description"]')
-        .exists();
+      assert.dom('[data-key="item-1"] [data-part="description"]').exists();
 
       assert.dom('[data-key="item-2"]').exists();
       assert
@@ -168,7 +166,7 @@ module(
       assert.dom('[data-key="item-3"]').exists();
       assert.dom('[data-key="item-4"]').exists();
       assert
-        .dom('[data-key="item-4"] + [data-test-id="divider"]')
+        .dom('[data-key="item-4"] + [data-component="divider"]')
         .exists('divider should be sibling of item 4');
       assert.dom('[data-key="item-5"]').exists();
 
@@ -249,7 +247,7 @@ module(
       assert.equal(selectedKeys.current[0], 'cheetah');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-selected', 'true');
       assert
-        .dom('[data-key="cheetah"] [data-test-id="listbox-item-selected-icon"]')
+        .dom('[data-key="cheetah"] [data-part="selected-icon"]')
         .exists('should render icon on selected item');
 
       await click('[data-key="crocodile"]');
@@ -1859,17 +1857,13 @@ module(
         .dom('[data-key="parent"]')
         .hasAttribute('data-submenu-open', 'false');
       assert
-        .dom(
-          '[data-key="parent"] [data-test-id="listbox-item-submenu-indicator"]'
-        )
+        .dom('[data-key="parent"] [data-part="submenu-indicator"]')
         .exists('renders the chevron');
 
       // A plain item is untouched by the new args.
       assert.dom('[data-key="plain"]').doesNotHaveAria('haspopup');
       assert
-        .dom(
-          '[data-key="plain"] [data-test-id="listbox-item-submenu-indicator"]'
-        )
+        .dom('[data-key="plain"] [data-part="submenu-indicator"]')
         .doesNotExist();
 
       // Clicking a sub-trigger must not fire onAction -- opening is not choosing.
@@ -1911,7 +1905,7 @@ module(
 
       assert.dom('[data-test-id="custom-end"]').exists();
       assert
-        .dom('[data-test-id="listbox-item-submenu-indicator"]')
+        .dom('[data-part="submenu-indicator"]')
         .doesNotExist('the default chevron steps aside');
     });
 

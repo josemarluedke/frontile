@@ -292,7 +292,6 @@ class ListboxItem extends Component<ListboxItemSignature> {
       tabindex={{this.tabindex}}
       data-active="{{this.listItem.isActive}}"
       data-selected="{{this.listItem.isSelected}}"
-      data-test-id="listbox-item"
       data-component="listbox-item"
       data-part="base"
       data-key={{this.key}}
@@ -313,7 +312,6 @@ class ListboxItem extends Component<ListboxItemSignature> {
             id={{this.labelId}}
           >{{yield}}</span>
           <span
-            data-test-id="listbox-item-description"
             data-part="description"
             class={{this.classNames.description}}
           >{{@description}}</span>
@@ -336,11 +334,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       {{/if}}
 
       {{#if this.listItem.isSelected}}
-        <span
-          data-test-id="listbox-item-selected-icon"
-          data-part="selected-icon"
-          class={{this.classNames.selectedIcon}}
-        >
+        <span data-part="selected-icon" class={{this.classNames.selectedIcon}}>
           {{#if (has-block "selectedIcon")}}
             {{yield to="selectedIcon"}}
           {{else}}
@@ -352,7 +346,6 @@ class ListboxItem extends Component<ListboxItemSignature> {
       {{#if @hasSubmenu}}
         {{#unless (has-block "end")}}
           <span
-            data-test-id="listbox-item-submenu-indicator"
             data-part="submenu-indicator"
             class={{this.submenuIndicatorClass}}
           >

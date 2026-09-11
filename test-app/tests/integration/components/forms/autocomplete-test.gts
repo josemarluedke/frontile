@@ -363,12 +363,12 @@ module(
       );
       await new Promise((resolve) => setTimeout(resolve, 50));
 
-      assert.dom('[data-test-id="loading-spinner"]').exists('spinner pending');
+      assert.dom('[data-component="spinner"]').exists('spinner pending');
 
       resolveSearch(fruits.filter((f) => f.toLowerCase().includes('fr')));
       await settled();
 
-      assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
+      assert.dom('[data-component="spinner"]').doesNotExist();
       assert.dom('[data-key="Dragonfruit"]').exists();
       assert.dom('[data-key="Apple"]').doesNotExist();
       assert.verifySteps(['search:fr']);
@@ -497,7 +497,7 @@ module(
       );
 
       assert
-        .dom('[data-test-id="search-message"]')
+        .dom('[data-part="empty-content"]')
         .hasText('Type to search for a fruit...');
       // search-message and the plain "no results" div are mutually
       // exclusive renderings of the same emptyContent slot -- exactly one
@@ -509,7 +509,7 @@ module(
         'app'
       );
 
-      assert.dom('[data-test-id="search-message"]').doesNotExist();
+      assert.dom('[data-part="empty-content"]').doesNotExist();
       assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
 
       await fillIn(
@@ -518,7 +518,7 @@ module(
       );
 
       assert
-        .dom('[data-test-id="search-message"]')
+        .dom('[data-part="empty-content"]')
         .hasText('Type to search for a fruit...');
     });
 
@@ -537,7 +537,7 @@ module(
         '[data-component="autocomplete"] [data-part="input"]:not(select)'
       );
       assert
-        .dom('[data-test-id="search-message"]')
+        .dom('[data-part="empty-content"]')
         .hasText('Start typing to see suggestions');
 
       await render(
@@ -549,7 +549,7 @@ module(
       await click(
         '[data-component="autocomplete"] [data-part="input"]:not(select)'
       );
-      assert.dom('[data-test-id="search-message"]').doesNotExist();
+      assert.dom('[data-part="empty-content"]').doesNotExist();
     });
 
     test('searchMessage is not shown when default items are displayed', async function (assert) {
@@ -571,7 +571,7 @@ module(
         '[data-component="autocomplete"] [data-part="input"]:not(select)'
       );
 
-      assert.dom('[data-test-id="search-message"]').doesNotExist();
+      assert.dom('[data-part="empty-content"]').doesNotExist();
       assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
     });
 
@@ -866,10 +866,10 @@ module(
       );
 
       assert
-        .dom('.input-container [data-test-id="input-start-content"]')
+        .dom('.input-container [data-part="start-content"]')
         .containsText('Start');
       assert
-        .dom('.input-container [data-test-id="input-end-content"]')
+        .dom('.input-container [data-part="end-content"]')
         .containsText('End');
     });
 
@@ -882,7 +882,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="loading-spinner"]').exists();
+      assert.dom('[data-component="spinner"]').exists();
     });
 
     /**

@@ -43,7 +43,6 @@ interface SelectEndContentSignature {
  */
 const SelectEndContent: TOC<SelectEndContentSignature> = <template>
   <div
-    data-test-id="input-end-content"
     data-part="end-content"
     class={{@classes.endContent
       class=@userClasses.endContent
@@ -56,10 +55,7 @@ const SelectEndContent: TOC<SelectEndContentSignature> = <template>
     {{yield}}
 
     {{#if @isLoading}}
-      <Spinner
-        @size={{if (isSm @inputSize) "xs" "sm"}}
-        data-test-id="loading-spinner"
-      />
+      <Spinner @size={{if (isSm @inputSize) "xs" "sm"}} />
     {{else if @isClearable}}
       <CloseButton
         @title="Clear"

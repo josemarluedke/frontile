@@ -726,7 +726,6 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
           >
             {{#if (has-block "startContent")}}
               <div
-                data-test-id="input-start-content"
                 data-part="start-content"
                 class={{this.classes.startContent
                   class=@classes.startContent
@@ -768,7 +767,6 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               {{on "focusout" this.blurTracker.handleFocusOut}}
             />
             <div
-              data-test-id="input-end-content"
               data-part="end-content"
               class={{this.classes.endContent
                 class=@classes.endContent
@@ -780,10 +778,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               {{yield to="endContent"}}
 
               {{#if this.isLoading}}
-                <Spinner
-                  @size={{if (isSm @inputSize) "xs" "sm"}}
-                  data-test-id="loading-spinner"
-                />
+                <Spinner @size={{if (isSm @inputSize) "xs" "sm"}} />
               {{else if this.isClearable}}
                 <CloseButton
                   @title="Clear"
@@ -861,7 +856,6 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
             }}
               <div
                 class={{this.classes.emptyContent class=@classes.emptyContent}}
-                data-test-id="search-message"
                 data-part="empty-content"
               >
                 {{#if (has-block "searchMessage")}}

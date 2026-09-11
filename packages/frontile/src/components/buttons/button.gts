@@ -69,7 +69,7 @@ const SpinnerOrIcon: TOC<{
   };
 }> = <template>
   {{#if @isLoading}}
-    <Spinner @class={{@spinnerClass}} data-test-id="loading-spinner" />
+    <Spinner @class={{@spinnerClass}} />
   {{else}}
     {{yield}}
   {{/if}}

@@ -155,11 +155,7 @@ class CommandDialog<T = unknown> extends Component<CommandDialogSignature<T>> {
         data-part="base"
         class={{this.classNames.base}}
       >
-        <div
-          class={{this.classNames.panel}}
-          data-test-id="command-dialog-panel"
-          data-part="panel"
-        >
+        <div class={{this.classNames.panel}} data-part="panel">
           <Command
             @items={{@items}}
             @groupBy={{@groupBy}}

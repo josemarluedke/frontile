@@ -88,7 +88,6 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
       {{#if @title}}
         <span
           id={{this.titleId}}
-          data-test-id="listbox-group-title"
           data-part="title"
           class={{this.classNames.title}}
         >{{@title}}</span>

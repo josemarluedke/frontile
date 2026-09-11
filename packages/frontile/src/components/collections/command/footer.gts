@@ -28,7 +28,6 @@ const CommandKbd: TOC<CommandKbdSignature> = <template>
       @size="sm"
       @appearance="outlined"
       @classes={{hash key=@classes.kbd}}
-      data-test-id="command-kbd"
       data-part="kbd"
       ...attributes
     >{{yield}}</Kbd>
@@ -38,7 +37,6 @@ const CommandKbd: TOC<CommandKbdSignature> = <template>
       @size="sm"
       @appearance="outlined"
       @classes={{hash key=@classes.kbd}}
-      data-test-id="command-kbd"
       data-part="kbd"
       ...attributes
     />
@@ -97,12 +95,7 @@ class CommandFooter extends Component<CommandFooterSignature> {
   }
 
   <template>
-    <div
-      class={{this.footerClass}}
-      data-test-id="command-footer"
-      data-part="footer"
-      ...attributes
-    >
+    <div class={{this.footerClass}} data-part="footer" ...attributes>
       {{#if (has-block)}}
         {{yield
           (hash

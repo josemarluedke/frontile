@@ -756,7 +756,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           >
             {{#if (has-block "startContent")}}
               <div
-                data-test-id="input-start-content"
                 data-part="start-content"
                 class={{this.classes.startContent
                   class=@classes.startContent

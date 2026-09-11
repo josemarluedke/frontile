@@ -53,10 +53,10 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
       await click('[data-test-id="dropdown-trigger"]');
 
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
 
       assert.dom('[data-key="profile"]').exists();
       assert.dom('[data-key="settings"]').exists();
@@ -146,12 +146,12 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
       await click('[data-test-id="dropdown-trigger"]');
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
 
       await click('[data-key="profile"]');
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
       assert.equal(calledClosed, true, 'should called didClose argument');
     });
 
@@ -169,12 +169,12 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
       await click('[data-test-id="dropdown-trigger"]');
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
 
       await click('[data-key="profile"]');
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
     });
 
     test('clicking outside closes menu', async function (assert) {
@@ -197,12 +197,12 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
       await click('[data-test-id="dropdown-trigger"]');
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
 
       await click('#outside');
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
       assert.equal(calledClosed, true, 'should called didClose argument');
     });
 
@@ -251,14 +251,14 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
       await triggerKeyEvent(
         '[data-test-id="dropdown-trigger"]',
         'keyup',
         'ArrowDown'
       );
 
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
     });
 
     test('it opens with Enter on the trigger', async function (assert) {
@@ -274,7 +274,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
 
       await triggerKeyEvent(
         '[data-test-id="dropdown-trigger"]',
@@ -288,7 +288,7 @@ module(
       );
 
       assert
-        .dom('[data-test-id="listbox"]')
+        .dom('[data-component="listbox"]')
         .exists('Enter on a focused trigger opens the menu');
     });
 
@@ -305,7 +305,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').doesNotExist();
+      assert.dom('[data-component="listbox"]').doesNotExist();
 
       await triggerKeyEvent(
         '[data-test-id="dropdown-trigger"]',
@@ -315,7 +315,7 @@ module(
       await triggerKeyEvent('[data-test-id="dropdown-trigger"]', 'keyup', ' ');
 
       assert
-        .dom('[data-test-id="listbox"]')
+        .dom('[data-component="listbox"]')
         .exists('Space on a focused trigger opens the menu');
     });
 
@@ -496,14 +496,22 @@ module(
       await click('[data-test-id="dropdown-trigger"]');
 
       // Walk down onto the sub-trigger: Edit, then More.
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'ArrowDown'
+      );
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'ArrowDown'
+      );
       assert
         .dom('[data-test-id="dropdown-submenu-trigger"]')
         .hasAttribute('data-active', 'true', 'the sub-trigger is active');
 
       await triggerKeyEvent(
-        '[data-test-id="listbox"]',
+        '[data-component="listbox"]',
         'keydown',
         'ArrowRight'
       );
@@ -616,8 +624,12 @@ module(
       );
 
       await click('[data-test-id="dropdown-trigger"]');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Enter');
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'ArrowDown'
+      );
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Enter');
 
       assert.dom('[data-key="nested"]').exists('Enter opened the submenu');
     });
@@ -723,7 +735,7 @@ module(
       assert.dom('[data-key="nested"]').doesNotExist('closed at rest');
 
       const listbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       listbox.dispatchEvent(
@@ -817,7 +829,7 @@ module(
 
       await click('[data-test-id="dropdown-trigger"]');
       const parentListbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       await click('[data-test-id="dropdown-submenu-trigger"]');
@@ -869,7 +881,11 @@ module(
       assert.dom('[data-key="edit"]').exists('root menu is open');
       assert.dom('[data-key="nested"]').doesNotExist('submenu is closed');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowLeft');
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'ArrowLeft'
+      );
 
       assert.dom('[data-key="edit"]').exists('root menu stayed open');
       assert.dom('[data-key="nested"]').doesNotExist('submenu did not open');
