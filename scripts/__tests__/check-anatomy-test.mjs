@@ -484,9 +484,7 @@ test('orphan.file cites the file the orphan data-part actually occurred in, not 
   );
 
   const r = checkAnatomy({ themeDir, componentsDir });
-  const orphan = r.orphan.find(
-    (o) => o.config === 'kbd' && o.part === 'stray'
-  );
+  const orphan = r.orphan.find((o) => o.config === 'kbd' && o.part === 'stray');
   assert.ok(orphan, 'expected a "stray" orphan for kbd');
   assert.ok(
     orphan.file.endsWith('second.gts'),

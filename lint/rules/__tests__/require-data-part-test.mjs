@@ -284,7 +284,9 @@ test('flags data-part on an element whose class is a plain static string (the ro
 
 test('flags data-component alone on an element whose class is a plain static string', async () => {
   assert.deepEqual(
-    await lint('<div class="not-a-real-slot-class" data-component="table">rogue</div>'),
+    await lint(
+      '<div class="not-a-real-slot-class" data-component="table">rogue</div>'
+    ),
     [
       'data-component="table" is written on an element whose class is a plain string, not a rendered slot; derive both from the same tv() slot accessor (or remove the attribute if this element isn\'t part of the component\'s anatomy)'
     ]
@@ -348,13 +350,18 @@ test('does not flag data-component set on a component invocation (tooltip/@Popov
 
 test('does not flag data-part forwarded onto a <Collapsible> component invocation', async () => {
   assert.deepEqual(
-    await lint('<Collapsible data-part="content" @isExpanded={{true}}></Collapsible>'),
+    await lint(
+      '<Collapsible data-part="content" @isExpanded={{true}}></Collapsible>'
+    ),
     []
   );
 });
 
 test('does not flag data-part forwarded onto a <m.CloseButton> path-expression component invocation', async () => {
-  assert.deepEqual(await lint('<m.CloseButton data-part="close-button" />'), []);
+  assert.deepEqual(
+    await lint('<m.CloseButton data-part="close-button" />'),
+    []
+  );
 });
 
 // Legitimate shape: simple-table/index.gts's conditional

@@ -206,7 +206,8 @@ export default class RequireDataPart extends Rule {
         ) {
           const classAttr = node.attributes.find((a) => a.name === 'class');
           if (classAttr && classAttr.value.type === 'TextNode') {
-            const attrName = part !== undefined ? 'data-part' : 'data-component';
+            const attrName =
+              part !== undefined ? 'data-part' : 'data-component';
             const attrVal = part !== undefined ? part : component;
             this.log({
               message: `${attrName}="${attrVal}" is written on an element whose class is a plain string, not a rendered slot; derive both from the same tv() slot accessor (or remove the attribute if this element isn't part of the component's anatomy)`,
