@@ -169,9 +169,20 @@ function resolveSlots(name, raw, cache) {
 
 /**
  * Read every slot-bearing tv() config under `themeDir`: `{ configName:
- * [kebabSlot, …] }`. A config counts as slot-bearing when it has its own
- * `slots:` key (see `parseThemeFile`); its returned slot list also includes
- * anything inherited through `extend`.
+ * [kebabSlot, …] }`. A config counts as slot-bearing when it either has its
+ * own `slots:` key (see `parseThemeFile`) or its *resolved* slot set (own
+ * slots plus anything inherited through `extend`) is non-empty.
+ *
+ * The resolved check matters on its own: several real configs (e.g.
+ * `radioGroup`/`checkboxGroup` in forms/forms.ts) declare only
+ * `extend: checkboxRadioGroupBase` with no own `slots:` key at all — they
+ * inherit their entire slot set from the base they extend. Gating inclusion
+ * on "has its own `slots:` key" alone (as an earlier version of this function
+ * did) drops such configs from the map entirely: `checkAnatomy` never even
+ * looks at them, so a component like `RadioGroup` that renders
+ * `data-component="radio-group"` with zero `data-part` attributes reports
+ * `{ missing: [], orphan: [] }` — silently passing a component that in fact
+ * covers none of its inherited slots.
  */
 export function readThemeSlots(themeDir) {
   const raw = {};
@@ -182,8 +193,11 @@ export function readThemeSlots(themeDir) {
   const cache = new Map();
   const configs = {};
   for (const [name, entry] of Object.entries(raw)) {
-    if (entry.ownSlots === null) continue; // no slots: key -> not slot-bearing
-    configs[name] = resolveSlots(name, raw, cache);
+    const resolved = resolveSlots(name, raw, cache);
+    // Include when the config declares its own `slots:` key (even if empty)
+    // or when it inherits a non-empty slot set through `extend`.
+    if (entry.ownSlots === null && resolved.length === 0) continue;
+    configs[name] = resolved;
   }
   return configs;
 }
