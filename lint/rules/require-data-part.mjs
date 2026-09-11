@@ -126,6 +126,21 @@ const attrValue = (node, name) => {
   return a && a.value.type === 'TextNode' ? a.value.chars : undefined;
 };
 
+/**
+ * Is `tag` a component invocation (`<Overlay>`, `<@PopoverContent>`,
+ * `<this.Checkbox>`) rather than a plain HTML element (`<div>`,
+ * `<button>`)? Same convention `frontile/require-root-data-component` uses
+ * (leading `@`/`.`, or an uppercase first character) -- duplicated here
+ * (rather than shared through a module) because it's a three-line, unlikely-
+ * to-drift piece of Glimmer trivia, and this rule has no existing shared-utils
+ * module to hang it on.
+ */
+function isComponentInvocation(tag) {
+  if (tag.startsWith('@') || tag.includes('.')) return true;
+  const first = tag[0] ?? '';
+  return first !== first.toLowerCase() && first === first.toUpperCase();
+}
+
 export default class RequireDataPart extends Rule {
   visitor() {
     return {
@@ -145,6 +160,56 @@ export default class RequireDataPart extends Rule {
           } else if (part !== expected) {
             this.log({
               message: `data-part="${part}" does not match the rendered slot; expected "${expected}"`,
+              node
+            });
+          }
+        }
+
+        // Forward check: an element carrying a literal data-part or
+        // data-component whose `class` attribute is provably NOT a slot
+        // accessor -- a plain static string, e.g.
+        // `class="not-a-real-slot-class"` -- is a hand-copied attribute pair
+        // rather than a genuine anatomy element. The rest of this rule (and
+        // `check-anatomy.mjs`) only ever check the *reverse* direction ("a
+        // detected slot must have a matching data-part"); nothing previously
+        // caught the case where data-part/data-component names a real slot
+        // of a real config, but the element they're written on isn't
+        // actually rendering that slot at all.
+        //
+        // Deliberately narrow to "class is a bare TextNode (no `{{...}}`
+        // anywhere)" rather than "slotFromClassAttr returned null": several
+        // real components compute their whole class string behind an opaque
+        // getter (`class={{this.classes}}`, `class={{this.classNames}}`,
+        // `class={{this.baseClass}}`, ...) that this rule's static analysis
+        // cannot see through to confirm it's slot-backed -- see
+        // `slotFromExpr`'s single-part-PathExpression branch and its doc
+        // comment for the same, already-accepted blind spot. Every one of
+        // those still contains a real `{{mustache}}`, so gating on "zero
+        // mustaches at all" catches the copy-pasted-hardcoded-string shape
+        // the reviewer's counter-example demonstrates without flagging any
+        // of those legitimate opaque-getter components. A `class` attribute
+        // that's entirely absent (e.g. `progress-bar.gts`'s root, which
+        // deliberately renders no slot and carries no data-part) is exempt
+        // for the same reason: there is no class value here to contradict.
+        //
+        // Also exempt: component invocations (`<Overlay data-component=...>`,
+        // `<@PopoverContent data-component="tooltip">`,
+        // `<Collapsible data-part="content">`,
+        // `<m.CloseButton data-part="close-button" />`). These forward
+        // data-part/data-component onto some other template's own root
+        // element via `...attributes`; they carry no `class` of their own
+        // for *this* template to render a slot through, so there's nothing
+        // here to check.
+        if (
+          (part !== undefined || component !== undefined) &&
+          !isComponentInvocation(node.tag)
+        ) {
+          const classAttr = node.attributes.find((a) => a.name === 'class');
+          if (classAttr && classAttr.value.type === 'TextNode') {
+            const attrName = part !== undefined ? 'data-part' : 'data-component';
+            const attrVal = part !== undefined ? part : component;
+            this.log({
+              message: `${attrName}="${attrVal}" is written on an element whose class is a plain string, not a rendered slot; derive both from the same tv() slot accessor (or remove the attribute if this element isn't part of the component's anatomy)`,
               node
             });
           }

@@ -373,6 +373,7 @@ function applyManualPartOwners(file, parts, ensure) {
     if (!parts.some((p) => p.value === part)) continue;
     const entry = ensure(ownerName);
     entry.parts.add(part);
+    if (!entry.partFiles.has(part)) entry.partFiles.set(part, file);
     entry.files.add(file);
   }
 }
@@ -390,7 +391,18 @@ function findOwnerByDirectory(file, componentsDir, knownConfigNames) {
 
 /**
  * Collect, for every component name, the set of data-part values rendered
- * for it and the files that rendered them: { name: { parts: Set, files: Set } }.
+ * for it, the files that rendered them, and -- per part -- the specific
+ * file that part was actually found in:
+ * { name: { parts: Set, files: Set, partFiles: Map<part, file> } }.
+ *
+ * `partFiles` exists so an orphan report can cite the file the offending
+ * `data-part` actually occurred in, rather than `entry.files`' insertion
+ * order (which is "the first file ever associated with this component
+ * name" -- e.g. the file that merely carries its `data-component` -- and
+ * can therefore name a file the orphan never appeared in at all). When a
+ * part is recorded more than once for the same component (legitimately,
+ * e.g. rendered in several files), the *first* file it was found in wins,
+ * matching this function's file-walk order.
  *
  * Attribution within a single file: a data-part belongs to the nearest
  * data-component that precedes it in source order (falling back to the
@@ -402,7 +414,15 @@ function findOwnerByDirectory(file, componentsDir, knownConfigNames) {
 export function readRenderedParts(componentsDir, knownConfigNames) {
   const byComponent = {};
   const ensure = (name) =>
-    (byComponent[name] ??= { parts: new Set(), files: new Set() });
+    (byComponent[name] ??= {
+      parts: new Set(),
+      files: new Set(),
+      partFiles: new Map()
+    });
+  const recordPart = (entry, part, file) => {
+    entry.parts.add(part);
+    if (!entry.partFiles.has(part)) entry.partFiles.set(part, file);
+  };
 
   for (const file of walk(componentsDir, '.gts')) {
     const src = readFileSync(file, 'utf8');
@@ -418,14 +438,14 @@ export function readRenderedParts(componentsDir, knownConfigNames) {
           else break;
         }
         const entry = ensure(owner);
-        entry.parts.add(part.value);
+        recordPart(entry, part.value, file);
         entry.files.add(file);
       }
     } else if (parts.length > 0) {
       const owner = findOwnerByDirectory(file, componentsDir, knownConfigNames);
       if (owner) {
         const entry = ensure(owner);
-        for (const part of parts) entry.parts.add(part.value);
+        for (const part of parts) recordPart(entry, part.value, file);
         entry.files.add(file);
       } else {
         // A sub-template whose owner cannot be inferred from its directory --
@@ -515,7 +535,11 @@ export function checkAnatomy({ themeDir, componentsDir }) {
     }
     for (const part of entry.parts) {
       if (!slotKeys.includes(part)) {
-        orphan.push({ config: name, part, file: [...entry.files][0] });
+        orphan.push({
+          config: name,
+          part,
+          file: entry.partFiles.get(part) ?? [...entry.files][0]
+        });
       }
     }
   }

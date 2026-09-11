@@ -453,3 +453,43 @@ test('a slotless config requires only a base part', () => {
   assert.deepEqual(r.missing, []);
   assert.deepEqual(r.orphan, []);
 });
+
+// --- Finding 2: orphan.file must cite the file the orphan actually occurred in
+
+test('orphan.file cites the file the orphan data-part actually occurred in, not the first file ever seen for that component (Finding 2)', () => {
+  const { themeDir, componentsDir } = bareRoot();
+  writeFileSync(
+    join(themeDir, 'kbd.ts'),
+    `const kbd = tv({
+  slots: {
+    base: ''
+  }
+});
+`
+  );
+  // "first.gts" is walked first (alphabetically) and establishes the
+  // "kbd" bucket via its data-component, with no data-part of its own.
+  // "second.gts" is walked afterwards and is where the actual orphan
+  // data-part lives. Before the fix, orphan.file was
+  // `[...entry.files][0]` -- the first file *ever* added to the bucket
+  // (first.gts) -- rather than the file the orphan was found in
+  // (second.gts).
+  writeFileSync(
+    join(componentsDir, 'first.gts'),
+    '<div data-component="kbd"></div>'
+  );
+  writeFileSync(
+    join(componentsDir, 'second.gts'),
+    '<div data-component="kbd" data-part="base"><i data-part="stray"></i></div>'
+  );
+
+  const r = checkAnatomy({ themeDir, componentsDir });
+  const orphan = r.orphan.find(
+    (o) => o.config === 'kbd' && o.part === 'stray'
+  );
+  assert.ok(orphan, 'expected a "stray" orphan for kbd');
+  assert.ok(
+    orphan.file.endsWith('second.gts'),
+    `expected orphan.file to point at second.gts (where "stray" was found), got ${orphan.file}`
+  );
+});

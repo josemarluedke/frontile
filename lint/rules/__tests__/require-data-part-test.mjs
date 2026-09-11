@@ -250,3 +250,152 @@ test('still requires the real slot name (not "base") for a colliding but genuine
     ['Element renders slot "listbox" but is missing data-part="listbox"']
   );
 });
+
+// --- Finding 1: forward check -----------------------------------------------
+//
+// Every check above only fires when a *slot accessor* is detected on the
+// element's `class` -- it says nothing about an element that carries
+// data-part/data-component whose class was never a slot at all. This is the
+// exact counter-example the final whole-branch review constructed and
+// confirmed passed both gates cleanly:
+//
+//   <div class="not-a-real-slot-class" data-component="table" data-part="tr">
+//     rogue
+//   </div>
+//
+// -- `tr` is a real `table` slot, so `check-anatomy.mjs`'s cross-file check
+// (which only asks "is every real slot rendered somewhere, and does every
+// rendered part name a real slot") is satisfied, and this rule's own
+// slot-detection never even looks at a hardcoded class string, so it never
+// gets a chance to object. This is exactly the shape a future author
+// produces by copy-pasting an attribute pair from a nearby component instead
+// of deriving it from their own config.
+
+test('flags data-part on an element whose class is a plain static string (the rogue counter-example)', async () => {
+  assert.deepEqual(
+    await lint(
+      '<div class="not-a-real-slot-class" data-component="table" data-part="tr">rogue</div>'
+    ),
+    [
+      'data-part="tr" is written on an element whose class is a plain string, not a rendered slot; derive both from the same tv() slot accessor (or remove the attribute if this element isn\'t part of the component\'s anatomy)'
+    ]
+  );
+});
+
+test('flags data-component alone on an element whose class is a plain static string', async () => {
+  assert.deepEqual(
+    await lint('<div class="not-a-real-slot-class" data-component="table">rogue</div>'),
+    [
+      'data-component="table" is written on an element whose class is a plain string, not a rendered slot; derive both from the same tv() slot accessor (or remove the attribute if this element isn\'t part of the component\'s anatomy)'
+    ]
+  );
+});
+
+test('flags data-part alone on an element whose class is a plain static string, with no data-component present', async () => {
+  assert.deepEqual(
+    await lint('<div class="not-a-real-slot-class" data-part="tr">rogue</div>'),
+    [
+      'data-part="tr" is written on an element whose class is a plain string, not a rendered slot; derive both from the same tv() slot accessor (or remove the attribute if this element isn\'t part of the component\'s anatomy)'
+    ]
+  );
+});
+
+// Legitimate shape: a normal root where the class IS a genuine slot
+// accessor -- the ordinary case, and the forward check must not add a
+// second, redundant complaint on top of the existing reverse-direction
+// checks (which already pass this shape, see the very first test above).
+
+test('does not flag a normal root whose class is a genuine slot accessor', async () => {
+  assert.deepEqual(
+    await lint(
+      '<div data-component="accordion" data-part="base" class={{this.styles.base}}></div>'
+    ),
+    []
+  );
+});
+
+// Legitimate shape: packages/frontile/src/components/status/progress-bar.gts:226
+// -- the outer <div data-component="progress-bar" ...attributes> renders no
+// slot at all and deliberately carries no data-part, no class attribute
+// whatsoever. Nothing here to contradict, so it must not be flagged.
+
+test('does not flag a data-component-only root with no class attribute at all (progress-bar shape)', async () => {
+  assert.deepEqual(
+    await lint('<div data-component="progress-bar" ...attributes></div>'),
+    []
+  );
+});
+
+// Legitimate shape: packages/frontile/src/components/overlays/tooltip.gts --
+// data-component/data-part set on a <@PopoverContent> *component
+// invocation*, not a plain DOM element. Component invocations forward their
+// attributes onto some other template's own root via ...attributes and have
+// no `class` of their own for this rule to check.
+
+test('does not flag data-component set on a component invocation (tooltip/@PopoverContent shape)', async () => {
+  assert.deepEqual(
+    await lint(
+      '<@PopoverContent data-component="tooltip" data-part="base" ...attributes></@PopoverContent>'
+    ),
+    []
+  );
+});
+
+// Legitimate shape: attributes forwarded onto a nested component invocation
+// -- Collapsible receiving data-part="content", and Modal/Drawer's docs
+// demos passing `<m.CloseButton data-part="close-button" />`. Uppercase-tag
+// and path-expression component invocations alike are exempt.
+
+test('does not flag data-part forwarded onto a <Collapsible> component invocation', async () => {
+  assert.deepEqual(
+    await lint('<Collapsible data-part="content" @isExpanded={{true}}></Collapsible>'),
+    []
+  );
+});
+
+test('does not flag data-part forwarded onto a <m.CloseButton> path-expression component invocation', async () => {
+  assert.deepEqual(await lint('<m.CloseButton data-part="close-button" />'), []);
+});
+
+// Legitimate shape: simple-table/index.gts's conditional
+// data-component={{if this.isRoot "table"}} -- a dynamic, non-literal value.
+// attrValue only reads TextNode attribute values, so a dynamic
+// data-component is invisible to this check entirely (same as it already is
+// to the reverse-direction check above it).
+
+test('does not flag a dynamic (non-literal) data-component value', async () => {
+  assert.deepEqual(
+    await lint(
+      '<table data-component={{if this.isRoot "table"}} data-part="table" class={{this.tableClassNames}}></table>'
+    ),
+    []
+  );
+});
+
+// Legitimate shape: an element whose class comes from a destructured local
+// (const { divider } = useStyles()) or, more broadly, any opaque
+// this.<getter> class computation this rule's static analysis cannot look
+// through (this.classes, this.classNames, this.baseClass, ...) -- several
+// real components use this pattern (e.g. form-feedback.gts, button.gts,
+// listbox.gts). The forward check is deliberately scoped to "class is a bare
+// TextNode (zero mustaches)" rather than "slotFromClassAttr returned null",
+// specifically so it does not flag these already-legitimate, already-tested
+// components.
+
+test('does not flag an opaque this.<getter> class expression the rule cannot resolve to a slot (form-feedback/button shape)', async () => {
+  assert.deepEqual(
+    await lint(
+      '<div class={{this.classes}} data-component="form-feedback" data-part="base"></div>'
+    ),
+    []
+  );
+});
+
+test('does not flag a bare this.classNames getter with data-component and data-part (button/button-group shape)', async () => {
+  assert.deepEqual(
+    await lint(
+      '<div class={{this.classNames}} data-component="button-group" data-part="base"></div>'
+    ),
+    []
+  );
+});
