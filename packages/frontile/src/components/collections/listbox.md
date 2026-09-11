@@ -594,6 +594,12 @@ import { Listbox } from 'frontile';
 </template>
 ```
 
+## Anatomy
+
+`Listbox` renders items from `@items` automatically, or yields an `Item` component for manual
+composition. Each item owns its option semantics, selection state, and optional start/end
+content.
+
 ## Accessibility
 
 | Element  | What it exposes                                                                                |

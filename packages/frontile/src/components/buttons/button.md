@@ -331,7 +331,7 @@ import { Button } from 'frontile';
 
 <template>
   <Button @isRenderless={{true}} as |btn|>
-    <a href='javascript:void(0)' class={{btn.classNames}}>My Link</a>
+    <a href='#composition' class={{btn.classNames}}>Jump to composition</a>
   </Button>
 </template>
 ```
@@ -372,7 +372,7 @@ import { Button } from 'frontile';
 <template>
   <Button
     @appearance='custom'
-    class='bg-teal-100 hover:bg-teal-200 hover:text-teal-600 border-teal-600 rounded-none border-dashed'
+    class='rounded-none border-teal-600 bg-teal-100 text-teal-900 hover:bg-teal-200 hover:text-teal-700 dark:border-teal-300 dark:bg-teal-950 dark:text-teal-100 dark:hover:bg-teal-900 dark:hover:text-teal-50 border-dashed'
   >
     Button
   </Button>

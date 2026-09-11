@@ -8,8 +8,7 @@ imports:
 
 A month-grid date picker for choosing a single day or a range, with full keyboard
 navigation and localization through `Intl`. Calendar renders no popover, trigger, or text
-input of its own — it's the primitive the date-picker components build their input and
-popover around.
+input of its own—you can compose it with an input and popover to build a date picker.
 
 ## Import
 
@@ -24,14 +23,26 @@ import { Calendar } from 'frontile/collections';
 
 const today = new Date();
 
-<template>
-  <Calendar @defaultValue={{today}} />
-</template>
+<template><Calendar @defaultValue={{today}} /></template>
 ```
 
 The first visible month is resolved in this order: `@defaultMonth`, then the month of
 `@defaultValue`, then the month of `@value`, then today. A calendar seeded with a selection
 opens showing that selection rather than today.
+
+## Anatomy
+
+Calendar provides four optional named blocks for replacing or extending its rendered parts:
+
+| Block | Purpose |
+| --- | --- |
+| `<:header>` | Replaces the month caption and previous/next controls. |
+| `<:weekday>` | Replaces each localized weekday label. |
+| `<:day>` | Replaces the contents of each day button. |
+| `<:footer>` | Adds content below the month grid, such as presets or selection help. |
+
+The default rendering is available when a block is omitted. See [Custom rendering](#custom-rendering)
+for the values yielded to each block.
 
 ## Controlled
 
@@ -48,7 +59,9 @@ export default class ControlledExample extends Component {
   @tracked value: Date | null = new Date();
 
   get label(): string {
-    return this.value ? `Selected: ${this.value.toDateString()}` : 'No date selected';
+    return this.value
+      ? `Selected: ${this.value.toDateString()}`
+      : 'No date selected';
   }
 
   handleChange = (value: Date | null): void => {
@@ -71,9 +84,7 @@ the usual pairing for a range picker.
 ```gts preview
 import { Calendar } from 'frontile/collections';
 
-<template>
-  <Calendar @mode='range' @visibleMonths={{2}} />
-</template>
+<template><Calendar @mode='range' @visibleMonths={{2}} /></template>
 ```
 
 A controlled range `@value` whose `end` is `null` is a half-open, mid-interaction state —
@@ -126,9 +137,7 @@ function isWeekend(date: Date): boolean {
   return day === 0 || day === 6;
 }
 
-<template>
-  <Calendar @isDateUnavailable={{isWeekend}} />
-</template>
+<template><Calendar @isDateUnavailable={{isWeekend}} /></template>
 ```
 
 In range mode, an unavailable date also blocks any range from being drawn across it — once
@@ -136,11 +145,11 @@ one endpoint is chosen, days on the far side of an unavailable day become unreac
 
 Three kinds of day look muted, and they don't all behave the same way:
 
-| Day | Looks | Selectable |
-| --- | --- | --- |
-| Outside `@minValue`/`@maxValue` | Dimmed | No |
-| Matched by `@isDateUnavailable` | Struck through | No |
-| Belonging to a neighbouring month | Dimmed | Yes — selecting it pages the calendar to that month |
+| Day                               | Looks          | Selectable                                          |
+| --------------------------------- | -------------- | --------------------------------------------------- |
+| Outside `@minValue`/`@maxValue`   | Dimmed         | No                                                  |
+| Matched by `@isDateUnavailable`   | Struck through | No                                                  |
+| Belonging to a neighbouring month | Dimmed         | Yes — selecting it pages the calendar to that month |
 
 ## Month and year dropdowns
 
@@ -150,9 +159,7 @@ Three kinds of day look muted, and they don't all behave the same way:
 ```gts preview
 import { Calendar } from 'frontile/collections';
 
-<template>
-  <Calendar @captionLayout='dropdown' />
-</template>
+<template><Calendar @captionLayout='dropdown' /></template>
 ```
 
 ## Intents and sizes
@@ -258,13 +265,25 @@ export default class PresetsExample extends Component {
     >
       <:footer>
         <div class='flex gap-2 pt-2'>
-          <Button @size='sm' @appearance='outlined' {{on 'click' (fn this.applyPreset 0)}}>
+          <Button
+            @size='sm'
+            @appearance='outlined'
+            {{on 'click' (fn this.applyPreset 0)}}
+          >
             Today
           </Button>
-          <Button @size='sm' @appearance='outlined' {{on 'click' (fn this.applyPreset 1)}}>
+          <Button
+            @size='sm'
+            @appearance='outlined'
+            {{on 'click' (fn this.applyPreset 1)}}
+          >
             Tomorrow
           </Button>
-          <Button @size='sm' @appearance='outlined' {{on 'click' (fn this.applyPreset 7)}}>
+          <Button
+            @size='sm'
+            @appearance='outlined'
+            {{on 'click' (fn this.applyPreset 7)}}
+          >
             In a week
           </Button>
         </div>
@@ -296,7 +315,14 @@ background.
 import { Calendar } from 'frontile/collections';
 import { get } from '@ember/helper';
 
-const prices: Record<number, number> = { 5: 120, 6: 120, 12: 95, 13: 95, 19: 140, 20: 140 };
+const prices: Record<number, number> = {
+  5: 120,
+  6: 120,
+  12: 95,
+  13: 95,
+  19: 140,
+  20: 140
+};
 const septemberFirst = new Date(2026, 8, 1);
 
 <template>
@@ -376,9 +402,7 @@ weekdays, and captions through `Intl.DateTimeFormat`, not a date-fns `Locale` ob
 ```gts preview
 import { Calendar } from 'frontile/collections';
 
-<template>
-  <Calendar @locale='nl-NL' @weekStartsOn={{1}} />
-</template>
+<template><Calendar @locale='nl-NL' @weekStartsOn={{1}} /></template>
 ```
 
 ## Disabled and read-only
@@ -405,15 +429,15 @@ The day grid is a single tab stop: `Tab` moves focus onto the currently focused 
 arrow keys move within the grid without adding extra stops. Moving past the edge of a
 visible month pages the calendar to bring the new day into view.
 
-| Key | Action |
-| --- | --- |
-| `←` / `→` | Move focus one day back / forward |
-| `↑` / `↓` | Move focus one week back / forward |
-| `Home` / `End` | Move to the start / end of the current week |
-| `Page Up` / `Page Down` | Move back / forward one month |
-| `Shift + Page Up` / `Shift + Page Down` | Move back / forward one year |
-| `Enter` / `Space` | Select the focused day |
-| `Escape` | Cancel a pending range selection |
+| Key                                     | Action                                      |
+| --------------------------------------- | ------------------------------------------- |
+| `←` / `→`                               | Move focus one day back / forward           |
+| `↑` / `↓`                               | Move focus one week back / forward          |
+| `Home` / `End`                          | Move to the start / end of the current week |
+| `Page Up` / `Page Down`                 | Move back / forward one month               |
+| `Shift + Page Up` / `Shift + Page Down` | Move back / forward one year                |
+| `Enter` / `Space`                       | Select the focused day                      |
+| `Escape`                                | Cancel a pending range selection            |
 
 `Escape` works no matter which control inside the calendar has focus — a day cell, the
 Previous/Next buttons, or the month `<select>` — so a pending range can always be

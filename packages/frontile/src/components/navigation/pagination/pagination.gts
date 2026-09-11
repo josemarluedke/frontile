@@ -113,8 +113,9 @@ interface PaginationArgs {
   showEdges?: boolean;
 
   /**
-   * Set to false for a previous/next-only control, with no page chips -- for
-   * cursor-style paging where the total is not known up front.
+   * Set to false for compact page-number navigation with previous and next
+   * controls but no page chips. `@total` and `@pageSize` still determine the
+   * first and last pages.
    *
    * @defaultValue true
    */

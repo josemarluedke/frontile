@@ -286,11 +286,12 @@ function knownSignatureComponents() {
 // The checks
 // ---------------------------------------------------------------------------
 
-function lintDoc(mdPath) {
+export function lintDoc(mdPath) {
   const findings = [];
   const source = readFileSync(mdPath, 'utf8');
   const { raw: frontmatter } = parseFrontmatter(source);
   const rel = relative(REPO_ROOT, mdPath);
+  const isModifierDoc = rel.includes('/src/modifiers/');
   const add = (level, line, message, hint) =>
     findings.push({ file: rel, level, line, message, hint });
 
@@ -361,7 +362,7 @@ function lintDoc(mdPath) {
   const signatureTags = [
     ...source.matchAll(/<Signature\s+[^>]*@component="([^"]+)"/g)
   ];
-  if (topLevel.has('API') && signatureTags.length === 0) {
+  if (topLevel.has('API') && signatureTags.length === 0 && !isModifierDoc) {
     add(
       'error',
       headings.find((h) => h.text === 'API')?.line ?? 1,
@@ -685,4 +686,6 @@ function main() {
   process.exit(errors.length > 0 ? 1 : 0);
 }
 
-main();
+if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
+  main();
+}

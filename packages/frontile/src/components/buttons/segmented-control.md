@@ -452,8 +452,7 @@ export default class Example extends Component {
 > flip again while the indicator itself only moves once, at the end. This is
 > a side effect of re-asserting native `checked` state a frame after the
 > click so it cannot disagree with a declined or absent `@onChange`; it is
-> bounded to a single frame and only visible on an async `@value`, so it is
-> worth knowing about rather than mistaking for a bug.
+> bounded to a single frame and only visible on an async `@value`.
 
 > Any interactive content yielded into an item ends up nested inside that
 > item's `<label>` in form mode. A nested link or button becomes a
@@ -465,7 +464,7 @@ export default class Example extends Component {
 
 Every slot is overridable through `@classes`, so a control can be restyled well
 past the built-in variants without dropping to a fork. The example below is a
-brand-styled toggle: a white card-coloured track with a hairline border, a
+brand-styled toggle: an adaptive card-coloured track with a hairline border, a
 filled `primary` pill, and the brand color carried by the unselected labels
 instead of neutral ink.
 
@@ -475,10 +474,9 @@ selected label, `@isFullWidth={{true}}` stretches the control and divides it
 evenly, and `@size='lg'` sets the padding. Only the track's surface and the
 label treatment need `@classes`.
 
-`text-neutral-bolder` is the strongest neutral ink, which inverts with the
-theme -- near-black (`gray-900`) in light, near-white (`gray-100`) in dark --
-so the unselected labels stay legible on the white track without hard-coding a
-colour per mode. `font-label text-header-md` overrides the size variant's own
+`text-neutral-bolder` is the strongest neutral ink, which adapts with the
+theme, so the unselected labels stay legible on the card surface without
+hard-coding a colour per mode. `font-label text-header-md` overrides the size variant's own
 type step; because both live in Tailwind's font-size group, the `@classes`
 value is the one that wins.
 

@@ -1,5 +1,5 @@
 .docfy-demo {
-  @apply mt-8 mb-12;
+  @apply mt-8 mb-12 min-w-0;
 }
 
 .docfy-demo__example__container {
@@ -7,6 +7,12 @@
 
   @apply relative gap-4 p-6 flex min-h-56 items-center justify-start sm:justify-center overflow-x-auto py-6;
 /* sm:py-24 lg:max-h-120 lg:min-h-120 */
+}
+
+.docfy-demo__example,
+.docfy-demo__snippet {
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* The stage above (`.docfy-demo__example__container`) is a centered flex
@@ -132,7 +138,7 @@
   @apply text-primary-strong -ml-6 pr-2 absolute opacity-100;
 }
 
-@screen lg {
+@media (min-width: 64rem) {
   .prose h2 > a::before,
   .prose h3 > a::before,
   .prose h4 > a::before,

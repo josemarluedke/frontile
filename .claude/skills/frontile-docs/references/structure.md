@@ -3,6 +3,7 @@
 Read this before creating a new `.md` or reordering an existing one.
 
 Contents:
+
 - [File location and naming](#file-location-and-naming)
 - [Frontmatter](#frontmatter)
 - [The template](#the-template)
@@ -36,11 +37,11 @@ imports:
 ---
 ```
 
-| Key | When | Notes |
-| --- | --- | --- |
-| `imports` | Whenever the doc uses `<Signature>` — so, effectively always | Without it the tag renders as literal text |
-| `label` | New components only | Renders a sidebar badge. `New` is the only value in use. Drop it after a release or two |
-| `url` | Rare | Overrides the generated URL segment. Only `modal.md` and `drawer.md` use it, to keep short public URLs |
+| Key       | When                                                         | Notes                                                                                                  |
+| --------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `imports` | Whenever the doc uses `<Signature>` — so, effectively always | Without it the tag renders as literal text                                                             |
+| `label`   | New components only                                          | Renders a sidebar badge. `New` is the only value in use. Drop it after a release or two                |
+| `url`     | Rare                                                         | Overrides the generated URL segment. Only `modal.md` and `drawer.md` use it, to keep short public URLs |
 
 There is no `title` key — the H1 is the title.
 
@@ -124,12 +125,12 @@ that have their own signatures, add a tag per component, in the order a reader m
 
 Use the standard headings so the sidebar and in-page TOC stay predictable across 30+ files:
 
-| Use | Instead of |
-| --- | --- |
-| `## Usage` | `## Basic Usage` |
-| Feature `##` sections, named for the axis | `## Key Features` (a list of features nobody reads) |
-| Prose inside the relevant section, or a `> Note:` callout | `## Important Notes` (orphaned facts) |
-| Guidance inside the section it applies to | `## Best Practices` |
+| Use                                                       | Instead of                                          |
+| --------------------------------------------------------- | --------------------------------------------------- |
+| `## Usage`                                                | `## Basic Usage`                                    |
+| Feature `##` sections, named for the axis                 | `## Key Features` (a list of features nobody reads) |
+| Prose inside the relevant section, or a `> Note:` callout | `## Important Notes` (orphaned facts)               |
+| Guidance inside the section it applies to                 | `## Best Practices`                                 |
 
 `## Key Features`, `## Important Notes`, and `## Best Practices` all exist in the current
 docs and all suffer the same problem: they collect facts away from the thing they describe,
@@ -139,8 +140,8 @@ redistribute its contents into the sections they belong to.
 ## Compound and yielding components
 
 For components that yield sub-components or a rich block context (`Form`, `Field`, `Table`,
-`Dropdown`, `Listbox`, `Select`), the reader's first question is *what are the pieces and
-how do they fit*. Answer it immediately after `## Usage` with a short section showing the
+`Dropdown`, `Listbox`, `Select`), the reader's first question is _what are the pieces and
+how do they fit_. Answer it immediately after `## Usage` with a short section showing the
 parts assembled — the existing `### Yielded Components` sections in `dropdown.md` and
 `listbox.md` are the pattern:
 
@@ -164,3 +165,13 @@ import { Dropdown } from 'frontile';
 Then document each part's own arguments with its own `<Signature>` tag under `## API`.
 Without this, a reader has to reverse-engineer the block structure from a feature demo that
 was trying to show them something else.
+
+## Modifiers
+
+Public modifier pages use the same Import, Usage, Accessibility, and API order.
+Their Accessibility section must say which semantics and keyboard behavior the
+host element must provide. Modifier signatures are not currently emitted by
+`glimmer-docgen-typescript`, so a modifier API may use a hand-written table that
+is checked directly against its exported TypeScript options interface. The
+component-only `<Signature>` requirement does not apply to files under
+`packages/frontile/src/modifiers/`.

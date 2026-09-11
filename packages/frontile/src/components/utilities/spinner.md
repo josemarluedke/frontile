@@ -69,7 +69,7 @@ You can further customize the Spinner by adding your own CSS classes using the
 `class` argument. This is particularly useful overwriting styles that does not
 work for your use case. You can also overwrite the colors using
 `fill-{*}` classes to modify the highlighted color and `text-{*}` classes to
-modify the background.
+modify the background. Semantic color utilities adapt automatically across themes.
 
 ```gts preview
 import { Spinner } from 'frontile';
@@ -77,7 +77,7 @@ import { Spinner } from 'frontile';
 <template>
   <div class='flex items-center justify-center'>
     <Spinner
-      @class='h-24 w-24 fill-purple-500 text-teal-300 dark:fill-purple-300 dark:text-teal-800'
+      @class='h-24 w-24 fill-secondary text-primary-muted'
     />
   </div>
 </template>

@@ -51,6 +51,12 @@ export default class DemoComponent extends Component {
 }
 ```
 
+## Anatomy
+
+`Table` combines a scroll container, header, body, rows, columns, and cells from `@columns`
+and `@items`. Custom header and cell components receive the same column and row context used
+by the default renderers.
+
 ## Column Configuration
 
 ### Custom Value Functions

@@ -171,7 +171,7 @@ registerCustomStyles({
   drawer: tv({
     extend: components.drawer,
     slots: {
-      header: 'text-2xl px-4 py-6 bg-black text-white rounded-none',
+      header: 'text-2xl px-4 py-6 bg-black text-white dark:bg-white dark:text-black rounded-none',
       footer: 'px-4 py-6'
     },
     variants: {
@@ -188,7 +188,7 @@ registerCustomStyles({
       ...components.button.variants,
       appearance: {
         ...components.button.variants.appearance,
-        default: 'shadow-depth-2'
+        default: 'shadow-elevation-2'
       }
     },
     compoundVariants: [
@@ -196,7 +196,7 @@ registerCustomStyles({
       {
         appearance: 'default',
         intent: 'default',
-        class: 'bg-black text-white hover:bg-black/80'
+        class: 'bg-black text-white hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/80'
       }
     ]
   })

@@ -671,9 +671,8 @@ What you must supply:
   enough when a page has more than one search.
 - Meaningful row text. An icon-only row needs its own accessible name.
 
-Verified in `test-app/tests/integration/components/collections/command-test.gts`, which covers
-the combobox attributes, `aria-activedescendant` tracking the active option, cross-group
-keyboard traversal, disabled rows, and the dialog's positioning.
+The combobox keeps `aria-activedescendant` synchronized with the active option while keyboard
+navigation crosses groups and skips disabled rows.
 
 ## API
 

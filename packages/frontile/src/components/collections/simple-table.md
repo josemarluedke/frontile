@@ -62,6 +62,12 @@ export default class DemoComponent extends Component {
 }
 ```
 
+## Anatomy
+
+`SimpleTable` yields `Header`, `Body`, `Footer`, `Column`, `Row`, and `Cell` components. Compose
+those pieces in native table order; unlike `Table`, SimpleTable does not create columns or rows
+from data for you.
+
 ## Advanced Composition
 
 ### Custom Headers

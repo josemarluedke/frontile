@@ -15,23 +15,6 @@ The Drawer component is a slide-out panel that appears from any edge of the scre
 import { Drawer } from 'frontile';
 ```
 
-## Anatomy
-
-Drawer yields the pieces you assemble it from:
-
-| Yielded       | Purpose                                                         |
-| ------------- | --------------------------------------------------------------- |
-| `Header`      | Heading region; applies the id that `aria-labelledby` points at |
-| `Body`        | Main content area                                               |
-| `Footer`      | Action row                                                      |
-| `CloseButton` | Styled close button wired to `@onClose`                         |
-| `headerId`    | The id `Header` uses, for labelling your own heading instead    |
-
-The default close button (shown unless `@allowClosing`/`@allowCloseButton` is `false`) is
-rendered inside `<d.Header>` when one is present, vertically centered against it regardless of
-whether the header is title-only or has a description too. Only a drawer with no `Header` at
-all falls back to the standalone, absolutely-positioned close button in the top right corner.
-
 ## Usage
 
 ### Basic Drawer
@@ -976,6 +959,21 @@ animation plays against the page rather than starting before anything has been d
 `@animateOnMount={{false}}` when an already-open drawer should simply be there, with no
 reveal.
 
+## Anatomy
+
+Drawer yields the pieces you assemble it from:
+
+| Yielded | Purpose |
+| --- | --- |
+| `d.Header` | Heading region; applies the id that `aria-labelledby` points at. |
+| `d.Body` | Main content area. |
+| `d.Footer` | Action row. |
+| `d.CloseButton` | Styled close button wired to `@onClose`. |
+| `d.headerId` | The id Header uses, for labelling your own heading instead. |
+
+The default close button is rendered inside `<d.Header>` when one is present. A drawer with
+no Header falls back to a standalone close button in its top-right corner.
+
 ## Patterns
 
 ### Form in Drawer
@@ -1185,9 +1183,9 @@ dialog by itself, because nothing points at it:
 </Drawer>
 ```
 
-In development, a drawer that ends up with no accessible name at all — no `Header`, no
-`aria-label` and no `aria-labelledby` — logs a warning with the id
-`frontile.drawer.missing-accessible-name`. It is compiled out of production builds.
+A drawer with no accessible name — no `Header`, `aria-label`, or `aria-labelledby` — is
+invalid. Frontile reports this during development with the warning id
+`frontile.drawer.missing-accessible-name` so it can be corrected before release.
 
 `aria-modal="true"` is dropped when `@disableFocusTrap={{true}}`: with the trap off the page
 behind really is reachable, and claiming otherwise would mislead screen reader users. Note

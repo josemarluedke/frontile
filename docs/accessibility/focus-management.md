@@ -21,18 +21,15 @@ When the mouse is used to focus an element, the class is not added—except for 
 Try focusing these elements with both keyboard (`Tab` key) and mouse to see the difference:
 
 ```gts preview
-import { Input } from 'frontile';
+import { Button, Input } from 'frontile';
 
 <template>
   <div class='space-y-4'>
-    <Input @placeholder='Focus me with Tab or mouse' />
+    <Input placeholder='Focus me with Tab or mouse' />
 
-    <a
-      class='inline-block px-4 py-2 bg-primary-soft text-white rounded hover:bg-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-soft focus-visible:ring-offset-2'
-      href='javascript:void(0)'
-    >
+    <Button @intent='primary'>
       Focus me with Tab or mouse
-    </a>
+    </Button>
   </div>
 </template>
 ```

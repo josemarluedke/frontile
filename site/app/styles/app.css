@@ -511,8 +511,19 @@
    layered `.prose :where(...)` heading/text rules. */
 .prose {
   font-family: var(--font-body);
+  min-width: 0;
+  max-width: 100%;
 }
-.prose h1 { @apply font-header text-header-3xl; }
+
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.prose h1 {
+  @apply font-header text-header-3xl;
+  overflow-wrap: anywhere;
+}
 .prose h2 { @apply font-header text-header-2xl; }
 .prose h3 { @apply font-header text-header-xl; }
 .prose h4 { @apply font-header text-header-lg; }

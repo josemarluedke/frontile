@@ -30,6 +30,8 @@
   --docfy-code-block-highlight-background: var(--color-primary-soft);
   --docfy-code-block-line-number-color: var(--color-neutral);
   --docfy-code-block-collapsed-height: 18rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* ------------------------------------------------------------------ *

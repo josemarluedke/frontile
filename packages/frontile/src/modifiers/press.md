@@ -19,19 +19,11 @@ import { press } from 'frontile';
 - **Optimized** - Only adds event listeners for callbacks you provide
 - **Flexible** - Supports both positional and named arguments
 
-`press` listens on `pointerdown`/`mousedown`, `pointerup`/`mouseup`, `pointercancel`,
-`keydown`, and `keyup`. It registers no `click` listener, so a native `element.click()` never
-triggers `onPress`.
+`press` listens to user pointer and keyboard input rather than native `click`
+events, so calling `element.click()` programmatically does not trigger
+`onPress`. A disabled native form control cannot be pressed by a user.
 
-> **Note:** In tests, an assertion that `onPress` did not fire after `element.click()` passes
-> against a broken implementation just as well as a working one. To check that a disabled
-> control suppresses `onPress`, use the `click` helper from `@ember/test-helpers`, which
-> refuses a disabled form control the way a browser does — `await assert.rejects(click(el),
-> /disabled/)` — and then assert the press count. Driving `pointerdown`/`pointerup` through
-> `triggerEvent` reports the opposite: `dispatchEvent` reaches listeners whatever the
-> element's `disabled` state, so a correct implementation still fires.
-
-## Example
+## Usage
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -62,14 +54,15 @@ export default class PressExample extends Component {
     <div class='flex items-center space-x-2'>
 
       <button
+        type='button'
         {{press
           onPressStart=this.handlePressStart
           onPressEnd=this.handlePressEnd
           onPress=this.handlePress
           onPressChange=this.handlePressChange
         }}
-        class={{if this.isPressed 'bg-success' 'bg-success/70'}}
-        class='text-on-success p-4 rounded'
+        class='rounded bg-success p-4 text-on-success transition-transform data-[pressed=true]:scale-95'
+        data-pressed={{this.isPressed}}
       >
         Press me! ({{if this.isPressed 'pressed' 'not pressed'}})
       </button>
@@ -87,35 +80,6 @@ export default class PressExample extends Component {
   </template>
 }
 ```
-
-## API
-
-The press modifier accepts an optional positional `onPress` function and the following named options:
-
-| Name            | Type                           | Description                                                                                                         |
-| --------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `onPress`       | `(e: PressEvent) => void`      | Handler called when press is released over the target.                                                              |
-| `onPressStart`  | `(e: PressEvent) => void`      | Handler called when a press interaction starts.                                                                     |
-| `onPressEnd`    | `(e: PressEvent) => void`      | Handler called when a press interaction ends, either over the target or when the pointer leaves the target.         |
-| `onPressUp`     | `(e: PressEvent) => void`      | Handler called when a press is released over the target. Not called when the release happens outside of the target. |
-| `onPressChange` | `(isPressed: boolean) => void` | Handler called when the press state changes.                                                                        |
-
-### PressEvent
-
-Press events are normalized across different input methods and provide consistent information:
-
-| Property                | Type                                                     | Description                                                  |
-| ----------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
-| `type`                  | `'pressstart' \| 'pressend' \| 'pressup' \| 'press'`     | The type of press event.                                     |
-| `pointerType`           | `'mouse' \| 'pen' \| 'touch' \| 'keyboard' \| 'virtual'` | The pointer type that triggered the event.                   |
-| `target`                | `Element`                                                | The target element of the press event.                       |
-| `shiftKey`              | `boolean`                                                | Whether the shift key was held during the event.             |
-| `ctrlKey`               | `boolean`                                                | Whether the ctrl key was held during the event.              |
-| `metaKey`               | `boolean`                                                | Whether the meta key was held during the event.              |
-| `altKey`                | `boolean`                                                | Whether the alt key was held during the event.               |
-| `x`                     | `number`                                                 | The x position relative to the target element.               |
-| `y`                     | `number`                                                 | The y position relative to the target element.               |
-| `continuePropagation()` | `() => void`                                             | Allows the event to continue propagating to parent elements. |
 
 ## Usage Notes
 
@@ -140,3 +104,43 @@ Press events are normalized across different input methods and provide consisten
 > same keypress a second time — a calendar grid handling Enter to select the focused day
 > selects twice once its day cells use `press`. Container-level key handlers above a
 > press-bearing element should check `event.defaultPrevented` before acting.
+
+## Accessibility
+
+Apply `press` to a natively interactive element such as a button whenever
+possible. The modifier normalizes Enter and Space activation, but it does not
+add a role, accessible name, focusability, or disabled semantics to a generic
+element. If a custom element is unavoidable, provide those semantics yourself.
+
+On a native button, set `type="button"` unless the press should submit its form.
+Disabled behavior comes from the native `disabled` attribute; the modifier does
+not infer disabled state from styling or `aria-disabled` alone.
+
+## API
+
+The press modifier accepts an optional positional `onPress` function and the following named options:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `onPress` | `(e: PressEvent) => void` | Handler called when press is released over the target. |
+| `onPressStart` | `(e: PressEvent) => void` | Handler called when a press interaction starts. |
+| `onPressEnd` | `(e: PressEvent) => void` | Handler called when a press interaction ends, either over the target or when the pointer leaves the target. |
+| `onPressUp` | `(e: PressEvent) => void` | Handler called when a press is released over the target. Not called when the release happens outside of the target. |
+| `onPressChange` | `(isPressed: boolean) => void` | Handler called when the press state changes. |
+
+### PressEvent
+
+Press events are normalized across different input methods and provide consistent information:
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `type` | `'pressstart' \| 'pressend' \| 'pressup' \| 'press'` | The type of press event. |
+| `pointerType` | `'mouse' \| 'pen' \| 'touch' \| 'keyboard' \| 'virtual'` | The pointer type that triggered the event. |
+| `target` | `Element` | The target element of the press event. |
+| `shiftKey` | `boolean` | Whether the shift key was held during the event. |
+| `ctrlKey` | `boolean` | Whether the ctrl key was held during the event. |
+| `metaKey` | `boolean` | Whether the meta key was held during the event. |
+| `altKey` | `boolean` | Whether the alt key was held during the event. |
+| `x` | `number` | The x position relative to the target element. |
+| `y` | `number` | The y position relative to the target element. |
+| `continuePropagation()` | `() => void` | Allows the event to continue propagating to parent elements. |
