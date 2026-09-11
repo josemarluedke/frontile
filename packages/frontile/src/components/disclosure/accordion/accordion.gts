@@ -243,13 +243,10 @@ class Accordion extends Component<AccordionSignature> {
       return [];
     }
 
+    const root = this.#element;
     return [
-      ...this.#element.querySelectorAll<HTMLElement>(
-        '[data-fr-accordion-trigger]'
-      )
-    ].filter(
-      (element) => element.closest('[data-fr-accordion]') === this.#element
-    );
+      ...root.querySelectorAll<HTMLElement>('[data-part="trigger"]')
+    ].filter((element) => element.closest('[data-component]') === root);
   }
 
   focusSibling = (from: HTMLElement, key: string): void => {
@@ -340,7 +337,8 @@ class Accordion extends Component<AccordionSignature> {
 
   <template>
     <div
-      data-fr-accordion
+      data-component="accordion"
+      data-part="base"
       class={{this.styles.base class=@classes.base}}
       {{this.setupRoot}}
       ...attributes

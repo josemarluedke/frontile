@@ -151,16 +151,17 @@ class AccordionItem extends Component<AccordionItemSignature> {
 
   <template>
     <div
+      data-part="item"
       data-open="{{this.isOpen}}"
       data-disabled="{{this.isDisabled}}"
       class="{{@context.itemClass}} {{@class}}"
       ...attributes
     >
       {{#let (element (headingTag @context.headingLevel)) as |Heading|}}
-        <Heading class={{@context.headingClass}}>
+        <Heading data-part="heading" class={{@context.headingClass}}>
           <button
             type="button"
-            data-fr-accordion-trigger
+            data-part="trigger"
             id={{this.triggerId}}
             aria-expanded="{{this.isOpen}}"
             aria-controls={{this.panelId}}
@@ -172,7 +173,10 @@ class AccordionItem extends Component<AccordionItemSignature> {
             {{on "keydown" this.handleKeydown}}
           >
             {{#if (has-block "startContent")}}
-              <span class={{@context.startContentClass}}>
+              <span
+                data-part="start-content"
+                class={{@context.startContentClass}}
+              >
                 {{yield
                   (hash isOpen=this.isOpen toggle=this.toggle)
                   to="startContent"
@@ -180,8 +184,11 @@ class AccordionItem extends Component<AccordionItemSignature> {
               </span>
             {{/if}}
 
-            <span class={{@context.titleWrapperClass}}>
-              <span class={{@context.titleClass}}>
+            <span
+              data-part="title-wrapper"
+              class={{@context.titleWrapperClass}}
+            >
+              <span data-part="title" class={{@context.titleClass}}>
                 {{#if (has-block "title")}}
                   {{yield
                     (hash isOpen=this.isOpen toggle=this.toggle)
@@ -193,7 +200,7 @@ class AccordionItem extends Component<AccordionItemSignature> {
               </span>
 
               {{#if (if (has-block "subtitle") true @subtitle)}}
-                <span class={{@context.subtitleClass}}>
+                <span data-part="subtitle" class={{@context.subtitleClass}}>
                   {{#if (has-block "subtitle")}}
                     {{yield
                       (hash isOpen=this.isOpen toggle=this.toggle)
@@ -207,7 +214,11 @@ class AccordionItem extends Component<AccordionItemSignature> {
             </span>
 
             {{#unless @context.hideIndicator}}
-              <span aria-hidden="true" class={{@context.indicatorClass}}>
+              <span
+                data-part="indicator"
+                aria-hidden="true"
+                class={{@context.indicatorClass}}
+              >
                 {{#if (has-block "indicator")}}
                   {{yield
                     (hash isOpen=this.isOpen toggle=this.toggle)
@@ -223,6 +234,7 @@ class AccordionItem extends Component<AccordionItemSignature> {
       {{/let}}
 
       <Collapsible
+        data-part="content"
         @isOpen={{this.isOpen}}
         role="region"
         id={{this.panelId}}
@@ -230,7 +242,7 @@ class AccordionItem extends Component<AccordionItemSignature> {
         inert={{this.inert}}
         class={{@context.contentClass}}
       >
-        <div class={{@context.contentBodyClass}}>
+        <div data-part="content-body" class={{@context.contentBodyClass}}>
           {{#if (has-block "content")}}
             {{yield (hash isOpen=this.isOpen toggle=this.toggle) to="content"}}
           {{else}}
