@@ -70,10 +70,10 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
   };
 
   <template>
-    <div data-fr-calendar-header class={{@classes.header}} ...attributes>
+    <div data-part="header" class={{@classes.header}} ...attributes>
       <button
         type="button"
-        data-fr-calendar-prev
+        data-part="nav-button"
         class={{@classes.navButton}}
         disabled={{if @context.canGoPrevious false true}}
         data-disabled={{if @context.canGoPrevious "false" "true"}}
@@ -82,21 +82,27 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
       ><ChevronLeftIcon /></button>
 
       {{#if this.isDropdown}}
-        <div class={{@classes.nav}}>
+        <div data-part="nav" class={{@classes.nav}}>
           {{! The visible label sizes this box to the current month; the real
               <select> is laid transparently over it, so the control stays
               native without dictating the width. }}
-          <span class={{@classes.monthSelectWrapper}}>
+          <span
+            data-part="month-select-wrapper"
+            class={{@classes.monthSelectWrapper}}
+          >
             <span
               aria-hidden="true"
-              data-fr-calendar-month-value
+              data-part="month-select-value"
               class={{@classes.monthSelectValue}}
             >{{this.monthLabel}}</span>
 
-            <ChevronDownIcon class={{@classes.monthSelectIcon}} />
+            <ChevronDownIcon
+              data-part="month-select-icon"
+              class={{@classes.monthSelectIcon}}
+            />
 
             <select
-              data-fr-calendar-month-select
+              data-part="month-select"
               aria-label="Month"
               class={{@classes.monthSelect}}
               {{on "change" this.onMonthSelect}}
@@ -115,22 +121,19 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
 
           <button
             type="button"
-            data-fr-calendar-year-trigger
+            data-part="year-trigger"
             aria-expanded={{if @isYearGridOpen "true" "false"}}
             class={{@classes.yearTrigger}}
             {{on "click" @onToggleYearGrid}}
           >{{this.year}}</button>
         </div>
       {{else}}
-        <div
-          data-fr-calendar-title
-          class={{@classes.title}}
-        >{{@context.title}}</div>
+        <div data-part="title" class={{@classes.title}}>{{@context.title}}</div>
       {{/if}}
 
       <button
         type="button"
-        data-fr-calendar-next
+        data-part="nav-button"
         class={{@classes.navButton}}
         disabled={{if @context.canGoNext false true}}
         data-disabled={{if @context.canGoNext "false" "true"}}

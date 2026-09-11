@@ -67,9 +67,18 @@ export default class YearGrid extends Component<YearGridSignature> {
   setup = modifier((element: HTMLElement) => {
     this.#element = element;
 
-    const selected = element.querySelector<HTMLElement>(
-      '[data-fr-calendar-year][data-selected="true"]'
-    );
+    // `element` here is the year-grid panel's own container, which carries
+    // no `data-component` of its own -- only the enclosing Calendar's root
+    // does. So the "same component" boundary is that ancestor, not
+    // `element` itself; resolve it once and filter against it, rather than
+    // comparing against `element` (which would never match and would leave
+    // `selected` unfindable for every real render).
+    const root = element.closest('[data-component]') ?? element;
+    const selected = [
+      ...element.querySelectorAll<HTMLElement>(
+        '[data-part="year-cell"][data-selected="true"]'
+      )
+    ].find((el) => el.closest('[data-component]') === root);
 
     // The list spans a century, so the selected year is usually far down a
     // scrolling panel. Bring it into view before focusing, or the panel opens
@@ -125,10 +134,16 @@ export default class YearGrid extends Component<YearGridSignature> {
 
     event.preventDefault();
 
-    const buttons = Array.from(
-      this.#element?.querySelectorAll<HTMLElement>('[data-fr-calendar-year]') ??
-        []
-    );
+    // Same reasoning as `setup` above: `this.#element` is the year-grid
+    // panel's own container, not the node carrying `data-component`, so the
+    // "same component" boundary is resolved via `closest` rather than
+    // compared directly against `this.#element`.
+    const root = this.#element?.closest('[data-component]') ?? this.#element;
+    const buttons = root
+      ? [
+          ...root.querySelectorAll<HTMLElement>('[data-part="year-cell"]')
+        ].filter((el) => el.closest('[data-component]') === root)
+      : [];
     const index = buttons.indexOf(document.activeElement as HTMLElement);
 
     // `indexOf` returns -1 when focus is not on a year button. Stepping from
@@ -153,7 +168,7 @@ export default class YearGrid extends Component<YearGridSignature> {
     <div
       role="listbox"
       aria-label="Year"
-      data-fr-calendar-year-grid
+      data-part="year-grid"
       class={{@classes.yearGrid}}
       {{this.setup}}
       {{on "keydown" this.handleKeydown}}
@@ -163,7 +178,7 @@ export default class YearGrid extends Component<YearGridSignature> {
         <button
           type="button"
           role="option"
-          data-fr-calendar-year
+          data-part="year-cell"
           data-year={{year}}
           data-selected={{if (this.isCurrent year) "true" "false"}}
           aria-selected={{if (this.isCurrent year) "true" "false"}}

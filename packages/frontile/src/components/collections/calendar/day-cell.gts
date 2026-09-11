@@ -23,7 +23,7 @@ const DayCell: TOC<DayCellSignature> = <template>
        that implies them. Both are omitted entirely on an empty outside-day
        placeholder cell, since it renders no selectable content. }}
   <td
-    data-fr-calendar-cell
+    data-part="cell"
     class={{@classes.cell}}
     role={{if @state.rendersDay "gridcell"}}
     aria-selected={{if @state.rendersDay (if @state.isSelected "true" "false")}}
@@ -31,7 +31,7 @@ const DayCell: TOC<DayCellSignature> = <template>
   >
     {{#if @state.rendersDay}}
       <span
-        data-fr-calendar-band
+        data-part="cell-band"
         class={{@classes.cellBand}}
         data-in-range={{if @state.isInRange "true" "false"}}
         data-preview={{if @state.isPreview "true" "false"}}
@@ -41,7 +41,7 @@ const DayCell: TOC<DayCellSignature> = <template>
 
       <button
         type="button"
-        data-fr-calendar-day
+        data-part="day"
         class={{@classes.day}}
         data-key={{@day.key}}
         data-outside={{if @state.isOutside "true" "false"}}
@@ -66,7 +66,7 @@ const DayCell: TOC<DayCellSignature> = <template>
             centres whatever sits inside it. A day block goes inside it
             rather than replacing it, so a block rendering a numeral plus a
             price gets that column for free instead of laying out inline. }}
-        <span data-fr-calendar-day-content class={{@classes.dayContent}}>
+        <span data-part="day-content" class={{@classes.dayContent}}>
           {{#if @hasCustomContent}}
             {{yield @state}}
           {{else}}
@@ -78,10 +78,7 @@ const DayCell: TOC<DayCellSignature> = <template>
             which is what the docs promise. }}
         {{#if @state.isToday}}
           {{#unless @hasCustomContent}}
-            <span
-              data-fr-calendar-indicator
-              class={{@classes.indicator}}
-            ></span>
+            <span data-part="indicator" class={{@classes.indicator}}></span>
           {{/unless}}
         {{/if}}
       </button>

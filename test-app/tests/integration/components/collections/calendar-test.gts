@@ -30,20 +30,20 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar]').exists('renders the root');
+      assert.dom('[data-component="calendar"]').exists('renders the root');
 
-      const grid = find('[data-fr-calendar-grid]');
+      const grid = find('[data-part="month-grid"]');
       assert.dom(grid).hasTagName('table');
       assert.dom(grid).hasAttribute('role', 'grid');
 
-      assert.dom('[data-fr-calendar-title]').hasText('September 2026');
+      assert.dom('[data-part="title"]').hasText('September 2026');
 
-      const weekdays = findAll('[data-fr-calendar-weekday]');
+      const weekdays = findAll('[data-part="weekday"]');
       assert.strictEqual(weekdays.length, 7, 'seven weekday headers');
       assert.dom(weekdays[0]!).hasText('Sun', 'en-US starts on Sunday');
       assert.dom(weekdays[0]!).hasAttribute('scope', 'col');
 
-      const days = findAll('[data-fr-calendar-day]');
+      const days = findAll('[data-part="day"]');
       assert.strictEqual(days.length, 35, 'September 2026 fills five rows');
       assert.dom(days[0]!).hasTagName('button');
       assert.dom(days[0]!).hasAttribute('type', 'button');
@@ -67,7 +67,7 @@ module(
         </template>
       );
 
-      const days = findAll('[data-fr-calendar-day]');
+      const days = findAll('[data-part="day"]');
       assert
         .dom(days[2]!.querySelector('[data-test-custom-day]'))
         .hasText('Day 1!', 'the supplied block content renders');
@@ -79,7 +79,7 @@ module(
       // The content wrapper is layout shared by both branches, so a block's
       // content still gets the column that stacks a numeral over a second line.
       assert
-        .dom(days[2]!.querySelector('[data-fr-calendar-day-content]'))
+        .dom(days[2]!.querySelector('[data-part="day-content"]'))
         .exists('custom content still sits inside the layout wrapper');
     });
 
@@ -100,14 +100,14 @@ module(
         </template>
       );
 
-      const cellSel = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      const cellSel = '[data-part="day"][data-key="2026-09-09"]';
       assert.dom(`${cellSel} [data-test-num]`).hasText('9');
       assert.dom(`${cellSel} [data-test-price]`).hasText('$100');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-05"] [data-test-price]')
+        .dom('[data-part="day"][data-key="2026-09-05"] [data-test-price]')
         .hasText('$120', 'Saturday is priced higher');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-08-30"] [data-test-price]')
+        .dom('[data-part="day"][data-key="2026-08-30"] [data-test-price]')
         .doesNotExist('outside days opt out');
     });
 
@@ -128,7 +128,7 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-prev]')
+        .dom('[aria-label="Previous month"]')
         .doesNotExist('default header replaced');
       assert.dom('[data-test-caption]').hasText('September 2026');
 
@@ -153,17 +153,17 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-year-grid]').doesNotExist();
+      assert.dom('[data-part="year-grid"]').doesNotExist();
       assert.dom('[data-test-year-trigger]').hasAria('expanded', 'false');
 
       await click('[data-test-year-trigger]');
 
-      assert.dom('[data-fr-calendar-year-grid]').exists('year grid opens');
+      assert.dom('[data-part="year-grid"]').exists('year grid opens');
       assert.dom('[data-test-year-trigger]').hasAria('expanded', 'true');
 
-      await click('[data-fr-calendar-year][data-year="2029"]');
+      await click('[data-part="year-cell"][data-year="2029"]');
 
-      assert.dom('[data-fr-calendar-year-grid]').doesNotExist('closes on pick');
+      assert.dom('[data-part="year-grid"]').doesNotExist('closes on pick');
       assert.dom('[data-test-caption]').hasText('September 2029');
       assert.notStrictEqual(
         document.activeElement,
@@ -171,7 +171,7 @@ module(
         'focus does not fall to <body> -- there is no default year trigger to restore it to'
       );
       assert
-        .dom('[data-fr-calendar-day][tabindex="0"]')
+        .dom('[data-part="day"][tabindex="0"]')
         .isFocused(
           'focus falls back to the roving day cell when a custom <:header> replaced the year trigger'
         );
@@ -188,7 +188,7 @@ module(
         </template>
       );
 
-      const first = findAll('[data-fr-calendar-weekday]')[0]!;
+      const first = findAll('[data-part="weekday"]')[0]!;
       assert.dom(first.querySelector('abbr')).hasText('S');
       assert.dom(first.querySelector('abbr')).hasAttribute('title', 'Sunday');
     });
@@ -205,7 +205,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-footer] [data-test-today]').exists();
+      assert.dom('[data-part="footer"] [data-test-today]').exists();
     });
 
     test('no footer wrapper renders when no <:footer> block is supplied', async function (assert) {
@@ -215,7 +215,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-footer]').doesNotExist();
+      assert.dom('[data-part="footer"]').doesNotExist();
     });
 
     test('@weekStartsOn overrides the locale', async function (assert) {
@@ -229,9 +229,9 @@ module(
         </template>
       );
 
-      assert.dom(findAll('[data-fr-calendar-weekday]')[0]!).hasText('Mon');
+      assert.dom(findAll('[data-part="weekday"]')[0]!).hasText('Mon');
       assert
-        .dom(findAll('[data-fr-calendar-day]')[0]!)
+        .dom(findAll('[data-part="day"]')[0]!)
         .hasAttribute('data-key', '2026-08-31');
     });
 
@@ -242,9 +242,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-title]').hasText('september 2026');
+      assert.dom('[data-part="title"]').hasText('september 2026');
       assert
-        .dom(findAll('[data-fr-calendar-weekday]')[0]!)
+        .dom(findAll('[data-part="weekday"]')[0]!)
         .hasText('ma', 'nl-NL starts on Monday');
     });
 
@@ -259,10 +259,10 @@ module(
         </template>
       );
 
-      const cells = findAll('[data-fr-calendar-cell]');
+      const cells = findAll('[data-part="cell"]');
       assert.strictEqual(cells.length, 35, 'every grid position still exists');
       assert.strictEqual(
-        findAll('[data-fr-calendar-day]').length,
+        findAll('[data-part="day"]').length,
         30,
         'only September days render a button'
       );
@@ -279,14 +279,14 @@ module(
         </template>
       );
 
-      assert.strictEqual(findAll('[data-fr-calendar-week]').length, 6);
+      assert.strictEqual(findAll('[data-part="week"]').length, 6);
     });
 
     test('today is marked with aria-current', async function (assert) {
       await render(<template><Calendar @locale="en-US" /></template>);
 
       assert
-        .dom('[data-fr-calendar-day][data-today="true"]')
+        .dom('[data-part="day"][data-today="true"]')
         .hasAria('current', 'date', 'exactly one day is today');
     });
 
@@ -298,7 +298,7 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAria(
           'label',
           'Wednesday, September 9, 2026',
@@ -317,7 +317,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-grid]').hasAria('readonly', 'true');
+      assert.dom('[data-part="month-grid"]').hasAria('readonly', 'true');
     });
 
     test('the grid is not aria-readonly by default', async function (assert) {
@@ -327,7 +327,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-grid]').hasAria('readonly', 'false');
+      assert.dom('[data-part="month-grid"]').hasAria('readonly', 'false');
     });
 
     test('it navigates months when uncontrolled', async function (assert) {
@@ -337,14 +337,14 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-title]').hasText('September 2026');
+      assert.dom('[data-part="title"]').hasText('September 2026');
 
-      await click('[data-fr-calendar-next]');
-      assert.dom('[data-fr-calendar-title]').hasText('October 2026');
+      await click('[aria-label="Next month"]');
+      assert.dom('[data-part="title"]').hasText('October 2026');
 
-      await click('[data-fr-calendar-prev]');
-      await click('[data-fr-calendar-prev]');
-      assert.dom('[data-fr-calendar-title]').hasText('August 2026');
+      await click('[aria-label="Previous month"]');
+      await click('[aria-label="Previous month"]');
+      assert.dom('[data-part="title"]').hasText('August 2026');
     });
 
     test('@month makes the visible month controlled', async function (assert) {
@@ -362,17 +362,17 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-next]');
+      await click('[aria-label="Next month"]');
 
       assert
-        .dom('[data-fr-calendar-title]')
+        .dom('[data-part="title"]')
         .hasText('September 2026', 'controlled mode does not move on its own');
       assert.strictEqual(seen.length, 1, 'it reports the requested month');
       assert.strictEqual(seen[0]!.getMonth(), 9, 'October');
 
       month.current = new Date(2026, 9, 1);
       await settled();
-      assert.dom('[data-fr-calendar-title]').hasText('October 2026');
+      assert.dom('[data-part="title"]').hasText('October 2026');
     });
 
     test('month changes are announced politely', async function (assert) {
@@ -386,7 +386,7 @@ module(
       assert.dom(live).hasAttribute('aria-live', 'polite');
       assert.dom(live).hasText('September 2026');
 
-      await click('[data-fr-calendar-next]');
+      await click('[aria-label="Next month"]');
       assert.dom('[data-fr-calendar-live]').hasText('October 2026');
     });
 
@@ -400,7 +400,7 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-title]')
+        .dom('[data-part="title"]')
         .hasText('March 2027', 'opens on the selection, not on today');
     });
 
@@ -418,14 +418,14 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute('data-selected', 'true');
       // `aria-selected` belongs on the gridcell, not the button inside it.
       const selectedCell = find(
-        '[data-fr-calendar-day][data-key="2026-09-09"]'
+        '[data-part="day"][data-key="2026-09-09"]'
       )!.closest('td');
       assert.dom(selectedCell).hasAria('selected', 'true');
       assert.strictEqual(seen.length, 1);
@@ -448,10 +448,10 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute(
           'data-selected',
           'false',
@@ -462,7 +462,7 @@ module(
       value.current = new Date(2026, 8, 9);
       await settled();
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute('data-selected', 'true');
     });
 
@@ -476,7 +476,7 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-12"]')
+        .dom('[data-part="day"][data-key="2026-09-12"]')
         .hasAttribute('data-selected', 'true');
     });
 
@@ -487,10 +487,10 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-10-01"]');
+      await click('[data-part="day"][data-key="2026-10-01"]');
 
       assert
-        .dom('[data-fr-calendar-title]')
+        .dom('[data-part="title"]')
         .hasText(
           'October 2026',
           'the newly selected day is never left off screen'
@@ -507,7 +507,7 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-title]')
+        .dom('[data-part="title"]')
         .hasText('June 2027', 'opens on the selection, not on today');
     });
 
@@ -527,22 +527,22 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-04"]')
+        .dom('[data-part="day"][data-key="2026-09-04"]')
         .hasAttribute('data-disabled', 'true');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-05"]')
+        .dom('[data-part="day"][data-key="2026-09-05"]')
         .hasAttribute(
           'data-disabled',
           'false',
           'the bound itself is selectable'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-21"]')
+        .dom('[data-part="day"][data-key="2026-09-21"]')
         .hasAttribute('data-disabled', 'true');
 
-      await click('[data-fr-calendar-day][data-key="2026-09-04"]');
+      await click('[data-part="day"][data-key="2026-09-04"]');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-04"]')
+        .dom('[data-part="day"][data-key="2026-09-04"]')
         .hasAttribute(
           'data-selected',
           'false',
@@ -566,10 +566,10 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-prev]')
+        .dom('[aria-label="Previous month"]')
         .isDisabled('no month before September');
       assert
-        .dom('[data-fr-calendar-next]')
+        .dom('[aria-label="Next month"]')
         .isDisabled('no month after September');
     });
 
@@ -595,28 +595,28 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-prev]')
+        .dom('[aria-label="Previous month"]')
         .isNotDisabled(
           'February 15-28 are still reachable, so Previous must stay enabled'
         );
 
-      await click('[data-fr-calendar-prev]');
+      await click('[aria-label="Previous month"]');
 
       assert
-        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .dom(findAll('[data-part="month-grid"]')[0]!)
         .hasAria('label', 'January 2026');
       assert
-        .dom(findAll('[data-fr-calendar-grid]')[1]!)
+        .dom(findAll('[data-part="month-grid"]')[1]!)
         .hasAria('label', 'February 2026');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-02-15"]')
+        .dom('[data-part="day"][data-key="2026-02-15"]')
         .hasAttribute(
           'data-disabled',
           'false',
           'the min bound itself is reachable and selectable'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-01-31"]')
+        .dom('[data-part="day"][data-key="2026-01-31"]')
         .hasAttribute('data-disabled', 'true', 'January is fully out of range');
     });
 
@@ -634,22 +634,22 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-05"]')
+        .dom('[data-part="day"][data-key="2026-09-05"]')
         .hasAttribute('data-unavailable', 'true', 'Saturday');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-05"]')
+        .dom('[data-part="day"][data-key="2026-09-05"]')
         .hasAttribute(
           'data-outside-range',
           'false',
           'unavailable is not out of range'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute('data-unavailable', 'false', 'Wednesday');
 
-      await click('[data-fr-calendar-day][data-key="2026-09-05"]');
+      await click('[data-part="day"][data-key="2026-09-05"]');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-05"]')
+        .dom('[data-part="day"][data-key="2026-09-05"]')
         .hasAttribute('data-selected', 'false');
     });
 
@@ -664,14 +664,14 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute('data-selected', 'false', 'not selectable');
 
-      await click('[data-fr-calendar-next]');
+      await click('[aria-label="Next month"]');
       assert
-        .dom('[data-fr-calendar-title]')
+        .dom('[data-part="title"]')
         .hasText('October 2026', 'still navigable');
     });
 
@@ -686,10 +686,10 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-prev]').isDisabled();
-      assert.dom('[data-fr-calendar-next]').isDisabled();
+      assert.dom('[aria-label="Previous month"]').isDisabled();
+      assert.dom('[aria-label="Next month"]').isDisabled();
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute('data-disabled', 'true');
     });
 
@@ -700,7 +700,7 @@ module(
         </template>
       );
 
-      const tabbable = findAll('[data-fr-calendar-day][tabindex="0"]');
+      const tabbable = findAll('[data-part="day"][tabindex="0"]');
       assert.strictEqual(tabbable.length, 1, 'exactly one day is tabbable');
     });
 
@@ -711,9 +711,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-day]').isNotFocused();
+      assert.dom('[data-part="day"]').isNotFocused();
       assert.notOk(
-        document.activeElement?.matches?.('[data-fr-calendar-day]'),
+        document.activeElement?.matches?.('[data-part="day"]'),
         'no calendar day is the active element'
       );
     });
@@ -725,36 +725,36 @@ module(
         </template>
       );
 
-      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      const start = '[data-part="day"][data-key="2026-09-09"]';
       await focus(start);
 
       await triggerKeyEvent(start, 'keydown', 'ArrowRight');
       assert
-        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .dom('[data-part="day"][data-focused="true"]')
         .hasAttribute('data-key', '2026-09-10');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-10"]')
+        .dom('[data-part="day"][data-key="2026-09-10"]')
         .isFocused('DOM focus actually moved, not just the data attribute');
 
       await triggerKeyEvent(
-        '[data-fr-calendar-day][data-key="2026-09-10"]',
+        '[data-part="day"][data-key="2026-09-10"]',
         'keydown',
         'ArrowDown'
       );
       assert
-        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .dom('[data-part="day"][data-focused="true"]')
         .hasAttribute('data-key', '2026-09-17');
-      assert.dom('[data-fr-calendar-day][data-key="2026-09-17"]').isFocused();
+      assert.dom('[data-part="day"][data-key="2026-09-17"]').isFocused();
 
       await triggerKeyEvent(
-        '[data-fr-calendar-day][data-key="2026-09-17"]',
+        '[data-part="day"][data-key="2026-09-17"]',
         'keydown',
         'ArrowUp'
       );
       assert
-        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .dom('[data-part="day"][data-focused="true"]')
         .hasAttribute('data-key', '2026-09-10');
-      assert.dom('[data-fr-calendar-day][data-key="2026-09-10"]').isFocused();
+      assert.dom('[data-part="day"][data-key="2026-09-10"]').isFocused();
     });
 
     test('arrow keys focused on a header nav button do not hijack the day grid', async function (assert) {
@@ -773,18 +773,22 @@ module(
         </template>
       );
 
-      await focus('[data-fr-calendar-next]');
-      await triggerKeyEvent('[data-fr-calendar-next]', 'keydown', 'ArrowRight');
+      await focus('[aria-label="Next month"]');
+      await triggerKeyEvent(
+        '[aria-label="Next month"]',
+        'keydown',
+        'ArrowRight'
+      );
 
       assert
-        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .dom('[data-part="day"][data-focused="true"]')
         .hasAttribute(
           'data-key',
           '2026-09-09',
           'the day-grid focused day did not change'
         );
       assert
-        .dom('[data-fr-calendar-next]')
+        .dom('[aria-label="Next month"]')
         .isFocused('the nav button kept DOM focus');
     });
 
@@ -795,24 +799,24 @@ module(
         </template>
       );
 
-      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      const start = '[data-part="day"][data-key="2026-09-09"]';
       await focus(start);
 
       await triggerKeyEvent(start, 'keydown', 'Home');
       assert
-        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .dom('[data-part="day"][data-focused="true"]')
         .hasAttribute('data-key', '2026-09-06');
-      assert.dom('[data-fr-calendar-day][data-key="2026-09-06"]').isFocused();
+      assert.dom('[data-part="day"][data-key="2026-09-06"]').isFocused();
 
       await triggerKeyEvent(
-        '[data-fr-calendar-day][data-key="2026-09-06"]',
+        '[data-part="day"][data-key="2026-09-06"]',
         'keydown',
         'End'
       );
       assert
-        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .dom('[data-part="day"][data-focused="true"]')
         .hasAttribute('data-key', '2026-09-12');
-      assert.dom('[data-fr-calendar-day][data-key="2026-09-12"]').isFocused();
+      assert.dom('[data-part="day"][data-key="2026-09-12"]').isFocused();
     });
 
     test('arrow keys cross the month boundary and move the window', async function (assert) {
@@ -829,17 +833,17 @@ module(
         </template>
       );
 
-      const last = '[data-fr-calendar-day][data-key="2026-09-30"]';
+      const last = '[data-part="day"][data-key="2026-09-30"]';
       await focus(last);
       await triggerKeyEvent(last, 'keydown', 'ArrowRight');
 
-      assert.dom('[data-fr-calendar-title]').hasText('October 2026');
+      assert.dom('[data-part="title"]').hasText('October 2026');
       assert.strictEqual(seen.length, 1, 'the month change is reported');
       assert
-        .dom('[data-fr-calendar-day][data-focused="true"]')
+        .dom('[data-part="day"][data-focused="true"]')
         .hasAttribute('data-key', '2026-10-01');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
+        .dom('[data-part="day"][data-key="2026-10-01"]')
         .isFocused(
           'focus followed the re-rendered grid across the month boundary'
         );
@@ -852,26 +856,26 @@ module(
         </template>
       );
 
-      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      const start = '[data-part="day"][data-key="2026-09-09"]';
       await focus(start);
 
       await triggerKeyEvent(start, 'keydown', 'PageDown');
-      assert.dom('[data-fr-calendar-title]').hasText('October 2026');
+      assert.dom('[data-part="title"]').hasText('October 2026');
 
       await triggerKeyEvent(
-        '[data-fr-calendar-day][data-key="2026-10-09"]',
+        '[data-part="day"][data-key="2026-10-09"]',
         'keydown',
         'PageUp'
       );
-      assert.dom('[data-fr-calendar-title]').hasText('September 2026');
+      assert.dom('[data-part="title"]').hasText('September 2026');
 
       await triggerKeyEvent(
-        '[data-fr-calendar-day][data-key="2026-09-09"]',
+        '[data-part="day"][data-key="2026-09-09"]',
         'keydown',
         'PageDown',
         { shiftKey: true }
       );
-      assert.dom('[data-fr-calendar-title]').hasText('September 2027');
+      assert.dom('[data-part="title"]').hasText('September 2027');
     });
 
     test('Enter selects the focused day', async function (assert) {
@@ -881,7 +885,7 @@ module(
         </template>
       );
 
-      const start = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      const start = '[data-part="day"][data-key="2026-09-09"]';
       await focus(start);
       await triggerKeyEvent(start, 'keydown', 'Enter');
 
@@ -899,7 +903,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-day][tabindex="0"]').isFocused();
+      assert.dom('[data-part="day"][tabindex="0"]').isFocused();
     });
 
     test('@autofocus only focuses the grid once, not on every subsequent focus recompute', async function (assert) {
@@ -914,21 +918,21 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-day][tabindex="0"]')
+        .dom('[data-part="day"][tabindex="0"]')
         .isFocused('the initial insert still autofocuses the grid');
 
       // Paging away from today moves `defaultFocusedDate` (today is no
       // longer in the visible window), which reruns the focus modifier --
       // `@autofocus` must not use that rerun as a fresh excuse to yank
       // focus back into the grid.
-      await click('[data-fr-calendar-next]');
+      await click('[aria-label="Next month"]');
       assert
-        .dom('[data-fr-calendar-next]')
+        .dom('[aria-label="Next month"]')
         .isFocused('focus stays on the nav button after paging once');
 
-      await click('[data-fr-calendar-next]');
+      await click('[aria-label="Next month"]');
       assert
-        .dom('[data-fr-calendar-next]')
+        .dom('[aria-label="Next month"]')
         .isFocused('focus stays on the nav button after paging twice');
     });
 
@@ -947,21 +951,21 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute('data-range-start', 'true');
 
-      await click('[data-fr-calendar-day][data-key="2026-09-18"]');
+      await click('[data-part="day"][data-key="2026-09-18"]');
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
+        .dom('[data-part="day"][data-key="2026-09-18"]')
         .hasAttribute('data-range-end', 'true');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .dom('[data-part="day"][data-key="2026-09-13"]')
         .hasAttribute('data-in-range', 'true');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-19"]')
+        .dom('[data-part="day"][data-key="2026-09-19"]')
         .hasAttribute('data-in-range', 'false');
 
       const committed = seen.at(-1)!;
@@ -984,8 +988,8 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-18"]');
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-18"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
 
       const committed = seen.at(-1)!;
       assert.strictEqual(
@@ -1003,17 +1007,17 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
       await triggerEvent(
-        '[data-fr-calendar-day][data-key="2026-09-14"]',
+        '[data-part="day"][data-key="2026-09-14"]',
         'mouseenter'
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-12"]')
+        .dom('[data-part="day"][data-key="2026-09-12"]')
         .hasAttribute('data-preview', 'true');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-16"]')
+        .dom('[data-part="day"][data-key="2026-09-16"]')
         .hasAttribute('data-preview', 'false');
     });
 
@@ -1031,42 +1035,42 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
       await triggerEvent(
-        '[data-fr-calendar-day][data-key="2026-09-18"]',
+        '[data-part="day"][data-key="2026-09-18"]',
         'mouseenter'
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .dom('[data-part="day"][data-key="2026-09-13"]')
         .hasAttribute(
           'data-in-range',
           'true',
           'the preview reaches right up to the day before the blocked date'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .dom('[data-part="day"][data-key="2026-09-13"]')
         .hasAttribute(
           'data-range-end',
           'true',
           'the preview band ends at the last reachable day, not the hovered one'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-14"]')
+        .dom('[data-part="day"][data-key="2026-09-14"]')
         .hasAttribute(
           'data-in-range',
           'false',
           'the booked night itself is never painted as reachable'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
+        .dom('[data-part="day"][data-key="2026-09-18"]')
         .hasAttribute(
           'data-in-range',
           'false',
           'the band does not paint through to the actually-hovered day'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
+        .dom('[data-part="day"][data-key="2026-09-18"]')
         .hasAttribute('data-disabled', 'true', 'and it cannot be selected');
     });
 
@@ -1077,34 +1081,34 @@ module(
         </template>
       );
 
-      const anchor = '[data-fr-calendar-day][data-key="2026-09-09"]';
+      const anchor = '[data-part="day"][data-key="2026-09-09"]';
       await click(anchor);
       await focus(anchor);
 
       // Move focus two days forward: 9 -> 10 -> 11.
       await triggerKeyEvent(anchor, 'keydown', 'ArrowRight');
       await triggerKeyEvent(
-        '[data-fr-calendar-day][data-key="2026-09-10"]',
+        '[data-part="day"][data-key="2026-09-10"]',
         'keydown',
         'ArrowRight'
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-11"]')
+        .dom('[data-part="day"][data-key="2026-09-11"]')
         .hasAttribute(
           'data-range-end',
           'true',
           'the preview end follows the focused day'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-10"]')
+        .dom('[data-part="day"][data-key="2026-09-10"]')
         .hasAttribute(
           'data-in-range',
           'true',
           'a day newly covered by the extended preview is marked in-range'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-12"]')
+        .dom('[data-part="day"][data-key="2026-09-12"]')
         .hasAttribute(
           'data-in-range',
           'false',
@@ -1113,31 +1117,31 @@ module(
 
       // Pointer hover still works after keyboard movement took over.
       await triggerEvent(
-        '[data-fr-calendar-day][data-key="2026-09-14"]',
+        '[data-part="day"][data-key="2026-09-14"]',
         'mouseenter'
       );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-12"]')
+        .dom('[data-part="day"][data-key="2026-09-12"]')
         .hasAttribute(
           'data-in-range',
           'true',
           'hover regains control of the preview'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-11"]')
+        .dom('[data-part="day"][data-key="2026-09-11"]')
         .hasAttribute('data-range-end', 'false', 'hover replaced the end day');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-14"]')
+        .dom('[data-part="day"][data-key="2026-09-14"]')
         .hasAttribute('data-range-end', 'true');
 
       // And keyboard movement can take control back from a hover.
       await triggerKeyEvent(
-        '[data-fr-calendar-day][data-key="2026-09-10"]',
+        '[data-part="day"][data-key="2026-09-10"]',
         'keydown',
         'ArrowRight'
       );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-11"]')
+        .dom('[data-part="day"][data-key="2026-09-11"]')
         .hasAttribute(
           'data-range-end',
           'true',
@@ -1160,20 +1164,20 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
       const afterFirst = seen.length;
 
       await triggerKeyEvent(
-        '[data-fr-calendar-day][data-key="2026-09-09"]',
+        '[data-part="day"][data-key="2026-09-09"]',
         'keydown',
         'Escape'
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute('data-range-start', 'false', 'the anchor is cleared');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute(
           'data-selected',
           'false',
@@ -1203,35 +1207,31 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute('data-range-start', 'true', 'the anchor step committed');
 
-      await focus('[data-fr-calendar-next]');
-      await triggerKeyEvent('[data-fr-calendar-next]', 'keydown', 'Escape');
+      await focus('[aria-label="Next month"]');
+      await triggerKeyEvent('[aria-label="Next month"]', 'keydown', 'Escape');
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute(
           'data-range-start',
           'false',
           'Escape from the next button still cancels the pending range'
         );
       assert
-        .dom('[data-fr-calendar-next]')
+        .dom('[aria-label="Next month"]')
         .isFocused('Escape did not disturb focus on the nav button');
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
-      await focus('[data-fr-calendar-month-select]');
-      await triggerKeyEvent(
-        '[data-fr-calendar-month-select]',
-        'keydown',
-        'Escape'
-      );
+      await click('[data-part="day"][data-key="2026-09-09"]');
+      await focus('[data-part="month-select"]');
+      await triggerKeyEvent('[data-part="month-select"]', 'keydown', 'Escape');
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute(
           'data-range-start',
           'false',
@@ -1256,20 +1256,20 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-18"]');
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-18"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
 
       // The component never wrote its own selection: with @value still
       // null, nothing is painted as selected/in-range.
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-09"]')
+        .dom('[data-part="day"][data-key="2026-09-09"]')
         .hasAttribute(
           'data-range-start',
           'false',
           'painted selection stays driven by @value, not internal state'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .dom('[data-part="day"][data-key="2026-09-13"]')
         .hasAttribute('data-in-range', 'false');
 
       const anchored = seen[0]!;
@@ -1299,17 +1299,17 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-13"]')
+        .dom('[data-part="day"][data-key="2026-09-13"]')
         .hasAttribute(
           'data-disabled',
           'false',
           'reachable before the booked night'
         );
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-09-18"]')
+        .dom('[data-part="day"][data-key="2026-09-18"]')
         .hasAttribute('data-disabled', 'true', 'unreachable past it');
     });
 
@@ -1324,7 +1324,7 @@ module(
         </template>
       );
 
-      const grids = findAll('[data-fr-calendar-grid]');
+      const grids = findAll('[data-part="month-grid"]');
       assert.strictEqual(grids.length, 2);
       assert.dom(grids[0]!).hasAria('label', 'September 2026');
       assert.dom(grids[1]!).hasAria('label', 'October 2026');
@@ -1341,9 +1341,9 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-next]');
+      await click('[aria-label="Next month"]');
       assert
-        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .dom(findAll('[data-part="month-grid"]')[0]!)
         .hasAria('label', 'November 2026', 'default advances by the window');
     });
 
@@ -1359,9 +1359,9 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-next]');
+      await click('[aria-label="Next month"]');
       assert
-        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .dom(findAll('[data-part="month-grid"]')[0]!)
         .hasAria('label', 'October 2026');
     });
 
@@ -1383,18 +1383,18 @@ module(
       // "2026-10-05" only exists inside the second grid -- it is not an
       // "outside day" of the first grid, since both months are fully
       // within the visible window.
-      await click('[data-fr-calendar-day][data-key="2026-10-05"]');
+      await click('[data-part="day"][data-key="2026-10-05"]');
 
       assert.strictEqual(
         seen.length,
         0,
         'selecting a day already inside the window must not page it'
       );
-      const grids = findAll('[data-fr-calendar-grid]');
+      const grids = findAll('[data-part="month-grid"]');
       assert.dom(grids[0]!).hasAria('label', 'September 2026');
       assert.dom(grids[1]!).hasAria('label', 'October 2026');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-10-05"]')
+        .dom('[data-part="day"][data-key="2026-10-05"]')
         .hasAttribute('data-selected', 'true');
     });
 
@@ -1413,7 +1413,7 @@ module(
         </template>
       );
 
-      const last = '[data-fr-calendar-day][data-key="2026-09-30"]';
+      const last = '[data-part="day"][data-key="2026-09-30"]';
       await focus(last);
       await triggerKeyEvent(last, 'keydown', 'ArrowRight');
 
@@ -1422,11 +1422,11 @@ module(
         0,
         'moving focus into a month already inside the window must not page it'
       );
-      const grids = findAll('[data-fr-calendar-grid]');
+      const grids = findAll('[data-part="month-grid"]');
       assert.dom(grids[0]!).hasAria('label', 'September 2026');
       assert.dom(grids[1]!).hasAria('label', 'October 2026');
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
+        .dom('[data-part="day"][data-key="2026-10-01"]')
         .isFocused('focus moved into the second grid');
     });
 
@@ -1446,7 +1446,7 @@ module(
       // September grid -- the default for a multi-month window must
       // suppress that duplicate.
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
+        .dom('[data-part="day"][data-key="2026-10-01"]')
         .exists({ count: 1 });
     });
 
@@ -1463,7 +1463,7 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-10-01"]')
+        .dom('[data-part="day"][data-key="2026-10-01"]')
         .exists(
           { count: 2 },
           'an explicit true must still render the boundary day in both grids'
@@ -1485,23 +1485,23 @@ module(
       // Oct 1 renders twice: as a real day in the October grid, and as a
       // trailing outside day in the September grid.
       const boundaryCopies = findAll(
-        '[data-fr-calendar-day][data-key="2026-10-01"]'
+        '[data-part="day"][data-key="2026-10-01"]'
       );
       assert.strictEqual(boundaryCopies.length, 2, 'the boundary duplicates');
 
       // Move focus onto the real (non-outside) Oct 1 cell via the keyboard,
       // crossing the month boundary the same way a real user would.
-      const last = '[data-fr-calendar-day][data-key="2026-09-30"]';
+      const last = '[data-part="day"][data-key="2026-09-30"]';
       await focus(last);
       await triggerKeyEvent(last, 'keydown', 'ArrowRight');
 
       assert.strictEqual(
-        findAll('[data-fr-calendar-day][tabindex="0"]').length,
+        findAll('[data-part="day"][tabindex="0"]').length,
         1,
         'exactly one tabbable day despite the duplicated boundary cell'
       );
       assert
-        .dom(find('[data-fr-calendar-day][tabindex="0"]'))
+        .dom(find('[data-part="day"][tabindex="0"]'))
         .hasAttribute(
           'data-outside',
           'false',
@@ -1509,10 +1509,10 @@ module(
         );
 
       await click(
-        '[data-fr-calendar-day][data-key="2026-10-01"][data-outside="false"]'
+        '[data-part="day"][data-key="2026-10-01"][data-outside="false"]'
       );
 
-      const selectedCells = findAll('[data-fr-calendar-cell]').filter(
+      const selectedCells = findAll('[data-part="cell"]').filter(
         (cell) => cell.getAttribute('aria-selected') === 'true'
       );
       assert.strictEqual(
@@ -1530,7 +1530,7 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-day][data-key="2026-08-30"]')
+        .dom('[data-part="day"][data-key="2026-08-30"]')
         .exists('single-month window keeps showing outside days by default');
     });
 
@@ -1545,17 +1545,17 @@ module(
         </template>
       );
 
-      assert.dom('[data-fr-calendar-month-select]').exists();
+      assert.dom('[data-part="month-select"]').exists();
       assert
-        .dom('[data-fr-calendar-month-select]')
+        .dom('[data-part="month-select"]')
         .hasValue('8', 'September is month index 8');
 
-      assert.dom('[data-fr-calendar-year-trigger]').hasText('2026');
+      assert.dom('[data-part="year-trigger"]').hasText('2026');
       assert
-        .dom('[data-fr-calendar-year-trigger]')
+        .dom('[data-part="year-trigger"]')
         .hasAria('expanded', 'false', 'the grid starts closed');
       assert
-        .dom('[data-fr-calendar-title]')
+        .dom('[data-part="title"]')
         .doesNotExist('the plain label is replaced');
     });
 
@@ -1570,10 +1570,10 @@ module(
         </template>
       );
 
-      await fillIn('[data-fr-calendar-month-select]', '11');
+      await fillIn('[data-part="month-select"]', '11');
 
       assert
-        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .dom(findAll('[data-part="month-grid"]')[0]!)
         .hasAria('label', 'December 2026');
     });
 
@@ -1589,20 +1589,20 @@ module(
       );
 
       assert
-        .dom('[data-fr-calendar-grid]')
+        .dom('[data-part="month-grid"]')
         .exists('the day grid starts visible');
 
-      await click('[data-fr-calendar-year-trigger]');
+      await click('[data-part="year-trigger"]');
 
-      assert.dom('[data-fr-calendar-year-grid]').exists();
+      assert.dom('[data-part="year-grid"]').exists();
       assert
-        .dom('[data-fr-calendar-grid]')
+        .dom('[data-part="month-grid"]')
         .doesNotExist('the day grid is replaced, not pushed down');
 
-      await click('[data-fr-calendar-year][data-year="2029"]');
+      await click('[data-part="year-cell"][data-year="2029"]');
 
       assert
-        .dom('[data-fr-calendar-grid]')
+        .dom('[data-part="month-grid"]')
         .exists('the day grid comes back once a year is picked');
     });
 
@@ -1617,32 +1617,32 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-year-trigger]');
+      await click('[data-part="year-trigger"]');
 
       // The list spans a century by default; without roving tabindex every one
       // of those years would be its own tab stop.
       assert.ok(
-        findAll('[data-fr-calendar-year]').length > 50,
+        findAll('[data-part="year-cell"]').length > 50,
         'the default range really is long enough for this to matter'
       );
       assert
-        .dom('[data-fr-calendar-year][tabindex="0"]')
+        .dom('[data-part="year-cell"][tabindex="0"]')
         .exists({ count: 1 }, 'exactly one year is tabbable');
       assert
-        .dom('[data-fr-calendar-year][tabindex="0"]')
+        .dom('[data-part="year-cell"][tabindex="0"]')
         .hasAttribute('data-year', '2026', 'and it is the selected one');
 
       await triggerKeyEvent(
-        '[data-fr-calendar-year][data-year="2026"]',
+        '[data-part="year-cell"][data-year="2026"]',
         'keydown',
         'ArrowRight'
       );
 
       assert
-        .dom('[data-fr-calendar-year][tabindex="0"]')
+        .dom('[data-part="year-cell"][tabindex="0"]')
         .exists({ count: 1 }, 'still exactly one after moving');
       assert
-        .dom('[data-fr-calendar-year][data-year="2027"]')
+        .dom('[data-part="year-cell"][data-year="2027"]')
         .hasAttribute('tabindex', '0', 'tabbability follows focus');
     });
 
@@ -1665,9 +1665,9 @@ module(
 
       // The header shares a column with the grids it pages, so its width tracks
       // the grid rather than the widest sibling.
-      const header = find('[data-fr-calendar-header]')!;
-      const grid = find('[data-fr-calendar-grid]')!;
-      const footer = find('[data-fr-calendar-footer]')!;
+      const header = find('[data-part="header"]')!;
+      const grid = find('[data-part="month-grid"]')!;
+      const footer = find('[data-part="footer"]')!;
 
       assert.ok(
         footer.getBoundingClientRect().width >
@@ -1694,26 +1694,24 @@ module(
         </template>
       );
 
-      assert
-        .dom('[data-fr-calendar-year-grid]')
-        .doesNotExist('closed by default');
+      assert.dom('[data-part="year-grid"]').doesNotExist('closed by default');
 
-      await click('[data-fr-calendar-year-trigger]');
+      await click('[data-part="year-trigger"]');
 
-      assert.dom('[data-fr-calendar-year-grid]').exists();
-      assert.dom('[data-fr-calendar-year-trigger]').hasAria('expanded', 'true');
+      assert.dom('[data-part="year-grid"]').exists();
+      assert.dom('[data-part="year-trigger"]').hasAria('expanded', 'true');
       assert
-        .dom('[data-fr-calendar-year][data-selected="true"]')
+        .dom('[data-part="year-cell"][data-selected="true"]')
         .hasText('2026', 'the current year is marked');
 
-      await click('[data-fr-calendar-year][data-year="2029"]');
+      await click('[data-part="year-cell"][data-year="2029"]');
 
-      assert.dom('[data-fr-calendar-year-grid]').doesNotExist('closes on pick');
+      assert.dom('[data-part="year-grid"]').doesNotExist('closes on pick');
       assert
-        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .dom(findAll('[data-part="month-grid"]')[0]!)
         .hasAria('label', 'September 2029');
       assert
-        .dom('[data-fr-calendar-year-trigger]')
+        .dom('[data-part="year-trigger"]')
         .isFocused('focus returns to the trigger after a click pick');
     });
 
@@ -1733,7 +1731,7 @@ module(
       );
 
       const scroller = document.getElementById('ember-testing-container')!;
-      const trigger = find('[data-fr-calendar-year-trigger]')!;
+      const trigger = find('[data-part="year-trigger"]')!;
       trigger.scrollIntoView({ block: 'center' });
 
       const scrollTopBefore = scroller.scrollTop;
@@ -1742,7 +1740,7 @@ module(
         'the page is scrolled to reach the calendar'
       );
 
-      await click('[data-fr-calendar-year-trigger]');
+      await click('[data-part="year-trigger"]');
 
       assert.strictEqual(
         scroller.scrollTop,
@@ -1752,9 +1750,9 @@ module(
 
       // Measured in layout pixels, the space `scrollTop` is in -- the test
       // container is CSS-scaled, so client rects would not agree with it.
-      const panel = find('[data-fr-calendar-year-grid]')!;
+      const panel = find('[data-part="year-grid"]')!;
       const selected = find(
-        '[data-fr-calendar-year][data-selected="true"]'
+        '[data-part="year-cell"][data-selected="true"]'
       ) as HTMLElement;
 
       assert.ok(
@@ -1776,27 +1774,27 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-year-trigger]');
+      await click('[data-part="year-trigger"]');
 
       await triggerKeyEvent(
-        '[data-fr-calendar-year][data-year="2026"]',
+        '[data-part="year-cell"][data-year="2026"]',
         'keydown',
         'ArrowRight'
       );
-      assert.dom('[data-fr-calendar-year][data-year="2027"]').isFocused();
+      assert.dom('[data-part="year-cell"][data-year="2027"]').isFocused();
 
       // A focused native <button> fires a click when Enter is pressed on
       // it; test-helper `triggerKeyEvent` dispatches an untrusted event, so
       // it does not trigger that native default action -- fire the click
       // that a real keyboard commit would produce.
-      await triggerEvent('[data-fr-calendar-year][data-year="2027"]', 'click');
+      await triggerEvent('[data-part="year-cell"][data-year="2027"]', 'click');
 
-      assert.dom('[data-fr-calendar-year-grid]').doesNotExist('closes on pick');
+      assert.dom('[data-part="year-grid"]').doesNotExist('closes on pick');
       assert
-        .dom(findAll('[data-fr-calendar-grid]')[0]!)
+        .dom(findAll('[data-part="month-grid"]')[0]!)
         .hasAria('label', 'September 2027');
       assert
-        .dom('[data-fr-calendar-year-trigger]')
+        .dom('[data-part="year-trigger"]')
         .isFocused('focus returns to the trigger after a keyboard pick');
     });
 
@@ -1819,16 +1817,16 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-year-trigger]');
+      await click('[data-part="year-trigger"]');
 
       assert
-        .dom('[data-fr-calendar-year][data-year="2026"]')
+        .dom('[data-part="year-cell"][data-year="2026"]')
         .exists('the visible year is still offered');
       assert
-        .dom('[data-fr-calendar-year][data-selected="true"]')
+        .dom('[data-part="year-cell"][data-selected="true"]')
         .hasText('2026', 'and it is the one marked selected');
       assert
-        .dom('[data-fr-calendar-year][data-selected="true"]')
+        .dom('[data-part="year-cell"][data-selected="true"]')
         .isFocused('so the panel opens with focus on it');
     });
 
@@ -1849,7 +1847,7 @@ module(
       );
 
       const options = findAll(
-        '[data-fr-calendar-month-select] option'
+        '[data-part="month-select"] option'
       ) as HTMLOptionElement[];
 
       assert.false(options[3]!.disabled, 'April is partly in range');
@@ -1901,16 +1899,16 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-day][data-key="2026-09-09"]');
+      await click('[data-part="day"][data-key="2026-09-09"]');
       await triggerEvent(
-        '[data-fr-calendar-day][data-key="2026-09-14"]',
+        '[data-part="day"][data-key="2026-09-14"]',
         'mouseenter'
       );
 
       const bandFor = (key: string) =>
-        find(`[data-fr-calendar-day][data-key="${key}"]`)!
+        find(`[data-part="day"][data-key="${key}"]`)!
           .closest('td')!
-          .querySelector('[data-fr-calendar-band]')!;
+          .querySelector('[data-part="cell-band"]')!;
 
       // A band that ran full width at the ends would extend past the endpoint
       // circle into empty grid.
@@ -1948,10 +1946,10 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-year-trigger]');
+      await click('[data-part="year-trigger"]');
 
       assert.deepEqual(
-        findAll('[data-fr-calendar-year]').map((el) => el.textContent?.trim()),
+        findAll('[data-part="year-cell"]').map((el) => el.textContent?.trim()),
         ['2025', '2026', '2027']
       );
     });
@@ -1967,37 +1965,113 @@ module(
         </template>
       );
 
-      await click('[data-fr-calendar-year-trigger]');
+      await click('[data-part="year-trigger"]');
 
       assert
-        .dom('[data-fr-calendar-year][data-year="2026"]')
+        .dom('[data-part="year-cell"][data-year="2026"]')
         .isFocused('opening moves focus to the current year');
 
       // The grid is three columns wide, so Down moves by three years.
       await triggerKeyEvent(
-        '[data-fr-calendar-year][data-year="2026"]',
+        '[data-part="year-cell"][data-year="2026"]',
         'keydown',
         'ArrowRight'
       );
-      assert.dom('[data-fr-calendar-year][data-year="2027"]').isFocused();
+      assert.dom('[data-part="year-cell"][data-year="2027"]').isFocused();
 
       await triggerKeyEvent(
-        '[data-fr-calendar-year][data-year="2027"]',
+        '[data-part="year-cell"][data-year="2027"]',
         'keydown',
         'ArrowDown'
       );
-      assert.dom('[data-fr-calendar-year][data-year="2030"]').isFocused();
+      assert.dom('[data-part="year-cell"][data-year="2030"]').isFocused();
 
       await triggerKeyEvent(
-        '[data-fr-calendar-year][data-year="2030"]',
+        '[data-part="year-cell"][data-year="2030"]',
         'keydown',
         'Escape'
       );
 
-      assert.dom('[data-fr-calendar-year-grid]').doesNotExist('Escape closes');
+      assert.dom('[data-part="year-grid"]').doesNotExist('Escape closes');
       assert
-        .dom('[data-fr-calendar-year-trigger]')
+        .dom('[data-part="year-trigger"]')
         .isFocused('focus returns to the trigger');
+    });
+
+    test('it renders the anatomy attributes', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US" />
+        </template>
+      );
+
+      assert.dom('[data-component="calendar"]').exists();
+      assert
+        .dom('[data-component="calendar"]')
+        .hasAttribute('data-part', 'base');
+      assert.dom('[data-part="body"]').exists();
+      assert.dom('[data-part="header"]').exists();
+      assert.dom('[data-part="title"]').exists();
+      assert.dom('[data-part="nav-button"]').exists({ count: 2 });
+      assert.dom('[data-part="months-wrapper"]').exists();
+      assert.dom('[data-part="month-grid"]').exists();
+      assert.dom('[data-part="weekdays-row"]').exists();
+      assert.dom('[data-part="weekday"]').exists({ count: 7 });
+      assert.dom('[data-part="week"]').exists();
+      assert.dom('[data-part="cell"]').exists();
+      assert.dom('[data-part="day"]').exists({ count: 35 });
+      assert.dom('[data-part="day-content"]').exists();
+    });
+
+    test('the dropdown caption layout renders its own anatomy parts', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="nav"]').exists();
+      assert.dom('[data-part="month-select-wrapper"]').exists();
+      assert.dom('[data-part="month-select-value"]').exists();
+      assert.dom('[data-part="month-select-icon"]').exists();
+      assert.dom('[data-part="month-select"]').exists();
+      assert.dom('[data-part="year-trigger"]').exists();
+
+      await click('[data-part="year-trigger"]');
+      assert.dom('[data-part="year-grid"]').exists();
+      assert.dom('[data-part="year-cell"]').exists();
+    });
+
+    test('the footer part and cell-band and indicator parts render', async function (assert) {
+      await render(
+        <template>
+          <Calendar @defaultMonth={{sep2026}} @locale="en-US">
+            <:footer>Footer</:footer>
+          </Calendar>
+        </template>
+      );
+
+      assert.dom('[data-part="footer"]').hasText('Footer');
+      assert.dom('[data-part="cell-band"]').exists();
+    });
+
+    test('a caller-supplied data-component wins on the root', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            data-component="my-calendar"
+          />
+        </template>
+      );
+
+      assert.dom('[data-component="my-calendar"]').exists();
+      assert.dom('[data-component="calendar"]').doesNotExist();
     });
   }
 );
