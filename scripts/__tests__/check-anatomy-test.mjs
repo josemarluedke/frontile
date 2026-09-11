@@ -248,6 +248,49 @@ test('a sub-template with parts but no data-component of its own is attributed v
   assert.deepEqual([...rendered.modal.parts].sort(), ['base', 'body']);
 });
 
+// --- KNOWN_UNRENDERED_SLOTS exception ---------------------------------------
+
+test('textarea does not report its inherited-but-unrendered input/start-content/end-content slots as missing', () => {
+  const { themeDir, componentsDir } = bareRoot();
+  writeFileSync(
+    join(themeDir, 'textarea.ts'),
+    `const input = tv({
+  slots: {
+    base: '',
+    innerContainer: '',
+    startContent: '',
+    endContent: '',
+    input: ''
+  }
+});
+
+const textarea = tv({
+  extend: input
+});
+`
+  );
+  // Textarea only ever renders 'base' (via FormControl) and 'input' (the
+  // <textarea> tag) -- it deliberately has no wrapper or start/end-content
+  // elements, unlike Input which it extends.
+  writeFileSync(
+    join(componentsDir, 'textarea.gts'),
+    `<div data-component="textarea" data-part="base">
+       <textarea data-part="input"></textarea>
+     </div>`
+  );
+
+  const r = checkAnatomy({ themeDir, componentsDir });
+  assert.deepEqual(
+    r.missing.filter((m) => m.config === 'textarea'),
+    [],
+    'inner-container/start-content/end-content must be excused, not reported as missing'
+  );
+  assert.deepEqual(
+    r.orphan.filter((o) => o.config === 'textarea'),
+    []
+  );
+});
+
 test('a sub-template whose owner cannot be inferred is left unattributed rather than guessed at', () => {
   const { componentsDir } = bareRoot();
   mkdirSync(join(componentsDir, 'mystery'), { recursive: true });

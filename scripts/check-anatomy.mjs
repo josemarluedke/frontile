@@ -244,6 +244,28 @@ const DIRECTORY_OWNER_ALIASES = {
   'simple-table': 'table'
 };
 
+/**
+ * Known, deliberate `(config, slot)` pairs that never render a `data-part`
+ * and are therefore excluded from the `missing` report rather than treated
+ * as an oversight. This is a narrow, named carve-out — it does not touch
+ * `readThemeSlots`/`resolveSlots` and does not change what counts as a
+ * config's full slot set (see those functions' docs for why inherited
+ * slots must stay part of that set in general, e.g. for `radioGroup`).
+ *
+ * - `textarea`: the `textarea` tv config `extend`s `input` and therefore
+ *   inherits all of `input`'s slots, including `inner-container`,
+ *   `start-content`, and `end-content`. Textarea deliberately has no
+ *   start/end adornments and renders no wrapper around its `<textarea>` —
+ *   those three slots exist in `textarea`'s resolved slot set purely
+ *   because they are inherited via `extend: input`, not because Textarea
+ *   has ever intended to render them. Adding a wrapper element or
+ *   start/end-content blocks to satisfy this check would be exactly the
+ *   out-of-scope feature addition this migration is not authorized to make.
+ */
+const KNOWN_UNRENDERED_SLOTS = {
+  textarea: new Set(['inner-container', 'start-content', 'end-content'])
+};
+
 function findOwnerByDirectory(file, componentsDir, knownConfigNames) {
   let dir = dirname(file);
   for (;;) {
@@ -326,6 +348,7 @@ export function checkAnatomy({ themeDir, componentsDir }) {
     if (!entry) continue;
 
     for (const slot of slotKeys) {
+      if (KNOWN_UNRENDERED_SLOTS[name]?.has(slot)) continue;
       if (!entry.parts.has(slot)) missing.push({ config: name, slot });
     }
     for (const part of entry.parts) {

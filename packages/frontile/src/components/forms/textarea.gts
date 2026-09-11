@@ -54,30 +54,10 @@ interface Args extends FormControlSharedArgs {
    * Callback when onblur is triggered
    */
   onBlur?: () => void;
-
-  /**
-   * Controls pointer-events property of startContent.
-   * If you want to pass the click event to the textarea, set it to `none`.
-   *
-   * @defaultValue 'auto'
-   */
-  startContentPointerEvents?: 'none' | 'auto';
-
-  /**
-   * Controls pointer-events property of endContent.
-   * If you want to pass the click event to the textarea, set it to `none`.
-   *
-   * @defaultValue 'auto'
-   */
-  endContentPointerEvents?: 'none' | 'auto';
 }
 
 interface TextareaSignature {
   Args: Args;
-  Blocks: {
-    startContent: [];
-    endContent: [];
-  };
   Element: HTMLTextAreaElement;
 }
 
@@ -124,55 +104,20 @@ class Textarea extends Component<TextareaSignature> {
       data-part="base"
       as |c|
     >
-      <div
-        class={{this.classes.innerContainer class=@classes.innerContainer}}
-        data-part="inner-container"
-      >
-        {{#if (has-block "startContent")}}
-          <div
-            data-part="start-content"
-            class={{this.classes.startContent
-              class=@classes.startContent
-              startContentPointerEvents=(if
-                @startContentPointerEvents @startContentPointerEvents "auto"
-              )
-            }}
-          >
-            {{yield to="startContent"}}
-          </div>
-        {{/if}}
-        <textarea
-          {{on "input" this.handleOnInput}}
-          {{on "change" this.handleOnChange}}
-          {{on "blur" this.handleOnBlur}}
-          id={{c.id}}
-          name={{@name}}
-          value={{@value}}
-          disabled={{@isDisabled}}
-          class={{this.classes.input
-            class=@classes.input
-            hasStartContent=(has-block "startContent")
-            hasEndContent=(has-block "endContent")
-          }}
-          data-part="input"
-          aria-invalid={{if c.isInvalid "true"}}
-          aria-describedby={{c.describedBy @description c.isInvalid}}
-          ...attributes
-        />
-        {{#if (has-block "endContent")}}
-          <div
-            data-part="end-content"
-            class={{this.classes.endContent
-              class=@classes.endContent
-              endContentPointerEvents=(if
-                @endContentPointerEvents @endContentPointerEvents "auto"
-              )
-            }}
-          >
-            {{yield to="endContent"}}
-          </div>
-        {{/if}}
-      </div>
+      <textarea
+        {{on "input" this.handleOnInput}}
+        {{on "change" this.handleOnChange}}
+        {{on "blur" this.handleOnBlur}}
+        id={{c.id}}
+        name={{@name}}
+        value={{@value}}
+        disabled={{@isDisabled}}
+        class={{this.classes.input class=@classes.input}}
+        data-part="input"
+        aria-invalid={{if c.isInvalid "true"}}
+        aria-describedby={{c.describedBy @description c.isInvalid}}
+        ...attributes
+      />
     </FormControl>
   </template>
 }

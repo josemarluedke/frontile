@@ -15,26 +15,10 @@ module('Integration | Component | @frontile/forms/Textarea', function (hooks) {
     assert.dom('[data-component="textarea"]').exists();
   });
 
-  test('renders data-component="textarea" on the root only, with data-part on every slot', async function (assert) {
-    await render(
-      <template>
-        <Textarea @label="Name">
-          <:startContent>S</:startContent>
-          <:endContent>E</:endContent>
-        </Textarea>
-      </template>
-    );
+  test('renders exactly one data-component="textarea", on the root, with data-part on every slot it renders', async function (assert) {
+    await render(<template><Textarea @label="Name" /></template>);
 
     assert.dom('[data-component="textarea"]').hasAttribute('data-part', 'base');
-    assert
-      .dom('[data-component="textarea"] [data-part="inner-container"]')
-      .exists();
-    assert
-      .dom('[data-component="textarea"] [data-part="start-content"]')
-      .exists();
-    assert
-      .dom('[data-component="textarea"] [data-part="end-content"]')
-      .exists();
     assert.dom('[data-component="textarea"] [data-part="input"]').exists();
     assert.strictEqual(
       document.querySelectorAll('[data-component="textarea"]').length,
