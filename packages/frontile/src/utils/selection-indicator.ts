@@ -25,6 +25,12 @@ class SelectionIndicator {
   #resize = deferredWork('@frontile/utils:selection-indicator:resize');
   #isReady = false;
 
+  // Whether a real measurement has ever landed. Only the very first one is
+  // forced-layout-sensitive (see `setupContainer`); once it has happened, a
+  // click that moves the selection is no longer racing an ancestor's own
+  // mount-time transition, so there is no reason to defer those.
+  #hasMeasuredOnce = false;
+
   /**
    * Modifier to place on the container element. Observes its size and, once
    * a target is selected, publishes that target's geometry as CSS custom
@@ -45,7 +51,22 @@ class SelectionIndicator {
     if (this.#target) {
       this.#observer.observe(this.#target);
     }
-    this.#measure();
+
+    // Before the first real measurement, this call is happening during the
+    // control's own initial mount -- the same render pass that can be
+    // mounting an ancestor overlay's enter transition. Forcing layout here
+    // lands at an arbitrary point in `ember-css-transitions`' own
+    // reflow-then-swap sequence for that transition, which is enough to make
+    // the browser skip it entirely. `ResizeObserver.observe()` above already
+    // guarantees an initial, asynchronous notification for `element` (and for
+    // the target, if already claimed), so leaving it to that -- deferred
+    // through `#resize` like any other resize -- gets the same measurement
+    // without the synchronous reflow. Once a first measurement has actually
+    // landed, later remounts of this same container are no longer racing
+    // anything, so measure immediately as before.
+    if (this.#hasMeasuredOnce) {
+      this.#measure();
+    }
 
     return (): void => {
       this.#shutDown();
@@ -57,11 +78,17 @@ class SelectionIndicator {
    * so a consumer composing its own modifier -- a navigation bar that also has
    * to write `aria-current` -- can delegate here rather than reimplement the
    * handover rules below.
+   *
+   * Measures synchronously once a first measurement has already landed --
+   * see `setupContainer` -- so a click that moves the selection updates the
+   * indicator immediately rather than a frame later.
    */
   claim(element: HTMLElement): void {
     this.#target = element;
     this.#observer?.observe(element);
-    this.#measure();
+    if (this.#hasMeasuredOnce) {
+      this.#measure();
+    }
   }
 
   /**
@@ -138,6 +165,8 @@ class SelectionIndicator {
     container.style.setProperty('--fr-si-y', `${target.offsetTop}px`);
     container.style.setProperty('--fr-si-width', `${width}px`);
     container.style.setProperty('--fr-si-height', `${height}px`);
+
+    this.#hasMeasuredOnce = true;
 
     if (!this.#isReady) {
       this.#isReady = true;

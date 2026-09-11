@@ -633,6 +633,10 @@ module(
         'span[aria-hidden="true"]'
       ) as HTMLElement;
 
+      await waitUntil(() => list.hasAttribute('data-fr-si-ready'), {
+        timeout: 1000
+      });
+
       assert
         .dom(list)
         .hasAttribute(
