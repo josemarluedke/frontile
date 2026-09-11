@@ -28,18 +28,18 @@ const distDir = join(root, 'dist');
 // — otherwise the next run would template off its own output, and the snapshot
 // would ship.
 const shellPath = join(root, 'dist-ssr', 'app-shell.html');
-let shell;
-try {
-  shell = await readFile(shellPath, 'utf8');
-} catch {
-  shell = await readFile(join(distDir, 'index.html'), 'utf8');
-  await writeFile(shellPath, shell, 'utf8');
+const shell = await readFile(shellPath, 'utf8').catch(() => {
+  throw new Error('Missing clean app-shell snapshot. Run both Vite builds, then `pnpm snapshot-shell`, before prerendering.');
+});
+
+if (shell.includes('name="x-prerendered"')) {
+  throw new Error('The app-shell snapshot is already prerendered. Rebuild and snapshot the client shell.');
 }
 
 // Tells index.html's boot script to rehydrate rather than render fresh. Added to
 // the template once rather than per document, and after the snapshot is written
 // so the file on disk stays a clean copy of the client build.
-shell = shell.replace('</head>', '<meta name="x-prerendered"></head>');
+const prerenderShell = shell.replace('</head>', '<meta name="x-prerendered"></head>');
 
 // --- preloads ---------------------------------------------------------------
 const manifest = JSON.parse(
@@ -95,7 +95,7 @@ function withPreloads(html, routeName) {
  * costs 12ms of a ~2s pass.
  */
 function createDocument() {
-  const { window, document } = parseHTML(shell);
+  const { window, document } = parseHTML(prerenderShell);
 
   // @ember/test-helpers (imported by app/ssr-entry.ts for `settled()`) reads
   // `document.location.search` at module scope, and linkedom supplies no

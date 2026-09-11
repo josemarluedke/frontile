@@ -18,7 +18,7 @@ Frontile aims to provide the legos (components, helpers, modifiers, and styles) 
 - **🎨 Fully Customizable** – Uses Tailwind CSS with Tailwind Variants for highly customizable styling
 - **🔧 TypeScript & Glint Support** – Fully typed templates with Glint for a better developer experience
 - **🌙 Theme Support** – Dark & light mode support with theme-aware components that automatically adapt
-- **📱 Responsive Design** – All styles are fully responsive using TailwindCSS utilities
+- **📱 Responsive foundations** – Components can be composed with Tailwind CSS responsive utilities
 - **🔄 Composable & Extensible** – Designed to be customized and extended to fit any design system
 
 ## Quick Start
@@ -86,7 +86,7 @@ Frontile follows a component composition pattern that prioritizes:
 
 - **Flexibility** – Components are designed to be composed together in various ways
 - **Consistency** – Unified design language across all components
-- **Accessibility** – WCAG compliance built into every component
+- **Accessibility** – Keyboard, focus, labeling, and ARIA behavior are built into interactive components
 - **Performance** – Optimized for Ember's rendering system
 - **Developer Experience** – Clear APIs with comprehensive TypeScript support
 
@@ -94,8 +94,7 @@ Frontile follows a component composition pattern that prioritizes:
 
 Frontile supports all modern browsers and follows Ember.js compatibility guidelines:
 
-- **Ember.js** v3.16 or above
-- **Node.js** v18 or above
+- **Ember.js** v4.12 or above
 - **Modern Browsers** – Chrome, Firefox, Safari, Edge
 
 ## Development Status

@@ -152,7 +152,7 @@ export default class TextareaWithFormChange extends Component {
           </div>
           <div>
             <strong>Current value:</strong>
-            <p class='mt-1 p-2 bg-white rounded border border-neutral-subtle break-words'>
+            <p class='mt-1 break-words rounded border border-neutral-subtle bg-surface-card p-2 text-neutral-strong'>
               {{if this.formData.text this.formData.text '(empty)'}}
             </p>
           </div>

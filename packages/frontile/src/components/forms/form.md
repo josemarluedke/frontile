@@ -54,6 +54,11 @@ export default class SimpleForm extends Component {
 }
 ```
 
+## Anatomy
+
+`Form` wraps the native form and yields `form.Field` when validation-aware binding is needed.
+Each Field then yields bound Input, Textarea, Select, Checkbox, Radio, and Switch variants.
+
 ## Controlled and Uncontrolled Forms
 
 Passing `@onChange` makes the form controlled: you own the state, and the data you assign back

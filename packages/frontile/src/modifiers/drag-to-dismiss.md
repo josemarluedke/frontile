@@ -19,13 +19,12 @@ draggable-to-dismiss surface.
 import { dragToDismiss } from 'frontile';
 ```
 
-## Example
+## Usage
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import { dragToDismiss } from 'frontile';
+import { dragToDismiss, Button } from 'frontile';
 
 export default class DragToDismissExample extends Component {
   @tracked isOpen = true;
@@ -39,13 +38,7 @@ export default class DragToDismissExample extends Component {
   };
 
   <template>
-    <button
-      {{on 'click' this.open}}
-      class='text-on-primary bg-primary p-2 rounded'
-      type='button'
-    >
-      Open panel
-    </button>
+    <Button @intent='primary' @onPress={{this.open}}>Open panel</Button>
 
     {{#if this.isOpen}}
       <div
@@ -63,25 +56,13 @@ export default class DragToDismissExample extends Component {
           data-test-id='panel-handle'
           class='mx-auto mb-3 h-1.5 w-10 rounded-full bg-neutral-muted'
         ></div>
-        Drag me down to dismiss.
+        <p class='mb-3'>Drag me down to dismiss.</p>
+        <Button @size='sm' @onPress={{this.close}}>Close panel</Button>
       </div>
     {{/if}}
   </template>
 }
 ```
-
-## API
-
-The `dragToDismiss` modifier accepts only named arguments:
-
-| Name             | Type         | Description                                                                                                                                                |
-| ---------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `axis`           | `'x' \| 'y'` | The axis the drag moves along.                                                                                                                             |
-| `direction`      | `1 \| -1`    | Which way along the axis dismisses: `1` for down/right, `-1` for up/left.                                                                                  |
-| `isEnabled`      | `boolean`    | Whether the modifier responds to pointer events at all.                                                                                                    |
-| `onDismiss`      | `() => void` | Called once the gesture commits to a dismiss.                                                                                                              |
-| `handleSelector` | `string`     | Optional CSS selector for an element that is always draggable (e.g. a drag handle).                                                                        |
-| `scrollSelector` | `string`     | Optional CSS selector for a scrollable container inside the element that may start a drag once it's already scrolled to the edge the drag pulls away from. |
 
 ## Usage Notes
 
@@ -113,3 +94,29 @@ The `dragToDismiss` modifier accepts only named arguments:
   gestures like pinch-zoom, which cancels pointer tracking more readily.
 - **Reduced motion**: when the user prefers reduced motion the transitions are
   skipped and `onDismiss` fires immediately.
+
+## Accessibility
+
+`dragToDismiss` is a pointer enhancement; it adds no role, accessible name,
+keyboard interaction, or focus management. Always provide a keyboard-operable
+dismiss control that calls the same callback, as the demo does. When dismissal
+removes the focused surface, move focus to the control that opened it or another
+logical destination.
+
+The drag handle is only a visual affordance unless you make it an interactive
+control yourself. Do not rely on gesture instructions alone, and keep the
+non-gesture dismissal available when `@isEnabled` is false. Reduced-motion
+preferences skip the settle animation automatically.
+
+## API
+
+The `dragToDismiss` modifier accepts only named arguments:
+
+| Name             | Type         | Description                                                                                                                                                |
+| ---------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `axis`           | `'x' \| 'y'` | The axis the drag moves along.                                                                                                                             |
+| `direction`      | `1 \| -1`    | Which way along the axis dismisses: `1` for down/right, `-1` for up/left.                                                                                  |
+| `isEnabled`      | `boolean`    | Whether the modifier responds to pointer events at all.                                                                                                    |
+| `onDismiss`      | `() => void` | Called once the gesture commits to a dismiss.                                                                                                              |
+| `handleSelector` | `string`     | Optional CSS selector for an element that is always draggable (e.g. a drag handle).                                                                        |
+| `scrollSelector` | `string`     | Optional CSS selector for a scrollable container inside the element that may start a drag once it's already scrolled to the edge the drag pulls away from. |

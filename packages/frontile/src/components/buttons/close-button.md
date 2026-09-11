@@ -159,8 +159,8 @@ import { DeleteIcon } from 'site/components/icons';
 ```
 
 Removing something on press leaves focus on a button that no longer exists, which
-drops it back to the top of the document. Move focus somewhere deliberate — the
-next item, or the container that held the removed one.
+drops it back to the top of the document. Move focus to the next item or to the
+container that held the removed one.
 
 ## Migration from onClick
 

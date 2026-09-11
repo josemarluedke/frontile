@@ -26,15 +26,26 @@ page, and needs no `@onChange`.
 ```gts preview
 import { Pagination } from 'frontile';
 
-<template>
-  <Pagination @total={{120}} />
-</template>
+<template><Pagination @total={{120}} /></template>
 ```
+
+## Anatomy
+
+Pagination renders its previous button, page items, and next button automatically. Two
+optional named blocks let you extend or replace that structure:
+
+| Block | Purpose |
+| --- | --- |
+| `<:summary>` | Adds a result-range summary using the yielded `from`, `to`, and `total` values. |
+| `<:item>` | Replaces each page item while preserving Pagination's windowing calculations. |
+
+Use the default items for button-based navigation. When rendering links through `<:item>`,
+provide the appropriate URL and disabled semantics described in [Disabled](#disabled).
 
 ## Controlled and uncontrolled
 
-The mode is decided by whether `@page` is *passed*, not by what it holds —
-the same rule [`SegmentedControl`](./segmented-control) uses for `@value`.
+The mode is decided by whether `@page` is _passed_, not by what it holds —
+the same rule [`SegmentedControl`](../buttons/segmented-control.md) uses for `@value`.
 
 Without `@page` the control is uncontrolled: it tracks the current page
 itself, seeded from `@defaultPage`, and `@onChange` still fires on every
@@ -43,9 +54,7 @@ navigation so you can observe the page without owning it.
 ```gts preview
 import { Pagination } from 'frontile';
 
-<template>
-  <Pagination @total={{120}} @defaultPage={{3}} />
-</template>
+<template><Pagination @total={{120}} @defaultPage={{3}} /></template>
 ```
 
 Passing `@page` makes it controlled: the rendered page then only ever
@@ -83,9 +92,7 @@ export default class Example extends Component {
 ```gts preview
 import { Pagination } from 'frontile';
 
-<template>
-  <Pagination @total={{45}} @pageSize={{10}} />
-</template>
+<template><Pagination @total={{45}} @pageSize={{10}} /></template>
 ```
 
 ## Window size
@@ -154,16 +161,14 @@ import { Pagination } from 'frontile';
 
 ## Previous and next only
 
-Set `@showPages={{false}}` for a control with no page chips — just previous
-and next. Use it for cursor-style paging, where the total item count isn't
-known up front.
+Set `@showPages={{false}}` for compact page-number navigation with no page
+chips—just previous and next. The component still uses `@total` and
+`@pageSize` to determine when those controls are disabled.
 
 ```gts preview
 import { Pagination } from 'frontile';
 
-<template>
-  <Pagination @total={{120}} @showPages={{false}} />
-</template>
+<template><Pagination @total={{120}} @showPages={{false}} /></template>
 ```
 
 ## Summary
@@ -179,7 +184,10 @@ import { Pagination } from 'frontile';
 <template>
   <Pagination @total={{120}} @pageSize={{10}} @defaultPage={{2}}>
     <:summary as |s|>
-      Showing {{s.from}}-{{s.to}} of {{s.total}}
+      Showing
+      {{s.from}}-{{s.to}}
+      of
+      {{s.total}}
     </:summary>
   </Pagination>
 </template>
@@ -237,13 +245,48 @@ import { Pagination } from 'frontile';
 
 <template>
   <div class='flex flex-col items-start gap-3'>
-    <Pagination @total={{50}} @defaultPage={{2}} @intent='default' aria-label='Default intent' />
-    <Pagination @total={{50}} @defaultPage={{2}} @intent='primary' aria-label='Primary intent' />
-    <Pagination @total={{50}} @defaultPage={{2}} @intent='secondary' aria-label='Secondary intent' />
-    <Pagination @total={{50}} @defaultPage={{2}} @intent='tertiary' aria-label='Tertiary intent' />
-    <Pagination @total={{50}} @defaultPage={{2}} @intent='success' aria-label='Success intent' />
-    <Pagination @total={{50}} @defaultPage={{2}} @intent='warning' aria-label='Warning intent' />
-    <Pagination @total={{50}} @defaultPage={{2}} @intent='danger' aria-label='Danger intent' />
+    <Pagination
+      @total={{50}}
+      @defaultPage={{2}}
+      @intent='default'
+      aria-label='Default intent'
+    />
+    <Pagination
+      @total={{50}}
+      @defaultPage={{2}}
+      @intent='primary'
+      aria-label='Primary intent'
+    />
+    <Pagination
+      @total={{50}}
+      @defaultPage={{2}}
+      @intent='secondary'
+      aria-label='Secondary intent'
+    />
+    <Pagination
+      @total={{50}}
+      @defaultPage={{2}}
+      @intent='tertiary'
+      aria-label='Tertiary intent'
+    />
+    <Pagination
+      @total={{50}}
+      @defaultPage={{2}}
+      @intent='success'
+      aria-label='Success intent'
+    />
+    <Pagination
+      @total={{50}}
+      @defaultPage={{2}}
+      @intent='warning'
+      aria-label='Warning intent'
+    />
+    <Pagination
+      @total={{50}}
+      @defaultPage={{2}}
+      @intent='danger'
+      aria-label='Danger intent'
+    />
   </div>
 </template>
 ```
@@ -253,7 +296,7 @@ import { Pagination } from 'frontile';
 `@isDisabled` disables every control in the row.
 
 For the component's own page chips and prev/next buttons, this sets a real
-`disabled` attribute, so those controls are genuinely inert. An element you
+`disabled` attribute, so those controls are inert. An element you
 supply through `<:item>` — typically an `<a href>` — has no `disabled`
 attribute to set, so only the pointer is blocked; the element stays
 keyboard-reachable and `Enter`-activatable. If you render your own links,

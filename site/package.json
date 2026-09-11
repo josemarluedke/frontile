@@ -15,10 +15,11 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "pnpm build:client && pnpm build:ssr && pnpm prerender",
+    "build": "pnpm build:client && pnpm build:ssr && pnpm snapshot-shell && pnpm prerender",
     "build:client": "vite build",
     "build:ssr": "vite build --ssr app/ssr-entry.ts",
     "prerender": "node ssr/prerender.mjs",
+    "snapshot-shell": "node ssr/snapshot-shell.mjs",
     "format": "prettier . --cache --write",
     "generate-homepage-snippets": "node lib/generate-homepage-snippets.mjs && pnpm prettier app/components/homepage/snippets.ts --write",
     "generate-signature-data": "node lib/generate-signature-data.mjs && pnpm prettier app/components/signature-data.ts --write",

@@ -112,7 +112,7 @@ In multiple selection mode there is one extra step. The dropdown stays open acro
 selections, so the click that takes the user away from the field is first spent closing
 it — and closing the dropdown returns focus to the trigger. Focus is therefore still
 inside the control at that point, and `@onBlur` does not fire; it fires on the next
-interaction, once focus genuinely leaves. Blur validation on a multiple Select runs one
+interaction, once focus leaves. Blur validation on a multiple Select runs one
 interaction later than on a single one.
 
 ```gts preview
@@ -545,6 +545,7 @@ export default class DeclarativeItemsSelect extends Component {
   <template>
     <div class='demo-stack'>
       <Select
+        @selectionMode='multiple'
         @placeholder='Select...'
         @onSelectionChange={{this.onSelectionChange}}
         @selectedKeys={{this.selectedKeys}}
@@ -717,6 +718,12 @@ export default class NativeSelectExample extends Component {
   </template>
 }
 ```
+
+## Anatomy
+
+`Select` combines a trigger or filter input, a Popover, and a Listbox. It can render options
+from `@items` or yield an item builder, while `<:selectedItem>` customizes the selected value
+shown in a single-select trigger.
 
 ## Multiple Selection
 

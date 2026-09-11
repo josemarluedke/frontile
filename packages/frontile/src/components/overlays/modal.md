@@ -435,7 +435,7 @@ export default class FormModal extends Component {
   @tracked isOpen = false;
   @tracked name = '';
   @tracked email = '';
-  @tracked category = [];
+  @tracked category = null;
   @tracked message = '';
   @tracked isSubmitting = false;
 
@@ -458,8 +458,8 @@ export default class FormModal extends Component {
     this.email = value;
   }
 
-  @action updateCategory(keys) {
-    this.category = keys;
+  @action updateCategory(key) {
+    this.category = key;
   }
 
   @action updateMessage(value) {
@@ -481,7 +481,7 @@ export default class FormModal extends Component {
     console.log('Form submitted:', {
       name: this.name,
       email: this.email,
-      category: this.category[0],
+      category: this.category,
       message: this.message
     });
 
@@ -493,7 +493,7 @@ export default class FormModal extends Component {
   @action resetForm() {
     this.name = '';
     this.email = '';
-    this.category = [];
+    this.category = null;
     this.message = '';
   }
 
@@ -547,7 +547,7 @@ export default class FormModal extends Component {
             <Select
               @label='Category'
               @items={{this.categories}}
-              @selectedKeys={{this.category}}
+              @selectedKey={{this.category}}
               @onSelectionChange={{this.updateCategory}}
               @placeholder='Select a category'
               disabled={{this.isSubmitting}}
@@ -846,9 +846,9 @@ dialog by itself, because nothing points at it:
 </Modal>
 ```
 
-In development, a modal that ends up with no accessible name at all — no `Header`, no
-`aria-label` and no `aria-labelledby` — logs a warning with the id
-`frontile.modal.missing-accessible-name`. It is compiled out of production builds.
+A modal with no accessible name — no `Header`, `aria-label`, or `aria-labelledby` — is
+invalid. Frontile reports this during development with the warning id
+`frontile.modal.missing-accessible-name` so it can be corrected before release.
 
 `aria-modal="true"` is dropped when `@disableFocusTrap={{true}}`: with the trap off the page
 behind really is reachable, and claiming otherwise would mislead screen reader users. Note

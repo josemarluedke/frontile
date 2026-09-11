@@ -17,15 +17,13 @@ regardless of how many items a list contains.
 - **Tab** enters or leaves the group in one press — it never steps through every item.
 - **Arrow keys** move focus between items. Horizontal groups (e.g. `SegmentedControl`) use
   Left/Right; vertical groups (e.g. `Table`, `Listbox`) use Up/Down.
-- **Home** / **End** jump to the first / last enabled item, in components built on
-  `rovingFocus`. `Listbox` implements the same Home/End behavior itself via a separate,
-  hand-rolled key handler rather than through `ListManager`, and additionally treats
-  PageUp/PageDown the same as Home/End.
+- **Home** / **End** jump to the first / last enabled item. Listbox also treats
+  PageUp/PageDown as Home/End.
 - **Typeahead** — typing a letter jumps to the next item whose text starts with it, in
   components that support text search (Listbox, Select, Autocomplete, Command).
 - **Disabled items are skipped** — navigation is computed from the enabled items only, so
   wrapping and Home/End always land on something usable.
-- In a right-to-left layout, `rovingFocus`-based horizontal groups swap Left/Right so "next"
+- In a right-to-left layout, horizontal groups swap Left/Right so "next"
   and "previous" still match the direction the user reads in. Vertical navigation is
   unaffected.
 
@@ -41,26 +39,13 @@ actually used:
   activating is not — `Table`'s row navigation uses this, since arrowing across rows
   shouldn't fire a selection on every keystroke.
 
-## Two primitives, same shape
+## Choosing a component
 
-Frontile has two building blocks that implement this model, at different levels of
-functionality:
-
-- **`rovingFocus`** (`packages/frontile/src/utils/roving-focus.ts`) is the minimal version:
-  it owns only keyboard handling and `tabindex` bookkeeping, reading selected/disabled state
-  directly off each element's attributes (`data-selected`, `aria-checked`, `aria-selected`,
-  `:disabled`, `aria-disabled`). It renders nothing and knows nothing about selection state
-  itself. `SegmentedControl` and `Table` use it directly — see the
-  [`rovingFocus` reference](../../packages/frontile/src/utils/roving-focus.md) for the full
-  API.
-- **`ListManager`** (`packages/frontile/src/utils/listManager.ts`) is the fuller-featured
-  engine behind `Listbox`, `Dropdown`, `Select`, `Autocomplete`, `NativeSelect`, and `Command`.
-  It additionally owns selection state (single/multiple/none), typeahead search, and
-  auto-activation of the first or previously-selected item when a list opens.
-
-You won't normally interact with either primitive directly unless you're building a new
-list-like component — as a consumer, what matters is that the keyboard behavior above is
-consistent everywhere you see it.
+Use `SegmentedControl` when moving focus should also change the value. Use `Table` when focus
+and selection must remain separate. Listbox, Dropdown, Select, Autocomplete, NativeSelect,
+and Command add selection state and typeahead behavior for option collections. If you are
+building a custom composite control, the public `rovingFocus` modifier provides the shared
+single-tab-stop behavior.
 
 ## Used by
 

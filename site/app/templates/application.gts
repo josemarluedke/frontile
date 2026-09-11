@@ -19,7 +19,7 @@ import { DocfyLink } from '@docfy/ember';
   <DocfyRouteLoadingBar />
   <DocfyHeader
     @githubUrl="https://github.com/josemarluedke/frontile"
-    class="overflow-x-scroll sm:overflow-x-auto"
+    class="max-w-full overflow-x-auto"
   >
     <:title>
       <VisuallyHidden>Frontile</VisuallyHidden>
