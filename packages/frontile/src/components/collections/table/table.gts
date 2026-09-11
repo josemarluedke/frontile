@@ -636,8 +636,11 @@ class Table<
       hasStickyHeader: this.args.isStickyHeader || false,
       isLoading: this.args.isLoading || false,
       loadingColor: this.args.loadingColor,
-      selectionColor: this.args.selectionColor,
-      class: this.args.classes?.base
+      selectionColor: this.args.selectionColor
+      // No `class: this.args.classes?.base` here: `table` has no `base`
+      // slot (deleted -- it was never rendered by anything, see
+      // packages/theme/src/components/table.ts), so passing a class here
+      // was already a no-op.
     });
   }
 

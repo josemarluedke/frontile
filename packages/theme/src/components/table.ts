@@ -2,7 +2,12 @@ import { tv, type VariantProps } from '../tw';
 
 const table = tv({
   slots: {
-    base: ['w-full', 'caption-bottom', 'font-body text-body-2xs'],
+    // No `base` slot: Table has no single wrapping root element of its own --
+    // `wrapper` (below) is the outermost rendered element, and nothing ever
+    // called `.base()`. `w-full caption-bottom font-body text-body-2xs` was
+    // dead here (never applied by any renderer); it is not carried over to
+    // any other slot, since restoring it would be a visual change out of
+    // scope for this migration -- see Task 12's brief.
     wrapper: [
       'relative',
       'isolate',

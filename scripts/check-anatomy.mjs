@@ -184,12 +184,26 @@ function resolveSlots(name, raw, cache) {
  * `{ missing: [], orphan: [] }` — silently passing a component that in fact
  * covers none of its inherited slots.
  */
-export function readThemeSlots(themeDir) {
+/**
+ * Parse every slot-bearing tv() config under `themeDir` into
+ * `{ name: { ownSlots, extends } }` (see `parseThemeFile`'s doc for the
+ * shape), skipping files this check has no interest in. Shared by
+ * `readThemeSlots` (the cross-file coverage check) and
+ * `readSlotlessConfigNames` (consulted by the `frontile/require-data-part`
+ * lint rule, see that function's doc) so both stay in sync with exactly one
+ * parse of the theme package.
+ */
+function readRawThemeConfigs(themeDir) {
   const raw = {};
   for (const file of walk(themeDir, '.ts')) {
     if (EXCLUDED_BASENAMES.has(basename(file))) continue;
     Object.assign(raw, parseThemeFile(readFileSync(file, 'utf8')));
   }
+  return raw;
+}
+
+export function readThemeSlots(themeDir) {
+  const raw = readRawThemeConfigs(themeDir);
   const cache = new Map();
   const configs = {};
   for (const [name, entry] of Object.entries(raw)) {
@@ -216,6 +230,39 @@ export function readThemeSlots(themeDir) {
     configs[name] = resolved;
   }
   return configs;
+}
+
+/**
+ * The set of top-level tv() config names (the literal JS identifier, e.g.
+ * `skeleton`, `spinner`, `divider` -- NOT kebab-cased) that are "slotless":
+ * no `slots:` key of their own, and nothing slot-shaped inherited through
+ * `extend` either (the same condition `readThemeSlots` uses to decide a
+ * config gets the implicit single `base` slot -- see the comment there).
+ *
+ * Consulted by the `frontile/require-data-part` ember-template-lint rule
+ * (`lint/rules/require-data-part.mjs`) to resolve a real ambiguity: when a
+ * template does `{{styles.skeleton class=@class ...}}` (or, destructured,
+ * bare `{{divider ...}}`), the final path segment names the *whole config*
+ * being invoked directly -- not a slot inside some other multi-slot config
+ * that happens to be in scope under the same name. Confusing the two made
+ * the rule demand `data-part="skeleton"` on Skeleton's root element, when
+ * the correct, already-applied convention for a slotless config's one
+ * element is `data-part="base"` (matching `readThemeSlots`'s own modeling).
+ * The rule uses this export to tell "the whole config, called directly" apart
+ * from "a slot of some other config", without duplicating the parsing logic
+ * that already lives here.
+ */
+export function readSlotlessConfigNames(themeDir) {
+  const raw = readRawThemeConfigs(themeDir);
+  const cache = new Map();
+  const names = new Set();
+  for (const name of Object.keys(raw)) {
+    const resolved = resolveSlots(name, raw, cache);
+    if (raw[name].ownSlots === null && resolved.length === 0) {
+      names.add(name);
+    }
+  }
+  return names;
 }
 
 function extractAttrOccurrences(src, attrName) {
@@ -390,6 +437,61 @@ export function readRenderedParts(componentsDir, knownConfigNames) {
   return byComponent;
 }
 
+/**
+ * Config names that are never themselves rendered by any component under
+ * their own name -- so they have no `data-component` of their own and no
+ * element of their own to carry a `data-part`. Two distinct shapes land
+ * here, both invisible under the old "not yet migrated" escape purely as a
+ * side effect of that escape (Task 7b); removing the escape turns them red
+ * for the wrong reason -- they were never going to get a `data-component`
+ * because they are not components, not because migration work is
+ * outstanding:
+ *
+ * 1. **`extend`-only base configs.** `checkboxRadioBase` supplies shared
+ *    slots to `checkbox` and `radio`; `checkboxRadioGroupBase` supplies
+ *    shared slots to `checkboxGroup` and `radioGroup`; `baseButton` supplies
+ *    shared classes to `button` and `toggleButton`. None is exported from
+ *    its theme file for any component to call directly.
+ *
+ *    This is a narrow, explicit exclusion from the "every config must have
+ *    a renderer" check, deliberately shaped as "exclude non-rendered base
+ *    configs" rather than a `KNOWN_UNRENDERED_SLOTS`-style per-slot
+ *    exemption: a base config's slots (`base`, `input`, `labelContainer`,
+ *    `label`, …) are never orphaned or missing on their own terms -- they
+ *    are fully covered via the `extend` chain resolution in `resolveSlots`,
+ *    through the configs that actually extend them. Exempting the *base
+ *    config entry itself* says precisely "this name is not a component";
+ *    exempting its slots one by one would instead say "these slots don't
+ *    need coverage", which is false -- they do, just under their extending
+ *    configs' names.
+ *
+ * 2. **Class-composition helpers and out-of-scope overlay/portal
+ *    machinery**, which are genuinely slotless (no `slots:` key, so they'd
+ *    otherwise demand an implicit `data-part="base"` renderer) but are
+ *    consumed as plain strings merged into a *different* component's own
+ *    output, never surfaced under their own `data-component`:
+ *    - `buttonSpinner`: called directly (not `extend`ed) inside
+ *      `Button#spinnerClassNames` and passed to `<Spinner @class=…>` --
+ *      the resulting element keeps `data-component="spinner"`, Spinner's
+ *      own identity, not `button-spinner`.
+ *    - `popover`, `backdrop`, `overlayArrow`, `dropdownContent`: overlay and
+ *      portal primitives explicitly out of scope for this migration (see
+ *      Task 8's brief, and the scoping note already on
+ *      `MANUAL_PART_OWNERS` below) -- `Overlay`/`Portal`/`Backdrop` are not
+ *      migrated components, so none of these ever gets its own
+ *      `data-component`.
+ */
+const NEVER_RENDERED_CONFIGS = new Set([
+  'checkboxRadioBase',
+  'checkboxRadioGroupBase',
+  'baseButton',
+  'buttonSpinner',
+  'popover',
+  'backdrop',
+  'overlayArrow',
+  'dropdownContent'
+]);
+
 export function checkAnatomy({ themeDir, componentsDir }) {
   const slotsByConfig = readThemeSlots(themeDir);
   const knownConfigNames = new Set(Object.keys(slotsByConfig).map(kebab));
@@ -399,19 +501,13 @@ export function checkAnatomy({ themeDir, componentsDir }) {
   const orphan = [];
 
   for (const [config, slotKeys] of Object.entries(slotsByConfig)) {
+    if (NEVER_RENDERED_CONFIGS.has(config)) continue;
     const name = kebab(config);
-    const entry = rendered[name];
-    // TEMPORARY escape: a config with no matching data-component anywhere is
-    // a component that has not been migrated to the anatomy attributes yet,
-    // so its slot coverage isn't this check's concern. Some components in
-    // this codebase already carry a `data-component` attribute today (from
-    // work that predates this migration plan) without yet carrying the
-    // matching `data-part`s, so this escape is not currently a no-op — those
-    // configs are the `missing` entries the baseline run reports. Task 12
-    // deletes this `continue` once every component in the migration list
-    // carries both attributes correctly, at which point an unmigrated config
-    // should start failing the check instead of being silently skipped.
-    if (!entry) continue;
+    // No matching data-component anywhere: an unmigrated (or misnamed)
+    // config, reported as missing every one of its slots rather than
+    // silently skipped -- see NEVER_RENDERED_CONFIGS above for the
+    // deliberate exceptions to "every config must have a renderer".
+    const entry = rendered[name] ?? { parts: new Set(), files: new Set() };
 
     for (const slot of slotKeys) {
       if (KNOWN_UNRENDERED_SLOTS[name]?.has(slot)) continue;

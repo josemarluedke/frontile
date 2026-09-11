@@ -229,7 +229,7 @@ class FormControl extends Component<FormControlSignature> {
       }}
       <VisuallyHidden
         aria-live="assertive"
-        data-component="form-feedback-live-region"
+        data-test-id="form-feedback-live-region"
       >{{this.errorMessageText}}</VisuallyHidden>
     </div>
   </template>

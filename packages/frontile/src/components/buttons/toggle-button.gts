@@ -58,6 +58,8 @@ class ToggleButton extends Component<ToggleButtonSignature> {
       {{press this.onChange}}
       class={{this.classNames}}
       aria-pressed="{{this.isSelected}}"
+      data-component="toggle-button"
+      data-part="base"
       ...attributes
     >
       {{yield}}
