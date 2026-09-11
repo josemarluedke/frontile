@@ -71,6 +71,21 @@ module(
       assert.dom('[data-test-id="button"]').hasAttribute('type', 'submit');
     });
 
+    test('renders data-component="button" on the root only, with data-part="base"', async function (assert) {
+      await render(
+        <template>
+          <Button>My Button</Button>
+        </template>
+      );
+
+      assert.dom('[data-component="button"]').hasAttribute('data-part', 'base');
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="button"]').length,
+        1,
+        'data-component="button" marks the root only'
+      );
+    });
+
     module('Style classes', () => {
       module('@appearance', () => {
         test('it adds class for default appearance', async function (assert) {

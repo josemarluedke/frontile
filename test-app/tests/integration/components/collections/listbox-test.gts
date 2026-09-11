@@ -195,6 +195,25 @@ module(
       assert.dom('[data-key="item-2"]').hasAttribute('data-selected', 'false');
     });
 
+    test('renders data-component="listbox" on the root only, with data-part="base"', async function (assert) {
+      await render(
+        <template>
+          <Listbox as |l|>
+            <l.Item @key="item-1">Item 1</l.Item>
+          </Listbox>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="listbox"]')
+        .hasAttribute('data-part', 'base');
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="listbox"]').length,
+        1,
+        'data-component="listbox" marks the root only'
+      );
+    });
+
     test('it render dynamic items without yield of item selectionMode = single / multiple', async function (assert) {
       const selectionMode = cell<'single' | 'multiple' | 'none'>('single');
       const allowEmpty = cell(false);

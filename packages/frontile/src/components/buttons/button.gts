@@ -227,6 +227,8 @@ class Button extends Component<ButtonSignature> {
         aria-busy={{if this.isLoading "true"}}
         data-loading={{if this.isLoading "true"}}
         data-pressed={{if this.isPressed "true"}}
+        data-component="button"
+        data-part="base"
         {{press this.onPress onPressChange=this.handlePressChange}}
         ...attributes
         {{disableWhile this.isLoading}}

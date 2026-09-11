@@ -94,5 +94,19 @@ module(
 
       assert.dom('[data-component="form-feedback"]').hasAria('live', 'polite');
     });
+
+    test('renders data-component="form-feedback" on the root only, with data-part="base"', async function (assert) {
+      messages.current = 'My message';
+      await settled();
+
+      assert
+        .dom('[data-component="form-feedback"]')
+        .hasAttribute('data-part', 'base');
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="form-feedback"]').length,
+        1,
+        'data-component="form-feedback" marks the root only'
+      );
+    });
   }
 );

@@ -190,5 +190,18 @@ module(
       assert.dom('[data-test-id="skeleton"]').hasClass('h-32');
       assert.dom('[data-test-id="skeleton"]').doesNotHaveClass('h-4');
     });
+
+    test('renders data-component="skeleton" on the root only, with data-part="base"', async function (assert) {
+      await render(<template><Skeleton /></template>);
+
+      assert
+        .dom('[data-component="skeleton"]')
+        .hasAttribute('data-part', 'base');
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="skeleton"]').length,
+        1,
+        'data-component="skeleton" marks the root only'
+      );
+    });
   }
 );

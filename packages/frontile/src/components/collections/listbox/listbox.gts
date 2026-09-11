@@ -310,6 +310,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
       }}
       data-test-id="listbox"
       data-component="listbox"
+      data-part="base"
       class={{this.classNames}}
       ...attributes
     >

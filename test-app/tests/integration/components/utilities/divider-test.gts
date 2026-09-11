@@ -60,5 +60,18 @@ module(
 
       assert.dom('[data-test-id="divider"]').hasTagName('span');
     });
+
+    test('renders data-component="divider" on the root only, with data-part="base"', async function (assert) {
+      await render(<template><Divider /></template>);
+
+      assert
+        .dom('[data-component="divider"]')
+        .hasAttribute('data-part', 'base');
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="divider"]').length,
+        1,
+        'data-component="divider" marks the root only'
+      );
+    });
   }
 );

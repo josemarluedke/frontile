@@ -441,3 +441,15 @@ test('MANUAL_PART_OWNERS does not silently swallow a genuine orphan: a mapped pa
     1
   );
 });
+
+// --- Implicit `base` for slotless configs -----------------------------------
+
+test('a slotless config requires only a base part', () => {
+  const { themeDir, componentsDir } = fixture(
+    `const divider = tv({ base: 'h-px' });`,
+    `<hr data-component="divider" data-part="base" />`
+  );
+  const r = checkAnatomy({ themeDir, componentsDir });
+  assert.deepEqual(r.missing, []);
+  assert.deepEqual(r.orphan, []);
+});

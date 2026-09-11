@@ -55,6 +55,8 @@ const Divider: TOC<{
       role="separator"
       aria-orientation={{if (isVertical @orientation) "vertical"}}
       data-test-id="divider"
+      data-component="divider"
+      data-part="base"
       ...attributes
     />
   {{/let}}

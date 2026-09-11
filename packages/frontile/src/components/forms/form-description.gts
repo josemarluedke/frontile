@@ -42,6 +42,7 @@ class FormDescription extends Component<FormDescriptionSignature> {
       id={{@id}}
       class={{this.classes}}
       data-component="form-description"
+      data-part="base"
       ...attributes
     >
       {{yield}}

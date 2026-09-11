@@ -196,7 +196,23 @@ export function readThemeSlots(themeDir) {
     const resolved = resolveSlots(name, raw, cache);
     // Include when the config declares its own `slots:` key (even if empty)
     // or when it inherits a non-empty slot set through `extend`.
-    if (entry.ownSlots === null && resolved.length === 0) continue;
+    if (entry.ownSlots === null && resolved.length === 0) {
+      // A config with no `slots:` key at all (e.g. `button`, `divider`) and
+      // nothing *slot-shaped* inherited through `extend` is a
+      // single-element component: it implicitly has one slot, `base`, even
+      // though tv() never spells it out as a slots object. Without this,
+      // such configs are invisible to this script -- a component that
+      // forgets `data-component` (or puts it on the wrong element) entirely
+      // on such a config passes silently. This applies even when the config
+      // `extend`s another config (e.g. `button` extends `baseButton`): the
+      // extend chain resolved to an empty slot set too (`baseButton` has no
+      // `slots:` key either), so there is still no real, named slot
+      // anywhere in the chain -- just a single implicit `base`. A config
+      // that inherits a genuinely non-empty slot set via `extend` takes the
+      // branch below instead and never reaches here.
+      configs[name] = ['base'];
+      continue;
+    }
     configs[name] = resolved;
   }
   return configs;
@@ -241,7 +257,15 @@ function extractAttrOccurrences(src, attrName) {
 // of their own (only their root, `simple-table/index.gts`'s `<table>`,
 // conditionally does), so they rely entirely on this directory fallback.
 const DIRECTORY_OWNER_ALIASES = {
-  'simple-table': 'table'
+  'simple-table': 'table',
+  // tab-nav/ is a second renderer of the `tabs` theme config (a nav-link
+  // variant of Tabs, sharing list/indicator/tab slot classes) -- not a
+  // config of its own. Its root file (tab-nav.gts) carries
+  // `data-component="tabs"` directly, but item.gts (the TabNavItem
+  // sub-template) carries only `data-part="tab"` with no data-component in
+  // its own file, so it needs the same directory-name fallback
+  // `simple-table` gets.
+  'tab-nav': 'tabs'
 };
 
 /**
