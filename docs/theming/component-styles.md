@@ -16,6 +16,122 @@ A **slot** represents a specific part of a component that can be styled or custo
 
 When customizing styles in Frontile, you can either apply styles globally using `registerCustomStyles` or customize individual components using class arguments. You can override default component styles by passing your own class names to the `class` or `classes` argument, depending on whether the component has slots.
 
+## DOM Anatomy: `data-component` and `data-part`
+
+Every Frontile component renders a stable, documented DOM anatomy, independent
+of its CSS classes. Two attributes carry it:
+
+- **`data-component="<name>"`** — the kebab-cased `tv()` config name (e.g. the
+  `notificationCard` config produces `notification-card`), written on the
+  component's **outermost rendered element only**. This is the name the
+  component is registered under, not its filename — `commandDialog` →
+  `command-dialog`.
+- **`data-part="<name>"`** — the kebab-cased `tv()` slot key, written on
+  **every** element that renders a slot (`startContent` → `start-content`).
+  Slot names are exactly the keys you already pass to `@classes`, so if you
+  can style a part with `@classes={{hash startContent='...'}}`, you can also
+  select it with `[data-part="start-content"]`.
+
+By convention the root element's part is `base` — but only by convention, not
+by rule. It carries whichever slot it actually renders. `Table`'s root is the
+`<table>` element, which renders the `table` slot, so it carries
+`data-part="table"`, not `data-part="base"`. `ProgressBar`'s outer `<div>`
+renders no slot at all, so it carries `data-component="progress-bar"` with no
+`data-part`.
+
+Both attributes are written **before** `...attributes` in every component's
+template, so a value you pass through `...attributes` always wins. This is
+how, for example, `Tooltip` — which renders no element of its own, only
+`Overlay`'s portaled `<div>` — sets `data-component="tooltip"` on markup that
+`Overlay` itself already stamps with `data-component="overlay"`.
+
+A nested component's root legitimately carries **both** its own
+`data-component` and a `data-part` belonging to its parent. `CloseButton`
+rendered inside `Alert`, for instance, is simultaneously
+`data-component="close-button"` (its own root) and `data-part="close-button"`
+(the part it fills in `Alert`'s anatomy).
+
+Two components can also render the same `data-component` value: `TabNav` is a
+second renderer of the `tabs` config, alongside `Tabs` itself.
+
+### Selecting by anatomy
+
+Scope a selector to one component's own parts with:
+
+```css
+[data-component="modal"] [data-part="header"] {
+  /* ... */
+}
+```
+
+### Known limitation: a nested component can share a part name
+
+`[data-component="x"] [data-part="y"]` is a plain CSS descendant combinator —
+it matches **any** descendant, not just `y` parts that belong directly to
+`x`. That's ambiguous whenever a nested component happens to have a part
+with the same name. `Alert` renders a `CloseButton`, and `CloseButton` has
+its own `icon` part (its SVG); `Alert` also has its own `icon` part (the
+alert's leading icon). `[data-component="alert"] [data-part="icon"]` matches
+both — the alert's own icon *and* the close button's icon glyph, because the
+close button is a descendant of the alert's root.
+
+The precise meaning consumers usually want is "the nearest `[data-component]`
+ancestor of this part is `x`" — ownership by the closest component boundary,
+not by any ancestor. CSS has no "nearest enclosing" combinator, so this
+cannot be expressed as a selector at all; a descendant combinator is the best
+CSS can do, and it is not equivalent.
+
+Frontile's own tests resolve this with the `ownParts(root, part)` helper
+exported from `frontile/test-support`:
+
+```ts
+import { ownParts } from 'frontile/test-support';
+
+// Only Alert's own `icon` part, not CloseButton's.
+const icons = ownParts(alertRootElement, 'icon');
+```
+
+It walks up from each candidate element's **parent** (not the element
+itself — `closest()` would match a nested component's own root against
+itself before ever reaching `root`, wrongly excluding a part that legitimately
+belongs to `root`) until it either reaches `root` (a true match) or hits
+another `[data-component]` ancestor first (owned by that nested component
+instead, so excluded). See `packages/frontile/src/test-support.ts` for the
+full implementation and reasoning.
+
+`Table`'s composition of `SimpleTable` has the same shape from the other
+direction: `SimpleTable` accepts an internal `@isRoot` flag so that when
+`Table` composes it, only `Table`'s own outer wrapper carries
+`data-component="table"` — `SimpleTable`'s `<table>` renders `data-part="table"`
+but no `data-component` of its own, avoiding two nested `data-component="table"`
+elements for what is, from the outside, one `Table` instance.
+
+### Not `data-slot`
+
+If you're coming from shadcn/ui, Nuxt UI, or HeroUI, you'll recognize the
+shape of this convention but not the attribute name — those use `data-slot`.
+Frontile uses `data-part` deliberately: `::part()` is the web platform's own
+word for a styleable piece of a component (see the CSS Shadow Parts spec),
+and "slot" already means something different in Ember — a named block
+(`{{yield to="title"}}`), not a DOM anatomy hook. Reusing "slot" for both
+would collide two unrelated concepts in the same codebase.
+
+### Enforcement
+
+Two mechanisms keep the anatomy honest as components change:
+
+- `pnpm lint:hbs` runs two `ember-template-lint` rules —
+  `frontile/require-data-part` (every element rendering a slot carries the
+  matching `data-part`) and `frontile/require-root-data-component` (every
+  component's outermost element carries `data-component`).
+- `pnpm lint:anatomy` runs `scripts/check-anatomy.mjs`, a cross-file check
+  that every slot a `tv()` config declares is actually rendered as a
+  `data-part` somewhere, and every `data-part` rendered actually names a
+  real slot.
+
+`@frontile/forms-legacy` is excluded from both — it is deprecated and not
+part of this anatomy migration.
+
 ## Customizing Styles
 
 ### Setting Up Global Customization
