@@ -40,10 +40,10 @@ class SimpleTableColumn extends Component<SimpleTableColumnSignature> {
 
   <template>
     <th
+      data-component="table"
+      data-part="th"
       scope="col"
       class={{this.classNames}}
-      data-test-id="table-column"
-      data-component="table-column"
       ...attributes
     >
       {{yield}}

@@ -62,13 +62,13 @@ class SimpleTableFooter extends Component<SimpleTableFooterSignature> {
 
   <template>
     <tfoot
+      data-component="table"
+      data-part="tfoot"
       class={{this.classNames}}
-      data-test-id="table-footer"
-      data-component="table-footer"
       ...attributes
     >
-      <tr class={{this.separatorClassNames}} />
-      <tr class={{this.rowClassNames}}>
+      <tr data-part="separator" class={{this.separatorClassNames}} />
+      <tr data-part="tr" class={{this.rowClassNames}}>
         {{yield (hash Column=SimpleTableColumn)}}
       </tr>
     </tfoot>

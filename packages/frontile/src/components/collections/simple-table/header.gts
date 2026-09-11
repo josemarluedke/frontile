@@ -62,15 +62,15 @@ class SimpleTableHeader extends Component<SimpleTableHeaderSignature> {
 
   <template>
     <thead
+      data-component="table"
+      data-part="thead"
       class={{this.classNames}}
-      data-test-id="table-header"
-      data-component="table-header"
       ...attributes
     >
-      <tr class={{this.rowClassNames}}>
+      <tr data-part="tr" class={{this.rowClassNames}}>
         {{yield (hash Column=SimpleTableColumn)}}
       </tr>
-      <tr class={{this.separatorClassNames}} />
+      <tr data-part="separator" class={{this.separatorClassNames}} />
     </thead>
   </template>
 }

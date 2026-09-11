@@ -101,11 +101,11 @@ class SimpleTable extends Component<SimpleTableSignature> {
 
   <template>
     {{#if this.hasWrapper}}
-      <div class={{this.wrapperClassNames}} data-component="table-wrapper">
+      <div data-part="wrapper" class={{this.wrapperClassNames}}>
         <table
-          class={{this.tableClassNames}}
-          data-test-id="table"
           data-component="table"
+          data-part="table"
+          class={{this.tableClassNames}}
           data-loading={{if this.args.isLoading "true" "false"}}
           ...attributes
         >
@@ -133,9 +133,9 @@ class SimpleTable extends Component<SimpleTableSignature> {
       </div>
     {{else}}
       <table
-        class={{this.tableClassNames}}
-        data-test-id="table"
         data-component="table"
+        data-part="table"
+        class={{this.tableClassNames}}
         data-loading={{if this.args.isLoading "true" "false"}}
         ...attributes
       >

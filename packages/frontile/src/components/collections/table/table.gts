@@ -659,6 +659,10 @@ class Table<
     return this.styles.skeleton({ class: this.args.classes?.skeleton });
   }
 
+  get toolbarClassNames() {
+    return this.styles.toolbar({ class: this.args.classes?.toolbar });
+  }
+
   get headlessColumns() {
     return columns.for(this.tableInstance);
   }
@@ -680,13 +684,13 @@ class Table<
 
   <template>
     <div
+      data-part="wrapper"
       class={{this.wrapperClassNames}}
       {{calculateHeaderHeight @isStickyHeader}}
       {{this.tableInstance.modifiers.container}}
-      data-component="table-wrapper"
     >
       {{#if (has-block "toolbar")}}
-        <div class="table-toolbar px-4 pt-3" data-component="table-toolbar">
+        <div data-part="toolbar" class={{this.toolbarClassNames}}>
           {{yield
             (hash
               ColumnVisibility=(component
@@ -828,10 +832,10 @@ class Table<
               {{#unless (has-block "loading")}}
                 {{#each this.skeletonRowsArray as |rowIndex|}}
                   <t.Row
+                    data-part="skeleton-row"
                     @class={{this.skeletonRowClassNames}}
                     style={{skeletonRowDelay rowIndex}}
                     aria-hidden="true"
-                    data-test-id="table-skeleton-row"
                   >
                     {{#each this.headlessColumns as |column|}}
                       <t.Cell
@@ -840,6 +844,7 @@ class Table<
                         data-column={{column.key}}
                       >
                         <Skeleton
+                          data-part="skeleton"
                           @shape={{columnSkeletonShape column}}
                           @size={{@size}}
                           @animation="pulse"
@@ -855,9 +860,9 @@ class Table<
                 {{#if (has-block "empty")}}
                   <t.Row data-test-id="table-empty-row">
                     <t.Cell
+                      data-part="empty"
                       @class={{(this.styles.empty)}}
                       colspan={{this.headlessColumns.length}}
-                      data-test-id="table-empty-cell"
                     >
                       {{yield to="empty"}}
                     </t.Cell>
@@ -865,9 +870,9 @@ class Table<
                 {{else if @emptyContent}}
                   <t.Row data-test-id="table-empty-row">
                     <t.Cell
+                      data-part="empty"
                       @class={{(this.styles.empty)}}
                       colspan={{this.headlessColumns.length}}
-                      data-test-id="table-empty-cell"
                     >
                       {{@emptyContent}}
                     </t.Cell>

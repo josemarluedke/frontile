@@ -52,9 +52,9 @@ class SimpleTableRow extends Component<SimpleTableRowSignature> {
 
   <template>
     <tr
+      data-component="table"
+      data-part="tr"
       class={{this.classNames}}
-      data-test-id="table-row"
-      data-component="table-row"
       ...attributes
     >
       {{yield

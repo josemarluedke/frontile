@@ -16,6 +16,8 @@ const table = tv({
       // `--color-surface-table` to sit a table on a different background.
       'bg-surface-table'
     ],
+    // The optional controls strip above the table (e.g. column visibility).
+    toolbar: ['px-4', 'pt-3'],
     table: ['w-full', 'table-auto'],
     thead: ['relative', 'bg-surface-overlay-subtle'],
     tbody: [

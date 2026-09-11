@@ -69,6 +69,7 @@ export default class ColumnVisibility<T> extends Component<
     <Dropdown @closeOnItemSelect={{false}} ...attributes>
       <:default as |d|>
         <d.Trigger
+          data-part="column-visibility-button"
           @intent="default"
           @size={{this.size}}
           @class={{(this.styles.columnVisibilityButton)}}
@@ -78,6 +79,7 @@ export default class ColumnVisibility<T> extends Component<
             {{yield to="icon"}}
           {{else}}
             <ColumnVisibilityIcon
+              data-part="column-visibility-icon"
               class={{(this.styles.columnVisibilityIcon)}}
             />
           {{/if}}

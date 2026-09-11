@@ -44,9 +44,9 @@ class SimpleTableBody extends Component<SimpleTableBodySignature> {
 
   <template>
     <tbody
+      data-component="table"
+      data-part="tbody"
       class={{this.classNames}}
-      data-test-id="table-body"
-      data-component="table-body"
       ...attributes
     >
       {{yield

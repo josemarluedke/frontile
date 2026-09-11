@@ -76,26 +76,24 @@ module(
       );
 
       // Check that selection column is rendered
-      assert
-        .dom('[data-test-id="table-column"][data-key="__selection__"]')
-        .exists();
+      assert.dom('[data-part="th"][data-key="__selection__"]').exists();
 
       // Check that select all checkbox exists in header
       assert
         .dom(
-          '[data-test-id="table-column"][data-key="__selection__"] input[type="checkbox"]'
+          '[data-part="th"][data-key="__selection__"] input[type="checkbox"]'
         )
         .exists();
 
       // Check that each row has a checkbox
       assert
         .dom(
-          '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+          '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
         )
         .exists();
       assert
         .dom(
-          '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+          '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
         )
         .exists();
     });
@@ -129,22 +127,22 @@ module(
 
       // Click first row checkbox
       await click(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       // Verify via DOM
       const row1Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
       assert.true(row1Checkbox?.checked, 'First row checkbox is checked');
 
       // Click second row checkbox
       await click(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       const row2Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
       assert.true(row1Checkbox?.checked, 'First row checkbox is still checked');
       assert.true(row2Checkbox?.checked, 'Second row checkbox is checked');
@@ -182,7 +180,7 @@ module(
       );
 
       const selectAllCheckbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-column"][data-key="__selection__"] input[type="checkbox"]'
+        '[data-part="th"][data-key="__selection__"] input[type="checkbox"]'
       );
 
       // Initially: none selected, checkbox not checked, not indeterminate
@@ -200,13 +198,13 @@ module(
 
       // Verify selection happened by checking row checkbox states
       const row1Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
       const row2Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
       const row3Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="3"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="3"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       assert.true(row1Checkbox?.checked, 'First row checkbox is checked');
@@ -257,7 +255,7 @@ module(
       );
 
       const selectAllCheckbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-column"][data-key="__selection__"] input[type="checkbox"]'
+        '[data-part="th"][data-key="__selection__"] input[type="checkbox"]'
       );
 
       // Initially: all selected, checkbox checked, not indeterminate
@@ -271,13 +269,13 @@ module(
       await click(selectAllCheckbox!);
 
       const row1Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
       const row2Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
       const row3Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="3"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="3"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       assert.false(row1Checkbox?.checked, 'First row checkbox is not checked');
@@ -331,7 +329,7 @@ module(
       );
 
       const selectAllCheckbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-column"][data-key="__selection__"] input[type="checkbox"]'
+        '[data-part="th"][data-key="__selection__"] input[type="checkbox"]'
       );
 
       // Initially: some selected, checkbox not checked but indeterminate
@@ -348,13 +346,13 @@ module(
       await click(selectAllCheckbox!);
 
       const row1Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
       const row2Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
       const row3Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="3"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="3"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       assert.true(row1Checkbox?.checked, 'First row checkbox is checked');
@@ -401,20 +399,20 @@ module(
       );
 
       const selectAllCheckbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-column"][data-key="__selection__"] input[type="checkbox"]'
+        '[data-part="th"][data-key="__selection__"] input[type="checkbox"]'
       );
 
       // Click to select all (should only select non-disabled rows)
       await click(selectAllCheckbox!);
 
       const row1Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
       const row2Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
       const row3Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="3"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="3"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       assert.true(row1Checkbox?.checked, 'First row checkbox is checked');
@@ -460,20 +458,20 @@ module(
       // Check that disabled row checkbox is disabled
       assert
         .dom(
-          '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+          '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
         )
         .isDisabled();
 
       // Check that enabled row checkbox is not disabled
       assert
         .dom(
-          '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+          '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
         )
         .isNotDisabled();
 
       // Check that disabled row has data-disabled attribute
       assert
-        .dom('[data-test-id="table-row"][data-key="2"]')
+        .dom('[data-part="tr"][data-key="2"]')
         .hasAttribute('data-disabled', 'true');
     });
 
@@ -503,27 +501,25 @@ module(
       );
 
       // In single selection mode, no checkboxes should be rendered
-      assert
-        .dom('[data-test-id="table-column"][data-key="__selection__"]')
-        .doesNotExist();
+      assert.dom('[data-part="th"][data-key="__selection__"]').doesNotExist();
 
       // Click first row (universal-ember/table handles row clicks for single selection)
-      await click('[data-test-id="table-row"][data-key="1"]');
+      await click('[data-part="tr"][data-key="1"]');
 
       // Verify via DOM data attribute
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'true', 'First row is selected');
 
       // Click second row
-      await click('[data-test-id="table-row"][data-key="2"]');
+      await click('[data-part="tr"][data-key="2"]');
 
       // Verify first row is no longer selected and second row is selected
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'false', 'First row is deselected');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"]')
+        .dom('[data-part="tr"][data-key="2"]')
         .hasAttribute('data-selected', 'true', 'Second row is selected');
     });
 
@@ -558,12 +554,12 @@ module(
 
       // Check that selected row has data-selected attribute
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'true');
 
       // Check that row has data-selectable attribute
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selectable', 'true');
     });
 
@@ -589,31 +585,29 @@ module(
       );
 
       // Check that checkboxes are rendered
-      assert
-        .dom('[data-test-id="table-column"][data-key="__selection__"]')
-        .exists();
+      assert.dom('[data-part="th"][data-key="__selection__"]').exists();
 
       // Click first row checkbox
       await click(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       // Verify first row is selected via DOM
       const row1Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
       assert.true(row1Checkbox?.checked, 'First row checkbox is checked');
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'true', 'First row is selected');
 
       // Click second row checkbox
       await click(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       const row2Checkbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
       assert.true(row1Checkbox?.checked, 'First row is still checked');
       assert.true(row2Checkbox?.checked, 'Second row is checked');
@@ -648,7 +642,7 @@ module(
 
       // Click first row checkbox
       await click(
-        '[data-test-id="table-row"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="1"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       assert.ok(capturedKeys, 'onSelectionChange was called');
@@ -657,7 +651,7 @@ module(
 
       // Click second row checkbox
       await click(
-        '[data-test-id="table-row"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
+        '[data-part="tr"][data-key="2"] [data-column="__selection__"] input[type="checkbox"]'
       );
 
       assert.true(capturedKeys?.has('1'), 'First row still in selection');
@@ -691,31 +685,23 @@ module(
       );
 
       const row1 = this.element.querySelector<HTMLElement>(
-        '[data-test-id="table-row"][data-key="1"]'
+        '[data-part="tr"][data-key="1"]'
       );
 
       // Focus and press Space on first row
       row1?.focus();
-      await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="1"]',
-        'keydown',
-        ' '
-      );
+      await triggerKeyEvent('[data-part="tr"][data-key="1"]', 'keydown', ' ');
 
       // Verify first row is selected
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'true', 'First row selected via Space');
 
       // Press Space again to deselect
-      await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="1"]',
-        'keydown',
-        ' '
-      );
+      await triggerKeyEvent('[data-part="tr"][data-key="1"]', 'keydown', ' ');
 
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute(
           'data-selected',
           'false',
@@ -749,38 +735,38 @@ module(
       );
 
       const row1 = this.element.querySelector<HTMLElement>(
-        '[data-test-id="table-row"][data-key="1"]'
+        '[data-part="tr"][data-key="1"]'
       );
 
       // Focus and press Enter on first row
       row1?.focus();
       await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="1"]',
+        '[data-part="tr"][data-key="1"]',
         'keydown',
         'Enter'
       );
 
       // Verify first row is selected
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'true', 'First row selected via Enter');
 
       // Press Enter on second row
       await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="2"]',
+        '[data-part="tr"][data-key="2"]',
         'keydown',
         'Enter'
       );
 
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute(
           'data-selected',
           'false',
           'First row deselected in single mode'
         );
       assert
-        .dom('[data-test-id="table-row"][data-key="2"]')
+        .dom('[data-part="tr"][data-key="2"]')
         .hasAttribute('data-selected', 'true', 'Second row selected via Enter');
     });
 
@@ -811,15 +797,11 @@ module(
       );
 
       // Try to select disabled row with Space
-      await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="1"]',
-        'keydown',
-        ' '
-      );
+      await triggerKeyEvent('[data-part="tr"][data-key="1"]', 'keydown', ' ');
 
       // Verify disabled row is not selected
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute(
           'data-selected',
           'false',
@@ -859,7 +841,7 @@ module(
 
       // Check that the selected row exists with data-selected attribute
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'true', 'Row is selected');
 
       // Note: The actual color class will be applied by the theme system
@@ -900,20 +882,20 @@ module(
 
       // Focus first row
       const row1 = this.element.querySelector<HTMLElement>(
-        '[data-test-id="table-row"][data-key="1"]'
+        '[data-part="tr"][data-key="1"]'
       );
       row1?.focus();
 
       // Press ArrowDown to move to second row
       await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="1"]',
+        '[data-part="tr"][data-key="1"]',
         'keydown',
         'ArrowDown'
       );
 
       // Check that second row is now focused
       const row2 = this.element.querySelector<HTMLElement>(
-        '[data-test-id="table-row"][data-key="2"]'
+        '[data-part="tr"][data-key="2"]'
       );
       assert.strictEqual(
         document.activeElement,
@@ -923,13 +905,13 @@ module(
 
       // Press ArrowDown again to move to third row
       await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="2"]',
+        '[data-part="tr"][data-key="2"]',
         'keydown',
         'ArrowDown'
       );
 
       const row3 = this.element.querySelector<HTMLElement>(
-        '[data-test-id="table-row"][data-key="3"]'
+        '[data-part="tr"][data-key="3"]'
       );
       assert.strictEqual(
         document.activeElement,
@@ -939,7 +921,7 @@ module(
 
       // Press ArrowUp to move back to second row
       await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="3"]',
+        '[data-part="tr"][data-key="3"]',
         'keydown',
         'ArrowUp'
       );
@@ -1011,7 +993,7 @@ module(
       );
 
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute(
           'data-selected',
           'false',
@@ -1123,18 +1105,18 @@ module(
       const tabbableKeys = () =>
         Array.from(
           this.element.querySelectorAll<HTMLElement>(
-            '[data-test-id="table-row"][tabindex="0"]'
+            '[data-part="tr"][tabindex="0"]'
           )
         ).map((row) => row.dataset.key);
 
-      assert.dom('[data-test-id="table-row"]').exists({ count: 3 });
+      assert.dom('[data-part="tbody"] [data-part="tr"]').exists({ count: 3 });
       assert.deepEqual(
         tabbableKeys(),
         ['1'],
         'only the first row is tabbable initially'
       );
       assert
-        .dom('[data-test-id="table-row"][data-key="2"]')
+        .dom('[data-part="tr"][data-key="2"]')
         .hasAttribute(
           'tabindex',
           '-1',
@@ -1142,12 +1124,12 @@ module(
         );
 
       const row1 = this.element.querySelector<HTMLElement>(
-        '[data-test-id="table-row"][data-key="1"]'
+        '[data-part="tr"][data-key="1"]'
       );
       row1?.focus();
 
       await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="1"]',
+        '[data-part="tr"][data-key="1"]',
         'keydown',
         'ArrowDown'
       );
@@ -1158,7 +1140,7 @@ module(
         'the tab stop moves with focus on ArrowDown'
       );
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute(
           'tabindex',
           '-1',
@@ -1203,11 +1185,9 @@ module(
       );
 
       assert
-        .dom('[data-test-id="table-row"][data-key="2"]')
+        .dom('[data-part="tr"][data-key="2"]')
         .hasAttribute('tabindex', '0', 'the selected row owns the tab stop');
-      assert
-        .dom('[data-test-id="table-row"][tabindex="0"]')
-        .exists({ count: 1 });
+      assert.dom('[data-part="tr"][tabindex="0"]').exists({ count: 1 });
     });
 
     test('it does not add row tab stops when selection is disabled', async function (assert) {
@@ -1226,7 +1206,7 @@ module(
       );
 
       assert
-        .dom('[data-test-id="table-row"][tabindex="0"]')
+        .dom('[data-part="tr"][tabindex="0"]')
         .doesNotExist('no row is tabbable without selection');
     });
 
@@ -1263,23 +1243,23 @@ module(
       );
 
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .exists(
           'a plain item with `data`/`table` properties still keys off `id`'
         );
-      assert.dom('[data-test-id="table-row"][data-key="2"]').exists();
+      assert.dom('[data-part="tr"][data-key="2"]').exists();
 
       const checkboxes = document.querySelectorAll<HTMLInputElement>(
-        '[data-test-id="table-row"] input[type="checkbox"]'
+        '[data-part="tbody"] [data-part="tr"] input[type="checkbox"]'
       );
       await click(checkboxes[0]!);
 
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'true', 'selection uses the item key');
 
       assert
-        .dom('[data-test-id="table-row"][tabindex="0"]')
+        .dom('[data-part="tr"][tabindex="0"]')
         .exists(
           { count: 1 },
           'the table keeps exactly one tab stop for items shaped like rows'
@@ -1326,17 +1306,13 @@ module(
       );
 
       const row1 = this.element.querySelector<HTMLElement>(
-        '[data-test-id="table-row"][data-key="1"]'
+        '[data-part="tr"][data-key="1"]'
       );
       await focus(row1!);
-      await triggerKeyEvent(
-        '[data-test-id="table-row"][data-key="1"]',
-        'keydown',
-        ' '
-      );
+      await triggerKeyEvent('[data-part="tr"][data-key="1"]', 'keydown', ' ');
 
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute(
           'data-selected',
           'true',
@@ -1382,15 +1358,15 @@ module(
       );
 
       const selectAllCheckbox = this.element.querySelector<HTMLInputElement>(
-        '[data-test-id="table-column"][data-key="__selection__"] input[type="checkbox"]'
+        '[data-part="th"][data-key="__selection__"] input[type="checkbox"]'
       );
       await click(selectAllCheckbox!);
 
       assert
-        .dom('[data-test-id="table-row"][data-key="1"]')
+        .dom('[data-part="tr"][data-key="1"]')
         .hasAttribute('data-selected', 'true', 'first row selected');
       assert
-        .dom('[data-test-id="table-row"][data-key="2"]')
+        .dom('[data-part="tr"][data-key="2"]')
         .hasAttribute('data-selected', 'true', 'second row selected');
     });
   }

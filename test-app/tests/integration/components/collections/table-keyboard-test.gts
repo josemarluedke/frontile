@@ -24,16 +24,16 @@ const columns = [
 
 const rowFor = (key: string): HTMLElement =>
   document.querySelector<HTMLElement>(
-    `[data-test-id="table-row"][data-key="${key}"]`
+    `[data-part="tr"][data-key="${key}"]`
   ) as HTMLElement;
 
 const rowKeys = (): (string | undefined)[] =>
-  findAll('[data-test-id="table-row"]').map(
+  findAll('[data-part="tbody"] [data-part="tr"]').map(
     (row) => (row as HTMLElement).dataset['key']
   );
 
 const tabbableKeys = (): (string | undefined)[] =>
-  findAll('[data-test-id="table-row"][tabindex="0"]').map(
+  findAll('[data-part="tr"][tabindex="0"]').map(
     (row) => (row as HTMLElement).dataset['key']
   );
 
