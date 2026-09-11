@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import { array } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { run } from '@ember/runloop';
 import {
@@ -20,15 +21,19 @@ import { Form, InputOtp, type FormResultData } from 'frontile';
 import { captureFrontileWarnings } from '../../../helpers/frontile-warnings';
 
 function otpInput(): HTMLInputElement {
-  return find('[data-component="input-otp-input"]') as HTMLInputElement;
+  return find(
+    '[data-component="input-otp"] [data-part="input"]'
+  ) as HTMLInputElement;
 }
 
 function cells(): Element[] {
-  return findAll('[data-test-id="input-otp-cell"]');
+  return findAll('[data-component="input-otp"] [data-part="cell"]');
 }
 
 function activeCells(): Element[] {
-  return findAll('[data-test-id="input-otp-cell"][data-active="true"]');
+  return findAll(
+    '[data-component="input-otp"] [data-part="cell"][data-active="true"]'
+  );
 }
 
 /**
@@ -69,11 +74,32 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert.dom('[data-component="label"]').hasText('Verification code');
     assert.dom('[data-component="input-otp"]').exists();
     assert.strictEqual(
-      findAll('[data-component="input-otp-input"]').length,
+      findAll('[data-component="input-otp"] [data-part="input"]').length,
       1,
       'there is exactly one real input'
     );
     assert.strictEqual(cells().length, 6, 'defaults to six cells');
+  });
+
+  test('renders data-component="input-otp" on the root only, with data-part on every slot', async function (assert) {
+    await render(
+      <template><InputOtp @label="Code" @groups={{array 3 3}} /></template>
+    );
+
+    assert
+      .dom('[data-component="input-otp"]')
+      .hasAttribute('data-part', 'base');
+    assert.dom('[data-component="input-otp"] [data-part="container"]').exists();
+    assert.dom('[data-component="input-otp"] [data-part="group"]').exists();
+    assert.dom('[data-component="input-otp"] [data-part="cell"]').exists();
+    assert.dom('[data-component="input-otp"] [data-part="cell-char"]').exists();
+    assert.dom('[data-component="input-otp"] [data-part="separator"]').exists();
+    assert.dom('[data-component="input-otp"] [data-part="input"]').exists();
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="input-otp"]').length,
+      1,
+      'data-component="input-otp" marks the root only, never a part'
+    );
   });
 
   test('@length controls the number of cells and the maxlength', async function (assert) {
@@ -81,7 +107,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     assert.strictEqual(cells().length, 4);
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('maxlength', '4');
   });
 
@@ -98,7 +124,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('typing fills the cells left to right', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123');
 
     const allCells = cells();
     assert.dom(allCells[0] as Element).hasText('1');
@@ -139,17 +165,17 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     );
 
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('name', 'otp');
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('data-test-otp');
   });
 
   test('uncontrolled: it owns its own value', async function (assert) {
     await render(<template><InputOtp @label="Code" /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '42');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '42');
 
     assert.dom(cells()[0] as Element).hasText('4');
     assert.dom(cells()[1] as Element).hasText('2');
@@ -165,7 +191,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '99');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '99');
 
     assert.strictEqual(
       value.current,
@@ -184,7 +210,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       <template><InputOtp @label="Code" @onChange={{noop}} /></template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '77');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '77');
 
     assert.dom(cells()[0] as Element).hasText('7');
     assert.dom(cells()[1] as Element).hasText('7');
@@ -309,8 +335,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '5');
-    await blur('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '5');
+    await blur('[data-component="input-otp"] [data-part="input"]');
 
     assert.deepEqual(seen, ['5']);
     assert.verifySteps(['blurred']);
@@ -326,10 +352,10 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '123');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123');
     assert.deepEqual(completed, [], 'not fired while incomplete');
 
-    await fillIn('[data-component="input-otp-input"]', '1234');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '1234');
     assert.deepEqual(completed, ['1234'], 'fired on the transition to full');
   });
 
@@ -343,9 +369,9 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '1234');
-    await fillIn('[data-component="input-otp-input"]', '123');
-    await fillIn('[data-component="input-otp-input"]', '1239');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '1234');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '1239');
 
     assert.deepEqual(completed, ['1234', '1239']);
   });
@@ -359,7 +385,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '12');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '12');
 
     assert.dom(cells()[0] as Element).hasText('1');
     assert.dom(cells()[1] as Element).hasText('2');
@@ -377,7 +403,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '135790');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '135790');
 
     assert.deepEqual(completed, ['135790']);
     assert.dom(cells()[5] as Element).hasText('0');
@@ -406,13 +432,13 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
     assert.deepEqual(completed, ['123456'], 'the first code completed');
 
     value.set('');
     await settled();
 
-    await fillIn('[data-component="input-otp-input"]', '654321');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '654321');
 
     assert.deepEqual(
       completed,
@@ -426,7 +452,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       <template><InputOtp @label="Code" @isDisabled={{true}} /></template>
     );
 
-    assert.dom('[data-component="input-otp-input"]').isDisabled();
+    assert.dom('[data-component="input-otp"] [data-part="input"]').isDisabled();
   });
 
   test('@errors renders the message and marks the input invalid', async function (assert) {
@@ -452,7 +478,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     );
 
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('aria-invalid', 'true');
     const cell = cells()[0] as Element;
     assert.ok(
@@ -589,31 +615,33 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('autocomplete', 'one-time-code');
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('type', 'text');
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('inputmode', 'numeric');
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('pattern', '^\\d+$');
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('spellcheck', 'false');
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('autocorrect', 'off');
-    assert.dom('[data-component="input-otp"]').hasAttribute('translate', 'no');
+    assert
+      .dom('[data-component="input-otp"] [data-part="container"]')
+      .hasAttribute('translate', 'no');
   });
 
   test('moving forward, a collapsed caret widens onto the cell after it', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
 
     // Establish the prior caret explicitly. Direction is inferred by comparing
     // against where the caret just was, and after fillIn that is not
@@ -634,8 +662,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // skip a cell.
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
 
     await setCaret(5);
     await setCaret(2);
@@ -650,8 +678,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('the caret at the start selects the first cell', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
     await setCaret(0);
 
     const active = activeCells();
@@ -662,8 +690,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('the caret at the end selects the last cell, not past it', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
     await setCaret(6);
 
     const active = activeCells();
@@ -675,8 +703,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // The exemption that stops the 4th keystroke replacing the 3rd character.
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123');
+    await focus('[data-component="input-otp"] [data-part="input"]');
     await setCaret(3);
 
     const allCells = cells();
@@ -689,8 +717,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('a range selection makes every covered cell active', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
     await setCaret(1, 4);
 
     assert.strictEqual(
@@ -703,22 +731,24 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('an empty active cell shows the fake caret; a filled one does not', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await focus('[data-component="input-otp-input"]');
+    await focus('[data-component="input-otp"] [data-part="input"]');
     await setCaret(0);
-    assert.dom('[data-test-id="input-otp-caret"]').exists('empty active cell');
+    assert
+      .dom('[data-component="input-otp"] [data-part="caret"]')
+      .exists('empty active cell');
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
     await setCaret(2);
     assert
-      .dom('[data-test-id="input-otp-caret"]')
+      .dom('[data-component="input-otp"] [data-part="caret"]')
       .doesNotExist('a filled active cell shows its character instead');
   });
 
   test('no cell is active while the input is not focused', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
     await setCaret(2);
 
     assert.strictEqual(
@@ -727,7 +757,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       'the mirror is populated while focused'
     );
 
-    await blur('[data-component="input-otp-input"]');
+    await blur('[data-component="input-otp"] [data-part="input"]');
 
     assert.strictEqual(activeCells().length, 0);
   });
@@ -742,11 +772,11 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // load-bearing in Safari and Firefox and must not be removed as dead code.
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
     await setCaret(6);
 
-    await fillIn('[data-component="input-otp-input"]', '12345');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '12345');
 
     const active = activeCells();
     assert.strictEqual(active.length, 1, 'still exactly one active cell');
@@ -759,8 +789,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // ArrowLeft gets, or the active cell lands one cell too far left.
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123');
+    await focus('[data-component="input-otp"] [data-part="input"]');
     await setCaret(3);
     await setCaret(2);
 
@@ -786,8 +816,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
 
     // A "Clear" button beside the field: the parent shrinks the value directly,
     // never through an input or change event.
@@ -811,16 +841,16 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       'the first cell, not a position past the end of the empty code'
     );
     assert
-      .dom('[data-test-id="input-otp-caret"]')
+      .dom('[data-component="input-otp"] [data-part="caret"]')
       .exists({ count: 1 }, 'the fake caret sits in it');
   });
 
   test('focusing a full code selects the last cell', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await blur('[data-component="input-otp-input"]');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await blur('[data-component="input-otp"] [data-part="input"]');
+    await focus('[data-component="input-otp"] [data-part="input"]');
 
     const active = activeCells();
     assert.strictEqual(active.length, 1);
@@ -838,11 +868,13 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     assert.strictEqual(cells().length, 6);
     assert.strictEqual(
-      findAll('[data-test-id="input-otp-separator"]').length,
+      findAll('[data-component="input-otp"] [data-part="separator"]').length,
       1,
       'one separator between two groups, never a leading or trailing one'
     );
-    assert.dom('[data-test-id="input-otp-separator"]').hasText('–');
+    assert
+      .dom('[data-component="input-otp"] [data-part="separator"]')
+      .hasText('–');
   });
 
   test('separators are hidden from assistive technology', async function (assert) {
@@ -856,7 +888,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     // The value contains no dash, so nothing may announce one.
     assert
-      .dom('[data-test-id="input-otp-separator"]')
+      .dom('[data-component="input-otp"] [data-part="separator"]')
       .hasAttribute('aria-hidden', 'true');
   });
 
@@ -874,14 +906,16 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="input-otp-separator"]').hasText('/');
+    assert
+      .dom('[data-component="input-otp"] [data-part="separator"]')
+      .hasText('/');
   });
 
   test('without @groups there is one group and no separator', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
     assert.strictEqual(
-      findAll('[data-test-id="input-otp-separator"]').length,
+      findAll('[data-component="input-otp"] [data-part="separator"]').length,
       0
     );
     assert.strictEqual(cells().length, 6);
@@ -900,8 +934,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '123456');
-    await focus('[data-component="input-otp-input"]');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '123456');
+    await focus('[data-component="input-otp"] [data-part="input"]');
 
     // Establish a known prior caret position before landing on the target, per
     // the "moving forward"/"moving backward" tests above.
@@ -952,7 +986,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '12');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '12');
 
     const allCells = cells();
     assert.dom(allCells[0] as Element).hasText('•');
@@ -968,10 +1002,10 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     );
 
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('type', 'text');
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('autocomplete', 'one-time-code');
   });
 
@@ -985,7 +1019,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     const allCells = cells();
     assert.dom(allCells[0] as Element).hasText('0');
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('aria-placeholder', '0000');
   });
 
@@ -996,7 +1030,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '7');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '7');
 
     const allCells = cells();
     assert.dom(allCells[0] as Element).hasText('7');
@@ -1018,13 +1052,17 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // Empty value: focus alone parks the caret at position 0 in append mode,
     // which is exactly what "an empty active cell shows the fake caret"
     // above relies on, so follow the same approach here.
-    await focus('[data-component="input-otp-input"]');
+    await focus('[data-component="input-otp"] [data-part="input"]');
 
     const firstCell = cells()[0] as Element;
     assert.dom(firstCell).hasAttribute('data-active', 'true');
     assert.dom(firstCell).hasText('0', 'the placeholder is still shown');
     assert
-      .dom(firstCell.querySelector('[data-test-id="input-otp-caret"]'))
+      .dom(
+        firstCell.querySelector(
+          '[data-component="input-otp"] [data-part="caret"]'
+        )
+      )
       .exists('the fake caret coexists with the placeholder in the same cell');
   });
 
@@ -1046,7 +1084,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert.dom(allCells[2] as Element).hasText('0', 'placeholder is unmasked');
     assert.dom(allCells[3] as Element).hasText('0', 'placeholder is unmasked');
 
-    await fillIn('[data-component="input-otp-input"]', '1');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '1');
 
     const filledCells = cells();
     assert.dom(filledCells[0] as Element).hasText('•', 'typed char is masked');
@@ -1072,10 +1110,10 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     );
 
     assert
-      .dom('[data-component="input-otp-input"]')
+      .dom('[data-component="input-otp"] [data-part="input"]')
       .hasAttribute('name', 'code');
 
-    await fillIn('[data-component="input-otp-input"]', '1234');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '1234');
 
     // <Form> only starts feeding the value back once its own bubbled-input
     // handler has updated its internal data, so for the first `input` event
@@ -1102,7 +1140,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="input-otp-input"]', '4321');
+    await fillIn('[data-component="input-otp"] [data-part="input"]', '4321');
     await click('[data-test-submit]');
 
     assert.verifySteps(['4321'], 'one FormData entry, not four');

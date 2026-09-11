@@ -390,6 +390,30 @@ import { hash } from '@ember/helper';
 </template>
 ```
 
+### Start and End Content
+
+Like Input, Textarea accepts `startContent` and `endContent` blocks for icons or other decorations positioned inside the field.
+
+```gts preview
+import { Textarea } from 'frontile';
+
+<template>
+  <div class='demo-stack'>
+    <Textarea @label='Message'>
+      <:startContent>
+        <span class='text-neutral-soft'>💬</span>
+      </:startContent>
+    </Textarea>
+
+    <Textarea @label='Notes'>
+      <:endContent>
+        <span class='text-neutral-soft'>✎</span>
+      </:endContent>
+    </Textarea>
+  </div>
+</template>
+```
+
 ## Accessibility
 
 The Textarea component follows accessibility best practices:

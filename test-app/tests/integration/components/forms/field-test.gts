@@ -687,7 +687,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     );
 
     assert
-      .dom('[data-component="switch"]')
+      .dom('[data-component="switch-input"]')
       .exists('Switch component is yielded');
     assert.dom('[data-component="label"]').hasText('Enable Feature');
     assert.dom('[data-test-switch]').hasAttribute('name', 'testSwitch');

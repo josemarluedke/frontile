@@ -15,6 +15,44 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
     assert.dom('[data-component="input"]').exists();
   });
 
+  test('renders data-component="label" on the root only, with data-part on every slot', async function (assert) {
+    await render(
+      <template><Input @label="Name" @isRequired={{true}} /></template>
+    );
+
+    assert.dom('[data-component="label"]').hasAttribute('data-part', 'base');
+    assert.dom('[data-component="label"] [data-part="asterisk"]').exists();
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="label"]').length,
+      1,
+      'data-component="label" marks the root only, never a part'
+    );
+  });
+
+  test('renders data-component="input" on the root only, with data-part on every slot', async function (assert) {
+    await render(
+      <template>
+        <Input @label="Name" @isClearable={{true}} @value="x">
+          <:startContent>S</:startContent>
+          <:endContent>E</:endContent>
+        </Input>
+      </template>
+    );
+
+    assert.dom('[data-component="input"]').hasAttribute('data-part', 'base');
+    assert
+      .dom('[data-component="input"] [data-part="inner-container"]')
+      .exists();
+    assert.dom('[data-component="input"] [data-part="start-content"]').exists();
+    assert.dom('[data-component="input"] [data-part="end-content"]').exists();
+    assert.dom('[data-component="input"] [data-part="input"]').exists();
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="input"]').length,
+      1,
+      'data-component="input" marks the root only, never a part'
+    );
+  });
+
   test('it should default type as text', async function (assert) {
     await render(<template><Input @label="Name" data-test-input /></template>);
 
@@ -102,10 +140,10 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
 
     assert.dom('[data-component="input"]').exists();
     assert
-      .dom('[data-test-id="input-start-content"]')
+      .dom('[data-component="input"] [data-part="start-content"]')
       .hasClass(/pointer-events-none/);
     assert
-      .dom('[data-test-id="input-end-content"]')
+      .dom('[data-component="input"] [data-part="end-content"]')
       .hasClass(/pointer-events-none/);
 
     startContentPointerEvents.current = 'auto';
@@ -114,10 +152,10 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
 
     assert.dom('[data-component="input"]').exists();
     assert
-      .dom('[data-test-id="input-start-content"]')
+      .dom('[data-component="input"] [data-part="start-content"]')
       .hasClass(/pointer-events-auto/);
     assert
-      .dom('[data-test-id="input-end-content"]')
+      .dom('[data-component="input"] [data-part="end-content"]')
       .hasClass(/pointer-events-auto/);
   });
 

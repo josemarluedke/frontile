@@ -12,7 +12,47 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
     await render(<template><Switch @label="Name" /></template>);
 
     assert.dom('[data-component="label"]').hasText('Name');
-    assert.dom('[data-component="switch"]').exists();
+    assert.dom('[data-component="switch-input"]').exists();
+  });
+
+  test('renders data-component="switch-input" on the root only, with data-part on every slot', async function (assert) {
+    await render(
+      <template>
+        <Switch @label="Airplane mode">
+          <:startContent>S</:startContent>
+          <:thumbContent>T</:thumbContent>
+          <:endContent>E</:endContent>
+        </Switch>
+      </template>
+    );
+
+    assert
+      .dom('[data-component="switch-input"]')
+      .hasAttribute('data-part', 'base');
+    assert
+      .dom('[data-component="switch-input"] [data-part="label-container"]')
+      .exists();
+    assert
+      .dom('[data-component="switch-input"] [data-component="label"]')
+      .hasAttribute('data-part', 'label');
+    assert
+      .dom('[data-component="switch-input"] [data-part="wrapper"]')
+      .exists();
+    assert
+      .dom('[data-component="switch-input"] [data-part="hidden-input"]')
+      .exists();
+    assert.dom('[data-component="switch-input"] [data-part="thumb"]').exists();
+    assert
+      .dom('[data-component="switch-input"] [data-part="start-content"]')
+      .exists();
+    assert
+      .dom('[data-component="switch-input"] [data-part="end-content"]')
+      .exists();
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="switch-input"]').length,
+      1,
+      'data-component="switch-input" marks the root only, never a part'
+    );
   });
 
   test('it renders html attributes', async function (assert) {
@@ -108,24 +148,24 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
 
     assert.dom('[data-test-input]').isChecked();
     assert
-      .dom('[data-component="switch"]')
+      .dom('[data-component="switch-input"]')
       .hasAttribute('data-selected', 'true');
     assert
-      .dom('[data-component="switch"]')
+      .dom('[data-component="switch-input"]')
       .hasAttribute('data-disabled', 'false');
 
     await click('[data-test-input]');
 
     assert.dom('[data-test-input]').isNotChecked();
     assert
-      .dom('[data-component="switch"]')
+      .dom('[data-component="switch-input"]')
       .hasAttribute('data-selected', 'false');
 
     disabled.current = true;
     await settled();
 
     assert
-      .dom('[data-component="switch"]')
+      .dom('[data-component="switch-input"]')
       .hasAttribute('data-disabled', 'true');
   });
 
@@ -140,12 +180,20 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="switch-start-content"]').hasText('Start');
-    assert.dom('[data-test-id="switch-end-content"]').hasText('End');
-    assert.dom('[data-test-id="switch-thumb-content"]').hasText('T: false');
+    assert
+      .dom('[data-component="switch-input"] [data-part="start-content"]')
+      .hasText('Start');
+    assert
+      .dom('[data-component="switch-input"] [data-part="end-content"]')
+      .hasText('End');
+    assert
+      .dom('[data-component="switch-input"] [data-part="thumb"]')
+      .hasText('T: false');
 
     await click('[data-test-input]');
-    assert.dom('[data-test-id="switch-thumb-content"]').hasText('T: true');
+    assert
+      .dom('[data-component="switch-input"] [data-part="thumb"]')
+      .hasText('T: true');
   });
 
   test('show error messages when errors has items', async function (assert) {
@@ -236,13 +284,17 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
       </template>
     );
 
-    const wrapper = find('[data-component="switch"] > span') as HTMLElement;
-    const thumb = find('[data-test-id="switch-thumb-content"]') as HTMLElement;
+    const wrapper = find(
+      '[data-component="switch-input"] > span'
+    ) as HTMLElement;
+    const thumb = find(
+      '[data-component="switch-input"] [data-part="thumb"]'
+    ) as HTMLElement;
     const startContent = find(
-      '[data-test-id="switch-start-content"]'
+      '[data-component="switch-input"] [data-part="start-content"]'
     ) as HTMLElement;
     const endContent = find(
-      '[data-test-id="switch-end-content"]'
+      '[data-component="switch-input"] [data-part="end-content"]'
     ) as HTMLElement;
 
     // The duration the browser will actually use for `property` on `el`, in

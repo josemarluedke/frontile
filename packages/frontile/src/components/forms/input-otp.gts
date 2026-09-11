@@ -558,24 +558,29 @@ class InputOtp extends Component<InputOtpSignature> {
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
       @class={{this.classes.base class=@classes.base}}
+      data-component="input-otp"
+      data-part="base"
       as |c|
     >
       {{! Chrome's translate feature rewrites the cell text nodes, wrapping
           them in <font> elements that Glimmer then tries to update. }}
       <div
         class={{this.classes.container class=@classes.container}}
-        data-component="input-otp"
+        data-part="container"
         translate="no"
       >
         {{#each this.cellGroups key="@index" as |group groupIndex|}}
           {{#if groupIndex}}
             <div
               class={{this.classes.separator class=@classes.separator}}
-              data-test-id="input-otp-separator"
+              data-part="separator"
               aria-hidden="true"
             >{{this.separator}}</div>
           {{/if}}
-          <div class={{this.classes.group class=@classes.group}}>
+          <div
+            class={{this.classes.group class=@classes.group}}
+            data-part="group"
+          >
             {{#each group key="index" as |cell|}}
               <div
                 class={{this.classes.cell
@@ -584,11 +589,14 @@ class InputOtp extends Component<InputOtpSignature> {
                   isInvalid=c.isInvalid
                   isDisabled=@isDisabled
                 }}
-                data-test-id="input-otp-cell"
+                data-part="cell"
                 data-active={{if cell.isActive "true"}}
                 aria-hidden="true"
               >
-                <span class={{this.classes.cellChar class=@classes.cellChar}}>
+                <span
+                  class={{this.classes.cellChar class=@classes.cellChar}}
+                  data-part="cell-char"
+                >
                   {{cell.displayChar}}
                 </span>
                 {{#if cell.hasFakeCaret}}
@@ -597,7 +605,7 @@ class InputOtp extends Component<InputOtpSignature> {
                       static bar, so the active cell also rings. }}
                   <span
                     class={{this.classes.caret class=@classes.caret}}
-                    data-test-id="input-otp-caret"
+                    data-part="caret"
                   ></span>
                 {{/if}}
               </div>
@@ -629,7 +637,7 @@ class InputOtp extends Component<InputOtpSignature> {
           maxlength={{this.length}}
           disabled={{@isDisabled}}
           class={{this.classes.input class=@classes.input}}
-          data-component="input-otp-input"
+          data-part="input"
           aria-invalid={{if c.isInvalid "true"}}
           aria-describedby={{c.describedBy @description c.isInvalid}}
           aria-placeholder={{@placeholder}}

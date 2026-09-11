@@ -128,12 +128,16 @@ class Switch extends Component<SwitchSignature> {
       @isRequired={{@isRequired}}
       @class={{this.classes.base class=@classes.base}}
       @preventErrorFeedback={{true}}
-      data-component="switch"
+      data-component="switch-input"
+      data-part="base"
       data-selected="{{this.isSelected}}"
       data-disabled="{{@isDisabled}}"
       as |c|
     >
-      <span class={{this.classes.wrapper class=@classes.wrapper}}>
+      <span
+        class={{this.classes.wrapper class=@classes.wrapper}}
+        data-part="wrapper"
+      >
         <input
           {{on "change" this.handleChange}}
           {{on "blur" this.handleBlur}}
@@ -143,13 +147,14 @@ class Switch extends Component<SwitchSignature> {
           class={{this.classes.hiddenInput class=@classes.hiddenInput}}
           type="checkbox"
           disabled={{@isDisabled}}
+          data-part="hidden-input"
           aria-invalid={{if c.isInvalid "true"}}
           aria-describedby={{c.describedBy @description c.isInvalid}}
           ...attributes
         />
         {{#if (has-block "startContent")}}
           <div
-            data-test-id="switch-start-content"
+            data-part="start-content"
             class={{this.classes.startContent class=@classes.startContent}}
           >
             {{yield to="startContent"}}
@@ -158,7 +163,7 @@ class Switch extends Component<SwitchSignature> {
 
         <span
           class={{this.classes.thumb class=@classes.thumb}}
-          data-test-id="switch-thumb-content"
+          data-part="thumb"
         >
           {{#if (has-block "thumbContent")}}
             {{yield (hash isSelected=this.isSelected) to="thumbContent"}}
@@ -167,7 +172,7 @@ class Switch extends Component<SwitchSignature> {
         </span>
         {{#if (has-block "endContent")}}
           <div
-            data-test-id="switch-end-content"
+            data-part="end-content"
             class={{this.classes.endContent class=@classes.endContent}}
           >
             {{yield to="endContent"}}
@@ -175,9 +180,15 @@ class Switch extends Component<SwitchSignature> {
         {{/if}}
       </span>
 
-      <div class={{this.classes.labelContainer class=@classes.labelContainer}}>
+      <div
+        class={{this.classes.labelContainer class=@classes.labelContainer}}
+        data-part="label-container"
+      >
         {{#if @label}}
-          <c.Label @class={{this.classes.label class=@classes.label}}>
+          <c.Label
+            @class={{this.classes.label class=@classes.label}}
+            data-part="label"
+          >
             {{@label}}
           </c.Label>
         {{/if}}

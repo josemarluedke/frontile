@@ -213,12 +213,17 @@ class Input extends Component<InputSignature> {
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
       @class={{this.classes.base class=@classes.base}}
+      data-component="input"
+      data-part="base"
       as |c|
     >
-      <div class={{this.classes.innerContainer class=@classes.innerContainer}}>
+      <div
+        class={{this.classes.innerContainer class=@classes.innerContainer}}
+        data-part="inner-container"
+      >
         {{#if (has-block "startContent")}}
           <div
-            data-test-id="input-start-content"
+            data-part="start-content"
             class={{this.classes.startContent
               class=@classes.startContent
               startContentPointerEvents=(if
@@ -244,14 +249,14 @@ class Input extends Component<InputSignature> {
             hasStartContent=(has-block "startContent")
             hasEndContent=(or (has-block "endContent") this.isClearable)
           }}
-          data-component="input"
+          data-part="input"
           aria-invalid={{if c.isInvalid "true"}}
           aria-describedby={{c.describedBy @description c.isInvalid}}
           ...attributes
         />
         {{#if (or (has-block "endContent") this.isClearable)}}
           <div
-            data-test-id="input-end-content"
+            data-part="end-content"
             class={{this.classes.endContent
               class=@classes.endContent
               endContentPointerEvents=(if
