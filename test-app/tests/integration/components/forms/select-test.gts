@@ -433,7 +433,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     await click('[data-component="listbox"] [data-key="item-1"]');
     assert.equal(selectedKey.current, 'item-1');
 
-    await click('[data-test-id="input-clear-button"]');
+    await click('[data-part="clear-button"]');
     assert.equal(selectedKey.current, null);
   });
 
@@ -3487,10 +3487,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-test-id="input-clear-button"]')
+      .dom('[data-part="clear-button"]')
       .exists('the clear button is an explicit opt-in, so it renders');
 
-    await click('[data-test-id="input-clear-button"]');
+    await click('[data-part="clear-button"]');
 
     assert.strictEqual(
       selectedKey.current,
@@ -3517,7 +3517,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-test-id="input-clear-button"]')
+      .dom('[data-part="clear-button"]')
       .doesNotExist('a disabled control cannot be cleared, so no dead button');
   });
 
@@ -3529,11 +3529,23 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
    * `[data-component="select"] [data-part="x"]` descendant selector cannot
    * tell the two apart, so ownership is resolved the same way behavioural
    * code has to: the nearest `[data-component]` ancestor must be `root`.
+   *
+   * The walk starts at `el.parentElement`, not `el` itself: the clear
+   * button is `CloseButton`, which now carries its own
+   * `data-component="close-button"` on the very element that also carries
+   * `data-part="clear-button"`. Starting `closest()` from `el` would match
+   * itself and never reach `root`, wrongly excluding a part that
+   * legitimately belongs to `select`.
    */
   const ownParts = (root: Element, part: string): Element[] =>
-    [...root.querySelectorAll(`[data-part="${part}"]`)].filter(
-      (el) => el.closest('[data-component]') === root
-    );
+    [...root.querySelectorAll(`[data-part="${part}"]`)].filter((el) => {
+      let node = el.parentElement;
+      while (node && node !== root) {
+        if (node.hasAttribute('data-component')) return false;
+        node = node.parentElement;
+      }
+      return node === root;
+    });
 
   test('renders data-component="select" on the root only, with data-part on every slot', async function (assert) {
     const selectedKeys = cell<string[]>(['apple']);

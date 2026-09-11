@@ -245,5 +245,23 @@ module(
         assert.ok(true, 'Component works without onClick');
       });
     });
+
+    module('anatomy', function () {
+      test('renders data-component="close-button" on the root only, with data-part on every slot', async function (assert) {
+        await render(<template><CloseButton /></template>);
+
+        assert
+          .dom('[data-component="close-button"]')
+          .hasAttribute('data-part', 'base');
+        assert
+          .dom('[data-component="close-button"] [data-part="icon"]')
+          .exists();
+        assert.strictEqual(
+          document.querySelectorAll('[data-component="close-button"]').length,
+          1,
+          'data-component="close-button" marks the root only, never a part'
+        );
+      });
+    });
   }
 );

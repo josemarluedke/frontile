@@ -113,6 +113,7 @@ class Avatar extends Component<AvatarSignature> {
     <span
       class={{this.classes.base class=@classes.base}}
       data-component="avatar"
+      data-part="base"
       ...attributes
     >
       {{#if this.shouldShowInitials}}
@@ -122,6 +123,7 @@ class Avatar extends Component<AvatarSignature> {
         <span
           aria-label={{@alt}}
           class={{this.classes.name class=@classes.name}}
+          data-part="name"
           role={{if @alt "img"}}
         >
           {{this.initials}}
@@ -132,6 +134,7 @@ class Avatar extends Component<AvatarSignature> {
         one marks the image decorative, which is right beside a visible name. }}
         <img
           class={{this.classes.img class=@classes.img}}
+          data-part="img"
           src={{@src}}
           alt={{if @alt @alt ""}}
         />

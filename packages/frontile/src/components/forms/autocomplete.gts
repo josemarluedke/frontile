@@ -790,7 +790,6 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
                   @variant="subtle"
                   @size="xs"
                   @class={{this.classes.clearButton class=@classes.clearButton}}
-                  data-test-id="input-clear-button"
                   data-part="clear-button"
                   @onPress={{this.clearSelectedKeys}}
                 />

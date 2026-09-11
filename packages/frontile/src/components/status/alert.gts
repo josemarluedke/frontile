@@ -246,54 +246,48 @@ class Alert extends Component<AlertSignature> {
         <div
           class={{classNames.base}}
           role={{this.role}}
-          data-test-id="alert"
           data-component="alert"
+          data-part="base"
           data-test-intent={{this.intent}}
           ...attributes
         >
-          <div class={{classNames.inner}}>
+          <div class={{classNames.inner}} data-part="inner">
             {{#unless @hideIcon}}
               {{#if (has-block "icon")}}
-                <span class={{classNames.icon}} data-test-id="alert-icon">
+                <span class={{classNames.icon}} data-part="icon">
                   {{yield to="icon"}}
                 </span>
               {{else}}
                 {{#let this.icon as |Icon|}}
-                  <Icon class={{classNames.icon}} data-test-id="alert-icon" />
+                  <Icon class={{classNames.icon}} data-part="icon" />
                 {{/let}}
               {{/if}}
             {{/unless}}
 
-            <div class={{classNames.content}} data-test-id="alert-content">
+            <div class={{classNames.content}} data-part="content">
               {{#if (has-block "title")}}
-                <div class={{classNames.title}} data-test-id="alert-title">
+                <div class={{classNames.title}} data-part="title">
                   {{yield to="title"}}
                 </div>
               {{else if @title}}
-                <div class={{classNames.title}} data-test-id="alert-title">
+                <div class={{classNames.title}} data-part="title">
                   {{@title}}
                 </div>
               {{/if}}
 
               {{#if (has-block "description")}}
-                <div
-                  class={{classNames.description}}
-                  data-test-id="alert-description"
-                >
+                <div class={{classNames.description}} data-part="description">
                   {{yield to="description"}}
                 </div>
               {{else if @description}}
-                <div
-                  class={{classNames.description}}
-                  data-test-id="alert-description"
-                >
+                <div class={{classNames.description}} data-part="description">
                   {{@description}}
                 </div>
               {{/if}}
             </div>
 
             {{#if (has-block "actions")}}
-              <div class={{classNames.actions}} data-test-id="alert-actions">
+              <div class={{classNames.actions}} data-part="actions">
                 {{yield to="actions"}}
               </div>
             {{/if}}
@@ -304,7 +298,7 @@ class Alert extends Component<AlertSignature> {
                 @size="sm"
                 @title={{@closeButtonTitle}}
                 @class={{classNames.closeButton}}
-                data-test-id="alert-close-button"
+                data-part="close-button"
               />
             {{/if}}
           </div>

@@ -148,19 +148,16 @@ class Kbd extends Component<KbdSignature> {
   <template>
     <kbd
       class={{this.classNames.base}}
-      data-test-id="kbd"
       data-component="kbd"
+      data-part="base"
       ...attributes
     >
       {{#if (has-block)}}
-        <kbd
-          class={{this.classNames.key}}
-          data-test-id="kbd-key"
-        >{{yield}}</kbd>
+        <kbd class={{this.classNames.key}} data-part="key">{{yield}}</kbd>
       {{else if this.isMerged}}
         <kbd
           class={{this.classNames.key}}
-          data-test-id="kbd-key"
+          data-part="key"
           title={{this.mergedTitle}}
         >
           {{#if this.mergedLabel}}
@@ -178,16 +175,12 @@ class Kbd extends Component<KbdSignature> {
               <span
                 class={{this.classNames.separator}}
                 aria-hidden="true"
-                data-test-id="kbd-separator"
+                data-part="separator"
               >{{@separator}}</span>
             {{/if}}
           {{/if}}
 
-          <kbd
-            class={{this.classNames.key}}
-            data-test-id="kbd-key"
-            title={{key.name}}
-          >
+          <kbd class={{this.classNames.key}} data-part="key" title={{key.name}}>
             {{#if key.needsSpokenLabel}}
               <span aria-hidden="true">{{key.glyph}}</span>
               <span class="sr-only">{{key.name}}</span>

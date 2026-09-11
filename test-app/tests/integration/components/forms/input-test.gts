@@ -273,13 +273,13 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="input-clear-button"]').doesNotExist();
+    assert.dom('[data-component="close-button"]').doesNotExist();
     await fillIn('[data-test-input]', 'Josemar');
     assert.equal(value.current, 'Josemar');
 
-    assert.dom('[data-test-id="input-clear-button"]').exists();
+    assert.dom('[data-component="close-button"]').exists();
 
-    await click('[data-test-id="input-clear-button"]');
+    await click('[data-component="close-button"]');
     assert.equal(value.current, '');
   });
 
@@ -298,20 +298,20 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
     );
 
     assert
-      .dom('[data-test-id="input-clear-button"]')
+      .dom('[data-component="close-button"]')
       .doesNotExist('nothing to clear yet');
 
     await fillIn('[data-test-input]', 'Josemar');
     assert
-      .dom('[data-test-id="input-clear-button"]')
+      .dom('[data-component="close-button"]')
       .exists('the field has a value, so it can be cleared');
 
-    await click('[data-test-id="input-clear-button"]');
+    await click('[data-component="close-button"]');
 
     assert.dom('[data-test-input]').hasValue('');
     assert.deepEqual(observed, ['Josemar', ''], 'onChange is still notified');
     assert
-      .dom('[data-test-id="input-clear-button"]')
+      .dom('[data-component="close-button"]')
       .doesNotExist('the button goes away once the field is empty');
   });
 
@@ -331,7 +331,7 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
     await fillIn('[data-test-input]', 'josemar@example.com');
     assert.dom('[data-test-input]').hasValue('josemar@example.com');
 
-    await click('[data-test-id="input-clear-button"]');
+    await click('[data-component="close-button"]');
     assert.dom('[data-test-input]').hasValue('');
   });
 

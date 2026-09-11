@@ -94,22 +94,20 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert"]').exists();
+      assert.dom('[data-component="alert"]').exists();
+      assert.dom('[data-component="alert"]').hasAttribute('data-part', 'base');
+      assert.dom('[data-part="title"]').hasText('Update available');
       assert
-        .dom('[data-test-id="alert"]')
-        .hasAttribute('data-component', 'alert');
-      assert.dom('[data-test-id="alert-title"]').hasText('Update available');
-      assert
-        .dom('[data-test-id="alert-description"]')
+        .dom('[data-part="description"]')
         .hasText('A new version is ready.');
     });
 
     test('it omits the title and description elements when neither is given', async function (assert) {
       await render(<template><Alert /></template>);
 
-      assert.dom('[data-test-id="alert"]').exists();
-      assert.dom('[data-test-id="alert-title"]').doesNotExist();
-      assert.dom('[data-test-id="alert-description"]').doesNotExist();
+      assert.dom('[data-component="alert"]').exists();
+      assert.dom('[data-part="title"]').doesNotExist();
+      assert.dom('[data-part="description"]').doesNotExist();
     });
 
     test('the title block overrides @title', async function (assert) {
@@ -121,8 +119,8 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert-title"]').hasText('From the block');
-      assert.dom('[data-test-id="alert-title"]').doesNotContainText('argument');
+      assert.dom('[data-part="title"]').hasText('From the block');
+      assert.dom('[data-part="title"]').doesNotContainText('argument');
     });
 
     test('the description block overrides @description and takes markup', async function (assert) {
@@ -139,12 +137,10 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
+      assert.dom('[data-part="description"]').doesNotContainText('argument');
+      assert.dom('[data-part="description"] li').exists({ count: 2 });
       assert
-        .dom('[data-test-id="alert-description"]')
-        .doesNotContainText('argument');
-      assert.dom('[data-test-id="alert-description"] li').exists({ count: 2 });
-      assert
-        .dom('[data-test-id="alert-description"] li')
+        .dom('[data-part="description"] li')
         .hasText('Check your internet connection');
     });
 
@@ -155,9 +151,9 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert"]').hasAttribute('data-extra', 'yes');
+      assert.dom('[data-component="alert"]').hasAttribute('data-extra', 'yes');
       assert
-        .dom('[data-test-id="alert"]')
+        .dom('[data-component="alert"]')
         .hasAttribute('aria-label', 'Saved alert');
     });
   });
@@ -202,7 +198,7 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert-icon"]').doesNotExist();
+      assert.dom('[data-part="icon"]').doesNotExist();
       assert.dom('[data-test-icon="danger"]').doesNotExist();
     });
 
@@ -215,7 +211,7 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert-icon"]').doesNotExist();
+      assert.dom('[data-part="icon"]').doesNotExist();
       assert.dom('[data-test-id="custom-icon"]').doesNotExist();
     });
 
@@ -255,7 +251,7 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
           </template>
         );
 
-        const slot = document.querySelector('[data-test-id="alert-icon"]');
+        const slot = document.querySelector('[data-part="icon"]');
         const yielded = document.querySelector(
           '[data-test-id="oversized-icon"]'
         );
@@ -412,22 +408,20 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert-actions"]').exists();
-      assert
-        .dom('[data-test-id="alert-actions"] [data-test-id="retry"]')
-        .exists();
+      assert.dom('[data-part="actions"]').exists();
+      assert.dom('[data-part="actions"] [data-test-id="retry"]').exists();
     });
 
     test('there is no actions element when the block is not passed', async function (assert) {
       await render(<template><Alert @title="Saved" /></template>);
 
-      assert.dom('[data-test-id="alert-actions"]').doesNotExist();
+      assert.dom('[data-part="actions"]').doesNotExist();
     });
 
     test('the close button appears only when @onClose is passed', async function (assert) {
       await render(<template><Alert @title="Saved" /></template>);
 
-      assert.dom('[data-test-id="alert-close-button"]').doesNotExist();
+      assert.dom('[data-part="close-button"]').doesNotExist();
     });
 
     test('clicking the close button calls @onClose', async function (assert) {
@@ -440,9 +434,9 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         <template><Alert @title="Saved" @onClose={{onClose}} /></template>
       );
 
-      assert.dom('[data-test-id="alert-close-button"]').exists();
+      assert.dom('[data-part="close-button"]').exists();
 
-      await click('[data-test-id="alert-close-button"]');
+      await click('[data-part="close-button"]');
 
       assert.strictEqual(closed, 1, 'the close button called @onClose once');
     });
@@ -467,14 +461,10 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       );
 
       assert
-        .dom(
-          '[data-test-id="default-title"] [data-test-id="alert-close-button"]'
-        )
+        .dom('[data-test-id="default-title"] [data-part="close-button"]')
         .hasText('Close');
       assert
-        .dom(
-          '[data-test-id="custom-title"] [data-test-id="alert-close-button"]'
-        )
+        .dom('[data-test-id="custom-title"] [data-part="close-button"]')
         .hasText('Dismiss the beta alert');
     });
   });
@@ -549,17 +539,13 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert"]').hasClass('alert-base');
-      assert.dom('[data-test-id="alert-content"]').hasClass('alert-content');
-      assert.dom('[data-test-id="alert-title"]').hasClass('alert-title');
-      assert
-        .dom('[data-test-id="alert-description"]')
-        .hasClass('alert-description');
-      assert.dom('[data-test-id="alert-icon"]').hasClass('alert-icon');
-      assert.dom('[data-test-id="alert-actions"]').hasClass('alert-actions');
-      assert
-        .dom('[data-test-id="alert-close-button"]')
-        .hasClass('alert-close-button');
+      assert.dom('[data-component="alert"]').hasClass('alert-base');
+      assert.dom('[data-part="content"]').hasClass('alert-content');
+      assert.dom('[data-part="title"]').hasClass('alert-title');
+      assert.dom('[data-part="description"]').hasClass('alert-description');
+      assert.dom('[data-part="icon"]').hasClass('alert-icon');
+      assert.dom('[data-part="actions"]').hasClass('alert-actions');
+      assert.dom('[data-part="close-button"]').hasClass('alert-close-button');
     });
 
     test('hasDescription tracks the argument and the block', async function (assert) {
@@ -589,8 +575,8 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         <template><Alert @title="Saved" @class="my-alert" /></template>
       );
 
-      assert.dom('[data-test-id="alert"]').hasClass('my-alert');
-      assert.dom('[data-test-id="alert"]').hasClass('alert-base');
+      assert.dom('[data-component="alert"]').hasClass('my-alert');
+      assert.dom('[data-component="alert"]').hasClass('alert-base');
     });
 
     test('@classes targets individual slots', async function (assert) {
@@ -616,14 +602,12 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert"]').hasClass('my-base');
-      assert.dom('[data-test-id="alert-title"]').hasClass('my-title');
-      assert
-        .dom('[data-test-id="alert-description"]')
-        .hasClass('my-description');
-      assert.dom('[data-test-id="alert-icon"]').hasClass('my-icon');
-      assert.dom('[data-test-id="alert-actions"]').hasClass('my-actions');
-      assert.dom('[data-test-id="alert-close-button"]').hasClass('my-close');
+      assert.dom('[data-component="alert"]').hasClass('my-base');
+      assert.dom('[data-part="title"]').hasClass('my-title');
+      assert.dom('[data-part="description"]').hasClass('my-description');
+      assert.dom('[data-part="icon"]').hasClass('my-icon');
+      assert.dom('[data-part="actions"]').hasClass('my-actions');
+      assert.dom('[data-part="close-button"]').hasClass('my-close');
     });
   });
 
@@ -631,8 +615,8 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
     test('it renders the inline layout by default', async function (assert) {
       await render(<template><Alert @title="Saved" /></template>);
 
-      assert.dom('[data-test-id="alert"]').hasClass('layout-inline');
-      assert.dom('[data-test-id="alert"]').doesNotHaveClass('layout-banner');
+      assert.dom('[data-component="alert"]').hasClass('layout-inline');
+      assert.dom('[data-component="alert"]').doesNotHaveClass('layout-banner');
     });
 
     test('@layout=banner puts the banner classes on the right slots', async function (assert) {
@@ -648,12 +632,10 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         </template>
       );
 
-      assert.dom('[data-test-id="alert"]').hasClass('layout-banner');
-      assert.dom('[data-test-id="alert"] .banner-inner').exists();
-      assert.dom('[data-test-id="alert-content"]').hasClass('banner-content');
-      assert
-        .dom('[data-test-id="alert-close-button"]')
-        .hasClass('banner-close');
+      assert.dom('[data-component="alert"]').hasClass('layout-banner');
+      assert.dom('[data-component="alert"] .banner-inner').exists();
+      assert.dom('[data-part="content"]').hasClass('banner-content');
+      assert.dom('[data-part="close-button"]').hasClass('banner-close');
     });
 
     test('a banner still renders its actions and calls @onClose', async function (assert) {
@@ -678,15 +660,49 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       );
 
       assert
-        .dom('[data-test-id="alert-actions"] [data-test-id="refresh"]')
+        .dom('[data-part="actions"] [data-test-id="refresh"]')
         .exists('the actions block still renders in banner mode');
 
-      await click('[data-test-id="alert-close-button"]');
+      await click('[data-part="close-button"]');
 
       assert.strictEqual(
         closed,
         1,
         'the pinned close button still fires @onClose'
+      );
+    });
+  });
+
+  module('anatomy', function () {
+    test('renders data-component="alert" on the root only, with data-part on every slot', async function (assert) {
+      const onClose = () => {};
+
+      await render(
+        <template>
+          <Alert
+            @title="Update available"
+            @description="A new version is ready."
+            @onClose={{onClose}}
+          >
+            <:actions><button type="button">Undo</button></:actions>
+          </Alert>
+        </template>
+      );
+
+      assert.dom('[data-component="alert"]').hasAttribute('data-part', 'base');
+      assert.dom('[data-component="alert"] [data-part="inner"]').exists();
+      assert.dom('[data-component="alert"] [data-part="icon"]').exists();
+      assert.dom('[data-component="alert"] [data-part="content"]').exists();
+      assert.dom('[data-component="alert"] [data-part="title"]').exists();
+      assert.dom('[data-component="alert"] [data-part="description"]').exists();
+      assert.dom('[data-component="alert"] [data-part="actions"]').exists();
+      assert
+        .dom('[data-component="alert"] [data-part="close-button"]')
+        .exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="alert"]').length,
+        1,
+        'data-component="alert" marks the root only, never a part'
       );
     });
   });

@@ -200,4 +200,25 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
       });
     });
   });
+
+  module('anatomy', function () {
+    test('renders data-component="chip" on the root only, with data-part on every slot', async function (assert) {
+      const onClose = () => {};
+      await render(
+        <template>
+          <Chip @withDot={{true}} @onClose={{onClose}}>My Chip</Chip>
+        </template>
+      );
+
+      assert.dom('[data-component="chip"]').hasAttribute('data-part', 'base');
+      assert.dom('[data-component="chip"] [data-part="content"]').exists();
+      assert.dom('[data-component="chip"] [data-part="dot"]').exists();
+      assert.dom('[data-component="chip"] [data-part="close-button"]').exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="chip"]').length,
+        1,
+        'data-component="chip" marks the root only, never a part'
+      );
+    });
+  });
 });

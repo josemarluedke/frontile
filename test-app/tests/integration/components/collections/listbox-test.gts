@@ -88,7 +88,7 @@ module(
         );
 
         const caps = document.querySelectorAll(
-          '[data-test-id="listbox-item-shortcut"] [data-test-id="kbd-key"]'
+          '[data-test-id="listbox-item-shortcut"] [data-part="key"]'
         );
 
         assert.true(caps.length > 0, 'shortcuts render through Kbd');

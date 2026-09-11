@@ -66,7 +66,6 @@ const SelectEndContent: TOC<SelectEndContentSignature> = <template>
         @variant="subtle"
         @size="xs"
         @class={{@classes.clearButton class=@userClasses.clearButton}}
-        data-test-id="input-clear-button"
         data-part="clear-button"
         @onPress={{@onClear}}
       />

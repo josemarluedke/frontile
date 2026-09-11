@@ -629,9 +629,9 @@ module(
       assert
         .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
         .hasValue('Apple');
-      assert.dom('[data-test-id="input-clear-button"]').exists();
+      assert.dom('[data-part="clear-button"]').exists();
 
-      await click('[data-test-id="input-clear-button"]');
+      await click('[data-part="clear-button"]');
 
       assert.equal(selectedKey.current, null);
       assert
@@ -1118,13 +1118,13 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="input-clear-button"]').exists();
+      assert.dom('[data-part="clear-button"]').exists();
 
       isDisabled.current = true;
       await settled();
 
       assert
-        .dom('[data-test-id="input-clear-button"]')
+        .dom('[data-part="clear-button"]')
         .doesNotExist(
           'a disabled control cannot be cleared, so no dead button'
         );
@@ -1132,7 +1132,7 @@ module(
       isDisabled.current = false;
       await settled();
 
-      await click('[data-test-id="input-clear-button"]');
+      await click('[data-part="clear-button"]');
 
       assert.strictEqual(
         selectedKey.current,
@@ -1150,11 +1150,23 @@ module(
      * cannot tell the two apart, so ownership is resolved the same way
      * behavioural code has to: the nearest `[data-component]` ancestor must
      * be `root`.
+     *
+     * The walk starts at `el.parentElement`, not `el` itself: the clear
+     * button is `CloseButton`, which now carries its own
+     * `data-component="close-button"` on the very element that also carries
+     * `data-part="clear-button"`. Starting `closest()` from `el` would match
+     * itself and never reach `root`, wrongly excluding a part that
+     * legitimately belongs to `autocomplete`.
      */
     const ownParts = (root: Element, part: string): Element[] =>
-      [...root.querySelectorAll(`[data-part="${part}"]`)].filter(
-        (el) => el.closest('[data-component]') === root
-      );
+      [...root.querySelectorAll(`[data-part="${part}"]`)].filter((el) => {
+        let node = el.parentElement;
+        while (node && node !== root) {
+          if (node.hasAttribute('data-component')) return false;
+          node = node.parentElement;
+        }
+        return node === root;
+      });
 
     test('renders data-component="autocomplete" on the root only, with data-part on every slot', async function (assert) {
       const items = ['Apple', 'Banana', 'Cherry'];
