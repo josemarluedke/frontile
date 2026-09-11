@@ -1,12 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, find } from '@ember/test-helpers';
+import { render, settled, waitUntil, find } from '@ember/test-helpers';
 import { selectionIndicator } from 'frontile';
 import { cell } from 'ember-resources';
-
-function nextFrame(): Promise<void> {
-  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
-}
 
 module(
   'Integration | Utility | selection-indicator | @frontile/utilities',
@@ -41,6 +37,13 @@ module(
 
       const container = find('[data-test-container]') as HTMLElement;
       const b = find('[data-test-item="b"]') as HTMLElement;
+
+      // The initial measurement is left to `ResizeObserver`'s own guaranteed
+      // first notification rather than forced synchronously during setup (a
+      // synchronous forced reflow there can land mid-sequence in an
+      // ancestor's own CSS transition and make the browser skip it), so it
+      // takes a frame to land.
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
 
       assert.strictEqual(
         container.style.getPropertyValue('--fr-si-width'),
@@ -90,6 +93,7 @@ module(
       );
 
       const container = find('[data-test-container]') as HTMLElement;
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
       assert.ok(
         container.hasAttribute('data-fr-si-ready'),
         'ready once a real measurement has landed and a frame has passed'
@@ -181,9 +185,10 @@ module(
       width.current = '500px';
       await settled();
       // ResizeObserver delivers off the microtask queue, which `settled()`
-      // does not await; give it a frame.
-      await nextFrame();
-      await nextFrame();
+      // does not await; poll for it instead of guessing a frame count.
+      await waitUntil(
+        () => container.style.getPropertyValue('--fr-si-width') !== before
+      );
 
       assert.notStrictEqual(
         container.style.getPropertyValue('--fr-si-width'),

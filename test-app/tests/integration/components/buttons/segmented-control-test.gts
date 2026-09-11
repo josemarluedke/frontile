@@ -408,6 +408,8 @@ module(
       const container = find('[role="radiogroup"]') as HTMLElement;
       const items = findAll('[role="radio"]') as HTMLButtonElement[];
 
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
+
       assert.strictEqual(
         container.style.getPropertyValue('--fr-si-width'),
         `${items[0]!.offsetWidth}px`,
@@ -461,6 +463,8 @@ module(
 
       const container = find('[role="radiogroup"]') as HTMLElement;
       const indicator = find('[aria-hidden="true"]') as HTMLElement;
+
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
 
       assert.ok(
         container.hasAttribute('data-fr-si-ready'),
@@ -674,6 +678,8 @@ module(
 
       const container = find('[role="radiogroup"]') as HTMLElement;
       const items = findAll('[role="radio"]') as HTMLButtonElement[];
+
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
 
       assert.ok(
         container.hasAttribute('data-fr-si-ready'),
@@ -1363,6 +1369,8 @@ module(
       const container = find('[role="radiogroup"]') as HTMLElement;
       const selected = findAll('[role="radio"]')[1] as HTMLElement;
 
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
+
       const indicatorBox = indicator.getBoundingClientRect();
       const containerBox = container.getBoundingClientRect();
       const selectedBox = selected.getBoundingClientRect();
@@ -1506,6 +1514,7 @@ module(
       );
 
       const container = find('[role="radiogroup"]') as HTMLElement;
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
       assert.ok(
         container.hasAttribute('data-fr-si-ready'),
         'ready while a real item is selected'
@@ -1690,6 +1699,8 @@ module(
       const container = find('[role="radiogroup"]') as HTMLElement;
       const indicator = find('[aria-hidden="true"]') as HTMLElement;
 
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
+
       assert.ok(
         container.matches('.my-control[data-fr-si-ready]'),
         'the ready attribute is on the container, which is what the rule keys off'
@@ -1777,7 +1788,10 @@ module(
       );
 
       const indicator = find('[aria-hidden="true"]') as HTMLElement;
+      const container = find('[role="radiogroup"]') as HTMLElement;
       const selected = findAll('[role="radio"]')[0] as HTMLElement;
+
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
 
       const computed = window.getComputedStyle(indicator);
       assert.strictEqual(
@@ -1843,6 +1857,8 @@ module(
       const items = findAll('[role="radio"]') as HTMLElement[];
       const indicator = find('[aria-hidden="true"]') as HTMLElement;
       const selected = items[2]!;
+
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
 
       assert.strictEqual(
         window.getComputedStyle(container).direction,
