@@ -149,12 +149,16 @@ class CommandDialog<T = unknown> extends Component<CommandDialogSignature<T>> {
       @backdrop={{if @backdrop @backdrop "faded"}}
       @transition={{this.transition}}
       @disableTransitions={{@disableTransitions}}
-      data-test-id="command-dialog"
     >
-      <div class={{this.classNames.base}}>
+      <div
+        data-component="command-dialog"
+        data-part="base"
+        class={{this.classNames.base}}
+      >
         <div
           class={{this.classNames.panel}}
           data-test-id="command-dialog-panel"
+          data-part="panel"
         >
           <Command
             @items={{@items}}

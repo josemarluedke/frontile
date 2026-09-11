@@ -294,6 +294,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       data-selected="{{this.listItem.isSelected}}"
       data-test-id="listbox-item"
       data-component="listbox-item"
+      data-part="base"
       data-key={{this.key}}
       aria-disabled={{if this.listItem.isDisabled "true"}}
       class={{this.classNames.base}}
@@ -302,20 +303,24 @@ class ListboxItem extends Component<ListboxItemSignature> {
       {{yield to="start"}}
 
       {{#if @description}}
-        <div class={{this.classNames.descriptionWrapper}}>
+        <div
+          data-part="description-wrapper"
+          class={{this.classNames.descriptionWrapper}}
+        >
           <span
-            data-test-id="listbox-item-label"
+            data-part="label"
             class={{this.classNames.label}}
             id={{this.labelId}}
           >{{yield}}</span>
           <span
             data-test-id="listbox-item-description"
+            data-part="description"
             class={{this.classNames.description}}
           >{{@description}}</span>
         </div>
       {{else}}
         <span
-          data-test-id="listbox-item-label"
+          data-part="label"
           class={{this.classNames.label}}
           id={{this.labelId}}
         >{{yield}}</span>
@@ -333,6 +338,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       {{#if this.listItem.isSelected}}
         <span
           data-test-id="listbox-item-selected-icon"
+          data-part="selected-icon"
           class={{this.classNames.selectedIcon}}
         >
           {{#if (has-block "selectedIcon")}}
@@ -347,6 +353,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
         {{#unless (has-block "end")}}
           <span
             data-test-id="listbox-item-submenu-indicator"
+            data-part="submenu-indicator"
             class={{this.submenuIndicatorClass}}
           >
             <ChevronRightIcon class="h-full w-full" />

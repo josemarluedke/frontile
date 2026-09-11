@@ -65,8 +65,8 @@ const command = tv({
       '[&_[data-component=listbox-item][data-active=true]]:bg-neutral-muted',
       '[&_[data-component=listbox-item][data-active=true]]:text-neutral-bolder',
       // row text
-      '[&_[data-test-id=listbox-item-label]]:text-body-sm',
-      '[&_[data-test-id=listbox-item-label]]:font-medium',
+      '[&_[data-component=listbox-item]_[data-part=label]]:text-body-sm',
+      '[&_[data-component=listbox-item]_[data-part=label]]:font-medium',
       // leading icons are sized and muted unless the consumer says otherwise
       '[&_[data-component=listbox-item]_svg:not([class*=size-])]:size-4',
       '[&_[data-component=listbox-item]_svg]:shrink-0',

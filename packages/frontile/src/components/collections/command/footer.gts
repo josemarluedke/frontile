@@ -29,6 +29,7 @@ const CommandKbd: TOC<CommandKbdSignature> = <template>
       @appearance="outlined"
       @classes={{hash key=@classes.kbd}}
       data-test-id="command-kbd"
+      data-part="kbd"
       ...attributes
     >{{yield}}</Kbd>
   {{else}}
@@ -38,6 +39,7 @@ const CommandKbd: TOC<CommandKbdSignature> = <template>
       @appearance="outlined"
       @classes={{hash key=@classes.kbd}}
       data-test-id="command-kbd"
+      data-part="kbd"
       ...attributes
     />
   {{/if}}
@@ -54,7 +56,7 @@ export interface CommandHintSignature {
 
 /** One hint: a keycap or two and a label. */
 const CommandHint: TOC<CommandHintSignature> = <template>
-  <span class={{hintClass @classes}} data-test-id="command-hint" ...attributes>
+  <span class={{hintClass @classes}} data-part="footer-hint" ...attributes>
     {{yield}}
   </span>
 </template>;
@@ -98,7 +100,7 @@ class CommandFooter extends Component<CommandFooterSignature> {
     <div
       class={{this.footerClass}}
       data-test-id="command-footer"
-      data-component="command-footer"
+      data-part="footer"
       ...attributes
     >
       {{#if (has-block)}}

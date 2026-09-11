@@ -447,8 +447,8 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
 
   <template>
     <div
-      data-test-id="command"
       data-component="command"
+      data-part="base"
       class={{this.baseClass}}
       ...attributes
     >

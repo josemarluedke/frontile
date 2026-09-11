@@ -155,7 +155,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
       assert.dom('[data-key="item-1"]').exists();
       assert
         .dom('[data-key="item-1"] [data-test-id="listbox-item-description"]')
@@ -217,7 +217,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
 
       assert.dom('[data-key="cheetah"]').exists();
       assert.dom('[data-key="crocodile"]').exists();
@@ -328,7 +328,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
 
       assert.dom('[data-key="cheetah-key"]').exists();
       assert.dom('[data-key="crocodile-key"]').exists();
@@ -364,7 +364,7 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
 
       assert.dom('[data-key="cheetah"]').exists();
       assert.dom('[data-key="crocodile"]').exists();
@@ -372,46 +372,58 @@ module(
 
       // ArrowDown & ArrowUp navigation
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'ArrowDown'
+      );
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'ArrowDown'
+      );
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowUp');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'ArrowUp');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
 
       // PageDown & PageUp
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'PageDown');
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'PageDown'
+      );
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'PageUp');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'PageUp');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
 
       // select active item
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Enter');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Enter');
       assert.equal(selectedKeys.current.length, 1);
       assert.equal(selectedKeys.current[0], 'cheetah');
 
       // search
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'E');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'E');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'C');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'C');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
 
-      triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'C');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'R');
+      triggerKeyEvent('[data-component="listbox"]', 'keydown', 'C');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'R');
 
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       assert
@@ -454,7 +466,7 @@ module(
       );
 
       const listbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       listbox.dispatchEvent(
@@ -501,7 +513,7 @@ module(
       );
 
       const listbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       for (const key of ['b', 'i', 'g', ' ', 'd']) {
@@ -560,7 +572,7 @@ module(
       );
 
       const listbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       pressKey(listbox, 'Enter');
@@ -592,7 +604,7 @@ module(
       );
 
       const listbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       for (const modifier of ['metaKey', 'ctrlKey', 'altKey']) {
@@ -660,7 +672,7 @@ module(
       );
 
       const listbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       for (const key of ['Enter', ' ']) {
@@ -710,7 +722,7 @@ module(
       );
 
       const listbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       // Synchronous and native: an `await` here would let the 500ms
@@ -763,7 +775,7 @@ module(
       );
 
       const listbox = document.querySelector(
-        '[data-test-id="listbox"]'
+        '[data-component="listbox"]'
       ) as HTMLElement;
 
       listbox.dispatchEvent(
@@ -808,7 +820,7 @@ module(
 
       // `@autoActivateMode` defaults to "first", so item-1 is already active
       // without any navigation.
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', ' ');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', ' ');
 
       assert.deepEqual(
         onAction,
@@ -842,7 +854,7 @@ module(
         </template>
       );
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Z');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Z');
       assert
         .dom('[data-key="item-1"]')
         .hasAttribute(
@@ -851,7 +863,7 @@ module(
           'should have matched the external label text'
         );
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Y');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Y');
       assert
         .dom('[data-key="item-2"]')
         .hasAttribute(
@@ -880,10 +892,10 @@ module(
 
       // A search that matches nothing leaves the previously active item
       // active, so match the other item first to make this discriminating.
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Y');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Y');
       assert.dom('[data-key="item-2"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Z');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Z');
       assert
         .dom('[data-key="item-1"]')
         .hasAttribute('data-active', 'true', 'should have used its own text');
@@ -913,12 +925,12 @@ module(
         </template>
       );
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Z');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Z');
       assert
         .dom('[data-key="item-1"]')
         .hasAttribute('data-active', 'true', 'should have used @textValue');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'Y');
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Y');
       assert
         .dom('[data-key="item-2"]')
         .hasAttribute(
@@ -968,7 +980,7 @@ module(
       const visited: (string | undefined)[] = [];
       for (let i = 0; i < 3; i++) {
         await triggerKeyEvent(
-          '[data-test-id="listbox"]',
+          '[data-component="listbox"]',
           'keydown',
           'ArrowDown'
         );
@@ -1021,7 +1033,7 @@ module(
       const visited: (string | undefined)[] = [];
       for (let i = 0; i < 3; i++) {
         await triggerKeyEvent(
-          '[data-test-id="listbox"]',
+          '[data-component="listbox"]',
           'keydown',
           'ArrowDown'
         );
@@ -1076,14 +1088,10 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="listbox"]').exists();
+      assert.dom('[data-component="listbox"]').exists();
       assert.dom('[data-key="item-1"]').exists();
-      assert
-        .dom('[data-key="item-1"] [data-test-id="listbox-item-label"]')
-        .exists();
-      assert
-        .dom('[data-key="item-1"] [data-test-id="listbox-item-label"]')
-        .hasText('Item 1');
+      assert.dom('[data-key="item-1"] [data-part="label"]').exists();
+      assert.dom('[data-key="item-1"] [data-part="label"]').hasText('Item 1');
 
       assert.dom('[data-key="item-1"] [data-test-id="start"]').exists();
       assert
@@ -1129,8 +1137,16 @@ module(
       );
 
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'ArrowDown'
+      );
+      await triggerKeyEvent(
+        '[data-component="listbox"]',
+        'keydown',
+        'ArrowDown'
+      );
 
       assert.deepEqual(activeItems, ['cheetah', 'crocodile', 'elephant']);
     });
@@ -1346,7 +1362,7 @@ module(
         );
 
         assert
-          .dom('[data-test-id="listbox"]')
+          .dom('[data-component="listbox"]')
           .doesNotHaveAttribute(
             'aria-multiselectable',
             'absent for single selection'
@@ -1356,7 +1372,7 @@ module(
         await settled();
 
         assert
-          .dom('[data-test-id="listbox"]')
+          .dom('[data-component="listbox"]')
           .hasAttribute('aria-multiselectable', 'true');
       });
 
@@ -1390,7 +1406,7 @@ module(
             'selected menu item has no aria-selected'
           );
         assert
-          .dom('[data-test-id="listbox"]')
+          .dom('[data-component="listbox"]')
           .doesNotHaveAttribute('aria-multiselectable');
       });
     });
@@ -1638,7 +1654,7 @@ module(
         );
 
         await triggerKeyEvent(
-          '[data-test-id="listbox"]',
+          '[data-component="listbox"]',
           'keydown',
           'ArrowDown'
         );
@@ -1648,7 +1664,7 @@ module(
         await settled();
 
         await triggerKeyEvent(
-          '[data-test-id="listbox"]',
+          '[data-component="listbox"]',
           'keydown',
           'ArrowDown'
         );
@@ -1729,7 +1745,7 @@ module(
         // Navigation starts from the selection when nothing is active yet, so
         // this steps onto the option after it.
         await triggerKeyEvent(
-          '[data-test-id="listbox"]',
+          '[data-component="listbox"]',
           'keydown',
           'ArrowDown'
         );
@@ -1740,7 +1756,11 @@ module(
           'the active option takes the tab stop over from the selection'
         );
 
-        await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowUp');
+        await triggerKeyEvent(
+          '[data-component="listbox"]',
+          'keydown',
+          'ArrowUp'
+        );
         assert
           .dom('[data-key="crocodile"]')
           .hasAttribute('data-active', 'true');
@@ -1874,6 +1894,98 @@ module(
       assert
         .dom('[data-test-id="listbox-item-submenu-indicator"]')
         .doesNotExist('the default chevron steps aside');
+    });
+
+    module('anatomy', function () {
+      test('listbox item and group are components, not parts', async function (assert) {
+        await render(
+          <template>
+            <Listbox as |l|>
+              <l.Group @title="G">
+                <l.Item @key="a" @description="desc">A</l.Item>
+              </l.Group>
+            </Listbox>
+          </template>
+        );
+
+        assert
+          .dom('[data-component="listbox-group"]')
+          .hasAttribute('data-part', 'base');
+        assert
+          .dom('[data-component="listbox-item"]')
+          .hasAttribute('data-part', 'base');
+        assert
+          .dom('[data-component="listbox-group"] [data-part="title"]')
+          .exists();
+        assert
+          .dom('[data-component="listbox-group"] [data-part="list"]')
+          .exists();
+        assert
+          .dom('[data-component="listbox-item"] [data-part="label"]')
+          .exists();
+        assert
+          .dom(
+            '[data-component="listbox-item"] [data-part="description-wrapper"]'
+          )
+          .exists();
+        assert
+          .dom('[data-component="listbox-item"] [data-part="description"]')
+          .exists();
+        assert.strictEqual(
+          document.querySelectorAll('[data-component="listbox-group"]').length,
+          1,
+          'data-component="listbox-group" marks the root only, never a part'
+        );
+        assert.strictEqual(
+          document.querySelectorAll('[data-component="listbox-item"]').length,
+          1,
+          'data-component="listbox-item" marks the root only, never a part'
+        );
+      });
+
+      test('listbox group renders a data-part="divider" when @withDivider is set', async function (assert) {
+        await render(
+          <template>
+            <Listbox as |l|>
+              <l.Group @title="G" @withDivider={{true}}>
+                <l.Item @key="a">A</l.Item>
+              </l.Group>
+            </Listbox>
+          </template>
+        );
+
+        assert.dom('[data-part="divider"]').exists();
+      });
+
+      test('a selected item renders data-part="selected-icon"', async function (assert) {
+        await render(
+          <template>
+            <Listbox @selectedKeys={{array "a"}} as |l|>
+              <l.Item @key="a">A</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        assert
+          .dom('[data-component="listbox-item"] [data-part="selected-icon"]')
+          .exists();
+      });
+
+      test('a submenu trigger renders data-part="submenu-indicator"', async function (assert) {
+        await render(
+          <template>
+            <Listbox @type="menu" as |l|>
+              <l.Item @key="parent" @hasSubmenu={{true}}>More</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-component="listbox-item"] [data-part="submenu-indicator"]'
+          )
+          .exists();
+      });
     });
   }
 );

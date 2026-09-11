@@ -94,6 +94,7 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
       <div
         class={{this.classNames.loading class=@classes.loading}}
         data-test-id="command-loading"
+        data-part="loading"
       >
         {{#if (has-block "loading")}}
           {{yield to="loading"}}
@@ -106,6 +107,7 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
       <div
         class={{this.classNames.empty class=@classes.empty}}
         data-test-id="command-prompt"
+        data-part="empty"
       >
         {{#if (has-block "prompt")}}
           {{yield to="prompt"}}
@@ -117,6 +119,7 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
       <div
         class={{this.classNames.empty class=@classes.empty}}
         data-test-id="command-empty"
+        data-part="empty"
         role="status"
       >
         {{#if (has-block "empty")}}
@@ -140,6 +143,7 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
         @elementToAddKeyboardEvents={{@inputElement}}
         @class={{this.classNames.list class=@classes.list}}
         data-test-id="command-list"
+        data-part="list"
         ...attributes
         as |l|
       >
