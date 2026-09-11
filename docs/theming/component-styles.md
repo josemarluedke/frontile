@@ -32,22 +32,15 @@ of its CSS classes. Two attributes carry it:
   can style a part with `@classes={{hash startContent='...'}}`, you can also
   select it with `[data-part="start-content"]`.
 
-By convention the root element's part is `base` — but only by convention, not
-by rule. It carries whichever slot it actually renders. `SimpleTable`, used
-standalone, renders its `<table>` element as the root, which renders the
-`table` slot, so it carries `data-part="table"`, not `data-part="base"`.
-(`Table`'s own root is different: it's the wrapper `<div>`, which carries
-`data-part="wrapper"` — `Table` composes `SimpleTable` internally with
-`@isRoot={{false}}`, so the inner `<table>` keeps `data-part="table"` but no
-longer carries `data-component`.) `ProgressBar`'s outer `<div>` renders no
-slot at all, so it carries `data-component="progress-bar"` with no
-`data-part`.
+The root element's part is usually `base`, but not always — it carries
+whichever slot it actually renders. `Table`'s root is its wrapper `<div>`, so
+that element is `data-part="wrapper"`; `SimpleTable` used on its own roots on
+the `<table>` element, so that one is `data-part="table"`. `ProgressBar`'s
+outer `<div>` renders no slot at all, so it has `data-component="progress-bar"`
+and no `data-part`. Check the component's page if you need the exact shape.
 
-Both attributes are written **before** `...attributes` in every component's
-template, so a value you pass through `...attributes` always wins. This is
-how, for example, `Tooltip` — which renders no element of its own, only
-`Overlay`'s portaled `<div>` — sets `data-component="tooltip"` on markup that
-`Overlay` itself already stamps with `data-component="overlay"`.
+Both attributes can be overridden: a `data-component` or `data-part` you pass
+to a component wins over the one it would render itself.
 
 A nested component's root legitimately carries **both** its own
 `data-component` and a `data-part` belonging to its parent. `CloseButton`
@@ -79,14 +72,20 @@ alert's leading icon). `[data-component="alert"] [data-part="icon"]` matches
 both — the alert's own icon *and* the close button's icon glyph, because the
 close button is a descendant of the alert's root.
 
-The precise meaning consumers usually want is "the nearest `[data-component]`
-ancestor of this part is `x`" — ownership by the closest component boundary,
-not by any ancestor. CSS has no "nearest enclosing" combinator, so this
-cannot be expressed as a selector at all; a descendant combinator is the best
-CSS can do, and it is not equivalent.
+What you usually mean is "the parts whose nearest `[data-component]` ancestor
+is `x`". CSS has no "nearest enclosing" combinator, so in a stylesheet you
+narrow the selector yourself, using child combinators down the path you want:
 
-Frontile's own tests resolve this with the `ownParts(root, part)` helper
-exported from `frontile/test-support`:
+```css
+/* The alert's own icon. The close button's icon is nested one level
+   deeper, inside the close button, so it doesn't match. */
+[data-component="alert"] > [data-part="inner"] > [data-part="icon"] {
+  /* ... */
+}
+```
+
+In tests, use the `ownParts(root, part)` helper from `frontile/test-support`,
+which returns only the parts belonging to `root` itself:
 
 ```ts
 import { ownParts } from 'frontile/test-support';
@@ -95,46 +94,15 @@ import { ownParts } from 'frontile/test-support';
 const icons = ownParts(alertRootElement, 'icon');
 ```
 
-It walks up from each candidate element's **parent** (not the element
-itself — `closest()` would match a nested component's own root against
-itself before ever reaching `root`, wrongly excluding a part that legitimately
-belongs to `root`) until it either reaches `root` (a true match) or hits
-another `[data-component]` ancestor first (owned by that nested component
-instead, so excluded). See `packages/frontile/src/test-support.ts` for the
-full implementation and reasoning.
-
-`Table`'s composition of `SimpleTable` has the same shape from the other
-direction: `SimpleTable` accepts an internal `@isRoot` flag so that when
-`Table` composes it, only `Table`'s own outer wrapper carries
-`data-component="table"` — `SimpleTable`'s `<table>` renders `data-part="table"`
-but no `data-component` of its own, avoiding two nested `data-component="table"`
-elements for what is, from the outside, one `Table` instance.
-
 ### Not `data-slot`
 
-If you're coming from shadcn/ui, Nuxt UI, or HeroUI, you'll recognize the
-shape of this convention but not the attribute name — those use `data-slot`.
-Frontile uses `data-part` deliberately: `::part()` is the web platform's own
-word for a styleable piece of a component (see the CSS Shadow Parts spec),
-and "slot" already means something different in Ember — a named block
-(`{{yield to="title"}}`), not a DOM anatomy hook. Reusing "slot" for both
-would collide two unrelated concepts in the same codebase.
+If you're coming from shadcn/ui, Nuxt UI, or HeroUI, this convention will look
+familiar but the attribute name differs — those use `data-slot`, Frontile uses
+`data-part`. In Ember, "slot" already means a named block (`{{yield to="title"}}`),
+which is a different thing from a styleable piece of the DOM.
 
-### Enforcement
-
-Two mechanisms keep the anatomy honest as components change:
-
-- `pnpm lint:hbs` runs two `ember-template-lint` rules —
-  `frontile/require-data-part` (every element rendering a slot carries the
-  matching `data-part`) and `frontile/require-root-data-component` (every
-  component's outermost element carries `data-component`).
-- `pnpm lint:anatomy` runs `scripts/check-anatomy.mjs`, a cross-file check
-  that every slot a `tv()` config declares is actually rendered as a
-  `data-part` somewhere, and every `data-part` rendered actually names a
-  real slot.
-
-`@frontile/forms-legacy` is excluded from both — it is deprecated and not
-part of this anatomy migration.
+`@frontile/forms-legacy` predates this convention and does not carry these
+attributes.
 
 ## Customizing Styles
 

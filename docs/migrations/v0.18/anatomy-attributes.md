@@ -10,9 +10,8 @@ subcategory: v0.18
 v0.18 gives every Frontile component a stable, documented DOM anatomy: two
 attributes, `data-component` and `data-part`, replace three older and
 inconsistent conventions — ad hoc `data-component` values that didn't match
-any real hierarchy, one-off `data-fr-*` attributes (mostly on `Calendar` and
-`Accordion`), and most of the `data-test-id` attributes that existed purely
-as selectors.
+any real hierarchy, one-off `data-fr-*` attributes on `Accordion`, and most of
+the `data-test-id` attributes that existed purely as selectors.
 
 **See also:** [Customizing Component Styles](../../theming/component-styles.md)
 for the full contract — what the two attributes mean, how scoping works, and
@@ -59,8 +58,8 @@ kebab-cased `tv()` config name, on the component's outermost element) plus a
 
 ## `data-fr-*` retirement
 
-Every `data-fr-*` attribute on `Calendar` and `Accordion` is gone, replaced
-by `data-component`/`data-part`. `data-fr-si-ready` is the one exception —
+Every `data-fr-*` attribute on `Accordion` is gone, replaced by
+`data-component`/`data-part`. `data-fr-si-ready` is the one exception —
 it is **not** an anatomy attribute; it's a lifecycle marker written by the
 [selection-indicator](https://frontile.dev/docs/components/utilities/selection-indicator)
 utility (used by `SegmentedControl`, `TabNav`, `Tabs`) to signal that the
@@ -71,26 +70,6 @@ kept as-is.
 | --- | --- |
 | `data-fr-accordion` | `data-component="accordion"` `data-part="base"` |
 | `data-fr-accordion-trigger` | `data-part="trigger"` |
-| `data-fr-calendar` | `data-component="calendar"` `data-part="base"` |
-| `data-fr-calendar-band` | `data-part="cell-band"` |
-| `data-fr-calendar-cell` | `data-part="cell"` |
-| `data-fr-calendar-day` | `data-part="day"` |
-| `data-fr-calendar-day-content` | `data-part="day-content"` |
-| `data-fr-calendar-footer` | `data-part="footer"` |
-| `data-fr-calendar-grid` | `data-part="month-grid"` |
-| `data-fr-calendar-header` | `data-part="header"` |
-| `data-fr-calendar-indicator` | `data-part="indicator"` |
-| `data-fr-calendar-month-select` | `data-part="month-select"` |
-| `data-fr-calendar-month-value` | `data-part="month-select-value"` |
-| `data-fr-calendar-next` | `data-part="nav-button"` (Calendar no longer distinguishes prev/next by attribute; both nav buttons carry the same part) |
-| `data-fr-calendar-prev` | `data-part="nav-button"` |
-| `data-fr-calendar-title` | `data-part="title"` |
-| `data-fr-calendar-week` | `data-part="week"` |
-| `data-fr-calendar-weekday` | `data-part="weekday"` |
-| `data-fr-calendar-weekdays` | `data-part="weekdays-row"` |
-| `data-fr-calendar-year` | `data-part="year-cell"` |
-| `data-fr-calendar-year-grid` | `data-part="year-grid"` |
-| `data-fr-calendar-year-trigger` | `data-part="year-trigger"` |
 | `data-fr-si-ready` | **Kept, unchanged** — not an anatomy attribute |
 
 ## Removed `data-test-id`s and their replacements
