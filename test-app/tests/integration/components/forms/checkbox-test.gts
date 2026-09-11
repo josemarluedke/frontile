@@ -123,4 +123,22 @@ module('Integration | Component | @frontile/forms/Checkbox', function (hooks) {
     assert.dom('.my-label-container-class').exists();
     assert.dom('.my-label-class').exists();
   });
+
+  test('renders data-component="checkbox" on the root only, with data-part on every slot', async function (assert) {
+    await render(
+      <template><Checkbox @label="Name" @description="Help" /></template>
+    );
+
+    assert.dom('[data-component="checkbox"]').hasAttribute('data-part', 'base');
+    assert.dom('[data-component="checkbox"] [data-part="input"]').exists();
+    assert
+      .dom('[data-component="checkbox"] [data-part="label-container"]')
+      .exists();
+    assert.dom('[data-component="checkbox"] [data-part="label"]').exists();
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="checkbox"]').length,
+      1,
+      'data-component="checkbox" marks the root only, never a part'
+    );
+  });
 });

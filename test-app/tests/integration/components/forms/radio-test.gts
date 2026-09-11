@@ -123,4 +123,24 @@ module('Integration | Component | @frontile/forms/Radio', function (hooks) {
     assert.dom('.my-label-container-class').exists();
     assert.dom('.my-label-class').exists();
   });
+
+  test('renders data-component="radio" on the root only, with data-part on every slot', async function (assert) {
+    await render(
+      <template>
+        <Radio @value="test" @label="Name" @description="Help" />
+      </template>
+    );
+
+    assert.dom('[data-component="radio"]').hasAttribute('data-part', 'base');
+    assert.dom('[data-component="radio"] [data-part="input"]').exists();
+    assert
+      .dom('[data-component="radio"] [data-part="label-container"]')
+      .exists();
+    assert.dom('[data-component="radio"] [data-part="label"]').exists();
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="radio"]').length,
+      1,
+      'data-component="radio" marks the root only, never a part'
+    );
+  });
 });

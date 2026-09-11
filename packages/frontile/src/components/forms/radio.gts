@@ -91,6 +91,8 @@ class Radio<T extends string | boolean | number> extends Component<
       @isRequired={{@isRequired}}
       @class={{this.classes.base class=@classes.base}}
       @preventErrorFeedback={{true}}
+      data-component="radio"
+      data-part="base"
       as |c|
     >
       {{! Under ARIA 1.2 aria-invalid is not in role=radio's supported
@@ -114,15 +116,21 @@ class Radio<T extends string | boolean | number> extends Component<
         type="radio"
         disabled={{@isDisabled}}
         class={{this.classes.input class=@classes.input}}
-        data-component="radio"
+        data-part="input"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
       {{! template-lint-enable no-unsupported-role-attributes }}
-      <div class={{this.classes.labelContainer class=@classes.labelContainer}}>
+      <div
+        class={{this.classes.labelContainer class=@classes.labelContainer}}
+        data-part="label-container"
+      >
         {{#if @label}}
-          <c.Label @class={{this.classes.label class=@classes.label}}>
+          <c.Label
+            @class={{this.classes.label class=@classes.label}}
+            data-part="label"
+          >
             {{@label}}
           </c.Label>
         {{/if}}

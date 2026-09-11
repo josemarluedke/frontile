@@ -84,6 +84,8 @@ class Checkbox extends Component<CheckboxSignature> {
       @isRequired={{@isRequired}}
       @class={{this.classes.base class=@classes.base}}
       @preventErrorFeedback={{true}}
+      data-component="checkbox"
+      data-part="base"
       as |c|
     >
       <input
@@ -95,14 +97,20 @@ class Checkbox extends Component<CheckboxSignature> {
         type="checkbox"
         disabled={{@isDisabled}}
         class={{this.classes.input class=@classes.input}}
-        data-component="checkbox"
+        data-part="input"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
-      <div class={{this.classes.labelContainer class=@classes.labelContainer}}>
+      <div
+        class={{this.classes.labelContainer class=@classes.labelContainer}}
+        data-part="label-container"
+      >
         {{#if @label}}
-          <c.Label @class={{this.classes.label class=@classes.label}}>
+          <c.Label
+            @class={{this.classes.label class=@classes.label}}
+            data-part="label"
+          >
             {{@label}}
           </c.Label>
         {{/if}}

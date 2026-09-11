@@ -69,10 +69,15 @@ class CheckboxGroup extends Component<CheckboxGroupSignature> {
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
       @class={{this.classes.base class=@classes.base}}
+      data-component="checkbox-group"
+      data-part="base"
       ...attributes
       as |c|
     >
-      <c.Label @class={{this.classes.label class=@classes.label}}>
+      <c.Label
+        @class={{this.classes.label class=@classes.label}}
+        data-part="label"
+      >
         {{@label}}
       </c.Label>
 
@@ -82,6 +87,7 @@ class CheckboxGroup extends Component<CheckboxGroupSignature> {
 
       <div
         class={{this.classes.optionsContainer class=@classes.optionsContainer}}
+        data-part="options-container"
         data-orientation={{if @orientation @orientation "vertical"}}
       >
         {{yield

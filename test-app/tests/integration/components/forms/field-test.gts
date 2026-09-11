@@ -130,10 +130,15 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     // Individual checkboxes within the group have the name attribute
     assert.dom('[data-component="checkbox"]').exists({ count: 3 });
 
-    // Test that checkbox group works
-    const checkboxes = document.querySelectorAll('[data-component="checkbox"]');
-    await click(checkboxes[0] as Element); // Option 1
-    await click(checkboxes[2] as Element); // Option 3
+    // Test that checkbox group works. Clicking the actual <input> (data-part
+    // "input" inside each checkbox's root), not the root itself: the root
+    // now carries data-component="checkbox" and is a <div>, so clicking it
+    // would no longer toggle anything.
+    const checkboxInputs = document.querySelectorAll(
+      '[data-component="checkbox"] [data-part="input"]'
+    );
+    await click(checkboxInputs[0] as Element); // Option 1
+    await click(checkboxInputs[2] as Element); // Option 3
     assert.true(opt1Checked.current, 'Option 1 is checked');
     assert.false(opt2Checked.current, 'Option 2 is not checked');
     assert.true(opt3Checked.current, 'Option 3 is checked');
