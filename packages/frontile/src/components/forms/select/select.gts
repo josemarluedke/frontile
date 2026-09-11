@@ -701,6 +701,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       {{this.updateSingleSelectValue @selectedKey}}
       {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
+      data-component="select"
+      data-part="base"
       ...attributes
     >
       <FormControl
@@ -750,10 +752,12 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
           <div
             class={{this.classes.innerContainer class=@classes.innerContainer}}
+            data-part="inner-container"
           >
             {{#if (has-block "startContent")}}
               <div
                 data-test-id="input-start-content"
+                data-part="start-content"
                 class={{this.classes.startContent
                   class=@classes.startContent
                   startContentPointerEvents=(if
@@ -773,6 +777,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               {{p.measureWidth}}
               {{on "click" this.handleFieldClick}}
               data-test-id={{if this.showChips "chips-field"}}
+              data-part="chips-field"
               {{! These flags are stringified rather than handed the boolean.
               Glimmer renders a true boolean attribute as an empty value, so
               passing isInvalid straight through produced an empty data-invalid
@@ -883,6 +888,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @class={{this.classes.listbox class=@classes.listbox}}
               @elementToAddKeyboardEvents={{this.triggerRef.current}}
               @autoActivateMode={{this.autoActivateMode}}
+              data-part="listbox"
             >
               <:item as |l|>
                 {{#if (has-block "item")}}
@@ -904,7 +910,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             {{#if this.showEmptyContent}}
               <div
                 class={{this.classes.emptyContent class=@classes.emptyContent}}
-                data-test-id="empty-content"
+                data-part="empty-content"
               >
                 {{#if (has-block "emptyContent")}}
                   {{yield to="emptyContent"}}

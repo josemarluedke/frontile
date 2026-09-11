@@ -309,5 +309,43 @@ module(
         'there is no collection entry behind it, and none is invented'
       );
     });
+
+    test('renders data-component="native-select" on the root only, with data-part on every slot', async function (assert) {
+      await render(
+        <template>
+          <NativeSelect @label="Animal">
+            <:startContent>S</:startContent>
+            <:endContent>E</:endContent>
+            <:default as |o|>
+              <o.Item @key="tiger">Tiger</o.Item>
+            </:default>
+          </NativeSelect>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="native-select"]')
+        .hasAttribute('data-part', 'base');
+      assert
+        .dom('[data-component="native-select"] [data-part="inner-container"]')
+        .exists();
+      assert
+        .dom('[data-component="native-select"] [data-part="start-content"]')
+        .exists();
+      assert
+        .dom('[data-component="native-select"] [data-part="input"]')
+        .exists();
+      assert
+        .dom('[data-component="native-select"] [data-part="end-content"]')
+        .exists();
+      assert
+        .dom('[data-component="native-select"] [data-part="icon"]')
+        .exists();
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="native-select"]').length,
+        1,
+        'data-component="native-select" marks the root only, never a part'
+      );
+    });
   }
 );

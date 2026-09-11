@@ -21,7 +21,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   setupRenderingTest(hooks);
 
   const getNativeSelect = () => {
-    const select = document.querySelector('[data-component="native-select"]');
+    const select = document.querySelector('[data-test-id="native-select"]');
     if (!select) throw new Error('native-select not found');
     return select;
   };
@@ -87,48 +87,45 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="native-select"]').exists();
-    assert.dom('[data-component="native-select"] [data-key="item-1"]').exists();
-    assert.dom('[data-component="native-select"] [data-key="item-2"]').exists();
-    assert.dom('[data-component="native-select"] [data-key="item-3"]').exists();
-    assert.dom('[data-component="native-select"] [data-key="item-4"]').exists();
-    assert.dom('[data-component="native-select"] [data-key="item-5"]').exists();
+    assert.dom('[data-test-id="native-select"]').exists();
+    assert.dom('[data-test-id="native-select"] [data-key="item-1"]').exists();
+    assert.dom('[data-test-id="native-select"] [data-key="item-2"]').exists();
+    assert.dom('[data-test-id="native-select"] [data-key="item-3"]').exists();
+    assert.dom('[data-test-id="native-select"] [data-key="item-4"]').exists();
+    assert.dom('[data-test-id="native-select"] [data-key="item-5"]').exists();
 
     assert
-      .dom('[data-component="native-select"] [data-key="item-3"]')
+      .dom('[data-test-id="native-select"] [data-key="item-3"]')
       .hasAttribute('disabled');
     assert
-      .dom('[data-component="native-select"] [data-key="item-4"]')
+      .dom('[data-test-id="native-select"] [data-key="item-4"]')
       .hasAttribute('disabled');
 
     assert
-      .dom('[data-component="native-select"] [data-key="item-1"]')
+      .dom('[data-test-id="native-select"] [data-key="item-1"]')
       .containsText('Item 1');
     assert
-      .dom('[data-component="native-select"] [data-key="item-2"]')
+      .dom('[data-test-id="native-select"] [data-key="item-2"]')
       .containsText('Item 2');
     assert
-      .dom('[data-component="native-select"] [data-key="item-3"]')
+      .dom('[data-test-id="native-select"] [data-key="item-3"]')
       .containsText('Item 3');
     assert
-      .dom('[data-component="native-select"] [data-key="item-4"]')
+      .dom('[data-test-id="native-select"] [data-key="item-4"]')
       .containsText('Item 4');
     assert
-      .dom('[data-component="native-select"] [data-key="item-5"]')
+      .dom('[data-test-id="native-select"] [data-key="item-5"]')
       .containsText('Item 5');
 
-    isNotSelected(
-      assert,
-      '[data-component="native-select"] [data-key="item-2"]'
-    );
+    isNotSelected(assert, '[data-test-id="native-select"] [data-key="item-2"]');
 
-    await selectOptionByKey('[data-component="native-select"]', 'item-2');
+    await selectOptionByKey('[data-test-id="native-select"]', 'item-2');
 
     assert.equal(selectedKey.current, 'item-2');
     isSelected(assert, '[data-key="item-2"]');
 
     // Check Listbox
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     assert.dom('[data-component="listbox"]').exists();
     assert.dom('[data-component="listbox"] [data-key="item-1"]').exists();
@@ -197,7 +194,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assert.dom('[data-component="listbox"]').exists();
 
     assert.dom('[data-component="listbox"] [data-key="cheetah"]').exists();
@@ -209,7 +206,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.equal(selectedKey.current, 'cheetah');
     assert.dom('[data-component="listbox"]').doesNotExist('should have closed');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="crocodile"]');
     assert.equal(selectedKey.current, 'crocodile');
     assert.dom('[data-component="listbox"]').doesNotExist('should have closed');
@@ -218,7 +215,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     selectionMode.current = 'multiple';
     selectedKeys.current = [];
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="elephant"]');
     assert.dom('[data-component="listbox"]').exists('should not have closed');
 
@@ -270,7 +267,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="native-select"]').exists();
+    assert.dom('[data-test-id="native-select"]').exists();
 
     assert.dom('[data-key="cheetah-key"]').exists();
     assert.dom('[data-key="crocodile-key"]').exists();
@@ -281,7 +278,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-key="elephant-key"]').containsText('elephant-value');
 
     // Check Listbox
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     assert.dom('[data-component="listbox"]').exists();
     assert.dom('[data-component="listbox"] [data-key="cheetah-key"]').exists();
@@ -325,7 +322,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     // Check Listbox
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     assert.dom('[data-component="listbox"]').exists();
     assert.dom('[data-component="listbox"] [data-key="item-1"]').exists();
@@ -366,9 +363,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     await render(
       <template><Select @items={{animals}} @isDisabled={{true}} /></template>
     );
-    assert.dom('[data-component="native-select"]').exists();
-    assert.dom('[data-component="native-select"]').isDisabled();
-    assert.dom('[data-component="select-trigger"]').isDisabled();
+    assert.dom('[data-test-id="native-select"]').exists();
+    assert.dom('[data-test-id="native-select"]').isDisabled();
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .isDisabled();
   });
 
   test('it renders select with placeholder', async function (assert) {
@@ -382,7 +381,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         />
       </template>
     );
-    assert.dom('[data-component="select-trigger"]').hasText('Select an animal');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Select an animal');
   });
 
   test('it renders named blocks startContent and endContent', async function (assert) {
@@ -428,7 +429,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="item-1"]');
     assert.equal(selectedKey.current, 'item-1');
 
@@ -453,17 +454,23 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assert.dom('[data-component="listbox"]').exists();
 
-    await fillIn('[data-test-id="trigger"]', 'App');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'App'
+    );
     // Scoped to the listbox: the hidden native <select> deliberately keeps
     // every option so the submitted value is never truncated by the filter.
     assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
     assert.dom('[data-component="listbox"] [data-key="Banana"]').doesNotExist();
     assert.dom('[data-component="listbox"] [data-key="Cherry"]').doesNotExist();
 
-    await fillIn('[data-test-id="trigger"]', 'a');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'a'
+    );
     assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
     assert.dom('[data-component="listbox"] [data-key="Banana"]').exists();
     assert.dom('[data-component="listbox"] [data-key="Cherry"]').doesNotExist();
@@ -484,8 +491,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-test-id="trigger"]', 'ap');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'ap'
+    );
 
     assert.deepEqual(
       [
@@ -505,8 +515,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template><Select @items={{items}} @isFilterable={{true}} /></template>
     );
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-test-id="trigger"]', 'apple');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'apple'
+    );
 
     assert.strictEqual(
       (
@@ -537,11 +550,14 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-test-id="trigger"]', 'XYZ');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'XYZ'
+    );
 
-    assert.dom('[data-test-id="empty-content"]').exists();
-    assert.dom('[data-test-id="empty-content"]').hasText('No results found.');
+    assert.dom('[data-part="empty-content"]').exists();
+    assert.dom('[data-part="empty-content"]').hasText('No results found.');
 
     await render(
       <template>
@@ -556,12 +572,15 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-test-id="trigger"]', 'XYZ');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'XYZ'
+    );
 
-    assert.dom('[data-test-id="empty-content"]').exists();
+    assert.dom('[data-part="empty-content"]').exists();
     assert
-      .dom('[data-test-id="empty-content"]')
+      .dom('[data-part="empty-content"]')
       .hasText('No results found from blocks.');
   });
 
@@ -578,10 +597,13 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-test-id="trigger"]', 'XYZ');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'XYZ'
+    );
 
-    assert.dom('[data-test-id="empty-content"]').doesNotExist();
+    assert.dom('[data-part="empty-content"]').doesNotExist();
   });
 
   test('it shows loading spinner when isLoading is true', async function (assert) {
@@ -625,11 +647,13 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="select-trigger"]').exists();
-    assert.dom('[data-component="native-select"]').exists();
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .exists();
+    assert.dom('[data-test-id="native-select"]').exists();
 
     // Test that single selection works as expected
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="item2"]');
 
     assert.equal(selectedKey.current, 'item2');
@@ -659,11 +683,13 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="select-trigger"]').exists();
-    assert.dom('[data-component="native-select"]').exists();
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .exists();
+    assert.dom('[data-test-id="native-select"]').exists();
 
     // Test that multiple selection works as expected
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="item1"]');
 
     assert.equal(selectedKeys.current.length, 1);
@@ -699,11 +725,13 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="select-trigger"]').exists();
-    assert.dom('[data-component="native-select"]').exists();
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .exists();
+    assert.dom('[data-test-id="native-select"]').exists();
 
     // Test that single selection works as expected (default behavior)
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="item3"]');
 
     assert.equal(selectedKey.current, 'item3');
@@ -734,12 +762,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     // First select an option
-    await selectOptionByKey('[data-component="native-select"]', 'item-2');
+    await selectOptionByKey('[data-test-id="native-select"]', 'item-2');
     assert.equal(selectedKey.current, 'item-2');
     isSelected(assert, '[data-key="item-2"]');
 
     // Call selectOptionByKey on the already selected option - should not change anything
-    await selectOptionByKey('[data-component="native-select"]', 'item-2');
+    await selectOptionByKey('[data-test-id="native-select"]', 'item-2');
 
     // Verify the selection remains the same
     assert.equal(selectedKey.current, 'item-2');
@@ -770,12 +798,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     // First select an option
-    await selectOptionByKey('[data-component="native-select"]', 'item-1');
+    await selectOptionByKey('[data-test-id="native-select"]', 'item-1');
     assert.equal(selectedKey.current, 'item-1');
     isSelected(assert, '[data-key="item-1"]');
 
     // Call selectOptionByKey on the already selected option - should not change anything
-    await selectOptionByKey('[data-component="native-select"]', 'item-1');
+    await selectOptionByKey('[data-test-id="native-select"]', 'item-1');
 
     // Verify the selection remains the same
     assert.equal(selectedKey.current, 'item-1');
@@ -801,20 +829,20 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Select a fruit', 'trigger should show placeholder initially');
 
     selectedKey.current = 'Apple';
     await settled();
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Apple', 'trigger should display Apple');
     isSelected(assert, '[data-key="Apple"]');
 
     selectedKey.current = 'Banana';
     await settled();
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('Banana', 'trigger should display Banana');
     isSelected(assert, '[data-key="Banana"]');
     isNotSelected(assert, '[data-key="Apple"]');
@@ -841,30 +869,36 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     isSelected(assert, '[data-key="item-1"]');
-    assert.dom('[data-component="select-trigger"]').hasText('Item 1');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Item 1');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-1', true);
     assertListboxSelection(assert, 'item-2', false);
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     selectedKey.current = 'item-2';
     await settled();
     isSelected(assert, '[data-key="item-2"]');
     isNotSelected(assert, '[data-key="item-1"]');
-    assert.dom('[data-component="select-trigger"]').hasText('Item 2');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Item 2');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-2', true);
     assertListboxSelection(assert, 'item-1', false);
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     selectedKey.current = 'item-3';
     await settled();
     isSelected(assert, '[data-key="item-3"]');
-    assert.dom('[data-component="select-trigger"]').hasText('Item 3');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Item 3');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-3', true);
   });
 
@@ -888,7 +922,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    const trigger = '[data-component="select-trigger"]';
+    const trigger = '[data-component="select"] [data-part="input"]:not(select)';
     assert.dom(trigger).hasText('Select fruits');
 
     selectedKeys.current = ['Apple'];
@@ -930,31 +964,31 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-1', false);
     assertListboxSelection(assert, 'item-2', false);
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     selectedKeys.current = ['item-1', 'item-3'];
     await settled();
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-1', true);
     assertListboxSelection(assert, 'item-2', false);
     assertListboxSelection(assert, 'item-3', true);
     assertListboxSelection(assert, 'item-4', false);
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     selectedKeys.current = ['item-2', 'item-3'];
     await settled();
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-1', false);
     assertListboxSelection(assert, 'item-2', true);
     assertListboxSelection(assert, 'item-3', true);
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
 
     selectedKeys.current = [];
     await settled();
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-1', false);
     assertListboxSelection(assert, 'item-2', false);
     assertListboxSelection(assert, 'item-3', false);
@@ -984,12 +1018,14 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert.equal(callCount, 0, 'callback should not be called during init');
-    assert.dom('[data-component="select-trigger"]').hasText('Item 2');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Item 2');
     isSelected(assert, '[data-key="item-2"]');
     isNotSelected(assert, '[data-key="item-1"]');
     isNotSelected(assert, '[data-key="item-3"]');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-2', true);
     assertListboxSelection(assert, 'item-1', false);
     assertListboxSelection(assert, 'item-3', false);
@@ -1024,9 +1060,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert.equal(callCount, 0, 'callback should not be called during init');
-    assert.dom('[data-component="select-trigger"]').hasText('Apple, Cherry');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Apple, Cherry');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'Apple', true);
     assertListboxSelection(assert, 'Banana', false);
     assertListboxSelection(assert, 'Cherry', true);
@@ -1064,12 +1102,14 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert.equal(callCount, 0, 'callback should not be called during init');
-    assert.dom('[data-component="select-trigger"]').hasText('Select an item');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Select an item');
     isNotSelected(assert, '[data-key="item-1"]');
     isNotSelected(assert, '[data-key="item-2"]');
     isNotSelected(assert, '[data-key="item-3"]');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-1', false);
     assertListboxSelection(assert, 'item-2', false);
     assertListboxSelection(assert, 'item-3', false);
@@ -1101,9 +1141,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert.equal(callCount, 0, 'callback should not be called during init');
-    assert.dom('[data-component="select-trigger"]').hasText('Select fruits');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Select fruits');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'Apple', false);
     assertListboxSelection(assert, 'Banana', false);
     assertListboxSelection(assert, 'Cherry', false);
@@ -1134,14 +1176,18 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="select-trigger"]').exists();
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .exists();
     assert.equal(callCount, 0, 'callback should not be called during init');
-    assert.dom('[data-component="select-trigger"]').hasText('Select an item');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Select an item');
     isNotSelected(assert, '[data-key="item-1"]');
     isNotSelected(assert, '[data-key="item-2"]');
     isNotSelected(assert, '[data-key="item-3"]');
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     assertListboxSelection(assert, 'item-1', false);
     assertListboxSelection(assert, 'item-2', false);
     assertListboxSelection(assert, 'item-3', false);
@@ -1149,7 +1195,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     await click('[data-component="listbox"] [data-key="item-2"]');
     assert.equal(callCount, 1, 'callback should be called after user click');
     assert.equal(lastSelectedKey, 'item-2');
-    assert.dom('[data-component="select-trigger"]').hasText('Item 2');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Item 2');
   });
 
   test('Multiple mode: external state + user interactions work together via onSelectionChange', async function (assert) {
@@ -1164,7 +1212,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     };
 
     const items = ['Apple', 'Banana', 'Cherry', 'Date'];
-    const trigger = '[data-component="select-trigger"]';
+    const trigger = '[data-component="select"] [data-part="input"]:not(select)';
 
     await render(
       <template>
@@ -1257,13 +1305,15 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-test-id="selected-chip"][data-key="cherry"]')
       .hasTextContaining('cherry');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .doesNotIncludeText('apple, cherry', 'joined text is not rendered');
     assert
-      .dom('[data-component="select-trigger"] [data-test-id="selected-chip"]')
+      .dom(
+        '[data-component="select"] [data-part="input"]:not(select) [data-test-id="selected-chip"]'
+      )
       .doesNotExist('chips must not be nested inside the trigger');
     assert
-      .dom('[data-test-id="chips-field"] [data-component="select-trigger"]')
+      .dom('[data-test-id="chips-field"] > [data-part="input"]')
       .exists('the trigger is a sibling of the chips inside the chips field');
   });
 
@@ -1284,7 +1334,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     const trigger = document.querySelector(
-      '[data-component="select-trigger"]'
+      '[data-component="select"] [data-part="input"]:not(select)'
     ) as HTMLElement;
     const chip = document.querySelector(
       '[data-test-id="selected-chip"]'
@@ -1354,15 +1404,17 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="select-trigger"]').hasText('Select fruits');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('Select fruits');
     assert.dom('[data-test-id="selected-chip"]').doesNotExist();
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="apple"]');
 
     assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .doesNotIncludeText('Select fruits', 'placeholder hides once chips show');
   });
 
@@ -1385,7 +1437,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert.dom('[data-test-id="selected-chip"]').doesNotExist();
     assert.dom('[data-test-id="chips-field"]').doesNotExist();
-    assert.dom('[data-component="select-trigger"]').hasText('apple, cherry');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('apple, cherry');
   });
 
   test('Single mode: is unaffected and renders no chips', async function (assert) {
@@ -1404,7 +1458,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert.dom('[data-test-id="selected-chip"]').doesNotExist();
     assert.dom('[data-test-id="chips-field"]').doesNotExist();
-    assert.dom('[data-component="select-trigger"]').hasText('apple');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('apple');
   });
   test('Multiple mode: a selected chip survives a filter that excludes its item', async function (assert) {
     const selectedKeys = cell<string[]>(['apple']);
@@ -1427,7 +1483,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-test-id="selected-chip"][data-key="apple"]')
       .exists('the chip renders before filtering');
 
-    await fillIn('[data-component="select-trigger"]', 'ban');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'ban'
+    );
 
     assert
       .dom('[data-component="listbox"] [data-key="apple"]')
@@ -1471,7 +1530,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       'both selections submit before filtering'
     );
 
-    await fillIn('[data-component="select-trigger"]', 'ban');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'ban'
+    );
 
     assert
       .dom('[data-component="listbox"] [data-key="apple"]')
@@ -1500,20 +1562,23 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasAttribute(
         'placeholder',
         'Search fruits',
         'single mode keeps its placeholder with a selection'
       );
 
-    await fillIn('[data-component="select-trigger"]', '');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      ''
+    );
 
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasValue('', 'the filter box is empty');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasAttribute(
         'placeholder',
         'Search fruits',
@@ -1539,10 +1604,13 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await fillIn('[data-component="select-trigger"]', '');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      ''
+    );
 
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasAttribute(
         'placeholder',
         'Search fruits',
@@ -1568,21 +1636,21 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasAttribute(
         'placeholder',
         'Search fruits',
         'with nothing selected the placeholder is the only prompt'
       );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="apple"]');
 
     assert
       .dom('[data-test-id="selected-chip"][data-key="apple"]')
       .exists('a chip now occupies the field');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .doesNotHaveAttribute(
         'placeholder',
         'so the placeholder is suppressed beside it'
@@ -1605,9 +1673,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="select-trigger"]').hasText('');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasAttribute('aria-label', 'Fruits');
   });
 
@@ -1626,9 +1696,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-component="select-trigger"]').hasText('apple');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .hasText('apple');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .doesNotHaveAttribute('aria-label');
   });
 
@@ -1688,7 +1760,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-component="listbox"]')
       .exists("clicking a chip's body opens the dropdown");
     assert
-      .dom('[data-test-id="trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasAttribute('aria-expanded', 'true');
     assert.deepEqual(
       selectedKeys.current,
@@ -1763,7 +1835,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .doesNotExist('the dropdown did not open');
     assert.notEqual(
       document
-        .querySelector('[data-test-id="trigger"]')
+        .querySelector(
+          '[data-component="select"] [data-part="input"]:not(select)'
+        )
         ?.getAttribute('aria-expanded'),
       'true',
       'the trigger does not report itself expanded'
@@ -1917,11 +1991,14 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasValue('', 'the joined selection does not fill the filter input');
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-component="select-trigger"]', 'ban');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'ban'
+    );
     assert.dom('[data-component="listbox"] [data-key="banana"]').exists();
     assert
       .dom('[data-component="listbox"] [data-key="apple"]')
@@ -1945,7 +2022,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Backspace'
     );
@@ -1953,9 +2030,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.deepEqual(selectedKeys.current, ['apple', 'banana']);
 
     // Backspace with text in the filter edits the text, it does not remove a chip
-    await fillIn('[data-component="select-trigger"]', 'ap');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'ap'
+    );
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Backspace'
     );
@@ -1984,7 +2064,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Backspace'
     );
@@ -2034,8 +2114,8 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     ].filter(isTabbable);
 
     assert.deepEqual(
-      tabbable.map((el) => el.getAttribute('data-component')),
-      ['select-trigger'],
+      tabbable.map((el) => el.getAttribute('data-part')),
+      ['input'],
       'the trigger is the only tab stop inside the chips field'
     );
 
@@ -2075,11 +2155,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('button[data-component="select-trigger"]')
+      .dom('[data-component="select"] button[data-part="input"]')
       .exists('this select uses the button trigger, not a filter input');
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Backspace'
     );
@@ -2093,7 +2173,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     checkSelected(assert, '[data-key="cherry"]', false);
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Delete'
     );
@@ -2121,7 +2201,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Backspace'
     );
@@ -2153,8 +2233,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-component="select-trigger"]', 'cherry');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'cherry'
+    );
 
     assert
       .dom('[data-component="listbox"] [data-key="cherry"]')
@@ -2164,7 +2247,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .doesNotExist('the already-selected option is filtered out of the list');
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Enter'
     );
@@ -2199,8 +2282,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-component="select-trigger"]', 'cherry');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'cherry'
+    );
     await click('[data-component="listbox"] [data-key="cherry"]');
 
     assert.deepEqual(
@@ -2270,7 +2356,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       '[data-test-id="chips-field"]'
     ) as HTMLElement;
     const trigger = field.querySelector(
-      '[data-component="select-trigger"]'
+      '[data-component="select"] [data-part="input"]:not(select)'
     ) as HTMLElement;
     const chips = [
       ...field.querySelectorAll('[data-test-id="selected-chip"]')
@@ -2331,7 +2417,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // is what "extra spacing below the chip" violates: unexplained height in
     // the field beyond one row of chips.
     const singleTrigger = document.querySelectorAll(
-      '[data-component="select-trigger"]'
+      '[data-component="select"] [data-part="input"]:not(select)'
     )[1] as HTMLElement;
     const singleRect = singleTrigger.getBoundingClientRect();
 
@@ -2550,13 +2636,19 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .dom(
+        '[data-component="select"] [data-part="input"]:not(select) [data-test-id="custom-selected"]'
+      )
       .exists('the block renders inside the trigger');
     assert
-      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .dom(
+        '[data-component="select"] [data-part="input"]:not(select) [data-test-id="custom-selected"]'
+      )
       .hasAttribute('data-key', 'bruno', 'the block is handed the option key');
     assert
-      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .dom(
+        '[data-component="select"] [data-part="input"]:not(select) [data-test-id="custom-selected"]'
+      )
       .hasText('Bruno', '`label` is the option text');
   });
 
@@ -2626,14 +2718,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert.dom('[data-test-id="selected-chip"]').doesNotExist();
     assert
-      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .dom(
+        '[data-component="select"] [data-part="input"]:not(select) [data-test-id="custom-selected"]'
+      )
       .exists({ count: 2 }, 'the block renders once per selection');
     // The plain presentation deliberately keeps one text node; the block
     // branch renders many, so assert on the text, not the node shape. The
     // separator is matched loosely because the whitespace around it belongs to
     // the consumer's own block markup, not to the Select.
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText(/Ana\s*,\s*Cleo/, 'the selections stay comma-separated');
   });
 
@@ -2673,7 +2767,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     const triggers = document.querySelectorAll(
-      '[data-component="select-trigger"]'
+      '[data-component="select"] [data-part="input"]:not(select)'
     );
 
     assert.dom(triggers[0]).hasText('Bruno', 'single mode renders the label');
@@ -2750,7 +2844,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     const triggers = document.querySelectorAll(
-      '[data-component="select-trigger"]'
+      '[data-component="select"] [data-part="input"]:not(select)'
     );
 
     // The block cannot render into an `<input>`, so the input is never left
@@ -2808,7 +2902,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     const triggers = document.querySelectorAll(
-      '[data-component="select-trigger"]'
+      '[data-component="select"] [data-part="input"]:not(select)'
     );
 
     // In chips mode the input shows nothing of the selection, so it has no
@@ -2837,10 +2931,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // A key with no registered option behind it counts as a selection but
     // resolves to no text, and `Owner, ` is announced as "Owner comma".
     assert
-      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .dom(
+        '[data-component="select"] [data-part="input"]:not(select) [data-test-id="custom-selected"]'
+      )
       .doesNotExist('there is no option behind the key, so nothing renders');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasAttribute(
         'aria-label',
         'Owner',
@@ -2875,7 +2971,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     const triggers = document.querySelectorAll(
-      '[data-component="select-trigger"]'
+      '[data-component="select"] [data-part="input"]:not(select)'
     );
 
     // `Select options` is a hardcoded English literal; prefixing the selected
@@ -2920,7 +3016,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // combobox, so a consumer cannot override the composed name this way.
     // The docs say so rather than promising an override that does not exist.
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasAttribute(
         'aria-label',
         'Owner, Ana',
@@ -2997,14 +3093,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     assert
-      .dom('[data-component="select-trigger"] [data-test-id="graphic-only"]')
+      .dom(
+        '[data-component="select"] [data-part="input"]:not(select) [data-test-id="graphic-only"]'
+      )
       .exists('the block rendered, and rendered nothing readable');
     assert
-      .dom('[data-component="select-trigger"]')
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
       .hasText('', 'the trigger has no text of its own to be named by');
 
     const trigger = document.querySelector(
-      '[data-component="select-trigger"]'
+      '[data-component="select"] [data-part="input"]:not(select)'
     ) as HTMLElement;
     const ariaLabel = trigger.getAttribute('aria-label');
 
@@ -3060,7 +3158,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .doesNotExist();
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Backspace'
     );
@@ -3104,7 +3202,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       );
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Backspace'
     );
@@ -3143,7 +3241,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="cheetah"]');
     await click('[data-component="listbox"] [data-key="crocodile"]');
 
@@ -3184,7 +3282,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="cheetah"]');
     await click('[data-component="listbox"] [data-key="crocodile"]');
     assert.strictEqual(blurCount, 0, 'selecting is not blurring');
@@ -3227,7 +3325,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="cheetah"]');
 
     assert.strictEqual(selectedKey.current, 'cheetah');
@@ -3257,7 +3355,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="cheetah"]');
     assert.strictEqual(blurCount, 0, 'selecting is not blurring');
 
@@ -3288,12 +3386,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="cheetah"]');
     assert.strictEqual(blurCount, 0, 'selecting is not blurring');
 
     await triggerKeyEvent(
-      '[data-component="select-trigger"]',
+      '[data-component="select"] [data-part="input"]:not(select)',
       'keydown',
       'Tab'
     );
@@ -3322,8 +3420,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
-    await fillIn('[data-component="select-trigger"]', 'cro');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
+    await fillIn(
+      '[data-component="select"] [data-part="input"]:not(select)',
+      'cro'
+    );
     await click('[data-component="listbox"] [data-key="crocodile"]');
 
     assert.strictEqual(selectedKey.current, 'crocodile');
@@ -3355,10 +3456,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    await click('[data-component="select-trigger"]');
+    await click('[data-component="select"] [data-part="input"]:not(select)');
     await click('[data-component="listbox"] [data-key="cheetah"]');
 
-    assert.dom('[data-component="select-trigger"]').doesNotExist('torn down');
+    assert
+      .dom('[data-component="select"] [data-part="input"]:not(select)')
+      .doesNotExist('torn down');
     assert.strictEqual(
       blurCount,
       0,
@@ -3416,5 +3519,117 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert
       .dom('[data-test-id="input-clear-button"]')
       .doesNotExist('a disabled control cannot be cleared, so no dead button');
+  });
+
+  /**
+   * Select nests a hidden native `<select>` (its own `native-select`
+   * component, with its own `data-component="native-select"` root) that
+   * shares several part names with `select` itself (inner-container,
+   * start-content, end-content, input, icon). A plain
+   * `[data-component="select"] [data-part="x"]` descendant selector cannot
+   * tell the two apart, so ownership is resolved the same way behavioural
+   * code has to: the nearest `[data-component]` ancestor must be `root`.
+   */
+  const ownParts = (root: Element, part: string): Element[] =>
+    [...root.querySelectorAll(`[data-part="${part}"]`)].filter(
+      (el) => el.closest('[data-component]') === root
+    );
+
+  test('renders data-component="select" on the root only, with data-part on every slot', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @placeholder="Select fruits"
+          @isClearable={{true}}
+        >
+          <:startContent>S</:startContent>
+        </Select>
+      </template>
+    );
+
+    const root = document.querySelector('[data-component="select"]') as Element;
+    assert.ok(root, 'the select root renders');
+    assert.strictEqual(root.getAttribute('data-part'), 'base');
+
+    assert.strictEqual(ownParts(root, 'inner-container').length, 1);
+    assert.strictEqual(ownParts(root, 'start-content').length, 1);
+    assert.strictEqual(ownParts(root, 'input').length, 1);
+    assert.strictEqual(ownParts(root, 'end-content').length, 1);
+    assert.strictEqual(
+      ownParts(root, 'icon').length,
+      0,
+      'the clear button takes the chevron icon slot when isClearable and something is selected'
+    );
+    assert.strictEqual(ownParts(root, 'clear-button').length, 1);
+    assert.strictEqual(ownParts(root, 'chips-field').length, 1);
+    assert.strictEqual(ownParts(root, 'chips-container').length, 1);
+    assert.strictEqual(ownParts(root, 'chip').length, 1);
+
+    await click(ownParts(root, 'input')[0] as HTMLElement);
+
+    // The dropdown's Listbox is portaled to document.body by Popover, so it
+    // is no longer a DOM descendant of `root` -- `listbox` is not a part
+    // name nativeSelect also declares, so no `ownParts` scoping is needed
+    // here; a plain document-wide count is unambiguous.
+    assert.strictEqual(
+      document.querySelectorAll('[data-part="listbox"]').length,
+      1
+    );
+
+    assert.strictEqual(
+      document.querySelectorAll('[data-component="select"]').length,
+      1,
+      'data-component="select" marks the root only, never a part'
+    );
+  });
+
+  test('renders data-part="placeholder" and data-part="empty-content" on Select', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @isFilterable={{true}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    const root = document.querySelector('[data-component="select"]') as Element;
+
+    assert.strictEqual(
+      ownParts(root, 'placeholder').length,
+      0,
+      'the filterable trigger has no placeholder span; the placeholder shows as an input attribute instead'
+    );
+
+    await click(ownParts(root, 'input')[0] as HTMLElement);
+    await fillIn(ownParts(root, 'input')[0] as HTMLElement, 'XYZ');
+
+    // Portaled to document.body by Popover, same as the listbox -- not a
+    // part name nativeSelect shares, so no scoping is needed.
+    assert.strictEqual(
+      document.querySelectorAll('[data-part="empty-content"]').length,
+      1,
+      'empty-content part renders'
+    );
+  });
+
+  test('renders data-part="placeholder" on Select\'s non-filterable trigger', async function (assert) {
+    await render(
+      <template>
+        <Select @items={{array}} @placeholder="Select fruits" />
+      </template>
+    );
+
+    const root = document.querySelector('[data-component="select"]') as Element;
+
+    assert.strictEqual(ownParts(root, 'placeholder').length, 1);
   });
 });

@@ -27,18 +27,20 @@ module(
         </template>
       );
 
-      assert.dom('[data-component="autocomplete-trigger"]').exists();
       assert
-        .dom('[data-component="autocomplete-trigger"]')
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .exists();
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
         .hasAttribute('role', 'combobox');
       assert
-        .dom('[data-component="autocomplete-trigger"]')
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
         .hasAttribute('aria-autocomplete', 'list');
       assert
-        .dom('[data-component="autocomplete-trigger"]')
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
         .hasAttribute('aria-expanded', 'false');
       assert
-        .dom('[data-component="autocomplete-trigger"]')
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
         .hasAttribute('placeholder', 'Search');
     });
 
@@ -47,14 +49,16 @@ module(
 
       await render(<template><Autocomplete @items={{items}} /></template>);
 
-      await click('[data-component="autocomplete-trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
 
       assert.dom('[data-component="listbox"]').exists();
       assert.dom('[data-key="Apple"]').exists();
       assert.dom('[data-key="Banana"]').exists();
       assert.dom('[data-key="Cherry"]').exists();
       assert
-        .dom('[data-component="autocomplete-trigger"]')
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
         .hasAttribute('aria-expanded', 'true');
     });
 
@@ -63,14 +67,20 @@ module(
 
       await render(<template><Autocomplete @items={{items}} /></template>);
 
-      await fillIn('[data-test-id="trigger"]', 'App');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'App'
+      );
 
       assert.dom('[data-component="listbox"]').exists('typing opens dropdown');
       assert.dom('[data-key="Apple"]').exists();
       assert.dom('[data-key="Banana"]').doesNotExist();
       assert.dom('[data-key="Cherry"]').doesNotExist();
 
-      await fillIn('[data-test-id="trigger"]', 'an');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'an'
+      );
       assert.dom('[data-key="Apple"]').doesNotExist();
       assert.dom('[data-key="Banana"]').exists();
     });
@@ -86,11 +96,17 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'an');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'an'
+      );
       assert.dom('[data-key="Banana"]').doesNotExist('contains does not apply');
-      assert.dom('[data-test-id="empty-content"]').exists();
+      assert.dom('[data-part="empty-content"]').exists();
 
-      await fillIn('[data-test-id="trigger"]', 'ba');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'ba'
+      );
       assert.dom('[data-key="Banana"]').exists();
     });
 
@@ -109,7 +125,10 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'ap');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'ap'
+      );
 
       assert.deepEqual(
         [...document.querySelectorAll('[data-component="listbox-item"]')].map(
@@ -125,7 +144,10 @@ module(
 
       await render(<template><Autocomplete @items={{items}} /></template>);
 
-      await fillIn('[data-test-id="trigger"]', 'apple');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'apple'
+      );
 
       assert.strictEqual(
         (
@@ -154,12 +176,17 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'Ban');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'Ban'
+      );
       await click('[data-component="listbox"] [data-key="Banana"]');
 
       assert.equal(selectedKey.current, 'Banana');
       assert.dom('[data-component="listbox"]').doesNotExist('dropdown closed');
-      assert.dom('[data-test-id="trigger"]').hasValue('Banana');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('Banana');
     });
 
     test('keyboard navigation: arrows + Enter select the active option', async function (assert) {
@@ -178,7 +205,10 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'a');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'a'
+      );
       assert.dom('[data-component="listbox"]').exists();
 
       // First matching option is auto-activated when filtering
@@ -186,19 +216,29 @@ module(
         .dom('[data-component="listbox"] [data-key="Apple"]')
         .hasAttribute('data-active', 'true');
       assert
-        .dom('[data-test-id="trigger"]')
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
         .hasAttribute('aria-activedescendant');
 
-      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'ArrowDown');
+      await triggerKeyEvent(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'keydown',
+        'ArrowDown'
+      );
       assert
         .dom('[data-component="listbox"] [data-key="Banana"]')
         .hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Enter');
+      await triggerKeyEvent(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'keydown',
+        'Enter'
+      );
 
       assert.equal(selectedKey.current, 'Banana');
       assert.dom('[data-component="listbox"]').doesNotExist();
-      assert.dom('[data-test-id="trigger"]').hasValue('Banana');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('Banana');
     });
 
     test('input reverts to the selected label when closed without selection', async function (assert) {
@@ -218,13 +258,20 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'Cher');
-      assert.dom('[data-test-id="trigger"]').hasValue('Cher');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'Cher'
+      );
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('Cher');
 
       await click('[data-test-id="outside"]');
 
       assert.dom('[data-component="listbox"]').doesNotExist();
-      assert.dom('[data-test-id="trigger"]').hasValue('Cherry');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('Cherry');
       assert.equal(selectedKey.current, 'Cherry', 'selection unchanged');
     });
 
@@ -244,10 +291,15 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'Dragonfruit');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'Dragonfruit'
+      );
       await click('[data-test-id="outside"]');
 
-      assert.dom('[data-test-id="trigger"]').hasValue('Dragonfruit');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('Dragonfruit');
       assert.equal(inputValue.current, 'Dragonfruit');
     });
 
@@ -262,7 +314,10 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'Ap');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'Ap'
+      );
       assert.deepEqual(values, ['Ap']);
     });
 
@@ -275,7 +330,10 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'XYZ');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'XYZ'
+      );
 
       assert.dom('[data-key="Apple"]').exists();
       assert.dom('[data-key="Banana"]').exists();
@@ -298,7 +356,10 @@ module(
         </template>
       );
 
-      void fillIn('[data-test-id="trigger"]', 'fr');
+      void fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'fr'
+      );
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       assert.dom('[data-test-id="loading-spinner"]').exists('spinner pending');
@@ -338,9 +399,15 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'Main');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'Main'
+      );
 
-      await fillIn('[data-test-id="trigger"]', 'Main St');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'Main St'
+      );
 
       const domOrder = [
         ...document.querySelectorAll(
@@ -352,7 +419,7 @@ module(
       const visited: (string | undefined)[] = [];
       for (let i = 0; i < addresses.length - 1; i++) {
         await triggerKeyEvent(
-          '[data-test-id="trigger"]',
+          '[data-component="autocomplete"] [data-part="input"]:not(select)',
           'keydown',
           'ArrowDown'
         );
@@ -385,9 +452,15 @@ module(
         </template>
       );
 
-      void fillIn('[data-test-id="trigger"]', 'a');
+      void fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'a'
+      );
       await new Promise((resolve) => setTimeout(resolve, 20));
-      void fillIn('[data-test-id="trigger"]', 'ab');
+      void fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'ab'
+      );
       await new Promise((resolve) => setTimeout(resolve, 20));
 
       assert.equal(resolvers.length, 2, 'two searches fired');
@@ -418,19 +491,30 @@ module(
         </template>
       );
 
-      await click('[data-component="autocomplete-trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
 
       assert
         .dom('[data-test-id="search-message"]')
         .hasText('Type to search for a fruit...');
-      assert.dom('[data-test-id="empty-content"]').doesNotExist();
+      // search-message and the plain "no results" div are mutually
+      // exclusive renderings of the same emptyContent slot -- exactly one
+      // ever exists, and here it is the search prompt.
+      assert.dom('[data-part="empty-content"]').exists({ count: 1 });
 
-      await fillIn('[data-test-id="trigger"]', 'app');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'app'
+      );
 
       assert.dom('[data-test-id="search-message"]').doesNotExist();
       assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
 
-      await fillIn('[data-test-id="trigger"]', '');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        ''
+      );
 
       assert
         .dom('[data-test-id="search-message"]')
@@ -448,7 +532,9 @@ module(
         </template>
       );
 
-      await click('[data-component="autocomplete-trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
       assert
         .dom('[data-test-id="search-message"]')
         .hasText('Start typing to see suggestions');
@@ -459,7 +545,9 @@ module(
         </template>
       );
 
-      await click('[data-component="autocomplete-trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
       assert.dom('[data-test-id="search-message"]').doesNotExist();
     });
 
@@ -478,7 +566,9 @@ module(
         </template>
       );
 
-      await click('[data-component="autocomplete-trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
 
       assert.dom('[data-test-id="search-message"]').doesNotExist();
       assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
@@ -502,11 +592,17 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'r');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'r'
+      );
 
       assert.dom('[data-key="Result"]').exists();
 
-      await fillIn('[data-test-id="trigger"]', '');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        ''
+      );
 
       assert.deepEqual(searches, ['r'], 'blank query did not trigger search');
       assert.dom('[data-key="Default 1"]').exists();
@@ -530,13 +626,17 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="trigger"]').hasValue('Apple');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('Apple');
       assert.dom('[data-test-id="input-clear-button"]').exists();
 
       await click('[data-test-id="input-clear-button"]');
 
       assert.equal(selectedKey.current, null);
-      assert.dom('[data-test-id="trigger"]').hasValue('');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('');
     });
 
     test('it renders disabled input', async function (assert) {
@@ -548,7 +648,9 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="trigger"]').isDisabled();
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .isDisabled();
     });
 
     test('it respects disabledKeys', async function (assert) {
@@ -568,7 +670,9 @@ module(
         </template>
       );
 
-      await click('[data-component="autocomplete-trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
       await click('[data-component="listbox"] [data-key="Banana"]');
 
       assert.equal(selectedKey.current, null, 'disabled item not selectable');
@@ -578,10 +682,13 @@ module(
       const items = ['Apple'];
 
       await render(<template><Autocomplete @items={{items}} /></template>);
-      await fillIn('[data-test-id="trigger"]', 'XYZ');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'XYZ'
+      );
 
-      assert.dom('[data-test-id="empty-content"]').exists();
-      assert.dom('[data-test-id="empty-content"]').hasText('No results found.');
+      assert.dom('[data-part="empty-content"]').exists();
+      assert.dom('[data-part="empty-content"]').hasText('No results found.');
 
       await render(
         <template>
@@ -590,16 +697,22 @@ module(
           </Autocomplete>
         </template>
       );
-      await fillIn('[data-test-id="trigger"]', 'XYZ');
-      assert.dom('[data-test-id="empty-content"]').hasText('Nothing here.');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'XYZ'
+      );
+      assert.dom('[data-part="empty-content"]').hasText('Nothing here.');
 
       await render(
         <template>
           <Autocomplete @items={{items}} @hideEmptyContent={{true}} />
         </template>
       );
-      await fillIn('[data-test-id="trigger"]', 'XYZ');
-      assert.dom('[data-test-id="empty-content"]').doesNotExist();
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'XYZ'
+      );
+      assert.dom('[data-part="empty-content"]').doesNotExist();
     });
 
     test('it renders custom items with the item block', async function (assert) {
@@ -620,7 +733,9 @@ module(
         </template>
       );
 
-      await click('[data-component="autocomplete-trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
 
       assert.dom('[data-component="listbox"] [data-key="apple"]').exists();
       assert
@@ -647,12 +762,16 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="trigger"]').hasValue('');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('');
 
       selectedKey.current = 'Cherry';
       await settled();
 
-      assert.dom('[data-test-id="trigger"]').hasValue('Cherry');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('Cherry');
     });
 
     test('hidden native select is rendered for form submission', async function (assert) {
@@ -662,9 +781,9 @@ module(
         <template><Autocomplete @items={{items}} @name="fruit" /></template>
       );
 
-      assert.dom('[data-component="native-select"]').exists();
+      assert.dom('[data-test-id="native-select"]').exists();
       assert
-        .dom('[data-component="native-select"]')
+        .dom('[data-test-id="native-select"]')
         .hasAttribute('name', 'fruit');
     });
 
@@ -686,11 +805,20 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'App');
-      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Enter');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'App'
+      );
+      await triggerKeyEvent(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'keydown',
+        'Enter'
+      );
 
       assert.equal(submitted, 0, 'form not submitted');
-      assert.dom('[data-test-id="trigger"]').hasValue('Apple');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .hasValue('Apple');
     });
 
     test('Enter selects the active item exactly once', async function (assert) {
@@ -710,8 +838,15 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'App');
-      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Enter');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'App'
+      );
+      await triggerKeyEvent(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'keydown',
+        'Enter'
+      );
 
       assert.deepEqual(actions, ['Apple'], 'onAction fired once, not twice');
     });
@@ -774,8 +909,13 @@ module(
         </template>
       );
 
-      await click('[data-component="autocomplete-trigger"]');
-      await fillIn('[data-component="autocomplete-trigger"]', 'Cherry');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'Cherry'
+      );
 
       assert
         .dom('[data-component="listbox"] [data-key="Apple"]')
@@ -816,7 +956,10 @@ module(
         </template>
       );
 
-      await fillIn('[data-test-id="trigger"]', 'Ban');
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'Ban'
+      );
       await click('[data-component="listbox"] [data-key="Banana"]');
 
       assert.strictEqual(selectedKey.current, 'Banana');
@@ -838,8 +981,13 @@ module(
         </template>
       );
 
-      await click('[data-test-id="trigger"]');
-      await fillIn('[data-test-id="trigger"]', 'a');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
+      await fillIn(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'a'
+      );
 
       assert.dom('[data-component="listbox"]').exists();
       assert.strictEqual(blurCount, 0, 'still interacting with the control');
@@ -865,7 +1013,9 @@ module(
         </template>
       );
 
-      await click('[data-test-id="trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
       await click('[data-component="listbox"] [data-key="Apple"]');
       assert.strictEqual(blurCount, 0, 'selecting is not blurring');
 
@@ -896,11 +1046,17 @@ module(
         </template>
       );
 
-      await click('[data-test-id="trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
       await click('[data-component="listbox"] [data-key="Apple"]');
       assert.strictEqual(blurCount, 0, 'selecting is not blurring');
 
-      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Tab');
+      await triggerKeyEvent(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)',
+        'keydown',
+        'Tab'
+      );
       await focus('[data-test-id="outside"]');
 
       assert.strictEqual(blurCount, 1, 'tabbing out reported exactly one blur');
@@ -927,10 +1083,14 @@ module(
         </template>
       );
 
-      await click('[data-test-id="trigger"]');
+      await click(
+        '[data-component="autocomplete"] [data-part="input"]:not(select)'
+      );
       await click('[data-component="listbox"] [data-key="Apple"]');
 
-      assert.dom('[data-test-id="trigger"]').doesNotExist('torn down');
+      assert
+        .dom('[data-component="autocomplete"] [data-part="input"]:not(select)')
+        .doesNotExist('torn down');
       assert.strictEqual(
         blurCount,
         0,
@@ -978,6 +1138,94 @@ module(
         selectedKey.current,
         null,
         '@isClearable is documented to override @allowEmpty'
+      );
+    });
+
+    /**
+     * Autocomplete nests a hidden native `<select>` (its own `native-select`
+     * component, with its own `data-component="native-select"` root) that
+     * shares several part names with `autocomplete` itself (inner-container,
+     * start-content, end-content, input, icon). A plain
+     * `[data-component="autocomplete"] [data-part="x"]` descendant selector
+     * cannot tell the two apart, so ownership is resolved the same way
+     * behavioural code has to: the nearest `[data-component]` ancestor must
+     * be `root`.
+     */
+    const ownParts = (root: Element, part: string): Element[] =>
+      [...root.querySelectorAll(`[data-part="${part}"]`)].filter(
+        (el) => el.closest('[data-component]') === root
+      );
+
+    test('renders data-component="autocomplete" on the root only, with data-part on every slot', async function (assert) {
+      const items = ['Apple', 'Banana', 'Cherry'];
+      const selectedKey = cell<string | null>('Apple');
+      const onSelectionChange = (key: string | null) =>
+        (selectedKey.current = key);
+
+      await render(
+        <template>
+          <Autocomplete
+            @items={{items}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSelectionChange}}
+            @isClearable={{true}}
+          >
+            <:startContent>S</:startContent>
+          </Autocomplete>
+        </template>
+      );
+
+      const root = document.querySelector(
+        '[data-component="autocomplete"]'
+      ) as Element;
+      assert.ok(root, 'the autocomplete root renders');
+      assert.strictEqual(root.getAttribute('data-part'), 'base');
+
+      assert.strictEqual(ownParts(root, 'inner-container').length, 1);
+      assert.strictEqual(ownParts(root, 'start-content').length, 1);
+      assert.strictEqual(ownParts(root, 'input').length, 1);
+      assert.strictEqual(ownParts(root, 'end-content').length, 1);
+      assert.strictEqual(
+        ownParts(root, 'icon').length,
+        0,
+        'the clear button takes the chevron icon slot when isClearable and something is selected'
+      );
+      assert.strictEqual(ownParts(root, 'clear-button').length, 1);
+
+      await click(ownParts(root, 'input')[0] as HTMLElement);
+
+      // The dropdown's Listbox is portaled to document.body by Popover, so
+      // it is no longer a DOM descendant of `root` -- `listbox` is not a
+      // part name nativeSelect also declares, so a plain document-wide
+      // count is unambiguous.
+      assert.strictEqual(
+        document.querySelectorAll('[data-part="listbox"]').length,
+        1
+      );
+
+      assert.strictEqual(
+        document.querySelectorAll('[data-component="autocomplete"]').length,
+        1,
+        'data-component="autocomplete" marks the root only, never a part'
+      );
+    });
+
+    test('renders data-part="empty-content" on Autocomplete', async function (assert) {
+      await render(
+        <template><Autocomplete @items={{array "Apple" "Banana"}} /></template>
+      );
+
+      const root = document.querySelector(
+        '[data-component="autocomplete"]'
+      ) as Element;
+
+      await fillIn(ownParts(root, 'input')[0] as HTMLElement, 'XYZ');
+
+      // Portaled to document.body by Popover, same as the listbox -- not a
+      // part name nativeSelect shares, so no scoping is needed.
+      assert.strictEqual(
+        document.querySelectorAll('[data-part="empty-content"]').length,
+        1
       );
     });
   }

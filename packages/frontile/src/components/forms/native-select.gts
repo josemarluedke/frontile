@@ -293,12 +293,17 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
       @class={{this.classes.base class=@classes.base}}
+      data-component="native-select"
+      data-part="base"
       as |c|
     >
-      <div class={{this.classes.innerContainer class=@classes.innerContainer}}>
+      <div
+        class={{this.classes.innerContainer class=@classes.innerContainer}}
+        data-part="inner-container"
+      >
         {{#if (has-block "startContent")}}
           <div
-            data-test-id="input-start-content"
+            data-part="start-content"
             class={{this.classes.startContent
               class=@classes.startContent
               startContentPointerEvents=(if
@@ -321,7 +326,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
           {{on "change" this.handleOnChange}}
           multiple={{this.isMultiple}}
           data-test-id="native-select"
-          data-component="native-select"
+          data-part="input"
           class={{this.classes.input
             class=@classes.input
             hasStartContent=(has-block "startContent")
@@ -370,7 +375,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
           }}
         </select>
         <div
-          data-test-id="input-end-content"
+          data-part="end-content"
           class={{this.classes.endContent
             class=@classes.endContent
             endContentPointerEvents=(if
@@ -380,7 +385,10 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
         >
           {{yield to="endContent"}}
 
-          <IconChevronUpDown class={{this.classes.icon class=@classes.icon}} />
+          <IconChevronUpDown
+            data-part="icon"
+            class={{this.classes.icon class=@classes.icon}}
+          />
         </div>
       </div>
     </FormControl>
@@ -460,7 +468,6 @@ class NativeSelectItem extends Component<SelectItemSignature> {
         onRegister=this.onRegister
       }}
       data-selected="{{this.listItem.isSelected}}"
-      data-test-id="option"
       data-key={{this.key}}
       selected={{this.listItem.isSelected}}
       value={{this.key}}
