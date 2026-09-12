@@ -218,7 +218,7 @@ export default class DocfyJumpTo extends Component {
       <Kbd
         @keys="/"
         @size="sm"
-        @appearance="outlined"
+        @variant="outline"
         @class="hidden sm:inline-flex ml-3"
       />
       {{! Rendered through Kbd rather than spelled out, so the announced

@@ -267,21 +267,21 @@ export default class PresetsExample extends Component {
         <div class='flex gap-2 pt-2'>
           <Button
             @size='sm'
-            @appearance='outlined'
+            @variant='outline'
             {{on 'click' (fn this.applyPreset 0)}}
           >
             Today
           </Button>
           <Button
             @size='sm'
-            @appearance='outlined'
+            @variant='outline'
             {{on 'click' (fn this.applyPreset 1)}}
           >
             Tomorrow
           </Button>
           <Button
             @size='sm'
-            @appearance='outlined'
+            @variant='outline'
             {{on 'click' (fn this.applyPreset 7)}}
           >
             In a week
@@ -363,7 +363,7 @@ import { on } from '@ember/modifier';
       <div class='flex items-center justify-between gap-2 pb-2'>
         <Button
           @size='sm'
-          @appearance='outlined'
+          @variant='outline'
           disabled={{unless header.canGoPrevious true false}}
           {{on 'click' header.goToPrevious}}
         >
@@ -372,7 +372,7 @@ import { on } from '@ember/modifier';
 
         <Button
           @size='sm'
-          @appearance='minimal'
+          @variant='plain'
           aria-expanded={{if header.isYearGridOpen 'true' 'false'}}
           {{on 'click' header.toggleYearGrid}}
         >
@@ -381,7 +381,7 @@ import { on } from '@ember/modifier';
 
         <Button
           @size='sm'
-          @appearance='outlined'
+          @variant='outline'
           disabled={{unless header.canGoNext true false}}
           {{on 'click' header.goToNext}}
         >

@@ -27,25 +27,25 @@ import { Chip } from 'frontile';
 
 ## Chip Appearances
 
-`default` is a filled chip, `outlined` draws the intent color as a border on the
-page background, and `faded` is a tinted surface with intent-colored text.
+`solid` is a filled chip, `outline` draws the intent color as a border on the
+page background, and `soft` is a tinted surface with intent-colored text.
 
 ```gts preview
 import { Chip } from 'frontile';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
-    <Chip @appearance='default'>Default</Chip>
-    <Chip @appearance='outlined'>Outlined</Chip>
-    <Chip @appearance='faded'>Faded</Chip>
+    <Chip @variant='solid'>Solid</Chip>
+    <Chip @variant='outline'>Outline</Chip>
+    <Chip @variant='soft'>Soft</Chip>
   </div>
 </template>
 ```
 
 ## Chip Intents
 
-Every intent is available in every appearance. The label on each row is the
-`@appearance` value; the chip labels are the `@intent` values.
+Every intent is available in every variant. The label on each row is the
+`@variant` value; the chip labels are the `@intent` values.
 
 ```gts preview
 import { Chip } from 'frontile';
@@ -63,14 +63,14 @@ const intents = [
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+    {{#each (array 'solid' 'outline' 'soft') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
-          @appearance='{{appearance}}'
+          @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
           {{#each intents as |intent|}}
-            <Chip @appearance={{appearance}} @intent={{intent}}>
+            <Chip @variant={{variant}} @intent={{intent}}>
               {{intent}}
             </Chip>
           {{/each}}
@@ -106,15 +106,15 @@ const noop = (): void => {};
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+    {{#each (array 'solid' 'outline' 'soft') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
-          @appearance='{{appearance}}'
+          @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
           {{#each (array 'sm' 'md' 'lg') as |size|}}
             <Chip
-              @appearance={{appearance}}
+              @variant={{variant}}
               @intent='primary'
               @size={{size}}
               @withDot={{true}}
@@ -143,7 +143,7 @@ import { array } from '@ember/helper';
 <template>
   <div class='flex flex-wrap items-center gap-3'>
     {{#each (array 'none' 'sm' 'lg' 'full') as |radius|}}
-      <Chip @appearance='outlined' @intent='primary' @radius={{radius}}>
+      <Chip @variant='outline' @intent='primary' @radius={{radius}}>
         {{radius}}
       </Chip>
     {{/each}}
@@ -172,15 +172,15 @@ const intents = [
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+    {{#each (array 'solid' 'outline' 'soft') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
-          @appearance='{{appearance}}'
+          @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
           {{#each intents as |intent|}}
             <Chip
-              @appearance={{appearance}}
+              @variant={{variant}}
               @intent={{intent}}
               @withDot={{true}}
             >
@@ -216,15 +216,15 @@ const noop = (): void => {};
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+    {{#each (array 'solid' 'outline' 'soft') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
-          @appearance='{{appearance}}'
+          @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
           {{#each intents as |intent|}}
             <Chip
-              @appearance={{appearance}}
+              @variant={{variant}}
               @intent={{intent}}
               @onClose={{noop}}
               @closeButtonTitle={{concat 'Remove ' intent}}
@@ -259,15 +259,15 @@ const noop = (): void => {};
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+    {{#each (array 'solid' 'outline' 'soft') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
-          @appearance='{{appearance}}'
+          @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
           {{#each intents as |intent|}}
             <Chip
-              @appearance={{appearance}}
+              @variant={{variant}}
               @intent={{intent}}
               @withDot={{true}}
               @onClose={{noop}}
@@ -307,7 +307,7 @@ export default class Example extends Component {
     <div class='flex flex-wrap items-center gap-2'>
       {{#each this.filters as |filter|}}
         <Chip
-          @appearance='faded'
+          @variant='soft'
           @intent='primary'
           @onClose={{fn this.remove filter}}
           @closeButtonTitle={{concat 'Remove ' filter}}
@@ -354,15 +354,15 @@ const noop = (): void => {};
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+    {{#each (array 'solid' 'outline' 'soft') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
-          @appearance='{{appearance}}'
+          @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
           {{#each intents as |intent|}}
             <Chip
-              @appearance={{appearance}}
+              @variant={{variant}}
               @intent={{intent}}
               @withDot={{true}}
               @onClose={{noop}}
@@ -386,7 +386,7 @@ You can also use TailwindCSS classes to customize even further.
 import { Chip } from 'frontile';
 
 <template>
-  <Chip @appearance='outlined' @intent='primary' @class='px-20 py-2 italic'>
+  <Chip @variant='outline' @intent='primary' @class='px-20 py-2 italic'>
     Chip
   </Chip>
 </template>
@@ -437,7 +437,7 @@ export default class Example extends Component {
       {{#each this.tags as |tag|}}
         <li>
           <Chip
-            @appearance='outlined'
+            @variant='outline'
             @onClose={{fn this.remove tag}}
             @closeButtonTitle={{concat 'Remove ' tag}}
           >

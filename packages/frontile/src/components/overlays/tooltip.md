@@ -86,7 +86,7 @@ import { Kbd } from 'frontile';
     <t.Content>
       <p class='font-semibold'>Save</p>
       <p class='flex items-center gap-1'>
-        <Kbd @keys='mod+s' @appearance='inherit' @size='sm' />
+        <Kbd @keys='mod+s' @variant='inherit' @size='sm' />
         saves the current document.
       </p>
     </t.Content>
@@ -254,7 +254,7 @@ import { Button } from 'frontile';
 <template>
   <Tooltip @content='Hover me, then dismiss me from the button' as |t|>
     <Button {{t.trigger}} class='mr-4'>Trigger</Button>
-    <Button @appearance='outlined' @onPress={{t.close}}>Close tooltip</Button>
+    <Button @variant='outline' @onPress={{t.close}}>Close tooltip</Button>
     <p class='mt-2 text-sm'>{{if t.isOpen "Open" "Closed"}}</p>
   </Tooltip>
 </template>

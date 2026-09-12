@@ -647,7 +647,7 @@ export default class SubmenuDropdown extends Component {
 
   <template>
     <Dropdown as |d|>
-      <d.Trigger @appearance='outlined' @size='sm'>Options</d.Trigger>
+      <d.Trigger @variant='outline' @size='sm'>Options</d.Trigger>
 
       <d.Menu @onAction={{this.onAction}} as |Item Sub|>
         <Item @key='edit' @shortcut='mod+e'>Edit</Item>
@@ -692,7 +692,7 @@ export default class NestedSubmenuDropdown extends Component {
 
   <template>
     <Dropdown as |d|>
-      <d.Trigger @appearance='outlined' @size='sm'>Share</d.Trigger>
+      <d.Trigger @variant='outline' @size='sm'>Share</d.Trigger>
 
       <d.Menu @onAction={{this.onAction}} as |Item Sub|>
         <Item @key='copy-link'>Copy Link</Item>
@@ -734,8 +734,8 @@ A `Sub`'s `s.Menu` yields `Item` and `Sub` again, the same as the root `d.Menu`,
 nest to any depth.
 
 The arguments declared once on the root `d.Menu` (`@onAction`, `@selectionMode`,
-`@selectedKeys`, `@disabledKeys`, `@allowEmpty`, `@onSelectionChange`, `@appearance`,
-`@intent`, `@shortcutAppearance`, `@closeOnItemSelect`, `@disableTransitions`,
+`@selectedKeys`, `@disabledKeys`, `@allowEmpty`, `@onSelectionChange`, `@variant`,
+`@intent`, `@shortcutVariant`, `@closeOnItemSelect`, `@disableTransitions`,
 `@transitionDuration`) apply at every depth, so a nested `s.Menu` only needs its own items.
 Passing one of these same arguments to a nested `s.Menu` instead of the root has no effect —
 the root's value always wins, silently — so declare them once, on `d.Menu`.

@@ -652,7 +652,7 @@ export default class DemoComponent extends Component {
           <Button
             @onPress={{this.toggleLoading}}
             @size='sm'
-            @appearance='outlined'
+            @variant='outline'
             @intent={{if this.isLoading 'danger' 'primary'}}
           >
             {{if this.isLoading 'Stop Loading' 'Start Loading'}}

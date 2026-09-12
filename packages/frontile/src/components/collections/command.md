@@ -90,9 +90,9 @@ export default class CommandDialogExample extends Component {
   <template>
     <div class='demo-stack items-center'>
       <div class='flex items-center gap-4'>
-        <Button @appearance='outlined' {{on 'click' this.open}}>
+        <Button @variant='outline' {{on 'click' this.open}}>
           Open palette
-          <Kbd @keys='mod+k' @size='sm' @appearance='outlined' @class='ml-2' />
+          <Kbd @keys='mod+k' @size='sm' @variant='outline' @class='ml-2' />
         </Button>
         {{#if this.lastSelected}}
           <span class='font-body text-body-sm text-neutral'>Selected:

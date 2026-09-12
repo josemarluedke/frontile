@@ -236,13 +236,13 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
   selectedItemsDisplay?: 'chips' | 'text';
 
   /**
-   * Appearance of the chips rendered for each selected option.
+   * Variant of the chips rendered for each selected option.
    * Only applies when `@selectedItemsDisplay` is `'chips'` (the default).
    *
-   * Options are the same ones {@link Chip} itself accepts (`appearance`,
+   * Options are the same ones {@link Chip} itself accepts (`variant`,
    * `intent`, `size`, `radius`, `withDot`), but Select applies its own
    * defaults tuned for sitting inside a field, rather than Chip's:
-   * - `appearance` defaults to `'faded'`
+   * - `variant` defaults to `'soft'`
    * - `intent` defaults to the Select's own `@intent`, so `@intent="primary"`
    *   colors the listbox items and the chips together
    * - `size` defaults to `'sm'`
@@ -252,7 +252,7 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * ```gts
    * <Select
    *   @selectionMode="multiple"
-   *   @chip={{hash appearance="outlined" size="md" radius="full"}}
+   *   @chip={{hash variant="outline" size="md" radius="full"}}
    * />
    * ```
    */

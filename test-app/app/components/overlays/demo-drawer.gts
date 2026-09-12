@@ -141,7 +141,7 @@ export default class DemoDrawer extends Component {
         </d.Body>
         <d.Footer>
           <Button
-            @appearance="minimal"
+            @variant="plain"
             class="mr-4"
             {{on "click" this.toggleIsOpen}}
           >
@@ -184,7 +184,7 @@ export default class DemoDrawer extends Component {
           </d.Body>
           <d.Footer>
             <Button
-              @appearance="minimal"
+              @variant="plain"
               @class="mr-4"
               {{on "click" this.toggleIsInPlaceOpen}}
             >

@@ -190,7 +190,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
 
   <template>
     <div class="inline-flex" data-test-id="docfy-copy-page" ...attributes>
-      <ButtonGroup @appearance="soft" @size="xs" as |g|>
+      <ButtonGroup @variant="subtle" @size="xs" as |g|>
         <g.Button @onPress={{this.copyPage}} data-test-id="copy-page-primary">
           {{#if this.isCopied}}
             <CheckIcon class="w-4 h-4" aria-hidden="true" />
@@ -202,7 +202,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
 
         <Dropdown as |d|>
           <d.Trigger
-            @appearance="soft"
+            @variant="subtle"
             @size="xs"
             @isInGroup={{true}}
             aria-label="More page actions"

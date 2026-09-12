@@ -220,7 +220,7 @@ export default class Demo extends Component {
         >
           Save
         </Button>
-        <Button @type='reset' @appearance='outlined'>
+        <Button @type='reset' @variant='outline'>
           Reset
         </Button>
         <div class='mt-4'>

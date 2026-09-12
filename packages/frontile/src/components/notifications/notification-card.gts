@@ -349,7 +349,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
                 data-part="custom-action-button"
                 @size="xs"
                 @intent={{if index "default" this.actionIntent}}
-                @appearance={{if index "minimal" "default"}}
+                @variant={{if index "plain" "solid"}}
                 @class={{this.classes.customActionButton}}
                 @onPress={{fn this.handleClickCustomAction customAction}}
               >

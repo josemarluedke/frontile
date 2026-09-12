@@ -70,7 +70,7 @@ export default class ThemeToggle extends Component {
   }
 
   <template>
-    <Button @appearance='outlined' @onPress={{this.toggleTheme}}>
+    <Button @variant='outline' @onPress={{this.toggleTheme}}>
       {{if this.isDark '☀️ Light Mode' '🌙 Dark Mode'}}
     </Button>
   </template>

@@ -9,7 +9,7 @@ export interface Signature {
     /** An external URL; opens in a new tab. */
     href?: string;
     intent?: ButtonArgs['intent'];
-    appearance?: ButtonArgs['appearance'];
+    variant?: ButtonArgs['variant'];
     size?: ButtonArgs['size'];
   };
   Blocks: { default: [] };
@@ -31,7 +31,7 @@ const LinkButton: TOC<Signature> = <template>
   <Button
     @isRenderless={{true}}
     @intent={{@intent}}
-    @appearance={{@appearance}}
+    @variant={{@variant}}
     @size={{@size}}
     as |b|
   >

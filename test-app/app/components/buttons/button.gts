@@ -46,37 +46,37 @@ const Comp: TOC<null> = <template>
   </h2>
 
   <div class="mt-6">
-    <Button @appearance="outlined">
+    <Button @variant="outline">
       Button
     </Button>
-    <Button @appearance="outlined" @intent="primary">
+    <Button @variant="outline" @intent="primary">
       Primary
     </Button>
-    <Button @appearance="outlined" @intent="success">
+    <Button @variant="outline" @intent="success">
       Success
     </Button>
-    <Button @appearance="outlined" @intent="warning">
+    <Button @variant="outline" @intent="warning">
       Warning
     </Button>
-    <Button @appearance="outlined" @intent="danger">
+    <Button @variant="outline" @intent="danger">
       Danger
     </Button>
   </div>
 
   <div class="mt-6">
-    <Button @appearance="outlined" disabled="true">
+    <Button @variant="outline" disabled="true">
       Button
     </Button>
-    <Button @appearance="outlined" disabled="true" @intent="primary">
+    <Button @variant="outline" disabled="true" @intent="primary">
       Primary
     </Button>
-    <Button @appearance="outlined" disabled="true" @intent="success">
+    <Button @variant="outline" disabled="true" @intent="success">
       Success
     </Button>
-    <Button @appearance="outlined" disabled="true" @intent="warning">
+    <Button @variant="outline" disabled="true" @intent="warning">
       Warning
     </Button>
-    <Button @appearance="outlined" disabled="true" @intent="danger">
+    <Button @variant="outline" disabled="true" @intent="danger">
       Danger
     </Button>
   </div>
@@ -85,37 +85,37 @@ const Comp: TOC<null> = <template>
     Minimal
   </h2>
   <div class="mt-6">
-    <Button @appearance="minimal">
+    <Button @variant="plain">
       Button
     </Button>
-    <Button @appearance="minimal" @intent="primary">
+    <Button @variant="plain" @intent="primary">
       Primary
     </Button>
-    <Button @appearance="minimal" @intent="success">
+    <Button @variant="plain" @intent="success">
       Success
     </Button>
-    <Button @appearance="minimal" @intent="warning">
+    <Button @variant="plain" @intent="warning">
       Warning
     </Button>
-    <Button @appearance="minimal" @intent="danger">
+    <Button @variant="plain" @intent="danger">
       Danger
     </Button>
   </div>
 
   <div class="mt-6">
-    <Button @appearance="minimal" disabled="true">
+    <Button @variant="plain" disabled="true">
       Button
     </Button>
-    <Button @appearance="minimal" disabled="true" @intent="primary">
+    <Button @variant="plain" disabled="true" @intent="primary">
       Primary
     </Button>
-    <Button @appearance="minimal" disabled="true" @intent="success">
+    <Button @variant="plain" disabled="true" @intent="success">
       Success
     </Button>
-    <Button @appearance="minimal" disabled="true" @intent="warning">
+    <Button @variant="plain" disabled="true" @intent="warning">
       Warning
     </Button>
-    <Button @appearance="minimal" disabled="true" @intent="danger">
+    <Button @variant="plain" disabled="true" @intent="danger">
       Danger
     </Button>
   </div>
@@ -124,37 +124,37 @@ const Comp: TOC<null> = <template>
     Custom
   </h2>
   <div class="mt-6">
-    <Button @appearance="custom">
+    <Button @variant="custom">
       Button
     </Button>
-    <Button @appearance="custom" @intent="primary">
+    <Button @variant="custom" @intent="primary">
       Primary
     </Button>
-    <Button @appearance="custom" @intent="success">
+    <Button @variant="custom" @intent="success">
       Success
     </Button>
-    <Button @appearance="custom" @intent="warning">
+    <Button @variant="custom" @intent="warning">
       Warning
     </Button>
-    <Button @appearance="custom" @intent="danger">
+    <Button @variant="custom" @intent="danger">
       Danger
     </Button>
   </div>
 
   <div class="mt-6">
-    <Button @appearance="custom" disabled="true">
+    <Button @variant="custom" disabled="true">
       Button
     </Button>
-    <Button @appearance="custom" disabled="true" @intent="primary">
+    <Button @variant="custom" disabled="true" @intent="primary">
       Primary
     </Button>
-    <Button @appearance="custom" disabled="true" @intent="success">
+    <Button @variant="custom" disabled="true" @intent="success">
       Success
     </Button>
-    <Button @appearance="custom" disabled="true" @intent="warning">
+    <Button @variant="custom" disabled="true" @intent="warning">
       Warning
     </Button>
-    <Button @appearance="custom" disabled="true" @intent="danger">
+    <Button @variant="custom" disabled="true" @intent="danger">
       Danger
     </Button>
   </div>
@@ -181,55 +181,55 @@ const Comp: TOC<null> = <template>
   </div>
 
   <div class="mt-6">
-    <Button @appearance="outlined" @size="xs">
+    <Button @variant="outline" @size="xs">
       XSmall
     </Button>
-    <Button @appearance="outlined" @size="sm">
+    <Button @variant="outline" @size="sm">
       Small
     </Button>
-    <Button @appearance="outlined">
+    <Button @variant="outline">
       Normal
     </Button>
-    <Button @appearance="outlined" @size="lg">
+    <Button @variant="outline" @size="lg">
       Large
     </Button>
-    <Button @appearance="outlined" @size="xl">
+    <Button @variant="outline" @size="xl">
       XLarge
     </Button>
   </div>
 
   <div class="mt-6">
-    <Button @appearance="minimal" @size="xs">
+    <Button @variant="plain" @size="xs">
       XSmall
     </Button>
-    <Button @appearance="minimal" @size="sm">
+    <Button @variant="plain" @size="sm">
       Small
     </Button>
-    <Button @appearance="minimal">
+    <Button @variant="plain">
       Normal
     </Button>
-    <Button @appearance="minimal" @size="lg">
+    <Button @variant="plain" @size="lg">
       Large
     </Button>
-    <Button @appearance="minimal" @size="xl">
+    <Button @variant="plain" @size="xl">
       XLarge
     </Button>
   </div>
 
   <div class="mt-6">
-    <Button @appearance="custom" @size="xs">
+    <Button @variant="custom" @size="xs">
       XSmall
     </Button>
-    <Button @appearance="custom" @size="sm">
+    <Button @variant="custom" @size="sm">
       Small
     </Button>
-    <Button @appearance="custom">
+    <Button @variant="custom">
       Normal
     </Button>
-    <Button @appearance="custom" @size="lg">
+    <Button @variant="custom" @size="lg">
       Large
     </Button>
-    <Button @appearance="custom" @size="xl">
+    <Button @variant="custom" @size="xl">
       XLarge
     </Button>
   </div>

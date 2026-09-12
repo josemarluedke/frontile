@@ -836,7 +836,7 @@ export default class RemovableChipsSelect extends Component {
 
 ### Customizing the Chips
 
-`@chip` forwards appearance options to every chip: `appearance` (defaults to `faded`),
+`@chip` forwards variant options to every chip: `variant` (defaults to `soft`),
 `intent`, `size` (defaults to `sm`), `radius` and `withDot`.
 
 `@chip.intent` defaults to the Select's own `@intent`, so `@intent='primary'` colors the
@@ -883,7 +883,7 @@ export default class ChipOptionsSelect extends Component {
           @selectedKeys={{this.customized}}
           @onSelectionChange={{this.onCustomizedChange}}
           @chip={{hash
-            appearance='outlined'
+            variant='outline'
             intent='success'
             size='md'
             radius='full'

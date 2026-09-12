@@ -24,17 +24,17 @@ import { ViewIcon, EditIcon, DeleteIcon } from 'site/components/icons';
 
 <template>
   <div class='flex gap-2'>
-    <Button @appearance='outlined' @size='sm'>
+    <Button @variant='outline' @size='sm'>
       <VisuallyHidden>View details</VisuallyHidden>
       <ViewIcon />
     </Button>
 
-    <Button @appearance='outlined' @size='sm'>
+    <Button @variant='outline' @size='sm'>
       <VisuallyHidden>Edit item</VisuallyHidden>
       <EditIcon />
     </Button>
 
-    <Button @appearance='outlined' @size='sm' @intent='danger'>
+    <Button @variant='outline' @size='sm' @intent='danger'>
       <VisuallyHidden>Delete item</VisuallyHidden>
       <DeleteIcon />
     </Button>

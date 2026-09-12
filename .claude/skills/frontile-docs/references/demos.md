@@ -102,7 +102,7 @@ border-neutral-soft   bg-surface-mild
 These adapt to dark mode through CSS variables, so a demo built from them is correct in
 both themes with no extra work. A hardcoded `bg-teal-100` is not — reserve raw Tailwind
 colors for demos whose whole point is showing custom styling (as `button.md` does for
-`@appearance='custom'`), and say so in the surrounding prose.
+`@variant='custom'`), and say so in the surrounding prose.
 
 For layout, keep wrappers minimal and consistent with neighbors:
 
