@@ -45,4 +45,5 @@ packages/docs/tmp/
 .playwright-cli/
 
 .superpowers/
+.worktrees/
 docs/superpowers/
