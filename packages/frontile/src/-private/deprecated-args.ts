@@ -25,27 +25,6 @@ function warn(options: RenamedArgOptions, detail = ''): void {
 }
 
 /**
- * Resolve an argument that was renamed without its values changing.
- *
- * The new argument wins when both are passed — a consumer mid-migration has
- * written the new one deliberately — but the deprecation still fires, because
- * the old one is still in their template and still needs removing.
- */
-export function renamedArg<T>(
-  next: T | undefined,
-  legacy: T | undefined,
-  options: RenamedArgOptions
-): T | undefined {
-  if (typeof legacy === 'undefined') {
-    return next;
-  }
-
-  warn(options);
-
-  return typeof next === 'undefined' ? legacy : next;
-}
-
-/**
  * Resolve an argument whose name *and* values moved.
  *
  * `values` maps old spellings to new ones. A legacy value absent from the map
