@@ -184,6 +184,8 @@ module(
     test('min and max bounds reach the calendar', async function (assert) {
       const min = new Date(2026, 0, 15);
       const max = new Date(2026, 0, 25);
+      const picked = cell<Date | null>(null);
+      const onChange = (value: Date | null) => (picked.current = value);
 
       await render(
         <template>
@@ -193,6 +195,7 @@ module(
             @locale="en-US"
             @minValue={{min}}
             @maxValue={{max}}
+            @onChange={{onChange}}
           />
         </template>
       );
@@ -211,6 +214,23 @@ module(
       assert
         .dom('[data-part="day"][data-key="2026-01-20"]')
         .hasAttribute('data-disabled', 'false');
+
+      // Attribute presence alone doesn't prove the day is unselectable
+      // through DatePicker's own wiring -- click it and confirm handleChange
+      // and close() are never reached.
+      await click('[data-part="day"][data-key="2026-01-10"]');
+
+      assert.strictEqual(
+        picked.current,
+        null,
+        'clicking an out-of-range day does not fire onChange'
+      );
+      assert
+        .dom('[data-part="input"]')
+        .hasText('Jan 20, 2026', 'the trigger text is unchanged');
+      assert
+        .dom('[data-component="calendar"]')
+        .exists('the popover stays open');
     });
 
     test('isDateUnavailable reaches the calendar', async function (assert) {
