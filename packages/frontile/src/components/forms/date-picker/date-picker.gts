@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
 import { DatePickerTrigger } from './trigger';
@@ -258,7 +259,9 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
               @isDisabled={{@isDisabled}}
               @labelledBy={{c.id}}
               @autofocus={{true}}
-              class={{this.classes.calendar class=@classes.calendar}}
+              @classes={{hash
+                base=(this.classes.calendar class=@classes.calendar)
+              }}
               data-part="calendar"
             />
           </p.Content>
