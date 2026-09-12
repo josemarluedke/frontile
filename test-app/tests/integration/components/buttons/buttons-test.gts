@@ -11,17 +11,21 @@ import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 registerCustomStyles({
   button: tv({
     base: [],
     variants: {
       isInGroup: { true: ['in-group'] },
-      appearance: {
-        default: 'btn',
-        outlined: 'btn-outlined',
-        minimal: 'btn-minimal',
-        custom: 'btn-custom'
+      variant: {
+        solid: 'button-solid',
+        soft: 'button-soft',
+        subtle: 'button-subtle',
+        outline: 'button-outline',
+        ghost: 'button-ghost',
+        plain: 'button-plain',
+        custom: 'button-custom'
       },
       intent: {
         default: 'intent-default',
@@ -40,7 +44,8 @@ registerCustomStyles({
     },
     defaultVariants: {
       size: 'md',
-      intent: 'primary'
+      intent: 'primary',
+      variant: 'solid'
     }
   }) as never
 });
@@ -97,10 +102,14 @@ module(
 
           assert
             .dom('[data-test-id="button"]')
-            .doesNotHaveClass('btn-outlined');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
-          assert.dom('[data-test-id="button"]').hasClass('btn');
+            .doesNotHaveClass('button-outline');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-plain');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-custom');
+          assert.dom('[data-test-id="button"]').hasClass('button-solid');
         });
 
         test('it adds class for outlined appearance', async function (assert) {
@@ -110,10 +119,16 @@ module(
             </template>
           );
 
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
-          assert.dom('[data-test-id="button"]').hasClass('btn-outlined');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-solid');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-plain');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-custom');
+          assert.dom('[data-test-id="button"]').hasClass('button-outline');
         });
 
         test('it adds class for minimal appearance', async function (assert) {
@@ -123,12 +138,16 @@ module(
             </template>
           );
 
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
           assert
             .dom('[data-test-id="button"]')
-            .doesNotHaveClass('btn-outlined');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
-          assert.dom('[data-test-id="button"]').hasClass('btn-minimal');
+            .doesNotHaveClass('button-solid');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-outline');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-custom');
+          assert.dom('[data-test-id="button"]').hasClass('button-plain');
         });
 
         test('it adds class for custom appearance', async function (assert) {
@@ -138,12 +157,96 @@ module(
             </template>
           );
 
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
           assert
             .dom('[data-test-id="button"]')
-            .doesNotHaveClass('btn-outlined');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
-          assert.dom('[data-test-id="button"]').hasClass('btn-custom');
+            .doesNotHaveClass('button-solid');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-outline');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-plain');
+          assert.dom('[data-test-id="button"]').hasClass('button-custom');
+        });
+      });
+
+      module('@variant', () => {
+        test('@variant renders the new class', async function (assert) {
+          await render(
+            <template>
+              <Button @variant="outline" data-test-id="button">x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-outline');
+        });
+
+        test('@appearance still renders, and deprecates exactly once', async function (assert) {
+          const { ids } = trackDeprecations();
+
+          await render(
+            <template>
+              <Button @appearance="outlined" data-test-id="button">x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-outline');
+          assert.deepEqual(ids, ['frontile.button.appearance']);
+        });
+
+        test('@appearance="minimal" maps to plain', async function (assert) {
+          await render(
+            <template>
+              <Button @appearance="minimal" data-test-id="button">x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-plain');
+        });
+
+        test('@variant wins when both are passed', async function (assert) {
+          await render(
+            <template>
+              <Button
+                @variant="solid"
+                @appearance="outlined"
+                data-test-id="button"
+              >x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-solid');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-outline');
+        });
+
+        test('@appearance="custom" passes through unmapped', async function (assert) {
+          const { ids } = trackDeprecations();
+
+          await render(
+            <template>
+              <Button @appearance="custom" data-test-id="button">x</Button>
+            </template>
+          );
+
+          // `custom` keeps its name, so it is absent from the value map and
+          // must pass through untouched rather than falling back to the
+          // default.
+          assert.dom('[data-test-id="button"]').hasClass('button-custom');
+          assert.deepEqual(ids, ['frontile.button.appearance']);
+        });
+
+        test('ghost carries a hover fill and plain does not', async function (assert) {
+          await render(
+            <template>
+              <Button @variant="ghost" data-test-id="ghost">x</Button>
+              <Button @variant="plain" data-test-id="plain">x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="ghost"]').hasClass('button-ghost');
+          assert.dom('[data-test-id="plain"]').hasClass('button-plain');
         });
       });
 
@@ -192,7 +295,7 @@ module(
       );
       assert
         .dom('[data-test-id="my-div"]')
-        .hasText('btn intent-default btn-md');
+        .hasText('button-solid intent-default btn-md');
     });
 
     module('Press functionality', () => {
