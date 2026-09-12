@@ -85,7 +85,7 @@ class Dropdown extends Component<DropdownSignature> {
 
 interface TriggerArgs extends Pick<
   ButtonSignature['Args'],
-  'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
+  'variant' | 'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
 > {
   /**
    * @internal
@@ -163,6 +163,7 @@ class Trigger extends Component<TriggerSignature> {
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
       @type="button"
+      @variant={{@variant}}
       @appearance={{@appearance}}
       @intent={{@intent}}
       @size={{@size}}

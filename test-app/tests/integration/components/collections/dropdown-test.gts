@@ -11,6 +11,7 @@ import { tv } from 'tailwind-variants';
 import { Dropdown } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 module(
   'Integration | Component | Dropdown | @frontile/collections',
@@ -27,6 +28,28 @@ module(
           }
         }
       }) as never
+    });
+
+    test('Trigger accepts @variant without deprecating', async function (assert) {
+      const { ids } = trackDeprecations();
+
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger
+              @variant="outline"
+              data-test-id="trigger"
+            >Open</d.Trigger>
+            <d.Menu as |Item|><Item @key="a">A</Item></d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      // The trigger is a Button, so @variant must reach it directly; before this
+      // was wired, TriggerArgs picked only `appearance` and @variant was a type
+      // error, leaving consumers unable to migrate the trigger off the old name.
+      assert.dom('[data-test-id="trigger"]').exists('trigger renders');
+      assert.deepEqual(ids, [], 'no deprecation for the new arg');
     });
 
     test('it renders the trigger and menu when opened', async function (assert) {
