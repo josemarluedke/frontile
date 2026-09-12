@@ -21,7 +21,8 @@ import type {
   Textarea,
   FormControl,
   RadioGroup,
-  CheckboxGroup
+  CheckboxGroup,
+  DatePicker
 } from './components/forms';
 
 import type {
@@ -84,6 +85,7 @@ export default interface Registry {
   Label: typeof Label;
   NativeSelect: typeof NativeSelect;
   Select: typeof Select;
+  DatePicker: typeof DatePicker;
   Autocomplete: typeof Autocomplete;
   Textarea: typeof Textarea;
   FormControl: typeof FormControl;
