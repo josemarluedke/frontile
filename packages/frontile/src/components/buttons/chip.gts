@@ -1,13 +1,20 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import { CloseButton } from './close-button';
+import { renamedArgValue } from '../../-private/deprecated-args';
 
 interface ChipSignature {
   Args: {
     /**
-     * The chip appearance
+     * The chip variant.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'solid'
+     */
+    variant?: 'solid' | 'outline' | 'soft';
+
+    /**
+     * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
+     * `outline`, and `faded` is `soft`.
      */
     appearance?: 'default' | 'outlined' | 'faded';
 
@@ -40,8 +47,8 @@ interface ChipSignature {
     radius?: 'none' | 'sm' | 'lg' | 'full';
 
     /**
-     * Adds a dot before the content, colored by `@intent`. On the `default`
-     * appearance the dot takes the chip's text color, since the chip's
+     * Adds a dot before the content, colored by `@intent`. On the `solid`
+     * variant the dot takes the chip's text color, since the chip's
      * background is already the intent color.
      *
      * @defaultValue false
@@ -100,7 +107,18 @@ class Chip extends Component<ChipSignature> {
     const { base, content, dot, closeButton } = chip({
       intent: this.args.intent || 'default',
       size: this.args.size,
-      appearance: this.args.appearance || 'default',
+      variant:
+        renamedArgValue(
+          this.args.variant,
+          this.args.appearance,
+          { default: 'solid', outlined: 'outline', faded: 'soft' } as const,
+          {
+            component: 'Chip',
+            from: 'appearance',
+            to: 'variant',
+            id: 'frontile.chip.appearance'
+          }
+        ) || 'solid',
       radius: this.args.radius,
       isDisabled: this.args.isDisabled
     });

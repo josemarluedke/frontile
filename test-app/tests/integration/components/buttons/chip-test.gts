@@ -4,6 +4,7 @@ import { render, triggerKeyEvent } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Chip } from 'frontile';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 registerCustomStyles({
   chip: tv({
@@ -14,10 +15,10 @@ registerCustomStyles({
       closeButton: ['chip-close-button']
     },
     variants: {
-      appearance: {
-        default: 'chip-default',
-        outlined: 'chip-outlined',
-        faded: 'chip-faded'
+      variant: {
+        solid: 'chip-solid',
+        outline: 'chip-outline',
+        soft: 'chip-soft'
       },
       intent: {
         default: 'intent-default',
@@ -59,41 +60,64 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
   });
 
   module('Style classes', () => {
-    module('@appearance', () => {
-      test('it adds class for default appearance', async function (assert) {
+    module('@variant', () => {
+      test('it adds class for solid variant', async function (assert) {
         await render(
           <template>
             <Chip data-test-id="button">My Chip</Chip>
           </template>
         );
 
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-outlined');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-faded');
-        assert.dom('[data-test-id="button"]').hasClass('chip-default');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-outline');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-soft');
+        assert.dom('[data-test-id="button"]').hasClass('chip-solid');
       });
 
-      test('it adds class for outlined appearance', async function (assert) {
+      test('it adds class for outline variant', async function (assert) {
         await render(
           <template>
-            <Chip @appearance="outlined" data-test-id="button">My Chip</Chip>
+            <Chip @variant="outline" data-test-id="button">My Chip</Chip>
           </template>
         );
 
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-default');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-faded');
-        assert.dom('[data-test-id="button"]').hasClass('chip-outlined');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-solid');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-soft');
+        assert.dom('[data-test-id="button"]').hasClass('chip-outline');
       });
 
-      test('it adds class for faded appearance', async function (assert) {
+      test('it adds class for soft variant', async function (assert) {
         await render(
           <template>
-            <Chip @appearance="faded" data-test-id="button">My Chip</Chip>
+            <Chip @variant="soft" data-test-id="button">My Chip</Chip>
           </template>
         );
 
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-default');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-outlined');
-        assert.dom('[data-test-id="button"]').hasClass('chip-faded');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-solid');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-outline');
+        assert.dom('[data-test-id="button"]').hasClass('chip-soft');
+      });
+
+      test('@variant renders the new class', async function (assert) {
+        await render(
+          <template>
+            <Chip @variant="soft" data-test-id="chip">x</Chip>
+          </template>
+        );
+
+        assert.dom('[data-test-id="chip"]').hasClass('chip-soft');
+      });
+
+      test('@appearance="faded" maps to soft and deprecates once', async function (assert) {
+        const { ids } = trackDeprecations();
+
+        await render(
+          <template>
+            <Chip @appearance="faded" data-test-id="chip">x</Chip>
+          </template>
+        );
+
+        assert.dom('[data-test-id="chip"]').hasClass('chip-soft');
+        assert.deepEqual(ids, ['frontile.chip.appearance']);
       });
     });
 

@@ -2446,7 +2446,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // The chip theme's real 'faded' + 'primary' compound variant resolves to
+    // The chip theme's real 'soft' + 'primary' compound variant resolves to
     // `bg-primary-subtle` (see packages/theme/src/components/chip.ts), but the
     // test suite globally overrides the `chip` theme via `registerCustomStyles`
     // in chip-test.gts with stub classnames per variant (no compound
@@ -2454,7 +2454,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // Assert against the variant stubs instead, matching the convention used
     // by chip-test.gts / buttons-test.gts elsewhere in this suite.
     const chip = '[data-part="chip"][data-key="apple"]';
-    assert.dom(chip).hasClass('chip-faded', 'defaults to appearance faded');
+    assert.dom(chip).hasClass('chip-soft', 'defaults to variant soft');
     assert.dom(chip).hasClass('intent-primary', 'inherits @intent="primary"');
   });
 
@@ -2491,11 +2491,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         '@chip.intent overrides the inherited @intent'
       );
     assert.dom(chip).hasClass('intent-danger', '@chip.intent applies');
-    assert.dom(chip).hasClass('chip-outlined', '@chip.appearance applies');
+    assert.dom(chip).hasClass('chip-outline', '@chip.appearance applies');
     assert
       .dom(chip)
       .doesNotHaveClass(
-        'chip-faded',
+        'chip-soft',
         '@chip.appearance overrides the faded default'
       );
     assert.dom(chip).hasClass('chip-lg', '@chip.size applies');
