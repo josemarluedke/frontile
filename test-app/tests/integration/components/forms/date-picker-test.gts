@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, triggerKeyEvent, settled } from '@ember/test-helpers';
+import { render, click, triggerKeyEvent } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
