@@ -471,6 +471,29 @@ const select = tv({
   }
 });
 
+// Extends `input` directly rather than `select`, even though the two look
+// alike. tv() loses slot types across a two-level extend, and
+// input -> select -> datePicker would be that second level; the shared
+// appearance comes from the common base instead.
+const datePicker = tv({
+  extend: input,
+  slots: {
+    base: [],
+    placeholder: 'text-neutral',
+    input: 'cursor-default text-left'
+  },
+  variants: {
+    size: {
+      sm: {},
+      md: {},
+      lg: {}
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
 // Note: extends `input` rather than `select` because tailwind-variants
 // loses inherited slot types across two levels of `extend`.
 const autocomplete = tv({
@@ -692,6 +715,8 @@ export type RadioGroupVariants = VariantProps<typeof radioGroup>;
 export type RadioGroupSlots = keyof ReturnType<typeof radioGroup>;
 export type SwitchVariants = VariantProps<typeof switchInput>;
 export type SwitchSlots = keyof ReturnType<typeof switchInput>;
+export type DatePickerVariants = VariantProps<typeof datePicker>;
+export type DatePickerSlots = keyof ReturnType<typeof datePicker>;
 
 export {
   label,
@@ -707,5 +732,6 @@ export {
   nativeSelect,
   checkboxGroup,
   radioGroup,
-  switchInput
+  switchInput,
+  datePicker
 };
