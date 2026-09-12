@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, click, triggerKeyEvent } from '@ember/test-helpers';
+import { cell } from 'ember-resources';
 import { DatePicker } from 'frontile';
 
 const jan20 = new Date(2026, 0, 20);
@@ -86,6 +87,155 @@ module(
       assert.dom('[data-part="input"]').isDisabled();
       assert.dom('[data-part="input"]').hasAttribute('data-invalid', 'true');
       assert.dom('[data-part="input"]').hasAttribute('data-disabled', 'true');
+    });
+
+    test('clicking the trigger opens a calendar in a dialog', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US" />
+        </template>
+      );
+
+      assert
+        .dom('[data-component="calendar"]')
+        .doesNotExist('closed initially');
+
+      await click('[data-part="input"]');
+
+      assert.dom('[data-component="calendar"]').exists('the calendar opens');
+      assert.dom('[role="dialog"]').exists('the popover content is a dialog');
+      assert
+        .dom('[data-part="title"]')
+        .hasText('January 2026', 'it opens on the selected month');
+    });
+
+    test('picking a day sets the value, closes, and restores focus', async function (assert) {
+      const picked = cell<Date | null>(null);
+      const onChange = (value: Date | null) => (picked.current = value);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert.strictEqual(picked.current?.getDate(), 22, 'onChange fires');
+      assert
+        .dom('[data-component="calendar"]')
+        .doesNotExist('single mode closes');
+      assert.dom('[data-part="input"]').hasText('Jan 22, 2026');
+      assert
+        .dom('[data-part="input"]')
+        .isFocused('focus returns to the trigger');
+    });
+
+    test('a controlled value does not change on its own', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @value={{jan20}} @locale="en-US" />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert
+        .dom('[data-part="input"]')
+        .hasText(
+          'Jan 20, 2026',
+          'the trigger still shows the controlled value'
+        );
+    });
+
+    test('escape closes and returns focus to the trigger', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US" />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+      await triggerKeyEvent('[data-component="calendar"]', 'keydown', 'Escape');
+
+      assert.dom('[data-component="calendar"]').doesNotExist();
+      assert.dom('[data-part="input"]').isFocused();
+    });
+
+    test('opening moves focus onto the selected day', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US" />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      assert.dom('[data-part="day"][data-key="2026-01-20"]').isFocused();
+    });
+
+    test('min and max bounds reach the calendar', async function (assert) {
+      const min = new Date(2026, 0, 15);
+      const max = new Date(2026, 0, 25);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @minValue={{min}}
+            @maxValue={{max}}
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      // Calendar deliberately never sets the native `disabled` attribute on a
+      // day button -- a disabled day must stay focusable so the grid can
+      // still be read and navigated with the keyboard (see Calendar's own
+      // `@isDisabled`/`@isReadOnly` docs). It signals the state with
+      // `data-disabled`/`aria-disabled` instead, exactly as Calendar's own
+      // test suite asserts.
+      assert
+        .dom('[data-part="day"][data-key="2026-01-10"]')
+        .hasAttribute('data-disabled', 'true');
+      assert
+        .dom('[data-part="day"][data-key="2026-01-20"]')
+        .hasAttribute('data-disabled', 'false');
+    });
+
+    test('isDateUnavailable reaches the calendar', async function (assert) {
+      // Every Sunday is unavailable. 2026-01-25 is a Sunday; 2026-01-26 is not.
+      const isDateUnavailable = (date: Date) => date.getDay() === 0;
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isDateUnavailable={{isDateUnavailable}}
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      assert
+        .dom('[data-part="day"][data-key="2026-01-25"]')
+        .hasAttribute('data-disabled', 'true');
+      assert
+        .dom('[data-part="day"][data-key="2026-01-26"]')
+        .hasAttribute('data-disabled', 'false');
     });
   }
 );
