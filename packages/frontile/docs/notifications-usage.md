@@ -161,7 +161,7 @@ export default class DescriptionExample extends Component {
       <Button @onPress={{this.showStringForm}}>
         String + Options
       </Button>
-      <Button @onPress={{this.showObjectForm}} @appearance='outlined'>
+      <Button @onPress={{this.showObjectForm}} @variant='outline'>
         Content Object
       </Button>
     </div>
@@ -175,7 +175,7 @@ export default class DescriptionExample extends Component {
 the stack:
 
 - **`default`** — a neutral opaque card; the intent color is carried only by the icon and title.
-- **`tonal`** — the same recipe as `Button`'s `appearance="tonal"`: an opaque neutral card
+- **`tonal`** — the same recipe as `Button`'s `variant="soft"`: an opaque neutral card
   whose inner row carries a translucent `{intent}-soft` tint with its `on-{intent}-soft`
   contrast text, so the card stays fully opaque while the tint reads like a tonal button.
 - **`solid`** — a filled surface in the intent color, with contrast text.
@@ -352,7 +352,7 @@ export default class StackingExample extends Component {
       <div class='flex flex-wrap gap-2'>
         <Button @onPress={{this.showAllIntents}}>Show All Intents</Button>
         <Button @onPress={{this.showFive}}>Show 5 Notifications</Button>
-        <Button @onPress={{this.clear}} @appearance='outlined'>Clear</Button>
+        <Button @onPress={{this.clear}} @variant='outline'>Clear</Button>
       </div>
 
       <p class='text-body-2xs text-neutral-muted'>
@@ -640,7 +640,7 @@ export default class PromiseExample extends Component {
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
         <Button @onPress={{this.save}}>Save (succeeds)</Button>
-        <Button @onPress={{this.saveWithError}} @appearance='outlined'>
+        <Button @onPress={{this.saveWithError}} @variant='outline'>
           Save (fails)
         </Button>
       </div>
@@ -754,7 +754,7 @@ const notification = this.notifications.add<UserActionMetadata>(
   at the `firm` level the other intents' title/icon text uses, so both fall below the 4.5:1 WCAG
   AA floor at `firm` — the theme uses `bolder` for their title/icon text instead. `tonal` composites
   the translucent `{intent}-soft` tint over the card's opaque surface and pairs it with the
-  auto-generated `on-{intent}-soft` contrast ink (the same recipe `Button`'s `appearance="tonal"`
+  auto-generated `on-{intent}-soft` contrast ink (the same recipe `Button`'s `variant="soft"`
   uses), which clears AA for every intent in both themes without any hand-picked text level or
   background override. `solid`'s title, icon, and description all use the full-strength
   `on-{intent}` ink — an earlier version put the description at 80% opacity, but compositing

@@ -61,37 +61,37 @@ const Comp: TOC<null> = <template>
   </h2>
 
   <div class="mt-6">
-    <Chip @appearance="outlined" @withDot={{true}}>
+    <Chip @variant="outline" @withDot={{true}}>
       Chip
     </Chip>
-    <Chip @appearance="outlined" @intent="primary" @withDot={{true}}>
+    <Chip @variant="outline" @intent="primary" @withDot={{true}}>
       Primary
     </Chip>
-    <Chip @appearance="outlined" @intent="success" @withDot={{true}}>
+    <Chip @variant="outline" @intent="success" @withDot={{true}}>
       Success
     </Chip>
-    <Chip @appearance="outlined" @intent="warning" @withDot={{true}}>
+    <Chip @variant="outline" @intent="warning" @withDot={{true}}>
       Warning
     </Chip>
-    <Chip @appearance="outlined" @intent="danger" @withDot={{true}}>
+    <Chip @variant="outline" @intent="danger" @withDot={{true}}>
       Danger
     </Chip>
   </div>
 
   <div class="mt-6">
-    <Chip @appearance="outlined" @onClose={{true}}>
+    <Chip @variant="outline" @onClose={{true}}>
       Chip
     </Chip>
-    <Chip @appearance="outlined" @intent="primary" @onClose={{true}}>
+    <Chip @variant="outline" @intent="primary" @onClose={{true}}>
       Primary
     </Chip>
-    <Chip @appearance="outlined" @intent="success" @onClose={{true}}>
+    <Chip @variant="outline" @intent="success" @onClose={{true}}>
       Success
     </Chip>
-    <Chip @appearance="outlined" @intent="warning" @onClose={{true}}>
+    <Chip @variant="outline" @intent="warning" @onClose={{true}}>
       Warning
     </Chip>
-    <Chip @appearance="outlined" @intent="danger" @onClose={{true}}>
+    <Chip @variant="outline" @intent="danger" @onClose={{true}}>
       Danger
     </Chip>
   </div>
@@ -100,47 +100,47 @@ const Comp: TOC<null> = <template>
     Faded
   </h2>
   <div class="mt-6">
-    <Chip @appearance="faded" @withDot={{true}}>
+    <Chip @variant="soft" @withDot={{true}}>
       Chip
     </Chip>
-    <Chip @appearance="faded" @intent="primary" @withDot={{true}}>
+    <Chip @variant="soft" @intent="primary" @withDot={{true}}>
       Primary
     </Chip>
-    <Chip @appearance="faded" @intent="success" @withDot={{true}}>
+    <Chip @variant="soft" @intent="success" @withDot={{true}}>
       Success
     </Chip>
-    <Chip @appearance="faded" @intent="warning" @withDot={{true}}>
+    <Chip @variant="soft" @intent="warning" @withDot={{true}}>
       Warning
     </Chip>
-    <Chip @appearance="faded" @intent="danger" @withDot={{true}}>
+    <Chip @variant="soft" @intent="danger" @withDot={{true}}>
       Danger
     </Chip>
   </div>
 
   <div class="mt-6">
-    <Chip @appearance="faded" @onClose={{true}}>
+    <Chip @variant="soft" @onClose={{true}}>
       Chip
     </Chip>
-    <Chip @appearance="faded" @intent="primary" @onClose={{true}}>
+    <Chip @variant="soft" @intent="primary" @onClose={{true}}>
       Primary
     </Chip>
-    <Chip @appearance="faded" @intent="success" @onClose={{true}}>
+    <Chip @variant="soft" @intent="success" @onClose={{true}}>
       Success
     </Chip>
-    <Chip @appearance="faded" @intent="warning" @onClose={{true}}>
+    <Chip @variant="soft" @intent="warning" @onClose={{true}}>
       Warning
     </Chip>
-    <Chip @appearance="faded" @intent="danger" @onClose={{true}}>
+    <Chip @variant="soft" @intent="danger" @onClose={{true}}>
       Danger
     </Chip>
   </div>
 
   <div class="mt-6">
-    <Chip @appearance="faded" @onClose={{true}} @isDisabled={{true}}>
+    <Chip @variant="soft" @onClose={{true}} @isDisabled={{true}}>
       Chip
     </Chip>
     <Chip
-      @appearance="faded"
+      @variant="soft"
       @intent="primary"
       @onClose={{true}}
       @isDisabled={{true}}
@@ -148,7 +148,7 @@ const Comp: TOC<null> = <template>
       Primary
     </Chip>
     <Chip
-      @appearance="faded"
+      @variant="soft"
       @intent="success"
       @onClose={{true}}
       @isDisabled={{true}}
@@ -156,7 +156,7 @@ const Comp: TOC<null> = <template>
       Success
     </Chip>
     <Chip
-      @appearance="faded"
+      @variant="soft"
       @intent="warning"
       @onClose={{true}}
       @isDisabled={{true}}
@@ -164,7 +164,7 @@ const Comp: TOC<null> = <template>
       Warning
     </Chip>
     <Chip
-      @appearance="faded"
+      @variant="soft"
       @intent="danger"
       @onClose={{true}}
       @isDisabled={{true}}

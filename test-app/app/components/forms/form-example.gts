@@ -156,7 +156,7 @@ export default class FormExample extends Component<FormExampleArgs> {
         @isClearable={{true}}
       >
         <:item as |o|>
-          <o.Item @key={{o.item}} @intent="default" @appearance="faded">
+          <o.Item @key={{o.item}} @intent="default" @variant="subtle">
             {{o.item}}
           </o.Item>
         </:item>

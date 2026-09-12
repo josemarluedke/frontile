@@ -19,10 +19,10 @@ const closeButton = tv({
       xl: { base: 'text-4xl p-3' }
     },
     variant: {
-      transparent: {
+      ghost: {
         base: ['bg-transparent', 'hover:bg-surface-overlay-subtle']
       },
-      subtle: {
+      soft: {
         base: [
           'bg-neutral-subtle',
           'text-on-neutral-subtle',
@@ -33,7 +33,7 @@ const closeButton = tv({
   },
   defaultVariants: {
     size: 'md',
-    variant: 'transparent'
+    variant: 'ghost'
   }
 });
 

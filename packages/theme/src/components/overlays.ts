@@ -140,8 +140,8 @@ const drawer = tv({
     dragHandleBar: 'rounded-pill'
   },
   variants: {
-    appearance: {
-      default: {
+    variant: {
+      sectioned: {
         base: 'bg-surface-drawer text-on-surface-drawer',
         body: 'bg-surface-drawer px-8 py-6',
         header: 'bg-black text-white px-8 py-6',
@@ -164,15 +164,15 @@ const drawer = tv({
         // black in dark mode. `bg-neutral` (gray-500 light / gray-400 dark)
         // is the one level that reads against both, plus the surface-drawer
         // body a side-placement handle runs down. See the "compound variant
-        // vs. single semantic level" note on the `ghost` bar below -- same
+        // vs. single semantic level" note on the `flat` bar below -- same
         // reasoning applies here.
         dragHandleBar: 'bg-neutral'
       },
-      ghost: {
+      flat: {
         base: 'bg-surface-modal text-on-surface-modal',
         body: 'px-8 py-6',
-        // Same grid layout as `default` (left-aligned, icon column) but
-        // ghost's own colours -- no `bg-black`/`text-white` here, this stays
+        // Same grid layout as `sectioned` (left-aligned, icon column) but
+        // flat's own colours -- no `bg-black`/`text-white` here, this stays
         // on `surface-modal`.
         header: 'font-header px-8 py-6',
         footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal px-8 py-6`,
@@ -182,8 +182,8 @@ const drawer = tv({
         // against `surface-modal` (white light / gray-950 dark) -- verified
         // in the browser. `bg-neutral` (gray-500 / gray-400) gives clear
         // contrast against surface-modal in both placements/schemes, and
-        // matches the level used for the `default` appearance above, which
-        // a matrix of appearance x placement compound variants would not
+        // matches the level used for the `sectioned` variant above, which
+        // a matrix of variant x placement compound variants would not
         // buy us anything over -- every surface the handle can land on
         // (black header, surface-app, surface-drawer, surface-modal)
         // contrasts against this one level.

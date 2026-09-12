@@ -53,9 +53,9 @@ export interface KbdSignature {
      * `inherit` follows the colour it sits on, for keycaps on a filled row.
      * `plain` drops the box entirely, for quiet trailing shortcuts.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'solid'
      */
-    appearance?: 'default' | 'outlined' | 'faded' | 'inherit' | 'plain';
+    variant?: 'solid' | 'outline' | 'subtle' | 'inherit' | 'plain';
 
     /**
      * Overrides the platform for this keycap only. Prefer `setKbdPlatform` to
@@ -134,7 +134,7 @@ class Kbd extends Component<KbdSignature> {
     const { base, key, separator } = kbd({
       size: this.args.size,
       intent: this.args.intent,
-      appearance: this.args.appearance,
+      variant: this.args.variant,
       isMerged: this.isMerged
     });
 

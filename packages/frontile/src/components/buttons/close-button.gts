@@ -25,9 +25,11 @@ interface CloseButtonSignature {
     size?: CloseButtonVariants['size'];
 
     /**
-     * @defaultValue 'transparent'
+     * @defaultValue 'ghost'
+     *
+     * `transparent` and `subtle` are @deprecated — use `ghost` and `soft` instead.
      */
-    variant?: CloseButtonVariants['variant'];
+    variant?: 'ghost' | 'soft' | 'transparent' | 'subtle';
 
     /**
      * The function to call when button is pressed
@@ -72,12 +74,33 @@ class CloseButton extends Component<CloseButtonSignature> {
     }
   }
 
+  get variant(): 'ghost' | 'soft' {
+    const legacy = this.args.variant;
+
+    if (legacy === 'transparent' || legacy === 'subtle') {
+      deprecate(
+        `CloseButton: \`@variant="${legacy}"\` is deprecated. Use \`@variant="${legacy === 'transparent' ? 'ghost' : 'soft'}"\`.`,
+        false,
+        {
+          id: 'frontile.close-button.variant-values',
+          until: '0.19.0',
+          for: 'frontile',
+          since: { available: '0.18.0', enabled: '0.18.0' }
+        }
+      );
+
+      return legacy === 'transparent' ? 'ghost' : 'soft';
+    }
+
+    return legacy ?? 'ghost';
+  }
+
   get classes() {
     const { closeButton } = useStyles();
 
     let { base, icon } = closeButton({
       size: this.args.size || 'md',
-      variant: this.args.variant || 'transparent'
+      variant: this.variant
     });
 
     return {

@@ -148,7 +148,7 @@ export default class StaticItems extends Component {
       <Listbox
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
-        @appearance='faded'
+        @variant='subtle'
         @disabledKeys={{this.disabledKeys}}
         as |l|
       >
@@ -229,7 +229,7 @@ export default class ActionMenu extends Component {
 
 ### Different Appearances
 
-Control the visual style with the `@appearance` argument.
+Control the visual style with the `@variant` argument.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -239,14 +239,14 @@ import { fn } from '@ember/helper';
 import { Listbox, ButtonGroup } from 'frontile';
 
 export default class Appearances extends Component {
-  @tracked appearance = 'default';
+  @tracked variant = 'solid';
   @tracked selectedKeys: string[] = ['option2'];
 
   options = ['option1', 'option2', 'option3', 'option4'];
 
   @action
-  setAppearance(appearance: string) {
-    this.appearance = appearance;
+  setVariant(variant: string) {
+    this.variant = variant;
   }
 
   @action
@@ -255,29 +255,29 @@ export default class Appearances extends Component {
   }
 
   isSelected = (type: string) => {
-    return this.appearance === type;
+    return this.variant === type;
   };
 
   <template>
     <div class='demo-stack items-center'>
       <ButtonGroup @size='xs' @intent='primary' as |g|>
         <g.ToggleButton
-          @isSelected={{this.isSelected 'default'}}
-          @onChange={{fn this.setAppearance 'default'}}
+          @isSelected={{this.isSelected 'solid'}}
+          @onChange={{fn this.setVariant 'solid'}}
         >
-          Default
+          Solid
         </g.ToggleButton>
         <g.ToggleButton
-          @isSelected={{this.isSelected 'outlined'}}
-          @onChange={{fn this.setAppearance 'outlined'}}
+          @isSelected={{this.isSelected 'outline'}}
+          @onChange={{fn this.setVariant 'outline'}}
         >
-          Outlined
+          Outline
         </g.ToggleButton>
         <g.ToggleButton
-          @isSelected={{this.isSelected 'faded'}}
-          @onChange={{fn this.setAppearance 'faded'}}
+          @isSelected={{this.isSelected 'subtle'}}
+          @onChange={{fn this.setVariant 'subtle'}}
         >
-          Faded
+          Subtle
         </g.ToggleButton>
       </ButtonGroup>
 
@@ -288,7 +288,7 @@ export default class Appearances extends Component {
           @items={{this.options}}
           @selectedKeys={{this.selectedKeys}}
           @onSelectionChange={{this.onSelectionChange}}
-          @appearance={{this.appearance}}
+          @variant={{this.variant}}
           @intent='primary'
         />
       </div>
@@ -308,7 +308,7 @@ import { Listbox } from 'frontile';
 export default class IntentColors extends Component {
   <template>
     <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
-      <Listbox @isKeyboardEventsEnabled={{true}} @appearance='faded' as |l|>
+      <Listbox @isKeyboardEventsEnabled={{true}} @variant='subtle' as |l|>
         <l.Item @key='default'>Default Color</l.Item>
         <l.Item @key='primary' @intent='primary'>Primary Color</l.Item>
         <l.Item @key='secondary' @intent='secondary'>Secondary Color</l.Item>
@@ -578,7 +578,7 @@ elsewhere. A string with no `+`, such as `'⌘⇧S'`, is shown exactly as given.
 
 Keycaps default to the `inherit` appearance, which takes its colour from the
 option, so a shortcut stays legible on an active or filled row. Use
-`@shortcutAppearance` to change that for every item at once — `Command` sets
+`@shortcutVariant` to change that for every item at once — `Command` sets
 `'plain'` for its denser rows.
 
 ```gts preview
@@ -586,7 +586,7 @@ import { Listbox } from 'frontile';
 
 <template>
   <div class='w-[280px] border px-1 py-2 rounded border-neutral-subtle'>
-    <Listbox @selectionMode='none' @shortcutAppearance='plain' as |l|>
+    <Listbox @selectionMode='none' @shortcutVariant='plain' as |l|>
       <l.Item @key='save' @shortcut='mod+s'>Save</l.Item>
       <l.Item @key='print' @shortcut='mod+p'>Print</l.Item>
     </Listbox>

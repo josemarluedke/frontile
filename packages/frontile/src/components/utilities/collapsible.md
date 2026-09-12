@@ -93,7 +93,7 @@ export default class PreviewCollapsible extends Component {
       </Collapsible>
 
       <div class='px-6 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
-        <Button @size='sm' @appearance='minimal' @onPress={{this.toggle}}>
+        <Button @size='sm' @variant='plain' @onPress={{this.toggle}}>
           {{if this.isOpen 'Read Less' 'Read More'}}
         </Button>
       </div>
@@ -140,7 +140,7 @@ export default class InitiallyOpen extends Component {
       </Collapsible>
 
       <div class='px-4 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
-        <Button @size='sm' @appearance='minimal' @onPress={{this.toggle}}>
+        <Button @size='sm' @variant='plain' @onPress={{this.toggle}}>
           {{if this.isOpen 'Dismiss' 'Show Again'}}
         </Button>
       </div>
@@ -186,7 +186,7 @@ export default class NestedCollapsibles extends Component {
     >
       <div class='p-4 bg-neutral-subtle'>
         <Button
-          @appearance='minimal'
+          @variant='plain'
           @class='w-full text-left font-semibold'
           @onPress={{this.toggleParent}}
           aria-expanded='{{this.isParentOpen}}'
@@ -202,7 +202,7 @@ export default class NestedCollapsibles extends Component {
             <div class='border border-neutral-subtle rounded overflow-hidden'>
               <div class='p-3 bg-neutral-subtle'>
                 <Button
-                  @appearance='minimal'
+                  @variant='plain'
                   @size='sm'
                   @class='w-full text-left'
                   @onPress={{fn this.toggleChild sub.id}}

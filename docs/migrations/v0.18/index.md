@@ -14,21 +14,21 @@ Frontile v0.18 is a major release that includes several breaking changes aimed a
 Two of these changes stop your app from working. The rest are cleanup, and one of
 them is optional for the whole 0.18 line.
 
-| Change | If you skip it | Fails how? |
-| --- | --- | --- |
-| Missing `@import "@frontile/theme"` | No Frontile styles at all | Loudly — the app is visibly unstyled |
-| Numbered color classes (`bg-primary-500`) | Those elements render unstyled | **Silently** |
-| `bg-background` → `bg-surface-canvas` | Those elements render unstyled | **Silently** |
-| `--frontile-*` variable references | The declaration is dropped | **Silently** |
-| Nested `LayoutTheme` config | Build or type error | Loudly, and only if you customize the theme |
-| `@frontile/*` package imports | Nothing — they still work in 0.18.x | Deprecation warning only |
-| `@frontile/forms-legacy` / `@frontile/changeset-form` | Nothing — they still work in 0.18.x, but are removed in 0.19.0 | Deprecation warning only |
-| Derived border-radius scale | Slightly rounder corners on menus and small marks | Visual only — nothing to fix |
-| Multi-select renders chips | Multi-selects look different — selections become removable chips | Visual only — nothing to fix |
-| Filtered lists are ranked | `Autocomplete`/`Select` list the closest match first instead of source order | Visual only — nothing to fix |
-| `text-body-pico`/`-nano`/`-micro` | Those elements render unstyled | **Silently** |
-| Body text-scale font sizes corrected | Body text (`xs` through `xl`) renders larger than intended | Visual only — nothing to fix |
-| `data-fr-*` / mismatched `data-component` / most `data-test-id` selectors | Those selectors stop matching | **Silently**, if you select Frontile-rendered elements yourself |
+| Change                                                                    | If you skip it                                                               | Fails how?                                                      |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Missing `@import "@frontile/theme"`                                       | No Frontile styles at all                                                    | Loudly — the app is visibly unstyled                            |
+| Numbered color classes (`bg-primary-500`)                                 | Those elements render unstyled                                               | **Silently**                                                    |
+| `bg-background` → `bg-surface-canvas`                                     | Those elements render unstyled                                               | **Silently**                                                    |
+| `--frontile-*` variable references                                        | The declaration is dropped                                                   | **Silently**                                                    |
+| Nested `LayoutTheme` config                                               | Build or type error                                                          | Loudly, and only if you customize the theme                     |
+| `@frontile/*` package imports                                             | Nothing — they still work in 0.18.x                                          | Deprecation warning only                                        |
+| `@frontile/forms-legacy` / `@frontile/changeset-form`                     | Nothing — they still work in 0.18.x, but are removed in 0.19.0               | Deprecation warning only                                        |
+| Derived border-radius scale                                               | Slightly rounder corners on menus and small marks                            | Visual only — nothing to fix                                    |
+| Multi-select renders chips                                                | Multi-selects look different — selections become removable chips             | Visual only — nothing to fix                                    |
+| Filtered lists are ranked                                                 | `Autocomplete`/`Select` list the closest match first instead of source order | Visual only — nothing to fix                                    |
+| `text-body-pico`/`-nano`/`-micro`                                         | Those elements render unstyled                                               | **Silently**                                                    |
+| Body text-scale font sizes corrected                                      | Body text (`xs` through `xl`) renders larger than intended                   | Visual only — nothing to fix                                    |
+| `data-fr-*` / mismatched `data-component` / most `data-test-id` selectors | Those selectors stop matching                                                | **Silently**, if you select Frontile-rendered elements yourself |
 
 **The silent ones are the reason to take this in order.** A class Tailwind can't
 resolve produces no error, no warning, and no CSS — the element just renders
@@ -165,7 +165,26 @@ couple hours, depending on how many selectors your app has.
 [Customizing Component Styles](../../theming/component-styles.md) for the
 ongoing contract.
 
-### 6. Body typography scale corrected
+### 6. `@appearance` renamed to `@variant` — required only if you set it
+
+The style axis on Button, Chip, Listbox (and its Select/Dropdown/Autocomplete
+forwarders), and CloseButton is renamed from `@appearance` to `@variant`, with
+new value names (`solid`, `soft`, `subtle`, `outline`, `ghost`, `plain`). The
+old prop and values still work through 0.18.x and log a deprecation warning;
+they are removed in v0.19.0.
+
+Kbd, Alert, NotificationCard, Accordion, Drawer, and Button's `soft`/`tonal`
+values were added during the 0.18 pre-release cycle and are renamed outright,
+with no deprecation warning — if you tracked a `0.18.0-alpha.*`/`beta.*` build,
+read this guide's second section.
+
+**Impact:** required only if you pass `@appearance` (or, for CloseButton,
+`@variant="transparent"`/`"subtle"`) today; otherwise none. **Time:** a few
+minutes to an hour, depending on how many call sites you have.
+
+**See:** [Variant API Migration](./variant-color-api.md)
+
+### 7. Body typography scale corrected
 
 The `--text-body-*` tokens were mapped to the wrong steps of the modular scale,
 so `xs` through `xl` rendered larger than the design spec (e.g. `md` shipped at
@@ -177,10 +196,10 @@ tokens are gone — the body scale now uses the same `5xs`…`3xl` naming as eve
 other text-style category. Replace them with the equivalent standard size,
 which renders at the same pixel value:
 
-| Removed | Use instead |
-| --- | --- |
-| `text-body-pico` | `text-body-4xs` |
-| `text-body-nano` | `text-body-3xs` |
+| Removed           | Use instead     |
+| ----------------- | --------------- |
+| `text-body-pico`  | `text-body-4xs` |
+| `text-body-nano`  | `text-body-3xs` |
 | `text-body-micro` | `text-body-2xs` |
 
 **Impact:** required only if you use `text-body-pico`/`-nano`/`-micro`
@@ -207,6 +226,9 @@ for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
 - [ ] Replaced any `data-fr-*`, mismatched `data-component`, or retired
       `data-test-id` selectors with the new `data-component`/`data-part`
       attributes (see [DOM Anatomy Attributes Migration](./anatomy-attributes.md))
+- [ ] `@appearance` replaced with `@variant` on Button, Chip, Listbox (and its
+      Select/Dropdown/Autocomplete forwarders), and CloseButton (see
+      [Variant API Migration](./variant-color-api.md))
 
 ## New projects
 

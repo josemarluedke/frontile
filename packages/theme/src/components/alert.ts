@@ -2,7 +2,7 @@ import { tv } from '../tw';
 import { statusRowCloseButton } from './shared';
 
 /**
- * `default` and `tonal` wear the same outer box. `tonal` carries its colour
+ * `surface` and `soft` wear the same outer box. `soft` carries its colour
  * on the inner element instead (see its compound variants), so the two must
  * stay identical out here — sharing the object keeps that structural rather
  * than a thing a future edit has to remember.
@@ -26,14 +26,14 @@ const alert = tv({
     // the notification stack's geometry.
     //
     // `overflow-hidden` is not optional: this element owns the radius, but
-    // the `tonal` variant paints its tint on `inner` (it needs an opaque
+    // the `soft` variant paints its tint on `inner` (it needs an opaque
     // surface underneath — see that slot). `inner` has square corners, so
     // without clipping here its tint paints over all four rounded corners
     // and the alert reads as a rectangle.
     base: 'w-full rounded-lg border overflow-hidden',
     // The inner element carries the row layout. Alert has no
     // ResizeObserver, so unlike the card it does not need this split for
-    // measurement — it needs it because the `tonal` variant's translucent
+    // measurement — it needs it because the `soft` variant's translucent
     // `{intent}-soft` tint has to composite over an opaque surface. All
     // three variants share the structure rather than branching the DOM.
     inner: 'flex gap-3 p-4 font-body text-body-2xs',
@@ -76,10 +76,10 @@ const alert = tv({
       danger: {}
     },
     variant: {
-      default: neutralSurface,
-      // Intent-independent out here: every `tonal` compound below tints the
-      // *inner* element instead, so the outer box is `default`'s.
-      tonal: neutralSurface,
+      surface: neutralSurface,
+      // Intent-independent out here: every `soft` compound below tints the
+      // *inner* element instead, so the outer box is `surface`'s.
+      soft: neutralSurface,
       solid: {
         base: 'border-transparent'
       }
@@ -130,46 +130,45 @@ const alert = tv({
   },
 
   compoundVariants: [
-    // default: neutral surface, colour carried by the icon and title.
+    // surface: neutral surface, colour carried by the icon and title.
     // The `default` intent has no accent colour to lend the title emphasis,
     // so the title earns its prominence from weight of ink instead, sitting
     // a level above the icon.
     {
-      variant: 'default',
+      variant: 'surface',
       intent: 'default',
       class: { icon: 'text-neutral-firm', title: 'text-neutral-bolder' }
     },
     {
-      variant: 'default',
+      variant: 'surface',
       intent: 'info',
       class: { icon: 'text-primary', title: 'text-primary' }
     },
     {
       // `success-firm` is only ~2.3:1 on a light surface; `bolder` clears
       // AA in both themes. Same measurement the card's theme records.
-      variant: 'default',
+      variant: 'surface',
       intent: 'success',
       class: { icon: 'text-success-bolder', title: 'text-success-bolder' }
     },
     {
       // `warning-firm` is only ~3:1 on a light surface; `bolder` clears AA
       // in both themes.
-      variant: 'default',
+      variant: 'surface',
       intent: 'warning',
       class: { icon: 'text-warning-bolder', title: 'text-warning-bolder' }
     },
     {
-      variant: 'default',
+      variant: 'surface',
       intent: 'danger',
       class: { icon: 'text-danger-firm', title: 'text-danger-firm' }
     },
 
-    // tonal: an opaque outer surface with the translucent `{intent}-soft`
+    // soft: an opaque outer surface with the translucent `{intent}-soft`
     // tint and its `on-*` contrast ink applied to the inner element, which
-    // composites over that opaque surface. Same recipe as Button's
-    // `appearance: 'tonal'` and NotificationCard's.
+    // composites over that opaque surface. Same recipe as NotificationCard's.
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'default',
       class: {
         inner: 'bg-neutral-soft',
@@ -178,7 +177,7 @@ const alert = tv({
       }
     },
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'info',
       class: {
         inner: 'bg-primary-soft',
@@ -187,7 +186,7 @@ const alert = tv({
       }
     },
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'success',
       class: {
         inner: 'bg-success-soft',
@@ -196,7 +195,7 @@ const alert = tv({
       }
     },
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'warning',
       class: {
         inner: 'bg-warning-soft',
@@ -205,7 +204,7 @@ const alert = tv({
       }
     },
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'danger',
       class: {
         inner: 'bg-danger-soft',
@@ -297,7 +296,7 @@ const alert = tv({
 
   defaultVariants: {
     intent: 'default',
-    variant: 'default',
+    variant: 'surface',
     layout: 'inline',
     hasDescription: false,
     hasCloseButton: false

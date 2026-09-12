@@ -101,11 +101,7 @@ export default class DemoModal extends Component<DemoModalArgs> {
         </p>
       </m.Body>
       <m.Footer>
-        <Button
-          @appearance="minimal"
-          class="mr-4"
-          {{on "click" this.toggleModal}}
-        >
+        <Button @variant="plain" class="mr-4" {{on "click" this.toggleModal}}>
           Cancel
         </Button>
         <Button

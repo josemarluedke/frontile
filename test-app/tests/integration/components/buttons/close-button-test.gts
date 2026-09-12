@@ -8,6 +8,7 @@ import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 registerCustomStyles({
   closeButton: tv({
@@ -23,10 +24,15 @@ registerCustomStyles({
         md: 'close-button--md',
         lg: 'close-button--lg',
         xl: 'close-button--xl'
+      },
+      variant: {
+        ghost: 'close-button-ghost',
+        soft: 'close-button-soft'
       }
     },
     defaultVariants: {
-      size: 'md'
+      size: 'md',
+      variant: 'ghost'
     }
   } as never)
 });
@@ -104,6 +110,29 @@ module(
     test('it allows to pass @class for component curlying', async function (assert) {
       await render(<template><CloseButton @class="some-class" /></template>);
       assert.dom('.close-button').hasClass('some-class');
+    });
+
+    test('@variant="soft" renders the new class', async function (assert) {
+      await render(
+        <template>
+          <CloseButton @variant="soft" data-test-id="close-button" />
+        </template>
+      );
+
+      assert.dom('[data-test-id="close-button"]').hasClass('close-button-soft');
+    });
+
+    test('@variant="subtle" maps to soft and deprecates once', async function (assert) {
+      const { ids } = trackDeprecations();
+
+      await render(
+        <template>
+          <CloseButton @variant="subtle" data-test-id="close-button" />
+        </template>
+      );
+
+      assert.dom('[data-test-id="close-button"]').hasClass('close-button-soft');
+      assert.deepEqual(ids, ['frontile.close-button.variant-values']);
     });
 
     module('Press functionality', () => {

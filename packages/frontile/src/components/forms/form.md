@@ -491,7 +491,7 @@ export default class ValidatedForm extends Component {
             <:loading>Creating Account…</:loading>
           </Button>
 
-          <Button @appearance='outlined' type='reset'>Reset</Button>
+          <Button @variant='outline' type='reset'>Reset</Button>
         </div>
       </Form>
 
@@ -1221,7 +1221,7 @@ export default class ResetForm extends Component {
             <Button
               type='button'
               @intent='default'
-              @appearance='outlined'
+              @variant='outline'
               {{on 'click' form.reset}}
             >
               Reset
@@ -1310,7 +1310,7 @@ export default class ResetValidationForm extends Component {
             <Button
               type='button'
               @intent='default'
-              @appearance='outlined'
+              @variant='outline'
               {{on 'click' form.reset}}
             >
               Reset

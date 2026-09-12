@@ -773,7 +773,7 @@ module(
         .dom(item)
         .hasClass(
           'border-b',
-          'the default outlined variant theme class survives alongside it'
+          'the default separated variant theme class survives alongside it'
         );
     });
 
