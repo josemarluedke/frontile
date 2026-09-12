@@ -7,7 +7,13 @@ import { DatePickerTrigger } from './trigger';
 import { Popover } from '../../overlays/popover';
 import { Calendar } from '../../collections/calendar/calendar';
 import { ref } from '../../../utils/ref';
-import { formatValue, isEmptyValue, parseDate, parseRange } from './value';
+import {
+  formatValue,
+  isEmptyValue,
+  parseDate,
+  parseRange,
+  toWire
+} from './value';
 import type {
   CalendarMode,
   CalendarValue,
@@ -169,6 +175,36 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return datePicker({ size: this.args.inputSize });
   }
 
+  get isRangeMode(): boolean {
+    return this.mode === 'range';
+  }
+
+  /** The single-mode wire value, or `''` when there is nothing selected. */
+  get wireValue(): string {
+    return this.mode === 'range' ? '' : toWire(this.value as Date | null);
+  }
+
+  get wireRangeStart(): string {
+    return toWire((this.value as DateRange | null)?.start ?? null);
+  }
+
+  get wireRangeEnd(): string {
+    return toWire((this.value as DateRange | null)?.end ?? null);
+  }
+
+  /**
+   * The range's two field names. Dot notation, matching the convention `Form`
+   * documents for nested data — so a range arrives at a validator and at
+   * `onSubmit` as one `{ start, end }` object rather than two loose keys.
+   */
+  get startName(): string {
+    return `${this.args.name}.start`;
+  }
+
+  get endName(): string {
+    return `${this.args.name}.end`;
+  }
+
   <template>
     <div
       class={{this.classes.base class=@classes.base}}
@@ -176,6 +212,22 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
       data-part="base"
       ...attributes
     >
+      {{#if @name}}
+        {{#if this.isRangeMode}}
+          <input
+            type="hidden"
+            name={{this.startName}}
+            value={{this.wireRangeStart}}
+          />
+          <input
+            type="hidden"
+            name={{this.endName}}
+            value={{this.wireRangeEnd}}
+          />
+        {{else}}
+          <input type="hidden" name={{@name}} value={{this.wireValue}} />
+        {{/if}}
+      {{/if}}
       <FormControl
         @id={{@id}}
         @size={{@inputSize}}
