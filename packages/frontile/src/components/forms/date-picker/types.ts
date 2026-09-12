@@ -12,7 +12,8 @@ import type { CalendarArgs } from '../../collections/calendar/calendar';
 import type {
   CalendarMode,
   CalendarValue,
-  DateRange
+  DateRange,
+  WeekDay
 } from '../../collections/calendar/types';
 import type { FormControlSharedArgs } from '../form-control';
 import type { DatePickerInput, DatePickerRangeInput } from './value';
@@ -120,10 +121,49 @@ interface DatePickerValueBlockArg<M extends CalendarMode = 'single'> {
   isEmpty: boolean;
 }
 
+/**
+ * The args the picker would otherwise have handed `Calendar`, so a `:calendar`
+ * block can spread them onto its own calendar rather than re-deriving the
+ * selection and focus wiring.
+ *
+ * `labelledBy` is only set when the consumer passed `@id` to the picker
+ * themselves. The default `<Calendar>` rendered in the template instead uses
+ * the id `FormControl` yields internally (`c.id`), which is generated when
+ * `@id` is absent and is not reachable from this getter — so it is always
+ * labelled. A consumer rendering their own calendar from this block must pass
+ * `@id` to the picker if they want the grid labelled.
+ */
+interface DatePickerCalendarArgs<M extends CalendarMode = 'single'> {
+  mode: CalendarMode;
+  value: CalendarValue<M> | null;
+  onChange: (value: CalendarValue<M>) => void;
+  locale: string;
+  weekStartsOn?: WeekDay;
+  minValue?: Date;
+  maxValue?: Date;
+  isDateUnavailable?: (date: Date) => boolean;
+  visibleMonths?: number;
+  captionLayout?: 'label' | 'dropdown';
+  labelledBy?: string;
+  autofocus: boolean;
+}
+
+/** What the `:footer` block receives. Presets are built from these. */
+interface DatePickerFooterArg<M extends CalendarMode = 'single'> {
+  /** Sets the value as if the user had picked it, callbacks and all. */
+  setValue: (value: CalendarValue<M>) => void;
+  /** Closes the popover and returns focus to the trigger. */
+  close: () => void;
+  value: CalendarValue<M> | null;
+  isOpen: boolean;
+}
+
 export type {
   DatePickerArgs,
   SingleDatePickerArgs,
   RangeDatePickerArgs,
   DatePickerValueBlockArg,
+  DatePickerCalendarArgs,
+  DatePickerFooterArg,
   DatePickerClasses
 };

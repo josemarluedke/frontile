@@ -2,10 +2,15 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerKeyEvent } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
+import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
 import { DatePicker, Form } from 'frontile';
 
 const jan20 = new Date(2026, 0, 20);
 const janAnchor = { start: new Date(2026, 0, 5), end: new Date(2026, 0, 6) };
+
+// `Date` is not a template helper; a plain function stands in.
+const Date_ = (y: number, m: number, d: number) => new Date(y, m, d);
 
 module(
   'Integration | Component | DatePicker | frontile/forms',
@@ -452,6 +457,75 @@ module(
       );
 
       assert.dom('input[type="hidden"]').doesNotExist();
+    });
+
+    test('the footer block renders presets that set the value and close', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US">
+            <:footer as |f|>
+              <button
+                type="button"
+                data-test-preset
+                {{on "click" (fn f.setValue (Date_ 2026 0 31))}}
+              >End of month</button>
+              <span data-test-open>{{if f.isOpen "open" "closed"}}</span>
+            </:footer>
+          </DatePicker>
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      assert.dom('[data-part="footer"]').exists('the footer renders its slot');
+      assert.dom('[data-test-open]').hasText('open');
+
+      await click('[data-test-preset]');
+
+      assert.dom('[data-part="input"]').hasText('Jan 31, 2026');
+      assert
+        .dom('[data-component="calendar"]')
+        .doesNotExist('setValue with a complete value closes');
+    });
+
+    test('the calendar block replaces the default calendar', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US">
+            <:calendar as |args|>
+              <div data-test-custom>{{args.mode}}</div>
+            </:calendar>
+          </DatePicker>
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      assert.dom('[data-test-custom]').hasText('single');
+      assert
+        .dom('[data-component="calendar"]')
+        .doesNotExist('the default calendar is replaced, not supplemented');
+    });
+
+    test('the value block owns the trigger content and names the button', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @value={{jan20}} @locale="en-US">
+            <:value as |v|>
+              <span data-test-custom-value>{{v.formatted}}!</span>
+            </:value>
+          </DatePicker>
+        </template>
+      );
+
+      assert.dom('[data-test-custom-value]').hasText('Jan 20, 2026!');
+      assert
+        .dom('[data-part="input"]')
+        .hasAttribute(
+          'aria-label',
+          'Start, Jan 20, 2026',
+          'the block may render nothing readable, so the button is named explicitly'
+        );
     });
   }
 );
