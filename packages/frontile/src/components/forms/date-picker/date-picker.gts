@@ -380,6 +380,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
             <DatePickerEndContent
               @classes={{this.classes}}
               @userClasses={{@classes}}
+              @endContentPointerEvents={{@endContentPointerEvents}}
               @isClearable={{this.isClearable}}
               @onClear={{this.clear}}
             />
@@ -389,6 +390,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
           after Calendar's autofocus already focused the day; turned off so
           Calendar's autofocus is the only thing moving focus into the grid. }}
           <p.Content
+            @size={{if @popoverSize @popoverSize "auto"}}
             @target={{@target}}
             @renderInPlace={{@renderInPlace}}
             @closeOnOutsideClick={{@closeOnOutsideClick}}
