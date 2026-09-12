@@ -27,12 +27,14 @@ module(
             plain: 'button-plain',
             custom: 'button-custom'
           },
-          intent: {
-            default: 'intent-default',
-            primary: 'intent-primary',
-            success: 'intent-success',
-            warning: 'intent-warning',
-            danger: 'intent-danger'
+          color: {
+            neutral: 'button-neutral',
+            primary: 'button-primary',
+            secondary: 'button-secondary',
+            tertiary: 'button-tertiary',
+            success: 'button-success',
+            warning: 'button-warning',
+            danger: 'button-danger'
           },
           size: {
             xs: 'btn-xs',
@@ -47,12 +49,14 @@ module(
         base: 'toggle-button',
         variants: {
           isInGroup: { true: ['in-group'] },
-          intent: {
-            default: 'intent-default',
-            primary: 'intent-primary',
-            success: 'intent-success',
-            warning: 'intent-warning',
-            danger: 'intent-danger'
+          color: {
+            neutral: 'button-neutral',
+            primary: 'button-primary',
+            secondary: 'button-secondary',
+            tertiary: 'button-tertiary',
+            success: 'button-success',
+            warning: 'button-warning',
+            danger: 'button-danger'
           },
           size: {
             xs: 'toggle-button-xs',
@@ -159,28 +163,41 @@ module(
         });
       });
 
-      module('@intent', () => {
-        test('it adds class for the an intent', async function (assert) {
-          const intent = cell<'primary' | 'danger'>('primary');
+      module('@color', () => {
+        test('it adds class for the a color', async function (assert) {
+          const color = cell<'primary' | 'danger'>('primary');
           await render(
             <template>
-              <ButtonGroup
-                data-test-id="group"
-                @intent={{intent.current}}
-                as |g|
-              >
+              <ButtonGroup data-test-id="group" @color={{color.current}} as |g|>
                 <g.Button data-test-id="button">Button</g.Button>
                 <g.ToggleButton data-test-id="toggle">Toggle</g.ToggleButton>
               </ButtonGroup>
             </template>
           );
-          assert.dom('[data-test-id="button"]').hasClass('intent-primary');
-          assert.dom('[data-test-id="toggle"]').hasClass('intent-primary');
+          assert.dom('[data-test-id="button"]').hasClass('button-primary');
+          assert.dom('[data-test-id="toggle"]').hasClass('button-primary');
 
-          intent.current = 'danger';
+          color.current = 'danger';
           await settled();
-          assert.dom('[data-test-id="button"]').hasClass('intent-danger');
-          assert.dom('[data-test-id="toggle"]').hasClass('intent-danger');
+          assert.dom('[data-test-id="button"]').hasClass('button-danger');
+          assert.dom('[data-test-id="toggle"]').hasClass('button-danger');
+        });
+
+        test('ButtonGroup @intent deprecates exactly once', async function (assert) {
+          const { ids } = trackDeprecations();
+
+          await render(
+            <template>
+              <ButtonGroup @intent="danger" as |g|>
+                <g.Button data-test-id="button">x</g.Button>
+                <g.ToggleButton data-test-id="toggle">x</g.ToggleButton>
+              </ButtonGroup>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-danger');
+          assert.dom('[data-test-id="toggle"]').hasClass('button-danger');
+          assert.deepEqual(ids, ['frontile.button-group.intent']);
         });
       });
 

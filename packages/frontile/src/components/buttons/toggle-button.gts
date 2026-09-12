@@ -6,7 +6,7 @@ import { renamedArgValue } from '../../-private/deprecated-args';
 
 interface ToggleButtonArgs extends Pick<
   ButtonArgs,
-  'variant' | 'appearance' | 'intent' | 'size' | 'class' | 'isInGroup'
+  'variant' | 'appearance' | 'color' | 'intent' | 'size' | 'class' | 'isInGroup'
 > {
   /**
    * If the button is currently selected
@@ -56,6 +56,20 @@ class ToggleButton extends Component<ToggleButtonSignature> {
     );
   }
 
+  get color() {
+    return renamedArgValue(
+      this.args.color,
+      this.args.intent,
+      { default: 'neutral' } as const,
+      {
+        component: 'ToggleButton',
+        from: 'intent',
+        to: 'color',
+        id: 'frontile.toggle-button.intent'
+      }
+    );
+  }
+
   get classNames(): string {
     const { toggleButton } = useStyles();
     // Resolve (and deprecate) `@appearance`/`@variant` for their side effect;
@@ -63,7 +77,7 @@ class ToggleButton extends Component<ToggleButtonSignature> {
     void this.variant;
 
     return toggleButton({
-      intent: this.args.intent || 'default',
+      color: this.color || 'neutral',
       size: this.args.size,
       variant: 'outline',
       isSelected: this.isSelected,

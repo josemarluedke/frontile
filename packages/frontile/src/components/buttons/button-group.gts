@@ -9,7 +9,7 @@ import { renamedArgValue } from '../../-private/deprecated-args';
 
 interface ButtonGroupArgs extends Pick<
   ButtonArgs,
-  'variant' | 'appearance' | 'intent' | 'size' | 'class'
+  'variant' | 'appearance' | 'color' | 'intent' | 'size' | 'class'
 > {}
 
 interface ButtonGroupSignature {
@@ -49,6 +49,20 @@ class ButtonGroup extends Component<ButtonGroupSignature> {
     );
   }
 
+  get color() {
+    return renamedArgValue(
+      this.args.color,
+      this.args.intent,
+      { default: 'neutral' } as const,
+      {
+        component: 'ButtonGroup',
+        from: 'intent',
+        to: 'color',
+        id: 'frontile.button-group.intent'
+      }
+    );
+  }
+
   get classNames(): string {
     const { buttonGroup } = useStyles();
 
@@ -68,10 +82,14 @@ class ButtonGroup extends Component<ButtonGroupSignature> {
       {{yield
         (hash
           Button=(component
-            Button isInGroup=true variant=this.variant intent=@intent size=@size
+            Button
+            isInGroup=true
+            variant=this.variant
+            color=this.color
+            size=@size
           )
           ToggleButton=(component
-            ToggleButton isInGroup=true intent=@intent size=@size
+            ToggleButton isInGroup=true color=this.color size=@size
           )
         )
       }}
