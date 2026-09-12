@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { modifier } from 'ember-modifier';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
@@ -9,6 +10,7 @@ import { Popover } from '../../overlays/popover';
 import { Calendar } from '../../collections/calendar/calendar';
 import { ref } from '../../../utils/ref';
 import { ControlBlurTracker } from '../../../-private/control-blur';
+import { triggerFormInputEvent } from '../../../utils/forms-utils-index';
 import {
   formatValue,
   isEmptyValue,
@@ -50,35 +52,22 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   containerRef = ref<HTMLElement>();
 
   /**
-   * Uncontrolled selection. `@value` only puts selection in controlled mode
-   * when it actually resolves to something other than `undefined`.
+   * The selection. Seeded from `@defaultValue`, updated by the user, and
+   * synced from `@value` by {@link syncValue} whenever that argument changes.
    *
-   * This is deliberately *not* `'value' in this.args`: `Field`'s bound
-   * `DatePicker`/`DateRangePicker` always pass the `value` key (it is one of
-   * the args `WithBoundArgsForSignature` binds), so the key is present even
-   * when there is no form data yet and `this.fieldValue` resolves to
-   * `undefined`. Keying off presence-of-key would make every `Field`-bound
-   * picker permanently controlled-with-nothing and silently ignore
-   * `@defaultValue`.
+   * Everything renders from here rather than from `@value` directly -- see
+   * {@link value} for why a read-through cannot work inside a `Form`.
    */
   @tracked internalValue: CalendarValue<M> | null = null;
 
   @tracked isOpen = false;
-
-  get isControlled(): boolean {
-    return this.args.value !== undefined;
-  }
 
   constructor(owner: unknown, args: DatePickerArgs<M>) {
     super(owner as never, args as never);
 
     const seed = (args as { defaultValue?: unknown }).defaultValue;
     if (seed !== undefined) {
-      this.internalValue = (
-        this.mode === 'range'
-          ? parseRange(seed as never)
-          : parseDate(seed as never)
-      ) as CalendarValue<M> | null;
+      this.internalValue = this.parseIncoming(seed);
     }
   }
 
@@ -91,19 +80,37 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   }
 
   /**
-   * The value as `Date`s. Consumers may pass `yyyy-MM-dd` strings — `Field`
-   * always does, since form data is strings — so every read of the value goes
-   * through here rather than touching `@value` directly.
+   * The rendered value is always internal state, never a read-through to
+   * `@value`; {@link syncValue} pushes `@value` into it whenever the argument
+   * changes. This is the pattern `Select` uses, and reading through instead
+   * deadlocks the component inside a `Form`: `Field` binds `@value` to the
+   * form's data, the form's data comes from hidden inputs this component
+   * renders, and those inputs would then render the very value they source.
+   * Nothing could ever change it, so every pick after the first submit was
+   * silently discarded.
    */
   get value(): CalendarValue<M> | null {
-    if (!this.isControlled) return this.internalValue;
+    return this.internalValue;
+  }
 
-    const raw = (this.args as { value?: unknown }).value;
+  /** Normalizes whatever `@value` / `@defaultValue` was given to `Date`s. */
+  private parseIncoming(raw: unknown): CalendarValue<M> | null {
     if (this.mode === 'range') {
       return parseRange(raw as never) as CalendarValue<M> | null;
     }
     return parseDate(raw as never) as CalendarValue<M> | null;
   }
+
+  /**
+   * Pushes `@value` into internal state when the argument changes. `undefined`
+   * is ignored so that an uncontrolled picker -- and one bound by `Field`
+   * before the form holds anything for it -- keeps whatever the user chose.
+   */
+  syncValue = modifier((_: HTMLDivElement, [raw]: [unknown]) => {
+    if (raw !== undefined) {
+      this.internalValue = this.parseIncoming(raw);
+    }
+  });
 
   get formatted(): string {
     return formatValue(this.value, this.locale, this.args.formatOptions);
@@ -185,6 +192,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   clear = (): void => {
     this.internalValue = null;
     (this.args.onChange as ((v: null) => void) | undefined)?.(null);
+    this.notifyForm();
     this.triggerRef.current?.focus();
   };
 
@@ -207,9 +215,25 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     (this.args.onChange as ((v: CalendarValue<M>) => void) | undefined)?.(
       value
     );
+    this.notifyForm();
 
     if (this.isComplete(value)) this.close();
   };
+
+  /**
+   * Tells an enclosing `Form` the value moved.
+   *
+   * The hidden inputs are written programmatically, and a programmatic value
+   * change fires no `input` event -- so without this the form never learns
+   * anything happened. That is worse than stale data: as soon as `Form` holds
+   * any data for this field, `Field` binds `@value` back to it -- so without
+   * this the form's copy of the value silently diverges from the field's, and
+   * a later `@data` change would sync the stale value back in. `Select`
+   * dispatches the same event for the same reason.
+   */
+  private notifyForm(): void {
+    triggerFormInputEvent(this.containerRef.current);
+  }
 
   /**
    * Wired to the popover's `@onOpenChange`, which also fires for Escape and
@@ -305,6 +329,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
   <template>
     <div
+      {{this.syncValue @value}}
       {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
       data-component="date-picker"

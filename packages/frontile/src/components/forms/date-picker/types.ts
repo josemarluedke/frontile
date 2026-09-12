@@ -124,15 +124,18 @@ interface SingleDatePickerArgs extends BaseDatePickerArgs {
 
   /**
    * A `Date`, or the same `yyyy-MM-dd` string this component writes to its
-   * hidden input. The picker is controlled only once this resolves to
-   * something other than `undefined` — unlike `Calendar`'s own `@value`,
-   * which controls as soon as the argument is passed at all, `undefined`
-   * included. This is why a `<form.Field>`-bound picker, which always passes
+   * hidden input.
+   *
+   * The field keeps its own selection and syncs *from* this argument: setting
+   * it replaces what is displayed, while picking a date updates the field
+   * immediately rather than waiting for `@value` to come back. `undefined` is
+   * ignored, which is why a `<form.Field>`-bound picker — which always passes
+   * a `value` key — still honors `@defaultValue` before form data exists. This is why a `<form.Field>`-bound picker, which always passes
    * a `value` key, still honors `@defaultValue` before form data exists.
    */
   value?: DatePickerInput | null;
 
-  /** Seeds the value when uncontrolled. Has no effect once `@value` controls. */
+  /** Seeds the value before any `@value` is supplied. */
   defaultValue?: DatePickerInput | null;
 
   /** Fires with the picked `Date`, or `null` after clearing. */
@@ -145,14 +148,13 @@ interface RangeDatePickerArgs extends BaseDatePickerArgs {
 
   /**
    * A `{ start, end }` pair, each a `Date` or a `yyyy-MM-dd` string; `end` may
-   * be `null` while only the anchor is chosen. Same controlled-mode rule as
-   * single mode: this puts the picker in controlled mode only once it
-   * resolves to something other than `undefined`, unlike `Calendar`'s own
-   * `@value`, which controls as soon as the argument is passed at all.
+   * be `null` while only the anchor is chosen. Synced the same way as single
+   * mode's `@value`: setting it replaces the displayed range, `undefined` is
+   * ignored, and the field updates on its own as the user picks.
    */
   value?: DatePickerRangeInput | null;
 
-  /** Seeds the value when uncontrolled. Has no effect once `@value` controls. */
+  /** Seeds the range before any `@value` is supplied. */
   defaultValue?: DatePickerRangeInput | null;
 
   /** Fires with the `{ start, end }` range, or `null` after clearing. */

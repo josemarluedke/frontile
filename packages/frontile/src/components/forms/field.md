@@ -582,6 +582,18 @@ However, when using select components **with `Field`**, you must explicitly spec
 - **`field.SingleSelect`** - For selecting a single item
 - **`field.MultiSelect`** - For selecting multiple items
 
+`DatePicker` splits the same way, and for the same reason — `field.DatePicker` picks one
+date, `field.DateRangePicker` picks a `{ start, end }` range:
+
+```gjs
+<form.Field @name='stay' as |field|>
+  <field.DateRangePicker @label='Stay' />
+</form.Field>
+```
+
+A range submits two dotted names, `stay.start` and `stay.end`, which `Form` unflattens into a
+single `{ stay: { start, end } }`.
+
 This distinction allows the Field component to properly bind values to the components.
 
 ### Field Select (with validation)
@@ -773,6 +785,8 @@ Field yields bound versions of all form components:
 - `field.Textarea` - Textarea with automatic error and value binding
 - `field.SingleSelect` - Select dropdown with automatic error and selectedKey binding
 - `field.MultiSelect` - Select dropdown with automatic error and selectedKeys binding
+- `field.DatePicker` - Date picker with automatic error and value binding
+- `field.DateRangePicker` - Date picker in range mode; the field arrives as `{ start, end }`
 - `field.Checkbox` - Single checkbox with automatic error and checked binding
 - `field.CheckboxGroup` - Checkbox group with automatic error binding
 - `field.RadioGroup` - Radio group with automatic error and value binding
