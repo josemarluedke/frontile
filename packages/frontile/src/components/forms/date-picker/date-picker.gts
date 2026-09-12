@@ -4,9 +4,11 @@ import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
 import { DatePickerTrigger } from './trigger';
+import { DatePickerEndContent } from './end-content';
 import { Popover } from '../../overlays/popover';
 import { Calendar } from '../../collections/calendar/calendar';
 import { ref } from '../../../utils/ref';
+import { ControlBlurTracker } from '../../../-private/control-blur';
 import {
   formatValue,
   isEmptyValue,
@@ -45,18 +47,26 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   DatePickerSignature<M>
 > {
   triggerRef = ref<HTMLButtonElement>();
+  containerRef = ref<HTMLElement>();
 
   /**
-   * Uncontrolled selection. `@value` is only consulted when the consumer
-   * passes it; passing it at all — `undefined` included — is what puts
-   * selection in controlled mode, matching Calendar's own convention.
+   * Uncontrolled selection. `@value` only puts selection in controlled mode
+   * when it actually resolves to something other than `undefined`.
+   *
+   * This is deliberately *not* `'value' in this.args`: `Field`'s bound
+   * `DatePicker`/`DateRangePicker` always pass the `value` key (it is one of
+   * the args `WithBoundArgsForSignature` binds), so the key is present even
+   * when there is no form data yet and `this.fieldValue` resolves to
+   * `undefined`. Keying off presence-of-key would make every `Field`-bound
+   * picker permanently controlled-with-nothing and silently ignore
+   * `@defaultValue`.
    */
   @tracked internalValue: CalendarValue<M> | null = null;
 
   @tracked isOpen = false;
 
   get isControlled(): boolean {
-    return 'value' in this.args;
+    return this.args.value !== undefined;
   }
 
   constructor(owner: unknown, args: DatePickerArgs<M>) {
@@ -120,10 +130,40 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return [this.args.label, this.formatted].filter(Boolean).join(', ');
   }
 
-  handleFocusOut = (): void => {
-    // Replaced by ControlBlurTracker in Task 7, once there is a popover that
-    // focus can legitimately move into.
-    this.args.onBlur?.();
+  /**
+   * Reports focus leaving the *whole* control -- the field and its portaled
+   * popover -- rather than the trigger, which blurs on the way into the
+   * calendar and on every day click.
+   */
+  blurTracker = new ControlBlurTracker({
+    trigger: () => this.triggerRef.current,
+    container: () => this.containerRef.current,
+    isOpen: () => this.isOpen,
+    isDestroyed: () => this.isDestroyed || this.isDestroying,
+    onBlur: () => this.args.onBlur?.()
+  });
+
+  willDestroy(): void {
+    super.willDestroy();
+    // Nothing may resolve against a destroyed component.
+    this.blurTracker.cancel();
+  }
+
+  /**
+   * Whether the clear button takes the calendar icon's place. A disabled
+   * field never shows it: the end-content cluster is not pointer-transparent
+   * to it and it carries no disabled state of its own, so it would be a live
+   * button that clears a field the user may not change.
+   */
+  get isClearable(): boolean {
+    return (
+      Boolean(this.args.isClearable) && !this.isEmpty && !this.args.isDisabled
+    );
+  }
+
+  clear = (): void => {
+    this.internalValue = null;
+    (this.args.onChange as ((v: null) => void) | undefined)?.(null);
   };
 
   /**
@@ -243,6 +283,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
   <template>
     <div
+      {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
       data-component="date-picker"
       data-part="base"
@@ -305,7 +346,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
               @triggerRef={{this.triggerRef.setup}}
               @classes={{this.classes}}
               @userClasses={{@classes}}
-              @onFocusOut={{this.handleFocusOut}}
+              @onFocusOut={{this.blurTracker.handleFocusOut}}
             >
               <:value>
                 {{#if (has-block "value")}}
@@ -313,6 +354,13 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
                 {{/if}}
               </:value>
             </DatePickerTrigger>
+
+            <DatePickerEndContent
+              @classes={{this.classes}}
+              @userClasses={{@classes}}
+              @isClearable={{this.isClearable}}
+              @onClear={{this.clear}}
+            />
           </div>
 
           {{! preventAutoFocus: overlay's default focus grab runs later()

@@ -46,7 +46,7 @@ const DatePickerTrigger: TOC<DatePickerTriggerSignature> = <template>
     data-disabled={{if @isDisabled "true" "false"}}
     aria-label={{if @hasCustomContent @accessibleName}}
     aria-haspopup="dialog"
-    class={{@classes.input class=@userClasses.input}}
+    class={{@classes.input class=@userClasses.input hasEndContent=true}}
     {{on "focusout" @onFocusOut}}
     ...attributes
   >

@@ -334,16 +334,16 @@ const DIRECTORY_OWNER_ALIASES = {
  *   out-of-scope feature addition this migration is not authorized to make.
  *
  * - `datePicker`: the `datePicker` tv config also `extend`s `input`, and
- *   inherits `start-content`/`end-content` the same way. Unlike textarea,
- *   DatePicker *will* render `end-content` — the DatePicker build plan adds
- *   an end-content cluster (icon/clear button) in a later task, alongside
- *   the `icon`/`clearButton` slots. It has no start-content adornment
- *   planned at all. Remove `end-content` from this entry once that task
- *   lands and renders it; `start-content` should stay carved out.
+ *   therefore also inherits `start-content`/`end-content`. Unlike textarea,
+ *   DatePicker *does* render `end-content` — the end-content cluster
+ *   (icon/clear button) rendered by `date-picker/end-content.gts`, alongside
+ *   the `icon`/`clearButton` slots — so `end-content` is no longer carved out
+ *   here. It has no start-content adornment, so `start-content` stays
+ *   carved out.
  */
 const KNOWN_UNRENDERED_SLOTS = {
   textarea: new Set(['inner-container', 'start-content', 'end-content']),
-  'date-picker': new Set(['start-content', 'end-content'])
+  'date-picker': new Set(['start-content'])
 };
 
 /**

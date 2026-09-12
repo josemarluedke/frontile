@@ -4,6 +4,7 @@ import { action, get } from '@ember/object';
 import { debounce } from '@ember/runloop';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
+import DatePicker from './date-picker';
 import Input from './input';
 import InputOtp from './input-otp';
 import Radio from './radio';
@@ -14,6 +15,7 @@ import Textarea from './textarea';
 
 import type { WithBoundArgs } from '@glint/template';
 import type { FormDataCompiled, FormErrors } from './form';
+import type { DatePickerSignature } from './date-picker';
 import type { SelectSignature } from './select';
 import type { WithBoundArgsForSignature } from './field-types';
 
@@ -25,6 +27,16 @@ type BoundSingleSelect<S = unknown> = WithBoundArgsForSignature<
 type BoundMultiSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
   'selectionMode' | 'name' | 'errors' | 'selectedKeys' | 'onBlur' | 'isDisabled'
+>;
+
+type BoundDatePicker = WithBoundArgsForSignature<
+  DatePickerSignature<'single'>,
+  'name' | 'errors' | 'value' | 'onBlur' | 'isDisabled'
+>;
+
+type BoundDateRangePicker = WithBoundArgsForSignature<
+  DatePickerSignature<'range'>,
+  'mode' | 'name' | 'errors' | 'value' | 'onBlur' | 'isDisabled'
 >;
 
 interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
@@ -89,6 +101,8 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         >;
         SingleSelect: BoundSingleSelect;
         MultiSelect: BoundMultiSelect;
+        DatePicker: BoundDatePicker;
+        DateRangePicker: BoundDateRangePicker;
         Switch: WithBoundArgs<
           typeof Switch,
           | 'name'
@@ -251,6 +265,23 @@ class Field<
           name=@name
           errors=this.fieldErrors
           selectedKeys=this.fieldValue
+          isDisabled=@disabled
+          onBlur=this.handleBlur
+        )
+        DatePicker=(component
+          DatePicker
+          name=@name
+          errors=this.fieldErrors
+          value=this.fieldValue
+          isDisabled=@disabled
+          onBlur=this.handleBlur
+        )
+        DateRangePicker=(component
+          DatePicker
+          mode="range"
+          name=@name
+          errors=this.fieldErrors
+          value=this.fieldValue
           isDisabled=@disabled
           onBlur=this.handleBlur
         )
