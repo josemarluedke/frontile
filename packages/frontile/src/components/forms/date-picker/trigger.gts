@@ -22,9 +22,11 @@ interface DatePickerTriggerSignature {
 
     /**
      * Names the trigger when a `:value` block owns its content — that block
-     * may render nothing readable at all, which would leave an unnamed button.
+     * may render nothing readable at all, which would leave an unnamed
+     * button. `undefined` when there is nothing to name it with, so
+     * `aria-label` is omitted entirely rather than set to `""`.
      */
-    accessibleName: string;
+    accessibleName: string | undefined;
 
     classes: DatePickerClasses;
     userClasses?: SlotsToClasses<DatePickerSlots>;

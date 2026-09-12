@@ -124,10 +124,15 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   /**
    * Names the trigger when a `:value` block owns its content. Falls back to
    * the formatted value alone rather than prefixing a hardcoded English
-   * string when there is no `@label`.
+   * string when there is no `@label`. `undefined` (not `''`) when neither is
+   * present, so the trigger omits `aria-label` entirely rather than setting
+   * it to an empty string -- some assistive tech treats a present-but-empty
+   * `aria-label` as overriding the visible text with nothing, leaving the
+   * button unnamed.
    */
-  get accessibleName(): string {
-    return [this.args.label, this.formatted].filter(Boolean).join(', ');
+  get accessibleName(): string | undefined {
+    const name = [this.args.label, this.formatted].filter(Boolean).join(', ');
+    return name === '' ? undefined : name;
   }
 
   /**
@@ -150,20 +155,37 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   }
 
   /**
-   * Whether the clear button takes the calendar icon's place. A disabled
-   * field never shows it: the end-content cluster is not pointer-transparent
-   * to it and it carries no disabled state of its own, so it would be a live
-   * button that clears a field the user may not change.
+   * Whether the clear button takes the calendar icon's place. A disabled or
+   * read-only field never shows it: the end-content cluster is not
+   * pointer-transparent to it and it carries no disabled/read-only state of
+   * its own, so it would otherwise be a live button that clears a field the
+   * user may not change -- the same contract `Calendar` enforces for day
+   * selection under `@isReadOnly`.
    */
   get isClearable(): boolean {
     return (
-      Boolean(this.args.isClearable) && !this.isEmpty && !this.args.isDisabled
+      Boolean(this.args.isClearable) &&
+      !this.isEmpty &&
+      !this.args.isDisabled &&
+      !this.args.isReadOnly
     );
   }
 
+  /**
+   * Clearing removes the clear button from the DOM (`isClearable` flips
+   * false the instant the value is gone), so -- like `close()` -- focus must
+   * be handed back to the trigger explicitly or it falls to `<body>`.
+   *
+   * Unlike `close()`, clearing deliberately leaves an open popover open: the
+   * clear button lives outside the popover entirely, so there is no
+   * dangling-focus reason to dismiss the calendar, and a user who just
+   * cleared the field is a user who likely wants to pick a new date right
+   * away -- closing would just make them reopen it.
+   */
   clear = (): void => {
     this.internalValue = null;
     (this.args.onChange as ((v: null) => void) | undefined)?.(null);
+    this.triggerRef.current?.focus();
   };
 
   /**
