@@ -9,6 +9,9 @@ interface DatePickerTriggerSignature {
     /** Records the element, for focus restoration and blur tracking. */
     triggerRef: ModifierLike<{ Element: HTMLButtonElement }>;
 
+    /** The popover's `trigger` modifier: what opens the calendar. */
+    trigger: ModifierLike<{ Element: HTMLElement }>;
+
     id?: string;
     placeholder?: string;
     formatted: string;
@@ -35,6 +38,7 @@ const DatePickerTrigger: TOC<DatePickerTriggerSignature> = <template>
   <button
     type="button"
     id={{@id}}
+    {{@trigger}}
     {{@triggerRef}}
     disabled={{@isDisabled}}
     data-part="input"

@@ -480,7 +480,10 @@ const datePicker = tv({
   slots: {
     base: [],
     placeholder: 'text-neutral',
-    input: 'cursor-default text-left'
+    input: 'cursor-default text-left',
+    // The calendar sits in the popover, which supplies its own surface and
+    // padding, so this only reserves room around the grid.
+    calendar: 'p-2'
   },
   variants: {
     size: {
