@@ -19,12 +19,19 @@ import type {
   CalendarValue,
   DateRange
 } from '../../collections/calendar/types';
-import type { DatePickerArgs, DatePickerValueBlockArg } from './types';
+import type {
+  DatePickerArgs,
+  DatePickerValueBlockArg,
+  DatePickerCalendarArgs,
+  DatePickerFooterArg
+} from './types';
 
 interface DatePickerSignature<M extends CalendarMode = 'single'> {
   Args: DatePickerArgs<M>;
   Blocks: {
     value: [DatePickerValueBlockArg<M>];
+    calendar: [DatePickerCalendarArgs<M>];
+    footer: [DatePickerFooterArg<M>];
   };
   Element: HTMLDivElement;
 }
@@ -205,6 +212,35 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return `${this.args.name}.end`;
   }
 
+  get calendarBlockArg(): DatePickerCalendarArgs<M> {
+    return {
+      mode: this.mode,
+      value: this.value,
+      onChange: this.handleChange,
+      locale: this.locale,
+      weekStartsOn: this.args.weekStartsOn,
+      minValue: this.args.minValue,
+      maxValue: this.args.maxValue,
+      isDateUnavailable: this.args.isDateUnavailable,
+      visibleMonths: this.args.visibleMonths,
+      captionLayout: this.args.captionLayout,
+      labelledBy: this.args.id,
+      autofocus: true
+    };
+  }
+
+  get footerBlockArg(): DatePickerFooterArg<M> {
+    return {
+      // Deliberately `handleChange`, not a bare assignment: a preset must be
+      // indistinguishable from a click, so it fires `@onChange` and closes on
+      // a complete value exactly the way picking a day does.
+      setValue: this.handleChange,
+      close: this.close,
+      value: this.value,
+      isOpen: this.isOpen
+    };
+  }
+
   <template>
     <div
       class={{this.classes.base class=@classes.base}}
@@ -294,28 +330,41 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
             role="dialog"
             aria-label={{@label}}
           >
-            <Calendar
-              @mode={{this.mode}}
-              @value={{this.value}}
-              @onChange={{this.handleChange}}
-              @locale={{@locale}}
-              @weekStartsOn={{@weekStartsOn}}
-              @minValue={{@minValue}}
-              @maxValue={{@maxValue}}
-              @isDateUnavailable={{@isDateUnavailable}}
-              @visibleMonths={{@visibleMonths}}
-              @captionLayout={{@captionLayout}}
-              @fixedWeeks={{@fixedWeeks}}
-              @showOutsideDays={{@showOutsideDays}}
-              @isReadOnly={{@isReadOnly}}
-              @isDisabled={{@isDisabled}}
-              @labelledBy={{c.id}}
-              @autofocus={{true}}
-              @classes={{hash
-                base=(this.classes.calendar class=@classes.calendar)
-              }}
-              data-part="calendar"
-            />
+            {{#if (has-block "calendar")}}
+              {{yield this.calendarBlockArg to="calendar"}}
+            {{else}}
+              <Calendar
+                @mode={{this.mode}}
+                @value={{this.value}}
+                @onChange={{this.handleChange}}
+                @locale={{@locale}}
+                @weekStartsOn={{@weekStartsOn}}
+                @minValue={{@minValue}}
+                @maxValue={{@maxValue}}
+                @isDateUnavailable={{@isDateUnavailable}}
+                @visibleMonths={{@visibleMonths}}
+                @captionLayout={{@captionLayout}}
+                @fixedWeeks={{@fixedWeeks}}
+                @showOutsideDays={{@showOutsideDays}}
+                @isReadOnly={{@isReadOnly}}
+                @isDisabled={{@isDisabled}}
+                @labelledBy={{c.id}}
+                @autofocus={{true}}
+                @classes={{hash
+                  base=(this.classes.calendar class=@classes.calendar)
+                }}
+                data-part="calendar"
+              />
+            {{/if}}
+
+            {{#if (has-block "footer")}}
+              <div
+                data-part="footer"
+                class={{this.classes.footer class=@classes.footer}}
+              >
+                {{yield this.footerBlockArg to="footer"}}
+              </div>
+            {{/if}}
           </p.Content>
         </Popover>
       </FormControl>

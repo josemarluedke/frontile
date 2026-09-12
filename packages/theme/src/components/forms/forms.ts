@@ -483,7 +483,11 @@ const datePicker = tv({
     input: 'cursor-default text-left',
     // The calendar sits in the popover, which supplies its own surface and
     // padding, so this only reserves room around the grid.
-    calendar: 'p-2'
+    calendar: 'p-2',
+    // `border-default` is not a generated utility -- there is no `default`
+    // semantic level. `border-neutral-soft` is the same divider treatment
+    // `command.ts` uses to separate a footer from the content above it.
+    footer: 'flex flex-wrap items-center gap-2 border-t border-neutral-soft p-2'
   },
   variants: {
     size: {
