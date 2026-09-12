@@ -15,6 +15,7 @@ export * from './radio';
 export * from './radio-group';
 export * from './form-control';
 export * from './switch';
+export * from './date-picker/value';
 export { StandardValidator } from '../../utils/standard-validator';
 export type { Issues, CustomValidatorFn } from '../../utils/standard-validator';
 export * from '../../utils/nested-data';
