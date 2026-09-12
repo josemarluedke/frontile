@@ -5,6 +5,7 @@ import { cell } from 'ember-resources';
 import { DatePicker } from 'frontile';
 
 const jan20 = new Date(2026, 0, 20);
+const janAnchor = { start: new Date(2026, 0, 5), end: new Date(2026, 0, 6) };
 
 module(
   'Integration | Component | DatePicker | frontile/forms',
@@ -256,6 +257,95 @@ module(
       assert
         .dom('[data-part="day"][data-key="2026-01-26"]')
         .hasAttribute('data-disabled', 'false');
+    });
+
+    test('range mode renders both ends in the trigger', async function (assert) {
+      const range = { start: new Date(2026, 0, 20), end: new Date(2026, 1, 9) };
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Stay"
+            @mode="range"
+            @value={{range}}
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="input"]').hasText('Jan 20, 2026 – Feb 9, 2026');
+    });
+
+    test('range mode stays open until both ends are chosen', async function (assert) {
+      const seen = cell<string>('');
+      const onChange = (value: { start: Date; end: Date | null } | null) => {
+        seen.current = `${value?.start.getDate()}-${value?.end?.getDate() ?? 'null'}`;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Stay"
+            @mode="range"
+            @defaultValue={{janAnchor}}
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+      await click('[data-part="day"][data-key="2026-01-20"]');
+
+      assert
+        .dom('[data-component="calendar"]')
+        .exists('still open after the anchor');
+      assert.strictEqual(seen.current, '20-null', 'the anchor is reported');
+
+      await click('[data-part="day"][data-key="2026-01-25"]');
+
+      assert.strictEqual(seen.current, '20-25', 'both ends are reported');
+      assert
+        .dom('[data-component="calendar"]')
+        .doesNotExist('closes once the range is complete');
+      assert.dom('[data-part="input"]').isFocused();
+    });
+
+    test('range mode shows the anchor alone while mid-selection', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Stay"
+            @mode="range"
+            @defaultValue={{janAnchor}}
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+      await click('[data-part="day"][data-key="2026-01-20"]');
+
+      assert
+        .dom('[data-part="input"]')
+        .hasText('Jan 20, 2026', 'no trailing dash, no placeholder');
+    });
+
+    test('range mode accepts string ends', async function (assert) {
+      const range = { start: '2026-01-20', end: '2026-02-09' };
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Stay"
+            @mode="range"
+            @value={{range}}
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="input"]').hasText('Jan 20, 2026 – Feb 9, 2026');
     });
   }
 );
