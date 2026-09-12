@@ -487,7 +487,10 @@ const datePicker = tv({
     // `border-default` is not a generated utility -- there is no `default`
     // semantic level. `border-neutral-soft` is the same divider treatment
     // `command.ts` uses to separate a footer from the content above it.
-    footer: 'flex flex-wrap items-center gap-2 border-t border-neutral-soft p-2'
+    footer:
+      'flex flex-wrap items-center gap-2 border-t border-neutral-soft p-2',
+    icon: 'w-5 h-5',
+    clearButton: 'pointer-events-auto'
   },
   variants: {
     size: {

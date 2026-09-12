@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, triggerKeyEvent } from '@ember/test-helpers';
+import { render, click, triggerKeyEvent, settled } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
@@ -526,6 +526,130 @@ module(
           'Start, Jan 20, 2026',
           'the block may render nothing readable, so the button is named explicitly'
         );
+    });
+
+    test('isClearable shows a clear button that empties the value', async function (assert) {
+      const cleared = cell(false);
+      const onChange = (value: Date | null) => {
+        if (value === null) cleared.current = true;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @placeholder="Pick a date"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isClearable={{true}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-part="clear-button"]');
+
+      assert.true(cleared.current, 'onChange is called with null');
+      assert.dom('[data-part="input"]').hasText('Pick a date');
+    });
+
+    test('no clear button without a value or when disabled', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start" @isClearable={{true}} /></template>
+      );
+      assert.dom('[data-part="clear-button"]').doesNotExist('nothing to clear');
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+            @isDisabled={{true}}
+          />
+        </template>
+      );
+      assert
+        .dom('[data-part="clear-button"]')
+        .doesNotExist('a disabled field offers no clear button');
+    });
+
+    test('onBlur does not fire when focus moves into the calendar', async function (assert) {
+      const blurs = cell(0);
+      const onBlur = () => blurs.current++;
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @onBlur={{onBlur}}
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      assert.strictEqual(
+        blurs.current,
+        0,
+        'entering the popover is not leaving the control'
+      );
+    });
+
+    test('Field yields a bound DatePicker', async function (assert) {
+      const submitted = cell<Record<string, unknown> | null>(null);
+      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+        submitted.current = data;
+      };
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}} as |form|>
+            <form.Field @name="start" as |field|>
+              <field.DatePicker @label="Start" @defaultValue={{jan20}} />
+            </form.Field>
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      await click('button[type="submit"]');
+
+      assert.deepEqual(submitted.current, { start: '2026-01-20' });
+    });
+
+    test('Field yields a bound DateRangePicker that round-trips form data', async function (assert) {
+      const submitted = cell<Record<string, unknown> | null>(null);
+      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+        submitted.current = data;
+      };
+      const initial = { stay: { start: '2026-01-20', end: '2026-02-09' } };
+
+      await render(
+        <template>
+          <Form @data={{initial}} @onSubmit={{onSubmit}} as |form|>
+            <form.Field @name="stay" as |field|>
+              <field.DateRangePicker @label="Stay" @locale="en-US" />
+            </form.Field>
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="input"]')
+        .hasText(
+          'Jan 20, 2026 – Feb 9, 2026',
+          'form data strings are parsed back into the trigger'
+        );
+
+      await click('button[type="submit"]');
+
+      assert.deepEqual(submitted.current, {
+        stay: { start: '2026-01-20', end: '2026-02-09' }
+      });
     });
   }
 );
