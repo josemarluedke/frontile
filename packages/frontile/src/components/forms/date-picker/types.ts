@@ -86,17 +86,47 @@ interface BaseDatePickerArgs
 }
 
 interface SingleDatePickerArgs extends BaseDatePickerArgs {
-  /** @defaultValue 'single' */
+  /**
+   * Selects a single day. Set `@mode="range"` for a start/end range instead.
+   *
+   * @defaultValue 'single'
+   */
   mode?: 'single' | undefined;
+
+  /**
+   * A `Date`, or the same `yyyy-MM-dd` string this component writes to its
+   * hidden input. The picker is controlled only once this resolves to
+   * something other than `undefined` — unlike `Calendar`'s own `@value`,
+   * which controls as soon as the argument is passed at all, `undefined`
+   * included. This is why a `<form.Field>`-bound picker, which always passes
+   * a `value` key, still honors `@defaultValue` before form data exists.
+   */
   value?: DatePickerInput | null;
+
+  /** Seeds the value when uncontrolled. Has no effect once `@value` controls. */
   defaultValue?: DatePickerInput | null;
+
+  /** Fires with the picked `Date`, or `null` after clearing. */
   onChange?: (value: Date | null) => void;
 }
 
 interface RangeDatePickerArgs extends BaseDatePickerArgs {
+  /** Switches the picker, and the calendar it wraps, to range selection. */
   mode: 'range';
+
+  /**
+   * A `{ start, end }` pair, each a `Date` or a `yyyy-MM-dd` string; `end` may
+   * be `null` while only the anchor is chosen. Same controlled-mode rule as
+   * single mode: this puts the picker in controlled mode only once it
+   * resolves to something other than `undefined`, unlike `Calendar`'s own
+   * `@value`, which controls as soon as the argument is passed at all.
+   */
   value?: DatePickerRangeInput | null;
+
+  /** Seeds the value when uncontrolled. Has no effect once `@value` controls. */
   defaultValue?: DatePickerRangeInput | null;
+
+  /** Fires with the `{ start, end }` range, or `null` after clearing. */
   onChange?: (value: DateRange | null) => void;
 }
 

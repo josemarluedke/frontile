@@ -5776,7 +5776,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Checkbox: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Checkbox</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, checked, onChange, onBlur, isDisabled bound); CheckboxGroup: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">CheckboxGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, isDisabled bound); Input: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Input</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); InputOtp: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">InputOtp</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); Radio: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Radio</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, checkedValue, onChange, onBlur, isDisabled bound); RadioGroup: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">RadioGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, isDisabled bound); SingleSelect: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (name, errors, selectedKey, onBlur, isDisabled bound); MultiSelect: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound); Switch: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Switch</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, isSelected, onChange, onBlur, isDisabled bound); Textarea: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Textarea</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); }]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Checkbox: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Checkbox</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, checked, onChange, onBlur, isDisabled bound); CheckboxGroup: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">CheckboxGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, isDisabled bound); Input: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Input</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); InputOtp: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">InputOtp</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); Radio: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Radio</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, checkedValue, onChange, onBlur, isDisabled bound); RadioGroup: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">RadioGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, isDisabled bound); SingleSelect: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (name, errors, selectedKey, onBlur, isDisabled bound); MultiSelect: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound); DatePicker: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">DatePicker</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'single\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (name, errors, value, onBlur, isDisabled bound); DateRangePicker: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">DatePicker</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'range\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (mode, name, errors, value, onBlur, isDisabled bound); Switch: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Switch</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, isSelected, onChange, onBlur, isDisabled bound); Textarea: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Textarea</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); }]</span></span>',
           items: [
             {
               identifier: '0',
@@ -5857,6 +5857,26 @@ const data: ComponentDoc[] = [
                     identifier: 'MultiSelect',
                     type: {
                       type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'DatePicker',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">DatePicker</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'single\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (name, errors, value, onBlur, isDisabled bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'DateRangePicker',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">DatePicker</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'range\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (mode, name, errors, value, onBlur, isDisabled bound)</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -6691,6 +6711,24 @@ const data: ComponentDoc[] = [
     package: 'unknown',
     module: 'icons',
     name: 'IconChevronUpDown',
+    fileName: 'packages/frontile/declarations/components/forms/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'IconCalendar',
     fileName: 'packages/frontile/declarations/components/forms/icons.d.ts',
     Args: [],
     Blocks: [],
@@ -8925,25 +8963,6 @@ const data: ComponentDoc[] = [
     },
     description:
       '<p>A link to another site.</p>\n<p>It opens a new tab, marks itself with an external-link glyph, protects the\nopener with <code>rel="noopener noreferrer"</code>, and tells assistive technology that\na new tab is coming — so the four cannot drift apart. For in-app navigation\nuse <code>TabNav</code> or Ember\'s <code>LinkTo</code>.</p>',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'Component',
-    fileName:
-      'packages/frontile/declarations/components/notifications/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
     tags: {},
   },
   {
@@ -32753,6 +32772,3755 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'date-picker',
+    name: 'DatePicker',
+    fileName:
+      'packages/frontile/declarations/components/forms/date-picker/date-picker.d.ts',
+    Args: [
+      {
+        identifier: 'captionLayout',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'label\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'dropdown\'</span></span>',
+          items: ["'label'", "'dropdown'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<code>'label'</code> renders the plain month/year caption; <code>'dropdown'</code> swaps it for\na native month <code>&#x3C;select></code> plus a year trigger that opens a year-grid\npicker.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'label'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'label\'</span></span>',
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'footer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'input\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'icon\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'innerContainer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'startContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'endContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'clearButton\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'placeholder\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'calendar\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'closeOnEscapeKey',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Whether to close when the escape key is pressed',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
+        identifier: 'closeOnOutsideClick',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether to close when the area outside (the backdrop) is clicked',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
+        identifier: 'defaultValue',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">DatePickerRangeInput </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> DatePickerInput</span></span>',
+          items: ['string', 'Date', 'DatePickerRangeInput'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Seeds the value when uncontrolled. Has no effect once <code>@value</code> controls.',
+        tags: {},
+      },
+      {
+        identifier: 'description',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
+        tags: {},
+      },
+      {
+        identifier: 'didClose',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Callback when closing has finished, including any exit transition.',
+        tags: {},
+      },
+      {
+        identifier: 'disableTransitions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Disable css transitions',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'errors',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string[]</span></span>',
+          items: ['string', 'string[]'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
+        tags: {},
+      },
+      {
+        identifier: 'fixedWeeks',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders six week rows in every month, so the calendar keeps the same\nheight as you page between months of different lengths.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'flipOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'alignment\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackPlacements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Placement[]; fallbackStrategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bestFit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'initialPlacement\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; fallbackAxisSideDirection</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> ...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> 4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> more </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Options for the floating-ui flip middleware, which moves the content to\nthe opposite side when it would overflow the viewport.',
+        tags: {},
+      },
+      {
+        identifier: 'formatOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'localeMatcher',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'lookup\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'best fit\'</span></span>',
+                items: ["'lookup'", "'best fit'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'weekday',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'long\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'short\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'narrow\'</span></span>',
+                items: ["'long'", "'short'", "'narrow'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'era',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'long\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'short\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'narrow\'</span></span>',
+                items: ["'long'", "'short'", "'narrow'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'year',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'numeric\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2-digit\'</span></span>',
+                items: ["'numeric'", "'2-digit'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'month',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'long\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'short\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'narrow\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'numeric\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2-digit\'</span></span>',
+                items: [
+                  "'long'",
+                  "'short'",
+                  "'narrow'",
+                  "'numeric'",
+                  "'2-digit'",
+                ],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'day',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'numeric\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2-digit\'</span></span>',
+                items: ["'numeric'", "'2-digit'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'hour',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'numeric\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2-digit\'</span></span>',
+                items: ["'numeric'", "'2-digit'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'minute',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'numeric\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2-digit\'</span></span>',
+                items: ["'numeric'", "'2-digit'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'second',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'numeric\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2-digit\'</span></span>',
+                items: ["'numeric'", "'2-digit'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'timeZoneName',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'long\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'short\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'shortOffset\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'longOffset\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'shortGeneric\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'longGeneric\'</span></span>',
+                items: [
+                  "'long'",
+                  "'short'",
+                  "'shortOffset'",
+                  "'longOffset'",
+                  "'shortGeneric'",
+                  "'longGeneric'",
+                ],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'formatMatcher',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'best fit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'basic\'</span></span>',
+                items: ["'best fit'", "'basic'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'hour12',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'timeZone',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'How the value is rendered in the trigger. Localized with <code>@locale</code>.',
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value: "{ dateStyle: 'medium' }",
+          },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">dateStyle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'medium\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> }</span></span>',
+      },
+      {
+        identifier: 'id',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The unique identifier for the control.',
+        tags: {},
+      },
+      {
+        identifier: 'inputSize',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The size of the field. Matches Select's <code>@inputSize</code>.",
+        tags: {},
+      },
+      {
+        identifier: 'isClearable',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether a clear button replaces the calendar icon when there is a value.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isDateUnavailable',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Date</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Marks a date as present but unselectable -- a holiday, a booked night.\nDistinct from <code>@minValue</code>/<code>@maxValue</code>, which put a date out of range\nentirely.',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isInvalid',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isReadOnly',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Allows paging between months but blocks selecting a day. Unlike\n<code>@isDisabled</code>, the days stay focusable so the calendar can still be read\nwith the keyboard.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isRequired',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'label',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
+        tags: {},
+      },
+      {
+        identifier: 'locale',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'BCP-47 tag. All human-readable text is produced by <code>Intl</code> from this.',
+        tags: {},
+      },
+      {
+        identifier: 'maxValue',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'toString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a string representation of a date. The format of the string depends on the locale.',
+              tags: {},
+            },
+            {
+              identifier: 'toDateString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Returns a date as a string value.',
+              tags: {},
+            },
+            {
+              identifier: 'toTimeString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Returns a time as a string value.',
+              tags: {},
+            },
+            {
+              identifier: 'toLocaleString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "Returns a value as a string value appropriate to the host environment's current locale.\nConverts a date and time to a string by using the current or specified locale.",
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                },
+              },
+            },
+            {
+              identifier: 'toLocaleDateString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "Returns a date as a string value appropriate to the host environment's current locale.\nConverts a date to a string by using the current or specified locale.",
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                },
+              },
+            },
+            {
+              identifier: 'toLocaleTimeString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "Returns a time as a string value appropriate to the host environment's current locale.\nConverts a time to a string by using the current or specified locale.",
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                },
+              },
+            },
+            {
+              identifier: 'valueOf',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC.',
+              tags: {},
+            },
+            {
+              identifier: 'getTime',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC.',
+              tags: {},
+            },
+            {
+              identifier: 'getFullYear',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the year, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCFullYear',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the year using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getMonth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the month, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCMonth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the month of a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the day-of-the-month, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the day-of-the-month, using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getDay',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the day of the week, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCDay',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the day of the week using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getHours',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the hours in a date, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCHours',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the hours value in a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getMinutes',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the minutes of a Date object, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCMinutes',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the minutes of a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getSeconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the seconds of a Date object, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCSeconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the seconds of a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getMilliseconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the milliseconds of a Date, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCMilliseconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the milliseconds of a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getTimezoneOffset',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the difference in minutes between Universal Coordinated Time (UTC) and the time on the local computer.',
+              tags: {},
+            },
+            {
+              identifier: 'setTime',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">time</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Sets the date and time value in the Date object.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'time   A numeric value representing the number of elapsed milliseconds since midnight, January 1, 1970 GMT.',
+                },
+              },
+            },
+            {
+              identifier: 'setMilliseconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the milliseconds value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value: 'ms   A numeric value equal to the millisecond value.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCMilliseconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the milliseconds value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value: 'ms   A numeric value equal to the millisecond value.',
+                },
+              },
+            },
+            {
+              identifier: 'setSeconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the seconds value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'sec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCSeconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the seconds value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'sec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setMinutes',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the minutes value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'min   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCMinutes',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the minutes value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'min   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setHours',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hours</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the hour value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'hours   A numeric value equal to the hours value.\nmin   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCHours',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hours</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the hours value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'hours   A numeric value equal to the hours value.\nmin   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the numeric day-of-the-month value of the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'date   A numeric value equal to the day of the month.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the numeric day of the month in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'date   A numeric value equal to the day of the month.',
+                },
+              },
+            },
+            {
+              identifier: 'setMonth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the month value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'month   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively.\ndate   A numeric value representing the day of the month. If this value is not supplied, the value from a call to the getDate method is used.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCMonth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the month value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'month   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively.\ndate   A numeric value representing the day of the month. If it is not supplied, the value from a call to the getUTCDate method is used.',
+                },
+              },
+            },
+            {
+              identifier: 'setFullYear',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">year</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Sets the year of the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'year   A numeric value for the year.\nmonth   A zero-based numeric value for the month (0 for January, 11 for December). Must be specified if numDate is specified.\ndate   A numeric value equal for the day of the month.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCFullYear',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">year</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the year value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'year   A numeric value equal to the year.\nmonth   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively. Must be supplied if numDate is supplied.\ndate   A numeric value equal to the day of the month.',
+                },
+              },
+            },
+            {
+              identifier: 'toUTCString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a date converted to a string using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'toISOString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Returns a date as a string value in ISO format.',
+              tags: {},
+            },
+            {
+              identifier: 'toJSON',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> any</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "Used by the JSON.stringify method to enable the transformation of an object's data for JavaScript Object Notation (JSON) serialization.",
+              tags: {},
+            },
+            {
+              identifier: 'getVarDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> VarDate</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Latest selectable date. Also clamps month navigation.',
+        tags: {},
+      },
+      {
+        identifier: 'middleware',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: string; options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> any; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">fn</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">state</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">placement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">strategy</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Strategy</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">x</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">y</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">initialPlacement</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Placement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">middlewareData</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> MiddlewareData</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">rects</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ElementRects</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">platform</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Platform</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">elements</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Elements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Promisable</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;...></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
+        tags: {},
+      },
+      {
+        identifier: 'minValue',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'toString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a string representation of a date. The format of the string depends on the locale.',
+              tags: {},
+            },
+            {
+              identifier: 'toDateString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Returns a date as a string value.',
+              tags: {},
+            },
+            {
+              identifier: 'toTimeString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Returns a time as a string value.',
+              tags: {},
+            },
+            {
+              identifier: 'toLocaleString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "Returns a value as a string value appropriate to the host environment's current locale.\nConverts a date and time to a string by using the current or specified locale.",
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                },
+              },
+            },
+            {
+              identifier: 'toLocaleDateString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "Returns a date as a string value appropriate to the host environment's current locale.\nConverts a date to a string by using the current or specified locale.",
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                },
+              },
+            },
+            {
+              identifier: 'toLocaleTimeString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "Returns a time as a string value appropriate to the host environment's current locale.\nConverts a time to a string by using the current or specified locale.",
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                },
+              },
+            },
+            {
+              identifier: 'valueOf',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC.',
+              tags: {},
+            },
+            {
+              identifier: 'getTime',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC.',
+              tags: {},
+            },
+            {
+              identifier: 'getFullYear',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the year, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCFullYear',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the year using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getMonth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the month, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCMonth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the month of a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the day-of-the-month, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the day-of-the-month, using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getDay',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the day of the week, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCDay',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the day of the week using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getHours',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the hours in a date, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCHours',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the hours value in a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getMinutes',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the minutes of a Date object, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCMinutes',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the minutes of a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getSeconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the seconds of a Date object, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCSeconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the seconds of a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getMilliseconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Gets the milliseconds of a Date, using local time.',
+              tags: {},
+            },
+            {
+              identifier: 'getUTCMilliseconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the milliseconds of a Date object using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'getTimezoneOffset',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Gets the difference in minutes between Universal Coordinated Time (UTC) and the time on the local computer.',
+              tags: {},
+            },
+            {
+              identifier: 'setTime',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">time</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Sets the date and time value in the Date object.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'time   A numeric value representing the number of elapsed milliseconds since midnight, January 1, 1970 GMT.',
+                },
+              },
+            },
+            {
+              identifier: 'setMilliseconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the milliseconds value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value: 'ms   A numeric value equal to the millisecond value.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCMilliseconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the milliseconds value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value: 'ms   A numeric value equal to the millisecond value.',
+                },
+              },
+            },
+            {
+              identifier: 'setSeconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the seconds value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'sec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCSeconds',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the seconds value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'sec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setMinutes',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the minutes value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'min   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCMinutes',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the minutes value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'min   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setHours',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hours</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the hour value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'hours   A numeric value equal to the hours value.\nmin   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCHours',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hours</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the hours value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'hours   A numeric value equal to the hours value.\nmin   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                },
+              },
+            },
+            {
+              identifier: 'setDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the numeric day-of-the-month value of the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'date   A numeric value equal to the day of the month.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the numeric day of the month in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'date   A numeric value equal to the day of the month.',
+                },
+              },
+            },
+            {
+              identifier: 'setMonth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the month value in the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'month   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively.\ndate   A numeric value representing the day of the month. If this value is not supplied, the value from a call to the getDate method is used.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCMonth',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the month value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'month   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively.\ndate   A numeric value representing the day of the month. If it is not supplied, the value from a call to the getUTCDate method is used.',
+                },
+              },
+            },
+            {
+              identifier: 'setFullYear',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">year</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Sets the year of the Date object using local time.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'year   A numeric value for the year.\nmonth   A zero-based numeric value for the month (0 for January, 11 for December). Must be specified if numDate is specified.\ndate   A numeric value equal for the day of the month.',
+                },
+              },
+            },
+            {
+              identifier: 'setUTCFullYear',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">year</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Sets the year value in the Date object using Universal Coordinated Time (UTC).',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'year   A numeric value equal to the year.\nmonth   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively. Must be supplied if numDate is supplied.\ndate   A numeric value equal to the day of the month.',
+                },
+              },
+            },
+            {
+              identifier: 'toUTCString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a date converted to a string using Universal Coordinated Time (UTC).',
+              tags: {},
+            },
+            {
+              identifier: 'toISOString',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Returns a date as a string value in ISO format.',
+              tags: {},
+            },
+            {
+              identifier: 'toJSON',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> any</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "Used by the JSON.stringify method to enable the transformation of an object's data for JavaScript Object Notation (JSON) serialization.",
+              tags: {},
+            },
+            {
+              identifier: 'getVarDate',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> VarDate</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Earliest selectable date. Also clamps month navigation.',
+        tags: {},
+      },
+      {
+        identifier: 'mode',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'single\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'range\'</span></span>',
+          items: ["'single'", "'range'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Switches the picker, and the calendar it wraps, to range selection.\nSelects a single day. Set <code>@mode="range"</code> for a start/end range instead.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'single'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'single\'</span></span>',
+      },
+      {
+        identifier: 'name',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The name the value submits under. See the hidden inputs in date-picker.gts.',
+        tags: {},
+      },
+      {
+        identifier: 'offsetOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">OffsetOptions</span></span>',
+          items: [
+            'number',
+            '{ mainAxis?: number; crossAxis?: number; alignmentAxis?: number; }',
+            'Derivable<OffsetValue>',
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: '5' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">5</span></span>',
+      },
+      {
+        identifier: 'onBlur',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Fires when focus leaves the trigger <em>and</em> the popover.',
+        tags: {},
+      },
+      {
+        identifier: 'onChange',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">((</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">value</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateRange</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> ((</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">value</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Date</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Fires with the <code>{ start, end }</code> range, or <code>null</code> after clearing.\nFires with the picked <code>Date</code>, or <code>null</code> after clearing.',
+        tags: {},
+      },
+      {
+        identifier: 'placeholder',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Text shown in the trigger when there is no value.',
+        tags: {},
+      },
+      {
+        identifier: 'placement',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'top-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'right-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'bottom-end\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-start\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left-end\'</span></span>',
+          items: [
+            "'bottom'",
+            "'left'",
+            "'right'",
+            "'top'",
+            "'top-start'",
+            "'top-end'",
+            "'right-start'",
+            "'right-end'",
+            "'bottom-start'",
+            "'bottom-end'",
+            "'left-start'",
+            "'left-end'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Placement of the menu when open',
+        tags: {
+          defaultValue: { name: 'defaultValue', value: "'bottom-start'" },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom-start\'</span></span>',
+      },
+      {
+        identifier: 'renderInPlace',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether to render in place or in the specified/default destination',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'shiftOptions',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ padding</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Padding; mainAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; crossAxis</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; rootBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> RootBoundary; elementContext</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> ElementContext; altBoundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean; limiter</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }; boundary</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Boundary; }</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Options for the floating-ui shift middleware, which nudges the content\nalong its axis to keep it in view.',
+        tags: {},
+      },
+      {
+        identifier: 'showOutsideDays',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Whether days from the adjacent month fill out a grid's leading/trailing\nweeks.",
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value:
+              '`true` when a single month is visible, `false`\nonce `@visibleMonths` is greater than one -- otherwise a boundary date\nwould render twice, once per adjacent grid.',
+          },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">`true`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> when a single month is visible, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">`false`</span>\n<span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">once </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">`@visibleMonths`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> is greater than one </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">--</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> otherwise a boundary date</span>\n<span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">would render twice, once per adjacent grid.</span></span>',
+      },
+      {
+        identifier: 'strategy',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Strategy</span></span>',
+          items: ["'absolute'", "'fixed'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'absolute'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'absolute\'</span></span>',
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Element</span></span>',
+          items: ['string', 'Element'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'transitionDuration',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Duration of the animation',
+        tags: { defaultValue: { name: 'defaultValue', value: '200' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">200</span></span>',
+      },
+      {
+        identifier: 'value',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">DatePickerRangeInput </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> DatePickerInput</span></span>',
+          items: ['string', 'Date', 'DatePickerRangeInput'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "A <code>{ start, end }</code> pair, each a <code>Date</code> or a <code>yyyy-MM-dd</code> string; <code>end</code> may\nbe <code>null</code> while only the anchor is chosen. Same controlled-mode rule as\nsingle mode: this puts the picker in controlled mode only once it\nresolves to something other than <code>undefined</code>, unlike <code>Calendar</code>'s own\n<code>@value</code>, which controls as soon as the argument is passed at all.\nA <code>Date</code>, or the same <code>yyyy-MM-dd</code> string this component writes to its\nhidden input. The picker is controlled only once this resolves to\nsomething other than <code>undefined</code> — unlike <code>Calendar</code>'s own <code>@value</code>,\nwhich controls as soon as the argument is passed at all, <code>undefined</code>\nincluded. This is why a <code>&#x3C;form.Field></code>-bound picker, which always passes\na <code>value</code> key, still honors <code>@defaultValue</code> before form data exists.",
+        tags: {},
+      },
+      {
+        identifier: 'visibleMonths',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'How many months to render side by side, starting from the visible\nmonth.',
+        tags: { defaultValue: { name: 'defaultValue', value: '1' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span></span>',
+      },
+      {
+        identifier: 'weekStartsOn',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">WeekDay</span></span>',
+          items: ['0', '2', '1', '3', '4', '5', '6'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Overrides the first day of week implied by <code>@locale</code>.',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'value',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[DatePickerValueBlockArg</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">M</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'value',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">CalendarValue</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">M</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The current value as `Date`s, whatever form it was passed in.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'formatted',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The same value as the trigger would render it.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isEmpty',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Whether the placeholder would show. An anchored range is not empty.',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'What the `:value` block receives.',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'calendar',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[DatePickerCalendarArgs</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">M</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'mode',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">CalendarMode</span></span>',
+                      items: ["'single'", "'range'"],
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'value',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">CalendarValue</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">M</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'onChange',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">value</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> CalendarValue</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">M</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">>) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'locale',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'weekStartsOn',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">WeekDay</span></span>',
+                      items: ['0', '2', '1', '3', '4', '5', '6'],
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'minValue',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                      items: [
+                        {
+                          identifier: 'toString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns a string representation of a date. The format of the string depends on the locale.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toDateString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: 'Returns a date as a string value.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toTimeString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: 'Returns a time as a string value.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toLocaleString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            "Returns a value as a string value appropriate to the host environment's current locale.\nConverts a date and time to a string by using the current or specified locale.",
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'toLocaleDateString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            "Returns a date as a string value appropriate to the host environment's current locale.\nConverts a date to a string by using the current or specified locale.",
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'toLocaleTimeString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            "Returns a time as a string value appropriate to the host environment's current locale.\nConverts a time to a string by using the current or specified locale.",
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'valueOf',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getTime',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getFullYear',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: 'Gets the year, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCFullYear',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the year using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getMonth',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: 'Gets the month, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCMonth',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the month of a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the day-of-the-month, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the day-of-the-month, using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getDay',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the day of the week, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCDay',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the day of the week using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getHours',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the hours in a date, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCHours',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the hours value in a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getMinutes',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the minutes of a Date object, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCMinutes',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the minutes of a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getSeconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the seconds of a Date object, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCSeconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the seconds of a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getMilliseconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the milliseconds of a Date, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCMilliseconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the milliseconds of a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getTimezoneOffset',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the difference in minutes between Universal Coordinated Time (UTC) and the time on the local computer.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'setTime',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">time</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the date and time value in the Date object.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'time   A numeric value representing the number of elapsed milliseconds since midnight, January 1, 1970 GMT.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setMilliseconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the milliseconds value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'ms   A numeric value equal to the millisecond value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCMilliseconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the milliseconds value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'ms   A numeric value equal to the millisecond value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setSeconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the seconds value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'sec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCSeconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the seconds value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'sec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setMinutes',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the minutes value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'min   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCMinutes',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the minutes value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'min   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setHours',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hours</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the hour value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'hours   A numeric value equal to the hours value.\nmin   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCHours',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hours</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the hours value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'hours   A numeric value equal to the hours value.\nmin   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the numeric day-of-the-month value of the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'date   A numeric value equal to the day of the month.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the numeric day of the month in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'date   A numeric value equal to the day of the month.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setMonth',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the month value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'month   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively.\ndate   A numeric value representing the day of the month. If this value is not supplied, the value from a call to the getDate method is used.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCMonth',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the month value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'month   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively.\ndate   A numeric value representing the day of the month. If it is not supplied, the value from a call to the getUTCDate method is used.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setFullYear',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">year</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the year of the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'year   A numeric value for the year.\nmonth   A zero-based numeric value for the month (0 for January, 11 for December). Must be specified if numDate is specified.\ndate   A numeric value equal for the day of the month.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCFullYear',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">year</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the year value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'year   A numeric value equal to the year.\nmonth   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively. Must be supplied if numDate is supplied.\ndate   A numeric value equal to the day of the month.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'toUTCString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns a date converted to a string using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toISOString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns a date as a string value in ISO format.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toJSON',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> any</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            "Used by the JSON.stringify method to enable the transformation of an object's data for JavaScript Object Notation (JSON) serialization.",
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getVarDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> VarDate</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                      ],
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'maxValue',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                      items: [
+                        {
+                          identifier: 'toString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns a string representation of a date. The format of the string depends on the locale.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toDateString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: 'Returns a date as a string value.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toTimeString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: 'Returns a time as a string value.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toLocaleString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            "Returns a value as a string value appropriate to the host environment's current locale.\nConverts a date and time to a string by using the current or specified locale.",
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'toLocaleDateString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            "Returns a date as a string value appropriate to the host environment's current locale.\nConverts a date to a string by using the current or specified locale.",
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'toLocaleTimeString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ ()</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">locales</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[], </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">options</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> DateTimeFormatOptions</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">)</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; }</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            "Returns a time as a string value appropriate to the host environment's current locale.\nConverts a time to a string by using the current or specified locale.",
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'locales   A locale string or array of locale strings that contain one or more language or locale tags. If you include more than one locale string, list them in descending order of priority so that the first entry is the preferred locale. If you omit this parameter, the default locale of the JavaScript runtime is used.\noptions   An object that contains one or more properties that specify comparison options.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'valueOf',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getTime',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getFullYear',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: 'Gets the year, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCFullYear',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the year using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getMonth',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: 'Gets the month, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCMonth',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the month of a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the day-of-the-month, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the day-of-the-month, using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getDay',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the day of the week, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCDay',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the day of the week using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getHours',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the hours in a date, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCHours',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the hours value in a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getMinutes',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the minutes of a Date object, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCMinutes',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the minutes of a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getSeconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the seconds of a Date object, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCSeconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the seconds of a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getMilliseconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the milliseconds of a Date, using local time.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getUTCMilliseconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the milliseconds of a Date object using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getTimezoneOffset',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Gets the difference in minutes between Universal Coordinated Time (UTC) and the time on the local computer.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'setTime',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">time</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the date and time value in the Date object.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'time   A numeric value representing the number of elapsed milliseconds since midnight, January 1, 1970 GMT.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setMilliseconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the milliseconds value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'ms   A numeric value equal to the millisecond value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCMilliseconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the milliseconds value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'ms   A numeric value equal to the millisecond value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setSeconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the seconds value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'sec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCSeconds',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the seconds value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'sec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setMinutes',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the minutes value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'min   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCMinutes',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the minutes value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'min   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setHours',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hours</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the hour value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'hours   A numeric value equal to the hours value.\nmin   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCHours',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hours</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">min</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">sec</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">ms</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the hours value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'hours   A numeric value equal to the hours value.\nmin   A numeric value equal to the minutes value.\nsec   A numeric value equal to the seconds value.\nms   A numeric value equal to the milliseconds value.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the numeric day-of-the-month value of the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'date   A numeric value equal to the day of the month.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the numeric day of the month in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'date   A numeric value equal to the day of the month.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setMonth',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the month value in the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'month   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively.\ndate   A numeric value representing the day of the month. If this value is not supplied, the value from a call to the getDate method is used.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCMonth',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the month value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'month   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively.\ndate   A numeric value representing the day of the month. If it is not supplied, the value from a call to the getUTCDate method is used.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setFullYear',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">year</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the year of the Date object using local time.',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'year   A numeric value for the year.\nmonth   A zero-based numeric value for the month (0 for January, 11 for December). Must be specified if numDate is specified.\ndate   A numeric value equal for the day of the month.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'setUTCFullYear',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">year</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">month</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Sets the year value in the Date object using Universal Coordinated Time (UTC).',
+                          tags: {
+                            param: {
+                              name: 'param',
+                              value:
+                                'year   A numeric value equal to the year.\nmonth   A numeric value equal to the month. The value for January is 0, and other month values follow consecutively. Must be supplied if numDate is supplied.\ndate   A numeric value equal to the day of the month.',
+                            },
+                          },
+                        },
+                        {
+                          identifier: 'toUTCString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns a date converted to a string using Universal Coordinated Time (UTC).',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toISOString',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            'Returns a date as a string value in ISO format.',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'toJSON',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">key</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> any</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description:
+                            "Used by the JSON.stringify method to enable the transformation of an object's data for JavaScript Object Notation (JSON) serialization.",
+                          tags: {},
+                        },
+                        {
+                          identifier: 'getVarDate',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> VarDate</span></span>',
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                      ],
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isDateUnavailable',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">date</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Date</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean</span></span>',
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'visibleMonths',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'captionLayout',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'label\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'dropdown\'</span></span>',
+                      items: ["'label'", "'dropdown'"],
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'labelledBy',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'autofocus',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'The args the picker would otherwise have handed `Calendar`, so a `:calendar`\nblock can spread them onto its own calendar rather than re-deriving the\nselection and focus wiring.\n\n`labelledBy` is only set when the consumer passed `@id` to the picker\nthemselves. The default `<Calendar>` rendered in the template instead uses\nthe id `FormControl` yields internally (`c.id`), which is generated when\n`@id` is absent and is not reachable from this getter — so it is always\nlabelled. A consumer rendering their own calendar from this block must pass\n`@id` to the picker if they want the grid labelled.',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'footer',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[DatePickerFooterArg</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">M</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'setValue',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">value</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> CalendarValue</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">M</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">>) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Sets the value as if the user had picked it, callbacks and all.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'close',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Closes the popover and returns focus to the trigger.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'value',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">CalendarValue</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">M</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isOpen',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'What the `:footer` block receives. Presets are built from these.',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLDivElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description:
+      '<p>A date field: a button trigger showing the formatted value, and a calendar\nin a popover. <code>@mode="range"</code> switches both the calendar and the value shape\nto a <code>{ start, end }</code> range.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'end-content',
+    name: 'DatePickerEndContent',
+    fileName:
+      'packages/frontile/declarations/components/forms/date-picker/end-content.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">base</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">slotProps</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">size</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hasStartContent</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hasEndContent</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hasChips</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">startContentPointerEvents</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">endContentPointerEvents</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x26;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ClassProp</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;...>) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">innerContainer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">slotProps</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x26;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ClassProp</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;...>) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string; startCont</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isClearable',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onClear',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'userClasses',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'footer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'input\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'icon\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'innerContainer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'startContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'endContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'clearButton\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'placeholder\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'calendar\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLDivElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description:
+      '<p>The cluster at the end of the field: exactly one of the clear button or the\ncalendar icon. Pointer events are off so a click anywhere in the field still\nreaches the trigger; the clear button opts back in.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'trigger',
+    name: 'DatePickerTrigger',
+    fileName:
+      'packages/frontile/declarations/components/forms/date-picker/trigger.d.ts',
+    Args: [
+      {
+        identifier: 'accessibleName',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Names the trigger when a <code>:value</code> block owns its content — that block\nmay render nothing readable at all, which would leave an unnamed button.',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">base</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">slotProps</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">size</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hasStartContent</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hasEndContent</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">hasChips</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">startContentPointerEvents</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">endContentPointerEvents</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x26;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ClassProp</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;...>) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">innerContainer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">slotProps</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">; } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x26;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> ClassProp</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;...>) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string; startCont</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">...</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'formatted',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'hasCustomContent',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isEmpty',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onFocusOut',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">event</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> FocusEvent</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'trigger',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "The popover's <code>trigger</code> modifier: what opens the calendar.",
+        tags: {},
+      },
+      {
+        identifier: 'triggerRef',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLButtonElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Records the element, for focus restoration and blur tracking.',
+        tags: {},
+      },
+      {
+        identifier: 'id',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isInvalid',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'placeholder',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'userClasses',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'footer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'input\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'icon\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'innerContainer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'startContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'endContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'clearButton\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'placeholder\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'calendar\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'value',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLButtonElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'end-content',
     name: 'SelectEndContent',
     fileName:
@@ -35167,7 +38935,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Set to false for a previous/next-only control, with no page chips -- for\ncursor-style paging where the total is not known up front.',
+          'Set to false for compact page-number navigation with previous and next\ncontrols but no page chips. <code>@total</code> and <code>@pageSize</code> still determine the\nfirst and last pages.',
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
