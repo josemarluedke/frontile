@@ -55,7 +55,7 @@ interface MenuContext {
   allowEmpty?: boolean;
   onAction?: (key: string) => void;
   onSelectionChange?: (keys: string[]) => void;
-  appearance?: ListboxItemSignature['Args']['appearance'];
+  variant?: ListboxItemSignature['Args']['variant'];
   intent?: ListboxItemSignature['Args']['intent'];
   shortcutAppearance?: ListboxItemSignature['Args']['shortcutAppearance'];
   closeOnItemSelect?: boolean;

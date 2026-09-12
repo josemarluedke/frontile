@@ -67,9 +67,15 @@ interface SelectChipOptions extends Pick<
   'radius' | 'withDot'
 > {
   /**
-   * The chip appearance.
+   * The chip variant.
    *
-   * @defaultValue 'faded'
+   * @defaultValue 'soft'
+   */
+  variant?: ChipSignature['Args']['variant'];
+
+  /**
+   * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
+   * `outline`, and `faded` is `soft`.
    */
   appearance?: ChipSignature['Args']['appearance'];
 
@@ -101,6 +107,7 @@ interface BaseSelectArgs<T>
     >,
     Pick<
       ListboxSignature<T>['Args'],
+      | 'variant'
       | 'appearance'
       | 'intent'
       | 'disabledKeys'
@@ -523,6 +530,7 @@ type SelectClasses = ReturnType<ReturnType<typeof useStyles>['select']>;
  * so the chips do not have to restate them.
  */
 interface ResolvedSelectChipOptions {
+  variant: NonNullable<SelectChipOptions['variant']>;
   appearance: NonNullable<SelectChipOptions['appearance']>;
   intent: NonNullable<SelectChipOptions['intent']>;
   size: NonNullable<SelectChipOptions['size']>;

@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
 import type Owner from '@ember/owner';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
+import { renamedArgValue } from '../../../-private/deprecated-args';
 
 import type { ListItem } from '../native-select';
 import { Listbox } from '../../collections/listbox';
@@ -426,6 +427,26 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   /**
+   * Resolved once (`@cached`) and forwarded to the internal `Listbox` as
+   * `@variant` only -- never `@appearance` as well, which would make the
+   * inner `Listbox` raise its own deprecation for the same usage.
+   */
+  @cached
+  get variant() {
+    return renamedArgValue(
+      this.args.variant,
+      this.args.appearance,
+      { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
+      {
+        component: 'Select',
+        from: 'appearance',
+        to: 'variant',
+        id: 'frontile.select.appearance'
+      }
+    );
+  }
+
+  /**
    * Resolved chip appearance: `@chip` wins, then the Select's own `@intent`,
    * then chip defaults tuned for sitting inside a field.
    */
@@ -433,6 +454,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     const chip =
       this.args.selectionMode === 'multiple' ? this.args.chip : undefined;
     return {
+      variant: chip?.variant ?? 'soft',
       appearance: chip?.appearance ?? 'faded',
       intent: chip?.intent ?? this.args.intent ?? 'default',
       size: chip?.size ?? 'sm',
@@ -599,6 +621,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   get classes() {
     const { select } = useStyles();
+    // Referenced here, on the always-rendered root, so `@appearance`/
+    // `@variant` raises its deprecation regardless of whether the popover
+    // content (and so the internal `Listbox`) is currently mounted.
+    void this.variant;
     return select({
       size: this.args.inputSize,
       hasChips: this.showChips,
@@ -875,7 +901,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             <Listbox
               @items={{this.filteredItems}}
               @allowEmpty={{@allowEmpty}}
-              @appearance={{@appearance}}
+              @variant={{this.variant}}
               @disabledKeys={{@disabledKeys}}
               @intent={{@intent}}
               @isKeyboardEventsEnabled={{true}}
@@ -895,7 +921,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{else}}
                   <l.Item
                     @key={{l.key}}
-                    @appearance={{@appearance}}
+                    @variant={{this.variant}}
                     @intent={{@intent}}
                   >
                     {{l.label}}

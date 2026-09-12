@@ -46,14 +46,14 @@ const listboxItem = tv({
     ]
   },
   variants: {
-    appearance: {
-      default: {
+    variant: {
+      solid: {
         base: ''
       },
-      outlined: {
+      outline: {
         base: 'border border-transparent bg-transparent'
       },
-      faded: {
+      subtle: {
         base: ['border border-transparent']
       }
     },
@@ -86,13 +86,13 @@ const listboxItem = tv({
     }
   },
   defaultVariants: {
-    appearance: 'default',
+    variant: 'solid',
     intent: 'default'
   },
   compoundVariants: [
-    // appearance: default
+    // variant: solid
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'default',
       class: {
         base: [
@@ -102,7 +102,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'primary',
       class: {
         base: [
@@ -112,7 +112,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'secondary',
       class: {
         base: [
@@ -122,7 +122,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'tertiary',
       class: {
         base: [
@@ -132,7 +132,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'success',
       class: {
         base: [
@@ -142,7 +142,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'warning',
       class: {
         base: [
@@ -152,7 +152,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'danger',
       class: {
         base: [
@@ -162,9 +162,9 @@ const listboxItem = tv({
       }
     },
 
-    // appearance: outlined
+    // variant: outline
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'default',
       class: {
         base: [
@@ -174,7 +174,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'primary',
       class: {
         base: [
@@ -184,7 +184,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'secondary',
       class: {
         base: [
@@ -194,7 +194,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'tertiary',
       class: {
         base: [
@@ -204,7 +204,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'success',
       class: {
         base: [
@@ -214,7 +214,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'warning',
       class: {
         base: [
@@ -224,7 +224,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'danger',
       class: {
         base: [
@@ -234,9 +234,9 @@ const listboxItem = tv({
       }
     },
 
-    // appearance: faded
+    // variant: subtle
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'default',
       class: {
         base: [
@@ -247,7 +247,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'primary',
       class: {
         base: [
@@ -258,7 +258,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'secondary',
       class: {
         base: [
@@ -269,7 +269,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'tertiary',
       class: {
         base: [
@@ -280,7 +280,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'success',
       class: {
         base: [
@@ -291,7 +291,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'warning',
       class: {
         base: [
@@ -302,7 +302,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'danger',
       class: {
         base: [

@@ -4,10 +4,16 @@ import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { modifier } from 'ember-modifier';
-import { Listbox, setKbdPlatform, type ListboxSignature } from 'frontile';
+import {
+  Listbox,
+  Select,
+  setKbdPlatform,
+  type ListboxSignature
+} from 'frontile';
 import { array, get } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 /**
  * Press a key the way a browser does.
@@ -1202,7 +1208,7 @@ module(
     });
 
     module('style classes', () => {
-      test('it adds class for default appearance', async function (assert) {
+      function registerListboxItemStyles() {
         registerCustomStyles({
           listboxItem: tv({
             slots: {
@@ -1215,15 +1221,15 @@ module(
               submenuIndicator: ['submenu-indicator']
             },
             variants: {
-              appearance: {
-                default: {
-                  base: 'appearance-default'
+              variant: {
+                solid: {
+                  base: 'variant-solid'
                 },
-                outlined: {
-                  base: 'appearance-outlined'
+                outline: {
+                  base: 'variant-outline'
                 },
-                faded: {
-                  base: ['appearance-faded']
+                subtle: {
+                  base: ['variant-subtle']
                 }
               },
               intent: {
@@ -1254,14 +1260,17 @@ module(
               }
             },
             defaultVariants: {
-              appearance: 'default',
+              variant: 'solid',
               intent: 'default'
             }
           }) as never
         });
+      }
 
-        const appearance =
-          cell<ListboxSignature<unknown>['Args']['appearance']>();
+      test('it adds class for default variant', async function (assert) {
+        registerListboxItemStyles();
+
+        const variant = cell<ListboxSignature<unknown>['Args']['variant']>();
         const intent = cell<ListboxSignature<unknown>['Args']['intent']>();
         const selectedKeys = ['item-5'];
         const disabledKeys = ['item-6'];
@@ -1270,12 +1279,12 @@ module(
             <Listbox
               @selectedKeys={{selectedKeys}}
               @disabledKeys={{disabledKeys}}
-              @appearance={{appearance.current}}
+              @variant={{variant.current}}
               @intent={{intent.current}}
               as |l|
             >
               <l.Item @key="item-1">Item 1</l.Item>
-              <l.Item @key="item-2" @appearance="outlined">Item 2</l.Item>
+              <l.Item @key="item-2" @variant="outline">Item 2</l.Item>
               <l.Item @key="item-3" @intent="danger">Item 3</l.Item>
               <l.Item @key="item-4" @withDivider={{true}}>Item 4</l.Item>
               <l.Item @key="item-5">Item 5</l.Item>
@@ -1285,19 +1294,19 @@ module(
           </template>
         );
 
-        // no appearance or intent set
-        assert.dom('[data-key="item-1"]').hasClass('appearance-default');
+        // no variant or intent set
+        assert.dom('[data-key="item-1"]').hasClass('variant-solid');
         assert.dom('[data-key="item-1"]').hasClass('intent-default');
 
-        // appearance and intent set
-        appearance.current = 'faded';
+        // variant and intent set
+        variant.current = 'subtle';
         intent.current = 'warning';
         await settled();
-        assert.dom('[data-key="item-1"]').hasClass('appearance-faded');
+        assert.dom('[data-key="item-1"]').hasClass('variant-subtle');
         assert.dom('[data-key="item-1"]').hasClass('intent-warning');
 
-        // appearance overwritten at item
-        assert.dom('[data-key="item-2"]').hasClass('appearance-outlined');
+        // variant overwritten at item
+        assert.dom('[data-key="item-2"]').hasClass('variant-outline');
 
         // intent overwritten at item
         assert.dom('[data-key="item-3"]').hasClass('intent-danger');
@@ -1313,6 +1322,42 @@ module(
 
         // disabled
         assert.dom('[data-key="item-6"]').hasClass('is-disabled');
+      });
+
+      test('@variant renders the new class', async function (assert) {
+        registerListboxItemStyles();
+
+        await render(
+          <template>
+            <Listbox @variant="subtle" as |l|>
+              <l.Item @key="item-1" data-test-id="listbox-item">Item 1</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        assert.dom('[data-test-id="listbox-item"]').hasClass('variant-subtle');
+      });
+
+      test('@appearance="faded" maps to subtle and deprecates once', async function (assert) {
+        const { ids } = trackDeprecations();
+
+        await render(
+          <template>
+            <Listbox @appearance="faded" data-test-id="listbox" />
+          </template>
+        );
+
+        assert.deepEqual(ids, ['frontile.listbox.appearance']);
+      });
+
+      test('Select forwards @variant to its items without double-deprecating', async function (assert) {
+        registerListboxItemStyles();
+
+        const { ids } = trackDeprecations();
+
+        await render(<template><Select @appearance="faded" /></template>);
+
+        assert.deepEqual(ids, ['frontile.select.appearance']);
       });
     });
 

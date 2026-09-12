@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
@@ -10,6 +10,7 @@ import type { KbdSignature } from '../../utilities/kbd';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, ListItem } from '../../../utils/listManager';
+import { renamedArgValue } from '../../../-private/deprecated-args';
 
 export interface ListboxItemSignature {
   Args: {
@@ -44,9 +45,15 @@ export interface ListboxItemSignature {
     withDivider?: boolean;
 
     /**
-     * The appearance of each item
+     * The variant of each item.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'solid'
+     */
+    variant?: 'solid' | 'outline' | 'subtle';
+
+    /**
+     * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
+     * `outline`, and `faded` is `subtle`.
      */
     appearance?: 'default' | 'outlined' | 'faded';
 
@@ -158,12 +165,34 @@ class ListboxItem extends Component<ListboxItemSignature> {
     return this.manager.isTabStop(this.key) ? 0 : -1;
   }
 
+  /**
+   * Resolved once per render (`@cached`) so referencing it from both
+   * `classNames` and `submenuIndicatorClass` does not fire the deprecation
+   * twice for the same item.
+   */
+  @cached
+  get variant(): 'solid' | 'outline' | 'subtle' {
+    return (
+      renamedArgValue(
+        this.args.variant,
+        this.args.appearance,
+        { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
+        {
+          component: 'Listbox',
+          from: 'appearance',
+          to: 'variant',
+          id: 'frontile.listbox.appearance'
+        }
+      ) || 'solid'
+    );
+  }
+
   get classNames() {
     const { listboxItem } = useStyles();
 
     const { base, descriptionWrapper, label, description, selectedIcon } =
       listboxItem({
-        appearance: this.args.appearance || 'default',
+        variant: this.variant,
         intent: this.args.intent || 'default',
         isDisabled: this.listItem?.isDisabled,
         isSelected: this.listItem?.isSelected,
@@ -202,7 +231,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
 
     const { listboxItem } = useStyles();
     const { submenuIndicator } = listboxItem({
-      appearance: this.args.appearance || 'default',
+      variant: this.variant,
       intent: this.args.intent || 'default',
       isDisabled: this.listItem?.isDisabled,
       isSelected: this.listItem?.isSelected,
