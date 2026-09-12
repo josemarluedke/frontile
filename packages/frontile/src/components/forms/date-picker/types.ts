@@ -130,8 +130,7 @@ interface SingleDatePickerArgs extends BaseDatePickerArgs {
    * it replaces what is displayed, while picking a date updates the field
    * immediately rather than waiting for `@value` to come back. `undefined` is
    * ignored, which is why a `<form.Field>`-bound picker — which always passes
-   * a `value` key — still honors `@defaultValue` before form data exists. This is why a `<form.Field>`-bound picker, which always passes
-   * a `value` key, still honors `@defaultValue` before form data exists.
+   * a `value` key — still honors `@defaultValue` before form data exists.
    */
   value?: DatePickerInput | null;
 
