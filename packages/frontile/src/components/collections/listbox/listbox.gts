@@ -66,7 +66,19 @@ interface ListboxSignature<T> {
     appearance?: 'default' | 'outlined' | 'faded';
 
     /**
-     * The intent of each item
+     * The color of each item
+     */
+    color?:
+      | 'neutral'
+      | 'primary'
+      | 'secondary'
+      | 'tertiary'
+      | 'success'
+      | 'warning'
+      | 'danger';
+
+    /**
+     * @deprecated Use `color`. `default` is now `neutral`.
      */
     intent?:
       | 'default'
@@ -292,12 +304,34 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
     );
   }
 
+  /**
+   * Resolved once (`@cached`) purely to raise Listbox's own deprecation when
+   * `@intent` is used directly on `<Listbox>` -- independent of whether any
+   * items are rendered to inherit it. Unlike `variant`, the resolved value is
+   * also forwarded to `classNames` below, so a bare `<Listbox @color="danger">`
+   * with no items renders its own color-dependent classes.
+   */
+  @cached
+  get color() {
+    return renamedArgValue(
+      this.args.color,
+      this.args.intent,
+      { default: 'neutral' } as const,
+      {
+        component: 'Listbox',
+        from: 'intent',
+        to: 'color',
+        id: 'frontile.listbox.intent'
+      }
+    );
+  }
+
   get classNames() {
     const { listbox } = useStyles();
     // Referenced only to trigger the deprecation above when appropriate;
     // Listbox itself has no styling of its own that varies by variant.
     void this.variant;
-    return listbox({ class: this.args.class });
+    return listbox({ class: this.args.class, color: this.color });
   }
 
   get role() {
@@ -361,6 +395,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
                   manager=this.listManager
                   variant=@variant
                   appearance=@appearance
+                  color=@color
                   intent=@intent
                   shortcutVariant=@shortcutVariant
                   type=this.role
@@ -377,6 +412,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
               @item={{item}}
               @variant={{@variant}}
               @appearance={{@appearance}}
+              @color={{@color}}
               @intent={{@intent}}
               @shortcutVariant={{@shortcutVariant}}
               @type={{this.role}}
@@ -394,6 +430,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             manager=this.listManager
             variant=@variant
             appearance=@appearance
+            color=@color
             intent=@intent
             shortcutVariant=@shortcutVariant
             type=this.role
@@ -403,6 +440,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             manager=this.listManager
             variant=@variant
             appearance=@appearance
+            color=@color
             intent=@intent
             shortcutVariant=@shortcutVariant
             type=this.role

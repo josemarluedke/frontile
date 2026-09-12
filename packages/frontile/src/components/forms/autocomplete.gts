@@ -46,6 +46,7 @@ interface AutocompleteArgs<T>
       ListboxSignature<T>['Args'],
       | 'variant'
       | 'appearance'
+      | 'color'
       | 'intent'
       | 'disabledKeys'
       | 'allowEmpty'
@@ -579,9 +580,11 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   get classes() {
     const { autocomplete } = useStyles();
     // Referenced here, on the always-rendered root, so `@appearance`/
-    // `@variant` raises its deprecation regardless of whether the popover
-    // content (and so the internal `Listbox`) is currently mounted.
+    // `@variant` (and `@intent`/`@color`) raises its deprecation regardless
+    // of whether the popover content (and so the internal `Listbox`) is
+    // currently mounted.
     void this.variant;
+    void this.color;
     return autocomplete({
       size: this.args.inputSize
     });
@@ -603,6 +606,26 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
         from: 'appearance',
         to: 'variant',
         id: 'frontile.autocomplete.appearance'
+      }
+    );
+  }
+
+  /**
+   * Resolved once (`@cached`) and forwarded to the internal `Listbox` as
+   * `@color` only -- never `@intent` as well, which would make the inner
+   * `Listbox` raise its own deprecation for the same usage.
+   */
+  @cached
+  get color() {
+    return renamedArgValue(
+      this.args.color,
+      this.args.intent,
+      { default: 'neutral' } as const,
+      {
+        component: 'Autocomplete',
+        from: 'intent',
+        to: 'color',
+        id: 'frontile.autocomplete.intent'
       }
     );
   }
@@ -844,7 +867,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               @allowEmpty={{@allowEmpty}}
               @variant={{this.variant}}
               @disabledKeys={{@disabledKeys}}
-              @intent={{@intent}}
+              @color={{this.color}}
               @isKeyboardEventsEnabled={{true}}
               @onAction={{this.onAction}}
               @onSelectionChange={{this.onSelectionChange}}
@@ -864,7 +887,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
                   <l.Item
                     @key={{l.key}}
                     @variant={{this.variant}}
-                    @intent={{@intent}}
+                    @color={{this.color}}
                   >
                     {{l.label}}
                   </l.Item>

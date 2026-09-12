@@ -10,7 +10,13 @@ import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<
   typeof ListboxItem,
-  'manager' | 'type' | 'variant' | 'appearance' | 'intent' | 'shortcutVariant'
+  | 'manager'
+  | 'type'
+  | 'variant'
+  | 'appearance'
+  | 'color'
+  | 'intent'
+  | 'shortcutVariant'
 >;
 
 export interface ListboxGroupSignature {
@@ -44,6 +50,7 @@ export interface ListboxGroupSignature {
      * @deprecated Use `variant`.
      */
     appearance?: ListboxItemSignature['Args']['appearance'];
+    color?: ListboxItemSignature['Args']['color'];
     intent?: ListboxItemSignature['Args']['intent'];
     shortcutVariant?: ListboxItemSignature['Args']['shortcutVariant'];
   };
@@ -105,6 +112,7 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
               manager=@manager
               variant=@variant
               appearance=@appearance
+              color=@color
               intent=@intent
               shortcutVariant=@shortcutVariant
               type=@type

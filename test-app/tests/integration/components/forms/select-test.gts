@@ -2459,6 +2459,26 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom(chip).hasClass('chip-primary', 'inherits @intent="primary"');
   });
 
+  test('Multiple mode: chips inherit @color', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @color="primary"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    const chip = '[data-part="chip"][data-key="apple"]';
+    assert.dom(chip).hasClass('chip-primary', 'inherits @color="primary"');
+  });
+
   test('Multiple mode: chips raise no deprecation when @chip.appearance is unused', async function (assert) {
     const selectedKeys = cell<string[]>(['apple']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
@@ -2485,6 +2505,29 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       [],
       'no chip appearance deprecation for internal defaults'
     );
+  });
+
+  test('Multiple mode: Select @color reaches the chips', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @color="primary"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    // chipOptions must consult Select's own `@color`, not just `@chip.color`.
+    // Without it `@color` would silently fail to tint the chips while the
+    // deprecated `@intent` still worked.
+    assert.dom('[data-part="chip"][data-key="apple"]').hasClass('chip-primary');
   });
 
   test('Multiple mode: chips raise no deprecation when @intent is unused', async function (assert) {

@@ -114,6 +114,7 @@ interface BaseSelectArgs<T>
       ListboxSignature<T>['Args'],
       | 'variant'
       | 'appearance'
+      | 'color'
       | 'intent'
       | 'disabledKeys'
       | 'allowEmpty'

@@ -183,6 +183,7 @@ interface MenuArgs
       ListboxSignature<unknown>['Args'],
       | 'variant'
       | 'appearance'
+      | 'color'
       | 'intent'
       | 'class'
       | 'selectionMode'
@@ -319,6 +320,26 @@ class Menu extends Component<MenuSignature> {
   }
 
   /**
+   * Resolved once (`@cached`) and forwarded to the internal `Listbox` as
+   * `@color` only -- never `@intent` as well, which would make the inner
+   * `Listbox` raise its own deprecation for the same usage.
+   */
+  @cached
+  get color() {
+    return renamedArgValue(
+      this.args.color,
+      this.args.intent,
+      { default: 'neutral' } as const,
+      {
+        component: 'Dropdown',
+        from: 'intent',
+        to: 'color',
+        id: 'frontile.dropdown.intent'
+      }
+    );
+  }
+
+  /**
    * A submenu is handed its level's context by the `Sub` that renders it. The
    * root builds its own, from the arguments the consumer wrote once.
    */
@@ -337,7 +358,7 @@ class Menu extends Component<MenuSignature> {
       onAction: this.args.onAction,
       onSelectionChange: this.args.onSelectionChange,
       variant: this.variant,
-      intent: this.args.intent,
+      color: this.color,
       shortcutVariant: this.args.shortcutVariant,
       closeOnItemSelect: this.args.closeOnItemSelect,
       disableTransitions: this.args.disableTransitions,
@@ -461,7 +482,7 @@ class Menu extends Component<MenuSignature> {
         @allowEmpty={{this.context.allowEmpty}}
         @variant={{this.context.variant}}
         @disabledKeys={{this.context.disabledKeys}}
-        @intent={{this.context.intent}}
+        @color={{this.context.color}}
         @shortcutVariant={{this.context.shortcutVariant}}
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
