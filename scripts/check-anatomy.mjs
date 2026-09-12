@@ -332,9 +332,18 @@ const DIRECTORY_OWNER_ALIASES = {
  *   has ever intended to render them. Adding a wrapper element or
  *   start/end-content blocks to satisfy this check would be exactly the
  *   out-of-scope feature addition this migration is not authorized to make.
+ *
+ * - `datePicker`: the `datePicker` tv config also `extend`s `input`, and
+ *   therefore also inherits `start-content`/`end-content`. Unlike textarea,
+ *   DatePicker *does* render `end-content` — the end-content cluster
+ *   (icon/clear button) rendered by `date-picker/end-content.gts`, alongside
+ *   the `icon`/`clearButton` slots — so `end-content` is no longer carved out
+ *   here. It has no start-content adornment, so `start-content` stays
+ *   carved out.
  */
 const KNOWN_UNRENDERED_SLOTS = {
-  textarea: new Set(['inner-container', 'start-content', 'end-content'])
+  textarea: new Set(['inner-container', 'start-content', 'end-content']),
+  'date-picker': new Set(['start-content'])
 };
 
 /**

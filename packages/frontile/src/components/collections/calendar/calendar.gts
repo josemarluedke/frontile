@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { tracked, cached } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
+import { deferredWork } from '../../../utils/deferred-work';
 import {
   addDays,
   addMonths,
@@ -233,6 +234,11 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     return this.args.captionLayout ?? 'label';
   }
 
+  // The autofocus below is deferred a frame; `deferredWork` holds the
+  // test-waiter token so `settled()` does not race it, and cancels cleanly on
+  // teardown.
+  #autofocusWork = deferredWork('@frontile/collections:calendar-autofocus');
+
   @tracked isYearGridOpen = false;
 
   toggleYearGrid = (): void => {
@@ -245,7 +251,10 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     );
 
     if (trigger) {
-      trigger.focus();
+      // Same reasoning as the day-cell focus below: inside a popover this
+      // element may not be positioned yet, and scrolling to it would move the
+      // page out from under the user.
+      trigger.focus({ preventScroll: true });
       return;
     }
 
@@ -809,9 +818,32 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       // `closest('[data-component]') === root` guard used elsewhere, this
       // query cannot pick up a descendant component's own day-shaped cell --
       // there is nothing else in the tree it could collide with.
-      element
-        .querySelector<HTMLElement>('[data-part="day"][tabindex="0"]')
-        ?.focus();
+
+      // Deferred by a frame rather than focused here, because focusing during
+      // insert costs the container its enter animation: a calendar in a
+      // popover is inserted already carrying the transition's enter classes,
+      // and taking focus synchronously flushes style before that start state
+      // is ever painted, so the browser finds nothing to animate from and
+      // skips the transition entirely. (It only ever skipped the *enter* half
+      // -- closing was unaffected, which is what made it look like an
+      // animation bug rather than a focus one.) One frame is enough; by then
+      // the transition is running and focus no longer disturbs it.
+      //
+      // `preventScroll` is a separate matter: the portaled content is focused
+      // before floating-ui has positioned it, so an ordinary focus scrolls the
+      // page to wherever the unpositioned element currently sits -- in
+      // practice the end of the document, yanking the page to the bottom.
+      // Nothing is lost in the standalone case either: the day being focused
+      // is one the user just navigated to in a calendar already on screen.
+      // Looked up when the frame fires rather than now, so a focus request
+      // superseded within the same frame still lands on the current day.
+      this.#autofocusWork.schedule(() => {
+        element
+          .querySelector<HTMLElement>('[data-part="day"][tabindex="0"]')
+          ?.focus({ preventScroll: true });
+      });
+
+      return () => this.#autofocusWork.cancel();
     }
   );
 

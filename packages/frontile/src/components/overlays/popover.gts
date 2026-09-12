@@ -795,7 +795,7 @@ interface ContentArgs extends Pick<
    *
    * @defaultValue 'md'
    */
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'trigger';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'trigger' | 'auto';
 }
 
 interface ContentSignature {

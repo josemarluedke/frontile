@@ -131,7 +131,7 @@ export function buildMonthGrid(opts: {
  */
 const formatterCache = new Map<string, Intl.DateTimeFormat>();
 
-function formatter(
+export function formatter(
   locale: string,
   options: Intl.DateTimeFormatOptions
 ): Intl.DateTimeFormat {
