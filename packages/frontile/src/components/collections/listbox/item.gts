@@ -34,12 +34,12 @@ export interface ListboxItemSignature {
     shortcut?: string;
 
     /**
-     * The appearance of the rendered shortcut. Defaults to `inherit`, so the
+     * The variant of the rendered shortcut. Defaults to `inherit`, so the
      * keycap follows the option's own colour on active and filled rows.
      *
      * @defaultValue 'inherit'
      */
-    shortcutAppearance?: KbdSignature['Args']['appearance'];
+    shortcutVariant?: KbdSignature['Args']['variant'];
     onClick?: () => void;
     class?: string;
     withDivider?: boolean;
@@ -244,8 +244,8 @@ class ListboxItem extends Component<ListboxItemSignature> {
       : undefined;
   }
 
-  get shortcutAppearance() {
-    return this.args.shortcutAppearance ?? 'inherit';
+  get shortcutVariant() {
+    return this.args.shortcutVariant ?? 'inherit';
   }
 
   get role() {
@@ -357,7 +357,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
         <Kbd
           @keys={{@shortcut}}
           @size="sm"
-          @appearance={{this.shortcutAppearance}}
+          @variant={{this.shortcutVariant}}
           data-test-id="listbox-item-shortcut"
         />
       {{/if}}

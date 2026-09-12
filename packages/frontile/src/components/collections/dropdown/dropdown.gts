@@ -189,7 +189,7 @@ interface MenuArgs
       | 'disabledKeys'
       | 'allowEmpty'
       | 'onSelectionChange'
-      | 'shortcutAppearance'
+      | 'shortcutVariant'
     >,
     Pick<
       ContentSignature['Args'],
@@ -337,7 +337,7 @@ class Menu extends Component<MenuSignature> {
       onSelectionChange: this.args.onSelectionChange,
       variant: this.variant,
       intent: this.args.intent,
-      shortcutAppearance: this.args.shortcutAppearance,
+      shortcutVariant: this.args.shortcutVariant,
       closeOnItemSelect: this.args.closeOnItemSelect,
       disableTransitions: this.args.disableTransitions,
       transitionDuration: this.args.transitionDuration
@@ -461,7 +461,7 @@ class Menu extends Component<MenuSignature> {
         @variant={{this.context.variant}}
         @disabledKeys={{this.context.disabledKeys}}
         @intent={{this.context.intent}}
-        @shortcutAppearance={{this.context.shortcutAppearance}}
+        @shortcutVariant={{this.context.shortcutVariant}}
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
         @onActiveItemChange={{this.onActiveItemChange}}

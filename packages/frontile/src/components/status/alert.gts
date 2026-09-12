@@ -87,9 +87,9 @@ interface AlertSignature {
     /**
      * The visual style of the alert.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'surface'
      */
-    variant?: 'default' | 'tonal' | 'solid';
+    variant?: 'surface' | 'soft' | 'solid';
 
     /**
      * `banner` drops the radius and border and centres the content, for a
@@ -222,7 +222,7 @@ class Alert extends Component<AlertSignature> {
       closeButton
     } = alert({
       intent: this.intent,
-      variant: this.args.variant ?? 'default',
+      variant: this.args.variant ?? 'surface',
       layout: this.args.layout ?? 'inline',
       hasDescription,
       hasCloseButton: !!this.args.onClose

@@ -42,8 +42,8 @@ registerCustomStyles({
         danger: { base: 'notification-card--danger' }
       },
       variant: {
-        default: { base: 'notification-card--default' },
-        tonal: { base: 'notification-card--tonal' },
+        surface: { base: 'notification-card--surface' },
+        soft: { base: 'notification-card--soft' },
         solid: { base: 'notification-card--solid' }
       },
       hasDescription: {
@@ -59,7 +59,7 @@ registerCustomStyles({
     },
     defaultVariants: {
       intent: 'info',
-      variant: 'default',
+      variant: 'surface',
       hasDescription: false
     }
   })
@@ -163,7 +163,7 @@ module(
             data-test-notification
             @placement="top-right"
             @notification={{notification.current}}
-            @variant="default"
+            @variant="surface"
           />
         </template>
       );
@@ -172,7 +172,7 @@ module(
         .hasClass('notification-card--default-intent');
       assert
         .dom('[data-test-notification]')
-        .hasClass('notification-card--default');
+        .hasClass('notification-card--surface');
 
       await render(
         <template>
@@ -180,7 +180,7 @@ module(
             data-test-notification
             @placement="top-right"
             @notification={{notification.current}}
-            @variant="tonal"
+            @variant="soft"
           />
         </template>
       );
@@ -189,7 +189,7 @@ module(
         .hasClass('notification-card--default-intent');
       assert
         .dom('[data-test-notification]')
-        .hasClass('notification-card--tonal');
+        .hasClass('notification-card--soft');
 
       await render(
         <template>
@@ -337,9 +337,9 @@ module(
       // instant a promise settles and the spinner swaps for an icon,
       // re-triggering the stack's layout (see `measure` in
       // notification-card.gts).
-      const variants: ('default' | 'tonal' | 'solid')[] = [
-        'default',
-        'tonal',
+      const variants: ('surface' | 'soft' | 'solid')[] = [
+        'surface',
+        'soft',
         'solid'
       ];
 
@@ -361,7 +361,7 @@ module(
     });
 
     test('the solid variant gives the spinner an accent arc and a dim track drawn from the same contrast ink, distinct from each other', function (assert) {
-      // Unlike the default/tonal case above, `solid`'s surface is a
+      // Unlike the surface/soft case above, `solid`'s surface is a
       // saturated `bg-{intent}` fill — the same color `@intent` would put on
       // the arc via the Spinner's own `fill-{intent}`, which would make the
       // arc invisible against its own card. This is verified directly

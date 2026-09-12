@@ -81,10 +81,10 @@ module(
           );
       });
 
-      test('@shortcutAppearance threads down to the rendered Kbd', async function (assert) {
+      test('@shortcutVariant threads down to the rendered Kbd', async function (assert) {
         await render(
           <template>
-            <Listbox @selectionMode="none" @shortcutAppearance="plain" as |l|>
+            <Listbox @selectionMode="none" @shortcutVariant="plain" as |l|>
               <l.Item @key="save" @shortcut="mod+s">Save</l.Item>
               <l.Group @title="More" as |g|>
                 <g.Item @key="print" @shortcut="mod+p">Print</g.Item>

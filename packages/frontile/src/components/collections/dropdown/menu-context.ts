@@ -57,7 +57,7 @@ interface MenuContext {
   onSelectionChange?: (keys: string[]) => void;
   variant?: ListboxItemSignature['Args']['variant'];
   intent?: ListboxItemSignature['Args']['intent'];
-  shortcutAppearance?: ListboxItemSignature['Args']['shortcutAppearance'];
+  shortcutVariant?: ListboxItemSignature['Args']['shortcutVariant'];
   closeOnItemSelect?: boolean;
   disableTransitions?: boolean;
   transitionDuration?: number;

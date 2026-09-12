@@ -22,7 +22,7 @@ function buildRoot(
     onSelectionChange: noop,
     appearance: 'faded',
     intent: 'primary',
-    shortcutAppearance: 'inherit',
+    shortcutVariant: 'inherit',
     closeOnItemSelect: true,
     disableTransitions: true,
     transitionDuration: 0,
@@ -86,7 +86,7 @@ module('Unit | Collections | menu-context', function () {
     assert.true(child.allowEmpty);
     assert.strictEqual(child.appearance, 'faded');
     assert.strictEqual(child.intent, 'primary');
-    assert.strictEqual(child.shortcutAppearance, 'inherit');
+    assert.strictEqual(child.shortcutVariant, 'inherit');
     assert.true(child.closeOnItemSelect);
     assert.true(child.disableTransitions);
     assert.strictEqual(child.transitionDuration, 0);

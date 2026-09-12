@@ -42,10 +42,10 @@ const kbd = tv({
       }
     },
     // Colours live in the compound variants below, paired with `intent`.
-    appearance: {
-      default: { key: 'border border-transparent' },
-      outlined: { key: 'border bg-transparent' },
-      faded: { key: 'border' },
+    variant: {
+      solid: { key: 'border border-transparent' },
+      outline: { key: 'border bg-transparent' },
+      subtle: { key: 'border' },
       // Follows whatever colour it is sitting on. This is what lets a keycap
       // ride an active, filled Listbox row without the row's theme having to
       // repaint it for every intent.
@@ -76,126 +76,126 @@ const kbd = tv({
     }
   },
   compoundVariants: [
-    // appearance: default -- a filled cap. `-muted` is light enough to read as
+    // variant: solid -- a filled cap. `-muted` is light enough to read as
     // a key on a page and each level carries its own `on-` contrast colour.
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'default',
       class: { key: 'bg-neutral-muted text-on-neutral-muted' }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'primary',
       class: { key: 'bg-primary-muted text-on-primary-muted' }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'secondary',
       class: { key: 'bg-secondary-muted text-on-secondary-muted' }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'tertiary',
       class: { key: 'bg-tertiary-muted text-on-tertiary-muted' }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'success',
       class: { key: 'bg-success-muted text-on-success-muted' }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'warning',
       class: { key: 'bg-warning-muted text-on-warning-muted' }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'danger',
       class: { key: 'bg-danger-muted text-on-danger-muted' }
     },
 
-    // appearance: outlined
+    // variant: outline
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'default',
       class: { key: 'border-neutral text-neutral-strong' }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'primary',
       class: { key: 'border-primary text-primary-strong' }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'secondary',
       class: { key: 'border-secondary text-secondary-strong' }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'tertiary',
       class: { key: 'border-tertiary text-tertiary-strong' }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'success',
       class: { key: 'border-success text-success-strong' }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'warning',
       class: { key: 'border-warning text-warning-strong' }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'danger',
       class: { key: 'border-danger text-danger-strong' }
     },
 
-    // appearance: faded
+    // variant: subtle
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'default',
       class: {
         key: 'bg-neutral-subtle border-neutral-soft text-neutral-strong'
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'primary',
       class: {
         key: 'bg-primary-subtle border-primary-soft text-primary-strong'
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'secondary',
       class: {
         key: 'bg-secondary-subtle border-secondary-soft text-secondary-strong'
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'tertiary',
       class: {
         key: 'bg-tertiary-subtle border-tertiary-soft text-tertiary-strong'
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'success',
       class: {
         key: 'bg-success-subtle border-success-soft text-success-strong'
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'warning',
       class: {
         key: 'bg-warning-subtle border-warning-soft text-warning-strong'
       }
     },
     {
-      appearance: 'faded',
+      variant: 'subtle',
       intent: 'danger',
       class: { key: 'bg-danger-subtle border-danger-soft text-danger-strong' }
     }
@@ -203,7 +203,7 @@ const kbd = tv({
   defaultVariants: {
     size: 'md',
     intent: 'default',
-    appearance: 'default'
+    variant: 'solid'
   }
 });
 

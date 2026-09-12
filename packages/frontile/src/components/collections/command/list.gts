@@ -134,7 +134,7 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
         @autoActivateMode="first"
         @disabledKeys={{@disabledKeys}}
         {{! A palette row wants a quiet trailing shortcut, not a keycap. }}
-        @shortcutAppearance="plain"
+        @shortcutVariant="plain"
         @onAction={{@onSelect}}
         @onActiveItemChange={{@onActiveItemChange}}
         @elementToAddKeyboardEvents={{@inputElement}}

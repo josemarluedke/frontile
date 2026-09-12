@@ -82,7 +82,7 @@ interface ListboxSignature<T> {
      *
      * @defaultValue 'inherit'
      */
-    shortcutAppearance?: ListboxItemSignature['Args']['shortcutAppearance'];
+    shortcutVariant?: ListboxItemSignature['Args']['shortcutVariant'];
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -362,7 +362,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
                   variant=@variant
                   appearance=@appearance
                   intent=@intent
-                  shortcutAppearance=@shortcutAppearance
+                  shortcutVariant=@shortcutVariant
                   type=this.role
                   key=keyLabel.key
                   item=item
@@ -378,7 +378,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
               @variant={{@variant}}
               @appearance={{@appearance}}
               @intent={{@intent}}
-              @shortcutAppearance={{@shortcutAppearance}}
+              @shortcutVariant={{@shortcutVariant}}
               @type={{this.role}}
             >
               {{keyLabel.label}}
@@ -395,7 +395,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             variant=@variant
             appearance=@appearance
             intent=@intent
-            shortcutAppearance=@shortcutAppearance
+            shortcutVariant=@shortcutVariant
             type=this.role
           )
           Group=(component
@@ -404,7 +404,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             variant=@variant
             appearance=@appearance
             intent=@intent
-            shortcutAppearance=@shortcutAppearance
+            shortcutVariant=@shortcutVariant
             type=this.role
           )
         )

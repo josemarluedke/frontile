@@ -26,7 +26,7 @@ const CommandKbd: TOC<CommandKbdSignature> = <template>
   {{#if (has-block)}}
     <Kbd
       @size="sm"
-      @appearance="outlined"
+      @variant="outline"
       @classes={{hash key=@classes.kbd}}
       data-part="kbd"
       ...attributes
@@ -35,7 +35,7 @@ const CommandKbd: TOC<CommandKbdSignature> = <template>
     <Kbd
       @keys={{@keys}}
       @size="sm"
-      @appearance="outlined"
+      @variant="outline"
       @classes={{hash key=@classes.kbd}}
       data-part="kbd"
       ...attributes
