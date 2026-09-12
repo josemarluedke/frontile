@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerKeyEvent } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
-import { DatePicker } from 'frontile';
+import { DatePicker, Form } from 'frontile';
 
 const jan20 = new Date(2026, 0, 20);
 const janAnchor = { start: new Date(2026, 0, 5), end: new Date(2026, 0, 6) };
@@ -346,6 +346,112 @@ module(
       );
 
       assert.dom('[data-part="input"]').hasText('Jan 20, 2026 – Feb 9, 2026');
+    });
+
+    test('single mode submits one input under the given name', async function (assert) {
+      const submitted = cell<Record<string, unknown> | null>(null);
+      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+        submitted.current = data;
+      };
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}}>
+            <DatePicker @label="Start" @name="start" @defaultValue={{jan20}} />
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      await click('button[type="submit"]');
+
+      assert.deepEqual(
+        submitted.current,
+        { start: '2026-01-20' },
+        'the wire value is yyyy-MM-dd'
+      );
+    });
+
+    test('range mode submits dotted names that unflatten to an object', async function (assert) {
+      const submitted = cell<Record<string, unknown> | null>(null);
+      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+        submitted.current = data;
+      };
+      const range = { start: new Date(2026, 0, 20), end: new Date(2026, 1, 9) };
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}}>
+            <DatePicker
+              @label="Stay"
+              @mode="range"
+              @name="stay"
+              @defaultValue={{range}}
+            />
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      await click('button[type="submit"]');
+
+      assert.deepEqual(
+        submitted.current,
+        { stay: { start: '2026-01-20', end: '2026-02-09' } },
+        'Form unflattens the dotted names into one object'
+      );
+    });
+
+    test('an empty value submits an empty string', async function (assert) {
+      const submitted = cell<Record<string, unknown> | null>(null);
+      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+        submitted.current = data;
+      };
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}}>
+            <DatePicker @label="Start" @name="start" />
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      await click('button[type="submit"]');
+
+      assert.deepEqual(submitted.current, { start: '' });
+    });
+
+    test('a late-evening date submits the same calendar day', async function (assert) {
+      const submitted = cell<Record<string, unknown> | null>(null);
+      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+        submitted.current = data;
+      };
+      // 23:30 local — toISOString() would report the next day in many zones.
+      const late = new Date(2026, 0, 20, 23, 30);
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}}>
+            <DatePicker @label="Start" @name="start" @defaultValue={{late}} />
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      await click('button[type="submit"]');
+
+      assert.deepEqual(submitted.current, { start: '2026-01-20' });
+    });
+
+    test('no name renders no hidden input', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @defaultValue={{jan20}} />
+        </template>
+      );
+
+      assert.dom('input[type="hidden"]').doesNotExist();
     });
   }
 );
