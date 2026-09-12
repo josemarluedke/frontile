@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { tracked, cached } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
-import { buildWaiter } from '@ember/test-waiters';
+import { deferredWork } from '../../../utils/deferred-work';
 import {
   addDays,
   addMonths,
@@ -45,10 +45,6 @@ import type {
   WeekDay,
   WeekdayLabel
 } from './types';
-
-// The autofocus below is deferred a frame, so `settled()` has to know to wait
-// for it or a test asserting focus races the frame.
-const focusWaiter = buildWaiter('frontile:calendar-autofocus');
 
 export interface CalendarArgs<M extends CalendarMode = 'single'> {
   /**
@@ -237,6 +233,11 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   get captionLayout(): 'label' | 'dropdown' {
     return this.args.captionLayout ?? 'label';
   }
+
+  // The autofocus below is deferred a frame; `deferredWork` holds the
+  // test-waiter token so `settled()` does not race it, and cancels cleanly on
+  // teardown.
+  #autofocusWork = deferredWork('@frontile/collections:calendar-autofocus');
 
   @tracked isYearGridOpen = false;
 
@@ -817,13 +818,6 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       // `closest('[data-component]') === root` guard used elsewhere, this
       // query cannot pick up a descendant component's own day-shaped cell --
       // there is nothing else in the tree it could collide with.
-      const day = element.querySelector<HTMLElement>(
-        '[data-part="day"][tabindex="0"]'
-      );
-
-      if (!day) {
-        return;
-      }
 
       // Deferred by a frame rather than focused here, because focusing during
       // insert costs the container its enter animation: a calendar in a
@@ -841,27 +835,15 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       // practice the end of the document, yanking the page to the bottom.
       // Nothing is lost in the standalone case either: the day being focused
       // is one the user just navigated to in a calendar already on screen.
-      const token = focusWaiter.beginAsync();
-      let settled = false;
-      const finish = (): void => {
-        if (settled) return;
-        settled = true;
-        focusWaiter.endAsync(token);
-      };
-
-      const frame = requestAnimationFrame(() => {
-        finish();
-        // The grid can be torn down within the frame -- the popover closed
-        // again, or the year panel took its place.
-        if (day.isConnected) {
-          day.focus({ preventScroll: true });
-        }
+      // Looked up when the frame fires rather than now, so a focus request
+      // superseded within the same frame still lands on the current day.
+      this.#autofocusWork.schedule(() => {
+        element
+          .querySelector<HTMLElement>('[data-part="day"][tabindex="0"]')
+          ?.focus({ preventScroll: true });
       });
 
-      return () => {
-        cancelAnimationFrame(frame);
-        finish();
-      };
+      return () => this.#autofocusWork.cancel();
     }
   );
 

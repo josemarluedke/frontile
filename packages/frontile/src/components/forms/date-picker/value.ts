@@ -1,4 +1,8 @@
-import { toDayKey, fromDayKey } from '../../collections/calendar/utils';
+import {
+  formatter,
+  toDayKey,
+  fromDayKey
+} from '../../collections/calendar/utils';
 import type {
   CalendarMode,
   CalendarValue,
@@ -130,7 +134,6 @@ export {
   parseDate,
   parseRange,
   toWire,
-  formatDate,
   formatValue,
   isEmptyValue,
   type DatePickerInput,
