@@ -574,6 +574,51 @@ module(
         .doesNotExist('a disabled field offers no clear button');
     });
 
+    test('no clear button on a read-only field', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+            @isReadOnly={{true}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-part="clear-button"]')
+        .doesNotExist('a read-only field offers no clear button either');
+    });
+
+    test('clearing while the popover is open keeps focus on the trigger', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isClearable={{true}}
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+      assert.dom('[data-component="calendar"]').exists('the calendar is open');
+
+      await click('[data-part="clear-button"]');
+
+      assert.dom('[data-part="clear-button"]').doesNotExist('value is cleared');
+      assert
+        .dom('[data-part="input"]')
+        .isFocused('focus lands on the trigger, not <body>');
+      assert.notStrictEqual(
+        document.activeElement,
+        document.body,
+        'focus does not fall to <body>'
+      );
+    });
+
     test('onBlur does not fire when focus moves into the calendar', async function (assert) {
       const blurs = cell(0);
       const onBlur = () => blurs.current++;

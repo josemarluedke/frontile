@@ -37,7 +37,6 @@ interface BaseDatePickerArgs
       PopoverSignature['Args'],
       | 'placement'
       | 'flipOptions'
-      | 'middleware'
       | 'shiftOptions'
       | 'offsetOptions'
       | 'strategy'
@@ -58,6 +57,13 @@ interface BaseDatePickerArgs
 
   /** The name the value submits under. See the hidden inputs in date-picker.gts. */
   name?: string;
+
+  /**
+   * Additional floating-ui middleware for the popover positioning the
+   * calendar, beyond what `placement`, `offsetOptions`, `flipOptions`, and
+   * `shiftOptions` cover. Forwarded to `Popover`'s own `@middleware`.
+   */
+  middleware?: PopoverSignature['Args']['middleware'];
 
   /** Text shown in the trigger when there is no value. */
   placeholder?: string;
