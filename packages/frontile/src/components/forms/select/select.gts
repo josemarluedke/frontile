@@ -458,7 +458,14 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       // it a default would make Chip's deprecation fire on every chip render.
       variant: chip?.variant ?? (chip?.appearance ? undefined : 'soft'),
       appearance: chip?.appearance,
-      intent: chip?.intent ?? this.args.intent ?? 'default',
+      // `intent` is passed through only when the consumer (or Select's own
+      // deprecated `@intent`) actually set it. Defaulting it would fire
+      // Chip's `intent` deprecation on every chip render, for a prop nobody
+      // wrote.
+      color:
+        chip?.color ??
+        ((chip?.intent ?? this.args.intent) ? undefined : 'neutral'),
+      intent: chip?.intent ?? this.args.intent,
       size: chip?.size ?? 'sm',
       radius: chip?.radius,
       withDot: chip?.withDot ?? false

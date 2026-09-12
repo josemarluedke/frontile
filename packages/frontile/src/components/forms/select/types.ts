@@ -80,7 +80,12 @@ interface SelectChipOptions extends Pick<
   appearance?: ChipSignature['Args']['appearance'];
 
   /**
-   * The intent of the chip. Defaults to the Select's own `@intent`.
+   * The color of the chip. Defaults to the Select's own `@intent`.
+   */
+  color?: ChipSignature['Args']['color'];
+
+  /**
+   * @deprecated Use `color`. Defaults to the Select's own `@intent`.
    */
   intent?: ChipSignature['Args']['intent'];
 
@@ -541,7 +546,18 @@ interface ResolvedSelectChipOptions {
    * prop the consumer never used.
    */
   appearance: SelectChipOptions['appearance'];
-  intent: NonNullable<SelectChipOptions['intent']>;
+  /**
+   * Always set unless the consumer used the deprecated `intent` (or Select's
+   * own deprecated `@intent`), in which case it is left undefined so Chip
+   * resolves from `intent` instead.
+   */
+  color: SelectChipOptions['color'];
+  /**
+   * Passed through only when the consumer (or Select's own deprecated
+   * `@intent`) actually set it. Defaulting this would fire Chip's `intent`
+   * deprecation on every chip render, for a prop nobody wrote.
+   */
+  intent: SelectChipOptions['intent'];
   size: NonNullable<SelectChipOptions['size']>;
   radius: SelectChipOptions['radius'];
   withDot: boolean;

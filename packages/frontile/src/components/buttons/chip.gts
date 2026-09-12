@@ -19,9 +19,19 @@ interface ChipSignature {
     appearance?: 'default' | 'outlined' | 'faded';
 
     /**
-     * The intent of the chip, which drives its color
-     *
-     * @defaultValue 'default'
+     * The color of the chip.
+     */
+    color?:
+      | 'neutral'
+      | 'primary'
+      | 'secondary'
+      | 'tertiary'
+      | 'success'
+      | 'warning'
+      | 'danger';
+
+    /**
+     * @deprecated Use `color`. `default` is now `neutral`.
      */
     intent?:
       | 'default'
@@ -105,7 +115,18 @@ class Chip extends Component<ChipSignature> {
     const { chip } = useStyles();
 
     const { base, content, dot, closeButton } = chip({
-      intent: this.args.intent || 'default',
+      color:
+        renamedArgValue(
+          this.args.color,
+          this.args.intent,
+          { default: 'neutral' } as const,
+          {
+            component: 'Chip',
+            from: 'intent',
+            to: 'color',
+            id: 'frontile.chip.intent'
+          }
+        ) || 'neutral',
       size: this.args.size,
       variant:
         renamedArgValue(

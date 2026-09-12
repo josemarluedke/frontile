@@ -142,6 +142,7 @@ const SelectedChips: TOC<SelectedChipsSignature> = <template>
         @class={{@classes.chip class=@userClasses.chip}}
         @variant={{@chipOptions.variant}}
         @appearance={{@chipOptions.appearance}}
+        @color={{@chipOptions.color}}
         @intent={{@chipOptions.intent}}
         @size={{@chipOptions.size}}
         @radius={{@chipOptions.radius}}

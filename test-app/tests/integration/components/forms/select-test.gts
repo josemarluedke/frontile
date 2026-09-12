@@ -2456,7 +2456,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // by chip-test.gts / buttons-test.gts elsewhere in this suite.
     const chip = '[data-part="chip"][data-key="apple"]';
     assert.dom(chip).hasClass('chip-soft', 'defaults to variant soft');
-    assert.dom(chip).hasClass('intent-primary', 'inherits @intent="primary"');
+    assert.dom(chip).hasClass('chip-primary', 'inherits @intent="primary"');
   });
 
   test('Multiple mode: chips raise no deprecation when @chip.appearance is unused', async function (assert) {
@@ -2484,6 +2484,31 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       ids.filter((id) => id === 'frontile.chip.appearance'),
       [],
       'no chip appearance deprecation for internal defaults'
+    );
+  });
+
+  test('Multiple mode: chips raise no deprecation when @intent is unused', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    const { ids } = trackDeprecations();
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-part="chip"][data-key="apple"]').exists('renders a chip');
+    assert.deepEqual(
+      ids.filter((id) => id === 'frontile.chip.intent'),
+      [],
+      'no chip intent deprecation for internal defaults'
     );
   });
 
@@ -2516,10 +2541,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert
       .dom(chip)
       .doesNotHaveClass(
-        'intent-primary',
+        'chip-primary',
         '@chip.intent overrides the inherited @intent'
       );
-    assert.dom(chip).hasClass('intent-danger', '@chip.intent applies');
+    assert.dom(chip).hasClass('chip-danger', '@chip.intent applies');
     assert.dom(chip).hasClass('chip-outline', '@chip.appearance applies');
     assert
       .dom(chip)
