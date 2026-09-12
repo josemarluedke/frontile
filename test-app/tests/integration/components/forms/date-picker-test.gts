@@ -18,6 +18,23 @@ const janAnchor = { start: new Date(2026, 0, 5), end: new Date(2026, 0, 6) };
 // `Date` is not a template helper; a plain function stands in.
 const Date_ = (y: number, m: number, d: number) => new Date(y, m, d);
 
+/**
+ * The submit capture every Form test here needs, so each test is left with
+ * only the render and the assertions that make it distinct.
+ */
+function captureSubmit(): {
+  submitted: ReturnType<typeof cell<Record<string, unknown> | null>>;
+  onSubmit: (result: { data: Record<string, unknown> }) => void;
+} {
+  const submitted = cell<Record<string, unknown> | null>(null);
+  return {
+    submitted,
+    onSubmit: ({ data }) => {
+      submitted.current = data;
+    }
+  };
+}
+
 module(
   'Integration | Component | DatePicker | frontile/forms',
   function (hooks) {
@@ -391,10 +408,7 @@ module(
     });
 
     test('single mode submits one input under the given name', async function (assert) {
-      const submitted = cell<Record<string, unknown> | null>(null);
-      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
-        submitted.current = data;
-      };
+      const { submitted, onSubmit } = captureSubmit();
 
       await render(
         <template>
@@ -415,10 +429,7 @@ module(
     });
 
     test('range mode submits dotted names that unflatten to an object', async function (assert) {
-      const submitted = cell<Record<string, unknown> | null>(null);
-      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
-        submitted.current = data;
-      };
+      const { submitted, onSubmit } = captureSubmit();
       const range = { start: new Date(2026, 0, 20), end: new Date(2026, 1, 9) };
 
       await render(
@@ -445,10 +456,7 @@ module(
     });
 
     test('an empty value submits an empty string', async function (assert) {
-      const submitted = cell<Record<string, unknown> | null>(null);
-      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
-        submitted.current = data;
-      };
+      const { submitted, onSubmit } = captureSubmit();
 
       await render(
         <template>
@@ -465,10 +473,7 @@ module(
     });
 
     test('a late-evening date submits the same calendar day', async function (assert) {
-      const submitted = cell<Record<string, unknown> | null>(null);
-      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
-        submitted.current = data;
-      };
+      const { submitted, onSubmit } = captureSubmit();
       // 23:30 local — toISOString() would report the next day in many zones.
       const late = new Date(2026, 0, 20, 23, 30);
 
@@ -681,10 +686,7 @@ module(
     });
 
     test('Field yields a bound DatePicker', async function (assert) {
-      const submitted = cell<Record<string, unknown> | null>(null);
-      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
-        submitted.current = data;
-      };
+      const { submitted, onSubmit } = captureSubmit();
 
       await render(
         <template>
@@ -703,10 +705,7 @@ module(
     });
 
     test('Field yields a bound DateRangePicker that round-trips form data', async function (assert) {
-      const submitted = cell<Record<string, unknown> | null>(null);
-      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
-        submitted.current = data;
-      };
+      const { submitted, onSubmit } = captureSubmit();
       const initial = { stay: { start: '2026-01-20', end: '2026-02-09' } };
 
       await render(
@@ -811,10 +810,7 @@ module(
         .hasClass('w-96', '@popoverSize is forwarded to the popover content');
     });
     test('a Field-bound range keeps working after a submit', async function (assert) {
-      const submitted = cell<Record<string, unknown> | null>(null);
-      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
-        submitted.current = data;
-      };
+      const { submitted, onSubmit } = captureSubmit();
 
       await render(
         <template>

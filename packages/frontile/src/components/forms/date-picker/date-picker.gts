@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
-import { hash } from '@ember/helper';
+import { concat, hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
 import { DatePickerTrigger } from './trigger';
@@ -120,6 +120,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return isEmptyValue(this.value);
   }
 
+  @cached
   get valueBlockArg(): DatePickerValueBlockArg<M> {
     return {
       value: this.value,
@@ -263,6 +264,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     this.triggerRef.current?.focus();
   };
 
+  @cached
   get classes() {
     const { datePicker } = useStyles();
     return datePicker({ size: this.args.inputSize });
@@ -272,9 +274,13 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return this.mode === 'range';
   }
 
-  /** The single-mode wire value, or `''` when there is nothing selected. */
+  /**
+   * The single-mode wire value, or `''` when there is nothing selected. Only
+   * read from the single-mode branch of the template, so it does not repeat
+   * that branch's mode check.
+   */
   get wireValue(): string {
-    return this.mode === 'range' ? '' : toWire(this.value as Date | null);
+    return toWire(this.value as Date | null);
   }
 
   get wireRangeStart(): string {
@@ -285,19 +291,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return toWire((this.value as DateRange | null)?.end ?? null);
   }
 
-  /**
-   * The range's two field names. Dot notation, matching the convention `Form`
-   * documents for nested data — so a range arrives at a validator and at
-   * `onSubmit` as one `{ start, end }` object rather than two loose keys.
-   */
-  get startName(): string {
-    return `${this.args.name}.start`;
-  }
-
-  get endName(): string {
-    return `${this.args.name}.end`;
-  }
-
+  @cached
   get calendarBlockArg(): DatePickerCalendarArgs<M> {
     return {
       mode: this.mode,
@@ -315,6 +309,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     };
   }
 
+  @cached
   get footerBlockArg(): DatePickerFooterArg<M> {
     return {
       // Deliberately `handleChange`, not a bare assignment: a preset must be
@@ -336,16 +331,19 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
       data-part="base"
       ...attributes
     >
+      {{! A range's two names use dot notation, the convention Form documents
+      for nested data -- so it arrives at a validator and at onSubmit as one
+      { start, end } object rather than two loose keys. }}
       {{#if @name}}
         {{#if this.isRangeMode}}
           <input
             type="hidden"
-            name={{this.startName}}
+            name={{concat @name ".start"}}
             value={{this.wireRangeStart}}
           />
           <input
             type="hidden"
-            name={{this.endName}}
+            name={{concat @name ".end"}}
             value={{this.wireRangeEnd}}
           />
         {{else}}
