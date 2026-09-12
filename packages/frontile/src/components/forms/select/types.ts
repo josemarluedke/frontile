@@ -530,8 +530,17 @@ type SelectClasses = ReturnType<ReturnType<typeof useStyles>['select']>;
  * so the chips do not have to restate them.
  */
 interface ResolvedSelectChipOptions {
-  variant: NonNullable<SelectChipOptions['variant']>;
-  appearance: NonNullable<SelectChipOptions['appearance']>;
+  /**
+   * Always set unless the consumer used the deprecated `appearance`, in which
+   * case it is left undefined so Chip resolves from `appearance` instead.
+   */
+  variant: SelectChipOptions['variant'];
+  /**
+   * Passed through only when the consumer actually wrote it. Defaulting this
+   * would fire Chip's `appearance` deprecation on every chip render, for a
+   * prop the consumer never used.
+   */
+  appearance: SelectChipOptions['appearance'];
   intent: NonNullable<SelectChipOptions['intent']>;
   size: NonNullable<SelectChipOptions['size']>;
   radius: SelectChipOptions['radius'];

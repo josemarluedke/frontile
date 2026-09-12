@@ -13,6 +13,7 @@ import { cell } from 'ember-resources';
 import { Select } from 'frontile';
 import { array, hash } from '@ember/helper';
 import { selectOptionByKey, ownParts } from 'frontile/test-support';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 // Simple equality helper
 const eq = (a: unknown, b: unknown) => a === b;
@@ -2456,6 +2457,34 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     const chip = '[data-part="chip"][data-key="apple"]';
     assert.dom(chip).hasClass('chip-soft', 'defaults to variant soft');
     assert.dom(chip).hasClass('intent-primary', 'inherits @intent="primary"');
+  });
+
+  test('Multiple mode: chips raise no deprecation when @chip.appearance is unused', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    const { ids } = trackDeprecations();
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-part="chip"][data-key="apple"]').exists('renders a chip');
+    // Select defaults the chip's variant, never its deprecated `appearance`.
+    // Defaulting `appearance` would fire Chip's deprecation on every chip
+    // render, warning consumers about a prop they never wrote.
+    assert.deepEqual(
+      ids.filter((id) => id === 'frontile.chip.appearance'),
+      [],
+      'no chip appearance deprecation for internal defaults'
+    );
   });
 
   test('Multiple mode: @chip overrides appearance, intent, size and dot', async function (assert) {

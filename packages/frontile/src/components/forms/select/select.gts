@@ -454,8 +454,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     const chip =
       this.args.selectionMode === 'multiple' ? this.args.chip : undefined;
     return {
-      variant: chip?.variant ?? 'soft',
-      appearance: chip?.appearance ?? 'faded',
+      // `appearance` is passed through only when the consumer set it. Giving
+      // it a default would make Chip's deprecation fire on every chip render.
+      variant: chip?.variant ?? (chip?.appearance ? undefined : 'soft'),
+      appearance: chip?.appearance,
       intent: chip?.intent ?? this.args.intent ?? 'default',
       size: chip?.size ?? 'sm',
       radius: chip?.radius,
