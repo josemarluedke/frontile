@@ -68,11 +68,7 @@ class ButtonGroup extends Component<ButtonGroupSignature> {
       {{yield
         (hash
           Button=(component
-            Button
-            isInGroup=true
-            variant=this.variant
-            intent=@intent
-            size=@size
+            Button isInGroup=true variant=this.variant intent=@intent size=@size
           )
           ToggleButton=(component
             ToggleButton isInGroup=true intent=@intent size=@size

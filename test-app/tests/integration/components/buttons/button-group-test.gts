@@ -119,7 +119,9 @@ module(
             </template>
           );
 
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('button-solid');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-solid');
           assert
             .dom('[data-test-id="button"]')
             .doesNotHaveClass('button-plain');
