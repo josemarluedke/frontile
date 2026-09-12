@@ -320,10 +320,21 @@ const checkbox = tv({
     ]
   },
   variants: {
+    // The trigger is a `<button>` whose text *is* the value, so with neither a
+    // value nor a `@placeholder` it has no content at all and collapses to its
+    // padding -- noticeably shorter than every other field on the form.
+    // (Select hit the same thing once chips took over its trigger's content.)
+    //
+    // The floor has to be stated per size, and as a border-box total: Tailwind
+    // sets `box-sizing: border-box`, so a bare `min-h-5` is already satisfied
+    // by the padding alone and does nothing. Each value is one line of
+    // `text-base`/`leading-tight` (1.25rem) plus that size's vertical padding
+    // plus the 1px borders -- i.e. exactly the height the field has once it
+    // holds a single line of text.
     size: {
-      sm: {},
-      md: {},
-      lg: {}
+      sm: { input: 'min-h-[calc(1.25rem+1rem+2px)]' },
+      md: { input: 'min-h-[calc(1.25rem+1.5rem+2px)]' },
+      lg: { input: 'min-h-[calc(1.25rem+2rem+2px)]' }
     }
   },
   defaultVariants: {
@@ -341,10 +352,21 @@ const radio = tv({
     ]
   },
   variants: {
+    // The trigger is a `<button>` whose text *is* the value, so with neither a
+    // value nor a `@placeholder` it has no content at all and collapses to its
+    // padding -- noticeably shorter than every other field on the form.
+    // (Select hit the same thing once chips took over its trigger's content.)
+    //
+    // The floor has to be stated per size, and as a border-box total: Tailwind
+    // sets `box-sizing: border-box`, so a bare `min-h-5` is already satisfied
+    // by the padding alone and does nothing. Each value is one line of
+    // `text-base`/`leading-tight` (1.25rem) plus that size's vertical padding
+    // plus the 1px borders -- i.e. exactly the height the field has once it
+    // holds a single line of text.
     size: {
-      sm: {},
-      md: {},
-      lg: {}
+      sm: { input: 'min-h-[calc(1.25rem+1rem+2px)]' },
+      md: { input: 'min-h-[calc(1.25rem+1.5rem+2px)]' },
+      lg: { input: 'min-h-[calc(1.25rem+2rem+2px)]' }
     }
   },
   defaultVariants: {
@@ -487,16 +509,35 @@ const datePicker = tv({
     // `border-default` is not a generated utility -- there is no `default`
     // semantic level. `border-neutral-soft` is the same divider treatment
     // `command.ts` uses to separate a footer from the content above it.
-    footer:
-      'flex flex-wrap items-center gap-2 border-t border-neutral-soft p-2',
+    // `w-0 min-w-full` keeps the footer out of the popover's intrinsic width:
+    // the popover is sized `auto`, so it takes the width of its widest child,
+    // and a row of preset buttons would otherwise stretch it well past the
+    // calendar. Contributing zero and then filling the resolved width lets the
+    // calendar decide how wide the popover is, and the buttons wrap within it.
+    footer: [
+      'flex flex-wrap items-center gap-2',
+      'w-0 min-w-full',
+      'border-t border-neutral-soft p-2'
+    ],
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto'
   },
   variants: {
+    // The trigger is a `<button>` whose text *is* the value, so with neither a
+    // value nor a `@placeholder` it has no content at all and collapses to its
+    // padding -- noticeably shorter than every other field on the form.
+    // (Select hit the same thing once chips took over its trigger's content.)
+    //
+    // The floor has to be stated per size, and as a border-box total: Tailwind
+    // sets `box-sizing: border-box`, so a bare `min-h-5` is already satisfied
+    // by the padding alone and does nothing. Each value is one line of
+    // `text-base`/`leading-tight` (1.25rem) plus that size's vertical padding
+    // plus the 1px borders -- i.e. exactly the height the field has once it
+    // holds a single line of text.
     size: {
-      sm: {},
-      md: {},
-      lg: {}
+      sm: { input: 'min-h-[calc(1.25rem+1rem+2px)]' },
+      md: { input: 'min-h-[calc(1.25rem+1.5rem+2px)]' },
+      lg: { input: 'min-h-[calc(1.25rem+2rem+2px)]' }
     }
   },
   defaultVariants: {
@@ -517,10 +558,21 @@ const autocomplete = tv({
     emptyContent: 'p-2'
   },
   variants: {
+    // The trigger is a `<button>` whose text *is* the value, so with neither a
+    // value nor a `@placeholder` it has no content at all and collapses to its
+    // padding -- noticeably shorter than every other field on the form.
+    // (Select hit the same thing once chips took over its trigger's content.)
+    //
+    // The floor has to be stated per size, and as a border-box total: Tailwind
+    // sets `box-sizing: border-box`, so a bare `min-h-5` is already satisfied
+    // by the padding alone and does nothing. Each value is one line of
+    // `text-base`/`leading-tight` (1.25rem) plus that size's vertical padding
+    // plus the 1px borders -- i.e. exactly the height the field has once it
+    // holds a single line of text.
     size: {
-      sm: {},
-      md: {},
-      lg: {}
+      sm: { input: 'min-h-[calc(1.25rem+1rem+2px)]' },
+      md: { input: 'min-h-[calc(1.25rem+1.5rem+2px)]' },
+      lg: { input: 'min-h-[calc(1.25rem+2rem+2px)]' }
     }
   },
   defaultVariants: {

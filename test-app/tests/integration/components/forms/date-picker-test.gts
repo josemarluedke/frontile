@@ -1,6 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find, triggerKeyEvent } from '@ember/test-helpers';
+import {
+  render,
+  click,
+  find,
+  settled,
+  triggerKeyEvent
+} from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
@@ -143,22 +149,53 @@ module(
         .isFocused('focus returns to the trigger');
     });
 
-    test('a controlled value does not change on its own', async function (assert) {
+    test('@value is pushed into the field whenever it changes', async function (assert) {
+      const external = cell<Date>(jan20);
+
       await render(
         <template>
-          <DatePicker @label="Start" @value={{jan20}} @locale="en-US" />
+          <DatePicker
+            @label="Start"
+            @value={{external.current}}
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="input"]').hasText('Jan 20, 2026');
+
+      external.current = new Date(2026, 1, 14);
+      await settled();
+
+      assert
+        .dom('[data-part="input"]')
+        .hasText('Feb 14, 2026', 'a new @value replaces what is displayed');
+    });
+
+    test('picking a date updates the field without waiting for @value', async function (assert) {
+      // The field renders its own state and treats @value as something to
+      // sync *from*, the way Select does -- it does not read through to the
+      // argument. Reading through deadlocks it inside a Form, where @value is
+      // bound to data this component is itself the only source of.
+      const seen = cell<Date | null>(null);
+      const onChange = (value: Date | null) => (seen.current = value);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @value={{jan20}}
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
         </template>
       );
 
       await click('[data-part="input"]');
       await click('[data-part="day"][data-key="2026-01-22"]');
 
-      assert
-        .dom('[data-part="input"]')
-        .hasText(
-          'Jan 20, 2026',
-          'the trigger still shows the controlled value'
-        );
+      assert.strictEqual(seen.current?.getDate(), 22, 'onChange still fires');
+      assert.dom('[data-part="input"]').hasText('Jan 22, 2026');
     });
 
     test('escape closes and returns focus to the trigger', async function (assert) {
@@ -772,6 +809,77 @@ module(
       assert
         .dom(find('[data-component="calendar"]')!.parentElement)
         .hasClass('w-96', '@popoverSize is forwarded to the popover content');
+    });
+    test('a Field-bound range keeps working after a submit', async function (assert) {
+      const submitted = cell<Record<string, unknown> | null>(null);
+      const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+        submitted.current = data;
+      };
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}} as |form|>
+            <form.Field @name="stay" as |field|>
+              <field.DateRangePicker
+                @label="Stay"
+                @locale="en-US"
+                @defaultValue={{janAnchor}}
+              />
+            </form.Field>
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      // Submitting puts data in the Form, which Field then binds back to
+      // @value -- from that point the picker counts as controlled.
+      await click('button[type="submit"]');
+      assert.deepEqual(
+        submitted.current,
+        { stay: { start: '2026-01-05', end: '2026-01-06' } },
+        'the seeded range submits'
+      );
+
+      // Picking a new range must still work. It only can if the component
+      // tells the Form its value moved -- the hidden inputs are written
+      // programmatically and fire no input event of their own.
+      await click('[data-part="input"]');
+      await click('[data-part="day"][data-key="2026-01-20"]');
+      await click('[data-part="day"][data-key="2026-01-25"]');
+
+      assert
+        .dom('[data-part="input"]')
+        .hasText('Jan 20, 2026 – Jan 25, 2026', 'the new range took effect');
+
+      await click('button[type="submit"]');
+
+      assert.deepEqual(
+        submitted.current,
+        { stay: { start: '2026-01-20', end: '2026-01-25' } },
+        'and it is what submits'
+      );
+    });
+
+    test('an empty trigger is as tall as one showing a value', async function (assert) {
+      await render(
+        <template>
+          <div data-test-empty><DatePicker @label="Empty" /></div>
+          <div data-test-filled>
+            <DatePicker @label="Filled" @value={{jan20}} @locale="en-US" />
+          </div>
+        </template>
+      );
+
+      // The trigger is a <button> whose text is the value, so with neither a
+      // value nor a @placeholder it has no content to give it height.
+      const empty = find('[data-test-empty] [data-part="input"]')!;
+      const filled = find('[data-test-filled] [data-part="input"]')!;
+
+      assert.strictEqual(
+        empty.getBoundingClientRect().height,
+        filled.getBoundingClientRect().height,
+        'an empty field does not collapse'
+      );
     });
   }
 );

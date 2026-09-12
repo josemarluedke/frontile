@@ -29,13 +29,15 @@ import { DatePicker } from 'frontile';
 
 ## Controlled vs Uncontrolled
 
-`@value` accepts a `Date` or a `yyyy-MM-dd` string. Passed alongside `@onChange`, it puts the
-picker in controlled mode — but only once it resolves to something other than `undefined`.
-An `undefined` `@value` (as opposed to omitting the argument) still leaves the picker
-uncontrolled, so `@defaultValue` seeds it. This differs from `Calendar`, whose own `@value`
-controls as soon as the argument is passed at all, `undefined` included.
+`@value` accepts a `Date` or a `yyyy-MM-dd` string, and `@defaultValue` seeds an uncontrolled
+picker. `@onChange` always hands back `Date`s, regardless of which form `@value` was given in.
 
-`@onChange` always hands back `Date`s, regardless of what `@value` was given.
+The field keeps its own selection and treats `@value` as something to sync *from*: setting it
+replaces what is displayed, and picking a date updates the field immediately without waiting
+for `@value` to come back. Passing `undefined` changes nothing, so a picker whose `@value` has
+no data yet still honours `@defaultValue`. This is how `Select` behaves, and it is what lets
+the field work inside a `<Form>`, where `@value` is bound to data the field is itself the only
+source of.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -119,8 +121,7 @@ clicking a day: it fires `@onChange` and closes the popover once the value is co
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { fn } from '@ember/helper';
-import { on } from '@ember/modifier';
-import { DatePicker } from 'frontile';
+import { Button, DatePicker } from 'frontile';
 
 function startOfToday(): Date {
   const now = new Date();
@@ -136,6 +137,12 @@ function daysFromToday(days: number): Date {
 export default class DatePickerPresets extends Component {
   @tracked value: Date | null = null;
 
+  presets = [
+    { label: 'Today', date: startOfToday() },
+    { label: 'Tomorrow', date: daysFromToday(1) },
+    { label: 'In a week', date: daysFromToday(7) }
+  ];
+
   handleChange = (value: Date | null) => {
     this.value = value;
   };
@@ -149,21 +156,21 @@ export default class DatePickerPresets extends Component {
         @onChange={{this.handleChange}}
       >
         <:footer as |f|>
-          <button
-            type='button'
-            class='text-sm text-primary'
-            {{on 'click' (fn f.setValue (startOfToday))}}
-          >Today</button>
-          <button
-            type='button'
-            class='text-sm text-primary'
-            {{on 'click' (fn f.setValue (daysFromToday 7))}}
-          >In a week</button>
-          <button
-            type='button'
-            class='text-sm text-neutral-soft'
-            {{on 'click' f.close}}
-          >Close</button>
+          {{#each this.presets as |preset|}}
+            <Button
+              @appearance='soft'
+              @intent='primary'
+              @size='xs'
+              @onPress={{fn f.setValue preset.date}}
+            >{{preset.label}}</Button>
+          {{/each}}
+
+          <Button
+            @appearance='minimal'
+            @size='xs'
+            @class='ml-auto'
+            @onPress={{f.close}}
+          >Close</Button>
         </:footer>
       </DatePicker>
     </div>

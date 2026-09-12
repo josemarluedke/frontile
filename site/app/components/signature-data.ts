@@ -32837,7 +32837,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Seeds the value when uncontrolled. Has no effect once <code>@value</code> controls.',
+          'Seeds the range before any <code>@value</code> is supplied.\nSeeds the value before any <code>@value</code> is supplied.',
         tags: {},
       },
       {
@@ -34728,7 +34728,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "A <code>{ start, end }</code> pair, each a <code>Date</code> or a <code>yyyy-MM-dd</code> string; <code>end</code> may\nbe <code>null</code> while only the anchor is chosen. Same controlled-mode rule as\nsingle mode: this puts the picker in controlled mode only once it\nresolves to something other than <code>undefined</code>, unlike <code>Calendar</code>'s own\n<code>@value</code>, which controls as soon as the argument is passed at all.\nA <code>Date</code>, or the same <code>yyyy-MM-dd</code> string this component writes to its\nhidden input. The picker is controlled only once this resolves to\nsomething other than <code>undefined</code> — unlike <code>Calendar</code>'s own <code>@value</code>,\nwhich controls as soon as the argument is passed at all, <code>undefined</code>\nincluded. This is why a <code>&#x3C;form.Field></code>-bound picker, which always passes\na <code>value</code> key, still honors <code>@defaultValue</code> before form data exists.",
+          "<p>A <code>{ start, end }</code> pair, each a <code>Date</code> or a <code>yyyy-MM-dd</code> string; <code>end</code> may\nbe <code>null</code> while only the anchor is chosen. Synced the same way as single\nmode's <code>@value</code>: setting it replaces the displayed range, <code>undefined</code> is\nignored, and the field updates on its own as the user picks.\nA <code>Date</code>, or the same <code>yyyy-MM-dd</code> string this component writes to its\nhidden input.</p>\n<p>The field keeps its own selection and syncs <em>from</em> this argument: setting\nit replaces what is displayed, while picking a date updates the field\nimmediately rather than waiting for <code>@value</code> to come back. <code>undefined</code> is\nignored, which is why a <code>&#x3C;form.Field></code>-bound picker — which always passes\na <code>value</code> key — still honors <code>@defaultValue</code> before form data exists. This is why a <code>&#x3C;form.Field></code>-bound picker, which always passes\na <code>value</code> key, still honors <code>@defaultValue</code> before form data exists.</p>",
         tags: {},
       },
       {
