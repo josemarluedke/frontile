@@ -5,10 +5,11 @@ import Button, { type ButtonSignature } from './button';
 import type { ButtonArgs } from './button';
 import ToggleButton, { type ToggleButtonSignature } from './toggle-button';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
+import { renamedArgValue } from '../../-private/deprecated-args';
 
 interface ButtonGroupArgs extends Pick<
   ButtonArgs,
-  'appearance' | 'intent' | 'size' | 'class'
+  'variant' | 'appearance' | 'intent' | 'size' | 'class'
 > {}
 
 interface ButtonGroupSignature {
@@ -28,6 +29,26 @@ interface ButtonGroupSignature {
 }
 
 class ButtonGroup extends Component<ButtonGroupSignature> {
+  get variant() {
+    return renamedArgValue(
+      this.args.variant,
+      this.args.appearance,
+      {
+        default: 'solid',
+        outlined: 'outline',
+        minimal: 'plain',
+        soft: 'subtle',
+        tonal: 'soft'
+      } as const,
+      {
+        component: 'ButtonGroup',
+        from: 'appearance',
+        to: 'variant',
+        id: 'frontile.button-group.appearance'
+      }
+    );
+  }
+
   get classNames(): string {
     const { buttonGroup } = useStyles();
 
@@ -49,7 +70,7 @@ class ButtonGroup extends Component<ButtonGroupSignature> {
           Button=(component
             Button
             isInGroup=true
-            appearance=@appearance
+            variant=this.variant
             intent=@intent
             size=@size
           )

@@ -6,6 +6,7 @@ import { tv } from 'tailwind-variants';
 import { ButtonGroup } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 module(
   'Integration | Component | ButtonGroup | @frontile/buttons',
@@ -17,11 +18,14 @@ module(
         base: [],
         variants: {
           isInGroup: { true: ['in-group'] },
-          appearance: {
-            default: 'btn-default',
-            outlined: 'btn-outlined',
-            minimal: 'btn-minimal',
-            custom: 'btn-custom'
+          variant: {
+            solid: 'button-solid',
+            soft: 'button-soft',
+            subtle: 'button-subtle',
+            outline: 'button-outline',
+            ghost: 'button-ghost',
+            plain: 'button-plain',
+            custom: 'button-custom'
           },
           intent: {
             default: 'intent-default',
@@ -77,8 +81,8 @@ module(
     });
 
     module('Style classes', () => {
-      module('@appearance', () => {
-        test('it adds class for default appearance', async function (assert) {
+      module('@variant', () => {
+        test('it adds class for default variant', async function (assert) {
           await render(
             <template>
               <ButtonGroup data-test-id="group" as |g|>
@@ -90,19 +94,23 @@ module(
 
           assert
             .dom('[data-test-id="button"]')
-            .doesNotHaveClass('btn-outlined');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
-          assert.dom('[data-test-id="button"]').hasClass('btn');
+            .doesNotHaveClass('button-outline');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-plain');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-custom');
+          assert.dom('[data-test-id="button"]').hasClass('button-solid');
         });
 
-        test('it adds class for outlined appearance', async function (assert) {
-          const appearance = cell<'outlined'>('outlined');
+        test('it adds class for outline variant', async function (assert) {
+          const variant = cell<'outline'>('outline');
           await render(
             <template>
               <ButtonGroup
                 data-test-id="group"
-                @appearance={{appearance.current}}
+                @variant={{variant.current}}
                 as |g|
               >
                 <g.Button data-test-id="button">Button</g.Button>
@@ -111,10 +119,41 @@ module(
             </template>
           );
 
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
-          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
-          assert.dom('[data-test-id="button"]').hasClass('btn-outlined');
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('button-solid');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-plain');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-custom');
+          assert.dom('[data-test-id="button"]').hasClass('button-outline');
+        });
+
+        test('ButtonGroup forwards @variant to its buttons', async function (assert) {
+          await render(
+            <template>
+              <ButtonGroup @variant="outline" as |g|>
+                <g.Button data-test-id="button">x</g.Button>
+              </ButtonGroup>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-outline');
+        });
+
+        test('ButtonGroup @appearance deprecates exactly once', async function (assert) {
+          const { ids } = trackDeprecations();
+
+          await render(
+            <template>
+              <ButtonGroup @appearance="outlined" as |g|>
+                <g.Button data-test-id="button">x</g.Button>
+              </ButtonGroup>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-outline');
+          assert.deepEqual(ids, ['frontile.button-group.appearance']);
         });
       });
 
