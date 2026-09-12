@@ -8,7 +8,12 @@ const popover = tv({
       md: 'w-64',
       lg: 'w-96',
       xl: 'w-136',
-      trigger: 'w-(--trigger-width)'
+      trigger: 'w-(--trigger-width)',
+      // Sizes to the content instead of a fixed width. For panels whose
+      // natural width is the point -- a calendar grid is as wide as seven day
+      // cells, and wider still with two months side by side -- a fixed width
+      // either clips the content or leaves it swimming.
+      auto: 'w-auto'
     }
   },
   defaultVariants: {

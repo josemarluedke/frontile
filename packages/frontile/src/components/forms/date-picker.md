@@ -71,6 +71,11 @@ export default class ControlledDatePicker extends Component {
 `@mode="range"` switches the calendar and the value shape to `{ start, end }`. `@visibleMonths`
 shows more than one month at a time, which is typical for a range picker.
 
+The popover sizes itself to the calendar, so showing a second month widens it automatically —
+there is nothing to adjust. Pass `@popoverSize` if you need a fixed width (`"sm"`, `"md"`,
+`"lg"`, `"xl"`) or want it to match the field (`"trigger"`); note that a fixed width narrower
+than the grid will clip it.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';

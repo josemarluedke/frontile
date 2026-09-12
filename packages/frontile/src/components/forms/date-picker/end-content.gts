@@ -10,6 +10,17 @@ interface DatePickerEndContentSignature {
     userClasses?: SlotsToClasses<DatePickerSlots>;
     isClearable: boolean;
     onClear: () => void;
+
+    /**
+     * Defaults to `none` so clicks fall through to the trigger; content that
+     * needs its own events opts back in per element.
+     *
+     * The theme declares no default for this variant, so leaving it unset
+     * yields neither class and the browser default (`auto`) wins -- which
+     * makes the cluster sit over the right edge of the field and swallow
+     * clicks on the calendar icon.
+     */
+    endContentPointerEvents?: 'none' | 'auto';
   };
   Element: HTMLDivElement;
 }
@@ -22,7 +33,12 @@ interface DatePickerEndContentSignature {
 const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
   <div
     data-part="end-content"
-    class={{@classes.endContent class=@userClasses.endContent}}
+    class={{@classes.endContent
+      class=@userClasses.endContent
+      endContentPointerEvents=(if
+        @endContentPointerEvents @endContentPointerEvents "none"
+      )
+    }}
     ...attributes
   >
     {{#if @isClearable}}

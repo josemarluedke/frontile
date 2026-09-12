@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, triggerKeyEvent } from '@ember/test-helpers';
+import { render, click, find, triggerKeyEvent } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
@@ -695,6 +695,83 @@ module(
       assert.deepEqual(submitted.current, {
         stay: { start: '2026-01-20', end: '2026-02-09' }
       });
+    });
+    test('the end-content cluster lets clicks fall through to the trigger', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @placeholder="Pick a date" />
+        </template>
+      );
+
+      // The cluster is absolutely positioned over the right edge of the field.
+      // With pointer events on, it swallows the click and the calendar icon
+      // becomes a dead zone -- the picker will not open when you click it.
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="end-content"]')!).pointerEvents,
+        'none',
+        'the cluster is transparent to pointer events'
+      );
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="icon"]')!).pointerEvents,
+        'none',
+        'so is the calendar icon inside it'
+      );
+    });
+
+    test('the clear button stays clickable inside the transparent cluster', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+          />
+        </template>
+      );
+
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="clear-button"]')!).pointerEvents,
+        'auto',
+        'the clear button opts back in, or it could never be clicked'
+      );
+    });
+
+    test('the popover sizes to the calendar rather than a fixed width', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start" @locale="en-US" /></template>
+      );
+
+      await click('[data-part="input"]');
+
+      const content = find('[data-component="calendar"]')!.parentElement!;
+
+      // Popover.Content defaults to `md` (w-64, 256px), which is narrower
+      // than the calendar grid and clips the Saturday column. `auto` sizes to
+      // the content instead, which also absorbs @visibleMonths changing the
+      // calendar's width.
+      //
+      // Asserted as the applied class rather than by measuring: #ember-testing
+      // is a narrow container, and an absolutely-positioned `width: auto` box
+      // shrink-to-fits against available width, so the measured width here
+      // reflects the test container rather than the rule under test.
+      assert.dom(content).hasClass('w-auto', 'sized to its content');
+      assert
+        .dom(content)
+        .doesNotHaveClass('w-64', 'not the default fixed size');
+    });
+
+    test('a consumer can still override the popover size', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @locale="en-US" @popoverSize="lg" />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      assert
+        .dom(find('[data-component="calendar"]')!.parentElement)
+        .hasClass('w-96', '@popoverSize is forwarded to the popover content');
     });
   }
 );

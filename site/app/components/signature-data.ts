@@ -11966,8 +11966,8 @@ const data: ComponentDoc[] = [
         identifier: 'size',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'trigger\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span></span>',
-          items: ["'sm'", "'md'", "'lg'", "'trigger'", "'xl'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'trigger\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'", "'trigger'", "'xl'", "'auto'"],
         },
         isRequired: false,
         isInternal: false,
@@ -32876,6 +32876,21 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
       },
       {
+        identifier: 'endContentPointerEvents',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span></span>',
+          items: ["'none'", "'auto'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>Whether the cluster at the end of the field (the calendar icon, or the\nclear button) receives pointer events.</p>\n<p>Defaults to <code>'none'</code> so that a click anywhere in the field -- the icon\nincluded -- falls through to the trigger and opens the picker. The clear\nbutton opts back in on its own.</p>",
+        tags: { defaultValue: { name: 'defaultValue', value: "'none'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'none\'</span></span>',
+      },
+      {
         identifier: 'errors',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -33862,7 +33877,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
+          "Additional floating-ui middleware for the popover positioning the\ncalendar, beyond what <code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and\n<code>shiftOptions</code> cover. Forwarded to <code>Popover</code>'s own <code>@middleware</code>.",
         tags: {},
       },
       {
@@ -34605,6 +34620,21 @@ const data: ComponentDoc[] = [
         },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'bottom-start\'</span></span>',
+      },
+      {
+        identifier: 'popoverSize',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'trigger\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'", "'trigger'", "'xl'", "'auto'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>The width of the popover holding the calendar.</p>\n<p>Defaults to <code>'auto'</code> -- the calendar's own width is the meaningful one,\nand it changes with <code>@visibleMonths</code>, so a fixed width would clip the\ngrid. <code>'trigger'</code> matches the field's width; the named sizes are fixed.</p>",
+        tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'auto\'</span></span>',
       },
       {
         identifier: 'renderInPlace',
@@ -36329,6 +36359,19 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'endContentPointerEvents',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'auto\'</span></span>',
+          items: ["'none'", "'auto'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Defaults to <code>none</code> so clicks fall through to the trigger; content that\nneeds its own events opts back in per element.</p>\n<p>The theme declares no default for this variant, so leaving it unset\nyields neither class and the browser default (<code>auto</code>) wins -- which\nmakes the cluster sit over the right edge of the field and swallow\nclicks on the calendar icon.</p>',
+        tags: {},
+      },
+      {
         identifier: 'userClasses',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'footer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'input\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'icon\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'innerContainer\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'startContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'endContent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'clearButton\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'placeholder\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'calendar\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
@@ -36367,7 +36410,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Names the trigger when a <code>:value</code> block owns its content — that block\nmay render nothing readable at all, which would leave an unnamed button.',
+          'Names the trigger when a <code>:value</code> block owns its content — that block\nmay render nothing readable at all, which would leave an unnamed\nbutton. <code>undefined</code> when there is nothing to name it with, so\n<code>aria-label</code> is omitted entirely rather than set to <code>""</code>.',
         tags: {},
       },
       {

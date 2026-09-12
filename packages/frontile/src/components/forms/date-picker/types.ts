@@ -85,6 +85,29 @@ interface BaseDatePickerArgs
    */
   isClearable?: boolean;
 
+  /**
+   * The width of the popover holding the calendar.
+   *
+   * Defaults to `'auto'` -- the calendar's own width is the meaningful one,
+   * and it changes with `@visibleMonths`, so a fixed width would clip the
+   * grid. `'trigger'` matches the field's width; the named sizes are fixed.
+   *
+   * @defaultValue 'auto'
+   */
+  popoverSize?: ContentSignature['Args']['size'];
+
+  /**
+   * Whether the cluster at the end of the field (the calendar icon, or the
+   * clear button) receives pointer events.
+   *
+   * Defaults to `'none'` so that a click anywhere in the field -- the icon
+   * included -- falls through to the trigger and opens the picker. The clear
+   * button opts back in on its own.
+   *
+   * @defaultValue 'none'
+   */
+  endContentPointerEvents?: 'none' | 'auto';
+
   /** Fires when focus leaves the trigger *and* the popover. */
   onBlur?: () => void;
 

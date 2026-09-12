@@ -245,7 +245,10 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
     );
 
     if (trigger) {
-      trigger.focus();
+      // Same reasoning as the day-cell focus below: inside a popover this
+      // element may not be positioned yet, and scrolling to it would move the
+      // page out from under the user.
+      trigger.focus({ preventScroll: true });
       return;
     }
 
@@ -809,9 +812,17 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
       // `closest('[data-component]') === root` guard used elsewhere, this
       // query cannot pick up a descendant component's own day-shaped cell --
       // there is nothing else in the tree it could collide with.
+      // `preventScroll` matters most when the calendar is inside a popover:
+      // the portaled content is focused on insert, *before* floating-ui has
+      // positioned it, so an ordinary focus scrolls the page to wherever the
+      // unpositioned element currently sits -- in practice the end of the
+      // document. That yanked the whole page to the bottom every time a
+      // DatePicker was opened. Nothing is lost in the standalone case either:
+      // the day being focused is one the user just navigated to in a calendar
+      // that is already on screen.
       element
         .querySelector<HTMLElement>('[data-part="day"][tabindex="0"]')
-        ?.focus();
+        ?.focus({ preventScroll: true });
     }
   );
 
