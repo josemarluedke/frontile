@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { Spinner } from 'frontile';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 module(
   'Integration | Component | Spinner | @frontile/utilities',
@@ -27,14 +28,46 @@ module(
       assert.dom('[data-test-id="sm"]').hasClass('h-6');
     });
 
-    test('it adds the class for the secondary intent', async function (assert) {
+    test('it adds the class for the secondary color', async function (assert) {
       await render(
         <template>
-          <Spinner @intent="secondary" data-test-id="spinner" />
+          <Spinner @color="secondary" data-test-id="spinner" />
         </template>
       );
 
       assert.dom('[data-test-id="spinner"]').hasClass('fill-secondary');
+    });
+
+    test('@intent still renders, and deprecates exactly once', async function (assert) {
+      const { ids } = trackDeprecations();
+
+      await render(
+        <template><Spinner @intent="danger" data-test-id="spinner" /></template>
+      );
+
+      assert.dom('[data-test-id="spinner"]').hasClass('fill-danger');
+      assert.deepEqual(ids, ['frontile.spinner.intent']);
+    });
+
+    test('@intent="default" maps to neutral', async function (assert) {
+      await render(
+        <template>
+          <Spinner @intent="default" data-test-id="spinner" />
+        </template>
+      );
+
+      assert.dom('[data-test-id="spinner"]').hasClass('fill-neutral-strong');
+    });
+
+    test('@color wins when both are passed', async function (assert) {
+      await render(
+        <template>
+          <Spinner @color="success" @intent="danger" data-test-id="spinner" />
+        </template>
+      );
+
+      assert.dom('[data-test-id="spinner"]').hasClass('fill-success');
+      assert.dom('[data-test-id="spinner"]').doesNotHaveClass('fill-danger');
     });
 
     test('renders data-component="spinner" on the root only, with data-part="base"', async function (assert) {

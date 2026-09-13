@@ -612,8 +612,8 @@ const switchInput = tv({
         label: 'text-lg'
       }
     },
-    intent: {
-      default: {
+    color: {
+      neutral: {
         wrapper: [
           'group-data-[selected=true]:bg-neutral-firm',
           'group-data-[selected=true]:text-on-neutral-firm'
@@ -659,7 +659,7 @@ const switchInput = tv({
   },
   defaultVariants: {
     size: 'md',
-    intent: 'primary',
+    color: 'primary',
     isDisabled: false
   }
 });

@@ -9,8 +9,8 @@ const spinner = tv({
       lg: 'w-10 h-10',
       xl: 'w-12 h-12'
     },
-    intent: {
-      default: 'fill-neutral-strong',
+    color: {
+      neutral: 'fill-neutral-strong',
       primary: 'fill-primary',
       secondary: 'fill-secondary',
       tertiary: 'fill-tertiary',
@@ -21,7 +21,7 @@ const spinner = tv({
   },
   defaultVariants: {
     size: 'md',
-    intent: 'default'
+    color: 'neutral'
   }
 });
 

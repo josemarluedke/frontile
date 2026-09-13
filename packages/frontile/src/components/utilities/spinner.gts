@@ -1,7 +1,8 @@
-import type { TOC } from '@ember/component/template-only';
+import Component from '@glimmer/component';
 import { useStyles, type SpinnerVariants } from '@frontile/theme';
+import { renamedArgValue } from '../../-private/deprecated-args';
 
-const Spinner: TOC<{
+interface SpinnerSignature {
   Args: {
     /**
      * Custom class name, it will override the default ones using Tailwind Merge
@@ -17,15 +18,50 @@ const Spinner: TOC<{
     size?: SpinnerVariants['size'];
 
     /**
-     * The color of the spinner, matching the intents used elsewhere.
+     * The color of the spinner.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'neutral'
      */
-    intent?: SpinnerVariants['intent'];
+    color?: SpinnerVariants['color'];
+
+    /**
+     * @deprecated Use `color`. `default` is now `neutral`.
+     */
+    intent?:
+      | 'default'
+      | 'primary'
+      | 'secondary'
+      | 'tertiary'
+      | 'success'
+      | 'warning'
+      | 'danger';
   };
   Element: SVGElement;
-}> = <template>
-  {{#let (useStyles) as |styles|}}
+}
+
+class Spinner extends Component<SpinnerSignature> {
+  get classNames() {
+    const { spinner } = useStyles();
+
+    return spinner({
+      class: this.args.class,
+      size: this.args.size,
+      color:
+        renamedArgValue(
+          this.args.color,
+          this.args.intent,
+          { default: 'neutral' } as const,
+          {
+            component: 'Spinner',
+            from: 'intent',
+            to: 'color',
+            id: 'frontile.spinner.intent'
+          }
+        ) || 'neutral'
+    });
+  }
+
+  <template>
     {{! A spinner is decorative: the loading state belongs on the region that
     is loading, not on the graphic. Hidden by default so it is not announced as
     an unnamed image; attributes are applied last, so a caller that really wants
@@ -36,7 +72,7 @@ const Spinner: TOC<{
       aria-hidden="true"
       data-component="spinner"
       data-part="base"
-      class={{styles.spinner class=@class size=@size intent=@intent}}
+      class={{this.classNames}}
       ...attributes
     >
       <path
@@ -53,8 +89,8 @@ const Spinner: TOC<{
         clip-rule="evenodd"
       />
     </svg>
-  {{/let}}
-</template>;
+  </template>
+}
 
-export { Spinner };
+export { Spinner, type SpinnerSignature };
 export default Spinner;

@@ -4,6 +4,7 @@ import { render, click, find, settled } from '@ember/test-helpers';
 
 import { Switch } from 'frontile';
 import { cell } from 'ember-resources';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 module('Integration | Component | @frontile/forms/Switch', function (hooks) {
   setupRenderingTest(hooks);
@@ -228,6 +229,81 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
 
     assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
     assert.dom('[data-component="form-feedback"]').doesNotExist();
+  });
+
+  test('@color renders the new class', async function (assert) {
+    await render(
+      <template>
+        <Switch
+          @label="Name"
+          @color="danger"
+          @isSelected={{true}}
+          data-test-input
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="switch-input"] [data-part="wrapper"]')
+      .hasClass('group-data-[selected=true]:bg-danger');
+  });
+
+  test('@intent still renders, and deprecates exactly once', async function (assert) {
+    const { ids } = trackDeprecations();
+
+    await render(
+      <template>
+        <Switch
+          @label="Name"
+          @intent="danger"
+          @isSelected={{true}}
+          data-test-input
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="switch-input"] [data-part="wrapper"]')
+      .hasClass('group-data-[selected=true]:bg-danger');
+    assert.deepEqual(ids, ['frontile.switch.intent']);
+  });
+
+  test('@intent="default" maps to neutral', async function (assert) {
+    await render(
+      <template>
+        <Switch
+          @label="Name"
+          @intent="default"
+          @isSelected={{true}}
+          data-test-input
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="switch-input"] [data-part="wrapper"]')
+      .hasClass('group-data-[selected=true]:bg-neutral-firm');
+  });
+
+  test('@color wins when both are passed', async function (assert) {
+    await render(
+      <template>
+        <Switch
+          @label="Name"
+          @color="success"
+          @intent="danger"
+          @isSelected={{true}}
+          data-test-input
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="switch-input"] [data-part="wrapper"]')
+      .hasClass('group-data-[selected=true]:bg-success');
+    assert
+      .dom('[data-component="switch-input"] [data-part="wrapper"]')
+      .doesNotHaveClass('group-data-[selected=true]:bg-danger');
   });
 
   test('it add classes to all slots', async function (assert) {
