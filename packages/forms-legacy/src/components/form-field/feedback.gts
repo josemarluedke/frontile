@@ -29,7 +29,7 @@ export default class FormFieldFeedback extends Component<FormFieldFeedbackSignat
 
     return formFeedback({
       size: this.args.size,
-      intent: this.isError ? 'danger' : 'primary',
+      status: this.isError ? 'danger' : 'primary',
       class: this.args.class
     });
   }

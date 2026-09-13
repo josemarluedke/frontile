@@ -42,7 +42,9 @@ const formFeedback = tv({
   // validation/feedback text — body role
   base: 'font-body text-body-2xs pt-1',
   variants: {
-    intent: {
+    // `status`, not `color`: this value also decides whether the message is
+    // announced assertively. See `isError` in form-feedback.gts.
+    status: {
       primary: 'text-primary',
       secondary: 'text-secondary',
       tertiary: 'text-tertiary',

@@ -6,16 +6,17 @@ import { tv } from 'tailwind-variants';
 
 import { FormFeedback, type FormFeedbackSignature } from 'frontile';
 import { cell } from 'ember-resources';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 registerCustomStyles({
   formFeedback: tv({
     base: 'form-field-feedback' as never,
     variants: {
-      intent: {
-        primary: 'intent-primary',
-        secondary: 'intent-secondary',
-        success: 'intent-success',
-        warning: 'intent-warning',
+      status: {
+        primary: 'status-primary',
+        secondary: 'status-secondary',
+        success: 'status-success',
+        warning: 'status-warning',
         danger: 'form-field-feedback--error'
       },
       size: {
@@ -36,7 +37,7 @@ module(
     setupRenderingTest(hooks);
 
     const messages = cell<string[] | string>();
-    const intent = cell<FormFeedbackSignature['Args']['intent']>('danger');
+    const status = cell<FormFeedbackSignature['Args']['status']>('danger');
 
     hooks.beforeEach(async function () {
       await render(
@@ -44,7 +45,7 @@ module(
           <FormFeedback
             @id="feedback"
             @messages={{messages.current}}
-            @intent={{intent.current}}
+            @status={{status.current}}
           />
         </template>
       );
@@ -70,26 +71,26 @@ module(
         .hasAttribute('id', 'feedback');
     });
 
-    test('it adds the class for the secondary intent', async function (assert) {
+    test('it adds the class for the secondary status', async function (assert) {
       messages.current = 'My message';
-      intent.current = 'secondary';
+      status.current = 'secondary';
       await settled();
 
       assert
         .dom('[data-component="form-feedback"]')
-        .hasClass('intent-secondary');
+        .hasClass('status-secondary');
     });
 
     test('it renders aria-live', async function (assert) {
       messages.current = 'My message';
-      intent.current = 'danger';
+      status.current = 'danger';
       await settled();
 
       assert
         .dom('[data-component="form-feedback"]')
         .hasAria('live', 'assertive');
 
-      intent.current = 'primary';
+      status.current = 'primary';
       await settled();
 
       assert.dom('[data-component="form-feedback"]').hasAria('live', 'polite');
@@ -107,6 +108,42 @@ module(
         1,
         'data-component="form-feedback" marks the root only'
       );
+    });
+
+    module('announcement', function () {
+      test('omitting @status still announces assertively', async function (assert) {
+        await render(
+          <template><FormFeedback @messages="bad" data-test-id="f" /></template>
+        );
+
+        // The default is `danger`. The ABSENCE of the arg must not quietly
+        // downgrade an error announcement to polite -- this is the whole
+        // reason the prop is `@status` and not `@color`.
+        assert.dom('[data-test-id="f"]').hasAttribute('aria-live', 'assertive');
+      });
+
+      test('a non-danger @status announces politely', async function (assert) {
+        await render(
+          <template>
+            <FormFeedback @status="success" @messages="ok" data-test-id="f" />
+          </template>
+        );
+
+        assert.dom('[data-test-id="f"]').hasAttribute('aria-live', 'polite');
+      });
+
+      test('deprecated @intent="danger" still announces assertively', async function (assert) {
+        const { ids } = trackDeprecations();
+
+        await render(
+          <template>
+            <FormFeedback @intent="danger" @messages="bad" data-test-id="f" />
+          </template>
+        );
+
+        assert.dom('[data-test-id="f"]').hasAttribute('aria-live', 'assertive');
+        assert.deepEqual(ids, ['frontile.form-feedback.intent']);
+      });
     });
   }
 );
