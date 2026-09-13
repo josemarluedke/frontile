@@ -127,9 +127,9 @@ interface PaginationArgs {
   /**
    * The colour of the active page chip.
    *
-   * @defaultValue 'default'
+   * @defaultValue 'neutral'
    */
-  intent?: PaginationVariants['intent'];
+  color?: PaginationVariants['color'];
 
   /**
    * Disables every control.
@@ -309,7 +309,7 @@ class Pagination extends Component<PaginationSignature> {
 
     return pagination({
       size: this.args.size,
-      intent: this.args.intent,
+      color: this.args.color,
       isDisabled: this.isDisabled
     });
   }

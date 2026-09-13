@@ -37,7 +37,7 @@ import { SegmentedControl } from 'frontile';
 
 ## Controlled and uncontrolled
 
-The mode is decided by whether `@value` is *passed*, not by what it holds.
+The mode is decided by whether `@value` is _passed_, not by what it holds.
 Omit the argument entirely and the control is uncontrolled; write it at all —
 including `@value={{undefined}}`, or `@value={{this.selection}}` where
 `selection` happens to be `undefined` — and it is controlled. That is what lets
@@ -93,7 +93,7 @@ choice has more than one entry point but otherwise worth avoiding.
 
 ## Intents
 
-`@intent` colors the selection indicator, so the selected option carries the
+`@color` colors the selection indicator, so the selected option carries the
 meaning rather than the control as a whole. `default` keeps the neutral raised
 pill; the rest tint it and switch the selected label to the matching contrast
 ink.
@@ -105,7 +105,7 @@ import { SegmentedControl } from 'frontile';
   <div class='flex flex-col items-start gap-3'>
     <SegmentedControl
       @defaultValue='week'
-      @intent='default'
+      @color='neutral'
       aria-label='Default intent'
       as |Ctl|
     >
@@ -115,7 +115,7 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='primary'
+      @color='primary'
       aria-label='Primary intent'
       as |Ctl|
     >
@@ -125,7 +125,7 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='secondary'
+      @color='secondary'
       aria-label='Secondary intent'
       as |Ctl|
     >
@@ -135,7 +135,7 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='tertiary'
+      @color='tertiary'
       aria-label='Tertiary intent'
       as |Ctl|
     >
@@ -145,7 +145,7 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='success'
+      @color='success'
       aria-label='Success intent'
       as |Ctl|
     >
@@ -155,7 +155,7 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='warning'
+      @color='warning'
       aria-label='Warning intent'
       as |Ctl|
     >
@@ -165,7 +165,7 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='danger'
+      @color='danger'
       aria-label='Danger intent'
       as |Ctl|
     >
@@ -469,7 +469,7 @@ filled `primary` pill, and the brand color carried by the unselected labels
 instead of neutral ink.
 
 Three of the four pieces come from arguments rather than overrides —
-`@intent='primary'` fills the indicator and picks the contrast ink for the
+`@color='primary'` fills the indicator and picks the contrast ink for the
 selected label, `@isFullWidth={{true}}` stretches the control and divides it
 evenly, and `@size='lg'` sets the padding. Only the track's surface and the
 label treatment need `@classes`.
@@ -490,7 +490,7 @@ import { hash } from '@ember/helper';
   <div class='w-[34rem] max-w-full'>
     <SegmentedControl
       @defaultValue='resident'
-      @intent='primary'
+      @color='primary'
       @size='lg'
       @isFullWidth={{true}}
       @classes={{hash
@@ -513,8 +513,8 @@ import { hash } from '@ember/helper';
 selected one needs a modifier. Each item publishes two data attributes for this,
 in **both** rendering modes:
 
-| Attribute | Values |
-| --------- | ------ |
+| Attribute       | Values               |
+| --------------- | -------------------- |
 | `data-selected` | `"true"` / `"false"` |
 | `data-disabled` | `"true"` / `"false"` |
 

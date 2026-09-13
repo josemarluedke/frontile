@@ -119,9 +119,9 @@ interface TooltipSignature {
      * The tooltip's semantic color role. The arrow inherits the body's
      * background, so it follows the chosen intent automatically.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'neutral'
      */
-    intent?: TooltipVariants['intent'];
+    color?: TooltipVariants['color'];
 
     /**
      * Milliseconds before opening on hover or keyboard focus.
@@ -265,7 +265,7 @@ class Tooltip extends Component<TooltipSignature> {
 
     const { base, arrow } = tooltip({
       size: this.args.size,
-      intent: this.args.intent
+      color: this.args.color
     });
 
     return {

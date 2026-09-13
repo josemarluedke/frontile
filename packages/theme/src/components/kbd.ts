@@ -41,14 +41,14 @@ const kbd = tv({
         key: 'h-7 min-w-7 px-2 rounded-md text-label-sm'
       }
     },
-    // Colours live in the compound variants below, paired with `intent`.
+    // Colours live in the compound variants below, paired with `color`.
     variant: {
       solid: { key: 'border border-transparent' },
       outline: { key: 'border bg-transparent' },
       subtle: { key: 'border' },
       // Follows whatever colour it is sitting on. This is what lets a keycap
       // ride an active, filled Listbox row without the row's theme having to
-      // repaint it for every intent.
+      // repaint it for every color.
       inherit: {
         key: 'border border-current/20 bg-transparent text-current'
       },
@@ -58,8 +58,8 @@ const kbd = tv({
         key: 'border-0 bg-transparent px-0 min-w-0 text-current tracking-wide'
       }
     },
-    intent: {
-      default: {},
+    color: {
+      neutral: {},
       primary: {},
       secondary: {},
       tertiary: {},
@@ -80,129 +80,129 @@ const kbd = tv({
     // a key on a page and each level carries its own `on-` contrast colour.
     {
       variant: 'solid',
-      intent: 'default',
+      color: 'neutral',
       class: { key: 'bg-neutral-muted text-on-neutral-muted' }
     },
     {
       variant: 'solid',
-      intent: 'primary',
+      color: 'primary',
       class: { key: 'bg-primary-muted text-on-primary-muted' }
     },
     {
       variant: 'solid',
-      intent: 'secondary',
+      color: 'secondary',
       class: { key: 'bg-secondary-muted text-on-secondary-muted' }
     },
     {
       variant: 'solid',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: { key: 'bg-tertiary-muted text-on-tertiary-muted' }
     },
     {
       variant: 'solid',
-      intent: 'success',
+      color: 'success',
       class: { key: 'bg-success-muted text-on-success-muted' }
     },
     {
       variant: 'solid',
-      intent: 'warning',
+      color: 'warning',
       class: { key: 'bg-warning-muted text-on-warning-muted' }
     },
     {
       variant: 'solid',
-      intent: 'danger',
+      color: 'danger',
       class: { key: 'bg-danger-muted text-on-danger-muted' }
     },
 
     // variant: outline
     {
       variant: 'outline',
-      intent: 'default',
+      color: 'neutral',
       class: { key: 'border-neutral text-neutral-strong' }
     },
     {
       variant: 'outline',
-      intent: 'primary',
+      color: 'primary',
       class: { key: 'border-primary text-primary-strong' }
     },
     {
       variant: 'outline',
-      intent: 'secondary',
+      color: 'secondary',
       class: { key: 'border-secondary text-secondary-strong' }
     },
     {
       variant: 'outline',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: { key: 'border-tertiary text-tertiary-strong' }
     },
     {
       variant: 'outline',
-      intent: 'success',
+      color: 'success',
       class: { key: 'border-success text-success-strong' }
     },
     {
       variant: 'outline',
-      intent: 'warning',
+      color: 'warning',
       class: { key: 'border-warning text-warning-strong' }
     },
     {
       variant: 'outline',
-      intent: 'danger',
+      color: 'danger',
       class: { key: 'border-danger text-danger-strong' }
     },
 
     // variant: subtle
     {
       variant: 'subtle',
-      intent: 'default',
+      color: 'neutral',
       class: {
         key: 'bg-neutral-subtle border-neutral-soft text-neutral-strong'
       }
     },
     {
       variant: 'subtle',
-      intent: 'primary',
+      color: 'primary',
       class: {
         key: 'bg-primary-subtle border-primary-soft text-primary-strong'
       }
     },
     {
       variant: 'subtle',
-      intent: 'secondary',
+      color: 'secondary',
       class: {
         key: 'bg-secondary-subtle border-secondary-soft text-secondary-strong'
       }
     },
     {
       variant: 'subtle',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: {
         key: 'bg-tertiary-subtle border-tertiary-soft text-tertiary-strong'
       }
     },
     {
       variant: 'subtle',
-      intent: 'success',
+      color: 'success',
       class: {
         key: 'bg-success-subtle border-success-soft text-success-strong'
       }
     },
     {
       variant: 'subtle',
-      intent: 'warning',
+      color: 'warning',
       class: {
         key: 'bg-warning-subtle border-warning-soft text-warning-strong'
       }
     },
     {
       variant: 'subtle',
-      intent: 'danger',
+      color: 'danger',
       class: { key: 'bg-danger-subtle border-danger-soft text-danger-strong' }
     }
   ],
   defaultVariants: {
     size: 'md',
-    intent: 'default',
+    color: 'neutral',
     variant: 'solid'
   }
 });

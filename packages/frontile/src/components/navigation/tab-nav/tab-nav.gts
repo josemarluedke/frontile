@@ -22,9 +22,9 @@ interface TabNavArgs {
   /**
    * The colour intent applied to the indicator.
    *
-   * @defaultValue 'default'
+   * @defaultValue 'neutral'
    */
-  intent?: TabsVariants['intent'];
+  color?: TabsVariants['color'];
 
   /**
    * The size of the links, driving padding and text size.
@@ -82,7 +82,7 @@ class TabNav extends Component<TabNavSignature> {
 
     return tabs({
       variant: this.args.variant,
-      intent: this.args.intent,
+      color: this.args.color,
       size: this.args.size,
       orientation: this.args.orientation,
       isFullWidth: this.args.isFullWidth

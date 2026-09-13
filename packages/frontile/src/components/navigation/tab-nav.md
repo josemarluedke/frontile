@@ -119,11 +119,7 @@ import { TabNav } from 'frontile';
 
 <template>
   <TabNav @label='Settings' as |nav|>
-    <a
-      href='/settings/account'
-      class={{nav.itemClass}}
-      {{nav.setupItem true}}
-    >
+    <a href='/settings/account' class={{nav.itemClass}} {{nav.setupItem true}}>
       Account
     </a>
   </TabNav>
@@ -132,7 +128,7 @@ import { TabNav } from 'frontile';
 
 ## Variants, intents, and sizes
 
-`TabNav` shares its theme with `Tabs`, so `@variant`, `@intent`, and `@size`
+`TabNav` shares its theme with `Tabs`, so `@variant`, `@color`, and `@size`
 behave the same way — see [Tabs](./tabs) for each option.
 
 ```gts preview
@@ -140,12 +136,12 @@ import { TabNav } from 'frontile';
 
 <template>
   <div class='demo-stack items-center'>
-    <TabNav @label='Solid' @variant='solid' @intent='primary' as |nav|>
+    <TabNav @label='Solid' @variant='solid' @color='primary' as |nav|>
       <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
       <nav.Item @href='#security'>Security</nav.Item>
     </TabNav>
 
-    <TabNav @label='Underline' @variant='underline' @intent='primary' as |nav|>
+    <TabNav @label='Underline' @variant='underline' @color='primary' as |nav|>
       <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
       <nav.Item @href='#security'>Security</nav.Item>
     </TabNav>

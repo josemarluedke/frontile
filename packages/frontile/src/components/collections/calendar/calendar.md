@@ -34,12 +34,12 @@ opens showing that selection rather than today.
 
 Calendar provides four optional named blocks for replacing or extending its rendered parts:
 
-| Block | Purpose |
-| --- | --- |
-| `<:header>` | Replaces the month caption and previous/next controls. |
-| `<:weekday>` | Replaces each localized weekday label. |
-| `<:day>` | Replaces the contents of each day button. |
-| `<:footer>` | Adds content below the month grid, such as presets or selection help. |
+| Block        | Purpose                                                               |
+| ------------ | --------------------------------------------------------------------- |
+| `<:header>`  | Replaces the month caption and previous/next controls.                |
+| `<:weekday>` | Replaces each localized weekday label.                                |
+| `<:day>`     | Replaces the contents of each day button.                             |
+| `<:footer>`  | Adds content below the month grid, such as presets or selection help. |
 
 The default rendering is available when a block is omitted. See [Custom rendering](#custom-rendering)
 for the values yielded to each block.
@@ -164,7 +164,7 @@ import { Calendar } from 'frontile/collections';
 
 ## Intents and sizes
 
-`@intent` sets the color of the selected day and the range band; `@size` scales the cells
+`@color` sets the color of the selected day and the range band; `@size` scales the cells
 and caption together.
 
 ```gts preview
@@ -176,7 +176,7 @@ const today = new Date();
 <template>
   <div class='flex flex-wrap gap-6'>
     {{#each (array 'primary' 'success' 'danger') as |intent|}}
-      <Calendar @intent={{intent}} @size='sm' @defaultValue={{today}} />
+      <Calendar @color={{intent}} @size='sm' @defaultValue={{today}} />
     {{/each}}
   </div>
 </template>
@@ -305,7 +305,7 @@ a smaller radius. `--calendar-cell-size` scales the whole grid, and content with
 line needs the extra room.
 
 Let custom content **inherit its color** rather than setting a fixed one. A selected day
-swaps its text to the contrast color for the current `@intent`, and anything inside it
+swaps its text to the contrast color for the current `@color`, and anything inside it
 inherits that automatically — so `opacity-70` gives you a muted second line that stays
 readable on both the resting surface and the selected fill. A fixed color like
 `text-neutral` looks right until the day is selected, then sits grey on a saturated

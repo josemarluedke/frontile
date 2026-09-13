@@ -134,9 +134,9 @@ const calendar = tv({
       'text-body-sm text-neutral-strong',
       'cursor-pointer select-none',
       'transition-colors duration-200 motion-reduce:transition-none',
-      // Selected days are excluded here and get their own hover per intent.
+      // Selected days are excluded here and get their own hover per color.
       // Without the exclusion this rule wins on specificity -- it carries an
-      // extra `:hover` over the intent's plain `data-[selected=true]` -- so
+      // extra `:hover` over the color's plain `data-[selected=true]` -- so
       // hovering the selected day replaced its fill with a grey overlay and
       // made it look deselected.
       'not-data-[disabled=true]:not-data-[selected=true]:hover:bg-surface-overlay-soft',
@@ -183,8 +183,8 @@ const calendar = tv({
   },
 
   variants: {
-    intent: {
-      default: {
+    color: {
+      neutral: {
         day: 'data-[selected=true]:bg-neutral-strong data-[selected=true]:text-on-neutral-strong data-[selected=true]:hover:bg-neutral-bolder',
         cellBand: 'data-[in-range=true]:bg-neutral-soft'
       },
@@ -234,7 +234,7 @@ const calendar = tv({
   },
 
   defaultVariants: {
-    intent: 'primary',
+    color: 'primary',
     size: 'md'
   }
 });

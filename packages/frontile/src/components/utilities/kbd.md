@@ -54,21 +54,21 @@ import { Kbd } from 'frontile';
 
 Named keys are case-insensitive.
 
-| Group | Names |
-| --- | --- |
-| Modifiers | `mod`, `meta` / `cmd` / `command`, `ctrl` / `control`, `alt` / `option`, `shift`, `win`, `fn` |
-| Special | `enter` / `return`, `esc` / `escape`, `tab`, `space`, `backspace`, `del` / `delete`, `capslock`, `plus` |
-| Navigation | `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `home`, `end` |
+| Group      | Names                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| Modifiers  | `mod`, `meta` / `cmd` / `command`, `ctrl` / `control`, `alt` / `option`, `shift`, `win`, `fn`           |
+| Special    | `enter` / `return`, `esc` / `escape`, `tab`, `space`, `backspace`, `del` / `delete`, `capslock`, `plus` |
+| Navigation | `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `home`, `end`                                      |
 
 Use `plus` when you need a literal `+`, since `+` is the separator.
 
 Only three keys differ by platform:
 
-| Name | Apple | Elsewhere |
-| --- | --- | --- |
-| `mod` | `⌘` | `Ctrl` |
-| `ctrl` | `⌃` | `Ctrl` |
-| `alt` | `⌥` | `Alt` |
+| Name   | Apple | Elsewhere |
+| ------ | ----- | --------- |
+| `mod`  | `⌘`   | `Ctrl`    |
+| `ctrl` | `⌃`   | `Ctrl`    |
+| `alt`  | `⌥`   | `Alt`     |
 
 Prefer `mod` for application shortcuts — it names the role, so it follows the
 platform. Use `meta` only when you mean the Command key specifically.
@@ -110,14 +110,21 @@ import { Kbd } from 'frontile';
 import { Kbd } from 'frontile';
 
 const variants = ['solid', 'outline', 'subtle'];
-const intents = ['default', 'primary', 'secondary', 'success', 'warning', 'danger'];
+const intents = [
+  'default',
+  'primary',
+  'secondary',
+  'success',
+  'warning',
+  'danger'
+];
 
 <template>
   <div class='flex flex-col gap-3 not-prose p-2'>
     {{#each variants as |variant|}}
       <div class='flex items-center gap-3'>
         {{#each intents as |intent|}}
-          <Kbd @keys='mod+k' @variant={{variant}} @intent={{intent}} />
+          <Kbd @keys='mod+k' @variant={{variant}} @color={{intent}} />
         {{/each}}
       </div>
     {{/each}}
@@ -126,7 +133,7 @@ const intents = ['default', 'primary', 'secondary', 'success', 'warning', 'dange
 ```
 
 Two appearances take their colour from their surroundings rather than from
-`@intent`. `inherit` keeps a hairline box drawn in the current colour, which is
+`@color`. `inherit` keeps a hairline box drawn in the current colour, which is
 what lets a keycap sit on a filled, active row without the row's theme having to
 repaint it. `plain` drops the box entirely, for a quiet trailing shortcut.
 
@@ -135,7 +142,9 @@ import { Kbd } from 'frontile';
 
 <template>
   <div class='flex flex-col gap-2 not-prose p-2'>
-    <div class='flex items-center justify-between gap-3 rounded-lg bg-primary-soft text-on-primary-soft px-3 py-2'>
+    <div
+      class='flex items-center justify-between gap-3 rounded-lg bg-primary-soft text-on-primary-soft px-3 py-2'
+    >
       <span>Open command palette</span>
       <Kbd @keys='mod+k' @variant='inherit' @size='sm' />
     </div>

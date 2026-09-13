@@ -112,9 +112,9 @@ const pagination = tv({
     },
 
     // Fill and label travel together: the digit sits on the fill, so each
-    // intent needs both or the active chip is unreadable.
-    intent: {
-      default: {
+    // color needs both or the active chip is unreadable.
+    color: {
+      neutral: {
         page: 'data-[active=true]:bg-neutral-bolder data-[active=true]:text-on-neutral-bolder'
       },
       primary: {
@@ -148,7 +148,7 @@ const pagination = tv({
 
   defaultVariants: {
     size: 'md',
-    intent: 'default',
+    color: 'neutral',
     isDisabled: false
   }
 });

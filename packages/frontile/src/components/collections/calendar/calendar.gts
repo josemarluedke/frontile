@@ -125,7 +125,7 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
    *
    * @defaultValue 'primary'
    */
-  intent?: CalendarVariants['intent'];
+  color?: CalendarVariants['color'];
 
   /**
    * The size of the calendar cells and caption text.
@@ -951,7 +951,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
   get styles() {
     const { calendar } = useStyles();
     return calendar({
-      intent: this.args.intent,
+      color: this.args.color,
       size: this.args.size,
       isDisabled: this.args.isDisabled
     });
