@@ -80,7 +80,7 @@ pnpm test
 **Build the main package (most component work):**
 
 ```bash
-pnpm --filter frontile build
+pnpm --filter "frontile..." build
 ```
 
 **Build the theme package (after any style/color change):**
@@ -95,10 +95,18 @@ pnpm --filter @frontile/theme build
 pnpm build
 ```
 
-**Important:** When working on a component, build `frontile` before running tests. If you
-modify styles or colors in `@frontile/theme`, build `@frontile/theme` too (the theme feeds
-generated Tailwind classes/CSS variables consumed everywhere). The legacy per-feature
-packages (`collections`, `buttons`, …) are wrappers — you rarely build them directly.
+**Important:** note the trailing `...` in `--filter "frontile..."` — it tells pnpm to build
+the package's workspace dependencies first. `frontile` compiles against `@frontile/theme`'s
+generated `declarations/`, so building it alone against missing or out-of-date theme
+declarations fails at the declaration step, with errors that point at `frontile`'s own source
+rather than at the real cause (`Module '@frontile/theme' has no exported member
+'AvatarSlots'` when they are missing; a narrower `datePicker is not a function` when they are
+merely stale). Nothing is wrong with the source in that case — the dependency had simply not
+been built. This bites hardest in a fresh clone or worktree, where nothing has been built yet.
+
+Build `frontile` before running tests when you are working on a component. The legacy
+per-feature packages (`collections`, `buttons`, …) are wrappers — you rarely build them
+directly.
 
 ### Linting
 
