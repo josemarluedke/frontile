@@ -66,7 +66,7 @@ export default class Example extends Component {
   };
 
   <template>
-    <Button @intent='primary' @size='lg' @onPress={{this.onPress}}>
+    <Button @color='primary' @size='lg' @onPress={{this.onPress}}>
       Get Started
     </Button>
   </template>
