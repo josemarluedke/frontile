@@ -27,7 +27,7 @@ import { Button, Input } from 'frontile';
   <div class='space-y-4'>
     <Input placeholder='Focus me with Tab or mouse' />
 
-    <Button @intent='primary'>
+    <Button @color='primary'>
       Focus me with Tab or mouse
     </Button>
   </div>
