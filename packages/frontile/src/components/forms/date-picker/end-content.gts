@@ -2,7 +2,7 @@ import type { TOC } from '@ember/component/template-only';
 import type { SlotsToClasses, DatePickerSlots } from '@frontile/theme';
 import type { DatePickerClasses } from './types';
 import { CloseButton } from '../../buttons/close-button';
-import { IconCalendar } from '../icons';
+import { IconCalendar } from '../../../-private/icons';
 
 interface DatePickerEndContentSignature {
   Args: {

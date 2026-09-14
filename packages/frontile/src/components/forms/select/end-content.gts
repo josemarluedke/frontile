@@ -6,7 +6,7 @@ import type {
 } from '@frontile/theme';
 import { Spinner } from '../../utilities/spinner';
 import { CloseButton } from '../../buttons/close-button';
-import { IconChevronUpDown } from '../icons';
+import { IconChevronUpDown } from '../../../-private/icons';
 import type { SelectClasses } from './types';
 
 const isSm = (size: SelectVariants['size']) => size === 'sm';

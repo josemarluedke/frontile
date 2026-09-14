@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import { press } from '../../../modifiers/press';
-import { ChevronUpIcon, ChevronDownIcon } from './icons';
+import { ChevronUpIcon, ChevronDownIcon } from '../../../-private/icons';
 import { SortDirection } from './types';
 import type { Column } from './types';
 

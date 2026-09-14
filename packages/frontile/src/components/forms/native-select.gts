@@ -17,7 +17,7 @@ import {
   keyAndLabelForItem,
   type ListItem
 } from '../../utils/listManager';
-import { IconChevronUpDown } from './icons';
+import { IconChevronUpDown } from '../../-private/icons';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;

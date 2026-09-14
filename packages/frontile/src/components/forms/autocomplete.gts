@@ -22,7 +22,7 @@ import {
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
-import { IconChevronUpDown } from './icons';
+import { IconChevronUpDown } from '../../-private/icons';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { filterAndRankItems, type FilterFn } from '../../utils/filter';
 import { debounce, cancel } from '@ember/runloop';

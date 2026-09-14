@@ -6,7 +6,7 @@ import {
   IconSuccess,
   IconWarning,
   IconDanger
-} from '../../-private/intent-icons';
+} from '../../-private/icons';
 import { CloseButton } from '../buttons/close-button';
 
 type AlertStatus = 'neutral' | 'primary' | 'success' | 'warning' | 'danger';

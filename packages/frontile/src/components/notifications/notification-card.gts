@@ -12,7 +12,7 @@ import {
   IconSuccess,
   IconWarning,
   IconDanger
-} from '../../-private/intent-icons';
+} from '../../-private/icons';
 import { useStyles } from '@frontile/theme';
 
 import type NotificationsService from '../../services/notifications';
