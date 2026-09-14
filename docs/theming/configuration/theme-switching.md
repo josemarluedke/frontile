@@ -153,7 +153,7 @@ import { Button } from 'frontile';
       <p class='text-body-md text-neutral-firm mb-4'>
         This section uses the current theme colors.
       </p>
-      <Button @intent='primary'>Primary Button</Button>
+      <Button @color='primary'>Primary Button</Button>
     </div>
 
     {{! Inverted theme section }}
@@ -163,7 +163,7 @@ import { Button } from 'frontile';
         <p class='text-body-md text-neutral-firm mb-4'>
           This section uses the opposite theme colors automatically.
         </p>
-        <Button @intent='primary'>Primary Button</Button>
+        <Button @color='primary'>Primary Button</Button>
       </div>
     </div>
   </div>
@@ -192,11 +192,11 @@ import { Button, Chip, ProgressBar } from 'frontile';
     <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
       <h4 class='text-header-sm text-neutral-strong mb-3'>Project Status</h4>
       <div class='flex flex-wrap gap-2 mb-4'>
-        <Chip @intent='success'>Active</Chip>
-        <Chip @intent='warning'>In Review</Chip>
-        <Chip @intent='default'>Draft</Chip>
+        <Chip @color='success'>Active</Chip>
+        <Chip @color='warning'>In Review</Chip>
+        <Chip @color='neutral'>Draft</Chip>
       </div>
-      <ProgressBar @progress={{65}} @intent='primary' />
+      <ProgressBar @progress={{65}} @color='primary' />
     </div>
   </div>
 </template>

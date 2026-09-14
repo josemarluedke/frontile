@@ -86,21 +86,21 @@ export default class DemoComponent extends Component {
       name: 'John Doe',
       email: 'john@example.com',
       status: 'Active',
-      chipIntent: 'success'
+      chipColor: 'success'
     },
     {
       id: '2',
       name: 'Jane Smith',
       email: 'jane@example.com',
       status: 'Inactive',
-      chipIntent: 'default'
+      chipColor: 'neutral'
     },
     {
       id: '3',
       name: 'Bob Wilson',
       email: 'bob@example.com',
       status: 'Pending',
-      chipIntent: 'warning'
+      chipColor: 'warning'
     }
   ];
 
@@ -140,7 +140,7 @@ export default class DemoComponent extends Component {
               </t.Cell>
               <t.Cell>{{user.email}}</t.Cell>
               <t.Cell>
-                <Chip @intent={{user.chipIntent}} @size='sm'>
+                <Chip @color={{user.chipColor}} @size='sm'>
                   {{user.status}}
                 </Chip>
               </t.Cell>
@@ -175,7 +175,7 @@ export default class DemoComponent extends Component {
       price: 99.99,
       stock: 15,
       stockStatus: 'In Stock',
-      stockChipIntent: 'success'
+      stockChipColor: 'success'
     },
     {
       id: '2',
@@ -183,7 +183,7 @@ export default class DemoComponent extends Component {
       price: 299.99,
       stock: 3,
       stockStatus: 'Low Stock',
-      stockChipIntent: 'warning'
+      stockChipColor: 'warning'
     },
     {
       id: '3',
@@ -191,7 +191,7 @@ export default class DemoComponent extends Component {
       price: 59.99,
       stock: 0,
       stockStatus: 'Out of Stock',
-      stockChipIntent: 'danger'
+      stockChipColor: 'danger'
     }
   ];
 
@@ -219,17 +219,17 @@ export default class DemoComponent extends Component {
               <t.Cell>
                 <div class='flex flex-col gap-1'>
                   <div class='font-medium'>{{product.stock}} units</div>
-                  <Chip @intent={{product.stockChipIntent}} @size='sm'>
+                  <Chip @color={{product.stockChipColor}} @size='sm'>
                     {{product.stockStatus}}
                   </Chip>
                 </div>
               </t.Cell>
               <t.Cell>
                 <div class='flex gap-2'>
-                  <Button @intent='primary' @size='sm'>
+                  <Button @color='primary' @size='sm'>
                     Edit
                   </Button>
-                  <Button @intent='danger' @size='sm'>
+                  <Button @color='danger' @size='sm'>
                     Delete
                   </Button>
                 </div>
@@ -413,25 +413,25 @@ export default class DemoComponent extends Component {
       name: 'John Doe',
       email: 'john@example.com',
       status: 'Active',
-      statusIntent: 'success'
+      statusColor: 'success'
     },
     {
       name: 'Jane Smith',
       email: 'jane@example.com',
       status: 'Active',
-      statusIntent: 'success'
+      statusColor: 'success'
     },
     {
       name: 'Bob Johnson',
       email: 'bob@example.com',
       status: 'Inactive',
-      statusIntent: 'default'
+      statusColor: 'neutral'
     },
     {
       name: 'Alice Brown',
       email: 'alice@example.com',
       status: 'Active',
-      statusIntent: 'success'
+      statusColor: 'success'
     }
   ];
 
@@ -449,7 +449,7 @@ export default class DemoComponent extends Component {
               <t.Cell>{{user.name}}</t.Cell>
               <t.Cell>{{user.email}}</t.Cell>
               <t.Cell>
-                <Chip @intent={{user.statusIntent}} @size='sm'>
+                <Chip @color={{user.statusColor}} @size='sm'>
                   {{user.status}}
                 </Chip>
               </t.Cell>
@@ -478,19 +478,19 @@ export default class DemoComponent extends Component {
       name: 'Critical Server Issue',
       value: '$1,000',
       priority: 'High',
-      priorityIntent: 'danger'
+      priorityColor: 'danger'
     },
     {
       name: 'Feature Enhancement',
       value: '$500',
       priority: 'Medium',
-      priorityIntent: 'warning'
+      priorityColor: 'warning'
     },
     {
       name: 'Documentation Update',
       value: '$100',
       priority: 'Low',
-      priorityIntent: 'success'
+      priorityColor: 'success'
     }
   ];
 
@@ -518,7 +518,7 @@ export default class DemoComponent extends Component {
               <t.Cell>{{item.name}}</t.Cell>
               <t.Cell class='font-mono'>{{item.value}}</t.Cell>
               <t.Cell>
-                <Chip @intent={{item.priorityIntent}} @size='sm'>
+                <Chip @color={{item.priorityColor}} @size='sm'>
                   {{item.priority}}
                 </Chip>
               </t.Cell>
@@ -653,7 +653,7 @@ export default class DemoComponent extends Component {
             @onPress={{this.toggleLoading}}
             @size='sm'
             @variant='outline'
-            @intent={{if this.isLoading 'danger' 'primary'}}
+            @color={{if this.isLoading 'danger' 'primary'}}
           >
             {{if this.isLoading 'Stop Loading' 'Start Loading'}}
           </Button>

@@ -34,7 +34,7 @@ import { ViewIcon, EditIcon, DeleteIcon } from 'site/components/icons';
       <EditIcon />
     </Button>
 
-    <Button @variant='outline' @size='sm' @intent='danger'>
+    <Button @variant='outline' @size='sm' @color='danger'>
       <VisuallyHidden>Delete item</VisuallyHidden>
       <DeleteIcon />
     </Button>
@@ -54,13 +54,13 @@ import { Chip, VisuallyHidden } from 'frontile';
 <template>
   <ul role='list' class='not-prose flex flex-col gap-2'>
     <li>
-      <Chip @intent='success' @withDot={{true}}>
+      <Chip @color='success' @withDot={{true}}>
         <VisuallyHidden>Status: </VisuallyHidden>
         Operational
       </Chip>
     </li>
     <li>
-      <Chip @intent='danger' @withDot={{true}}>
+      <Chip @color='danger' @withDot={{true}}>
         <VisuallyHidden>Status: </VisuallyHidden>
         Degraded
       </Chip>
@@ -96,7 +96,7 @@ export default class Example extends Component {
 
   <template>
     <div class='flex items-center gap-4'>
-      <Button @intent='primary' @onPress={{this.add}}>Add to cart</Button>
+      <Button @color='primary' @onPress={{this.add}}>Add to cart</Button>
       <span class='text-neutral-strong'>{{this.count}}</span>
 
       <VisuallyHidden aria-live='polite'>{{this.announcement}}</VisuallyHidden>

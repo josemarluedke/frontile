@@ -47,13 +47,13 @@ const options = ['Option 1', 'Option 2', 'Option 3'];
 <template>
   <div class='demo-stack'>
     <div class='grid grid-cols-2 gap-4'>
-      <Select @intent='default' @placeholder='Default' @items={{options}} />
-      <Select @intent='primary' @placeholder='Primary' @items={{options}} />
-      <Select @intent='secondary' @placeholder='Secondary' @items={{options}} />
-      <Select @intent='tertiary' @placeholder='Tertiary' @items={{options}} />
-      <Select @intent='success' @placeholder='Success' @items={{options}} />
-      <Select @intent='warning' @placeholder='Warning' @items={{options}} />
-      <Select @intent='danger' @placeholder='Danger' @items={{options}} />
+      <Select @color='neutral' @placeholder='Default' @items={{options}} />
+      <Select @color='primary' @placeholder='Primary' @items={{options}} />
+      <Select @color='secondary' @placeholder='Secondary' @items={{options}} />
+      <Select @color='tertiary' @placeholder='Tertiary' @items={{options}} />
+      <Select @color='success' @placeholder='Success' @items={{options}} />
+      <Select @color='warning' @placeholder='Warning' @items={{options}} />
+      <Select @color='danger' @placeholder='Danger' @items={{options}} />
     </div>
   </div>
 </template>
@@ -839,7 +839,7 @@ export default class RemovableChipsSelect extends Component {
 `@chip` forwards variant options to every chip: `variant` (defaults to `soft`),
 `intent`, `size` (defaults to `sm`), `radius` and `withDot`.
 
-`@chip.intent` defaults to the Select's own `@intent`, so `@intent='primary'` colors the
+`@chip.intent` defaults to the Select's own `@intent`, so `@color='primary'` colors the
 listbox options and the chips together and you only set `@chip.intent` when you want them to
 differ.
 
@@ -868,7 +868,7 @@ export default class ChipOptionsSelect extends Component {
       <div class='grid gap-4 md:grid-cols-2'>
         <Select
           @selectionMode='multiple'
-          @intent='primary'
+          @color='primary'
           @label='Inherits @intent'
           @placeholder='Select tags'
           @items={{tags}}

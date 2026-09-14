@@ -45,7 +45,7 @@ export default class BasicOverlay extends Component {
           <p class='mb-4'>This is the content inside the overlay. You can put
             any content here.</p>
           <div class='flex gap-2'>
-            <Button @intent='primary' @onPress={{this.toggle}}>
+            <Button @color='primary' @onPress={{this.toggle}}>
               Close
             </Button>
             <Button>
@@ -365,7 +365,7 @@ export default class FocusManagement extends Component {
             <Input @label='First Input' />
             <Input @label='Second Input' />
             <div class='flex gap-2'>
-              <Button @intent='primary' @onPress={{this.toggleFocusTrap}}>
+              <Button @color='primary' @onPress={{this.toggleFocusTrap}}>
                 Close
               </Button>
               <Button>

@@ -21,7 +21,7 @@ interface Signature {
 }
 
 class Label extends Component<{ Args: { label: unknown } }> {
-  get intent() {
+  get color() {
     if (typeof this.args.label !== 'string') {
       return 'default';
     }
@@ -45,7 +45,7 @@ class Label extends Component<{ Args: { label: unknown } }> {
     <Chip
       @size="sm"
       @variant="soft"
-      @intent={{this.intent}}
+      @color={{this.color}}
       @class="ml-1 !text-[10px] !px-1.5 !py-0 !h-4 !min-h-4"
     >
       {{this.label}}

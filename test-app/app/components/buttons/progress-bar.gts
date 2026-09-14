@@ -11,25 +11,25 @@ const Comp: TOC<null> = <template>
     <ProgressBar
       @progress={{50}}
       @label="Primary"
-      @intent="primary"
+      @color="primary"
       @showValueLabel={{false}}
     />
     <ProgressBar
       @progress={{50}}
       @label="Success"
-      @intent="success"
+      @color="success"
       @showValueLabel={{false}}
     />
     <ProgressBar
       @progress={{50}}
       @label="Warning"
-      @intent="warning"
+      @color="warning"
       @showValueLabel={{false}}
     />
     <ProgressBar
       @progress={{50}}
       @label="Danger"
-      @intent="danger"
+      @color="danger"
       @showValueLabel={{false}}
     />
   </div>

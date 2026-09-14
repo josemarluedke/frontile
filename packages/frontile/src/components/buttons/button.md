@@ -42,19 +42,19 @@ import { Button } from 'frontile';
 ```
 
 The `custom` variant is available for the cases where you might want to fully customize the appearance of the button.
-The default styles are mainly structural. Intent colors are applied as `color`.
+The default styles are mainly structural. Colors are applied as `color`.
 
-## Button Intents
+## Button Colors
 
-Every intent is available in every variant. The label on each row is the
-`@variant` value; the button labels are the `@intent` values.
+Every color is available in every variant. The label on each row is the
+`@variant` value; the button labels are the `@color` values.
 
 ```gts preview
 import { Button } from 'frontile';
 import { array } from '@ember/helper';
 
-const intents = [
-  'default',
+const colors = [
+  'neutral',
   'primary',
   'secondary',
   'tertiary',
@@ -74,9 +74,9 @@ const intents = [
           @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
-          {{#each intents as |intent|}}
-            <Button @variant={{variant}} @intent={{intent}}>
-              {{intent}}
+          {{#each colors as |color|}}
+            <Button @variant={{variant}} @color={{color}}>
+              {{color}}
             </Button>
           {{/each}}
         </div>
@@ -111,11 +111,11 @@ import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
-    <Button @size='xs' @intent='primary'><DownloadIcon /> Download</Button>
-    <Button @size='sm' @intent='primary'><DownloadIcon /> Download</Button>
-    <Button @intent='primary'><DownloadIcon /> Download</Button>
-    <Button @size='lg' @intent='primary'><DownloadIcon /> Download</Button>
-    <Button @size='xl' @intent='primary'><DownloadIcon /> Download</Button>
+    <Button @size='xs' @color='primary'><DownloadIcon /> Download</Button>
+    <Button @size='sm' @color='primary'><DownloadIcon /> Download</Button>
+    <Button @color='primary'><DownloadIcon /> Download</Button>
+    <Button @size='lg' @color='primary'><DownloadIcon /> Download</Button>
+    <Button @size='xl' @color='primary'><DownloadIcon /> Download</Button>
   </div>
 </template>
 ```
@@ -128,10 +128,10 @@ import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 
 <template>
   <div class='flex gap-4'>
-    <Button @intent='primary'><DownloadIcon /> Download</Button>
-    <Button @variant='outline' @intent='default'>Share
+    <Button @color='primary'><DownloadIcon /> Download</Button>
+    <Button @variant='outline' @color='neutral'>Share
       <ShareIcon /></Button>
-    <Button @variant='soft' @intent='success'><CheckIcon /> Confirm</Button>
+    <Button @variant='soft' @color='success'><CheckIcon /> Confirm</Button>
   </div>
 </template>
 ```
@@ -168,14 +168,14 @@ import { StarIcon } from 'site/components/icons';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
-    <Button @intent='primary'>
+    <Button @color='primary'>
       <span class='inline-flex items-center gap-1'>
         Upgrade
         <span class='font-body text-body-xs'>/mo</span>
       </span>
     </Button>
 
-    <Button @variant='outline' @intent='default'>
+    <Button @variant='outline' @color='neutral'>
       <StarIcon />
       <span class='inline-flex items-center gap-1'>
         Button
@@ -204,25 +204,25 @@ import { Button } from 'frontile';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
-    <Button @size='sm' @intent='primary'>
+    <Button @size='sm' @color='primary'>
       <span class='inline-flex items-center gap-0.5'>
         $9
         <span class='font-body text-body-2xs'>/mo</span>
       </span>
     </Button>
-    <Button @intent='primary'>
+    <Button @color='primary'>
       <span class='inline-flex items-center gap-1'>
         $19
         <span class='font-body text-body-xs'>/mo</span>
       </span>
     </Button>
-    <Button @size='lg' @intent='primary'>
+    <Button @size='lg' @color='primary'>
       <span class='inline-flex items-center gap-1'>
         $29
         <span class='font-body text-body-sm'>/mo</span>
       </span>
     </Button>
-    <Button @size='2xl' @intent='primary'>
+    <Button @size='2xl' @color='primary'>
       <span class='inline-flex items-center gap-1.5'>
         $99
         <span class='font-body text-body-lg'>/mo</span>
@@ -239,13 +239,13 @@ import { Button } from 'frontile';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
-    <Button @intent='default' disabled>Default</Button>
-    <Button @intent='primary' disabled>Primary</Button>
-    <Button @intent='secondary' disabled>Secondary</Button>
-    <Button @intent='tertiary' disabled>Tertiary</Button>
-    <Button @intent='success' disabled>Success</Button>
-    <Button @intent='warning' disabled>Warning</Button>
-    <Button @intent='danger' disabled>Danger</Button>
+    <Button @color='neutral' disabled>Default</Button>
+    <Button @color='primary' disabled>Primary</Button>
+    <Button @color='secondary' disabled>Secondary</Button>
+    <Button @color='tertiary' disabled>Tertiary</Button>
+    <Button @color='success' disabled>Success</Button>
+    <Button @color='warning' disabled>Warning</Button>
+    <Button @color='danger' disabled>Danger</Button>
   </div>
 </template>
 ```
@@ -261,7 +261,7 @@ import { Button } from 'frontile';
   <div class='flex flex-wrap items-center gap-3'>
     <Button @isLoading={{true}}>Save</Button>
     <Button @variant='outline' @isLoading={{true}}>Save</Button>
-    <Button @intent='danger' @isLoading={{true}}>Delete</Button>
+    <Button @color='danger' @isLoading={{true}}>Delete</Button>
   </div>
 </template>
 ```
@@ -338,15 +338,15 @@ import { Button } from 'frontile';
 
 ## Composition
 
-You can compose variant with intents and more to create the button that best fits your needs.
+You can compose variant with colors and more to create the button that best fits your needs.
 
 ```gts preview
 import { Button } from 'frontile';
 
 <template>
-  <Button @variant='outline' @intent='primary'>Button</Button>
-  <Button @variant='plain' @intent='warning'>Button</Button>
-  <Button @size='xs' @intent='danger'>Button</Button>
+  <Button @variant='outline' @color='primary'>Button</Button>
+  <Button @variant='plain' @color='warning'>Button</Button>
+  <Button @size='xs' @color='danger'>Button</Button>
 </template>
 ```
 
@@ -358,7 +358,7 @@ You can use TailwindCSS classes to customize even further.
 import { Button } from 'frontile';
 
 <template>
-  <Button @variant='outline' @intent='primary' @class='px-20 py-2 italic'>
+  <Button @variant='outline' @color='primary' @class='px-20 py-2 italic'>
     Button
   </Button>
 </template>
@@ -461,7 +461,7 @@ export default class KeyboardParityExample extends Component {
 
   <template>
     <div class='flex flex-wrap items-center gap-4'>
-      <Button @intent='primary' @onPress={{this.handlePress}}>
+      <Button @color='primary' @onPress={{this.handlePress}}>
         @onPress ({{this.pressCount}})
       </Button>
       <Button @variant='outline' {{on 'click' this.handleClick}}>
@@ -491,7 +491,7 @@ import { Button } from 'frontile';
 import { ShareIcon } from 'site/components/icons';
 
 <template>
-  <Button @intent='primary' aria-label='Share this page'>
+  <Button @color='primary' aria-label='Share this page'>
     <ShareIcon />
   </Button>
 </template>

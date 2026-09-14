@@ -164,7 +164,7 @@ export default class IndexPage extends Component {
             >
               <LinkButton
                 @to="/docs/components/overview"
-                @intent="primary"
+                @color="primary"
                 @size="lg"
               >Explore the components</LinkButton>
               <LinkButton
@@ -223,7 +223,7 @@ export default class IndexPage extends Component {
               @note="Five intents, three appearances, four sizes"
             >
               <div class="flex flex-wrap gap-2 justify-center">
-                <Button @intent="primary" @size="sm">Primary</Button>
+                <Button @color="primary" @size="sm">Primary</Button>
                 <Button @variant="outline" @size="sm">Outlined</Button>
               </div>
             </SpecimenTile>
@@ -268,9 +268,9 @@ export default class IndexPage extends Component {
               @note="Status, filters, and removable tags"
             >
               <div class="flex flex-wrap gap-2 justify-center">
-                <Chip @intent="primary" @size="sm">Active</Chip>
-                <Chip @intent="success" @size="sm" @withDot={{true}}>Live</Chip>
-                <Chip @intent="danger" @size="sm">Failed</Chip>
+                <Chip @color="primary" @size="sm">Active</Chip>
+                <Chip @color="success" @size="sm" @withDot={{true}}>Live</Chip>
+                <Chip @color="danger" @size="sm">Failed</Chip>
               </div>
             </SpecimenTile>
 
@@ -293,11 +293,11 @@ export default class IndexPage extends Component {
             >
               <div class="w-full space-y-3">
                 <ProgressBar
-                  @intent="primary"
+                  @color="primary"
                   @label="Upload"
                   @progress={{72}}
                 />
-                <ProgressBar @intent="success" @progress={{100}} @size="sm" />
+                <ProgressBar @color="success" @progress={{100}} @size="sm" />
               </div>
             </SpecimenTile>
 
@@ -449,7 +449,7 @@ export default class IndexPage extends Component {
                       <Button
                         {{pop.trigger}}
                         {{pop.anchor}}
-                        @intent="primary"
+                        @color="primary"
                         @size="sm"
                       >
                         Seat details
@@ -489,7 +489,7 @@ export default class IndexPage extends Component {
                     </div>
                     <div class="mt-4">
                       <ProgressBar
-                        @intent="primary"
+                        @color="primary"
                         @label="Storage used"
                         @progress={{61}}
                         @size="sm"
@@ -500,7 +500,7 @@ export default class IndexPage extends Component {
                       <Chip
                         @size="sm"
                         @variant="soft"
-                        @intent="success"
+                        @color="success"
                         @withDot={{true}}
                       >Active</Chip>
                     </div>
@@ -514,7 +514,7 @@ export default class IndexPage extends Component {
                   @note="Tab to the end — focus wraps instead of escaping."
                 >
                   <Button
-                    @intent="primary"
+                    @color="primary"
                     @size="sm"
                     @onPress={{this.openModal}}
                   >
@@ -569,7 +569,7 @@ export default class IndexPage extends Component {
                       </Item>
                       <Item
                         @key="remove"
-                        @intent="danger"
+                        @color="danger"
                         @description="Permanently remove"
                       >
                         <:start><DeleteIcon /></:start>
@@ -608,7 +608,7 @@ export default class IndexPage extends Component {
           </modal.Body>
           <modal.Footer class="flex justify-end gap-3">
             <Button @onPress={{this.closeModal}}>Cancel</Button>
-            <Button @intent="primary" @onPress={{this.closeModal}}>
+            <Button @color="primary" @onPress={{this.closeModal}}>
               Send invite
             </Button>
           </modal.Footer>
@@ -634,13 +634,13 @@ export default class IndexPage extends Component {
               </div>
             </div>
             <ProgressBar
-              @intent="primary"
+              @color="primary"
               @label="Storage used"
               @progress={{42}}
             />
             <div class="mt-6 flex flex-wrap gap-2">
               <Chip @size="sm">Editor</Chip>
-              <Chip @size="sm" @intent="success" @withDot={{true}}>Active</Chip>
+              <Chip @size="sm" @color="success" @withDot={{true}}>Active</Chip>
             </div>
           </drawer.Body>
           <drawer.Footer class="flex justify-end">
@@ -796,11 +796,8 @@ export default class IndexPage extends Component {
           </SectionIntro>
 
           <div class="mt-8 flex flex-wrap items-center gap-3 reveal">
-            <LinkButton
-              @to="/docs/get-started"
-              @intent="primary"
-              @size="lg"
-            >Read the docs</LinkButton>
+            <LinkButton @to="/docs/get-started" @color="primary" @size="lg">Read
+              the docs</LinkButton>
             <LinkButton
               @href="https://github.com/josemarluedke/frontile"
               @variant="outline"

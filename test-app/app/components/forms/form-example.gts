@@ -93,7 +93,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       />
 
       <Switch
-        @intent="primary"
+        @color="primary"
         @size="sm"
         @name="field-switch-1"
         @label="My Switch"
@@ -102,7 +102,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       />
 
       <Switch
-        @intent="primary"
+        @color="primary"
         @size="md"
         @name="field-switch-2"
         @label="My Switch"
@@ -127,7 +127,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       </Switch>
 
       <Switch
-        @intent="primary"
+        @color="primary"
         @size="lg"
         @name="field-switch-3"
         @label="My Switch"
@@ -156,7 +156,7 @@ export default class FormExample extends Component<FormExampleArgs> {
         @isClearable={{true}}
       >
         <:item as |o|>
-          <o.Item @key={{o.item}} @intent="default" @variant="subtle">
+          <o.Item @key={{o.item}} @color="neutral" @variant="subtle">
             {{o.item}}
           </o.Item>
         </:item>

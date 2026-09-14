@@ -53,7 +53,7 @@ export default class Example extends Component {
   <template>
     <ButtonGroup
       @size='sm'
-      @intent='primary'
+      @color='primary'
       aria-label='Example toggles'
       as |g|
     >
@@ -79,7 +79,7 @@ import { ButtonGroup } from 'frontile';
 import { ChevronDownIcon } from 'site/components/icons';
 
 <template>
-  <ButtonGroup @size='sm' @intent='primary' aria-label='Merge options' as |g|>
+  <ButtonGroup @size='sm' @color='primary' aria-label='Merge options' as |g|>
     <g.Button>Create a merge commit</g.Button>
     <g.Button
       @class='border-l-primary-mild'
@@ -98,10 +98,10 @@ of them can be overridden on an individual button.
 import { ButtonGroup } from 'frontile';
 
 <template>
-  <ButtonGroup @size='sm' @intent='primary' aria-label='Example actions' as |g|>
+  <ButtonGroup @size='sm' @color='primary' aria-label='Example actions' as |g|>
     <g.Button>First</g.Button>
     <g.Button>Second</g.Button>
-    <g.Button @intent='danger'>Third</g.Button>
+    <g.Button @color='danger'>Third</g.Button>
   </ButtonGroup>
 </template>
 ```

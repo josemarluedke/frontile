@@ -105,7 +105,7 @@ export default class DemoModal extends Component<DemoModalArgs> {
           Cancel
         </Button>
         <Button
-          @intent="primary"
+          @color="primary"
           disabled={{this.isLoading}}
           {{on "click" this.save}}
         >
@@ -132,7 +132,7 @@ export default class DemoModal extends Component<DemoModalArgs> {
           <p>Some contents...</p>
         </m.Body>
         <m.Footer>
-          <Button @intent="primary" {{on "click" this.toggleModal}}>
+          <Button @color="primary" {{on "click" this.toggleModal}}>
             Save
           </Button>
         </m.Footer>

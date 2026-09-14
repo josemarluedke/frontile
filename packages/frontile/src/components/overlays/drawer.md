@@ -55,7 +55,7 @@ export default class BasicDrawer extends Component {
           <Button @size='sm' @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @size='sm' @intent='primary'>
+          <Button @size='sm' @color='primary'>
             Save
           </Button>
         </d.Footer>
@@ -299,7 +299,7 @@ export default class DrawerHeaderActions extends Component {
     <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
       <d.Header @title='Filters' @description='Narrow the results below.'>
         <:actions>
-          <Button @size='sm' @intent='primary' @onPress={{this.toggleStarred}}>
+          <Button @size='sm' @color='primary' @onPress={{this.toggleStarred}}>
             {{if this.onlyStarred 'Show all' 'Only starred'}}
           </Button>
         </:actions>
@@ -369,7 +369,7 @@ export default class DrawerWithBanner extends Component {
       <Alert
         @layout='banner'
         @variant='solid'
-        @intent='warning'
+        @status='warning'
         @title='This is the banner text'
       />
 
@@ -381,13 +381,13 @@ export default class DrawerWithBanner extends Component {
       <d.Footer>
         <Button
           @size='sm'
-          @intent='primary'
+          @color='primary'
           @variant='outline'
           @onPress={{this.toggle}}
         >
           Secondary
         </Button>
-        <Button @size='sm' @intent='primary'>Primary</Button>
+        <Button @size='sm' @color='primary'>Primary</Button>
       </d.Footer>
     </Drawer>
   </template>
@@ -921,7 +921,7 @@ export default class NonDismissibleDrawer extends Component {
               <ProgressBar
                 @progress={{this.progress}}
                 @label='Progress: {{this.progress}}%'
-                @intent='success'
+                @color='success'
               />
             {{else}}
               <p class='text-success'>Ready to process data.</p>
@@ -933,14 +933,14 @@ export default class NonDismissibleDrawer extends Component {
             <Button @size='sm' disabled={{true}}>
               Processing...
             </Button>
-            <Button @size='sm' @intent='danger' @onPress={{this.forceClose}}>
+            <Button @size='sm' @color='danger' @onPress={{this.forceClose}}>
               Force Close
             </Button>
           {{else}}
             <Button @size='sm' @onPress={{this.toggle}}>
               Cancel
             </Button>
-            <Button @size='sm' @intent='primary' @onPress={{this.startProcess}}>
+            <Button @size='sm' @color='primary' @onPress={{this.startProcess}}>
               Start Processing
             </Button>
           {{/if}}
@@ -1065,7 +1065,7 @@ export default class DrawerForm extends Component {
           <Button @size='sm' @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @size='sm' @intent='primary' @onPress={{this.handleSubmit}}>
+          <Button @size='sm' @color='primary' @onPress={{this.handleSubmit}}>
             Send Message
           </Button>
         </d.Footer>

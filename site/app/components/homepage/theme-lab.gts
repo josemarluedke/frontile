@@ -114,11 +114,11 @@ const LabPanel: TOC<{
 
     <div class="space-y-4">
       <div class="flex flex-wrap items-center gap-2">
-        <Button @intent="primary" @size="sm">Save changes</Button>
-        <Button @intent="primary" @variant="outline" @size="sm">
+        <Button @color="primary" @size="sm">Save changes</Button>
+        <Button @color="primary" @variant="outline" @size="sm">
           Preview
         </Button>
-        <Button @intent="primary" @variant="plain" @size="sm">
+        <Button @color="primary" @variant="plain" @size="sm">
           Cancel
         </Button>
       </div>
@@ -132,16 +132,16 @@ const LabPanel: TOC<{
       </Field>
 
       <ProgressBar
-        @intent="primary"
+        @color="primary"
         @label="Upload"
         @progress={{68}}
         @size="sm"
       />
 
       <div class="flex flex-wrap gap-2">
-        <Chip @intent="primary" @size="sm">Primary</Chip>
-        <Chip @intent="primary" @variant="outline" @size="sm">Outline</Chip>
-        <Chip @intent="primary" @variant="soft" @size="sm">Soft</Chip>
+        <Chip @color="primary" @size="sm">Primary</Chip>
+        <Chip @color="primary" @variant="outline" @size="sm">Outline</Chip>
+        <Chip @color="primary" @variant="soft" @size="sm">Soft</Chip>
       </div>
     </div>
   </div>

@@ -73,7 +73,7 @@ Here's how easy it is to create a themed button with Frontile:
 import { Button } from 'frontile';
 
 <template>
-  <Button @intent='primary'>Click me</Button>
+  <Button @color='primary'>Click me</Button>
 </template>
 ```
 
@@ -130,13 +130,13 @@ import { Button } from 'frontile';
   <div class='space-y-8 p-8'>
     <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
       <h3 class='text-lg font-bold text-neutral-strong mb-4'>Regular Theme</h3>
-      <Button @intent='primary'>Primary Button</Button>
+      <Button @color='primary'>Primary Button</Button>
     </div>
 
     <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
       <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
         <h3 class='text-lg font-bold text-neutral-strong mb-4'>Inverted Theme</h3>
-        <Button @intent='primary'>Primary Button</Button>
+        <Button @color='primary'>Primary Button</Button>
       </div>
     </div>
   </div>

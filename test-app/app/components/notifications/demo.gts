@@ -142,7 +142,7 @@ export default class Demo extends Component<DemoArgs> {
       />
 
       <div>
-        <Button @type="submit" @intent="primary">
+        <Button @type="submit" @color="primary">
           Add Notification
         </Button>
       </div>

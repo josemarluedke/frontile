@@ -42,16 +42,16 @@ const Comp: TOC<null> = <template>
     <Chip>
       Default
     </Chip>
-    <Chip @intent="primary">
+    <Chip @color="primary">
       Primary
     </Chip>
-    <Chip @intent="success">
+    <Chip @color="success">
       Success
     </Chip>
-    <Chip @intent="warning">
+    <Chip @color="warning">
       Warning
     </Chip>
-    <Chip @intent="danger">
+    <Chip @color="danger">
       Danger
     </Chip>
   </div>
@@ -64,16 +64,16 @@ const Comp: TOC<null> = <template>
     <Chip @variant="outline" @withDot={{true}}>
       Chip
     </Chip>
-    <Chip @variant="outline" @intent="primary" @withDot={{true}}>
+    <Chip @variant="outline" @color="primary" @withDot={{true}}>
       Primary
     </Chip>
-    <Chip @variant="outline" @intent="success" @withDot={{true}}>
+    <Chip @variant="outline" @color="success" @withDot={{true}}>
       Success
     </Chip>
-    <Chip @variant="outline" @intent="warning" @withDot={{true}}>
+    <Chip @variant="outline" @color="warning" @withDot={{true}}>
       Warning
     </Chip>
-    <Chip @variant="outline" @intent="danger" @withDot={{true}}>
+    <Chip @variant="outline" @color="danger" @withDot={{true}}>
       Danger
     </Chip>
   </div>
@@ -82,16 +82,16 @@ const Comp: TOC<null> = <template>
     <Chip @variant="outline" @onClose={{true}}>
       Chip
     </Chip>
-    <Chip @variant="outline" @intent="primary" @onClose={{true}}>
+    <Chip @variant="outline" @color="primary" @onClose={{true}}>
       Primary
     </Chip>
-    <Chip @variant="outline" @intent="success" @onClose={{true}}>
+    <Chip @variant="outline" @color="success" @onClose={{true}}>
       Success
     </Chip>
-    <Chip @variant="outline" @intent="warning" @onClose={{true}}>
+    <Chip @variant="outline" @color="warning" @onClose={{true}}>
       Warning
     </Chip>
-    <Chip @variant="outline" @intent="danger" @onClose={{true}}>
+    <Chip @variant="outline" @color="danger" @onClose={{true}}>
       Danger
     </Chip>
   </div>
@@ -103,16 +103,16 @@ const Comp: TOC<null> = <template>
     <Chip @variant="soft" @withDot={{true}}>
       Chip
     </Chip>
-    <Chip @variant="soft" @intent="primary" @withDot={{true}}>
+    <Chip @variant="soft" @color="primary" @withDot={{true}}>
       Primary
     </Chip>
-    <Chip @variant="soft" @intent="success" @withDot={{true}}>
+    <Chip @variant="soft" @color="success" @withDot={{true}}>
       Success
     </Chip>
-    <Chip @variant="soft" @intent="warning" @withDot={{true}}>
+    <Chip @variant="soft" @color="warning" @withDot={{true}}>
       Warning
     </Chip>
-    <Chip @variant="soft" @intent="danger" @withDot={{true}}>
+    <Chip @variant="soft" @color="danger" @withDot={{true}}>
       Danger
     </Chip>
   </div>
@@ -121,16 +121,16 @@ const Comp: TOC<null> = <template>
     <Chip @variant="soft" @onClose={{true}}>
       Chip
     </Chip>
-    <Chip @variant="soft" @intent="primary" @onClose={{true}}>
+    <Chip @variant="soft" @color="primary" @onClose={{true}}>
       Primary
     </Chip>
-    <Chip @variant="soft" @intent="success" @onClose={{true}}>
+    <Chip @variant="soft" @color="success" @onClose={{true}}>
       Success
     </Chip>
-    <Chip @variant="soft" @intent="warning" @onClose={{true}}>
+    <Chip @variant="soft" @color="warning" @onClose={{true}}>
       Warning
     </Chip>
-    <Chip @variant="soft" @intent="danger" @onClose={{true}}>
+    <Chip @variant="soft" @color="danger" @onClose={{true}}>
       Danger
     </Chip>
   </div>
@@ -141,7 +141,7 @@ const Comp: TOC<null> = <template>
     </Chip>
     <Chip
       @variant="soft"
-      @intent="primary"
+      @color="primary"
       @onClose={{true}}
       @isDisabled={{true}}
     >
@@ -149,7 +149,7 @@ const Comp: TOC<null> = <template>
     </Chip>
     <Chip
       @variant="soft"
-      @intent="success"
+      @color="success"
       @onClose={{true}}
       @isDisabled={{true}}
     >
@@ -157,7 +157,7 @@ const Comp: TOC<null> = <template>
     </Chip>
     <Chip
       @variant="soft"
-      @intent="warning"
+      @color="warning"
       @onClose={{true}}
       @isDisabled={{true}}
     >
@@ -165,7 +165,7 @@ const Comp: TOC<null> = <template>
     </Chip>
     <Chip
       @variant="soft"
-      @intent="danger"
+      @color="danger"
       @onClose={{true}}
       @isDisabled={{true}}
     >

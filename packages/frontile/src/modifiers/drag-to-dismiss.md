@@ -38,7 +38,7 @@ export default class DragToDismissExample extends Component {
   };
 
   <template>
-    <Button @intent='primary' @onPress={{this.open}}>Open panel</Button>
+    <Button @color='primary' @onPress={{this.open}}>Open panel</Button>
 
     {{#if this.isOpen}}
       <div

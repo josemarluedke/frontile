@@ -85,7 +85,7 @@ class Dropdown extends Component<DropdownSignature> {
 
 interface TriggerArgs extends Pick<
   ButtonSignature['Args'],
-  'variant' | 'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
+  'variant' | 'appearance' | 'color' | 'intent' | 'size' | 'isInGroup' | 'class'
 > {
   /**
    * @internal
@@ -165,6 +165,7 @@ class Trigger extends Component<TriggerSignature> {
       @type="button"
       @variant={{@variant}}
       @appearance={{@appearance}}
+      @color={{@color}}
       @intent={{@intent}}
       @size={{@size}}
       @class={{@class}}

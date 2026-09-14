@@ -16,9 +16,9 @@ export default class Example extends Component {
 
   <template>
     <Dropdown as |d|>
-      <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
+      <d.Trigger @color="primary" @size="sm">Dropdown</d.Trigger>
 
-      <d.Menu @onAction={{this.onAction}} @intent="primary" as |Item|>
+      <d.Menu @onAction={{this.onAction}} @color="primary" as |Item|>
         <Item @key="profile" @description="View my profile">
           My Profile
         </Item>
@@ -26,13 +26,13 @@ export default class Example extends Component {
         <Item @key="notifications" @shortcut="⌘⇧N" @withDivider={{true}}>
           Notifications
         </Item>
-        <Item @key="reset" @intent="danger" @class="text-danger">
+        <Item @key="reset" @color="danger" @class="text-danger">
           Reset Settings
         </Item>
         <Item
           @key="delete"
           @shortcut="⌘⇧D"
-          @intent="danger"
+          @color="danger"
           @class="text-danger"
           @onClick={{this.delete}}
         >

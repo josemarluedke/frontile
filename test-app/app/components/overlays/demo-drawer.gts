@@ -148,7 +148,7 @@ export default class DemoDrawer extends Component {
             Cancel
           </Button>
           <Button
-            @intent="primary"
+            @color="primary"
             disabled={{this.isLoading}}
             {{on "click" this.save}}
           >
@@ -191,7 +191,7 @@ export default class DemoDrawer extends Component {
               Cancel
             </Button>
             <Button
-              @intent="primary"
+              @color="primary"
               disabled={{this.isLoading}}
               {{on "click" this.save}}
             >

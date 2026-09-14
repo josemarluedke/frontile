@@ -43,7 +43,7 @@ export default class DocfySectionNav extends Component {
           <TabNav
             @label="Documentation sections"
             @variant="underline"
-            @intent="primary"
+            @color="primary"
             @size="sm"
             @classes={{hash list="overflow-x-auto scrollbar-hide"}}
             as |tabNav|

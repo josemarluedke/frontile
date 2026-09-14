@@ -54,7 +54,7 @@ export default class BasicListbox extends Component {
           @items={{this.animals}}
           @selectedKeys={{this.selectedKeys}}
           @onSelectionChange={{this.onSelectionChange}}
-          @intent='primary'
+          @color='primary'
         />
       </div>
       <div class='text-sm text-neutral-firm'>
@@ -105,7 +105,7 @@ export default class MultipleSelection extends Component {
           @items={{this.animals}}
           @selectedKeys={{this.selectedKeys}}
           @onSelectionChange={{this.onSelectionChange}}
-          @intent='primary'
+          @color='primary'
         />
       </div>
       <div class='text-sm text-neutral-firm'>
@@ -176,7 +176,7 @@ export default class StaticItems extends Component {
         <l.Item
           @key='delete'
           @description='Permanently delete'
-          @intent='danger'
+          @color='danger'
           @class='text-danger'
           @shortcut='mod+backspace'
         >
@@ -260,7 +260,7 @@ export default class Appearances extends Component {
 
   <template>
     <div class='demo-stack items-center'>
-      <ButtonGroup @size='xs' @intent='primary' as |g|>
+      <ButtonGroup @size='xs' @color='primary' as |g|>
         <g.ToggleButton
           @isSelected={{this.isSelected 'solid'}}
           @onChange={{fn this.setVariant 'solid'}}
@@ -289,7 +289,7 @@ export default class Appearances extends Component {
           @selectedKeys={{this.selectedKeys}}
           @onSelectionChange={{this.onSelectionChange}}
           @variant={{this.variant}}
-          @intent='primary'
+          @color='primary'
         />
       </div>
     </div>
@@ -310,12 +310,12 @@ export default class IntentColors extends Component {
     <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
       <Listbox @isKeyboardEventsEnabled={{true}} @variant='subtle' as |l|>
         <l.Item @key='default'>Default Color</l.Item>
-        <l.Item @key='primary' @intent='primary'>Primary Color</l.Item>
-        <l.Item @key='secondary' @intent='secondary'>Secondary Color</l.Item>
-        <l.Item @key='tertiary' @intent='tertiary'>Tertiary Color</l.Item>
-        <l.Item @key='success' @intent='success'>Success Color</l.Item>
-        <l.Item @key='warning' @intent='warning'>Warning Color</l.Item>
-        <l.Item @key='danger' @intent='danger'>Danger Color</l.Item>
+        <l.Item @key='primary' @color='primary'>Primary Color</l.Item>
+        <l.Item @key='secondary' @color='secondary'>Secondary Color</l.Item>
+        <l.Item @key='tertiary' @color='tertiary'>Tertiary Color</l.Item>
+        <l.Item @key='success' @color='success'>Success Color</l.Item>
+        <l.Item @key='warning' @color='warning'>Warning Color</l.Item>
+        <l.Item @key='danger' @color='danger'>Danger Color</l.Item>
       </Listbox>
     </div>
   </template>
@@ -354,7 +354,7 @@ export default class DisabledItems extends Component {
           @selectedKeys={{this.selectedKeys}}
           @disabledKeys={{this.disabledKeys}}
           @onSelectionChange={{this.onSelectionChange}}
-          @intent='primary'
+          @color='primary'
         />
       </div>
       <div class='text-sm text-neutral-firm'>
@@ -419,7 +419,7 @@ export default class CustomItems extends Component {
           @items={{this.users}}
           @selectedKeys={{this.selectedKeys}}
           @onSelectionChange={{this.onSelectionChange}}
-          @intent='primary'
+          @color='primary'
         >
           <:item as |o|>
             <o.Item @key={{o.item.id}} @description={{o.item.email}}>
@@ -472,7 +472,7 @@ export default class WithDividers extends Component {
         <l.Item @key='paste'>Paste</l.Item>
         <l.Item @key='cut' @withDivider={{true}}>Cut</l.Item>
         <l.Item @key='rename'>Rename</l.Item>
-        <l.Item @key='delete' @intent='danger'>Delete</l.Item>
+        <l.Item @key='delete' @color='danger'>Delete</l.Item>
       </Listbox>
     </div>
   </template>
@@ -521,7 +521,7 @@ export default class EmptySelection extends Component {
           @items={{this.options}}
           @selectedKeys={{this.selectedKeys}}
           @onSelectionChange={{this.onSelectionChange}}
-          @intent='primary'
+          @color='primary'
         />
       </div>
 

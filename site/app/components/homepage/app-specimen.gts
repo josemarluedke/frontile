@@ -162,7 +162,7 @@ export default class AppSpecimen extends Component {
           </p>
         </div>
         <div class="ml-auto flex items-center">
-          <Button @intent="primary" @size="sm">
+          <Button @color="primary" @size="sm">
             <PlusIcon />
             Invite
           </Button>
@@ -275,7 +275,7 @@ export default class AppSpecimen extends Component {
                 </Button>
                 <Button
                   @variant="subtle"
-                  @intent="primary"
+                  @color="primary"
                   @size="xs"
                   @class="px-0 size-7 shrink-0"
                   aria-label="Edit member"
@@ -284,7 +284,7 @@ export default class AppSpecimen extends Component {
                 </Button>
                 <Button
                   @variant="subtle"
-                  @intent="danger"
+                  @color="danger"
                   @size="xs"
                   @class="px-0 size-7 shrink-0"
                   aria-label="Remove member"
@@ -310,7 +310,7 @@ export default class AppSpecimen extends Component {
         </p>
         <div class="w-56 shrink-0 max-w-full">
           <ProgressBar
-            @intent="primary"
+            @color="primary"
             @label="Seat usage"
             @progress={{5}}
             @maxValue={{20}}

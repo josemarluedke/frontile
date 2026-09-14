@@ -184,7 +184,27 @@ minutes to an hour, depending on how many call sites you have.
 
 **See:** [Variant API Migration](./variant-color-api.md)
 
-### 7. Body typography scale corrected
+### 7. `@intent` renamed to `@color` (and `@status`) — required only if you set it
+
+The semantic axis is renamed from `@intent` to `@color` on most components, and
+to `@status` on `Alert`, `NotificationCard` and `FormFeedback` — the three where
+the value also selects an icon, an ARIA role, or whether a message is announced
+assertively. `default` becomes `neutral` everywhere; on Alert and
+NotificationCard, `info` folds into `primary`.
+
+On Button, Chip, Listbox (and its forwarders), Spinner, ProgressBar, Switch and
+FormFeedback the old prop still works through 0.18.x and logs a deprecation
+warning; it is removed in v0.19.0. Calendar, Kbd, Pagination, SegmentedControl,
+Tabs, TabNav, Tooltip, Alert and NotificationCard were added during the 0.18
+pre-release cycle and are renamed outright, with no warning — if you tracked a
+`0.18.0-alpha.*`/`beta.*` build, read this guide's second section.
+
+**Impact:** required only if you pass `@intent` today; otherwise none.
+**Time:** a few minutes to an hour, depending on how many call sites you have.
+
+**See:** [Color and Status API Migration](./color-status-api.md)
+
+### 8. Body typography scale corrected
 
 The `--text-body-*` tokens were mapped to the wrong steps of the modular scale,
 so `xs` through `xl` rendered larger than the design spec (e.g. `md` shipped at
@@ -229,6 +249,9 @@ for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
 - [ ] `@appearance` replaced with `@variant` on Button, Chip, Listbox (and its
       Select/Dropdown/Autocomplete forwarders), and CloseButton (see
       [Variant API Migration](./variant-color-api.md))
+- [ ] `@intent` replaced with `@color` — or `@status` on Alert,
+      NotificationCard and FormFeedback — and `default` replaced with
+      `neutral` (see [Color and Status API Migration](./color-status-api.md))
 
 ## New projects
 

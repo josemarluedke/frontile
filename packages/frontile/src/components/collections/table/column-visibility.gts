@@ -70,7 +70,7 @@ export default class ColumnVisibility<T> extends Component<
       <:default as |d|>
         <d.Trigger
           data-part="column-visibility-button"
-          @intent="default"
+          @color="neutral"
           @size={{this.size}}
           @class={{(this.styles.columnVisibilityButton)}}
         >

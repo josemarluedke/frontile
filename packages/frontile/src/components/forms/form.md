@@ -1220,7 +1220,7 @@ export default class ResetForm extends Component {
             </Button>
             <Button
               type='button'
-              @intent='default'
+              @color='neutral'
               @variant='outline'
               {{on 'click' form.reset}}
             >
@@ -1309,7 +1309,7 @@ export default class ResetValidationForm extends Component {
             </Button>
             <Button
               type='button'
-              @intent='default'
+              @color='neutral'
               @variant='outline'
               {{on 'click' form.reset}}
             >
@@ -1458,21 +1458,21 @@ import { FormFeedback } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <FormFeedback @intent='primary' @messages='Your changes are being saved.' />
+    <FormFeedback @color='primary' @messages='Your changes are being saved.' />
     <FormFeedback
-      @intent='secondary'
+      @color='secondary'
       @messages='This field supports Markdown.'
     />
     <FormFeedback
-      @intent='tertiary'
+      @color='tertiary'
       @messages='This field supports Markdown.'
     />
-    <FormFeedback @intent='success' @messages='Looks good!' />
+    <FormFeedback @color='success' @messages='Looks good!' />
     <FormFeedback
-      @intent='warning'
+      @color='warning'
       @messages='This username is close to the limit.'
     />
-    <FormFeedback @intent='danger' @messages='This field is required.' />
+    <FormFeedback @color='danger' @messages='This field is required.' />
   </div>
 </template>
 ```

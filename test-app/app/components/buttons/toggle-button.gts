@@ -31,7 +31,7 @@ export default class Example extends Component<ExampleArgs> {
         <ToggleButton
           @isSelected={{val}}
           @onChange={{fn this.onChange key}}
-          @intent={{key}}
+          @color={{key}}
         >
           Toggle
         </ToggleButton>
@@ -43,7 +43,7 @@ export default class Example extends Component<ExampleArgs> {
         <ToggleButton
           @isSelected={{val}}
           @onChange={{fn this.onChange key}}
-          @intent={{key}}
+          @color={{key}}
           disabled={{true}}
         >
           Toggle
