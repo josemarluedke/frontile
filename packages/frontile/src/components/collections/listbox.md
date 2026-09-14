@@ -227,7 +227,7 @@ export default class ActionMenu extends Component {
 }
 ```
 
-### Different Appearances
+### Different Variants
 
 Control the visual style with the `@variant` argument.
 
@@ -238,7 +238,7 @@ import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Listbox, ButtonGroup } from 'frontile';
 
-export default class Appearances extends Component {
+export default class Variants extends Component {
   @tracked variant = 'solid';
   @tracked selectedKeys: string[] = ['option2'];
 
@@ -297,7 +297,7 @@ export default class Appearances extends Component {
 }
 ```
 
-### Different Intents
+### Different Colors
 
 Apply color intents to individual items or the entire listbox.
 
@@ -552,7 +552,11 @@ import { array } from '@ember/helper';
 
 <template>
   <div class='demo-stack'>
-    <Listbox @selectionMode='single' @disabledKeys={{array 'calculator'}} as |l|>
+    <Listbox
+      @selectionMode='single'
+      @disabledKeys={{array 'calculator'}}
+      as |l|
+    >
       <l.Group @title='Suggestions' @withDivider={{true}} as |g|>
         <g.Item @key='calendar'>Calendar</g.Item>
         <g.Item @key='emoji'>Search Emoji</g.Item>
@@ -576,7 +580,7 @@ carries no `aria-labelledby` — there would be nothing for it to point at.
 and resolves them per platform: `'mod+o'` shows `⌘O` on Apple and `Ctrl+O`
 elsewhere. A string with no `+`, such as `'⌘⇧S'`, is shown exactly as given.
 
-Keycaps default to the `inherit` appearance, which takes its colour from the
+Keycaps default to the `inherit` variant, which takes its colour from the
 option, so a shortcut stays legible on an active or filled row. Use
 `@shortcutVariant` to change that for every item at once — `Command` sets
 `'plain'` for its denser rows.
@@ -610,7 +614,7 @@ content.
 |          | `aria-selected` reflecting selection — options only, since it is invalid on a plain `menuitem` |
 |          | `aria-disabled="true"` for keys in `@disabledKeys`                                             |
 |          | a roving `tabindex` — exactly one option carries `0`, every other one `-1`                     |
-|          | `aria-haspopup="menu"`, `aria-expanded` and `aria-controls` on an item with `@hasSubmenu`       |
+|          | `aria-haspopup="menu"`, `aria-expanded` and `aria-controls` on an item with `@hasSubmenu`      |
 
 An item that opens a nested menu takes three arguments: `@hasSubmenu` renders a trailing
 chevron (unless the item supplies its own `:end` block) and switches its ARIA to

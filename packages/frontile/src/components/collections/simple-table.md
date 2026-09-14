@@ -145,7 +145,7 @@ export default class DemoComponent extends Component {
                 </Chip>
               </t.Cell>
               <t.Cell>
-                <Button @variant='link' @size='sm'>
+                <Button @variant='plain' @size='sm'>
                   Edit
                 </Button>
               </t.Cell>
@@ -210,7 +210,8 @@ export default class DemoComponent extends Component {
               <t.Cell>
                 <div>
                   <div class='font-medium'>{{product.name}}</div>
-                  <div class='text-sm text-neutral-soft'>ID: {{product.id}}</div>
+                  <div class='text-sm text-neutral-soft'>ID:
+                    {{product.id}}</div>
                 </div>
               </t.Cell>
               <t.Cell>
@@ -576,13 +577,17 @@ export default class DemoComponent extends Component {
               <t.Cell>{{order.product}}</t.Cell>
               <t.Cell>{{order.quantity}}</t.Cell>
               <t.Cell>${{order.price}}</t.Cell>
-              <t.Cell>${{this.calculateTotal order.quantity order.price}}</t.Cell>
+              <t.Cell>${{this.calculateTotal
+                  order.quantity
+                  order.price
+                }}</t.Cell>
             </t.Row>
           {{/each}}
         </t.Body>
         <t.Footer>
           <t.Column colspan='2' class='font-semibold'>Order Summary</t.Column>
-          <t.Column class='font-semibold'>{{this.totalQuantity}} items</t.Column>
+          <t.Column class='font-semibold'>{{this.totalQuantity}}
+            items</t.Column>
           <t.Column />
           <t.Column class='font-bold text-lg'>${{this.totalValue}}</t.Column>
         </t.Footer>

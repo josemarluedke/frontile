@@ -42,7 +42,7 @@ import { Spinner } from 'frontile';
 </template>
 ```
 
-## Intents
+## Colors
 
 The intent option changes the Spinner's color to match common UI patterns, such
 as `primary` actions, `success` states, `warnings`, and `danger` actions.
@@ -76,9 +76,7 @@ import { Spinner } from 'frontile';
 
 <template>
   <div class='flex items-center justify-center'>
-    <Spinner
-      @class='h-24 w-24 fill-secondary text-primary-muted'
-    />
+    <Spinner @class='h-24 w-24 fill-secondary text-primary-muted' />
   </div>
 </template>
 ```

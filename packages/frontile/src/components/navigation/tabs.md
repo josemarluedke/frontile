@@ -118,7 +118,7 @@ import { Tabs } from 'frontile';
 </template>
 ```
 
-## Intents
+## Colors
 
 `@color` colors the indicator, so the selected tab carries the meaning
 rather than the whole component. `default` keeps the neutral fill; the rest

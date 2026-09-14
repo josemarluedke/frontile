@@ -31,14 +31,17 @@ import { Alert } from 'frontile';
 </template>
 ```
 
-## Intents
+## Statuses
 
 ```gts preview
 import { Alert } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @title='Default' @description='A neutral, general-purpose message.' />
+    <Alert
+      @title='Default'
+      @description='A neutral, general-purpose message.'
+    />
     <Alert
       @title='Info'
       @description='Something worth knowing about.'
@@ -88,7 +91,7 @@ import { Alert } from 'frontile';
 </template>
 ```
 
-### Tonal
+### Soft
 
 A translucent tint of the status fills the alert, over an opaque surface. More
 presence than `default` without the weight of `solid`.
@@ -98,11 +101,11 @@ import { Alert } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @variant='tonal' @status='neutral' @title='Default' />
-    <Alert @variant='tonal' @status='primary' @title='Info' />
-    <Alert @variant='tonal' @status='success' @title='Success' />
-    <Alert @variant='tonal' @status='warning' @title='Warning' />
-    <Alert @variant='tonal' @status='danger' @title='Danger' />
+    <Alert @variant='soft' @status='neutral' @title='Default' />
+    <Alert @variant='soft' @status='primary' @title='Info' />
+    <Alert @variant='soft' @status='success' @title='Success' />
+    <Alert @variant='soft' @status='warning' @title='Warning' />
+    <Alert @variant='soft' @status='danger' @title='Danger' />
   </div>
 </template>
 ```
@@ -149,7 +152,7 @@ import { Alert } from 'frontile';
       </div>
       <Alert
         @layout='banner'
-        @variant='tonal'
+        @variant='soft'
         @status='warning'
         @title='This is the banner text'
       />
@@ -189,14 +192,14 @@ export default class BannerCloseExample extends Component {
       >
         <Alert
           @layout='banner'
-          @variant='tonal'
+          @variant='soft'
           @status='primary'
           @title='Not dismissible'
         />
         {{#if this.isVisible}}
           <Alert
             @layout='banner'
-            @variant='tonal'
+            @variant='soft'
             @status='primary'
             @title='Dismissible'
             @onClose={{this.close}}
@@ -245,7 +248,11 @@ import { Alert, Button } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @status='warning' @title='Unsaved changes' @description='Save before you leave?'>
+    <Alert
+      @status='warning'
+      @title='Unsaved changes'
+      @description='Save before you leave?'
+    >
       <:actions>
         <Button @size='xs' @status='warning'>Save</Button>
         <Button @size='xs' @variant='plain'>Discard</Button>

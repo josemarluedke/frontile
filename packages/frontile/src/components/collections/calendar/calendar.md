@@ -162,7 +162,7 @@ import { Calendar } from 'frontile/collections';
 <template><Calendar @captionLayout='dropdown' /></template>
 ```
 
-## Intents and sizes
+## Colors and sizes
 
 `@color` sets the color of the selected day and the range band; `@size` scales the cells
 and caption together.

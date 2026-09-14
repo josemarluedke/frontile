@@ -30,8 +30,8 @@ import { Accordion } from 'frontile';
   <div class='demo-stack'>
     <Accordion as |a|>
       <a.Item @title='What are your shipping options?'>
-        Standard shipping arrives in three to five business days. Express arrives
-        the next business day.
+        Standard shipping arrives in three to five business days. Express
+        arrives the next business day.
       </a.Item>
       <a.Item @title='What is your return policy?'>
         Unopened items can be returned within thirty days for a full refund.
@@ -154,7 +154,7 @@ import { Accordion } from 'frontile';
       on source order, so the wider rhythm goes on an inner wrapper. }}
   <div class='demo-stack'>
     <div class='flex flex-col gap-8'>
-      {{#each (array 'outlined' 'ghost' 'faded' 'enclosed') as |variant|}}
+      {{#each (array 'separated' 'ghost' 'soft' 'enclosed') as |variant|}}
         <div>
           <p class='text-label-xs text-neutral-firm mb-2'>{{variant}}</p>
           <Accordion @variant={{variant}} as |a|>
@@ -216,7 +216,10 @@ import { Accordion, Avatar } from 'frontile';
   <div class='demo-stack'>
     <Accordion as |a|>
       <a.Item @key='team'>
-        <:startContent><Avatar @name='Ada Lovelace' @size='sm' /></:startContent>
+        <:startContent><Avatar
+            @name='Ada Lovelace'
+            @size='sm'
+          /></:startContent>
         <:title>Team</:title>
         <:subtitle>Three members</:subtitle>
         <:indicator as |i|>{{if i.isOpen '−' '+'}}</:indicator>

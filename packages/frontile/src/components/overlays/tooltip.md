@@ -94,7 +94,7 @@ import { Kbd } from 'frontile';
 </template>
 ```
 
-## Intent
+## Color
 
 ```gts preview
 import { Tooltip } from 'frontile';

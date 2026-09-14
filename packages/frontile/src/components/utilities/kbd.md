@@ -104,7 +104,7 @@ import { Kbd } from 'frontile';
 </template>
 ```
 
-## Appearance and intent
+## Variant and color
 
 ```gts preview
 import { Kbd } from 'frontile';
@@ -132,7 +132,7 @@ const intents = [
 </template>
 ```
 
-Two appearances take their colour from their surroundings rather than from
+Two variants take their colour from their surroundings rather than from
 `@color`. `inherit` keeps a hairline box drawn in the current colour, which is
 what lets a keycap sit on a filled, active row without the row's theme having to
 repaint it. `plain` drops the box entirely, for a quiet trailing shortcut.

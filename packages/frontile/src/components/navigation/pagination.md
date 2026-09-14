@@ -236,7 +236,7 @@ import { Pagination } from 'frontile';
 </template>
 ```
 
-## Intents
+## Colors
 
 `@color` colors the active page chip's fill.
 

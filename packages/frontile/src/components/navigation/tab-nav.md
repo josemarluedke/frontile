@@ -126,7 +126,7 @@ import { TabNav } from 'frontile';
 </template>
 ```
 
-## Variants, intents, and sizes
+## Variants, colors, and sizes
 
 `TabNav` shares its theme with `Tabs`, so `@variant`, `@color`, and `@size`
 behave the same way — see [Tabs](./tabs) for each option.

@@ -25,7 +25,7 @@ import { Chip } from 'frontile';
 </template>
 ```
 
-## Chip Appearances
+## Chip Variants
 
 `solid` is a filled chip, `outline` draws the color as a border on the
 page background, and `soft` is a tinted surface with color-tinted text.
@@ -179,11 +179,7 @@ const colors = [
         </p>
         <div class='flex flex-wrap items-center gap-3'>
           {{#each colors as |color|}}
-            <Chip
-              @variant={{variant}}
-              @color={{color}}
-              @withDot={{true}}
-            >
+            <Chip @variant={{variant}} @color={{color}} @withDot={{true}}>
               {{color}}
             </Chip>
           {{/each}}

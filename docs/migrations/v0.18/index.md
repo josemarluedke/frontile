@@ -165,46 +165,28 @@ couple hours, depending on how many selectors your app has.
 [Customizing Component Styles](../../theming/component-styles.md) for the
 ongoing contract.
 
-### 6. `@appearance` renamed to `@variant` — required only if you set it
+### 6. Component API naming: `@appearance` → `@variant`, `@intent` → `@color`/`@status` — required only if you set them
 
-The style axis on Button, Chip, Listbox (and its Select/Dropdown/Autocomplete
-forwarders), and CloseButton is renamed from `@appearance` to `@variant`, with
-new value names (`solid`, `soft`, `subtle`, `outline`, `ghost`, `plain`). The
-old prop and values still work through 0.18.x and log a deprecation warning;
-they are removed in v0.19.0.
+Both styling axes are renamed. `@appearance` becomes `@variant` with a shared
+value vocabulary (`solid`, `soft`, `subtle`, `outline`, `ghost`, `plain`), and
+`@intent` becomes `@color` — or `@status` on `Alert`, `NotificationCard` and
+`FormFeedback`, the three where the value also selects an icon, an ARIA role, or
+whether a message is announced assertively. `default` becomes `neutral`
+throughout; on Alert and NotificationCard, `info` folds into `primary`.
 
-Kbd, Alert, NotificationCard, Accordion, Drawer, and Button's `soft`/`tonal`
-values were added during the 0.18 pre-release cycle and are renamed outright,
-with no deprecation warning — if you tracked a `0.18.0-alpha.*`/`beta.*` build,
-read this guide's second section.
+On the components whose API shipped in v0.17.1, the old props still work through
+0.18.x and log a deprecation warning; they are removed in v0.19.0. Components
+added during the 0.18 pre-release cycle are renamed outright with no warning —
+if you tracked a `0.18.0-alpha.*`/`beta.*` build, read that guide's second
+section.
 
-**Impact:** required only if you pass `@appearance` (or, for CloseButton,
-`@variant="transparent"`/`"subtle"`) today; otherwise none. **Time:** a few
-minutes to an hour, depending on how many call sites you have.
+**Impact:** required only if you pass `@appearance` or `@intent` today;
+otherwise none. **Time:** a few minutes to an hour, depending on how many call
+sites you have.
 
-**See:** [Variant API Migration](./variant-color-api.md)
+**See:** [Component API Naming Migration](./component-api-naming.md)
 
-### 7. `@intent` renamed to `@color` (and `@status`) — required only if you set it
-
-The semantic axis is renamed from `@intent` to `@color` on most components, and
-to `@status` on `Alert`, `NotificationCard` and `FormFeedback` — the three where
-the value also selects an icon, an ARIA role, or whether a message is announced
-assertively. `default` becomes `neutral` everywhere; on Alert and
-NotificationCard, `info` folds into `primary`.
-
-On Button, Chip, Listbox (and its forwarders), Spinner, ProgressBar, Switch and
-FormFeedback the old prop still works through 0.18.x and logs a deprecation
-warning; it is removed in v0.19.0. Calendar, Kbd, Pagination, SegmentedControl,
-Tabs, TabNav, Tooltip, Alert and NotificationCard were added during the 0.18
-pre-release cycle and are renamed outright, with no warning — if you tracked a
-`0.18.0-alpha.*`/`beta.*` build, read this guide's second section.
-
-**Impact:** required only if you pass `@intent` today; otherwise none.
-**Time:** a few minutes to an hour, depending on how many call sites you have.
-
-**See:** [Color and Status API Migration](./color-status-api.md)
-
-### 8. Body typography scale corrected
+### 7. Body typography scale corrected
 
 The `--text-body-*` tokens were mapped to the wrong steps of the modular scale,
 so `xs` through `xl` rendered larger than the design spec (e.g. `md` shipped at
@@ -246,12 +228,10 @@ for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
 - [ ] Replaced any `data-fr-*`, mismatched `data-component`, or retired
       `data-test-id` selectors with the new `data-component`/`data-part`
       attributes (see [DOM Anatomy Attributes Migration](./anatomy-attributes.md))
-- [ ] `@appearance` replaced with `@variant` on Button, Chip, Listbox (and its
-      Select/Dropdown/Autocomplete forwarders), and CloseButton (see
-      [Variant API Migration](./variant-color-api.md))
-- [ ] `@intent` replaced with `@color` — or `@status` on Alert,
-      NotificationCard and FormFeedback — and `default` replaced with
-      `neutral` (see [Color and Status API Migration](./color-status-api.md))
+- [ ] `@appearance` replaced with `@variant`, and `@intent` with `@color` —
+      or `@status` on Alert, NotificationCard and FormFeedback — with
+      `default` replaced by `neutral` (see
+      [Component API Naming Migration](./component-api-naming.md))
 
 ## New projects
 

@@ -525,7 +525,7 @@ const people = [
 ];
 ```
 
-In multiple mode the chip chrome is kept around your content — the appearance, `@chip`
+In multiple mode the chip chrome is kept around your content — the variant, `@chip`
 options and the close button are still the Select's, so removal, `@allowEmpty` and the
 `Backspace` keyboard path keep working unchanged.
 

@@ -84,7 +84,7 @@ import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 
-export default class DrawerAppearances extends Component {
+export default class DrawerVariants extends Component {
   @tracked isOpen = false;
   @tracked selectedVariant = 'sectioned';
 
@@ -119,8 +119,8 @@ export default class DrawerAppearances extends Component {
         @description='Switch variants with the buttons above.'
       />
       <d.Body>
-        <p>This is the body content, on its own surface in `sectioned` and flat in
-          `flat`.</p>
+        <p>This is the body content, on its own surface in `sectioned` and flat
+          in `flat`.</p>
       </d.Body>
       <d.Footer @class='flex gap-2'>
         <Button @size='sm' @onPress={{this.closeDrawer}}>Close</Button>
@@ -141,7 +141,7 @@ import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 import { SettingsIcon } from 'site/components/icons';
 
-export default class DrawerAppearancesIcon extends Component {
+export default class DrawerVariantsIcon extends Component {
   @tracked isOpen = false;
   @tracked selectedVariant = 'sectioned';
 
@@ -842,7 +842,7 @@ export default class DrawerCloseButton extends Component {
       >
         <d.Header>
           Custom Close Button
-          <d.CloseButton data-part="close-button" />
+          <d.CloseButton data-part='close-button' />
         </d.Header>
         <d.Body>
           <p>This drawer uses a custom close button placed in the header using
@@ -963,13 +963,13 @@ reveal.
 
 Drawer yields the pieces you assemble it from:
 
-| Yielded | Purpose |
-| --- | --- |
-| `d.Header` | Heading region; applies the id that `aria-labelledby` points at. |
-| `d.Body` | Main content area. |
-| `d.Footer` | Action row. |
-| `d.CloseButton` | Styled close button wired to `@onClose`. |
-| `d.headerId` | The id Header uses, for labelling your own heading instead. |
+| Yielded         | Purpose                                                          |
+| --------------- | ---------------------------------------------------------------- |
+| `d.Header`      | Heading region; applies the id that `aria-labelledby` points at. |
+| `d.Body`        | Main content area.                                               |
+| `d.Footer`      | Action row.                                                      |
+| `d.CloseButton` | Styled close button wired to `@onClose`.                         |
+| `d.headerId`    | The id Header uses, for labelling your own heading instead.      |
 
 The default close button is rendered inside `<d.Header>` when one is present. A drawer with
 no Header falls back to a standalone close button in its top-right corner.

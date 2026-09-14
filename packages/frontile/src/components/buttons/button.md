@@ -24,7 +24,7 @@ import { Button } from 'frontile';
 </template>
 ```
 
-## Button Appearances
+## Button Variants
 
 ```gts preview
 import { Button } from 'frontile';
@@ -65,10 +65,7 @@ const colors = [
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each
-      (array 'solid' 'subtle' 'outline' 'soft' 'plain')
-      as |variant|
-    }}
+    {{#each (array 'solid' 'subtle' 'outline' 'soft' 'plain') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
           @variant='{{variant}}'
