@@ -1,6 +1,10 @@
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
+} from '../../../-private/icons';
 
 export interface CalendarHeaderContext {
   month: Date;

@@ -4,7 +4,7 @@ import { on } from '@ember/modifier';
 import { guidFor } from '@ember/object/internals';
 import { element } from 'ember-element-helper';
 import Collapsible from '../../utilities/collapsible';
-import { ChevronDownIcon } from '../icons';
+import { ChevronDownIcon } from '../../../-private/icons';
 import type { AccordionContext, HeadingLevel } from './accordion';
 import type Owner from '@ember/owner';
 

@@ -7,7 +7,7 @@ import {
   show,
   isVisible
 } from '@universal-ember/table/plugins/column-visibility';
-import { ColumnVisibilityIcon } from './icons';
+import { ColumnVisibilityIcon } from '../../../-private/icons';
 import type { Table, Column } from './types';
 
 interface ColumnVisibilitySignature<T> {

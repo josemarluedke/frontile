@@ -12,7 +12,7 @@ import {
   ChevronRightIcon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon
-} from './icons';
+} from '../../../-private/icons';
 import type { PaginationSlots, PaginationVariants } from '@frontile/theme';
 import type { ModifierLike } from '@glint/template';
 
