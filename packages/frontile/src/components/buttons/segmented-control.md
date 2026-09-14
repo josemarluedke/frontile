@@ -91,7 +91,7 @@ must be referentially stable, or every item will read as unselected; two items
 that share a value both render as selected, which is useful when the same
 choice has more than one entry point but otherwise worth avoiding.
 
-## Intents
+## Colors
 
 `@color` colors the selection indicator, so the selected option carries the
 meaning rather than the control as a whole. `default` keeps the neutral raised
@@ -106,7 +106,7 @@ import { SegmentedControl } from 'frontile';
     <SegmentedControl
       @defaultValue='week'
       @color='neutral'
-      aria-label='Default intent'
+      aria-label='Neutral color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -116,7 +116,7 @@ import { SegmentedControl } from 'frontile';
     <SegmentedControl
       @defaultValue='week'
       @color='primary'
-      aria-label='Primary intent'
+      aria-label='Primary color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -126,7 +126,7 @@ import { SegmentedControl } from 'frontile';
     <SegmentedControl
       @defaultValue='week'
       @color='secondary'
-      aria-label='Secondary intent'
+      aria-label='Secondary color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -136,7 +136,7 @@ import { SegmentedControl } from 'frontile';
     <SegmentedControl
       @defaultValue='week'
       @color='tertiary'
-      aria-label='Tertiary intent'
+      aria-label='Tertiary color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -146,7 +146,7 @@ import { SegmentedControl } from 'frontile';
     <SegmentedControl
       @defaultValue='week'
       @color='success'
-      aria-label='Success intent'
+      aria-label='Success color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -156,7 +156,7 @@ import { SegmentedControl } from 'frontile';
     <SegmentedControl
       @defaultValue='week'
       @color='warning'
-      aria-label='Warning intent'
+      aria-label='Warning color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -166,7 +166,7 @@ import { SegmentedControl } from 'frontile';
     <SegmentedControl
       @defaultValue='week'
       @color='danger'
-      aria-label='Danger intent'
+      aria-label='Danger color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>

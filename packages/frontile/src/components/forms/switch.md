@@ -256,9 +256,9 @@ import { hash } from '@ember/helper';
       </div>
     </div>
 
-    {{! Intent variants }}
+    {{! Color variants }}
     <div>
-      <h4 class='text-sm font-medium mb-2'>Intent Variants</h4>
+      <h4 class='text-sm font-medium mb-2'>Color Variants</h4>
       <div class='flex gap-4'>
         <Switch @color='neutral' @label='Default' @defaultSelected={{true}} />
         <Switch @color='primary' @label='Primary' @defaultSelected={{true}} />

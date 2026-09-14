@@ -21,7 +21,7 @@ function buildRoot(
     onAction: noop,
     onSelectionChange: noop,
     variant: 'subtle',
-    intent: 'primary',
+    color: 'primary',
     shortcutVariant: 'inherit',
     closeOnItemSelect: true,
     disableTransitions: true,
@@ -85,7 +85,7 @@ module('Unit | Collections | menu-context', function () {
     assert.deepEqual(child.disabledKeys, ['b']);
     assert.true(child.allowEmpty);
     assert.strictEqual(child.variant, 'subtle');
-    assert.strictEqual(child.intent, 'primary');
+    assert.strictEqual(child.color, 'primary');
     assert.strictEqual(child.shortcutVariant, 'inherit');
     assert.true(child.closeOnItemSelect);
     assert.true(child.disableTransitions);

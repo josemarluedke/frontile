@@ -65,7 +65,7 @@ export default class Demo extends Component<DemoArgs> {
       this.notifications.add(
         'Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna.',
         {
-          intent: data['intent'] as NotificationOptions['intent'],
+          status: data['status'] as NotificationOptions['status'],
           preserve: data['preserve'] == 'on',
           duration: parseInt(data['duration'] as string) || 5000,
           allowClosing: data['allowClosing'] == 'on',
@@ -100,7 +100,7 @@ export default class Demo extends Component<DemoArgs> {
       <RadioGroup
         @orientation="horizontal"
         @label="Intent"
-        @name="intent"
+        @name="status"
         @value="default"
         as |Radio|
       >

@@ -67,16 +67,16 @@ export default class BasicExample extends Component {
 }
 ```
 
-## Intents
+## Statuses
 
-Use `intent` to convey the appropriate message type: `'default'`, `'info'`, `'success'`,
-`'warning'`, or `'danger'`. Each intent renders a matching icon automatically; pass
+Use `status` to convey the appropriate message type: `'neutral'`, `'primary'`, `'success'`,
+`'warning'`, or `'danger'`. Each status renders a matching icon automatically; pass
 `hideIcon: true` to suppress it.
 
-`'default'` is the intent used when none is given — a bare `notifications.add('message')`
-produces a `default` toast. It still renders the same info glyph as the `info` intent, just
+`'neutral'` is the status used when none is given — a bare `notifications.add('message')`
+produces a `neutral` toast. It still renders the same info glyph as `'primary'`, just
 in a neutral color rather than the primary accent, so callers who want the old
-teal-accented look pass `intent: 'info'` explicitly.
+accented look pass `status: 'primary'` explicitly.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -84,7 +84,7 @@ import { service } from '@ember/service';
 import { Button } from 'frontile';
 import type { NotificationsService } from 'frontile';
 
-export default class IntentExample extends Component {
+export default class StatusExample extends Component {
   @service notifications!: NotificationsService;
 
   showDefault = () => {
@@ -93,25 +93,25 @@ export default class IntentExample extends Component {
 
   showInfo = () => {
     this.notifications.add('This is an info notification', {
-      intent: 'info'
+      status: 'primary'
     });
   };
 
   showSuccess = () => {
     this.notifications.add('Operation completed successfully!', {
-      intent: 'success'
+      status: 'success'
     });
   };
 
   showWarning = () => {
     this.notifications.add('Please check your input', {
-      intent: 'warning'
+      status: 'warning'
     });
   };
 
   showDanger = () => {
     this.notifications.add('Something went wrong', {
-      intent: 'danger'
+      status: 'danger'
     });
   };
 
@@ -119,9 +119,9 @@ export default class IntentExample extends Component {
     <div class='grid grid-cols-2 gap-2'>
       <Button @onPress={{this.showDefault}}>Default</Button>
       <Button @onPress={{this.showInfo}}>Info</Button>
-      <Button @onPress={{this.showSuccess}} @intent='success'>Success</Button>
-      <Button @onPress={{this.showWarning}} @intent='warning'>Warning</Button>
-      <Button @onPress={{this.showDanger}} @intent='danger'>Danger</Button>
+      <Button @onPress={{this.showSuccess}} @color='success'>Success</Button>
+      <Button @onPress={{this.showWarning}} @color='warning'>Warning</Button>
+      <Button @onPress={{this.showDanger}} @color='danger'>Danger</Button>
     </div>
   </template>
 }
@@ -145,7 +145,7 @@ export default class DescriptionExample extends Component {
   showStringForm = () => {
     this.notifications.add('Event created', {
       description: 'The event starts at 8:00 AM.',
-      intent: 'success'
+      status: 'success'
     });
   };
 
@@ -174,11 +174,11 @@ export default class DescriptionExample extends Component {
 `@variant` on `NotificationsContainer` controls the surface style applied to every card in
 the stack:
 
-- **`default`** — a neutral opaque card; the intent color is carried only by the icon and title.
+- **`default`** — a neutral opaque card; the status color is carried only by the icon and title.
 - **`tonal`** — the same recipe as `Button`'s `variant="soft"`: an opaque neutral card
-  whose inner row carries a translucent `{intent}-soft` tint with its `on-{intent}-soft`
+  whose inner row carries a translucent `{status}-soft` tint with its `on-{status}-soft`
   contrast text, so the card stays fully opaque while the tint reads like a tonal button.
-- **`solid`** — a filled surface in the intent color, with contrast text.
+- **`solid`** — a filled surface in the status color, with contrast text.
 
 ```gts
 <NotificationsContainer @variant='tonal' />
@@ -227,7 +227,7 @@ import {
   Switch,
   NotificationsContainer,
   type NotificationsService,
-  type NotificationIntent
+  type NotificationStatus
 } from 'frontile';
 
 export default class StackingExample extends Component {
@@ -259,7 +259,7 @@ export default class StackingExample extends Component {
     { key: '5', label: '5' }
   ];
 
-  intents: NotificationIntent[] = [
+  statuses: NotificationStatus[] = [
     'default',
     'info',
     'success',
@@ -287,10 +287,10 @@ export default class StackingExample extends Component {
     this.expand = value;
   };
 
-  showAllIntents = () => {
-    this.intents.forEach((intent) => {
-      this.notifications.add(`${intent} notification`, {
-        intent,
+  showAllStatuses = () => {
+    this.statuses.forEach((status) => {
+      this.notifications.add(`${status} notification`, {
+        status,
         preserve: true
       });
     });
@@ -350,7 +350,7 @@ export default class StackingExample extends Component {
       />
 
       <div class='flex flex-wrap gap-2'>
-        <Button @onPress={{this.showAllIntents}}>Show All Intents</Button>
+        <Button @onPress={{this.showAllStatuses}}>Show All Statuses</Button>
         <Button @onPress={{this.showFive}}>Show 5 Notifications</Button>
         <Button @onPress={{this.clear}} @variant='outline'>Clear</Button>
       </div>
@@ -391,7 +391,7 @@ export default class ActionsExample extends Component {
   showWithActions = () => {
     this.result = '';
     this.notifications.add('File uploaded successfully!', {
-      intent: 'success',
+      status: 'success',
       duration: 10000, // Keep it open longer for user to act
       customActions: [
         {
@@ -413,7 +413,7 @@ export default class ActionsExample extends Component {
   showUndoAction = () => {
     this.result = '';
     this.notifications.add('Item deleted', {
-      intent: 'info',
+      status: 'primary',
       duration: 8000,
       customActions: [
         {
@@ -468,21 +468,21 @@ export default class TimingExample extends Component {
 
   showShortDuration = () => {
     this.notifications.add('Quick notification (1 second)', {
-      intent: 'info',
+      status: 'primary',
       duration: 1000
     });
   };
 
   showLongDuration = () => {
     this.notifications.add('Long notification (10 seconds)', {
-      intent: 'warning',
+      status: 'warning',
       duration: 10000
     });
   };
 
   showCustomDuration = () => {
     this.notifications.add(`Custom duration (${this.duration}ms)`, {
-      intent: 'success',
+      status: 'success',
       duration: this.duration
     });
   };
@@ -531,14 +531,14 @@ export default class PersistentExample extends Component {
 
   showPersistent = () => {
     this.notifications.add('This notification stays until manually closed', {
-      intent: 'warning',
+      status: 'warning',
       preserve: true
     });
   };
 
   showWithoutCloseButton = () => {
     this.notifications.add('No close button - click actions to dismiss', {
-      intent: 'info',
+      status: 'primary',
       preserve: true,
       allowClosing: false,
       customActions: [
@@ -693,7 +693,7 @@ export default class CallbackExample extends Component {
 
   showWithCallback = () => {
     this.notifications.add('Notification with tracking', {
-      intent: 'info',
+      status: 'primary',
       metadata: {
         id: `notification_${Date.now()}`,
         source: 'demo',
@@ -724,7 +724,7 @@ interface UserActionMetadata {
 const notification = this.notifications.add<UserActionMetadata>(
   'File uploaded successfully',
   {
-    intent: 'success',
+    status: 'success',
     metadata: {
       userId: '123',
       action: 'upload',
@@ -741,7 +741,7 @@ const notification = this.notifications.add<UserActionMetadata>(
 
 - **ARIA Attributes**: The container uses `role="region"`, `aria-label="Notifications"`, and
   `aria-live="polite"`. Each card carries `role="status"` (default, info, success) or
-  `role="alert"` (warning, danger) — `alert` is reserved for intents that warrant interrupting the screen
+  `role="alert"` (warning, danger) — `alert` is reserved for statuses that warrant interrupting the screen
   reader.
 - **Screen Reader Support**: Notifications are announced as they appear, without stealing
   focus.
@@ -751,74 +751,74 @@ const notification = this.notifications.add<UserActionMetadata>(
 - **Hover and Focus Behavior**: Auto-dismissal pauses for every visible notification while the
   stack is hovered or focused, not just the one underneath the pointer.
 - **Text Contrast**: `default` uses the brightest levels of the `success`/`warning` palette scale
-  at the `firm` level the other intents' title/icon text uses, so both fall below the 4.5:1 WCAG
+  at the `firm` level the other statuses' title/icon text uses, so both fall below the 4.5:1 WCAG
   AA floor at `firm` — the theme uses `bolder` for their title/icon text instead. `tonal` composites
-  the translucent `{intent}-soft` tint over the card's opaque surface and pairs it with the
-  auto-generated `on-{intent}-soft` contrast ink (the same recipe `Button`'s `variant="soft"`
-  uses), which clears AA for every intent in both themes without any hand-picked text level or
+  the translucent `{status}-soft` tint over the card's opaque surface and pairs it with the
+  auto-generated `on-{status}-soft` contrast ink (the same recipe `Button`'s `variant="soft"`
+  uses), which clears AA for every status in both themes without any hand-picked text level or
   background override. `solid`'s title, icon, and description all use the full-strength
-  `on-{intent}` ink — an earlier version put the description at 80% opacity, but compositing
+  `on-{status}` ink — an earlier version put the description at 80% opacity, but compositing
   white/black at 80% over a saturated fill (e.g. `danger`'s `#e51701`) drops as low as 3.37:1 in
   light mode, well below the 4.5:1 WCAG AA floor. Measured ratios (WCAG relative luminance,
-  resolving the composited `{intent}-soft`-over-surface color where relevant):
+  resolving the composited `{status}-soft`-over-surface color where relevant):
 
-  | Pairing                                                                | Light | Dark  |
-  | ----------------------------------------------------------------------- | ----- | ----- |
-  | `default`/`tonal` description (`text-neutral-firm`)                     | 8.1   | 8.9–11.6 |
-  | `default` `success`/`warning` title (`bolder`)                          | 9.3 / 7.6 | 16.3 / 11.4 |
-  | `default` `info`/`danger`/neutral title                                 | ≥5.6  | ≥6.4  |
-  | `tonal` `default` (`on-neutral-soft` on composited `neutral-soft`)      | 15.4  | 8.1   |
-  | `tonal` `info` (`on-primary-soft` on composited `primary-soft`)         | 18.0  | 12.4  |
-  | `tonal` `success` (`on-success-soft` on composited `success-soft`)      | 19.5  | 12.0  |
-  | `tonal` `warning` (`on-warning-soft` on composited `warning-soft`)      | 17.9  | 13.8  |
-  | `tonal` `danger` (`on-danger-soft` on composited `danger-soft`)         | 16.4  | 16.6  |
-  | `solid` `default` title/icon/description (`on-neutral`)                 | 6.71  | 9.60  |
-  | `solid` `info` title/icon/description (`on-primary`)                    | 6.49  | 9.72  |
-  | `solid` `success` title/icon/description (`on-success`)                 | 16.29 | 16.29 |
-  | `solid` `warning` title/icon/description (`on-warning`)                 | 9.41  | 9.41  |
-  | `solid` `danger` title/icon/description (`on-danger`)                   | 4.71  | 6.09  |
+  | Pairing                                                            | Light     | Dark        |
+  | ------------------------------------------------------------------ | --------- | ----------- |
+  | `default`/`tonal` description (`text-neutral-firm`)                | 8.1       | 8.9–11.6    |
+  | `default` `success`/`warning` title (`bolder`)                     | 9.3 / 7.6 | 16.3 / 11.4 |
+  | `default` `info`/`danger`/neutral title                            | ≥5.6      | ≥6.4        |
+  | `tonal` `default` (`on-neutral-soft` on composited `neutral-soft`) | 15.4      | 8.1         |
+  | `tonal` `info` (`on-primary-soft` on composited `primary-soft`)    | 18.0      | 12.4        |
+  | `tonal` `success` (`on-success-soft` on composited `success-soft`) | 19.5      | 12.0        |
+  | `tonal` `warning` (`on-warning-soft` on composited `warning-soft`) | 17.9      | 13.8        |
+  | `tonal` `danger` (`on-danger-soft` on composited `danger-soft`)    | 16.4      | 16.6        |
+  | `solid` `default` title/icon/description (`on-neutral`)            | 6.71      | 9.60        |
+  | `solid` `info` title/icon/description (`on-primary`)               | 6.49      | 9.72        |
+  | `solid` `success` title/icon/description (`on-success`)            | 16.29     | 16.29       |
+  | `solid` `warning` title/icon/description (`on-warning`)            | 9.41      | 9.41        |
+  | `solid` `danger` title/icon/description (`on-danger`)              | 4.71      | 6.09        |
 
 ## Migrating from `appearance`
 
 The notification API was redesigned in 0.18: `message` became the title with a new sibling
-`description`, `appearance` was renamed `intent` (`'error'` became `'danger'`), the container
+`description`, `appearance` was renamed `status` (`'error'` became `'danger'`, `'info'` became `'primary'`), the container
 gained a collapsible stack, and the theme slots changed to match. `appearance` keeps working
 until 0.19, emitting a deprecation warning.
 
-**The default intent changed from `'info'` to `'default'`**
+**The default status changed from `'info'` to `'neutral'`**
 
-A bare `add()` call with no `intent` option used to render as an `info`-colored (primary/teal)
+A bare `add()` call with no `status` option used to render as an `info`-colored (primary/teal)
 toast. It now renders as a neutral `default` toast — same info icon, no accent color. This is
-an intentional visual behavior change. Callers who want the previous teal look should pass
-`intent: 'info'` explicitly:
+an intentional visual behavior change. Callers who want the previous accented look should pass
+`status: 'primary'` explicitly:
 
 ```ts
 // Before: a bare add() was info-colored
 this.notifications.add('Saved');
 
-// After: a bare add() is neutral; pass intent explicitly for the old look
-this.notifications.add('Saved', { intent: 'info' });
+// After: a bare add() is neutral; pass status explicitly for the old look
+this.notifications.add('Saved', { status: 'primary' });
 ```
 
-**`appearance` → `intent`, `'error'` → `'danger'`**
+**`appearance` → `status`, `'error'` → `'danger'`**
 
 ```ts
 // Before
 this.notifications.add('Something went wrong', { appearance: 'error' });
 
 // After
-this.notifications.add('Something went wrong', { intent: 'danger' });
+this.notifications.add('Something went wrong', { status: 'danger' });
 ```
 
-**Reading `notification.appearance` back can now yield `'default'`**
+**Reading `notification.appearance` back can now yield `'neutral'`**
 
-The deprecated `appearance` getter on a `Notification` instance mirrors `intent`, and since
-`default` is now the intent a bare `add()` call resolves to, `appearance` can return `'default'`
+The deprecated `appearance` getter on a `Notification` instance mirrors `status`, and since
+`default` is now the status a bare `add()` call resolves to, `appearance` can return `'neutral'`
 for it — a value that isn't part of the exported `NotificationAppearance` type (`'info' |
 'success' | 'warning' | 'error'`). Code that still reads this getter should account for it:
 assigning it to a `NotificationAppearance`-typed variable is a compile error, and a `switch`
 over the four old names silently falls through for every notification created without an
-explicit `appearance`/`intent`. Add a `'default'` case (or switch to `intent`, which is typed
+explicit `appearance`/`status`. Add a `'neutral'` case (or switch to `status`, which is typed
 to include it):
 
 ```ts
@@ -932,13 +932,13 @@ change is required, but update any test or a11y check that asserted the old attr
 
 The notifications service manages the global notification state and provides methods for adding and removing notifications.
 
-| Method                | Parameters                                                                          | Return Type               | Description                                                                                             |
-| --------------------- | ------------------------------------------------------------------------------------ | -------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `add<TMetadata>`      | `content: string \| NotificationContent`, `options?: NotificationOptions<TMetadata>` | `Notification<TMetadata>` | Adds a new notification with optional metadata and configuration                                          |
-| `promise<T, TMetadata>` | `promise: Promise<T>`, `options: PromiseNotificationOptions<T, TMetadata>`          | `Promise<T>`               | Shows a loading toast that mutates into success or danger when the promise settles; returns the original promise |
-| `remove`              | `notification?: Notification`                                                        | `void`                      | Removes a specific notification                                                                           |
-| `removeAll`           | -                                                                                     | `void`                      | Removes all current notifications                                                                         |
-| `setOnRemoveCallback` | `callback?: (notification: Notification) => void`                                    | `void`                      | Sets a global callback for when notifications are dismissed                                               |
+| Method                  | Parameters                                                                           | Return Type               | Description                                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `add<TMetadata>`        | `content: string \| NotificationContent`, `options?: NotificationOptions<TMetadata>` | `Notification<TMetadata>` | Adds a new notification with optional metadata and configuration                                                 |
+| `promise<T, TMetadata>` | `promise: Promise<T>`, `options: PromiseNotificationOptions<T, TMetadata>`           | `Promise<T>`              | Shows a loading toast that mutates into success or danger when the promise settles; returns the original promise |
+| `remove`                | `notification?: Notification`                                                        | `void`                    | Removes a specific notification                                                                                  |
+| `removeAll`             | -                                                                                    | `void`                    | Removes all current notifications                                                                                |
+| `setOnRemoveCallback`   | `callback?: (notification: Notification) => void`                                    | `void`                    | Sets a global callback for when notifications are dismissed                                                      |
 
 | Property        | Type             | Description                                |
 | --------------- | ---------------- | ------------------------------------------ |
@@ -948,18 +948,18 @@ The notifications service manages the global notification state and provides met
 
 All options available when creating notifications with `add`:
 
-| Option               | Type                                            | Default     | Description                                                                                 |
-| --------------------- | ------------------------------------------------ | ----------- | --------------------------------------------------------------------------------------------- |
-| `intent`              | `'default' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'default'` | The intent of the notification                                                     |
-| `appearance`          | `'info' \| 'success' \| 'warning' \| 'error'`    | `undefined` | **Deprecated** — use `intent` instead. `'error'` maps to `'danger'`. Removed in 0.19           |
-| `description`         | `string`                                         | `undefined` | Supporting text rendered below the title (string content form only)                           |
-| `duration`            | `number`                                         | `5000`      | Auto-dismiss time in milliseconds                                                              |
-| `preserve`            | `boolean`                                        | `false`     | Prevent auto-dismissal                                                                         |
-| `allowClosing`        | `boolean`                                        | `true`      | Show close button                                                                              |
-| `transitionDuration`  | `number`                                         | `200`       | Duration of the enter/exit fade, in milliseconds. Card slide/scale and the container's expand-collapse height animate at a fixed 400ms, independent of this option. |
-| `hideIcon`            | `boolean`                                        | `false`     | Hide the leading intent icon                                                                   |
-| `customActions`       | `CustomAction[]`                                 | `undefined` | Array of action buttons                                                                        |
-| `metadata`            | `TMetadata`                                      | `undefined` | Custom data attached to the notification                                                       |
+| Option               | Type                                                        | Default     | Description                                                                                                                                                         |
+| -------------------- | ----------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `status`             | `'default' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | The status of the notification                                                                                                                                      |
+| `appearance`         | `'info' \| 'success' \| 'warning' \| 'error'`               | `undefined` | **Deprecated** — use `status` instead. `'error'` maps to `'danger'`. Removed in 0.19                                                                                |
+| `description`        | `string`                                                    | `undefined` | Supporting text rendered below the title (string content form only)                                                                                                 |
+| `duration`           | `number`                                                    | `5000`      | Auto-dismiss time in milliseconds                                                                                                                                   |
+| `preserve`           | `boolean`                                                   | `false`     | Prevent auto-dismissal                                                                                                                                              |
+| `allowClosing`       | `boolean`                                                   | `true`      | Show close button                                                                                                                                                   |
+| `transitionDuration` | `number`                                                    | `200`       | Duration of the enter/exit fade, in milliseconds. Card slide/scale and the container's expand-collapse height animate at a fixed 400ms, independent of this option. |
+| `hideIcon`           | `boolean`                                                   | `false`     | Hide the leading status icon                                                                                                                                        |
+| `customActions`      | `CustomAction[]`                                            | `undefined` | Array of action buttons                                                                                                                                             |
+| `metadata`           | `TMetadata`                                                 | `undefined` | Custom data attached to the notification                                                                                                                            |
 
 > The `title` (or `message` for backwards compatibility) comes from the `content` argument to
 > `add`, either as a plain string or as `{ title, description }`.
@@ -968,11 +968,11 @@ All options available when creating notifications with `add`:
 
 Options for `promise()`, in addition to everything above except `isLoading` (which `promise()` manages itself):
 
-| Option    | Type                                                                | Description                                     |
-| --------- | -------------------------------------------------------------------- | ------------------------------------------------ |
-| `loading` | `string \| NotificationContent`                                      | Shown with a spinner while the promise is pending |
-| `success` | `string \| NotificationContent \| (value) => string \| NotificationContent` | Shown when the promise resolves            |
-| `error`   | `string \| NotificationContent \| (reason) => string \| NotificationContent` | Shown when the promise rejects            |
+| Option    | Type                                                                         | Description                                       |
+| --------- | ---------------------------------------------------------------------------- | ------------------------------------------------- |
+| `loading` | `string \| NotificationContent`                                              | Shown with a spinner while the promise is pending |
+| `success` | `string \| NotificationContent \| (value) => string \| NotificationContent`  | Shown when the promise resolves                   |
+| `error`   | `string \| NotificationContent \| (reason) => string \| NotificationContent` | Shown when the promise rejects                    |
 
 ### CustomAction
 

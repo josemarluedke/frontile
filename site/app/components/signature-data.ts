@@ -4090,7 +4090,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Adds a dot before the content, colored by <code>@intent</code>. On the <code>solid</code>\nvariant the dot takes the chip's text color, since the chip's\nbackground is already the intent color.",
+          "Adds a dot before the content, colored by <code>@color</code>. On the <code>solid</code>\nvariant the dot takes the chip's text color, since the chip's\nbackground is already the chip's color.",
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
@@ -16660,7 +16660,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "The colour intent applied to the selected item's indicator and label.",
+          "The colour applied to the selected item's indicator and label.",
         tags: { defaultValue: { name: 'defaultValue', value: "'neutral'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span></span>',
@@ -33854,7 +33854,7 @@ const data: ComponentDoc[] = [
               isRequired: false,
               isInternal: false,
               description:
-                "The color of the chip. Defaults to the Select's own `@intent`.",
+                "The color of the chip. Defaults to the Select's own `@color`.",
               tags: {},
             },
             {
@@ -33918,7 +33918,7 @@ const data: ComponentDoc[] = [
               isRequired: false,
               isInternal: false,
               description:
-                "Adds a dot before the content, colored by `@intent`. On the `solid`\nvariant the dot takes the chip's text color, since the chip's\nbackground is already the intent color.",
+                "Adds a dot before the content, colored by `@color`. On the `solid`\nvariant the dot takes the chip's text color, since the chip's\nbackground is already the chip's color.",
               tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
               defaultValue:
                 '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
@@ -33928,7 +33928,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>Not applicable in single selection mode.\nVariant of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>variant</code>,\n<code>intent</code>, <code>size</code>, <code>radius</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>variant</code> defaults to <code>'soft'</code></li>\n<li><code>intent</code> defaults to the Select's own <code>@intent</code>, so <code>@intent=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'sm'</code></li>\n<li><code>radius</code> and <code>withDot</code> fall back to Chip's own defaults</li>\n</ul>",
+          "<p>Not applicable in single selection mode.\nVariant of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>variant</code>,\n<code>color</code>, <code>size</code>, <code>radius</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>variant</code> defaults to <code>'soft'</code></li>\n<li><code>color</code> defaults to the Select's own <code>@color</code>, so <code>@color=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'sm'</code></li>\n<li><code>radius</code> and <code>withDot</code> fall back to Chip's own defaults</li>\n</ul>",
         tags: {
           example: { name: 'example', value: '```gts\n<Select' },
           selectionMode: { name: 'selectionMode', value: '="multiple"' },

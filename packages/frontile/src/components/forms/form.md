@@ -1437,13 +1437,13 @@ export default class DisabledForm extends Component {
 
 ## Feedback Messages
 
-When a field fails validation, `Form`/`Field` render a `FormFeedback` with the `danger` intent
+When a field fails validation, `Form`/`Field` render a `FormFeedback` with the `danger` status
 — no wiring needed. The announcement comes from a separate, visually hidden `aria-live`
 region that `FormControl` always keeps in the DOM, so it is already being observed when the
 message arrives.
 
 For feedback that isn't a validation error — hints, confirmations, warnings — render
-`FormFeedback` yourself and pick an `@intent` from `primary`, `secondary`, `tertiary`,
+`FormFeedback` yourself and pick a `@status` from `primary`, `secondary`, `tertiary`,
 `success`, `warning`, or `danger`. Anything other than `danger` announces politely.
 
 A standalone `FormFeedback` is its own `aria-live` region. Pass `@announce={{false}}` when

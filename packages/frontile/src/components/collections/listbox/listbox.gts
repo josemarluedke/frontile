@@ -306,7 +306,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
 
   /**
    * Resolved once (`@cached`) purely to raise Listbox's own deprecation when
-   * `@intent` is used directly on `<Listbox>` -- independent of whether any
+   * `@color`/`@intent` is used directly on `<Listbox>` -- independent of whether any
    * items are rendered to inherit it. Unlike `variant`, the resolved value is
    * also forwarded to `classNames` below, so a bare `<Listbox @color="danger">`
    * with no items renders its own color-dependent classes.

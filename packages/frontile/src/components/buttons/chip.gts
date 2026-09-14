@@ -57,9 +57,9 @@ interface ChipSignature {
     radius?: 'none' | 'sm' | 'lg' | 'full';
 
     /**
-     * Adds a dot before the content, colored by `@intent`. On the `solid`
+     * Adds a dot before the content, colored by `@color`. On the `solid`
      * variant the dot takes the chip's text color, since the chip's
-     * background is already the intent color.
+     * background is already the chip's color.
      *
      * @defaultValue false
      */

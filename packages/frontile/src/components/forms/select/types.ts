@@ -80,7 +80,7 @@ interface SelectChipOptions extends Pick<
   appearance?: ChipSignature['Args']['appearance'];
 
   /**
-   * The color of the chip. Defaults to the Select's own `@intent`.
+   * The color of the chip. Defaults to the Select's own `@color`.
    */
   color?: ChipSignature['Args']['color'];
 
@@ -246,10 +246,10 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * Only applies when `@selectedItemsDisplay` is `'chips'` (the default).
    *
    * Options are the same ones {@link Chip} itself accepts (`variant`,
-   * `intent`, `size`, `radius`, `withDot`), but Select applies its own
+   * `color`, `size`, `radius`, `withDot`), but Select applies its own
    * defaults tuned for sitting inside a field, rather than Chip's:
    * - `variant` defaults to `'soft'`
-   * - `intent` defaults to the Select's own `@intent`, so `@intent="primary"`
+   * - `color` defaults to the Select's own `@color`, so `@color="primary"`
    *   colors the listbox items and the chips together
    * - `size` defaults to `'sm'`
    * - `radius` and `withDot` fall back to Chip's own defaults

@@ -50,7 +50,7 @@ interface SegmentedControlArgs<T> {
   name?: string;
 
   /**
-   * The colour intent applied to the selected item's indicator and label.
+   * The colour applied to the selected item's indicator and label.
    *
    * @defaultValue 'neutral'
    */

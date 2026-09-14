@@ -10,7 +10,7 @@ registerCustomStyles({
   formFeedback: tv({
     base: 'form-field-feedback' as never,
     variants: {
-      intent: {
+      status: {
         danger: 'form-field-feedback--error'
       },
       size: {
