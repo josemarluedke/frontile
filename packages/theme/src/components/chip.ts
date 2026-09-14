@@ -22,13 +22,13 @@ const chip = tv({
     isDisabled: {
       true: 'opacity-disabled cursor-not-allowed'
     },
-    appearance: {
-      default: '',
-      outlined: '',
-      faded: ''
+    variant: {
+      solid: '',
+      outline: '',
+      soft: ''
     },
-    // The close button is a filled circle in every appearance. `-muted` is
-    // light enough to sit on the page in `outlined`/`faded` and to read as a
+    // The close button is a filled circle in every variant. `-muted` is
+    // light enough to sit on the page in `outline`/`soft` and to read as a
     // disc on a filled chip, and each level carries its own `on-` colour — the
     // pairing this used to get wrong, by putting `text-on-{intent}` (the
     // contrast colour for the DEFAULT level) on a `-muted` circle.
@@ -94,19 +94,19 @@ const chip = tv({
     // dot disappears into it. Inherit the chip's text colour instead — the one
     // colour guaranteed to contrast the fill.
     {
-      appearance: 'default',
+      variant: 'solid',
       class: {
         dot: 'bg-current'
       }
     },
 
-    // APPEARANCE: default (filled)
+    // VARIANT: solid (filled)
     //
     // The chip's own fill is the intent's DEFAULT level, so the close button
-    // cannot hover *towards* it the way the other two appearances do — the
+    // cannot hover *towards* it the way the other two variants do — the
     // circle would vanish into the chip. It steps down to `-subtle` instead.
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'default',
       class: {
         base: 'bg-neutral-bolder text-on-neutral-bolder',
@@ -114,7 +114,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'primary',
       class: {
         base: 'bg-primary text-on-primary',
@@ -122,7 +122,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'secondary',
       class: {
         base: 'bg-secondary text-on-secondary',
@@ -130,7 +130,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'tertiary',
       class: {
         base: 'bg-tertiary text-on-tertiary',
@@ -138,7 +138,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'success',
       class: {
         base: 'bg-success text-on-success',
@@ -146,7 +146,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'warning',
       class: {
         base: 'bg-warning text-on-warning',
@@ -154,7 +154,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'default',
+      variant: 'solid',
       intent: 'danger',
       class: {
         base: 'bg-danger text-on-danger',
@@ -162,9 +162,9 @@ const chip = tv({
       }
     },
 
-    // APPEARANCE: faded (tonal)
+    // VARIANT: soft (tonal)
     {
-      appearance: 'faded',
+      variant: 'soft',
       intent: 'default',
       class: {
         base: 'text-neutral-strong bg-neutral-subtle',
@@ -172,7 +172,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'soft',
       intent: 'primary',
       class: {
         base: 'text-primary-strong bg-primary-subtle',
@@ -180,7 +180,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'soft',
       intent: 'secondary',
       class: {
         base: 'text-secondary-strong bg-secondary-subtle',
@@ -188,7 +188,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'soft',
       intent: 'tertiary',
       class: {
         base: 'text-tertiary-strong bg-tertiary-subtle',
@@ -196,7 +196,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'soft',
       intent: 'success',
       class: {
         base: 'text-success-strong bg-success-subtle',
@@ -204,7 +204,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'soft',
       intent: 'warning',
       class: {
         base: 'text-warning-strong bg-warning-subtle',
@@ -212,7 +212,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'faded',
+      variant: 'soft',
       intent: 'danger',
       class: {
         base: 'text-danger-strong bg-danger-subtle',
@@ -220,9 +220,9 @@ const chip = tv({
       }
     },
 
-    // APPEARANCE: outlined
+    // VARIANT: outline
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'default',
       class: {
         base: 'text-neutral-strong border border-neutral',
@@ -230,7 +230,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'primary',
       class: {
         base: 'text-primary-strong border border-primary',
@@ -238,7 +238,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'secondary',
       class: {
         base: 'text-secondary-strong border border-secondary',
@@ -246,7 +246,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'tertiary',
       class: {
         base: 'text-tertiary-strong border border-tertiary',
@@ -254,7 +254,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'success',
       class: {
         base: 'text-success-strong border border-success',
@@ -262,7 +262,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'warning',
       class: {
         base: 'text-warning-strong border border-warning',
@@ -270,7 +270,7 @@ const chip = tv({
       }
     },
     {
-      appearance: 'outlined',
+      variant: 'outline',
       intent: 'danger',
       class: {
         base: 'text-danger-strong border border-danger',
@@ -281,7 +281,7 @@ const chip = tv({
   defaultVariants: {
     size: 'md',
     intent: 'default',
-    appearance: 'default',
+    variant: 'solid',
     radius: 'full'
   }
 });

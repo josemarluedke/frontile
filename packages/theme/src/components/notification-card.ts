@@ -85,15 +85,15 @@ const notificationCard = tv({
       // size. `text-neutral-firm` clears it comfortably against every
       // surface this description can sit on, light or dark, tonal or not.
       // See packages/frontile/docs/notifications-usage.md's contrast note for the measured ratios.
-      default: {
+      surface: {
         base: 'bg-surface-modal border-surface-overlay-mild',
         description: 'text-neutral-firm'
       },
-      // The outer surface/border is intent-independent — every `tonal`
-      // compound variant below borrows the same neutral surface `default`
-      // uses (see the comment above the `tonal` compound variants), so it
+      // The outer surface/border is intent-independent — every `soft`
+      // compound variant below borrows the same neutral surface `surface`
+      // uses (see the comment above the `soft` compound variants), so it
       // lives here once instead of repeating in each of them.
-      tonal: {
+      soft: {
         base: 'bg-surface-modal border-surface-overlay-mild',
         description: 'text-neutral-firm'
       },
@@ -130,16 +130,16 @@ const notificationCard = tv({
   },
 
   compoundVariants: [
-    // default: neutral surface, colour carried by the icon and title.
+    // surface: neutral surface, colour carried by the icon and title.
     // `default` intent has no accent — icon and title stay neutral, same
     // `firm` level the other intents use for their accent text.
     {
-      variant: 'default',
+      variant: 'surface',
       intent: 'default',
       class: { icon: 'text-neutral-firm', title: 'text-neutral-firm' }
     },
     {
-      variant: 'default',
+      variant: 'surface',
       intent: 'info',
       class: { icon: 'text-primary', title: 'text-primary' }
     },
@@ -147,7 +147,7 @@ const notificationCard = tv({
       // `success-firm` is only ~2.3:1 on the white card surface in light
       // mode; `bolder` clears AA in both themes. See packages/frontile/docs/notifications-usage.md's
       // contrast note.
-      variant: 'default',
+      variant: 'surface',
       intent: 'success',
       class: { icon: 'text-success-bolder', title: 'text-success-bolder' }
     },
@@ -155,27 +155,24 @@ const notificationCard = tv({
       // `warning-firm` is only ~3:1 on the white card surface in light
       // mode; `bolder` clears AA in both themes. See packages/frontile/docs/notifications-usage.md's
       // contrast note.
-      variant: 'default',
+      variant: 'surface',
       intent: 'warning',
       class: { icon: 'text-warning-bolder', title: 'text-warning-bolder' }
     },
     {
-      variant: 'default',
+      variant: 'surface',
       intent: 'danger',
       class: { icon: 'text-danger-firm', title: 'text-danger-firm' }
     },
 
-    // tonal: same recipe as Button's `appearance: 'tonal'` — an opaque
-    // outer surface (so the floating card never lets page content show
-    // through) with the translucent `{intent}-soft` tint and its `on-*`
-    // contrast ink applied to the *inner* element, which composites over
-    // that opaque surface. The outer picks up the `default` variant's
-    // neutral surface/border instead of a colour-matched one: Button's
-    // tonal has no border at all, but a card floating over arbitrary page
-    // content benefits from the same edge definition `default` already
-    // uses, so it borrows that treatment rather than inventing a new one.
+    // soft: an opaque outer surface (so the floating card never lets page
+    // content show through) with the translucent `{intent}-soft` tint and its
+    // `on-*` contrast ink applied to the *inner* element, which composites
+    // over that opaque surface. The outer picks up the `surface` variant's
+    // neutral surface/border instead of a colour-matched one, so it borrows
+    // that treatment rather than inventing a new one.
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'default',
       class: {
         inner: 'bg-neutral-soft',
@@ -184,7 +181,7 @@ const notificationCard = tv({
       }
     },
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'info',
       class: {
         inner: 'bg-primary-soft',
@@ -193,7 +190,7 @@ const notificationCard = tv({
       }
     },
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'success',
       class: {
         inner: 'bg-success-soft',
@@ -202,7 +199,7 @@ const notificationCard = tv({
       }
     },
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'warning',
       class: {
         inner: 'bg-warning-soft',
@@ -211,7 +208,7 @@ const notificationCard = tv({
       }
     },
     {
-      variant: 'tonal',
+      variant: 'soft',
       intent: 'danger',
       class: {
         inner: 'bg-danger-soft',
@@ -289,7 +286,7 @@ const notificationCard = tv({
 
   defaultVariants: {
     intent: 'default',
-    variant: 'default',
+    variant: 'surface',
     hasDescription: false,
     stackPlacement: 'none'
   }

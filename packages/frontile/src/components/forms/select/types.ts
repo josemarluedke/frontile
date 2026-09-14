@@ -67,9 +67,15 @@ interface SelectChipOptions extends Pick<
   'radius' | 'withDot'
 > {
   /**
-   * The chip appearance.
+   * The chip variant.
    *
-   * @defaultValue 'faded'
+   * @defaultValue 'soft'
+   */
+  variant?: ChipSignature['Args']['variant'];
+
+  /**
+   * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
+   * `outline`, and `faded` is `soft`.
    */
   appearance?: ChipSignature['Args']['appearance'];
 
@@ -101,6 +107,7 @@ interface BaseSelectArgs<T>
     >,
     Pick<
       ListboxSignature<T>['Args'],
+      | 'variant'
       | 'appearance'
       | 'intent'
       | 'disabledKeys'
@@ -229,13 +236,13 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
   selectedItemsDisplay?: 'chips' | 'text';
 
   /**
-   * Appearance of the chips rendered for each selected option.
+   * Variant of the chips rendered for each selected option.
    * Only applies when `@selectedItemsDisplay` is `'chips'` (the default).
    *
-   * Options are the same ones {@link Chip} itself accepts (`appearance`,
+   * Options are the same ones {@link Chip} itself accepts (`variant`,
    * `intent`, `size`, `radius`, `withDot`), but Select applies its own
    * defaults tuned for sitting inside a field, rather than Chip's:
-   * - `appearance` defaults to `'faded'`
+   * - `variant` defaults to `'soft'`
    * - `intent` defaults to the Select's own `@intent`, so `@intent="primary"`
    *   colors the listbox items and the chips together
    * - `size` defaults to `'sm'`
@@ -245,7 +252,7 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * ```gts
    * <Select
    *   @selectionMode="multiple"
-   *   @chip={{hash appearance="outlined" size="md" radius="full"}}
+   *   @chip={{hash variant="outline" size="md" radius="full"}}
    * />
    * ```
    */
@@ -523,7 +530,17 @@ type SelectClasses = ReturnType<ReturnType<typeof useStyles>['select']>;
  * so the chips do not have to restate them.
  */
 interface ResolvedSelectChipOptions {
-  appearance: NonNullable<SelectChipOptions['appearance']>;
+  /**
+   * Always set unless the consumer used the deprecated `appearance`, in which
+   * case it is left undefined so Chip resolves from `appearance` instead.
+   */
+  variant: SelectChipOptions['variant'];
+  /**
+   * Passed through only when the consumer actually wrote it. Defaulting this
+   * would fire Chip's `appearance` deprecation on every chip render, for a
+   * prop the consumer never used.
+   */
+  appearance: SelectChipOptions['appearance'];
   intent: NonNullable<SelectChipOptions['intent']>;
   size: NonNullable<SelectChipOptions['size']>;
   radius: SelectChipOptions['radius'];

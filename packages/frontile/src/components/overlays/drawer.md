@@ -65,15 +65,15 @@ export default class BasicDrawer extends Component {
 }
 ```
 
-### Appearance
+### Variant
 
-`@appearance` controls how the header, body and footer relate to each other. `default` gives
+`@variant` controls how the header, body and footer relate to each other. `sectioned` gives
 the drawer a black header band, a body on its own surface and a solid footer — this is the
-banded treatment. `ghost` keeps every region on the same surface as the modal — the flat look
+banded treatment. `flat` keeps every region on the same surface as the modal — the flat look
 Drawer used before v0.18, kept for consumers who don't want the restyle.
 
-The header API is identical in both appearances: `@title`/`@description` and a block yielding
-`h.Icon`, `h.Title` and `h.Description` work the same way regardless of which appearance is
+The header API is identical in both variants: `@title`/`@description` and a block yielding
+`h.Icon`, `h.Title` and `h.Description` work the same way regardless of which variant is
 selected.
 
 ```gts preview
@@ -86,12 +86,12 @@ import { Button } from 'frontile';
 
 export default class DrawerAppearances extends Component {
   @tracked isOpen = false;
-  @tracked selectedAppearance = 'default';
+  @tracked selectedVariant = 'sectioned';
 
-  appearances = ['default', 'ghost'];
+  variants = ['sectioned', 'flat'];
 
-  @action openDrawer(appearance) {
-    this.selectedAppearance = appearance;
+  @action openDrawer(variant) {
+    this.selectedVariant = variant;
     this.isOpen = true;
   }
 
@@ -101,9 +101,9 @@ export default class DrawerAppearances extends Component {
 
   <template>
     <div class='flex gap-2'>
-      {{#each this.appearances as |appearance|}}
-        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
-          {{appearance}}
+      {{#each this.variants as |variant|}}
+        <Button @size='sm' @onPress={{fn this.openDrawer variant}}>
+          {{variant}}
         </Button>
       {{/each}}
     </div>
@@ -111,16 +111,16 @@ export default class DrawerAppearances extends Component {
     <Drawer
       @isOpen={{this.isOpen}}
       @onClose={{this.closeDrawer}}
-      @appearance={{this.selectedAppearance}}
+      @variant={{this.selectedVariant}}
       as |d|
     >
       <d.Header
-        @title='{{this.selectedAppearance}} appearance'
-        @description='Switch appearances with the buttons above.'
+        @title='{{this.selectedVariant}} variant'
+        @description='Switch variants with the buttons above.'
       />
       <d.Body>
-        <p>This is the body content, on its own surface in `default` and flat in
-          `ghost`.</p>
+        <p>This is the body content, on its own surface in `sectioned` and flat in
+          `flat`.</p>
       </d.Body>
       <d.Footer @class='flex gap-2'>
         <Button @size='sm' @onPress={{this.closeDrawer}}>Close</Button>
@@ -143,12 +143,12 @@ import { SettingsIcon } from 'site/components/icons';
 
 export default class DrawerAppearancesIcon extends Component {
   @tracked isOpen = false;
-  @tracked selectedAppearance = 'default';
+  @tracked selectedVariant = 'sectioned';
 
-  appearances = ['default', 'ghost'];
+  variants = ['sectioned', 'flat'];
 
-  @action openDrawer(appearance) {
-    this.selectedAppearance = appearance;
+  @action openDrawer(variant) {
+    this.selectedVariant = variant;
     this.isOpen = true;
   }
 
@@ -158,9 +158,9 @@ export default class DrawerAppearancesIcon extends Component {
 
   <template>
     <div class='flex gap-2'>
-      {{#each this.appearances as |appearance|}}
-        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
-          {{appearance}}
+      {{#each this.variants as |variant|}}
+        <Button @size='sm' @onPress={{fn this.openDrawer variant}}>
+          {{variant}}
           with icon
         </Button>
       {{/each}}
@@ -169,11 +169,11 @@ export default class DrawerAppearancesIcon extends Component {
     <Drawer
       @isOpen={{this.isOpen}}
       @onClose={{this.closeDrawer}}
-      @appearance={{this.selectedAppearance}}
+      @variant={{this.selectedVariant}}
       as |d|
     >
       <d.Header
-        @title='{{this.selectedAppearance}} with an icon'
+        @title='{{this.selectedVariant}} with an icon'
         @description='The icon and text placement come from the block form.'
         as |h|
       >
@@ -183,7 +183,7 @@ export default class DrawerAppearancesIcon extends Component {
       </d.Header>
       <d.Body>
         <p>Icon, title and description are placed by the block, unaffected by
-          which appearance is active.</p>
+          which variant is active.</p>
       </d.Body>
     </Drawer>
   </template>
@@ -382,7 +382,7 @@ export default class DrawerWithBanner extends Component {
         <Button
           @size='sm'
           @intent='primary'
-          @appearance='outlined'
+          @variant='outline'
           @onPress={{this.toggle}}
         >
           Secondary
@@ -600,12 +600,12 @@ import { Button } from 'frontile';
 
 export default class DrawerDragBottom extends Component {
   @tracked isOpen = false;
-  @tracked selectedAppearance = 'default';
+  @tracked selectedVariant = 'sectioned';
 
-  appearances = ['default', 'ghost'];
+  variants = ['sectioned', 'flat'];
 
-  @action openDrawer(appearance) {
-    this.selectedAppearance = appearance;
+  @action openDrawer(variant) {
+    this.selectedVariant = variant;
     this.isOpen = true;
   }
 
@@ -615,9 +615,9 @@ export default class DrawerDragBottom extends Component {
 
   <template>
     <div class='flex gap-2'>
-      {{#each this.appearances as |appearance|}}
-        <Button @size='sm' @onPress={{fn this.openDrawer appearance}}>
-          Open Bottom Drawer ({{appearance}})
+      {{#each this.variants as |variant|}}
+        <Button @size='sm' @onPress={{fn this.openDrawer variant}}>
+          Open Bottom Drawer ({{variant}})
         </Button>
       {{/each}}
     </div>
@@ -626,7 +626,7 @@ export default class DrawerDragBottom extends Component {
       @isOpen={{this.isOpen}}
       @onClose={{this.closeDrawer}}
       @placement='bottom'
-      @appearance={{this.selectedAppearance}}
+      @variant={{this.selectedVariant}}
       as |d|
     >
       <d.Header @title='Drag me down' @description='Or use the close button.' />

@@ -53,7 +53,7 @@ interface AccordionArgs {
   /**
    * The container treatment.
    *
-   * @defaultValue 'outlined'
+   * @defaultValue 'separated'
    */
   variant?: AccordionVariants['variant'];
 

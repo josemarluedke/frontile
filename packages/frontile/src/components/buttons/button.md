@@ -32,22 +32,22 @@ import { Button } from 'frontile';
 <template>
   <div class='flex flex-wrap items-center gap-3'>
     <Button>Default</Button>
-    <Button @appearance='soft'>Soft</Button>
-    <Button @appearance='outlined'>Outlined</Button>
-    <Button @appearance='tonal'>Tonal</Button>
-    <Button @appearance='minimal'>Minimal</Button>
-    <Button @appearance='custom'>Custom</Button>
+    <Button @variant='subtle'>Subtle</Button>
+    <Button @variant='outline'>Outline</Button>
+    <Button @variant='soft'>Soft</Button>
+    <Button @variant='plain'>Plain</Button>
+    <Button @variant='custom'>Custom</Button>
   </div>
 </template>
 ```
 
-The `custom` appearance is available for the cases where you might want to fully customize the appearance of the button.
+The `custom` variant is available for the cases where you might want to fully customize the appearance of the button.
 The default styles are mainly structural. Intent colors are applied as `color`.
 
 ## Button Intents
 
-Every intent is available in every appearance. The label on each row is the
-`@appearance` value; the button labels are the `@intent` values.
+Every intent is available in every variant. The label on each row is the
+`@variant` value; the button labels are the `@intent` values.
 
 ```gts preview
 import { Button } from 'frontile';
@@ -66,16 +66,16 @@ const intents = [
 <template>
   <div class='flex flex-col gap-6'>
     {{#each
-      (array 'default' 'soft' 'outlined' 'tonal' 'minimal')
-      as |appearance|
+      (array 'solid' 'subtle' 'outline' 'soft' 'plain')
+      as |variant|
     }}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
-          @appearance='{{appearance}}'
+          @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
           {{#each intents as |intent|}}
-            <Button @appearance={{appearance}} @intent={{intent}}>
+            <Button @variant={{variant}} @intent={{intent}}>
               {{intent}}
             </Button>
           {{/each}}
@@ -129,9 +129,9 @@ import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 <template>
   <div class='flex gap-4'>
     <Button @intent='primary'><DownloadIcon /> Download</Button>
-    <Button @appearance='outlined' @intent='default'>Share
+    <Button @variant='outline' @intent='default'>Share
       <ShareIcon /></Button>
-    <Button @appearance='tonal' @intent='success'><CheckIcon /> Confirm</Button>
+    <Button @variant='soft' @intent='success'><CheckIcon /> Confirm</Button>
   </div>
 </template>
 ```
@@ -175,7 +175,7 @@ import { StarIcon } from 'site/components/icons';
       </span>
     </Button>
 
-    <Button @appearance='outlined' @intent='default'>
+    <Button @variant='outline' @intent='default'>
       <StarIcon />
       <span class='inline-flex items-center gap-1'>
         Button
@@ -260,7 +260,7 @@ import { Button } from 'frontile';
 <template>
   <div class='flex flex-wrap items-center gap-3'>
     <Button @isLoading={{true}}>Save</Button>
-    <Button @appearance='outlined' @isLoading={{true}}>Save</Button>
+    <Button @variant='outline' @isLoading={{true}}>Save</Button>
     <Button @intent='danger' @isLoading={{true}}>Delete</Button>
   </div>
 </template>
@@ -338,14 +338,14 @@ import { Button } from 'frontile';
 
 ## Composition
 
-You can compose appearance with intents and more to create the button that best fits your needs.
+You can compose variant with intents and more to create the button that best fits your needs.
 
 ```gts preview
 import { Button } from 'frontile';
 
 <template>
-  <Button @appearance='outlined' @intent='primary'>Button</Button>
-  <Button @appearance='minimal' @intent='warning'>Button</Button>
+  <Button @variant='outline' @intent='primary'>Button</Button>
+  <Button @variant='plain' @intent='warning'>Button</Button>
   <Button @size='xs' @intent='danger'>Button</Button>
 </template>
 ```
@@ -358,20 +358,20 @@ You can use TailwindCSS classes to customize even further.
 import { Button } from 'frontile';
 
 <template>
-  <Button @appearance='outlined' @intent='primary' @class='px-20 py-2 italic'>
+  <Button @variant='outline' @intent='primary' @class='px-20 py-2 italic'>
     Button
   </Button>
 </template>
 ```
 
-Here is another example using TailwindCSS classes with the `custom` appearance.
+Here is another example using TailwindCSS classes with the `custom` variant.
 
 ```gts preview
 import { Button } from 'frontile';
 
 <template>
   <Button
-    @appearance='custom'
+    @variant='custom'
     class='rounded-none border-teal-600 bg-teal-100 text-teal-900 hover:bg-teal-200 hover:text-teal-700 dark:border-teal-300 dark:bg-teal-950 dark:text-teal-100 dark:hover:bg-teal-900 dark:hover:text-teal-50 border-dashed'
   >
     Button
@@ -464,7 +464,7 @@ export default class KeyboardParityExample extends Component {
       <Button @intent='primary' @onPress={{this.handlePress}}>
         @onPress ({{this.pressCount}})
       </Button>
-      <Button @appearance='outlined' {{on 'click' this.handleClick}}>
+      <Button @variant='outline' {{on 'click' this.handleClick}}>
         click listener ({{this.clickCount}})
       </Button>
       <p class='text-neutral'>

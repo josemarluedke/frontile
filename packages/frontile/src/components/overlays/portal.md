@@ -85,7 +85,7 @@ import { Button, Portal, PortalTarget } from 'frontile';
     </Portal>
 
     <Portal @target='footer'>
-      <Button @size='sm' @appearance='outlined'>Cancel</Button>
+      <Button @size='sm' @variant='outline'>Cancel</Button>
     </Portal>
   </div>
 </template>

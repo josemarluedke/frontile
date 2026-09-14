@@ -58,9 +58,9 @@ interface NotificationsContainerSignature {
     /**
      * The visual style applied to every card.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'surface'
      */
-    variant?: 'default' | 'tonal' | 'solid';
+    variant?: 'surface' | 'soft' | 'solid';
 
     /**
      * How many cards stay visible while the stack is collapsed.

@@ -26,6 +26,7 @@ import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { filterAndRankItems, type FilterFn } from '../../utils/filter';
 import { debounce, cancel } from '@ember/runloop';
+import { renamedArgValue } from '../../-private/deprecated-args';
 
 import { modifier } from 'ember-modifier';
 
@@ -43,6 +44,7 @@ interface AutocompleteArgs<T>
     >,
     Pick<
       ListboxSignature<T>['Args'],
+      | 'variant'
       | 'appearance'
       | 'intent'
       | 'disabledKeys'
@@ -576,9 +578,33 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   @cached
   get classes() {
     const { autocomplete } = useStyles();
+    // Referenced here, on the always-rendered root, so `@appearance`/
+    // `@variant` raises its deprecation regardless of whether the popover
+    // content (and so the internal `Listbox`) is currently mounted.
+    void this.variant;
     return autocomplete({
       size: this.args.inputSize
     });
+  }
+
+  /**
+   * Resolved once (`@cached`) and forwarded to the internal `Listbox` as
+   * `@variant` only -- never `@appearance` as well, which would make the
+   * inner `Listbox` raise its own deprecation for the same usage.
+   */
+  @cached
+  get variant() {
+    return renamedArgValue(
+      this.args.variant,
+      this.args.appearance,
+      { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
+      {
+        component: 'Autocomplete',
+        from: 'appearance',
+        to: 'variant',
+        id: 'frontile.autocomplete.appearance'
+      }
+    );
   }
 
   /**
@@ -816,7 +842,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
             <Listbox
               @items={{this.filteredItems}}
               @allowEmpty={{@allowEmpty}}
-              @appearance={{@appearance}}
+              @variant={{this.variant}}
               @disabledKeys={{@disabledKeys}}
               @intent={{@intent}}
               @isKeyboardEventsEnabled={{true}}
@@ -837,7 +863,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
                 {{else}}
                   <l.Item
                     @key={{l.key}}
-                    @appearance={{@appearance}}
+                    @variant={{this.variant}}
                     @intent={{@intent}}
                   >
                     {{l.label}}

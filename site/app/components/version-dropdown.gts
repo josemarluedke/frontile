@@ -91,7 +91,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
     <div ...attributes>
       <Dropdown as |d|>
         <d.Trigger
-          @appearance="minimal"
+          @variant="plain"
           @class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-neutral-strong bg-neutral-subtle border border-neutral-subtle rounded-lg hover:bg-neutral-subtle focus:bg-neutral-subtle transition-all duration-200"
         >
           <span>{{this.getVersionLabel this.currentVersion}}</span>

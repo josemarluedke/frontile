@@ -140,6 +140,7 @@ const SelectedChips: TOC<SelectedChipsSignature> = <template>
         data-part="chip"
         data-key={{item.key}}
         @class={{@classes.chip class=@userClasses.chip}}
+        @variant={{@chipOptions.variant}}
         @appearance={{@chipOptions.appearance}}
         @intent={{@chipOptions.intent}}
         @size={{@chipOptions.size}}

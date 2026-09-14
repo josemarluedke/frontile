@@ -44,7 +44,7 @@ class Label extends Component<{ Args: { label: unknown } }> {
   <template>
     <Chip
       @size="sm"
-      @appearance="faded"
+      @variant="soft"
       @intent={{this.intent}}
       @class="ml-1 !text-[10px] !px-1.5 !py-0 !h-4 !min-h-4"
     >

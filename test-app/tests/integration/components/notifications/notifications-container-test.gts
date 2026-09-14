@@ -283,7 +283,7 @@ module(
               warning: {},
               danger: {}
             },
-            variant: { default: {}, tonal: {}, solid: {} },
+            variant: { surface: {}, soft: {}, solid: {} },
             hasDescription: {
               true: { inner: 'items-start' },
               false: { inner: 'items-center' }
@@ -291,7 +291,7 @@ module(
           },
           defaultVariants: {
             intent: 'info',
-            variant: 'default',
+            variant: 'surface',
             hasDescription: false
           }
         })
@@ -432,7 +432,7 @@ module(
               warning: {},
               danger: {}
             },
-            variant: { default: {}, tonal: {}, solid: {} },
+            variant: { surface: {}, soft: {}, solid: {} },
             hasDescription: {
               true: { inner: 'items-start' },
               false: { inner: 'items-center' }
@@ -440,7 +440,7 @@ module(
           },
           defaultVariants: {
             intent: 'info',
-            variant: 'default',
+            variant: 'surface',
             hasDescription: false
           }
         })
@@ -883,7 +883,7 @@ module(
 
       service.add('Message 1', { ...options, intent: 'success' });
 
-      for (const variant of ['default', 'tonal', 'solid'] as const) {
+      for (const variant of ['surface', 'soft', 'solid'] as const) {
         await render(
           <template>
             <NotificationsContainer
@@ -908,7 +908,7 @@ module(
       }
     });
 
-    test('@variant defaults to "default" when omitted', async function (assert) {
+    test('@variant defaults to "surface" when omitted', async function (assert) {
       const service = this.owner.lookup(
         'service:notifications'
       ) as NotificationsService;
@@ -922,7 +922,7 @@ module(
       const card = find('[data-test-notification-card]') as HTMLElement;
       const expectedBase = realNotificationCardStyles({
         intent: 'info',
-        variant: 'default',
+        variant: 'surface',
         hasDescription: false
       }).base();
 

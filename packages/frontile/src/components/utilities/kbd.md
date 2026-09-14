@@ -109,15 +109,15 @@ import { Kbd } from 'frontile';
 ```gts preview
 import { Kbd } from 'frontile';
 
-const appearances = ['default', 'outlined', 'faded'];
+const variants = ['solid', 'outline', 'subtle'];
 const intents = ['default', 'primary', 'secondary', 'success', 'warning', 'danger'];
 
 <template>
   <div class='flex flex-col gap-3 not-prose p-2'>
-    {{#each appearances as |appearance|}}
+    {{#each variants as |variant|}}
       <div class='flex items-center gap-3'>
         {{#each intents as |intent|}}
-          <Kbd @keys='mod+k' @appearance={{appearance}} @intent={{intent}} />
+          <Kbd @keys='mod+k' @variant={{variant}} @intent={{intent}} />
         {{/each}}
       </div>
     {{/each}}
@@ -137,11 +137,11 @@ import { Kbd } from 'frontile';
   <div class='flex flex-col gap-2 not-prose p-2'>
     <div class='flex items-center justify-between gap-3 rounded-lg bg-primary-soft text-on-primary-soft px-3 py-2'>
       <span>Open command palette</span>
-      <Kbd @keys='mod+k' @appearance='inherit' @size='sm' />
+      <Kbd @keys='mod+k' @variant='inherit' @size='sm' />
     </div>
     <div class='flex items-center justify-between gap-3 rounded-lg px-3 py-2'>
       <span>Open command palette</span>
-      <Kbd @keys='mod+k' @appearance='plain' @size='sm' />
+      <Kbd @keys='mod+k' @variant='plain' @size='sm' />
     </div>
   </div>
 </template>
@@ -149,7 +149,7 @@ import { Kbd } from 'frontile';
 
 `Listbox`, `Dropdown` and `Command` render their items' `@shortcut` through
 `Kbd`. Their keycaps default to `inherit`, so a shortcut stays legible on an
-active or filled row; pass `@shortcutAppearance` on the `Listbox` or `Dropdown`
+active or filled row; pass `@shortcutVariant` on the `Listbox` or `Dropdown`
 to change every item at once.
 
 ## Platform

@@ -50,9 +50,9 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
         dragHandleBar: 'drawer__drag-handle-bar'
       },
       variants: {
-        appearance: {
-          default: 'drawer--default',
-          ghost: 'drawer--ghost'
+        variant: {
+          sectioned: 'drawer--sectioned',
+          flat: 'drawer--flat'
         },
         hasCloseButton: {
           true: { header: 'drawer__header--has-close-btn' }
@@ -927,15 +927,15 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     );
   });
 
-  test('it applies appearance classes', async function (assert) {
+  test('it applies variant classes', async function (assert) {
     const isOpen = cell(true);
-    const appearance = cell<string | undefined>(undefined);
+    const variant = cell<string | undefined>(undefined);
 
     await render(
       <template>
         <Drawer
           @isOpen={{isOpen.current}}
-          @appearance={{appearance.current}}
+          @variant={{variant.current}}
           @disableTransitions={{true}}
           data-test-id="drawer"
           as |m|
@@ -948,13 +948,13 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
 
     assert
       .dom('[data-test-id="drawer"]')
-      .hasClass('drawer--default', 'defaults to the default appearance');
+      .hasClass('drawer--sectioned', 'defaults to the sectioned variant');
 
-    appearance.current = 'ghost';
+    variant.current = 'flat';
     await settled();
 
-    assert.dom('[data-test-id="drawer"]').hasClass('drawer--ghost');
-    assert.dom('[data-test-id="drawer"]').doesNotHaveClass('drawer--default');
+    assert.dom('[data-test-id="drawer"]').hasClass('drawer--flat');
+    assert.dom('[data-test-id="drawer"]').doesNotHaveClass('drawer--sectioned');
   });
 
   test('the header reserves the close-button lane only when it has one', async function (assert) {

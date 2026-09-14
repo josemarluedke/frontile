@@ -81,9 +81,9 @@ interface NotificationCardSignature {
     /**
      * The visual style of the card.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'surface'
      */
-    variant?: 'default' | 'tonal' | 'solid';
+    variant?: 'surface' | 'soft' | 'solid';
 
     /**
      * Position, scale, and stacking supplied by the container. When omitted
@@ -272,7 +272,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
       closeButton
     } = notificationCard({
       intent: this.intent,
-      variant: this.args.variant || 'default',
+      variant: this.args.variant || 'surface',
       hasDescription: !!this.args.notification.description,
       // Only pin the card to the placement edge once the container has
       // supplied stack geometry — see the `stackPlacement` variant's
@@ -349,7 +349,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
                 data-part="custom-action-button"
                 @size="xs"
                 @intent={{if index "default" this.actionIntent}}
-                @appearance={{if index "minimal" "default"}}
+                @variant={{if index "plain" "solid"}}
                 @class={{this.classes.customActionButton}}
                 @onPress={{fn this.handleClickCustomAction customAction}}
               >

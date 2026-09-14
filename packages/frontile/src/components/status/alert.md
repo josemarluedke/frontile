@@ -238,7 +238,7 @@ import { Alert, Spinner } from 'frontile';
 The `actions` block renders buttons in a row between the content and the close button.
 Alert follows the same styling convention as `NotificationCard`: `@size='xs'`, the first
 button's `@intent` matching the alert's own, and any further button using
-`@appearance='minimal'`.
+`@variant='plain'`.
 
 ```gts preview
 import { Alert, Button } from 'frontile';
@@ -248,7 +248,7 @@ import { Alert, Button } from 'frontile';
     <Alert @intent='warning' @title='Unsaved changes' @description='Save before you leave?'>
       <:actions>
         <Button @size='xs' @intent='warning'>Save</Button>
-        <Button @size='xs' @appearance='minimal'>Discard</Button>
+        <Button @size='xs' @variant='plain'>Discard</Button>
       </:actions>
     </Alert>
   </div>

@@ -75,7 +75,7 @@ export default class Example extends Component {
       @placeholder="Select your favorite animals"
     >
       <:item as |o|>
-        <o.Item @key={{o.item}} @intent="default" @appearance="faded">
+        <o.Item @key={{o.item}} @intent="default" @variant="subtle">
           {{o.item}}
         </o.Item>
       </:item>
@@ -125,7 +125,7 @@ export default class Example extends Component {
         @key="delete"
         @shortcut="⌘⇧D"
         @intent="danger"
-        @appearance="faded"
+        @variant="subtle"
         @class="text-danger"
       >
         Delete Account

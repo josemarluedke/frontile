@@ -153,10 +153,10 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
   });
 
   module('styling', function () {
-    test('size, intent and appearance apply their classes', async function (assert) {
+    test('size, intent and variant apply their classes', async function (assert) {
       await render(
         <template>
-          <Kbd @keys="k" @size="lg" @intent="danger" @appearance="faded" />
+          <Kbd @keys="k" @size="lg" @intent="danger" @variant="subtle" />
         </template>
       );
 
@@ -168,8 +168,8 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
     test('inherit and plain follow the surrounding colour', async function (assert) {
       await render(
         <template>
-          <Kbd @keys="k" @appearance="inherit" data-test-inherit />
-          <Kbd @keys="k" @appearance="plain" data-test-plain />
+          <Kbd @keys="k" @variant="inherit" data-test-inherit />
+          <Kbd @keys="k" @variant="plain" data-test-plain />
         </template>
       );
 

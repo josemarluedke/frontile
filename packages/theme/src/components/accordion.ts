@@ -50,12 +50,12 @@ const accordion = tv({
       // No chrome at all.
       ghost: {},
       // Rules between items, none after the last.
-      outlined: {
+      separated: {
         item: 'border-b border-neutral-muted last:border-b-0'
       },
       // A soft fill on the open item. Horizontal padding comes with the
       // surface -- text running to the edge of a tinted box reads as a bug.
-      faded: {
+      soft: {
         item: 'rounded-lg data-[open=true]:bg-surface-overlay-soft',
         trigger: 'px-3',
         contentBody: 'px-3'
@@ -113,7 +113,7 @@ const accordion = tv({
   },
 
   defaultVariants: {
-    variant: 'outlined',
+    variant: 'separated',
     size: 'md'
   }
 });

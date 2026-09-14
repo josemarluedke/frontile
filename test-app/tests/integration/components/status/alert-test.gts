@@ -41,8 +41,8 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
         danger: 'intent-danger'
       },
       variant: {
-        default: 'variant-default',
-        tonal: 'variant-tonal',
+        surface: 'variant-surface',
+        soft: 'variant-soft',
         solid: 'variant-solid'
       },
       layout: {
@@ -68,7 +68,7 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
     },
     defaultVariants: {
       intent: 'default',
-      variant: 'default',
+      variant: 'surface',
       layout: 'inline',
       hasDescription: false,
       hasCloseButton: false

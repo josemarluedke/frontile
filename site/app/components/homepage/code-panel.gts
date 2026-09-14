@@ -85,7 +85,7 @@ export default class CodePanel extends Component<Signature> {
         {{#if @isCollapsible}}
           <span class="ml-auto flex-none text-code-ink">
             <Button
-              @appearance="minimal"
+              @variant="plain"
               @size="xs"
               @onPress={{this.toggle}}
               aria-expanded={{if this.isOpen "true" "false"}}

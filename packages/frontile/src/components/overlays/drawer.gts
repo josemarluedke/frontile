@@ -94,14 +94,14 @@ export interface DrawerArgs extends Pick<
   size?: DrawerVariants['size'];
 
   /**
-   * The Drawer visual appearance.
+   * The Drawer visual variant.
    *
-   * `default` gives the drawer a black header band, a distinct body surface and
-   * a solid footer. `ghost` keeps every region on the modal surface.
+   * `sectioned` gives the drawer a black header band, a distinct body surface and
+   * a solid footer. `flat` keeps every region on the modal surface.
    *
-   * @defaultValue 'default'
+   * @defaultValue 'sectioned'
    */
-  appearance?: DrawerVariants['appearance'];
+  variant?: DrawerVariants['variant'];
 
   /**
    * Enables the drag-to-close gesture and its grab handle.
@@ -251,8 +251,8 @@ export default class Drawer extends Component<DrawerSignature> {
     return this.args.placement || 'right';
   }
 
-  get appearance(): NonNullable<DrawerVariants['appearance']> {
-    return this.args.appearance || 'default';
+  get variant(): NonNullable<DrawerVariants['variant']> {
+    return this.args.variant || 'sectioned';
   }
 
   get isVerticalPlacement(): boolean {
@@ -291,7 +291,7 @@ export default class Drawer extends Component<DrawerSignature> {
     return drawer({
       placement: this.placement,
       size: this.args.size || 'md',
-      appearance: this.appearance,
+      variant: this.variant,
       hasCloseButton: this.showCloseButton
     });
   }

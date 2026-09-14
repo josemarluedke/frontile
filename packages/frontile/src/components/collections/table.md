@@ -105,7 +105,7 @@ import type { TOC } from '@ember/component/template-only';
 const StatusCell: TOC<CellSignature<User>> = <template>
   <Chip
     @size='sm'
-    @appearance='outlined'
+    @variant='outline'
     @intent='{{if (eq @row.data.status "active") "success" "danger"}}'
     @withDot={{true}}
   >
@@ -444,7 +444,7 @@ export default class DemoComponent extends Component {
           <Button
             @onPress={{this.toggleLoading}}
             @size='sm'
-            @appearance='outlined'
+            @variant='outline'
             @intent={{if this.isLoading 'danger' 'primary'}}
           >
             {{if this.isLoading 'Stop Loading' 'Start Loading'}}
@@ -526,7 +526,7 @@ export default class DemoComponent extends Component {
           <Button @size='sm' @intent='primary' {{on 'click' this.load}}>
             Load data
           </Button>
-          <Button @size='sm' @appearance='outlined' {{on 'click' this.reset}}>
+          <Button @size='sm' @variant='outline' {{on 'click' this.reset}}>
             Back to loading
           </Button>
         </div>
@@ -625,7 +625,7 @@ export default class DemoComponent extends Component {
   <template>
     <div class='demo-stack demo-stack--wide'>
       <div class='space-y-4'>
-        <Button @onPress={{this.toggleLoading}} @size='sm' @appearance='outlined'>
+        <Button @onPress={{this.toggleLoading}} @size='sm' @variant='outline'>
           {{if this.isLoading 'Stop Loading' 'Start Loading'}}
         </Button>
         <div class='relative'>
@@ -753,7 +753,7 @@ export default class DemoComponent extends Component {
           <c.For @key='status'>
             <Chip
               @size='sm'
-              @appearance='outlined'
+              @variant='outline'
               @intent='{{if (eq c.value "active") "success" "danger"}}'
               @withDot={{true}}
             >

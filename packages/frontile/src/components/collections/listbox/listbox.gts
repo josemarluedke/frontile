@@ -1,7 +1,9 @@
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
+import { renamedArgValue } from '../../../-private/deprecated-args';
 import {
   ListManager,
   keyAndLabelForItem,
@@ -51,9 +53,15 @@ interface ListboxSignature<T> {
     onActiveItemChange?: (key?: string, item?: ListItem) => void;
 
     /**
-     * The appearance of each item
+     * The variant of each item.
      *
-     * @defaultValue 'default'
+     * @defaultValue 'solid'
+     */
+    variant?: 'solid' | 'outline' | 'subtle';
+
+    /**
+     * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
+     * `outline`, and `faded` is `subtle`.
      */
     appearance?: 'default' | 'outlined' | 'faded';
 
@@ -74,7 +82,7 @@ interface ListboxSignature<T> {
      *
      * @defaultValue 'inherit'
      */
-    shortcutAppearance?: ListboxItemSignature['Args']['shortcutAppearance'];
+    shortcutVariant?: ListboxItemSignature['Args']['shortcutVariant'];
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -260,8 +268,35 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
     }
   );
 
+  /**
+   * Resolved once (`@cached`) purely to raise Listbox's own deprecation when
+   * `@appearance` is used directly on `<Listbox>` -- independent of whether
+   * any items are rendered to inherit it. The resolved value is not itself
+   * forwarded to items: `@variant`/`@appearance` are passed down unchanged
+   * (see the template below) so a per-item override using either name still
+   * takes effect, and only actual uses of the deprecated arg -- at whichever
+   * level they occur -- raise a warning.
+   */
+  @cached
+  get variant() {
+    return renamedArgValue(
+      this.args.variant,
+      this.args.appearance,
+      { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
+      {
+        component: 'Listbox',
+        from: 'appearance',
+        to: 'variant',
+        id: 'frontile.listbox.appearance'
+      }
+    );
+  }
+
   get classNames() {
     const { listbox } = useStyles();
+    // Referenced only to trigger the deprecation above when appropriate;
+    // Listbox itself has no styling of its own that varies by variant.
+    void this.variant;
     return listbox({ class: this.args.class });
   }
 
@@ -324,9 +359,10 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
                 Item=(component
                   ListboxItem
                   manager=this.listManager
+                  variant=@variant
                   appearance=@appearance
                   intent=@intent
-                  shortcutAppearance=@shortcutAppearance
+                  shortcutVariant=@shortcutVariant
                   type=this.role
                   key=keyLabel.key
                   item=item
@@ -339,9 +375,10 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
               @manager={{this.listManager}}
               @key={{keyLabel.key}}
               @item={{item}}
+              @variant={{@variant}}
               @appearance={{@appearance}}
               @intent={{@intent}}
-              @shortcutAppearance={{@shortcutAppearance}}
+              @shortcutVariant={{@shortcutVariant}}
               @type={{this.role}}
             >
               {{keyLabel.label}}
@@ -355,17 +392,19 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
           Item=(component
             ListboxItem
             manager=this.listManager
+            variant=@variant
             appearance=@appearance
             intent=@intent
-            shortcutAppearance=@shortcutAppearance
+            shortcutVariant=@shortcutVariant
             type=this.role
           )
           Group=(component
             ListboxGroup
             manager=this.listManager
+            variant=@variant
             appearance=@appearance
             intent=@intent
-            shortcutAppearance=@shortcutAppearance
+            shortcutVariant=@shortcutVariant
             type=this.role
           )
         )

@@ -5,6 +5,7 @@ import type { TOC } from '@ember/component/template-only';
 import { useStyles } from '@frontile/theme';
 import { press, type PressEvent } from '../../modifiers/press';
 import { Spinner } from '../utilities/spinner';
+import { renamedArgValue } from '../../-private/deprecated-args';
 
 /**
  * Sets `disabled` on the element while `loading` is true, restoring whatever
@@ -84,9 +85,16 @@ export interface ButtonArgs {
   type?: 'button' | 'submit' | 'reset';
 
   /**
-   * The button appearance
+   * The button variant.
    *
-   * @defaultValue 'default'
+   * @defaultValue 'solid'
+   */
+  variant?:
+    'solid' | 'soft' | 'subtle' | 'outline' | 'ghost' | 'plain' | 'custom';
+
+  /**
+   * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
+   * `outline`, and `minimal` is `plain`.
    */
   appearance?: 'default' | 'soft' | 'outlined' | 'minimal' | 'tonal' | 'custom';
 
@@ -183,7 +191,24 @@ class Button extends Component<ButtonSignature> {
     return button({
       intent: this.args.intent || 'default',
       size: this.args.size,
-      appearance: this.args.appearance || 'default',
+      variant:
+        renamedArgValue(
+          this.args.variant,
+          this.args.appearance,
+          {
+            default: 'solid',
+            outlined: 'outline',
+            minimal: 'plain',
+            soft: 'subtle',
+            tonal: 'soft'
+          } as const,
+          {
+            component: 'Button',
+            from: 'appearance',
+            to: 'variant',
+            id: 'frontile.button.appearance'
+          }
+        ) || 'solid',
       isInGroup: this.args.isInGroup,
       isLoading: this.isLoading,
       class: this.args.class

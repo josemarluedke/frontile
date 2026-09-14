@@ -16,6 +16,8 @@ import type { MenuContext, SubHandle } from './menu-context';
 import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from '../listbox/item';
 import type { WithBoundArgs } from '@glint/template';
+import { cached } from '@glimmer/tracking';
+import { renamedArgValue } from '../../../-private/deprecated-args';
 
 interface DropdownArgs extends Pick<
   PopoverSignature['Args'],
@@ -83,7 +85,7 @@ class Dropdown extends Component<DropdownSignature> {
 
 interface TriggerArgs extends Pick<
   ButtonSignature['Args'],
-  'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
+  'variant' | 'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
 > {
   /**
    * @internal
@@ -161,6 +163,7 @@ class Trigger extends Component<TriggerSignature> {
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
       @type="button"
+      @variant={{@variant}}
       @appearance={{@appearance}}
       @intent={{@intent}}
       @size={{@size}}
@@ -178,6 +181,7 @@ interface MenuArgs
   extends
     Pick<
       ListboxSignature<unknown>['Args'],
+      | 'variant'
       | 'appearance'
       | 'intent'
       | 'class'
@@ -186,7 +190,7 @@ interface MenuArgs
       | 'disabledKeys'
       | 'allowEmpty'
       | 'onSelectionChange'
-      | 'shortcutAppearance'
+      | 'shortcutVariant'
     >,
     Pick<
       ContentSignature['Args'],
@@ -296,6 +300,25 @@ class Menu extends Component<MenuSignature> {
   }
 
   /**
+   * Resolved once (`@cached`): `context` is read many times per render, and
+   * without caching each read would re-run the deprecation.
+   */
+  @cached
+  get variant() {
+    return renamedArgValue(
+      this.args.variant,
+      this.args.appearance,
+      { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
+      {
+        component: 'Dropdown',
+        from: 'appearance',
+        to: 'variant',
+        id: 'frontile.dropdown.appearance'
+      }
+    );
+  }
+
+  /**
    * A submenu is handed its level's context by the `Sub` that renders it. The
    * root builds its own, from the arguments the consumer wrote once.
    */
@@ -313,9 +336,9 @@ class Menu extends Component<MenuSignature> {
       allowEmpty: this.args.allowEmpty,
       onAction: this.args.onAction,
       onSelectionChange: this.args.onSelectionChange,
-      appearance: this.args.appearance,
+      variant: this.variant,
       intent: this.args.intent,
-      shortcutAppearance: this.args.shortcutAppearance,
+      shortcutVariant: this.args.shortcutVariant,
       closeOnItemSelect: this.args.closeOnItemSelect,
       disableTransitions: this.args.disableTransitions,
       transitionDuration: this.args.transitionDuration
@@ -436,10 +459,10 @@ class Menu extends Component<MenuSignature> {
       <Listbox
         {{on "keydown" this.handleArrowKeys}}
         @allowEmpty={{this.context.allowEmpty}}
-        @appearance={{this.context.appearance}}
+        @variant={{this.context.variant}}
         @disabledKeys={{this.context.disabledKeys}}
         @intent={{this.context.intent}}
-        @shortcutAppearance={{this.context.shortcutAppearance}}
+        @shortcutVariant={{this.context.shortcutVariant}}
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
         @onActiveItemChange={{this.onActiveItemChange}}

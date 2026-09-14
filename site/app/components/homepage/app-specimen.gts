@@ -192,10 +192,10 @@ export default class AppSpecimen extends Component {
           <g.ToggleButton>Contractors</g.ToggleButton>
         </ButtonGroup>
 
-        <Button @appearance="outlined" @size="xs" class="ml-auto">
+        <Button @variant="outline" @size="xs" class="ml-auto">
           <FilterIcon />
           Filters
-          <Chip @size="sm" @appearance="faded">2</Chip>
+          <Chip @size="sm" @variant="soft">2</Chip>
         </Button>
       </div>
 
@@ -228,7 +228,7 @@ export default class AppSpecimen extends Component {
                   class="font-code text-code-sm text-neutral-firm"
                 >{{c.row.data.workerId}}</span>
                 <Button
-                  @appearance="minimal"
+                  @variant="plain"
                   @size="xs"
                   @class="px-0 size-7 shrink-0"
                   aria-label="Copy worker ID"
@@ -257,16 +257,16 @@ export default class AppSpecimen extends Component {
                   neutral chip. Colour-coding it would spend a semantic hue on
                   decoration and leave real status with no signal of its own. }}
               {{#if (isEmployee c.row.data.workerType)}}
-                <Chip @size="sm" @appearance="faded">Employee</Chip>
+                <Chip @size="sm" @variant="soft">Employee</Chip>
               {{else}}
-                <Chip @size="sm" @appearance="outlined">Contractor</Chip>
+                <Chip @size="sm" @variant="outline">Contractor</Chip>
               {{/if}}
             </c.For>
 
             <c.For @key="actions">
               <div class="flex items-center gap-1.5">
                 <Button
-                  @appearance="soft"
+                  @variant="subtle"
                   @size="xs"
                   @class="px-0 size-7 shrink-0"
                   aria-label="View member"
@@ -274,7 +274,7 @@ export default class AppSpecimen extends Component {
                   <ViewIcon />
                 </Button>
                 <Button
-                  @appearance="soft"
+                  @variant="subtle"
                   @intent="primary"
                   @size="xs"
                   @class="px-0 size-7 shrink-0"
@@ -283,7 +283,7 @@ export default class AppSpecimen extends Component {
                   <EditIcon />
                 </Button>
                 <Button
-                  @appearance="soft"
+                  @variant="subtle"
                   @intent="danger"
                   @size="xs"
                   @class="px-0 size-7 shrink-0"
@@ -319,8 +319,8 @@ export default class AppSpecimen extends Component {
           />
         </div>
         <div class="ml-auto flex items-center gap-2">
-          <Button @appearance="outlined" @size="xs">Export</Button>
-          <Button @appearance="minimal" @size="xs">Manage roles</Button>
+          <Button @variant="outline" @size="xs">Export</Button>
+          <Button @variant="plain" @size="xs">Manage roles</Button>
         </div>
       </div>
     </div>

@@ -3454,22 +3454,26 @@ const data: ComponentDoc[] = [
         identifier: 'appearance',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span></span>',
           items: [
-            "'default'",
             "'soft'",
+            "'custom'",
+            "'default'",
             "'outlined'",
             "'minimal'",
             "'tonal'",
-            "'custom'",
           ],
         },
         isRequired: false,
         isInternal: false,
-        description: 'The button appearance',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `minimal` is `plain`.',
+          },
+        },
       },
       {
         identifier: 'class',
@@ -3513,6 +3517,28 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'The size of the button',
         tags: {},
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          items: [
+            "'solid'",
+            "'soft'",
+            "'subtle'",
+            "'outline'",
+            "'ghost'",
+            "'plain'",
+            "'custom'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The button variant.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
       },
     ],
     Blocks: [
@@ -3583,22 +3609,26 @@ const data: ComponentDoc[] = [
         identifier: 'appearance',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span></span>',
           items: [
-            "'default'",
             "'soft'",
+            "'custom'",
+            "'default'",
             "'outlined'",
             "'minimal'",
             "'tonal'",
-            "'custom'",
           ],
         },
         isRequired: false,
         isInternal: false,
-        description: 'The button appearance',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `minimal` is `plain`.',
+          },
+        },
       },
       {
         identifier: 'class',
@@ -3718,6 +3748,28 @@ const data: ComponentDoc[] = [
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'button\'</span></span>',
       },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          items: [
+            "'solid'",
+            "'soft'",
+            "'subtle'",
+            "'outline'",
+            "'ghost'",
+            "'plain'",
+            "'custom'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The button variant.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
+      },
     ],
     Blocks: [
       {
@@ -3816,10 +3868,14 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The chip appearance',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `faded` is `soft`.',
+          },
+        },
       },
       {
         identifier: 'class',
@@ -3940,6 +3996,20 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
       },
       {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+          items: ["'solid'", "'soft'", "'outline'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The chip variant.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
+      },
+      {
         identifier: 'withDot',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
@@ -3947,7 +4017,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Adds a dot before the content, colored by <code>@intent</code>. On the <code>default</code>\nappearance the dot takes the chip's text color, since the chip's\nbackground is already the intent color.",
+          "Adds a dot before the content, colored by <code>@intent</code>. On the <code>solid</code>\nvariant the dot takes the chip's text color, since the chip's\nbackground is already the intent color.",
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
@@ -4052,17 +4122,24 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'transparent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span></span>',
-          items: ["'transparent'", "'subtle'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'transparent\'</span></span>',
+          items: ["'soft'", "'subtle'", "'ghost'", "'transparent'"],
         },
         isRequired: false,
         isInternal: false,
         description: '',
         tags: {
-          defaultValue: { name: 'defaultValue', value: "'transparent'" },
+          defaultValue: {
+            name: 'defaultValue',
+            value: "'ghost'\n\n`transparent` and `subtle` are",
+          },
+          deprecated: {
+            name: 'deprecated',
+            value: '— use `ghost` and `soft` instead.',
+          },
         },
         defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'transparent\'</span></span>',
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'ghost\'</span>\n\n<span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">`transparent`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> and </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">`subtle`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> are</span></span>',
       },
     ],
     Blocks: [
@@ -4108,6 +4185,31 @@ const data: ComponentDoc[] = [
     fileName:
       'packages/frontile/declarations/components/buttons/toggle-button.d.ts',
     Args: [
+      {
+        identifier: 'appearance',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span></span>',
+          items: [
+            "'soft'",
+            "'custom'",
+            "'default'",
+            "'outlined'",
+            "'minimal'",
+            "'tonal'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `minimal` is `plain`.',
+          },
+        },
+      },
       {
         identifier: 'class',
         type: {
@@ -4184,6 +4286,28 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'The size of the button',
         tags: {},
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          items: [
+            "'solid'",
+            "'soft'",
+            "'subtle'",
+            "'outline'",
+            "'ghost'",
+            "'plain'",
+            "'custom'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The button variant.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
       },
     ],
     Blocks: [
@@ -4268,10 +4392,14 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The appearance of each item',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `faded` is `subtle`.',
+          },
+        },
       },
       {
         identifier: 'backdrop',
@@ -5183,6 +5311,20 @@ const data: ComponentDoc[] = [
         tags: { defaultValue: { name: 'defaultValue', value: '200' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">200</span></span>',
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The variant of each item.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
       },
     ],
     Blocks: [
@@ -8929,25 +9071,6 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
-    module: 'icons',
-    name: 'Component',
-    fileName:
-      'packages/frontile/declarations/components/notifications/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
     module: 'notification-card',
     name: 'NotificationCard',
     fileName:
@@ -9077,15 +9200,15 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'solid\'</span></span>',
-          items: ["'default'", "'tonal'", "'solid'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'surface\'</span></span>',
+          items: ["'solid'", "'soft'", "'surface'"],
         },
         isRequired: false,
         isInternal: false,
         description: 'The visual style of the card.',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        tags: { defaultValue: { name: 'defaultValue', value: "'surface'" } },
         defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'surface\'</span></span>',
       },
     ],
     Blocks: [],
@@ -9182,15 +9305,15 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'solid\'</span></span>',
-          items: ["'default'", "'tonal'", "'solid'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'surface\'</span></span>',
+          items: ["'solid'", "'soft'", "'surface'"],
         },
         isRequired: false,
         isInternal: false,
         description: 'The visual style applied to every card.',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        tags: { defaultValue: { name: 'defaultValue', value: "'surface'" } },
         defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'surface\'</span></span>',
       },
       {
         identifier: 'visibleToasts',
@@ -9482,21 +9605,6 @@ const data: ComponentDoc[] = [
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
-      },
-      {
-        identifier: 'appearance',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span></span>',
-          items: ["'default'", "'ghost'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          '<p>The Drawer visual appearance.</p>\n<p><code>default</code> gives the drawer a black header band, a distinct body surface and\na solid footer. <code>ghost</code> keeps every region on the modal surface.</p>',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
       },
       {
         identifier: 'backdrop',
@@ -9971,6 +10079,21 @@ const data: ComponentDoc[] = [
         tags: { defaultValue: { name: 'defaultValue', value: '200' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">200</span></span>',
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sectioned\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'flat\'</span></span>',
+          items: ["'sectioned'", "'flat'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The Drawer visual variant.</p>\n<p><code>sectioned</code> gives the drawer a black header band, a distinct body surface and\na solid footer. <code>flat</code> keeps every region on the modal surface.</p>',
+        tags: { defaultValue: { name: 'defaultValue', value: "'sectioned'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sectioned\'</span></span>',
       },
     ],
     Blocks: [
@@ -12880,15 +13003,15 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'solid\'</span></span>',
-          items: ["'default'", "'tonal'", "'solid'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'surface\'</span></span>',
+          items: ["'solid'", "'soft'", "'surface'"],
         },
         isRequired: false,
         isInternal: false,
         description: 'The visual style of the alert.',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        tags: { defaultValue: { name: 'defaultValue', value: "'surface'" } },
         defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'surface\'</span></span>',
       },
     ],
     Blocks: [
@@ -13485,21 +13608,6 @@ const data: ComponentDoc[] = [
     fileName: 'packages/frontile/declarations/components/utilities/kbd.d.ts',
     Args: [
       {
-        identifier: 'appearance',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
-          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          '<code>inherit</code> follows the colour it sits on, for keycaps on a filled row.\n<code>plain</code> drops the box entirely, for quiet trailing shortcuts.',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
-      },
-      {
         identifier: 'class',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
@@ -13606,6 +13714,21 @@ const data: ComponentDoc[] = [
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'", "'plain'", "'inherit'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<code>inherit</code> follows the colour it sits on, for keycaps on a filled row.\n<code>plain</code> drops the box entirely, for quiet trailing shortcuts.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
       },
     ],
     Blocks: [
@@ -27698,22 +27821,26 @@ const data: ComponentDoc[] = [
         identifier: 'appearance',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'minimal\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tonal\'</span></span>',
           items: [
-            "'default'",
             "'soft'",
+            "'custom'",
+            "'default'",
             "'outlined'",
             "'minimal'",
             "'tonal'",
-            "'custom'",
           ],
         },
         isRequired: false,
         isInternal: false,
-        description: 'The button appearance',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `minimal` is `plain`.',
+          },
+        },
       },
       {
         identifier: 'class',
@@ -27768,6 +27895,28 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'The size of the button',
         tags: {},
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          items: [
+            "'solid'",
+            "'soft'",
+            "'subtle'",
+            "'outline'",
+            "'ghost'",
+            "'plain'",
+            "'custom'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The button variant.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
       },
     ],
     Blocks: [
@@ -27831,10 +27980,14 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The appearance of each item',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `faded` is `subtle`.',
+          },
+        },
       },
       {
         identifier: 'autoActivateMode',
@@ -28193,11 +28346,11 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
-              identifier: 'appearance',
+              identifier: 'variant',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span></span>',
-                items: ["'default'", "'outlined'", "'faded'"],
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+                items: ["'solid'", "'subtle'", "'outline'"],
               },
               isRequired: false,
               isInternal: false,
@@ -28225,16 +28378,16 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
-              identifier: 'shortcutAppearance',
+              identifier: 'shortcutVariant',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
                 items: [
-                  "'default'",
-                  "'outlined'",
-                  "'faded'",
-                  "'inherit'",
+                  "'solid'",
+                  "'subtle'",
+                  "'outline'",
                   "'plain'",
+                  "'inherit'",
                 ],
               },
               isRequired: false,
@@ -28442,11 +28595,11 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'shortcutAppearance',
+        identifier: 'shortcutVariant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
-          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'", "'plain'", "'inherit'"],
         },
         isRequired: false,
         isInternal: false,
@@ -28628,6 +28781,20 @@ const data: ComponentDoc[] = [
         tags: { defaultValue: { name: 'defaultValue', value: '200' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">200</span></span>',
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The variant of each item.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
       },
     ],
     Blocks: [
@@ -28854,11 +29021,11 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
-              identifier: 'appearance',
+              identifier: 'variant',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span></span>',
-                items: ["'default'", "'outlined'", "'faded'"],
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+                items: ["'solid'", "'subtle'", "'outline'"],
               },
               isRequired: false,
               isInternal: false,
@@ -28886,16 +29053,16 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
-              identifier: 'shortcutAppearance',
+              identifier: 'shortcutVariant',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
                 items: [
-                  "'default'",
-                  "'outlined'",
-                  "'faded'",
-                  "'inherit'",
+                  "'solid'",
+                  "'subtle'",
+                  "'outline'",
                   "'plain'",
+                  "'inherit'",
                 ],
               },
               isRequired: false,
@@ -29229,7 +29396,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
-        tags: {},
+        tags: { deprecated: { name: 'deprecated', value: 'Use `variant`.' } },
       },
       {
         identifier: 'class',
@@ -29304,11 +29471,11 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'shortcutAppearance',
+        identifier: 'shortcutVariant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
-          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'", "'plain'", "'inherit'"],
         },
         isRequired: false,
         isInternal: false,
@@ -29339,6 +29506,18 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
         identifier: 'withDivider',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
@@ -29355,7 +29534,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager, type, appearance, intent, shortcutAppearance bound); }]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager, type, variant, appearance, intent, shortcutVariant bound); }]</span></span>',
           items: [
             {
               identifier: '0',
@@ -29365,7 +29544,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Item',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager, type, appearance, intent, shortcutAppearance bound)</span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager, type, variant, appearance, intent, shortcutVariant bound)</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -29435,10 +29614,14 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The appearance of each item',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `faded` is `subtle`.',
+          },
+        },
       },
       {
         identifier: 'class',
@@ -29536,16 +29719,16 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'shortcutAppearance',
+        identifier: 'shortcutVariant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
-          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'", "'plain'", "'inherit'"],
         },
         isRequired: false,
         isInternal: false,
         description:
-          "The appearance of the rendered shortcut. Defaults to <code>inherit</code>, so the\nkeycap follows the option's own colour on active and filled rows.",
+          "The variant of the rendered shortcut. Defaults to <code>inherit</code>, so the\nkeycap follows the option's own colour on active and filled rows.",
         tags: { defaultValue: { name: 'defaultValue', value: "'inherit'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'inherit\'</span></span>',
@@ -29582,6 +29765,20 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {},
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The variant of each item.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
       },
       {
         identifier: 'withDivider',
@@ -29681,10 +29878,14 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The appearance of each item',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `faded` is `subtle`.',
+          },
+        },
       },
       {
         identifier: 'autoActivateMode',
@@ -29832,11 +30033,11 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'shortcutAppearance',
+        identifier: 'shortcutVariant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span></span>',
-          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'", "'plain'", "'inherit'"],
         },
         isRequired: false,
         isInternal: false,
@@ -29857,6 +30058,20 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: { default: { name: 'default', value: "'listbox'" } },
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The variant of each item.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
       },
     ],
     Blocks: [
@@ -32122,15 +32337,15 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'enclosed\'</span></span>',
-          items: ["'outlined'", "'faded'", "'ghost'", "'enclosed'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'separated\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'enclosed\'</span></span>',
+          items: ["'soft'", "'ghost'", "'separated'", "'enclosed'"],
         },
         isRequired: false,
         isInternal: false,
         description: 'The container treatment.',
-        tags: { defaultValue: { name: 'defaultValue', value: "'outlined'" } },
+        tags: { defaultValue: { name: 'defaultValue', value: "'separated'" } },
         defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'outlined\'</span></span>',
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'separated\'</span></span>',
       },
     ],
     Blocks: [
@@ -33076,10 +33291,14 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The appearance of each item',
-        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `faded` is `subtle`.',
+          },
+        },
       },
       {
         identifier: 'backdrop',
@@ -33238,6 +33457,20 @@ const data: ComponentDoc[] = [
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
           items: [
             {
+              identifier: 'variant',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+                items: ["'solid'", "'soft'", "'outline'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: 'The chip variant.',
+              tags: { defaultValue: { name: 'defaultValue', value: "'soft'" } },
+              defaultValue:
+                '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span></span>',
+            },
+            {
               identifier: 'appearance',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -33246,12 +33479,14 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: 'The chip appearance.',
+              description: '',
               tags: {
-                defaultValue: { name: 'defaultValue', value: "'faded'" },
+                deprecated: {
+                  name: 'deprecated',
+                  value:
+                    'Use `variant`. `default` is now `solid`, `outlined` is\n`outline`, and `faded` is `soft`.',
+                },
               },
-              defaultValue:
-                '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'faded\'</span></span>',
             },
             {
               identifier: 'intent',
@@ -33310,7 +33545,7 @@ const data: ComponentDoc[] = [
               isRequired: false,
               isInternal: false,
               description:
-                "Adds a dot before the content, colored by `@intent`. On the `default`\nappearance the dot takes the chip's text color, since the chip's\nbackground is already the intent color.",
+                "Adds a dot before the content, colored by `@intent`. On the `solid`\nvariant the dot takes the chip's text color, since the chip's\nbackground is already the intent color.",
               tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
               defaultValue:
                 '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
@@ -33320,14 +33555,14 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>Not applicable in single selection mode.\nAppearance of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>appearance</code>,\n<code>intent</code>, <code>size</code>, <code>radius</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>appearance</code> defaults to <code>'faded'</code></li>\n<li><code>intent</code> defaults to the Select's own <code>@intent</code>, so <code>@intent=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'sm'</code></li>\n<li><code>radius</code> and <code>withDot</code> fall back to Chip's own defaults</li>\n</ul>",
+          "<p>Not applicable in single selection mode.\nVariant of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>variant</code>,\n<code>intent</code>, <code>size</code>, <code>radius</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>variant</code> defaults to <code>'soft'</code></li>\n<li><code>intent</code> defaults to the Select's own <code>@intent</code>, so <code>@intent=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'sm'</code></li>\n<li><code>radius</code> and <code>withDot</code> fall back to Chip's own defaults</li>\n</ul>",
         tags: {
           example: { name: 'example', value: '```gts\n<Select' },
           selectionMode: { name: 'selectionMode', value: '="multiple"' },
           chip: {
             name: 'chip',
             value:
-              '={{hash appearance="outlined" size="md" radius="full"}}\n/>\n```',
+              '={{hash variant="outline" size="md" radius="full"}}\n/>\n```',
           },
         },
       },
@@ -34121,6 +34356,20 @@ const data: ComponentDoc[] = [
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">200</span></span>',
       },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+          items: ["'solid'", "'subtle'", "'outline'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The variant of each item.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span></span>',
+      },
     ],
     Blocks: [
       {
@@ -34471,15 +34720,29 @@ const data: ComponentDoc[] = [
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
           items: [
             {
+              identifier: 'variant',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+                items: ["'solid'", "'soft'", "'outline'"],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Always set unless the consumer used the deprecated `appearance`, in which\ncase it is left undefined so Chip resolves from `appearance` instead.',
+              tags: {},
+            },
+            {
               identifier: 'appearance',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">NonNullable</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outlined\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'faded\'</span></span>',
                 items: ["'default'", "'outlined'", "'faded'"],
               },
               isRequired: true,
               isInternal: false,
-              description: '',
+              description:
+                "Passed through only when the consumer actually wrote it. Defaulting this\nwould fire Chip's `appearance` deprecation on every chip render, for a\nprop the consumer never used.",
               tags: {},
             },
             {
@@ -35167,7 +35430,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Set to false for a previous/next-only control, with no page chips -- for\ncursor-style paging where the total is not known up front.',
+          'Set to false for compact page-number navigation with previous and next\ncontrols but no page chips. <code>@total</code> and <code>@pageSize</code> still determine the\nfirst and last pages.',
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
@@ -35605,8 +35868,8 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'underline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'solid\'</span></span>',
-          items: ["'underline'", "'solid'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'underline\'</span></span>',
+          items: ["'solid'", "'underline'"],
         },
         isRequired: false,
         isInternal: false,
@@ -36465,8 +36728,8 @@ const data: ComponentDoc[] = [
         identifier: 'variant',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'underline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'solid\'</span></span>',
-          items: ["'underline'", "'solid'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'underline\'</span></span>',
+          items: ["'solid'", "'underline'"],
         },
         isRequired: false,
         isInternal: false,

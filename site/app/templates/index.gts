@@ -169,7 +169,7 @@ export default class IndexPage extends Component {
               >Explore the components</LinkButton>
               <LinkButton
                 @to="/docs/theming/overview"
-                @appearance="outlined"
+                @variant="outline"
                 @size="lg"
               >How theming works</LinkButton>
             </div>
@@ -224,7 +224,7 @@ export default class IndexPage extends Component {
             >
               <div class="flex flex-wrap gap-2 justify-center">
                 <Button @intent="primary" @size="sm">Primary</Button>
-                <Button @appearance="outlined" @size="sm">Outlined</Button>
+                <Button @variant="outline" @size="sm">Outlined</Button>
               </div>
             </SpecimenTile>
 
@@ -496,10 +496,10 @@ export default class IndexPage extends Component {
                       />
                     </div>
                     <div class="mt-4 flex flex-wrap gap-2">
-                      <Chip @size="sm" @appearance="faded">Editor</Chip>
+                      <Chip @size="sm" @variant="soft">Editor</Chip>
                       <Chip
                         @size="sm"
-                        @appearance="faded"
+                        @variant="soft"
                         @intent="success"
                         @withDot={{true}}
                       >Active</Chip>
@@ -527,7 +527,7 @@ export default class IndexPage extends Component {
                   @note="Scroll the page behind it. It will not move."
                 >
                   <Button
-                    @appearance="outlined"
+                    @variant="outline"
                     @size="sm"
                     @onPress={{this.openDrawer}}
                   >
@@ -540,7 +540,7 @@ export default class IndexPage extends Component {
                   @note="Arrow keys move, typeahead jumps, Escape restores focus."
                 >
                   <Dropdown as |d|>
-                    <d.Trigger @appearance="outlined" @size="sm">
+                    <d.Trigger @variant="outline" @size="sm">
                       Row actions
                     </d.Trigger>
                     <d.Menu as |Item|>
@@ -673,15 +673,15 @@ export default class IndexPage extends Component {
           <div class="mt-10 flex flex-wrap gap-3 reveal">
             <LinkButton
               @to="/docs/theming/design-tokens/colors"
-              @appearance="outlined"
+              @variant="outline"
             >Color tokens</LinkButton>
             <LinkButton
               @to="/docs/theming/component-styles"
-              @appearance="outlined"
+              @variant="outline"
             >Restyle a component</LinkButton>
             <LinkButton
               @to="/docs/theming/configuration/theme-switching"
-              @appearance="outlined"
+              @variant="outline"
             >Theme switching</LinkButton>
           </div>
         </div>
@@ -803,7 +803,7 @@ export default class IndexPage extends Component {
             >Read the docs</LinkButton>
             <LinkButton
               @href="https://github.com/josemarluedke/frontile"
-              @appearance="outlined"
+              @variant="outline"
               @size="lg"
             >GitHub</LinkButton>
           </div>
