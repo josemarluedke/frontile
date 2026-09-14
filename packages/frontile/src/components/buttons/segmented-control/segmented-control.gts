@@ -50,11 +50,11 @@ interface SegmentedControlArgs<T> {
   name?: string;
 
   /**
-   * The colour intent applied to the selected item's indicator and label.
+   * The colour applied to the selected item's indicator and label.
    *
-   * @defaultValue 'default'
+   * @defaultValue 'neutral'
    */
-  intent?: SegmentedControlVariants['intent'];
+  color?: SegmentedControlVariants['color'];
 
   /**
    * The visual style of the control's track and indicator.
@@ -170,7 +170,7 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
     const { segmentedControl } = useStyles();
 
     return segmentedControl({
-      intent: this.args.intent,
+      color: this.args.color,
       variant: this.args.variant,
       size: this.args.size,
       orientation: this.args.orientation,

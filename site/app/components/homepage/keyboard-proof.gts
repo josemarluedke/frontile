@@ -72,7 +72,7 @@ export default class KeyboardProof extends Component {
         <Listbox
           {{on "keydown" this.handleKeyDown}}
           @isKeyboardEventsEnabled={{true}}
-          @intent="primary"
+          @color="primary"
           @items={{this.items}}
           @selectionMode="single"
           @selectedKeys={{this.selectedKeys}}

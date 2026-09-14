@@ -25,9 +25,9 @@ interface TabsArgs<T> {
   /**
    * The colour intent applied to the indicator.
    *
-   * @defaultValue 'default'
+   * @defaultValue 'neutral'
    */
-  intent?: TabsVariants['intent'];
+  color?: TabsVariants['color'];
 
   /**
    * The size of the tabs, driving padding and text size.
@@ -195,7 +195,7 @@ class Tabs<T> extends Component<TabsSignature<T>> {
 
     return tabs({
       variant: this.args.variant,
-      intent: this.args.intent,
+      color: this.args.color,
       size: this.args.size,
       orientation: this.args.orientation,
       isFullWidth: this.args.isFullWidth,

@@ -179,7 +179,7 @@ module(
         <template>
           <FormControl @label="Username" as |c|>
             <input id={{c.id}} />
-            <c.Feedback @intent="success" @announce={{true}}>
+            <c.Feedback @status="success" @announce={{true}}>
               That username is available.
             </c.Feedback>
           </FormControl>
@@ -200,7 +200,7 @@ module(
         <template>
           <FormControl @label="Username" as |c|>
             <input id={{c.id}} />
-            <c.Feedback @intent="success">
+            <c.Feedback @status="success">
               That username is available.
             </c.Feedback>
           </FormControl>

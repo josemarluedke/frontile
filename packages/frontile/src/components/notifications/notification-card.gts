@@ -22,53 +22,56 @@ import type { CardGeometry } from '../../-private/notification-stack';
 import type {
   CustomAction,
   containerPlacement,
-  NotificationIntent
+  NotificationStatus
 } from '../../-private/types';
 import type { SafeString } from '@ember/template';
 
 /**
- * Everything that varies by `NotificationIntent`, keyed in one place so
- * adding an intent means adding one row here instead of remembering to
- * touch an icon map, an action-intent map, and the `role` getter's cascade
+ * Everything that varies by `NotificationStatus`, keyed in one place so
+ * adding a status means adding one row here instead of remembering to
+ * touch an icon map, an action-colour map, and the `role` getter's cascade
  * separately.
  */
-const INTENT_CONFIG = {
-  default: {
+const STATUS_CONFIG = {
+  neutral: {
     icon: IconInfo,
-    // Button intent for the primary custom action. Also reused as the
-    // loading <Spinner>'s `@intent` (its `intent` union has the same
-    // default/primary/success/warning/danger shape), so the spinner's arc
+    // Button colour for the primary custom action. Also reused as the
+    // loading <Spinner>'s `@color` (its colour union has the same
+    // neutral/primary/success/warning/danger shape), so the spinner's arc
     // matches the same accent the card's custom action button would use.
-    actionIntent: 'default',
+    actionColor: 'neutral',
     // `alert` interrupts a screen reader, so it is reserved for the
-    // intents that warrant interrupting.
+    // statuses that warrant interrupting. This coupling is why the prop is
+    // `@status` and not `@color`.
     role: 'status'
   },
-  info: {
+  // Formerly `info`, which already painted `primary`'s classes. The info
+  // glyph stays attached to `primary`.
+  primary: {
     icon: IconInfo,
-    actionIntent: 'primary',
+    actionColor: 'primary',
     role: 'status'
   },
   success: {
     icon: IconSuccess,
-    actionIntent: 'success',
+    actionColor: 'success',
     role: 'status'
   },
   warning: {
     icon: IconWarning,
-    actionIntent: 'warning',
+    actionColor: 'warning',
     role: 'alert'
   },
   danger: {
     icon: IconDanger,
-    actionIntent: 'danger',
+    actionColor: 'danger',
     role: 'alert'
   }
 } as const satisfies Record<
-  NotificationIntent,
+  NotificationStatus,
   {
     icon: unknown;
-    actionIntent: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+    actionColor: 'neutral' | 'primary' | 'success' | 'warning' | 'danger';
     role: 'status' | 'alert';
   }
 >;
@@ -120,20 +123,20 @@ class NotificationCard extends Component<NotificationCardSignature> {
     return isTopPlacement(this.args.placement || 'bottom-right');
   }
 
-  get intent(): NotificationIntent {
-    return this.args.notification.intent;
+  get status(): NotificationStatus {
+    return this.args.notification.status;
   }
 
   get icon() {
-    return INTENT_CONFIG[this.intent].icon;
+    return STATUS_CONFIG[this.status].icon;
   }
 
-  get actionIntent() {
-    return INTENT_CONFIG[this.intent].actionIntent;
+  get actionColor() {
+    return STATUS_CONFIG[this.status].actionColor;
   }
 
   get role(): 'status' | 'alert' {
-    return INTENT_CONFIG[this.intent].role;
+    return STATUS_CONFIG[this.status].role;
   }
 
   get style(): SafeString {
@@ -271,7 +274,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
       customActionButton,
       closeButton
     } = notificationCard({
-      intent: this.intent,
+      status: this.status,
       variant: this.args.variant || 'surface',
       hasDescription: !!this.args.notification.description,
       // Only pin the card to the placement edge once the container has
@@ -307,7 +310,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
       style={{this.style}}
       role={{this.role}}
       data-test-notification-card
-      data-test-intent={{this.intent}}
+      data-test-status={{this.status}}
       {{this.enter}}
       ...attributes
     >
@@ -318,7 +321,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
             <Spinner
               data-part="spinner"
               @class={{this.classes.spinner}}
-              @intent={{this.actionIntent}}
+              @color={{this.actionColor}}
               @size="sm"
               data-test-icon="loading"
             />
@@ -348,7 +351,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
               <Button
                 data-part="custom-action-button"
                 @size="xs"
-                @intent={{if index "default" this.actionIntent}}
+                @color={{if index "neutral" this.actionColor}}
                 @variant={{if index "plain" "solid"}}
                 @class={{this.classes.customActionButton}}
                 @onPress={{fn this.handleClickCustomAction customAction}}

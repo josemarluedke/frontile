@@ -276,7 +276,7 @@ module(
             closeButton: 'shrink-0 self-center inline-block p-1.5'
           },
           variants: {
-            intent: {
+            status: {
               default: {},
               info: {},
               success: {},
@@ -290,7 +290,7 @@ module(
             }
           },
           defaultVariants: {
-            intent: 'info',
+            status: 'primary',
             variant: 'surface',
             hasDescription: false
           }
@@ -425,7 +425,7 @@ module(
             closeButton: 'shrink-0 self-center inline-block p-1.5'
           },
           variants: {
-            intent: {
+            status: {
               default: {},
               info: {},
               success: {},
@@ -439,7 +439,7 @@ module(
             }
           },
           defaultVariants: {
-            intent: 'info',
+            status: 'primary',
             variant: 'surface',
             hasDescription: false
           }
@@ -881,7 +881,7 @@ module(
         'service:notifications'
       ) as NotificationsService;
 
-      service.add('Message 1', { ...options, intent: 'success' });
+      service.add('Message 1', { ...options, status: 'success' });
 
       for (const variant of ['surface', 'soft', 'solid'] as const) {
         await render(
@@ -895,7 +895,7 @@ module(
 
         const card = find('[data-test-notification-card]') as HTMLElement;
         const expectedBase = realNotificationCardStyles({
-          intent: 'success',
+          status: 'success',
           variant,
           hasDescription: false
         }).base();
@@ -913,7 +913,7 @@ module(
         'service:notifications'
       ) as NotificationsService;
 
-      service.add('Message 1', { ...options, intent: 'info' });
+      service.add('Message 1', { ...options, status: 'primary' });
 
       await render(
         <template><NotificationsContainer data-test-notifications /></template>
@@ -921,7 +921,7 @@ module(
 
       const card = find('[data-test-notification-card]') as HTMLElement;
       const expectedBase = realNotificationCardStyles({
-        intent: 'info',
+        status: 'primary',
         variant: 'surface',
         hasDescription: false
       }).base();

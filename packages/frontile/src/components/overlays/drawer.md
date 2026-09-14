@@ -55,7 +55,7 @@ export default class BasicDrawer extends Component {
           <Button @size='sm' @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @size='sm' @intent='primary'>
+          <Button @size='sm' @color='primary'>
             Save
           </Button>
         </d.Footer>
@@ -84,7 +84,7 @@ import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 
-export default class DrawerAppearances extends Component {
+export default class DrawerVariants extends Component {
   @tracked isOpen = false;
   @tracked selectedVariant = 'sectioned';
 
@@ -119,8 +119,8 @@ export default class DrawerAppearances extends Component {
         @description='Switch variants with the buttons above.'
       />
       <d.Body>
-        <p>This is the body content, on its own surface in `sectioned` and flat in
-          `flat`.</p>
+        <p>This is the body content, on its own surface in `sectioned` and flat
+          in `flat`.</p>
       </d.Body>
       <d.Footer @class='flex gap-2'>
         <Button @size='sm' @onPress={{this.closeDrawer}}>Close</Button>
@@ -141,7 +141,7 @@ import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 import { SettingsIcon } from 'site/components/icons';
 
-export default class DrawerAppearancesIcon extends Component {
+export default class DrawerVariantsIcon extends Component {
   @tracked isOpen = false;
   @tracked selectedVariant = 'sectioned';
 
@@ -299,7 +299,7 @@ export default class DrawerHeaderActions extends Component {
     <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
       <d.Header @title='Filters' @description='Narrow the results below.'>
         <:actions>
-          <Button @size='sm' @intent='primary' @onPress={{this.toggleStarred}}>
+          <Button @size='sm' @color='primary' @onPress={{this.toggleStarred}}>
             {{if this.onlyStarred 'Show all' 'Only starred'}}
           </Button>
         </:actions>
@@ -369,7 +369,7 @@ export default class DrawerWithBanner extends Component {
       <Alert
         @layout='banner'
         @variant='solid'
-        @intent='warning'
+        @status='warning'
         @title='This is the banner text'
       />
 
@@ -381,13 +381,13 @@ export default class DrawerWithBanner extends Component {
       <d.Footer>
         <Button
           @size='sm'
-          @intent='primary'
+          @color='primary'
           @variant='outline'
           @onPress={{this.toggle}}
         >
           Secondary
         </Button>
-        <Button @size='sm' @intent='primary'>Primary</Button>
+        <Button @size='sm' @color='primary'>Primary</Button>
       </d.Footer>
     </Drawer>
   </template>
@@ -842,7 +842,7 @@ export default class DrawerCloseButton extends Component {
       >
         <d.Header>
           Custom Close Button
-          <d.CloseButton data-part="close-button" />
+          <d.CloseButton data-part='close-button' />
         </d.Header>
         <d.Body>
           <p>This drawer uses a custom close button placed in the header using
@@ -921,7 +921,7 @@ export default class NonDismissibleDrawer extends Component {
               <ProgressBar
                 @progress={{this.progress}}
                 @label='Progress: {{this.progress}}%'
-                @intent='success'
+                @color='success'
               />
             {{else}}
               <p class='text-success'>Ready to process data.</p>
@@ -933,14 +933,14 @@ export default class NonDismissibleDrawer extends Component {
             <Button @size='sm' disabled={{true}}>
               Processing...
             </Button>
-            <Button @size='sm' @intent='danger' @onPress={{this.forceClose}}>
+            <Button @size='sm' @color='danger' @onPress={{this.forceClose}}>
               Force Close
             </Button>
           {{else}}
             <Button @size='sm' @onPress={{this.toggle}}>
               Cancel
             </Button>
-            <Button @size='sm' @intent='primary' @onPress={{this.startProcess}}>
+            <Button @size='sm' @color='primary' @onPress={{this.startProcess}}>
               Start Processing
             </Button>
           {{/if}}
@@ -963,13 +963,13 @@ reveal.
 
 Drawer yields the pieces you assemble it from:
 
-| Yielded | Purpose |
-| --- | --- |
-| `d.Header` | Heading region; applies the id that `aria-labelledby` points at. |
-| `d.Body` | Main content area. |
-| `d.Footer` | Action row. |
-| `d.CloseButton` | Styled close button wired to `@onClose`. |
-| `d.headerId` | The id Header uses, for labelling your own heading instead. |
+| Yielded         | Purpose                                                          |
+| --------------- | ---------------------------------------------------------------- |
+| `d.Header`      | Heading region; applies the id that `aria-labelledby` points at. |
+| `d.Body`        | Main content area.                                               |
+| `d.Footer`      | Action row.                                                      |
+| `d.CloseButton` | Styled close button wired to `@onClose`.                         |
+| `d.headerId`    | The id Header uses, for labelling your own heading instead.      |
 
 The default close button is rendered inside `<d.Header>` when one is present. A drawer with
 no Header falls back to a standalone close button in its top-right corner.
@@ -1065,7 +1065,7 @@ export default class DrawerForm extends Component {
           <Button @size='sm' @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @size='sm' @intent='primary' @onPress={{this.handleSubmit}}>
+          <Button @size='sm' @color='primary' @onPress={{this.handleSubmit}}>
             Send Message
           </Button>
         </d.Footer>

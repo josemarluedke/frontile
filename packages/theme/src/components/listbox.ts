@@ -1,7 +1,21 @@
 import { tv } from '../tw';
 
 const listbox = tv({
-  base: 'w-full flex flex-col gap-0.5 outline-hidden p-1'
+  base: 'w-full flex flex-col gap-0.5 outline-hidden p-1',
+  variants: {
+    color: {
+      neutral: '',
+      primary: '',
+      secondary: '',
+      tertiary: '',
+      success: '',
+      warning: '',
+      danger: ''
+    }
+  },
+  defaultVariants: {
+    color: 'neutral'
+  }
 });
 
 const listboxItem = tv({
@@ -57,8 +71,8 @@ const listboxItem = tv({
         base: ['border border-transparent']
       }
     },
-    intent: {
-      default: {},
+    color: {
+      neutral: {},
       primary: {},
       secondary: {},
       tertiary: {},
@@ -87,13 +101,13 @@ const listboxItem = tv({
   },
   defaultVariants: {
     variant: 'solid',
-    intent: 'default'
+    color: 'neutral'
   },
   compoundVariants: [
     // variant: solid
     {
       variant: 'solid',
-      intent: 'default',
+      color: 'neutral',
       class: {
         base: [
           'data-is-active:bg-neutral-subtle',
@@ -103,7 +117,7 @@ const listboxItem = tv({
     },
     {
       variant: 'solid',
-      intent: 'primary',
+      color: 'primary',
       class: {
         base: [
           'data-is-active:bg-primary-soft',
@@ -113,7 +127,7 @@ const listboxItem = tv({
     },
     {
       variant: 'solid',
-      intent: 'secondary',
+      color: 'secondary',
       class: {
         base: [
           'data-is-active:bg-secondary-soft',
@@ -123,7 +137,7 @@ const listboxItem = tv({
     },
     {
       variant: 'solid',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: {
         base: [
           'data-is-active:bg-tertiary-soft',
@@ -133,7 +147,7 @@ const listboxItem = tv({
     },
     {
       variant: 'solid',
-      intent: 'success',
+      color: 'success',
       class: {
         base: [
           'data-is-active:bg-success-soft',
@@ -143,7 +157,7 @@ const listboxItem = tv({
     },
     {
       variant: 'solid',
-      intent: 'warning',
+      color: 'warning',
       class: {
         base: [
           'data-is-active:bg-warning-soft',
@@ -153,7 +167,7 @@ const listboxItem = tv({
     },
     {
       variant: 'solid',
-      intent: 'danger',
+      color: 'danger',
       class: {
         base: [
           'data-is-active:bg-danger-soft',
@@ -165,7 +179,7 @@ const listboxItem = tv({
     // variant: outline
     {
       variant: 'outline',
-      intent: 'default',
+      color: 'neutral',
       class: {
         base: [
           'data-is-active:border-neutral',
@@ -175,7 +189,7 @@ const listboxItem = tv({
     },
     {
       variant: 'outline',
-      intent: 'primary',
+      color: 'primary',
       class: {
         base: [
           'data-is-active:border-primary',
@@ -185,7 +199,7 @@ const listboxItem = tv({
     },
     {
       variant: 'outline',
-      intent: 'secondary',
+      color: 'secondary',
       class: {
         base: [
           'data-is-active:border-secondary',
@@ -195,7 +209,7 @@ const listboxItem = tv({
     },
     {
       variant: 'outline',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: {
         base: [
           'data-is-active:border-tertiary',
@@ -205,7 +219,7 @@ const listboxItem = tv({
     },
     {
       variant: 'outline',
-      intent: 'success',
+      color: 'success',
       class: {
         base: [
           'data-is-active:border-success',
@@ -215,7 +229,7 @@ const listboxItem = tv({
     },
     {
       variant: 'outline',
-      intent: 'warning',
+      color: 'warning',
       class: {
         base: [
           'data-is-active:border-warning',
@@ -225,7 +239,7 @@ const listboxItem = tv({
     },
     {
       variant: 'outline',
-      intent: 'danger',
+      color: 'danger',
       class: {
         base: [
           'data-is-active:border-danger',
@@ -237,7 +251,7 @@ const listboxItem = tv({
     // variant: subtle
     {
       variant: 'subtle',
-      intent: 'default',
+      color: 'neutral',
       class: {
         base: [
           'data-is-active:bg-neutral-soft/20',
@@ -248,7 +262,7 @@ const listboxItem = tv({
     },
     {
       variant: 'subtle',
-      intent: 'primary',
+      color: 'primary',
       class: {
         base: [
           'data-is-active:bg-primary-soft/20',
@@ -259,7 +273,7 @@ const listboxItem = tv({
     },
     {
       variant: 'subtle',
-      intent: 'secondary',
+      color: 'secondary',
       class: {
         base: [
           'data-is-active:bg-secondary-soft/20',
@@ -270,7 +284,7 @@ const listboxItem = tv({
     },
     {
       variant: 'subtle',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: {
         base: [
           'data-is-active:bg-tertiary-soft/20',
@@ -281,7 +295,7 @@ const listboxItem = tv({
     },
     {
       variant: 'subtle',
-      intent: 'success',
+      color: 'success',
       class: {
         base: [
           'data-is-active:bg-success-soft/20',
@@ -292,7 +306,7 @@ const listboxItem = tv({
     },
     {
       variant: 'subtle',
-      intent: 'warning',
+      color: 'warning',
       class: {
         base: [
           'data-is-active:bg-warning-soft/20',
@@ -303,7 +317,7 @@ const listboxItem = tv({
     },
     {
       variant: 'subtle',
-      intent: 'danger',
+      color: 'danger',
       class: {
         base: [
           'data-is-active:bg-danger-soft/20',

@@ -10,6 +10,7 @@ import {
 import { tracked } from '@ember/-internals/metal';
 import type Owner from '@ember/owner';
 import { hash } from '@ember/helper';
+import { renamedArgValue } from '../../-private/deprecated-args';
 
 interface Args extends FormControlSharedArgs {
   /**
@@ -36,10 +37,22 @@ interface Args extends FormControlSharedArgs {
   size?: SwitchVariants['size'];
 
   /**
-   * The visual intent (e.g., color or style) of the Switch.
+   * The color of the Switch.
    * @defaultValue 'primary'
    */
-  intent?: SwitchVariants['intent'];
+  color?: SwitchVariants['color'];
+
+  /**
+   * @deprecated Use `color`. `default` is now `neutral`.
+   */
+  intent?:
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'success'
+    | 'warning'
+    | 'danger';
 
   /**
    * Custom classes to style different slots of the Switch component.
@@ -115,7 +128,17 @@ class Switch extends Component<SwitchSignature> {
     const { switchInput } = useStyles();
     return switchInput({
       size: this.args.size,
-      intent: this.args.intent,
+      color: renamedArgValue(
+        this.args.color,
+        this.args.intent,
+        { default: 'neutral' } as const,
+        {
+          component: 'Switch',
+          from: 'intent',
+          to: 'color',
+          id: 'frontile.switch.intent'
+        }
+      ),
       isDisabled: this.args.isDisabled
     });
   }

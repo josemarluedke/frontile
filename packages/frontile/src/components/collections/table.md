@@ -106,7 +106,7 @@ const StatusCell: TOC<CellSignature<User>> = <template>
   <Chip
     @size='sm'
     @variant='outline'
-    @intent='{{if (eq @row.data.status "active") "success" "danger"}}'
+    @color='{{if (eq @row.data.status "active") "success" "danger"}}'
     @withDot={{true}}
   >
     {{@row.data.status}}
@@ -445,7 +445,7 @@ export default class DemoComponent extends Component {
             @onPress={{this.toggleLoading}}
             @size='sm'
             @variant='outline'
-            @intent={{if this.isLoading 'danger' 'primary'}}
+            @color={{if this.isLoading 'danger' 'primary'}}
           >
             {{if this.isLoading 'Stop Loading' 'Start Loading'}}
           </Button>
@@ -523,7 +523,7 @@ export default class DemoComponent extends Component {
     <div class='demo-stack demo-stack--wide'>
       <div class='w-full space-y-3'>
         <div class='flex gap-2'>
-          <Button @size='sm' @intent='primary' {{on 'click' this.load}}>
+          <Button @size='sm' @color='primary' {{on 'click' this.load}}>
             Load data
           </Button>
           <Button @size='sm' @variant='outline' {{on 'click' this.reset}}>
@@ -677,7 +677,7 @@ export default class DemoComponent extends Component {
           <div class='text-center py-8'>
             <h3 class='text-lg font-medium mb-2'>No Users Found</h3>
             <p class='text-muted mb-4'>Get started by adding your first user.</p>
-            <Button @intent='primary' @size='sm'>Add User</Button>
+            <Button @color='primary' @size='sm'>Add User</Button>
           </div>
         </:empty>
       </Table>
@@ -754,7 +754,7 @@ export default class DemoComponent extends Component {
             <Chip
               @size='sm'
               @variant='outline'
-              @intent='{{if (eq c.value "active") "success" "danger"}}'
+              @color='{{if (eq c.value "active") "success" "danger"}}'
               @withDot={{true}}
             >
               {{c.value}}

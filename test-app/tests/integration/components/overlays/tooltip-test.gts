@@ -255,12 +255,12 @@ module(
         );
     });
 
-    test('@intent and @size apply theme classes', async function (assert) {
+    test('@color and @size apply theme classes', async function (assert) {
       await render(
         <template>
           <Tooltip
             @content="Hi"
-            @intent="danger"
+            @color="danger"
             @size="lg"
             @openDelay={{0}}
             @closeDelay={{0}}

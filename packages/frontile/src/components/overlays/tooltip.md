@@ -94,7 +94,7 @@ import { Kbd } from 'frontile';
 </template>
 ```
 
-## Intent
+## Color
 
 ```gts preview
 import { Tooltip } from 'frontile';
@@ -113,7 +113,7 @@ const intents = [
 <template>
   <div class='flex flex-wrap gap-8 p-8'>
     {{#each intents as |intent|}}
-      <Tooltip @content={{intent}} @intent={{intent}} as |t|>
+      <Tooltip @content={{intent}} @color={{intent}} as |t|>
         <Button {{t.trigger}}>{{intent}}</Button>
       </Tooltip>
     {{/each}}
@@ -255,7 +255,7 @@ import { Button } from 'frontile';
   <Tooltip @content='Hover me, then dismiss me from the button' as |t|>
     <Button {{t.trigger}} class='mr-4'>Trigger</Button>
     <Button @variant='outline' @onPress={{t.close}}>Close tooltip</Button>
-    <p class='mt-2 text-sm'>{{if t.isOpen "Open" "Closed"}}</p>
+    <p class='mt-2 text-sm'>{{if t.isOpen 'Open' 'Closed'}}</p>
   </Tooltip>
 </template>
 ```

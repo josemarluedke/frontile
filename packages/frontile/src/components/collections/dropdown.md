@@ -42,7 +42,7 @@ export default class BasicDropdown extends Component {
 
   <template>
     <Dropdown as |d|>
-      <d.Trigger @intent='primary' @size='sm'>
+      <d.Trigger @color='primary' @size='sm'>
         Project Actions
       </d.Trigger>
 
@@ -66,20 +66,20 @@ export default class BasicDropdown extends Component {
         </Item>
         <Item
           @key='share'
-          @intent='primary'
+          @color='primary'
           @description='Invite team members'
           @shortcut='mod+shift+s'
         >
           <:start><ShareIcon /></:start>
           <:default>Share</:default>
         </Item>
-        <Item @key='export' @intent='success' @description='Download as file'>
+        <Item @key='export' @color='success' @description='Download as file'>
           <:start><DownloadIcon /></:start>
           <:default>Export</:default>
         </Item>
         <Item
           @key='archive'
-          @intent='warning'
+          @color='warning'
           @description='Move to archived projects'
           @withDivider={{true}}
         >
@@ -88,7 +88,7 @@ export default class BasicDropdown extends Component {
         </Item>
         <Item
           @key='delete'
-          @intent='danger'
+          @color='danger'
           @description='Permanently delete'
           @class='text-danger'
           @shortcut='mod+backspace'
@@ -122,9 +122,9 @@ export default class DropdownWithDetails extends Component {
 
   <template>
     <Dropdown as |d|>
-      <d.Trigger @intent='primary' @size='sm'>Account</d.Trigger>
+      <d.Trigger @color='primary' @size='sm'>Account</d.Trigger>
 
-      <d.Menu @onAction={{this.onAction}} @intent='primary' as |Item|>
+      <d.Menu @onAction={{this.onAction}} @color='primary' as |Item|>
         <Item @key='profile' @description='View and edit your profile'>
           My Profile
         </Item>
@@ -141,7 +141,7 @@ export default class DropdownWithDetails extends Component {
         >
           Team
         </Item>
-        <Item @key='logout' @intent='danger' @class='text-danger'>
+        <Item @key='logout' @color='danger' @class='text-danger'>
           Log Out
         </Item>
       </d.Menu>
@@ -216,7 +216,7 @@ export default class TriggerStyles extends Component {
   <template>
     <div class='flex gap-2 flex-wrap'>
       <Dropdown as |d|>
-        <d.Trigger @intent='default' @size='sm'>Default</d.Trigger>
+        <d.Trigger @color='neutral' @size='sm'>Default</d.Trigger>
         <d.Menu @onAction={{this.onAction}} as |Item|>
           <Item @key='option1'>Option 1</Item>
           <Item @key='option2'>Option 2</Item>
@@ -224,7 +224,7 @@ export default class TriggerStyles extends Component {
       </Dropdown>
 
       <Dropdown as |d|>
-        <d.Trigger @intent='primary' @size='sm'>Primary</d.Trigger>
+        <d.Trigger @color='primary' @size='sm'>Primary</d.Trigger>
         <d.Menu @onAction={{this.onAction}} as |Item|>
           <Item @key='option1'>Option 1</Item>
           <Item @key='option2'>Option 2</Item>
@@ -232,7 +232,7 @@ export default class TriggerStyles extends Component {
       </Dropdown>
 
       <Dropdown as |d|>
-        <d.Trigger @intent='secondary' @size='sm'>Secondary</d.Trigger>
+        <d.Trigger @color='secondary' @size='sm'>Secondary</d.Trigger>
         <d.Menu @onAction={{this.onAction}} as |Item|>
           <Item @key='option1'>Option 1</Item>
           <Item @key='option2'>Option 2</Item>
@@ -240,7 +240,7 @@ export default class TriggerStyles extends Component {
       </Dropdown>
 
       <Dropdown as |d|>
-        <d.Trigger @intent='success' @size='sm'>Success</d.Trigger>
+        <d.Trigger @color='success' @size='sm'>Success</d.Trigger>
         <d.Menu @onAction={{this.onAction}} as |Item|>
           <Item @key='option1'>Option 1</Item>
           <Item @key='option2'>Option 2</Item>
@@ -248,7 +248,7 @@ export default class TriggerStyles extends Component {
       </Dropdown>
 
       <Dropdown as |d|>
-        <d.Trigger @intent='warning' @size='sm'>Warning</d.Trigger>
+        <d.Trigger @color='warning' @size='sm'>Warning</d.Trigger>
         <d.Menu @onAction={{this.onAction}} as |Item|>
           <Item @key='option1'>Option 1</Item>
           <Item @key='option2'>Option 2</Item>
@@ -256,7 +256,7 @@ export default class TriggerStyles extends Component {
       </Dropdown>
 
       <Dropdown as |d|>
-        <d.Trigger @intent='danger' @size='sm'>Danger</d.Trigger>
+        <d.Trigger @color='danger' @size='sm'>Danger</d.Trigger>
         <d.Menu @onAction={{this.onAction}} as |Item|>
           <Item @key='option1'>Option 1</Item>
           <Item @key='option2'>Option 2</Item>
@@ -310,7 +310,7 @@ export default class MenuPositioning extends Component {
   <template>
     <div class='demo-stack items-center'>
       <div class='flex gap-2 flex-wrap'>
-        <ButtonGroup @size='xs' @intent='primary' as |g|>
+        <ButtonGroup @size='xs' @color='primary' as |g|>
           {{#each this.placements as |p|}}
             <g.ToggleButton
               @isSelected={{this.isSelected p}}
@@ -324,7 +324,7 @@ export default class MenuPositioning extends Component {
 
       <div class='flex justify-center items-center h-32'>
         <Dropdown @placement={{this.placement}} as |d|>
-          <d.Trigger @intent='primary' @size='sm'>
+          <d.Trigger @color='primary' @size='sm'>
             Menu ({{this.placement}})
           </d.Trigger>
 
@@ -360,7 +360,7 @@ export default class DisabledItems extends Component {
 
   <template>
     <Dropdown as |d|>
-      <d.Trigger @intent='primary' @size='sm'>File Actions</d.Trigger>
+      <d.Trigger @color='primary' @size='sm'>File Actions</d.Trigger>
 
       <d.Menu
         @onAction={{this.onAction}}
@@ -371,7 +371,7 @@ export default class DisabledItems extends Component {
         <Item @key='rename'>Rename</Item>
         <Item @key='share'>Share (Coming Soon)</Item>
         <Item @key='download'>Download</Item>
-        <Item @key='delete' @intent='danger' @class='text-danger'>
+        <Item @key='delete' @color='danger' @class='text-danger'>
           Delete (Unavailable)
         </Item>
       </d.Menu>
@@ -445,7 +445,7 @@ export default class SectionedDropdown extends Component {
 
   <template>
     <Dropdown as |d|>
-      <d.Trigger @intent='primary' @size='sm'>More Options</d.Trigger>
+      <d.Trigger @color='primary' @size='sm'>More Options</d.Trigger>
 
       <d.Menu @onAction={{this.onAction}} as |Item|>
         <Item @key='new-file'>New File</Item>
@@ -456,7 +456,7 @@ export default class SectionedDropdown extends Component {
         <Item @key='rename' @withDivider={{true}}>Rename</Item>
         <Item @key='export'>Export</Item>
         <Item @key='share'>Share</Item>
-        <Item @key='delete' @intent='danger' @class='text-danger'>
+        <Item @key='delete' @color='danger' @class='text-danger'>
           Delete
         </Item>
       </d.Menu>
@@ -494,7 +494,7 @@ export default class CustomHandlers extends Component {
 
   <template>
     <Dropdown as |d|>
-      <d.Trigger @intent='primary' @size='sm'>Actions</d.Trigger>
+      <d.Trigger @color='primary' @size='sm'>Actions</d.Trigger>
 
       <d.Menu as |Item|>
         <Item @key='view'>View Details</Item>
@@ -504,7 +504,7 @@ export default class CustomHandlers extends Component {
         </Item>
         <Item
           @key='delete'
-          @intent='danger'
+          @color='danger'
           @class='text-danger'
           @onClick={{this.handleDelete}}
           @withDivider={{true}}
@@ -548,7 +548,7 @@ export default class DropdownBackdrop extends Component {
 
   <template>
     <div class='demo-stack items-center'>
-      <ButtonGroup @size='xs' @intent='primary' as |g|>
+      <ButtonGroup @size='xs' @color='primary' as |g|>
         <g.ToggleButton
           @isSelected={{this.isActiveBackdrop 'none'}}
           @onChange={{fn this.setBackdrop 'none'}}
@@ -570,7 +570,7 @@ export default class DropdownBackdrop extends Component {
       </ButtonGroup>
 
       <Dropdown as |d|>
-        <d.Trigger @intent='primary' @size='sm'>
+        <d.Trigger @color='primary' @size='sm'>
           Open Menu ({{this.backdrop}})
         </d.Trigger>
 
@@ -613,7 +613,7 @@ export default class DropdownWithCallback extends Component {
 
   <template>
     <Dropdown @didClose={{this.handleDidClose}} as |d|>
-      <d.Trigger @intent='primary' @size='sm'>Dropdown</d.Trigger>
+      <d.Trigger @color='primary' @size='sm'>Dropdown</d.Trigger>
 
       <d.Menu @onAction={{this.onAction}} as |Item|>
         <Item @key='option1'>Option 1</Item>
@@ -665,7 +665,7 @@ export default class SubmenuDropdown extends Component {
         </Sub>
 
         <Item @key='share'>Share</Item>
-        <Item @key='delete' @intent='danger' @shortcut='mod+backspace'>
+        <Item @key='delete' @color='danger' @shortcut='mod+backspace'>
           Delete
         </Item>
       </d.Menu>

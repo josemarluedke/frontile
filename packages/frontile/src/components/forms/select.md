@@ -33,10 +33,10 @@ const options = ['Option 1', 'Option 2', 'Option 3'];
 
 > **Modern Usage:** For forms with data binding and validation, use the Form and Field components as shown in the examples below. Form/Field provides automatic state management, validation, and error handling without manual `@onChange` handlers.
 
-### Intent Colors
+### Colors
 
-Use `@intent` to color the highlighted and selected options in the dropdown. Open each
-Select to see how the active option adopts the intent color. Available intents are
+Use `@color` to color the highlighted and selected options in the dropdown. Open each
+Select to see how the active option adopts the color. Available colors are
 `default`, `primary`, `secondary`, `tertiary`, `success`, `warning`, and `danger`.
 
 ```gts preview
@@ -47,13 +47,13 @@ const options = ['Option 1', 'Option 2', 'Option 3'];
 <template>
   <div class='demo-stack'>
     <div class='grid grid-cols-2 gap-4'>
-      <Select @intent='default' @placeholder='Default' @items={{options}} />
-      <Select @intent='primary' @placeholder='Primary' @items={{options}} />
-      <Select @intent='secondary' @placeholder='Secondary' @items={{options}} />
-      <Select @intent='tertiary' @placeholder='Tertiary' @items={{options}} />
-      <Select @intent='success' @placeholder='Success' @items={{options}} />
-      <Select @intent='warning' @placeholder='Warning' @items={{options}} />
-      <Select @intent='danger' @placeholder='Danger' @items={{options}} />
+      <Select @color='neutral' @placeholder='Default' @items={{options}} />
+      <Select @color='primary' @placeholder='Primary' @items={{options}} />
+      <Select @color='secondary' @placeholder='Secondary' @items={{options}} />
+      <Select @color='tertiary' @placeholder='Tertiary' @items={{options}} />
+      <Select @color='success' @placeholder='Success' @items={{options}} />
+      <Select @color='warning' @placeholder='Warning' @items={{options}} />
+      <Select @color='danger' @placeholder='Danger' @items={{options}} />
     </div>
   </div>
 </template>
@@ -334,7 +334,9 @@ export default class CustomUserSelect extends Component {
                 class='w-10 h-10 rounded-full'
               />
               <div>
-                <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+                <div
+                  class='font-medium text-neutral-strong'
+                >{{o.item.name}}</div>
                 <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
               </div>
             </div>
@@ -435,7 +437,9 @@ export default class CustomSelectedItem extends Component {
                 class='w-10 h-10 rounded-full'
               />
               <div>
-                <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+                <div
+                  class='font-medium text-neutral-strong'
+                >{{o.item.name}}</div>
                 <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
               </div>
             </div>
@@ -474,7 +478,9 @@ export default class CustomSelectedItem extends Component {
                 class='w-10 h-10 rounded-full'
               />
               <div>
-                <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+                <div
+                  class='font-medium text-neutral-strong'
+                >{{o.item.name}}</div>
                 <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
               </div>
             </div>
@@ -519,7 +525,7 @@ const people = [
 ];
 ```
 
-In multiple mode the chip chrome is kept around your content — the appearance, `@chip`
+In multiple mode the chip chrome is kept around your content — the variant, `@chip`
 options and the close button are still the Select's, so removal, `@allowEmpty` and the
 `Backspace` keyboard path keep working unchanged.
 
@@ -569,7 +575,7 @@ export default class DeclarativeItemsSelect extends Component {
 
 The built-in clear button can be enabled using the `@isClearable` flag. This allows users to reset the selection easily.
 
-It overrides `@allowEmpty`: that argument governs deselecting an *option*, while
+It overrides `@allowEmpty`: that argument governs deselecting an _option_, while
 `@isClearable` is the affordance for emptying the field. No clear button renders on a
 disabled Select, or with nothing selected.
 
@@ -837,10 +843,10 @@ export default class RemovableChipsSelect extends Component {
 ### Customizing the Chips
 
 `@chip` forwards variant options to every chip: `variant` (defaults to `soft`),
-`intent`, `size` (defaults to `sm`), `radius` and `withDot`.
+`color`, `size` (defaults to `sm`), `radius` and `withDot`.
 
-`@chip.intent` defaults to the Select's own `@intent`, so `@intent='primary'` colors the
-listbox options and the chips together and you only set `@chip.intent` when you want them to
+`@chip.color` defaults to the Select's own `@color`, so `@color='primary'` colors the
+listbox options and the chips together and you only set `@chip.color` when you want them to
 differ.
 
 ```gts preview
@@ -868,8 +874,8 @@ export default class ChipOptionsSelect extends Component {
       <div class='grid gap-4 md:grid-cols-2'>
         <Select
           @selectionMode='multiple'
-          @intent='primary'
-          @label='Inherits @intent'
+          @color='primary'
+          @label='Inherits @color'
           @placeholder='Select tags'
           @items={{tags}}
           @selectedKeys={{this.inherited}}
@@ -884,7 +890,7 @@ export default class ChipOptionsSelect extends Component {
           @onSelectionChange={{this.onCustomizedChange}}
           @chip={{hash
             variant='outline'
-            intent='success'
+            color='success'
             size='md'
             radius='full'
             withDot=true
@@ -1033,14 +1039,14 @@ export default class StyledChipsSelect extends Component {
 Select is a custom listbox, not a native `<select>`, so its semantics are assembled from
 several pieces:
 
-| Element    | What it exposes                                                                                                                                                                                                                    |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Trigger    | `aria-haspopup="true"`, `aria-controls` pointing at the dropdown, and `aria-expanded` kept in sync — supplied by Popover's `trigger` modifier                                                                                      |
-| Dropdown   | `role="listbox"`, plus `aria-multiselectable="true"` when `@selectionMode="multiple"`                                                                                                                                              |
-| Options    | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                                                                                                          |
-| Form value | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                                                                                                               |
-| Chips      | Each chip's close button is named `Remove <label>` with visually hidden text, so the buttons are announced distinctly. The chips sit beside the trigger rather than inside it, so no interactive element is nested in the combobox. The close buttons carry `tabindex="-1"` — see the keyboard model below |
-| `<:selectedItem>` | Supplying the block gives the **button** trigger an explicit `aria-label` composed from the field label and the option's text — see below |
+| Element           | What it exposes                                                                                                                                                                                                                                                                                            |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Trigger           | `aria-haspopup="true"`, `aria-controls` pointing at the dropdown, and `aria-expanded` kept in sync — supplied by Popover's `trigger` modifier                                                                                                                                                              |
+| Dropdown          | `role="listbox"`, plus `aria-multiselectable="true"` when `@selectionMode="multiple"`                                                                                                                                                                                                                      |
+| Options           | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                                                                                                                                                                                  |
+| Form value        | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                                                                                                                                                                                       |
+| Chips             | Each chip's close button is named `Remove <label>` with visually hidden text, so the buttons are announced distinctly. The chips sit beside the trigger rather than inside it, so no interactive element is nested in the combobox. The close buttons carry `tabindex="-1"` — see the keyboard model below |
+| `<:selectedItem>` | Supplying the block gives the **button** trigger an explicit `aria-label` composed from the field label and the option's text — see below                                                                                                                                                                  |
 
 Keyboard handling comes from the listbox:
 
@@ -1059,11 +1065,11 @@ tab stops, so Tabbing into the control lands on the field itself rather than on 
 
 Keyboard removal is on the field instead, in **both** modes:
 
-| Context                                 | Key                    | Behavior                                       |
-| --------------------------------------- | ---------------------- | ---------------------------------------------- |
-| Chips, `@isFilterable={{true}}`         | `Backspace`            | Removes the last chip **when the filter is empty**; with text in the filter it edits the text as usual |
-| Chips, non-filterable (button trigger)  | `Backspace` or `Delete`| Removes the last chip                          |
-| Either                                  | `Enter` / `Space` on an option | Toggles that selection off from the dropdown |
+| Context                                | Key                            | Behavior                                                                                               |
+| -------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Chips, `@isFilterable={{true}}`        | `Backspace`                    | Removes the last chip **when the filter is empty**; with text in the filter it edits the text as usual |
+| Chips, non-filterable (button trigger) | `Backspace` or `Delete`        | Removes the last chip                                                                                  |
+| Either                                 | `Enter` / `Space` on an option | Toggles that selection off from the dropdown                                                           |
 
 The `@allowEmpty` rule applies throughout: with the default `@allowEmpty={{false}}` the final
 selection cannot be removed, so its chip renders without a close button and `Backspace` leaves
@@ -1089,8 +1095,8 @@ selection with the untranslatable `Select options`.
 **This name replaces whatever your block renders, so keep the two in agreement.** If your
 block's visible text is the option's `label`, they already agree and there is nothing to do —
 hiding decorative images from assistive technology (`alt=''`) is enough. If your block shows
-something *else* — an email address, an abbreviation, an initial — then the announced name and
-the visible text disagree, which fails WCAG 2.5.3 *Label in Name* and leaves speech-input
+something _else_ — an email address, an abbreviation, an initial — then the announced name and
+the visible text disagree, which fails WCAG 2.5.3 _Label in Name_ and leaves speech-input
 users unable to say what they see. In that case, render the option's `label` somewhere in the
 block, or set `@label` / `@placeholder` to the wording that is actually visible.
 

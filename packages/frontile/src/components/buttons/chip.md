@@ -25,10 +25,10 @@ import { Chip } from 'frontile';
 </template>
 ```
 
-## Chip Appearances
+## Chip Variants
 
-`solid` is a filled chip, `outline` draws the intent color as a border on the
-page background, and `soft` is a tinted surface with intent-colored text.
+`solid` is a filled chip, `outline` draws the color as a border on the
+page background, and `soft` is a tinted surface with color-tinted text.
 
 ```gts preview
 import { Chip } from 'frontile';
@@ -42,17 +42,17 @@ import { Chip } from 'frontile';
 </template>
 ```
 
-## Chip Intents
+## Chip Colors
 
-Every intent is available in every variant. The label on each row is the
-`@variant` value; the chip labels are the `@intent` values.
+Every color is available in every variant. The label on each row is the
+`@variant` value; the chip labels are the `@color` values.
 
 ```gts preview
 import { Chip } from 'frontile';
 import { array } from '@ember/helper';
 
-const intents = [
-  'default',
+const colors = [
+  'neutral',
   'primary',
   'secondary',
   'tertiary',
@@ -69,9 +69,9 @@ const intents = [
           @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
-          {{#each intents as |intent|}}
-            <Chip @variant={{variant}} @intent={{intent}}>
-              {{intent}}
+          {{#each colors as |color|}}
+            <Chip @variant={{variant}} @color={{color}}>
+              {{color}}
             </Chip>
           {{/each}}
         </div>
@@ -115,7 +115,7 @@ const noop = (): void => {};
           {{#each (array 'sm' 'md' 'lg') as |size|}}
             <Chip
               @variant={{variant}}
-              @intent='primary'
+              @color='primary'
               @size={{size}}
               @withDot={{true}}
               @onClose={{noop}}
@@ -143,7 +143,7 @@ import { array } from '@ember/helper';
 <template>
   <div class='flex flex-wrap items-center gap-3'>
     {{#each (array 'none' 'sm' 'lg' 'full') as |radius|}}
-      <Chip @variant='outline' @intent='primary' @radius={{radius}}>
+      <Chip @variant='outline' @color='primary' @radius={{radius}}>
         {{radius}}
       </Chip>
     {{/each}}
@@ -153,15 +153,15 @@ import { array } from '@ember/helper';
 
 ## Chip with Dots
 
-`@withDot` adds a small intent-colored dot before the content — useful when the
+`@withDot` adds a small color-tinted dot before the content — useful when the
 chip stands for a status and the color needs to read at a glance.
 
 ```gts preview
 import { Chip } from 'frontile';
 import { array } from '@ember/helper';
 
-const intents = [
-  'default',
+const colors = [
+  'neutral',
   'primary',
   'secondary',
   'tertiary',
@@ -178,13 +178,9 @@ const intents = [
           @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
-          {{#each intents as |intent|}}
-            <Chip
-              @variant={{variant}}
-              @intent={{intent}}
-              @withDot={{true}}
-            >
-              {{intent}}
+          {{#each colors as |color|}}
+            <Chip @variant={{variant}} @color={{color}} @withDot={{true}}>
+              {{color}}
             </Chip>
           {{/each}}
         </div>
@@ -202,8 +198,8 @@ Passing `@onClose` makes the close button visible.
 import { Chip } from 'frontile';
 import { array, concat } from '@ember/helper';
 
-const intents = [
-  'default',
+const colors = [
+  'neutral',
   'primary',
   'secondary',
   'tertiary',
@@ -222,14 +218,14 @@ const noop = (): void => {};
           @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
-          {{#each intents as |intent|}}
+          {{#each colors as |color|}}
             <Chip
               @variant={{variant}}
-              @intent={{intent}}
+              @color={{color}}
               @onClose={{noop}}
-              @closeButtonTitle={{concat 'Remove ' intent}}
+              @closeButtonTitle={{concat 'Remove ' color}}
             >
-              {{intent}}
+              {{color}}
             </Chip>
           {{/each}}
         </div>
@@ -245,8 +241,8 @@ const noop = (): void => {};
 import { Chip } from 'frontile';
 import { array, concat } from '@ember/helper';
 
-const intents = [
-  'default',
+const colors = [
+  'neutral',
   'primary',
   'secondary',
   'tertiary',
@@ -265,15 +261,15 @@ const noop = (): void => {};
           @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
-          {{#each intents as |intent|}}
+          {{#each colors as |color|}}
             <Chip
               @variant={{variant}}
-              @intent={{intent}}
+              @color={{color}}
               @withDot={{true}}
               @onClose={{noop}}
-              @closeButtonTitle={{concat 'Remove ' intent}}
+              @closeButtonTitle={{concat 'Remove ' color}}
             >
-              {{intent}}
+              {{color}}
             </Chip>
           {{/each}}
         </div>
@@ -308,7 +304,7 @@ export default class Example extends Component {
       {{#each this.filters as |filter|}}
         <Chip
           @variant='soft'
-          @intent='primary'
+          @color='primary'
           @onClose={{fn this.remove filter}}
           @closeButtonTitle={{concat 'Remove ' filter}}
         >
@@ -340,8 +336,8 @@ longer be removed.
 import { Chip } from 'frontile';
 import { array } from '@ember/helper';
 
-const intents = [
-  'default',
+const colors = [
+  'neutral',
   'primary',
   'secondary',
   'tertiary',
@@ -360,15 +356,15 @@ const noop = (): void => {};
           @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
-          {{#each intents as |intent|}}
+          {{#each colors as |color|}}
             <Chip
               @variant={{variant}}
-              @intent={{intent}}
+              @color={{color}}
               @withDot={{true}}
               @onClose={{noop}}
               @isDisabled={{true}}
             >
-              {{intent}}
+              {{color}}
             </Chip>
           {{/each}}
         </div>
@@ -386,7 +382,7 @@ You can also use TailwindCSS classes to customize even further.
 import { Chip } from 'frontile';
 
 <template>
-  <Chip @variant='outline' @intent='primary' @class='px-20 py-2 italic'>
+  <Chip @variant='outline' @color='primary' @class='px-20 py-2 italic'>
     Chip
   </Chip>
 </template>
@@ -402,8 +398,8 @@ not one thing. What it means depends on what you are using it for, and that
 determines what you owe it:
 
 - **As a label or attribute** (a status, a tag, a count) it is ordinary text.
-  Nothing extra is needed. Do not rely on `@intent` or `@withDot` alone to carry
-  the meaning: `@intent='danger'` reads as "failed" to a sighted user and as
+  Nothing extra is needed. Do not rely on `@color` or `@withDot` alone to carry
+  the meaning: `@color='danger'` reads as "failed" to a sighted user and as
   nothing at all to a screen reader, so keep the word in the content.
 - **As a removable value** — with `@onClose` — the close button is the only
   interactive part. It is a real `<button>`, reached with `Tab` and activated

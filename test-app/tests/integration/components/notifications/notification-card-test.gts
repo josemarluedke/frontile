@@ -34,9 +34,9 @@ registerCustomStyles({
       closeButton: 'notification-card__close-btn'
     },
     variants: {
-      intent: {
-        default: { base: 'notification-card--default-intent' },
-        info: { base: 'notification-card--info' },
+      status: {
+        neutral: { base: 'notification-card--neutral-status' },
+        primary: { base: 'notification-card--primary' },
         success: { base: 'notification-card--success' },
         warning: { base: 'notification-card--warning' },
         danger: { base: 'notification-card--danger' }
@@ -58,7 +58,7 @@ registerCustomStyles({
       }
     },
     defaultVariants: {
-      intent: 'info',
+      status: 'primary',
       variant: 'surface',
       hasDescription: false
     }
@@ -146,12 +146,12 @@ module(
       assert.dom('.notification-card--centered').doesNotExist();
     });
 
-    test('the default intent composes with all three variants', async function (assert) {
+    test('the neutral status composes with all three variants', async function (assert) {
       // This file's module-level `registerCustomStyles` replaces the real
       // `notificationCard` theme classes with plain marker strings for the
       // whole test run (see the comment in notifications-container-test.gts
       // about module-level code running regardless of `--filter`), so this
-      // exercises the `intent`/`variant` plumbing rather than the actual
+      // exercises the `status`/`variant` plumbing rather than the actual
       // Tailwind color literals — those are reviewed directly in
       // packages/theme/src/components/notification-card.ts and verified by
       // the site build's live demos.
@@ -169,7 +169,7 @@ module(
       );
       assert
         .dom('[data-test-notification]')
-        .hasClass('notification-card--default-intent');
+        .hasClass('notification-card--neutral-status');
       assert
         .dom('[data-test-notification]')
         .hasClass('notification-card--surface');
@@ -186,7 +186,7 @@ module(
       );
       assert
         .dom('[data-test-notification]')
-        .hasClass('notification-card--default-intent');
+        .hasClass('notification-card--neutral-status');
       assert
         .dom('[data-test-notification]')
         .hasClass('notification-card--soft');
@@ -203,53 +203,53 @@ module(
       );
       assert
         .dom('[data-test-notification]')
-        .hasClass('notification-card--default-intent');
+        .hasClass('notification-card--neutral-status');
       assert
         .dom('[data-test-notification]')
         .hasClass('notification-card--solid');
     });
 
-    test('it applies the intent class', async function (assert) {
+    test('it applies the status class', async function (assert) {
       notification.current = new Notification({}, 'Message', {
-        intent: 'danger'
+        status: 'danger'
       });
       await render(template);
 
       assert.dom('.notification-card--danger').exists();
     });
 
-    test('the default intent renders the info icon in neutral styling, distinct from info', async function (assert) {
+    test('the neutral status renders the info icon in neutral styling, distinct from info', async function (assert) {
       notification.current = new Notification({}, 'Message');
       await render(template);
 
       assert
         .dom('[data-test-notification]')
-        .hasAttribute('data-test-intent', 'default');
+        .hasAttribute('data-test-status', 'neutral');
       assert
         .dom('.notification-card__icon')
         .hasAttribute(
           'data-test-icon',
           'info',
-          'the default intent reuses the info glyph'
+          'the neutral status reuses the info glyph'
         );
-      assert.dom('.notification-card--default-intent').exists();
-      assert.dom('.notification-card--info').doesNotExist();
+      assert.dom('.notification-card--neutral-status').exists();
+      assert.dom('.notification-card--primary').doesNotExist();
     });
 
-    test('an explicit info intent is distinguishable from default via data-test-intent', async function (assert) {
+    test('an explicit primary status is distinguishable from neutral via data-test-status', async function (assert) {
       notification.current = new Notification({}, 'Message', {
-        intent: 'info'
+        status: 'primary'
       });
       await render(template);
 
       assert
         .dom('[data-test-notification]')
-        .hasAttribute('data-test-intent', 'info');
-      assert.dom('.notification-card--info').exists();
-      assert.dom('.notification-card--default-intent').doesNotExist();
+        .hasAttribute('data-test-status', 'primary');
+      assert.dom('.notification-card--primary').exists();
+      assert.dom('.notification-card--neutral-status').doesNotExist();
     });
 
-    test('the default intent uses role=status', async function (assert) {
+    test('the neutral status uses role=status', async function (assert) {
       notification.current = new Notification({}, 'Message');
       await render(template);
 
@@ -257,9 +257,9 @@ module(
       assert.dom('[role="alert"]').doesNotExist();
     });
 
-    test('it renders an icon per intent', async function (assert) {
+    test('it renders an icon per status', async function (assert) {
       notification.current = new Notification({}, 'Message', {
-        intent: 'success'
+        status: 'success'
       });
       await render(template);
 
@@ -288,12 +288,12 @@ module(
       // `spinner` is not), so the `fill-*`/`text-*` classes asserted here are
       // the actual Tailwind literals, not test marker strings. Regression
       // target: passing the card's `icon` slot classes to <Spinner> put an
-      // intent-coloured `text-*` class on the track, which Tailwind-merge let
+      // status-coloured `text-*` class on the track, which Tailwind-merge let
       // win over the Spinner's own dim `text-neutral-muted`, making arc and
       // track nearly identical.
       notification.current = new Notification({}, 'Saving…', {
         isLoading: true,
-        intent: 'danger'
+        status: 'danger'
       });
       await render(template);
 
@@ -304,11 +304,11 @@ module(
 
       assert.true(
         classList.includes('fill-danger'),
-        `the arc picks up the danger accent via @intent; got classes: ${classList.join(' ')}`
+        `the arc picks up the danger accent via @status; got classes: ${classList.join(' ')}`
       );
       assert.true(
         classList.includes('text-neutral-muted'),
-        `the track stays a dim neutral, not the intent color; got classes: ${classList.join(' ')}`
+        `the track stays a dim neutral, not the status color; got classes: ${classList.join(' ')}`
       );
       assert.false(
         classList.includes('fill-neutral-muted'),
@@ -317,7 +317,7 @@ module(
       );
       assert.false(
         classList.includes('text-danger'),
-        `the track does not pick up the intent color meant for the arc; ` +
+        `the track does not pick up the status color meant for the arc; ` +
           `got classes: ${classList.join(' ')}`
       );
       assert.true(
@@ -326,7 +326,7 @@ module(
       );
     });
 
-    test('the loading spinner is the same size as the settled intent icon, in every variant', function (assert) {
+    test('the loading spinner is the same size as the settled status icon, in every variant', function (assert) {
       // This must be checked against the *real* theme, not through render:
       // this file's module-level `registerCustomStyles` mock (needed by the
       // rendering tests above, e.g. `.notification-card__icon`) replaces
@@ -345,7 +345,7 @@ module(
 
       for (const variant of variants) {
         const { icon, spinner } = realNotificationCardStyles({
-          intent: 'danger',
+          status: 'danger',
           variant
         });
 
@@ -362,14 +362,14 @@ module(
 
     test('the solid variant gives the spinner an accent arc and a dim track drawn from the same contrast ink, distinct from each other', function (assert) {
       // Unlike the surface/soft case above, `solid`'s surface is a
-      // saturated `bg-{intent}` fill — the same color `@intent` would put on
-      // the arc via the Spinner's own `fill-{intent}`, which would make the
+      // saturated `bg-{status}` fill — the same color `@status` would put on
+      // the arc via the Spinner's own `fill-{status}`, which would make the
       // arc invisible against its own card. This is verified directly
       // against the real (unmocked) theme object, since this file's
       // module-level `registerCustomStyles` replaces `notificationCard`'s
       // classes with test markers for rendering tests.
       const cases: {
-        intent: 'default' | 'info' | 'success' | 'warning' | 'danger';
+        status: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
         // The card's own `bg-{cardColor}` surface class — the color the arc
         // must NOT also use, or it would camouflage against its own card.
         cardColor: string;
@@ -377,40 +377,40 @@ module(
         track: string;
       }[] = [
         {
-          intent: 'default',
+          status: 'neutral',
           cardColor: 'fill-neutral',
           arc: 'fill-on-neutral',
           track: 'text-on-neutral/30'
         },
         {
-          intent: 'info',
+          status: 'primary',
           cardColor: 'fill-primary',
           arc: 'fill-on-primary',
           track: 'text-on-primary/30'
         },
         {
-          intent: 'success',
+          status: 'success',
           cardColor: 'fill-success',
           arc: 'fill-on-success',
           track: 'text-on-success/30'
         },
         {
-          intent: 'warning',
+          status: 'warning',
           cardColor: 'fill-warning',
           arc: 'fill-on-warning',
           track: 'text-on-warning/30'
         },
         {
-          intent: 'danger',
+          status: 'danger',
           cardColor: 'fill-danger',
           arc: 'fill-on-danger',
           track: 'text-on-danger/30'
         }
       ];
 
-      for (const { intent, cardColor, arc, track } of cases) {
+      for (const { status, cardColor, arc, track } of cases) {
         const { spinner, icon } = realNotificationCardStyles({
-          intent,
+          status,
           variant: 'solid'
         });
         const spinnerClass = spinner();
@@ -418,24 +418,24 @@ module(
 
         assert.true(
           spinnerClass.includes(arc),
-          `solid/${intent} spinner includes the arc class "${arc}"; got "${spinnerClass}"`
+          `solid/${status} spinner includes the arc class "${arc}"; got "${spinnerClass}"`
         );
         assert.true(
           spinnerClass.includes(track),
-          `solid/${intent} spinner includes the track class "${track}"; got "${spinnerClass}"`
+          `solid/${status} spinner includes the track class "${track}"; got "${spinnerClass}"`
         );
         assert.false(
           spinnerClass.includes(cardColor),
-          `solid/${intent} arc does not reuse the card's own "${cardColor}" ` +
+          `solid/${status} arc does not reuse the card's own "${cardColor}" ` +
             `fill, which would camouflage it against the card; got "${spinnerClass}"`
         );
         assert.true(
           spinnerClass.includes('size-5'),
-          `solid/${intent} spinner is still size-5, matching the icon`
+          `solid/${status} spinner is still size-5, matching the icon`
         );
         assert.true(
           iconClass.includes('size-5'),
-          `solid/${intent} icon is size-5, for parity with the spinner`
+          `solid/${status} icon is size-5, for parity with the spinner`
         );
       }
     });
@@ -451,7 +451,7 @@ module(
 
     test('info and success use role=status', async function (assert) {
       notification.current = new Notification({}, 'Message', {
-        intent: 'success'
+        status: 'success'
       });
       await render(template);
 
@@ -461,7 +461,7 @@ module(
 
     test('warning and danger use role=alert', async function (assert) {
       notification.current = new Notification({}, 'Message', {
-        intent: 'warning'
+        status: 'warning'
       });
       await render(template);
 

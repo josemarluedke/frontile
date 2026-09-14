@@ -3,11 +3,24 @@ import { useStyles } from '@frontile/theme';
 import { htmlSafe } from '@ember/template';
 import type { SafeString } from '@ember/template';
 import { guidFor } from '@ember/object/internals';
+import { renamedArgValue } from '../../-private/deprecated-args';
 
 interface ProgressBarSignature {
   Args: {
     /**
-     * The intent of the progress bar
+     * The color of the progress bar
+     */
+    color?:
+      | 'neutral'
+      | 'primary'
+      | 'secondary'
+      | 'tertiary'
+      | 'success'
+      | 'warning'
+      | 'danger';
+
+    /**
+     * @deprecated Use `color`. `default` is now `neutral`.
      */
     intent?:
       | 'default'
@@ -104,7 +117,18 @@ class ProgressBar extends Component<ProgressBarSignature> {
     const { progressBar } = useStyles();
 
     const { base, progress, label, description } = progressBar({
-      intent: this.args.intent || 'default',
+      color:
+        renamedArgValue(
+          this.args.color,
+          this.args.intent,
+          { default: 'neutral' } as const,
+          {
+            component: 'ProgressBar',
+            from: 'intent',
+            to: 'color',
+            id: 'frontile.progress-bar.intent'
+          }
+        ) || 'neutral',
       size: this.args.size,
       radius: this.args.radius,
       isIndeterminate: this.args.isIndeterminate

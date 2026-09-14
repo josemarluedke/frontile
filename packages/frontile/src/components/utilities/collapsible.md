@@ -39,7 +39,7 @@ export default class BasicCollapsible extends Component {
 
   <template>
     <div class='max-w-md'>
-      <Button @intent='primary' @onPress={{this.toggle}}>
+      <Button @color='primary' @onPress={{this.toggle}}>
         {{if this.isOpen 'Hide' 'Show'}}
         Content
       </Button>

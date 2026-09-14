@@ -80,7 +80,12 @@ interface SelectChipOptions extends Pick<
   appearance?: ChipSignature['Args']['appearance'];
 
   /**
-   * The intent of the chip. Defaults to the Select's own `@intent`.
+   * The color of the chip. Defaults to the Select's own `@color`.
+   */
+  color?: ChipSignature['Args']['color'];
+
+  /**
+   * @deprecated Use `color`. Defaults to the Select's own `@intent`.
    */
   intent?: ChipSignature['Args']['intent'];
 
@@ -109,6 +114,7 @@ interface BaseSelectArgs<T>
       ListboxSignature<T>['Args'],
       | 'variant'
       | 'appearance'
+      | 'color'
       | 'intent'
       | 'disabledKeys'
       | 'allowEmpty'
@@ -240,10 +246,10 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * Only applies when `@selectedItemsDisplay` is `'chips'` (the default).
    *
    * Options are the same ones {@link Chip} itself accepts (`variant`,
-   * `intent`, `size`, `radius`, `withDot`), but Select applies its own
+   * `color`, `size`, `radius`, `withDot`), but Select applies its own
    * defaults tuned for sitting inside a field, rather than Chip's:
    * - `variant` defaults to `'soft'`
-   * - `intent` defaults to the Select's own `@intent`, so `@intent="primary"`
+   * - `color` defaults to the Select's own `@color`, so `@color="primary"`
    *   colors the listbox items and the chips together
    * - `size` defaults to `'sm'`
    * - `radius` and `withDot` fall back to Chip's own defaults
@@ -541,7 +547,18 @@ interface ResolvedSelectChipOptions {
    * prop the consumer never used.
    */
   appearance: SelectChipOptions['appearance'];
-  intent: NonNullable<SelectChipOptions['intent']>;
+  /**
+   * Always set unless the consumer used the deprecated `intent` (or Select's
+   * own deprecated `@intent`), in which case it is left undefined so Chip
+   * resolves from `intent` instead.
+   */
+  color: SelectChipOptions['color'];
+  /**
+   * Passed through only when the consumer (or Select's own deprecated
+   * `@intent`) actually set it. Defaulting this would fire Chip's `intent`
+   * deprecation on every chip render, for a prop nobody wrote.
+   */
+  intent: SelectChipOptions['intent'];
   size: NonNullable<SelectChipOptions['size']>;
   radius: SelectChipOptions['radius'];
   withDot: boolean;

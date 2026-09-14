@@ -42,7 +42,7 @@ import { Spinner } from 'frontile';
 </template>
 ```
 
-## Intents
+## Colors
 
 The intent option changes the Spinner's color to match common UI patterns, such
 as `primary` actions, `success` states, `warnings`, and `danger` actions.
@@ -52,13 +52,13 @@ import { Spinner } from 'frontile';
 
 <template>
   <div class='flex items-center space-x-2'>
-    <Spinner @intent='default' />
-    <Spinner @intent='primary' />
-    <Spinner @intent='secondary' />
-    <Spinner @intent='tertiary' />
-    <Spinner @intent='success' />
-    <Spinner @intent='warning' />
-    <Spinner @intent='danger' />
+    <Spinner @color='neutral' />
+    <Spinner @color='primary' />
+    <Spinner @color='secondary' />
+    <Spinner @color='tertiary' />
+    <Spinner @color='success' />
+    <Spinner @color='warning' />
+    <Spinner @color='danger' />
   </div>
 </template>
 ```
@@ -76,9 +76,7 @@ import { Spinner } from 'frontile';
 
 <template>
   <div class='flex items-center justify-center'>
-    <Spinner
-      @class='h-24 w-24 fill-secondary text-primary-muted'
-    />
+    <Spinner @class='h-24 w-24 fill-secondary text-primary-muted' />
   </div>
 </template>
 ```
@@ -113,7 +111,7 @@ export default class Example extends Component {
 
   <template>
     <div class='flex flex-col gap-3'>
-      <Button @intent='primary' @onPress={{this.load}}>Load routes</Button>
+      <Button @color='primary' @onPress={{this.load}}>Load routes</Button>
 
       <div
         aria-busy={{if this.isLoading 'true' 'false'}}
@@ -122,7 +120,7 @@ export default class Example extends Component {
       >
         {{#if this.isLoading}}
           <span class='flex items-center gap-2'>
-            <Spinner @size='sm' @intent='primary' />
+            <Spinner @size='sm' @color='primary' />
             Loading routes…
           </span>
         {{else if this.rows}}
@@ -162,7 +160,7 @@ export default class Example extends Component {
   };
 
   <template>
-    <Button @intent='primary' @onPress={{this.save}} disabled={{this.isSaving}}>
+    <Button @color='primary' @onPress={{this.save}} disabled={{this.isSaving}}>
       {{#if this.isSaving}}
         <Spinner @size='sm' />
         <VisuallyHidden>Saving, please wait</VisuallyHidden>
@@ -195,7 +193,7 @@ it yourself:
 import { Spinner } from 'frontile';
 
 <template>
-  <Spinner @intent='primary' @class='motion-reduce:animate-none' />
+  <Spinner @color='primary' @class='motion-reduce:animate-none' />
 </template>
 ```
 

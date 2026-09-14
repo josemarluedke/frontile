@@ -29,7 +29,7 @@ export default class Example extends Component {
         <g.Button>Third</g.Button>
       </ButtonGroup>
 
-      <ButtonGroup @size="sm" @intent="primary" as |g|>
+      <ButtonGroup @size="sm" @color="primary" as |g|>
         {{#each-in this.isSelected as |key val|}}
           <g.ToggleButton
             @isSelected={{val}}

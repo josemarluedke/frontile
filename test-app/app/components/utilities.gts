@@ -128,11 +128,11 @@ export default class UtilitiesDemo extends Component {
         </div>
 
         <div class="flex items-center my-4 space-x-2">
-          <Spinner @intent="default" />
-          <Spinner @intent="primary" />
-          <Spinner @intent="success" />
-          <Spinner @intent="warning" />
-          <Spinner @intent="danger" />
+          <Spinner @color="neutral" />
+          <Spinner @color="primary" />
+          <Spinner @color="success" />
+          <Spinner @color="warning" />
+          <Spinner @color="danger" />
         </div>
 
         <Divider />

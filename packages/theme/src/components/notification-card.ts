@@ -54,12 +54,12 @@ const notificationCard = tv({
     inner: 'flex gap-3 p-4 font-body text-body-2xs',
     icon: 'shrink-0 size-5',
     // The loading spinner's own slot, distinct from `icon`. It must NOT
-    // reuse `icon` — `icon`'s intent-coloured `text-*` class (the compound
+    // reuse `icon` — `icon`'s status-coloured `text-*` class (the compound
     // variants below) would win the Tailwind-merge over the Spinner's own
     // dim `text-neutral-muted` track, making the arc and track nearly
     // identical and the spin unreadable. `size-5` matches `icon` exactly so
     // a promise settling (spinner -> icon) never resizes the card. The arc
-    // colour comes from `@intent` passed to <Spinner>, not from this slot;
+    // colour comes from `@status` passed to <Spinner>, not from this slot;
     // this slot only ever supplies sizing/position and, where needed
     // (solid variant below), an explicit track/arc override.
     spinner: 'shrink-0 size-5',
@@ -72,9 +72,9 @@ const notificationCard = tv({
   },
 
   variants: {
-    intent: {
-      default: {},
-      info: {},
+    status: {
+      neutral: {},
+      primary: {},
       success: {},
       warning: {},
       danger: {}
@@ -89,7 +89,7 @@ const notificationCard = tv({
         base: 'bg-surface-modal border-surface-overlay-mild',
         description: 'text-neutral-firm'
       },
-      // The outer surface/border is intent-independent — every `soft`
+      // The outer surface/border is status-independent — every `soft`
       // compound variant below borrows the same neutral surface `surface`
       // uses (see the comment above the `soft` compound variants), so it
       // lives here once instead of repeating in each of them.
@@ -131,16 +131,16 @@ const notificationCard = tv({
 
   compoundVariants: [
     // surface: neutral surface, colour carried by the icon and title.
-    // `default` intent has no accent — icon and title stay neutral, same
-    // `firm` level the other intents use for their accent text.
+    // `default` status has no accent — icon and title stay neutral, same
+    // `firm` level the other statuses use for their accent text.
     {
       variant: 'surface',
-      intent: 'default',
+      status: 'neutral',
       class: { icon: 'text-neutral-firm', title: 'text-neutral-firm' }
     },
     {
       variant: 'surface',
-      intent: 'info',
+      status: 'primary',
       class: { icon: 'text-primary', title: 'text-primary' }
     },
     {
@@ -148,7 +148,7 @@ const notificationCard = tv({
       // mode; `bolder` clears AA in both themes. See packages/frontile/docs/notifications-usage.md's
       // contrast note.
       variant: 'surface',
-      intent: 'success',
+      status: 'success',
       class: { icon: 'text-success-bolder', title: 'text-success-bolder' }
     },
     {
@@ -156,24 +156,24 @@ const notificationCard = tv({
       // mode; `bolder` clears AA in both themes. See packages/frontile/docs/notifications-usage.md's
       // contrast note.
       variant: 'surface',
-      intent: 'warning',
+      status: 'warning',
       class: { icon: 'text-warning-bolder', title: 'text-warning-bolder' }
     },
     {
       variant: 'surface',
-      intent: 'danger',
+      status: 'danger',
       class: { icon: 'text-danger-firm', title: 'text-danger-firm' }
     },
 
     // soft: an opaque outer surface (so the floating card never lets page
-    // content show through) with the translucent `{intent}-soft` tint and its
+    // content show through) with the translucent `{status}-soft` tint and its
     // `on-*` contrast ink applied to the *inner* element, which composites
     // over that opaque surface. The outer picks up the `surface` variant's
     // neutral surface/border instead of a colour-matched one, so it borrows
     // that treatment rather than inventing a new one.
     {
       variant: 'soft',
-      intent: 'default',
+      status: 'neutral',
       class: {
         inner: 'bg-neutral-soft',
         icon: 'text-on-neutral-soft',
@@ -182,7 +182,7 @@ const notificationCard = tv({
     },
     {
       variant: 'soft',
-      intent: 'info',
+      status: 'primary',
       class: {
         inner: 'bg-primary-soft',
         icon: 'text-on-primary-soft',
@@ -191,7 +191,7 @@ const notificationCard = tv({
     },
     {
       variant: 'soft',
-      intent: 'success',
+      status: 'success',
       class: {
         inner: 'bg-success-soft',
         icon: 'text-on-success-soft',
@@ -200,7 +200,7 @@ const notificationCard = tv({
     },
     {
       variant: 'soft',
-      intent: 'warning',
+      status: 'warning',
       class: {
         inner: 'bg-warning-soft',
         icon: 'text-on-warning-soft',
@@ -209,7 +209,7 @@ const notificationCard = tv({
     },
     {
       variant: 'soft',
-      intent: 'danger',
+      status: 'danger',
       class: {
         inner: 'bg-danger-soft',
         icon: 'text-on-danger-soft',
@@ -218,18 +218,18 @@ const notificationCard = tv({
     },
 
     // solid: filled surface, contrast text. `description` uses the
-    // full-strength `on-{intent}` ink rather than a translucent cut — see
+    // full-strength `on-{status}` ink rather than a translucent cut — see
     // packages/frontile/docs/notifications-usage.md's contrast note for why
     // (a translucent cut used to fail WCAG AA here).
     //
-    // The spinner override matters because `@intent` on <Spinner> drives its
-    // arc via `fill-{intent}`, the exact same color as this variant's own
-    // `bg-{intent}` surface — left alone the arc would be camouflaged
+    // The spinner override matters because `@status` on <Spinner> drives its
+    // arc via `fill-{status}`, the exact same color as this variant's own
+    // `bg-{status}` surface — left alone the arc would be camouflaged
     // against its own card, so `solid` forces both halves of the spinner to
     // the contrast ink instead.
     {
       variant: 'solid',
-      intent: 'default',
+      status: 'neutral',
       class: {
         base: 'bg-neutral text-on-neutral',
         icon: 'text-on-neutral',
@@ -240,7 +240,7 @@ const notificationCard = tv({
     },
     {
       variant: 'solid',
-      intent: 'info',
+      status: 'primary',
       class: {
         base: 'bg-primary text-on-primary',
         icon: 'text-on-primary',
@@ -251,7 +251,7 @@ const notificationCard = tv({
     },
     {
       variant: 'solid',
-      intent: 'success',
+      status: 'success',
       class: {
         base: 'bg-success text-on-success',
         icon: 'text-on-success',
@@ -262,7 +262,7 @@ const notificationCard = tv({
     },
     {
       variant: 'solid',
-      intent: 'warning',
+      status: 'warning',
       class: {
         base: 'bg-warning text-on-warning',
         icon: 'text-on-warning',
@@ -273,7 +273,7 @@ const notificationCard = tv({
     },
     {
       variant: 'solid',
-      intent: 'danger',
+      status: 'danger',
       class: {
         base: 'bg-danger text-on-danger',
         icon: 'text-on-danger',
@@ -285,7 +285,7 @@ const notificationCard = tv({
   ],
 
   defaultVariants: {
-    intent: 'default',
+    status: 'neutral',
     variant: 'surface',
     hasDescription: false,
     stackPlacement: 'none'

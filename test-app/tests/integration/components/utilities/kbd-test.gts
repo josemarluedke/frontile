@@ -153,10 +153,10 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
   });
 
   module('styling', function () {
-    test('size, intent and variant apply their classes', async function (assert) {
+    test('size, color and variant apply their classes', async function (assert) {
       await render(
         <template>
-          <Kbd @keys="k" @size="lg" @intent="danger" @variant="subtle" />
+          <Kbd @keys="k" @size="lg" @color="danger" @variant="subtle" />
         </template>
       );
 

@@ -53,7 +53,7 @@ export default class Example extends Component {
         @onSelectionChange={{this.onSelectionChange}}
       >
         <:item as |o|>
-          <o.Item @key={{o.item}} @intent="default" @variant="subtle">
+          <o.Item @key={{o.item}} @color="neutral" @variant="subtle">
             {{o.item}}
           </o.Item>
         </:item>
@@ -85,13 +85,13 @@ export default class Example extends Component {
           <l.Item @key="notifications" @shortcut="⌘⇧N" @withDivider={{true}}>
             Notifications
           </l.Item>
-          <l.Item @key="reset" @intent="danger" @class="text-danger">
+          <l.Item @key="reset" @color="danger" @class="text-danger">
             Reset Settings
           </l.Item>
           <l.Item
             @key="delete"
             @shortcut="⌘⇧D"
-            @intent="danger"
+            @color="danger"
             @variant="subtle"
             @class="text-danger"
           >

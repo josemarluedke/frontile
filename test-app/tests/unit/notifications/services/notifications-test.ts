@@ -293,7 +293,7 @@ module(
       await pending;
 
       assert.equal(notification.title, 'Saved');
-      assert.equal(notification.intent, 'success');
+      assert.equal(notification.status, 'success');
       assert.equal(notification.isLoading, false);
       assert.equal(notification.allowClosing, true);
       assert.notEqual(
@@ -354,7 +354,7 @@ module(
 
       const notification = service.notifications[0]!;
       assert.equal(notification.title, 'Failed');
-      assert.equal(notification.intent, 'danger');
+      assert.equal(notification.status, 'danger');
       assert.equal(notification.isLoading, false);
     });
 

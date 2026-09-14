@@ -104,7 +104,7 @@ interface FormControlSignature {
         >;
         Feedback: WithBoundArgs<
           ComponentLike<FormFeedbackSignature>,
-          'id' | 'size' | 'messages' | 'intent'
+          'id' | 'size' | 'messages' | 'status'
         >;
       }
     ];
@@ -202,7 +202,7 @@ class FormControl extends Component<FormControlSignature> {
             id=this.feedbackId
             size=@size
             messages=@errors
-            intent="danger"
+            status="danger"
             announce=false
           )
         )
@@ -214,7 +214,7 @@ class FormControl extends Component<FormControlSignature> {
           @id={{this.feedbackId}}
           @size={{@size}}
           @messages={{@errors}}
-          @intent="danger"
+          @status="danger"
           @announce={{false}}
         />
       {{/if}}

@@ -71,11 +71,11 @@ const tabs = tv({
     },
 
     // Fill and selected ink travel together: the label sits on the fill, so a
-    // new intent needs both or its selected label is unreadable on its own
+    // new color needs both or its selected label is unreadable on its own
     // background. `underline` overrides the ink in one compound below, since a
     // bare bar puts no fill behind the label.
-    intent: {
-      default: {
+    color: {
+      neutral: {
         indicator: 'bg-surface-card dark:bg-neutral-soft',
         tab: 'data-[selected=true]:text-neutral-bolder'
       },
@@ -128,8 +128,8 @@ const tabs = tv({
   },
 
   compoundVariants: [
-    // -- underline: no fill behind the label, so the intent colour lives on the
-    // bar alone and the label stays high-contrast neutral at every intent --
+    // -- underline: no fill behind the label, so the color colour lives on the
+    // bar alone and the label stays high-contrast neutral at every color --
     // matching the reference designs. The hover chip shares this matcher, so it
     // rides along rather than repeating the condition in a second entry.
     {
@@ -151,10 +151,10 @@ const tabs = tv({
         tab: 'rounded-xl'
       }
     },
-    // `default` intent's fill is a surface in solid; a bare bar needs ink.
+    // `neutral` color's fill is a surface in solid; a bare bar needs ink.
     {
       variant: 'underline',
-      intent: 'default',
+      color: 'neutral',
       class: { indicator: 'bg-neutral-bolder' }
     },
     {
@@ -192,7 +192,7 @@ const tabs = tv({
 
   defaultVariants: {
     variant: 'solid',
-    intent: 'default',
+    color: 'neutral',
     size: 'md',
     orientation: 'horizontal'
   }

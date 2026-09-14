@@ -86,7 +86,9 @@ import { ExternalLink } from 'frontile';
 import { ExternalLink } from 'frontile';
 
 <template>
-  <div class='not-prose text-neutral-strong flex flex-col items-start gap-3 p-2'>
+  <div
+    class='not-prose text-neutral-strong flex flex-col items-start gap-3 p-2'
+  >
     <ExternalLink @href='https://emberjs.com'>
       Always underlined (default)
     </ExternalLink>
@@ -106,7 +108,9 @@ import { ExternalLink } from 'frontile';
 import { ExternalLink } from 'frontile';
 
 <template>
-  <div class='not-prose text-neutral-strong flex flex-col items-start gap-3 p-2'>
+  <div
+    class='not-prose text-neutral-strong flex flex-col items-start gap-3 p-2'
+  >
     <ExternalLink @href='https://emberjs.com'>Icon at the end (default)</ExternalLink>
     <ExternalLink @href='https://emberjs.com' @iconPlacement='start'>
       Icon at the start
@@ -162,7 +166,9 @@ if the link still opens a new tab.
 import { ExternalLink } from 'frontile';
 
 <template>
-  <div class='not-prose text-neutral-strong flex flex-col items-start gap-3 p-2'>
+  <div
+    class='not-prose text-neutral-strong flex flex-col items-start gap-3 p-2'
+  >
     <ExternalLink @href='https://emberjs.com'>New tab (default)</ExternalLink>
     <ExternalLink @href='https://emberjs.com' @target='_self'>
       Same tab
@@ -188,7 +194,9 @@ surrounding copy already says so.
 import { ExternalLink } from 'frontile';
 
 <template>
-  <div class='not-prose text-neutral-strong flex flex-col items-start gap-3 p-2'>
+  <div
+    class='not-prose text-neutral-strong flex flex-col items-start gap-3 p-2'
+  >
     <ExternalLink
       @href='https://emberjs.com'
       @newTabLabel='(abre em uma nova aba)'

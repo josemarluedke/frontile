@@ -118,9 +118,9 @@ import { Tabs } from 'frontile';
 </template>
 ```
 
-## Intents
+## Colors
 
-`@intent` colors the indicator, so the selected tab carries the meaning
+`@color` colors the indicator, so the selected tab carries the meaning
 rather than the whole component. `default` keeps the neutral fill; the rest
 tint it and switch the selected label to the matching contrast ink in the
 `solid` variant.
@@ -137,7 +137,7 @@ import { array } from '@ember/helper';
       )
       as |intent|
     }}
-      <Tabs @defaultValue='account' @intent={{intent}} as |t|>
+      <Tabs @defaultValue='account' @color={{intent}} as |t|>
         <t.List @label='{{intent}} intent'>
           <t.Tab @value='account'>Account</t.Tab>
           <t.Tab @value='security'>Security</t.Tab>

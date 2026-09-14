@@ -1210,6 +1210,23 @@ module(
     module('style classes', () => {
       function registerListboxItemStyles() {
         registerCustomStyles({
+          listbox: tv({
+            base: 'listbox',
+            variants: {
+              color: {
+                neutral: 'listbox-neutral',
+                primary: 'listbox-primary',
+                secondary: 'listbox-secondary',
+                tertiary: 'listbox-tertiary',
+                success: 'listbox-success',
+                warning: 'listbox-warning',
+                danger: 'listbox-danger'
+              }
+            },
+            defaultVariants: {
+              color: 'neutral'
+            }
+          }) as never,
           listboxItem: tv({
             slots: {
               base: ['listboxItem'],
@@ -1232,14 +1249,14 @@ module(
                   base: ['variant-subtle']
                 }
               },
-              intent: {
-                default: { base: 'intent-default' },
-                primary: { base: 'intent-primary' },
-                secondary: { base: 'intent-secondary' },
-                tertiary: { base: 'intent-tertiary' },
-                success: { base: 'intent-success' },
-                warning: { base: 'intent-warning' },
-                danger: { base: 'intent-danger' }
+              color: {
+                neutral: { base: 'listbox-neutral' },
+                primary: { base: 'listbox-primary' },
+                secondary: { base: 'listbox-secondary' },
+                tertiary: { base: 'listbox-tertiary' },
+                success: { base: 'listbox-success' },
+                warning: { base: 'listbox-warning' },
+                danger: { base: 'listbox-danger' }
               },
               isActive: { true: { base: ['is-active'] } },
               withDivider: {
@@ -1261,7 +1278,7 @@ module(
             },
             defaultVariants: {
               variant: 'solid',
-              intent: 'default'
+              color: 'neutral'
             }
           }) as never
         });
@@ -1271,7 +1288,7 @@ module(
         registerListboxItemStyles();
 
         const variant = cell<ListboxSignature<unknown>['Args']['variant']>();
-        const intent = cell<ListboxSignature<unknown>['Args']['intent']>();
+        const color = cell<ListboxSignature<unknown>['Args']['color']>();
         const selectedKeys = ['item-5'];
         const disabledKeys = ['item-6'];
         await render(
@@ -1280,39 +1297,39 @@ module(
               @selectedKeys={{selectedKeys}}
               @disabledKeys={{disabledKeys}}
               @variant={{variant.current}}
-              @intent={{intent.current}}
+              @color={{color.current}}
               as |l|
             >
               <l.Item @key="item-1">Item 1</l.Item>
               <l.Item @key="item-2" @variant="outline">Item 2</l.Item>
-              <l.Item @key="item-3" @intent="danger">Item 3</l.Item>
+              <l.Item @key="item-3" @color="danger">Item 3</l.Item>
               <l.Item @key="item-4" @withDivider={{true}}>Item 4</l.Item>
               <l.Item @key="item-5">Item 5</l.Item>
               <l.Item @key="item-6">Item 6</l.Item>
-              <l.Item @key="item-7" @intent="tertiary">Item 7</l.Item>
+              <l.Item @key="item-7" @color="tertiary">Item 7</l.Item>
             </Listbox>
           </template>
         );
 
-        // no variant or intent set
+        // no variant or color set
         assert.dom('[data-key="item-1"]').hasClass('variant-solid');
-        assert.dom('[data-key="item-1"]').hasClass('intent-default');
+        assert.dom('[data-key="item-1"]').hasClass('listbox-neutral');
 
-        // variant and intent set
+        // variant and color set
         variant.current = 'subtle';
-        intent.current = 'warning';
+        color.current = 'warning';
         await settled();
         assert.dom('[data-key="item-1"]').hasClass('variant-subtle');
-        assert.dom('[data-key="item-1"]').hasClass('intent-warning');
+        assert.dom('[data-key="item-1"]').hasClass('listbox-warning');
 
         // variant overwritten at item
         assert.dom('[data-key="item-2"]').hasClass('variant-outline');
 
-        // intent overwritten at item
-        assert.dom('[data-key="item-3"]').hasClass('intent-danger');
+        // color overwritten at item
+        assert.dom('[data-key="item-3"]').hasClass('listbox-danger');
 
-        // tertiary intent overwritten at item
-        assert.dom('[data-key="item-7"]').hasClass('intent-tertiary');
+        // tertiary color overwritten at item
+        assert.dom('[data-key="item-7"]').hasClass('listbox-tertiary');
 
         // Divider
         assert.dom('[data-key="item-4"]').hasClass('with-divider');
@@ -1358,6 +1375,100 @@ module(
         await render(<template><Select @appearance="faded" /></template>);
 
         assert.deepEqual(ids, ['frontile.select.appearance']);
+      });
+
+      test('@color renders the new class', async function (assert) {
+        registerListboxItemStyles();
+
+        await render(
+          <template>
+            <Listbox @color="danger" data-test-id="listbox" />
+          </template>
+        );
+
+        assert.dom('[data-test-id="listbox"]').hasClass('listbox-danger');
+      });
+
+      test('@intent="default" maps to neutral and deprecates once', async function (assert) {
+        registerListboxItemStyles();
+
+        const { ids } = trackDeprecations();
+
+        await render(
+          <template>
+            <Listbox @intent="default" data-test-id="listbox" />
+          </template>
+        );
+
+        assert.dom('[data-test-id="listbox"]').hasClass('listbox-neutral');
+        assert.deepEqual(ids, ['frontile.listbox.intent']);
+      });
+
+      test('a per-item @color overrides the listbox default', async function (assert) {
+        registerListboxItemStyles();
+
+        await render(
+          <template>
+            <Listbox @color="primary" as |l|>
+              <l.Item @key="a" @color="danger" data-test-id="item">A</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        // Listbox forwards the raw args down and Item resolves, so an item's
+        // own arg beats the inherited one. Pre-resolving in Listbox would
+        // break this -- Phase A hit exactly that for @variant.
+        assert.dom('[data-test-id="item"]').hasClass('listbox-danger');
+      });
+
+      test('a per-item @intent overrides a listbox-level @intent', async function (assert) {
+        registerListboxItemStyles();
+
+        await render(
+          <template>
+            <Listbox @intent="primary" as |l|>
+              <l.Item @key="a" @intent="danger" data-test-id="item">A</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        assert.dom('[data-test-id="item"]').hasClass('listbox-danger');
+      });
+
+      test('known limitation: a listbox-level @color beats a per-item @intent', async function (assert) {
+        registerListboxItemStyles();
+
+        await render(
+          <template>
+            <Listbox @color="primary" as |l|>
+              <l.Item @key="a" @intent="danger" data-test-id="item">A</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        // Mixing the two APIs across levels does NOT behave as you would hope.
+        // Listbox binds its value as `color`, and `renamedArgValue` lets the
+        // new arg win over the legacy one -- so the INHERITED default beats the
+        // item's explicit override. The same is true of @variant/@appearance,
+        // which Phase A shipped with this behaviour; this test pins it so the
+        // limitation is deliberate rather than accidental.
+        //
+        // The fix for a consumer is to migrate a Listbox and its items
+        // together, which the migration guide says to do.
+        assert.dom('[data-test-id="item"]').hasClass('listbox-primary');
+        assert.dom('[data-test-id="item"]').doesNotHaveClass('listbox-danger');
+      });
+
+      test('Select forwards @color without double-deprecating', async function (assert) {
+        registerListboxItemStyles();
+
+        const { ids } = trackDeprecations();
+
+        await render(
+          <template><Select @intent="danger" data-test-id="select" /></template>
+        );
+
+        assert.deepEqual(ids, ['frontile.select.intent']);
       });
     });
 

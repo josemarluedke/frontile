@@ -1220,7 +1220,7 @@ export default class ResetForm extends Component {
             </Button>
             <Button
               type='button'
-              @intent='default'
+              @color='neutral'
               @variant='outline'
               {{on 'click' form.reset}}
             >
@@ -1309,7 +1309,7 @@ export default class ResetValidationForm extends Component {
             </Button>
             <Button
               type='button'
-              @intent='default'
+              @color='neutral'
               @variant='outline'
               {{on 'click' form.reset}}
             >
@@ -1437,13 +1437,13 @@ export default class DisabledForm extends Component {
 
 ## Feedback Messages
 
-When a field fails validation, `Form`/`Field` render a `FormFeedback` with the `danger` intent
+When a field fails validation, `Form`/`Field` render a `FormFeedback` with the `danger` status
 — no wiring needed. The announcement comes from a separate, visually hidden `aria-live`
 region that `FormControl` always keeps in the DOM, so it is already being observed when the
 message arrives.
 
 For feedback that isn't a validation error — hints, confirmations, warnings — render
-`FormFeedback` yourself and pick an `@intent` from `primary`, `secondary`, `tertiary`,
+`FormFeedback` yourself and pick a `@status` from `primary`, `secondary`, `tertiary`,
 `success`, `warning`, or `danger`. Anything other than `danger` announces politely.
 
 A standalone `FormFeedback` is its own `aria-live` region. Pass `@announce={{false}}` when
@@ -1458,21 +1458,21 @@ import { FormFeedback } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <FormFeedback @intent='primary' @messages='Your changes are being saved.' />
+    <FormFeedback @color='primary' @messages='Your changes are being saved.' />
     <FormFeedback
-      @intent='secondary'
+      @color='secondary'
       @messages='This field supports Markdown.'
     />
     <FormFeedback
-      @intent='tertiary'
+      @color='tertiary'
       @messages='This field supports Markdown.'
     />
-    <FormFeedback @intent='success' @messages='Looks good!' />
+    <FormFeedback @color='success' @messages='Looks good!' />
     <FormFeedback
-      @intent='warning'
+      @color='warning'
       @messages='This username is close to the limit.'
     />
-    <FormFeedback @intent='danger' @messages='This field is required.' />
+    <FormFeedback @color='danger' @messages='This field is required.' />
   </div>
 </template>
 ```

@@ -38,10 +38,10 @@ export interface KbdSignature {
     size?: 'sm' | 'md' | 'lg';
 
     /**
-     * @defaultValue 'default'
+     * @defaultValue 'neutral'
      */
-    intent?:
-      | 'default'
+    color?:
+      | 'neutral'
       | 'primary'
       | 'secondary'
       | 'tertiary'
@@ -133,7 +133,7 @@ class Kbd extends Component<KbdSignature> {
 
     const { base, key, separator } = kbd({
       size: this.args.size,
-      intent: this.args.intent,
+      color: this.args.color,
       variant: this.args.variant,
       isMerged: this.isMerged
     });

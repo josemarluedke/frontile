@@ -884,14 +884,14 @@ module(
           <SegmentedControl
             @value="day"
             @name="range"
-            @intent="primary"
+            @color="primary"
             as |Ctl|
           >
             <Ctl.Item @value="day">Day</Ctl.Item>
             <Ctl.Item @value="week">Week</Ctl.Item>
           </SegmentedControl>
 
-          <SegmentedControl @value="day" @intent="primary" as |Ctl|>
+          <SegmentedControl @value="day" @color="primary" as |Ctl|>
             <Ctl.Item @value="day">Day</Ctl.Item>
             <Ctl.Item @value="week">Week</Ctl.Item>
           </SegmentedControl>

@@ -224,7 +224,7 @@ Notes before you rely on it:
 - **Disabled is visual.** `@isDisabled` is passed through for styling only; the control
   owns its own `disabled` attribute.
 - **Error feedback is announced.** The feedback element carries `aria-live`, assertive at
-  the default `danger` intent and polite otherwise, so messages appearing after the
+  the default `danger` status and polite otherwise, so messages appearing after the
   initial render are read out.
 - **It groups nothing.** There is no `role='group'` and the label's `for` can only point
   at one control, so wrapping several inputs in a single FormControl leaves them

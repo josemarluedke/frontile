@@ -1,5 +1,7 @@
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 import { useStyles, type FormFeedbackVariants } from '@frontile/theme';
+import { renamedArgValue } from '../../-private/deprecated-args';
 
 interface FormFeedbackSignature {
   Args: {
@@ -15,12 +17,18 @@ interface FormFeedbackSignature {
     messages?: string[] | string;
 
     /**
-     * The intent of the feedback, which also decides whether it is announced
+     * The status of the feedback, which also decides whether it is announced
      * assertively (`danger`) or politely.
      *
      * @defaultValue 'danger'
      */
-    intent?: FormFeedbackVariants['intent'];
+    status?: FormFeedbackVariants['status'];
+
+    /**
+     * @deprecated Use `status`. The name changed because this value also
+     * decides whether the message is announced assertively.
+     */
+    intent?: FormFeedbackVariants['status'];
 
     /**
      * The size of the feedback text.
@@ -66,10 +74,29 @@ function feedbackMessageText(messages: string[] | string | undefined): string {
 }
 
 class FormFeedback extends Component<FormFeedbackSignature> {
+  /**
+   * Resolved once so `isError` and `classes` agree, and so the deprecation
+   * fires once per render rather than per reader.
+   */
+  @cached
+  get status(): FormFeedbackVariants['status'] {
+    return renamedArgValue(this.args.status, this.args.intent, {} as const, {
+      component: 'FormFeedback',
+      from: 'intent',
+      to: 'status',
+      id: 'frontile.form-feedback.intent'
+    });
+  }
+
+  /**
+   * Drives `aria-live="assertive"`. The default is `danger`, so the ABSENCE
+   * of the arg must stay assertive -- a missing value must never quietly
+   * downgrade an error announcement to polite.
+   */
   get isError(): boolean {
     return (
       typeof this.args.messages !== 'undefined' &&
-      (this.args.intent === 'danger' || typeof this.args.intent === 'undefined')
+      (this.status === 'danger' || typeof this.status === 'undefined')
     );
   }
 
@@ -78,7 +105,7 @@ class FormFeedback extends Component<FormFeedbackSignature> {
 
     return formFeedback({
       size: this.args.size || 'md',
-      intent: this.args.intent || 'danger',
+      status: this.status || 'danger',
       class: this.args.class
     });
   }

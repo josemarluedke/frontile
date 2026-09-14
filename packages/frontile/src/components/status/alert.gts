@@ -9,27 +9,31 @@ import {
 } from '../../-private/intent-icons';
 import { CloseButton } from '../buttons/close-button';
 
-type AlertIntent = 'default' | 'info' | 'success' | 'warning' | 'danger';
+type AlertStatus = 'neutral' | 'primary' | 'success' | 'warning' | 'danger';
 
 /**
- * Everything about an intent that this component decides, keyed in one place
+ * Everything about an status that this component decides, keyed in one place
  * — the same shape NotificationCard's own table uses — so the icon map and
  * the role cascade cannot drift apart.
  *
  * Colour is deliberately not here: it belongs to the `alert` recipe in
- * `@frontile/theme`, whose `intent` variant and compound variants carry it.
- * So a new intent means a row here *and* rows there; neither table can be
+ * `@frontile/theme`, whose `status` variant and compound variants carry it.
+ * So a new status means a row here *and* rows there; neither table can be
  * derived from the other, since one holds components and the other holds
  * Tailwind classes.
  */
-const INTENT_CONFIG = {
-  default: {
+const STATUS_CONFIG = {
+  neutral: {
     icon: IconInfo,
     // `alert` interrupts a screen reader, so it is reserved for the
-    // intents that warrant interrupting.
+    // statuses that warrant interrupting. This is why the prop is
+    // `@status` and not `@color`: the value picks an ARIA role, not
+    // just a colour.
     role: 'status'
   },
-  info: {
+  // Formerly `info`, which painted `primary`'s classes already. The info
+  // glyph stays attached to `primary`.
+  primary: {
     icon: IconInfo,
     role: 'status'
   },
@@ -46,7 +50,7 @@ const INTENT_CONFIG = {
     role: 'alert'
   }
 } as const satisfies Record<
-  AlertIntent,
+  AlertStatus,
   {
     icon: unknown;
     role: 'status' | 'alert';
@@ -77,12 +81,12 @@ interface AlertSignature {
     description?: string;
 
     /**
-     * The intent of the alert, which drives its colour, its default icon,
+     * The status of the alert, which drives its colour, its default icon,
      * and its default ARIA role.
      *
      * @defaultValue 'default'
      */
-    intent?: AlertIntent;
+    status?: AlertStatus;
 
     /**
      * The visual style of the alert.
@@ -131,8 +135,8 @@ interface AlertSignature {
     closeButtonTitle?: string;
 
     /**
-     * Overrides the ARIA role, which otherwise comes from `@intent`:
-     * `warning` and `danger` render `role="alert"`, every other intent
+     * Overrides the ARIA role, which otherwise comes from `@status`:
+     * `warning` and `danger` render `role="alert"`, every other status
      * renders `role="status"`.
      *
      * That default suits an alert *inserted* in response to an event. Use
@@ -154,7 +158,7 @@ interface AlertSignature {
     classes?: SlotsToClasses<AlertSlots>;
   };
   Blocks: {
-    /** Replaces the default intent glyph. Ignored when `@hideIcon` is set. */
+    /** Replaces the default status glyph. Ignored when `@hideIcon` is set. */
     icon: [];
 
     /** Overrides `@title`. */
@@ -174,17 +178,17 @@ interface AlertSignature {
 /**
  * Displays an important message inline in the page.
  *
- * The static counterpart to `NotificationCard`: same intents and visual
+ * The static counterpart to `NotificationCard`: same statuses and visual
  * recipes, but rendered as part of the page rather than pushed through the
  * notifications service.
  */
 class Alert extends Component<AlertSignature> {
-  get intent(): AlertIntent {
-    return this.args.intent ?? 'default';
+  get status(): AlertStatus {
+    return this.args.status ?? 'neutral';
   }
 
   get icon() {
-    return INTENT_CONFIG[this.intent].icon;
+    return STATUS_CONFIG[this.status].icon;
   }
 
   /**
@@ -199,7 +203,7 @@ class Alert extends Component<AlertSignature> {
       return undefined;
     }
 
-    return role ?? INTENT_CONFIG[this.intent].role;
+    return role ?? STATUS_CONFIG[this.status].role;
   }
 
   /**
@@ -221,7 +225,7 @@ class Alert extends Component<AlertSignature> {
       actions,
       closeButton
     } = alert({
-      intent: this.intent,
+      status: this.status,
       variant: this.args.variant ?? 'surface',
       layout: this.args.layout ?? 'inline',
       hasDescription,
@@ -248,7 +252,7 @@ class Alert extends Component<AlertSignature> {
           role={{this.role}}
           data-component="alert"
           data-part="base"
-          data-test-intent={{this.intent}}
+          data-test-status={{this.status}}
           ...attributes
         >
           <div class={{classNames.inner}} data-part="inner">

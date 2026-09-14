@@ -214,7 +214,7 @@ export default class Demo extends Component {
         </Form.RadioGroup>
         <Button
           @type='submit'
-          @intent='primary'
+          @color='primary'
           disabled={{changeset.isInvalid}}
           class='mt-4'
         >

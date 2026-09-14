@@ -27,12 +27,14 @@ registerCustomStyles({
         plain: 'button-plain',
         custom: 'button-custom'
       },
-      intent: {
-        default: 'intent-default',
-        primary: 'intent-primary',
-        success: 'intent-success',
-        warning: 'intent-warning',
-        danger: 'intent-danger'
+      color: {
+        neutral: 'button-neutral',
+        primary: 'button-primary',
+        secondary: 'button-secondary',
+        tertiary: 'button-tertiary',
+        success: 'button-success',
+        warning: 'button-warning',
+        danger: 'button-danger'
       },
       size: {
         xs: 'btn-xs',
@@ -44,7 +46,7 @@ registerCustomStyles({
     },
     defaultVariants: {
       size: 'md',
-      intent: 'primary',
+      color: 'neutral',
       variant: 'solid'
     }
   }) as never
@@ -250,15 +252,65 @@ module(
         });
       });
 
-      module('@intent', () => {
-        test('it adds class for the an intent', async function (assert) {
+      module('@color', () => {
+        test('it adds class for the a color', async function (assert) {
           await render(
             <template>
-              <Button @intent="primary" data-test-id="button">My Button</Button>
+              <Button @color="primary" data-test-id="button">My Button</Button>
             </template>
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('intent-primary');
+          assert.dom('[data-test-id="button"]').hasClass('button-primary');
+        });
+
+        test('@color renders the new class', async function (assert) {
+          await render(
+            <template>
+              <Button @color="danger" data-test-id="button">x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-danger');
+        });
+
+        test('@intent still renders, and deprecates exactly once', async function (assert) {
+          const { ids } = trackDeprecations();
+
+          await render(
+            <template>
+              <Button @intent="danger" data-test-id="button">x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-danger');
+          assert.deepEqual(ids, ['frontile.button.intent']);
+        });
+
+        test('@intent="default" maps to neutral', async function (assert) {
+          await render(
+            <template>
+              <Button @intent="default" data-test-id="button">x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-neutral');
+        });
+
+        test('@color wins when both are passed', async function (assert) {
+          await render(
+            <template>
+              <Button
+                @color="success"
+                @intent="danger"
+                data-test-id="button"
+              >x</Button>
+            </template>
+          );
+
+          assert.dom('[data-test-id="button"]').hasClass('button-success');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-danger');
         });
       });
 
@@ -295,7 +347,7 @@ module(
       );
       assert
         .dom('[data-test-id="my-div"]')
-        .hasText('button-solid intent-default btn-md');
+        .hasText('button-solid button-neutral btn-md');
     });
 
     module('Press functionality', () => {

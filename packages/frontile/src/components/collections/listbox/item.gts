@@ -58,7 +58,19 @@ export interface ListboxItemSignature {
     appearance?: 'default' | 'outlined' | 'faded';
 
     /**
-     * The intent of each item
+     * The color of each item
+     */
+    color?:
+      | 'neutral'
+      | 'primary'
+      | 'secondary'
+      | 'tertiary'
+      | 'success'
+      | 'warning'
+      | 'danger';
+
+    /**
+     * @deprecated Use `color`. `default` is now `neutral`.
      */
     intent?:
       | 'default'
@@ -187,13 +199,35 @@ class ListboxItem extends Component<ListboxItemSignature> {
     );
   }
 
+  /**
+   * Resolved once per render (`@cached`) so referencing it from both
+   * `classNames` and `submenuIndicatorClass` does not fire the deprecation
+   * twice for the same item.
+   */
+  @cached
+  get color(): NonNullable<ListboxItemSignature['Args']['color']> {
+    return (
+      renamedArgValue(
+        this.args.color,
+        this.args.intent,
+        { default: 'neutral' } as const,
+        {
+          component: 'Listbox',
+          from: 'intent',
+          to: 'color',
+          id: 'frontile.listbox.intent'
+        }
+      ) || 'neutral'
+    );
+  }
+
   get classNames() {
     const { listboxItem } = useStyles();
 
     const { base, descriptionWrapper, label, description, selectedIcon } =
       listboxItem({
         variant: this.variant,
-        intent: this.args.intent || 'default',
+        color: this.color,
         isDisabled: this.listItem?.isDisabled,
         isSelected: this.listItem?.isSelected,
         isActive: this.listItem?.isActive,
@@ -232,7 +266,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
     const { listboxItem } = useStyles();
     const { submenuIndicator } = listboxItem({
       variant: this.variant,
-      intent: this.args.intent || 'default',
+      color: this.color,
       isDisabled: this.listItem?.isDisabled,
       isSelected: this.listItem?.isSelected,
       isActive: this.listItem?.isActive,

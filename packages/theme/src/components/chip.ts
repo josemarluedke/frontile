@@ -32,8 +32,8 @@ const chip = tv({
     // disc on a filled chip, and each level carries its own `on-` colour — the
     // pairing this used to get wrong, by putting `text-on-{intent}` (the
     // contrast colour for the DEFAULT level) on a `-muted` circle.
-    intent: {
-      default: {
+    color: {
+      neutral: {
         dot: 'bg-neutral-strong',
         closeButton: 'bg-neutral-muted text-on-neutral-muted'
       },
@@ -107,7 +107,7 @@ const chip = tv({
     // circle would vanish into the chip. It steps down to `-subtle` instead.
     {
       variant: 'solid',
-      intent: 'default',
+      color: 'neutral',
       class: {
         base: 'bg-neutral-bolder text-on-neutral-bolder',
         closeButton: 'hover:bg-neutral-subtle hover:text-on-neutral-subtle'
@@ -115,7 +115,7 @@ const chip = tv({
     },
     {
       variant: 'solid',
-      intent: 'primary',
+      color: 'primary',
       class: {
         base: 'bg-primary text-on-primary',
         closeButton: 'hover:bg-primary-subtle hover:text-on-primary-subtle'
@@ -123,7 +123,7 @@ const chip = tv({
     },
     {
       variant: 'solid',
-      intent: 'secondary',
+      color: 'secondary',
       class: {
         base: 'bg-secondary text-on-secondary',
         closeButton: 'hover:bg-secondary-subtle hover:text-on-secondary-subtle'
@@ -131,7 +131,7 @@ const chip = tv({
     },
     {
       variant: 'solid',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: {
         base: 'bg-tertiary text-on-tertiary',
         closeButton: 'hover:bg-tertiary-subtle hover:text-on-tertiary-subtle'
@@ -139,7 +139,7 @@ const chip = tv({
     },
     {
       variant: 'solid',
-      intent: 'success',
+      color: 'success',
       class: {
         base: 'bg-success text-on-success',
         closeButton: 'hover:bg-success-subtle hover:text-on-success-subtle'
@@ -147,7 +147,7 @@ const chip = tv({
     },
     {
       variant: 'solid',
-      intent: 'warning',
+      color: 'warning',
       class: {
         base: 'bg-warning text-on-warning',
         closeButton: 'hover:bg-warning-subtle hover:text-on-warning-subtle'
@@ -155,7 +155,7 @@ const chip = tv({
     },
     {
       variant: 'solid',
-      intent: 'danger',
+      color: 'danger',
       class: {
         base: 'bg-danger text-on-danger',
         closeButton: 'hover:bg-danger-subtle hover:text-on-danger-subtle'
@@ -165,7 +165,7 @@ const chip = tv({
     // VARIANT: soft (tonal)
     {
       variant: 'soft',
-      intent: 'default',
+      color: 'neutral',
       class: {
         base: 'text-neutral-strong bg-neutral-subtle',
         closeButton: 'hover:bg-neutral hover:text-on-neutral'
@@ -173,7 +173,7 @@ const chip = tv({
     },
     {
       variant: 'soft',
-      intent: 'primary',
+      color: 'primary',
       class: {
         base: 'text-primary-strong bg-primary-subtle',
         closeButton: 'hover:bg-primary hover:text-on-primary'
@@ -181,7 +181,7 @@ const chip = tv({
     },
     {
       variant: 'soft',
-      intent: 'secondary',
+      color: 'secondary',
       class: {
         base: 'text-secondary-strong bg-secondary-subtle',
         closeButton: 'hover:bg-secondary hover:text-on-secondary'
@@ -189,7 +189,7 @@ const chip = tv({
     },
     {
       variant: 'soft',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: {
         base: 'text-tertiary-strong bg-tertiary-subtle',
         closeButton: 'hover:bg-tertiary hover:text-on-tertiary'
@@ -197,7 +197,7 @@ const chip = tv({
     },
     {
       variant: 'soft',
-      intent: 'success',
+      color: 'success',
       class: {
         base: 'text-success-strong bg-success-subtle',
         closeButton: 'hover:bg-success hover:text-on-success'
@@ -205,7 +205,7 @@ const chip = tv({
     },
     {
       variant: 'soft',
-      intent: 'warning',
+      color: 'warning',
       class: {
         base: 'text-warning-strong bg-warning-subtle',
         closeButton: 'hover:bg-warning hover:text-on-warning'
@@ -213,7 +213,7 @@ const chip = tv({
     },
     {
       variant: 'soft',
-      intent: 'danger',
+      color: 'danger',
       class: {
         base: 'text-danger-strong bg-danger-subtle',
         closeButton: 'hover:bg-danger hover:text-on-danger'
@@ -223,7 +223,7 @@ const chip = tv({
     // VARIANT: outline
     {
       variant: 'outline',
-      intent: 'default',
+      color: 'neutral',
       class: {
         base: 'text-neutral-strong border border-neutral',
         closeButton: 'hover:bg-neutral hover:text-on-neutral'
@@ -231,7 +231,7 @@ const chip = tv({
     },
     {
       variant: 'outline',
-      intent: 'primary',
+      color: 'primary',
       class: {
         base: 'text-primary-strong border border-primary',
         closeButton: 'hover:bg-primary hover:text-on-primary'
@@ -239,7 +239,7 @@ const chip = tv({
     },
     {
       variant: 'outline',
-      intent: 'secondary',
+      color: 'secondary',
       class: {
         base: 'text-secondary-strong border border-secondary',
         closeButton: 'hover:bg-secondary hover:text-on-secondary'
@@ -247,7 +247,7 @@ const chip = tv({
     },
     {
       variant: 'outline',
-      intent: 'tertiary',
+      color: 'tertiary',
       class: {
         base: 'text-tertiary-strong border border-tertiary',
         closeButton: 'hover:bg-tertiary hover:text-on-tertiary'
@@ -255,7 +255,7 @@ const chip = tv({
     },
     {
       variant: 'outline',
-      intent: 'success',
+      color: 'success',
       class: {
         base: 'text-success-strong border border-success',
         closeButton: 'hover:bg-success hover:text-on-success'
@@ -263,7 +263,7 @@ const chip = tv({
     },
     {
       variant: 'outline',
-      intent: 'warning',
+      color: 'warning',
       class: {
         base: 'text-warning-strong border border-warning',
         closeButton: 'hover:bg-warning hover:text-on-warning'
@@ -271,7 +271,7 @@ const chip = tv({
     },
     {
       variant: 'outline',
-      intent: 'danger',
+      color: 'danger',
       class: {
         base: 'text-danger-strong border border-danger',
         closeButton: 'hover:bg-danger hover:text-on-danger'
@@ -280,7 +280,7 @@ const chip = tv({
   ],
   defaultVariants: {
     size: 'md',
-    intent: 'default',
+    color: 'neutral',
     variant: 'solid',
     radius: 'full'
   }

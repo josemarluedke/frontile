@@ -25,7 +25,7 @@ import { ProgressBar } from 'frontile';
 </template>
 ```
 
-## ProgressBar Intents
+## ProgressBar Colors
 
 ```gts preview
 import { ProgressBar } from 'frontile';
@@ -33,35 +33,39 @@ import { ProgressBar } from 'frontile';
 <template>
   <div class='demo-stack'>
     <div class='grid grid-cols-6 gap-4'>
-      <ProgressBar @progress={{50}} @label='Default' @showValueLabel={{false}} />
+      <ProgressBar
+        @progress={{50}}
+        @label='Default'
+        @showValueLabel={{false}}
+      />
       <ProgressBar
         @progress={{50}}
         @label='Primary'
-        @intent='primary'
+        @color='primary'
         @showValueLabel={{false}}
       />
       <ProgressBar
         @progress={{50}}
         @label='Secondary'
-        @intent='secondary'
+        @color='secondary'
         @showValueLabel={{false}}
       />
       <ProgressBar
         @progress={{50}}
         @label='Success'
-        @intent='success'
+        @color='success'
         @showValueLabel={{false}}
       />
       <ProgressBar
         @progress={{50}}
         @label='Warning'
-        @intent='warning'
+        @color='warning'
         @showValueLabel={{false}}
       />
       <ProgressBar
         @progress={{50}}
         @label='Danger'
-        @intent='danger'
+        @color='danger'
         @showValueLabel={{false}}
       />
     </div>

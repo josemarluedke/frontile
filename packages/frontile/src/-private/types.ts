@@ -18,11 +18,11 @@ export interface CustomAction {
   onClick: () => void;
 }
 
-export type NotificationIntent =
-  'default' | 'info' | 'success' | 'warning' | 'danger';
+export type NotificationStatus =
+  'neutral' | 'primary' | 'success' | 'warning' | 'danger';
 
 /**
- * The deprecated intent names. `error` maps onto `danger`.
+ * The deprecated status names. `error` maps onto `danger`.
  */
 export type NotificationAppearance = 'info' | 'success' | 'warning' | 'error';
 
@@ -41,7 +41,7 @@ export interface NotificationContent {
 export interface NotificationUpdate {
   title?: string;
   description?: string;
-  intent?: NotificationIntent;
+  status?: NotificationStatus;
   allowClosing?: boolean;
   isLoading?: boolean;
 }
@@ -85,16 +85,18 @@ export interface NotificationOptions<
   description?: string;
 
   /**
-   * The intent of the notification.
+   * The status of the notification. Drives the glyph, the ARIA role and
+   * the action button's colour — not only the colour, which is why it is
+   * `status` rather than `color`.
    *
-   * @defaultValue 'default'
+   * @defaultValue 'neutral'
    */
-  intent?: NotificationIntent;
+  status?: NotificationStatus;
 
   /**
    * The appearance of the notification.
    *
-   * @deprecated Use `intent` instead. `error` maps onto `danger`.
+   * @deprecated Use `status` instead. `error` maps onto `danger`.
    * @defaultValue undefined
    */
   appearance?: NotificationAppearance;
@@ -107,7 +109,7 @@ export interface NotificationOptions<
   hideIcon?: boolean;
 
   /**
-   * Render a spinner in place of the intent icon. Set by `promise()`.
+   * Render a spinner in place of the status icon. Set by `promise()`.
    *
    * @defaultValue false
    */

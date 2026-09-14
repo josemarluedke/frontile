@@ -75,7 +75,7 @@ export default class Example extends Component {
       @placeholder="Select your favorite animals"
     >
       <:item as |o|>
-        <o.Item @key={{o.item}} @intent="default" @variant="subtle">
+        <o.Item @key={{o.item}} @color="neutral" @variant="subtle">
           {{o.item}}
         </o.Item>
       </:item>
@@ -89,7 +89,7 @@ export default class Example extends Component {
       @allowEmpty={{true}}
       @selectionMode="single"
       @items={{animalsAsOject}}
-      @intent="primary"
+      @color="primary"
       @selectedKey={{this.selectedKey2}}
       @onAction={{this.onAction}}
       @onSelectionChange={{this.onSelectionChange2}}
@@ -113,7 +113,7 @@ export default class Example extends Component {
       <l.Item @key="notifications" @shortcut="⌘⇧N" @withDivider={{true}}>
         Notifications
       </l.Item>
-      <l.Item @key="reset" @intent="danger" @class="text-danger">
+      <l.Item @key="reset" @color="danger" @class="text-danger">
         <:start>
           <div>Start</div>
         </:start>
@@ -124,7 +124,7 @@ export default class Example extends Component {
       <l.Item
         @key="delete"
         @shortcut="⌘⇧D"
-        @intent="danger"
+        @color="danger"
         @variant="subtle"
         @class="text-danger"
       >

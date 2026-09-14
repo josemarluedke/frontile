@@ -9,16 +9,16 @@ const Comp: TOC<null> = <template>
     <Button>
       Default
     </Button>
-    <Button @intent="primary">
+    <Button @color="primary">
       Primary
     </Button>
-    <Button @intent="success">
+    <Button @color="success">
       Success
     </Button>
-    <Button @intent="warning">
+    <Button @color="warning">
       Warning
     </Button>
-    <Button @intent="danger">
+    <Button @color="danger">
       Danger
     </Button>
   </div>
@@ -27,16 +27,16 @@ const Comp: TOC<null> = <template>
     <Button disabled="true">
       Default
     </Button>
-    <Button disabled="true" @intent="primary">
+    <Button disabled="true" @color="primary">
       Primary
     </Button>
-    <Button disabled="true" @intent="success">
+    <Button disabled="true" @color="success">
       Success
     </Button>
-    <Button disabled="true" @intent="warning">
+    <Button disabled="true" @color="warning">
       Warning
     </Button>
-    <Button disabled="true" @intent="danger">
+    <Button disabled="true" @color="danger">
       Danger
     </Button>
   </div>
@@ -49,16 +49,16 @@ const Comp: TOC<null> = <template>
     <Button @variant="outline">
       Button
     </Button>
-    <Button @variant="outline" @intent="primary">
+    <Button @variant="outline" @color="primary">
       Primary
     </Button>
-    <Button @variant="outline" @intent="success">
+    <Button @variant="outline" @color="success">
       Success
     </Button>
-    <Button @variant="outline" @intent="warning">
+    <Button @variant="outline" @color="warning">
       Warning
     </Button>
-    <Button @variant="outline" @intent="danger">
+    <Button @variant="outline" @color="danger">
       Danger
     </Button>
   </div>
@@ -67,16 +67,16 @@ const Comp: TOC<null> = <template>
     <Button @variant="outline" disabled="true">
       Button
     </Button>
-    <Button @variant="outline" disabled="true" @intent="primary">
+    <Button @variant="outline" disabled="true" @color="primary">
       Primary
     </Button>
-    <Button @variant="outline" disabled="true" @intent="success">
+    <Button @variant="outline" disabled="true" @color="success">
       Success
     </Button>
-    <Button @variant="outline" disabled="true" @intent="warning">
+    <Button @variant="outline" disabled="true" @color="warning">
       Warning
     </Button>
-    <Button @variant="outline" disabled="true" @intent="danger">
+    <Button @variant="outline" disabled="true" @color="danger">
       Danger
     </Button>
   </div>
@@ -88,16 +88,16 @@ const Comp: TOC<null> = <template>
     <Button @variant="plain">
       Button
     </Button>
-    <Button @variant="plain" @intent="primary">
+    <Button @variant="plain" @color="primary">
       Primary
     </Button>
-    <Button @variant="plain" @intent="success">
+    <Button @variant="plain" @color="success">
       Success
     </Button>
-    <Button @variant="plain" @intent="warning">
+    <Button @variant="plain" @color="warning">
       Warning
     </Button>
-    <Button @variant="plain" @intent="danger">
+    <Button @variant="plain" @color="danger">
       Danger
     </Button>
   </div>
@@ -106,16 +106,16 @@ const Comp: TOC<null> = <template>
     <Button @variant="plain" disabled="true">
       Button
     </Button>
-    <Button @variant="plain" disabled="true" @intent="primary">
+    <Button @variant="plain" disabled="true" @color="primary">
       Primary
     </Button>
-    <Button @variant="plain" disabled="true" @intent="success">
+    <Button @variant="plain" disabled="true" @color="success">
       Success
     </Button>
-    <Button @variant="plain" disabled="true" @intent="warning">
+    <Button @variant="plain" disabled="true" @color="warning">
       Warning
     </Button>
-    <Button @variant="plain" disabled="true" @intent="danger">
+    <Button @variant="plain" disabled="true" @color="danger">
       Danger
     </Button>
   </div>
@@ -127,16 +127,16 @@ const Comp: TOC<null> = <template>
     <Button @variant="custom">
       Button
     </Button>
-    <Button @variant="custom" @intent="primary">
+    <Button @variant="custom" @color="primary">
       Primary
     </Button>
-    <Button @variant="custom" @intent="success">
+    <Button @variant="custom" @color="success">
       Success
     </Button>
-    <Button @variant="custom" @intent="warning">
+    <Button @variant="custom" @color="warning">
       Warning
     </Button>
-    <Button @variant="custom" @intent="danger">
+    <Button @variant="custom" @color="danger">
       Danger
     </Button>
   </div>
@@ -145,16 +145,16 @@ const Comp: TOC<null> = <template>
     <Button @variant="custom" disabled="true">
       Button
     </Button>
-    <Button @variant="custom" disabled="true" @intent="primary">
+    <Button @variant="custom" disabled="true" @color="primary">
       Primary
     </Button>
-    <Button @variant="custom" disabled="true" @intent="success">
+    <Button @variant="custom" disabled="true" @color="success">
       Success
     </Button>
-    <Button @variant="custom" disabled="true" @intent="warning">
+    <Button @variant="custom" disabled="true" @color="warning">
       Warning
     </Button>
-    <Button @variant="custom" disabled="true" @intent="danger">
+    <Button @variant="custom" disabled="true" @color="danger">
       Danger
     </Button>
   </div>

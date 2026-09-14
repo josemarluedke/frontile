@@ -31,33 +31,36 @@ import { Alert } from 'frontile';
 </template>
 ```
 
-## Intents
+## Statuses
 
 ```gts preview
 import { Alert } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @title='Default' @description='A neutral, general-purpose message.' />
+    <Alert
+      @title='Default'
+      @description='A neutral, general-purpose message.'
+    />
     <Alert
       @title='Info'
       @description='Something worth knowing about.'
-      @intent='info'
+      @status='primary'
     />
     <Alert
       @title='Success'
       @description='The operation completed.'
-      @intent='success'
+      @status='success'
     />
     <Alert
       @title='Warning'
       @description='Something needs attention.'
-      @intent='warning'
+      @status='warning'
     />
     <Alert
       @title='Danger'
       @description='Something went wrong.'
-      @intent='danger'
+      @status='danger'
     />
   </div>
 </template>
@@ -65,13 +68,13 @@ import { Alert } from 'frontile';
 
 ## Variants
 
-`@variant` decides how much of the alert the intent colors, from a neutral
+`@variant` decides how much of the alert the status colors, from a neutral
 surface with a colored icon and title through to a fully filled one. Set it
-alongside `@intent` — the three below are shown across all five intents.
+alongside `@status` — the three below are shown across all five intents.
 
 ### Default
 
-A neutral surface; the intent shows in the icon and title only. Quiet enough to
+A neutral surface; the status shows in the icon and title only. Quiet enough to
 sit in a page without competing with the content around it.
 
 ```gts preview
@@ -79,18 +82,18 @@ import { Alert } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @intent='default' @title='Default' />
-    <Alert @intent='info' @title='Info' />
-    <Alert @intent='success' @title='Success' />
-    <Alert @intent='warning' @title='Warning' />
-    <Alert @intent='danger' @title='Danger' />
+    <Alert @status='neutral' @title='Default' />
+    <Alert @status='primary' @title='Info' />
+    <Alert @status='success' @title='Success' />
+    <Alert @status='warning' @title='Warning' />
+    <Alert @status='danger' @title='Danger' />
   </div>
 </template>
 ```
 
-### Tonal
+### Soft
 
-A translucent tint of the intent fills the alert, over an opaque surface. More
+A translucent tint of the status fills the alert, over an opaque surface. More
 presence than `default` without the weight of `solid`.
 
 ```gts preview
@@ -98,18 +101,18 @@ import { Alert } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @variant='tonal' @intent='default' @title='Default' />
-    <Alert @variant='tonal' @intent='info' @title='Info' />
-    <Alert @variant='tonal' @intent='success' @title='Success' />
-    <Alert @variant='tonal' @intent='warning' @title='Warning' />
-    <Alert @variant='tonal' @intent='danger' @title='Danger' />
+    <Alert @variant='soft' @status='neutral' @title='Default' />
+    <Alert @variant='soft' @status='primary' @title='Info' />
+    <Alert @variant='soft' @status='success' @title='Success' />
+    <Alert @variant='soft' @status='warning' @title='Warning' />
+    <Alert @variant='soft' @status='danger' @title='Danger' />
   </div>
 </template>
 ```
 
 ### Solid
 
-The intent fills the surface, with contrast ink on top. The loudest of the
+The status fills the surface, with contrast ink on top. The loudest of the
 three — worth reserving for something the reader should not miss.
 
 ```gts preview
@@ -117,11 +120,11 @@ import { Alert } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @variant='solid' @intent='default' @title='Default' />
-    <Alert @variant='solid' @intent='info' @title='Info' />
-    <Alert @variant='solid' @intent='success' @title='Success' />
-    <Alert @variant='solid' @intent='warning' @title='Warning' />
-    <Alert @variant='solid' @intent='danger' @title='Danger' />
+    <Alert @variant='solid' @status='neutral' @title='Default' />
+    <Alert @variant='solid' @status='primary' @title='Info' />
+    <Alert @variant='solid' @status='success' @title='Success' />
+    <Alert @variant='solid' @status='warning' @title='Warning' />
+    <Alert @variant='solid' @status='danger' @title='Danger' />
   </div>
 </template>
 ```
@@ -149,8 +152,8 @@ import { Alert } from 'frontile';
       </div>
       <Alert
         @layout='banner'
-        @variant='tonal'
-        @intent='warning'
+        @variant='soft'
+        @status='warning'
         @title='This is the banner text'
       />
       <div class='bg-surface-modal px-4 py-6 text-body-2xs text-neutral-firm'>
@@ -189,15 +192,15 @@ export default class BannerCloseExample extends Component {
       >
         <Alert
           @layout='banner'
-          @variant='tonal'
-          @intent='info'
+          @variant='soft'
+          @status='primary'
           @title='Not dismissible'
         />
         {{#if this.isVisible}}
           <Alert
             @layout='banner'
-            @variant='tonal'
-            @intent='info'
+            @variant='soft'
+            @status='primary'
             @title='Dismissible'
             @onClose={{this.close}}
             @closeButtonTitle='Dismiss the banner'
@@ -215,7 +218,7 @@ export default class BannerCloseExample extends Component {
 
 ## Icon
 
-The `icon` block replaces the intent glyph with anything you pass it — a `Spinner` is a
+The `icon` block replaces the status glyph with anything you pass it — a `Spinner` is a
 convenient way to build a loading alert, since there is no dedicated loading argument.
 `@hideIcon` removes it entirely and wins over the block.
 
@@ -237,7 +240,7 @@ import { Alert, Spinner } from 'frontile';
 
 The `actions` block renders buttons in a row between the content and the close button.
 Alert follows the same styling convention as `NotificationCard`: `@size='xs'`, the first
-button's `@intent` matching the alert's own, and any further button using
+button's `@status` matching the alert's own, and any further button using
 `@variant='plain'`.
 
 ```gts preview
@@ -245,9 +248,13 @@ import { Alert, Button } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @intent='warning' @title='Unsaved changes' @description='Save before you leave?'>
+    <Alert
+      @status='warning'
+      @title='Unsaved changes'
+      @description='Save before you leave?'
+    >
       <:actions>
-        <Button @size='xs' @intent='warning'>Save</Button>
+        <Button @size='xs' @status='warning'>Save</Button>
         <Button @size='xs' @variant='plain'>Discard</Button>
       </:actions>
     </Alert>
@@ -281,7 +288,7 @@ export default class ClosableAlertExample extends Component {
     <div class='demo-stack'>
       {{#if this.isVisible}}
         <Alert
-          @intent='success'
+          @status='success'
           @title='Changes saved'
           @onClose={{this.close}}
           @closeButtonTitle='Dismiss saved message'
@@ -307,7 +314,7 @@ import { Alert } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert @intent='info' @title='Before you continue'>
+    <Alert @status='primary' @title='Before you continue'>
       <:description>
         <ul class='list-disc pl-4'>
           <li>Your session expires in 10 minutes.</li>
@@ -321,13 +328,13 @@ import { Alert } from 'frontile';
 
 ## Accessibility
 
-`@intent` sets the ARIA role along with the color and icon: `warning` and `danger` render
-`role="alert"`; every other intent renders `role="status"`. `@role` overrides this — use
+`@status` sets the ARIA role along with the color and icon: `warning` and `danger` render
+`role="alert"`; every other status renders `role="status"`. `@role` overrides this — use
 `'none'` for an alert present in the DOM at first paint, where a live region announces
 nothing useful and `alert` can interrupt a screen reader mid-page. Leave the default for an
 alert inserted in response to an event, where the role is what gets it announced at all.
 
-Colour alone should not carry the meaning of `@intent`. A `danger` alert reads as a problem
+Colour alone should not carry the meaning of `@status`. A `danger` alert reads as a problem
 to a sighted user and as an ordinary alert to everyone else, so put the state in the
 `@title` or `@description` as well.
 

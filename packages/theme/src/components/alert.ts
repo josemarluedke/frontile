@@ -34,12 +34,12 @@ const alert = tv({
     // The inner element carries the row layout. Alert has no
     // ResizeObserver, so unlike the card it does not need this split for
     // measurement — it needs it because the `soft` variant's translucent
-    // `{intent}-soft` tint has to composite over an opaque surface. All
+    // `{status}-soft` tint has to composite over an opaque surface. All
     // three variants share the structure rather than branching the DOM.
     inner: 'flex gap-3 p-4 font-body text-body-2xs',
     // `inline-flex items-center justify-center` turns this slot into a
     // fixed 20px centering box, and `[&>*]:size-full` forces whatever
-    // element lands inside it (default intent glyph, or arbitrary content
+    // element lands inside it (default status glyph, or arbitrary content
     // yielded through the `icon` block, e.g. `<Spinner @size='sm' />`) to
     // fill that box rather than render at its own intrinsic size. Without
     // this, a yielded `Spinner` (`sm` = 24px) would overflow and
@@ -61,23 +61,23 @@ const alert = tv({
   },
 
   variants: {
-    // Intent alone paints nothing; every colour comes from an intent ×
+    // Status alone paints nothing; every colour comes from an status ×
     // variant compound below.
     //
-    // The other half of an intent lives in the component: `INTENT_CONFIG` in
-    // alert.gts maps it to a glyph and an ARIA role. Adding an intent means
+    // The other half of an status lives in the component: `STATUS_CONFIG` in
+    // alert.gts maps it to a glyph and an ARIA role. Adding an status means
     // adding it in both places — this list plus its three compound variants
     // here, and a row there.
-    intent: {
-      default: {},
-      info: {},
+    status: {
+      neutral: {},
+      primary: {},
       success: {},
       warning: {},
       danger: {}
     },
     variant: {
       surface: neutralSurface,
-      // Intent-independent out here: every `soft` compound below tints the
+      // Status-independent out here: every `soft` compound below tints the
       // *inner* element instead, so the outer box is `surface`'s.
       soft: neutralSurface,
       solid: {
@@ -131,45 +131,45 @@ const alert = tv({
 
   compoundVariants: [
     // surface: neutral surface, colour carried by the icon and title.
-    // The `default` intent has no accent colour to lend the title emphasis,
+    // The `neutral` status has no accent colour to lend the title emphasis,
     // so the title earns its prominence from weight of ink instead, sitting
     // a level above the icon.
     {
       variant: 'surface',
-      intent: 'default',
+      status: 'neutral',
       class: { icon: 'text-neutral-firm', title: 'text-neutral-bolder' }
     },
     {
       variant: 'surface',
-      intent: 'info',
+      status: 'primary',
       class: { icon: 'text-primary', title: 'text-primary' }
     },
     {
       // `success-firm` is only ~2.3:1 on a light surface; `bolder` clears
       // AA in both themes. Same measurement the card's theme records.
       variant: 'surface',
-      intent: 'success',
+      status: 'success',
       class: { icon: 'text-success-bolder', title: 'text-success-bolder' }
     },
     {
       // `warning-firm` is only ~3:1 on a light surface; `bolder` clears AA
       // in both themes.
       variant: 'surface',
-      intent: 'warning',
+      status: 'warning',
       class: { icon: 'text-warning-bolder', title: 'text-warning-bolder' }
     },
     {
       variant: 'surface',
-      intent: 'danger',
+      status: 'danger',
       class: { icon: 'text-danger-firm', title: 'text-danger-firm' }
     },
 
-    // soft: an opaque outer surface with the translucent `{intent}-soft`
+    // soft: an opaque outer surface with the translucent `{status}-soft`
     // tint and its `on-*` contrast ink applied to the inner element, which
     // composites over that opaque surface. Same recipe as NotificationCard's.
     {
       variant: 'soft',
-      intent: 'default',
+      status: 'neutral',
       class: {
         inner: 'bg-neutral-soft',
         icon: 'text-on-neutral-soft',
@@ -178,7 +178,7 @@ const alert = tv({
     },
     {
       variant: 'soft',
-      intent: 'info',
+      status: 'primary',
       class: {
         inner: 'bg-primary-soft',
         icon: 'text-on-primary-soft',
@@ -187,7 +187,7 @@ const alert = tv({
     },
     {
       variant: 'soft',
-      intent: 'success',
+      status: 'success',
       class: {
         inner: 'bg-success-soft',
         icon: 'text-on-success-soft',
@@ -196,7 +196,7 @@ const alert = tv({
     },
     {
       variant: 'soft',
-      intent: 'warning',
+      status: 'warning',
       class: {
         inner: 'bg-warning-soft',
         icon: 'text-on-warning-soft',
@@ -205,7 +205,7 @@ const alert = tv({
     },
     {
       variant: 'soft',
-      intent: 'danger',
+      status: 'danger',
       class: {
         inner: 'bg-danger-soft',
         icon: 'text-on-danger-soft',
@@ -214,11 +214,11 @@ const alert = tv({
     },
 
     // solid: filled surface, contrast ink. The description uses the
-    // full-strength `on-{intent}` ink rather than a translucent cut — a
+    // full-strength `on-{status}` ink rather than a translucent cut — a
     // translucent cut failed WCAG AA in the equivalent card recipe.
     {
       variant: 'solid',
-      intent: 'default',
+      status: 'neutral',
       class: {
         base: 'bg-neutral text-on-neutral',
         icon: 'text-on-neutral',
@@ -228,7 +228,7 @@ const alert = tv({
     },
     {
       variant: 'solid',
-      intent: 'info',
+      status: 'primary',
       class: {
         base: 'bg-primary text-on-primary',
         icon: 'text-on-primary',
@@ -238,7 +238,7 @@ const alert = tv({
     },
     {
       variant: 'solid',
-      intent: 'success',
+      status: 'success',
       class: {
         base: 'bg-success text-on-success',
         icon: 'text-on-success',
@@ -248,7 +248,7 @@ const alert = tv({
     },
     {
       variant: 'solid',
-      intent: 'warning',
+      status: 'warning',
       class: {
         base: 'bg-warning text-on-warning',
         icon: 'text-on-warning',
@@ -258,7 +258,7 @@ const alert = tv({
     },
     {
       variant: 'solid',
-      intent: 'danger',
+      status: 'danger',
       class: {
         base: 'bg-danger text-on-danger',
         icon: 'text-on-danger',
@@ -295,7 +295,7 @@ const alert = tv({
   ],
 
   defaultVariants: {
-    intent: 'default',
+    status: 'neutral',
     variant: 'surface',
     layout: 'inline',
     hasDescription: false,

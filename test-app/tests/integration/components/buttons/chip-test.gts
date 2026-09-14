@@ -20,12 +20,14 @@ registerCustomStyles({
         outline: 'chip-outline',
         soft: 'chip-soft'
       },
-      intent: {
-        default: 'intent-default',
-        primary: 'intent-primary',
-        success: 'intent-success',
-        warning: 'intent-warning',
-        danger: 'intent-danger'
+      color: {
+        neutral: 'chip-neutral',
+        primary: 'chip-primary',
+        secondary: 'chip-secondary',
+        tertiary: 'chip-tertiary',
+        success: 'chip-success',
+        warning: 'chip-warning',
+        danger: 'chip-danger'
       },
       size: {
         sm: 'chip-sm',
@@ -41,7 +43,7 @@ registerCustomStyles({
     },
     defaultVariants: {
       size: 'md',
-      intent: 'primary'
+      color: 'primary'
     }
   }) as never
 });
@@ -121,15 +123,59 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
       });
     });
 
-    module('@intent', () => {
-      test('it adds class for the an intent', async function (assert) {
+    module('@color', () => {
+      test('it adds class for a color', async function (assert) {
         await render(
           <template>
-            <Chip @intent="primary" data-test-id="button">My Chip</Chip>
+            <Chip @color="primary" data-test-id="button">My Chip</Chip>
           </template>
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('intent-primary');
+        assert.dom('[data-test-id="button"]').hasClass('chip-primary');
+      });
+
+      test('@color renders the new class', async function (assert) {
+        await render(
+          <template>
+            <Chip @color="danger" data-test-id="chip">x</Chip>
+          </template>
+        );
+
+        assert.dom('[data-test-id="chip"]').hasClass('chip-danger');
+      });
+
+      test('@intent still renders, and deprecates exactly once', async function (assert) {
+        const { ids } = trackDeprecations();
+
+        await render(
+          <template>
+            <Chip @intent="danger" data-test-id="chip">x</Chip>
+          </template>
+        );
+
+        assert.dom('[data-test-id="chip"]').hasClass('chip-danger');
+        assert.deepEqual(ids, ['frontile.chip.intent']);
+      });
+
+      test('@intent="default" maps to neutral', async function (assert) {
+        await render(
+          <template>
+            <Chip @intent="default" data-test-id="chip">x</Chip>
+          </template>
+        );
+
+        assert.dom('[data-test-id="chip"]').hasClass('chip-neutral');
+      });
+
+      test('@color wins when both are passed', async function (assert) {
+        await render(
+          <template>
+            <Chip @color="success" @intent="danger" data-test-id="chip">x</Chip>
+          </template>
+        );
+
+        assert.dom('[data-test-id="chip"]').hasClass('chip-success');
+        assert.dom('[data-test-id="chip"]').doesNotHaveClass('chip-danger');
       });
     });
 

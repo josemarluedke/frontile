@@ -21,22 +21,22 @@ const tooltip = tv({
       md: { base: 'px-2.5 py-1.5 text-label-sm' },
       lg: { base: 'px-3 py-2 text-label-md' }
     },
-    // `bg-inherit` on the arrow (see `overlayArrow`) means each intent only
+    // `bg-inherit` on the arrow (see `overlayArrow`) means each color only
     // has to state the background once, on `base`. The border is stated on
-    // both `base` and `arrow` for every intent so the two agree at the join:
+    // both `base` and `arrow` for every color so the two agree at the join:
     // `default` carries a visible `border-neutral-soft` on each (the arrow's
     // own shadow-less edge needs a level with more contrast than the body's
-    // `shadow-md` gets away with), and every coloured intent clears both to
+    // `shadow-md` gets away with), and every coloured color clears both to
     // `border-transparent`. The body needs this explicitly, not just the
     // arrow: `Content`'s classNames (`popover.gts`) run this `base` class
     // through the *`popover`* tv, whose own base carries
     // `border border-neutral-subtle` (`popover.ts`) -- twMerge only drops
     // that when a later class from the same border-color group replaces it,
-    // so a coloured intent with no border class of its own left that
+    // so a coloured color with no border class of its own left that
     // neutral border showing on the body while the arrow (fixed here to
     // `border-transparent`) went invisible, a visible seam at the join.
-    intent: {
-      default: {
+    color: {
+      neutral: {
         base: 'bg-surface-input text-on-surface-input border border-neutral-soft',
         arrow: 'border-neutral-soft'
       },
@@ -68,7 +68,7 @@ const tooltip = tv({
   },
   defaultVariants: {
     size: 'md',
-    intent: 'default'
+    color: 'neutral'
   }
 });
 

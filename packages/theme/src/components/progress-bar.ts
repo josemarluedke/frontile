@@ -13,8 +13,8 @@ const progressBar = tv({
         progress: ['animate-loading origin-left']
       }
     },
-    intent: {
-      default: {
+    color: {
+      neutral: {
         progress: 'bg-neutral-strong'
       },
       primary: {
@@ -69,7 +69,7 @@ const progressBar = tv({
   },
   defaultVariants: {
     size: 'md',
-    intent: 'default',
+    color: 'neutral',
     radius: 'sm'
   }
 });

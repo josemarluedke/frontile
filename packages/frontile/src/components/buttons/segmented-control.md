@@ -37,7 +37,7 @@ import { SegmentedControl } from 'frontile';
 
 ## Controlled and uncontrolled
 
-The mode is decided by whether `@value` is *passed*, not by what it holds.
+The mode is decided by whether `@value` is _passed_, not by what it holds.
 Omit the argument entirely and the control is uncontrolled; write it at all —
 including `@value={{undefined}}`, or `@value={{this.selection}}` where
 `selection` happens to be `undefined` — and it is controlled. That is what lets
@@ -91,9 +91,9 @@ must be referentially stable, or every item will read as unselected; two items
 that share a value both render as selected, which is useful when the same
 choice has more than one entry point but otherwise worth avoiding.
 
-## Intents
+## Colors
 
-`@intent` colors the selection indicator, so the selected option carries the
+`@color` colors the selection indicator, so the selected option carries the
 meaning rather than the control as a whole. `default` keeps the neutral raised
 pill; the rest tint it and switch the selected label to the matching contrast
 ink.
@@ -105,8 +105,8 @@ import { SegmentedControl } from 'frontile';
   <div class='flex flex-col items-start gap-3'>
     <SegmentedControl
       @defaultValue='week'
-      @intent='default'
-      aria-label='Default intent'
+      @color='neutral'
+      aria-label='Neutral color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -115,8 +115,8 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='primary'
-      aria-label='Primary intent'
+      @color='primary'
+      aria-label='Primary color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -125,8 +125,8 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='secondary'
-      aria-label='Secondary intent'
+      @color='secondary'
+      aria-label='Secondary color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -135,8 +135,8 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='tertiary'
-      aria-label='Tertiary intent'
+      @color='tertiary'
+      aria-label='Tertiary color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -145,8 +145,8 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='success'
-      aria-label='Success intent'
+      @color='success'
+      aria-label='Success color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -155,8 +155,8 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='warning'
-      aria-label='Warning intent'
+      @color='warning'
+      aria-label='Warning color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -165,8 +165,8 @@ import { SegmentedControl } from 'frontile';
     </SegmentedControl>
     <SegmentedControl
       @defaultValue='week'
-      @intent='danger'
-      aria-label='Danger intent'
+      @color='danger'
+      aria-label='Danger color'
       as |Ctl|
     >
       <Ctl.Item @value='day'>Day</Ctl.Item>
@@ -469,7 +469,7 @@ filled `primary` pill, and the brand color carried by the unselected labels
 instead of neutral ink.
 
 Three of the four pieces come from arguments rather than overrides —
-`@intent='primary'` fills the indicator and picks the contrast ink for the
+`@color='primary'` fills the indicator and picks the contrast ink for the
 selected label, `@isFullWidth={{true}}` stretches the control and divides it
 evenly, and `@size='lg'` sets the padding. Only the track's surface and the
 label treatment need `@classes`.
@@ -490,7 +490,7 @@ import { hash } from '@ember/helper';
   <div class='w-[34rem] max-w-full'>
     <SegmentedControl
       @defaultValue='resident'
-      @intent='primary'
+      @color='primary'
       @size='lg'
       @isFullWidth={{true}}
       @classes={{hash
@@ -513,8 +513,8 @@ import { hash } from '@ember/helper';
 selected one needs a modifier. Each item publishes two data attributes for this,
 in **both** rendering modes:
 
-| Attribute | Values |
-| --------- | ------ |
+| Attribute       | Values               |
+| --------------- | -------------------- |
 | `data-selected` | `"true"` / `"false"` |
 | `data-disabled` | `"true"` / `"false"` |
 

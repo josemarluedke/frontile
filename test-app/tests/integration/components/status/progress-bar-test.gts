@@ -5,6 +5,7 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { ProgressBar } from 'frontile';
 import { hash } from '@ember/helper';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 registerCustomStyles({
   progressBar: tv({
@@ -20,13 +21,13 @@ registerCustomStyles({
           progress: ['pb-is-indeterminate']
         }
       },
-      intent: {
-        default: 'intent-default',
-        primary: 'intent-primary',
-        secondary: 'intent-secondary',
-        success: 'intent-success',
-        warning: 'intent-warning',
-        danger: 'intent-danger'
+      color: {
+        neutral: 'color-neutral',
+        primary: 'color-primary',
+        secondary: 'color-secondary',
+        success: 'color-success',
+        warning: 'color-warning',
+        danger: 'color-danger'
       },
       size: {
         xs: 'size-xs',
@@ -43,7 +44,7 @@ registerCustomStyles({
     },
     defaultVariants: {
       size: 'md',
-      intent: 'default',
+      color: 'neutral',
       radius: 'sm'
     }
   }) as never
@@ -63,39 +64,101 @@ module(
     });
 
     module('style classes', () => {
-      module('intent', () => {
-        test('it adds class for the intent', async function (assert) {
+      module('color', () => {
+        test('it adds class for the color', async function (assert) {
           await render(
             <template>
-              <ProgressBar @intent="primary" data-test-id="progress-bar" />
+              <ProgressBar @color="primary" data-test-id="progress-bar" />
             </template>
           );
 
           assert
             .dom('[data-test-id="progress-bar"] > div.pb-base')
-            .hasClass('intent-primary');
+            .hasClass('color-primary');
         });
 
-        test('it adds class for the secondary intent', async function (assert) {
+        test('it adds class for the secondary color', async function (assert) {
           await render(
             <template>
-              <ProgressBar @intent="secondary" data-test-id="progress-bar" />
+              <ProgressBar @color="secondary" data-test-id="progress-bar" />
             </template>
           );
 
           assert
             .dom('[data-test-id="progress-bar"] > div.pb-base')
-            .hasClass('intent-secondary');
+            .hasClass('color-secondary');
         });
 
-        test('it adds class for the default intent', async function (assert) {
+        test('it adds class for the default (neutral) color', async function (assert) {
           await render(
             <template><ProgressBar data-test-id="progress-bar" /></template>
           );
 
           assert
             .dom('[data-test-id="progress-bar"] > div.pb-base')
-            .hasClass('intent-default');
+            .hasClass('color-neutral');
+        });
+
+        test('@intent still renders, and deprecates exactly once', async function (assert) {
+          const { ids } = trackDeprecations();
+
+          await render(
+            <template>
+              <ProgressBar @intent="danger" data-test-id="progress-bar" />
+            </template>
+          );
+
+          assert
+            .dom('[data-test-id="progress-bar"] > div.pb-base')
+            .hasClass('color-danger');
+          assert.deepEqual(ids, ['frontile.progress-bar.intent']);
+        });
+
+        test('@intent="default" maps to neutral', async function (assert) {
+          await render(
+            <template>
+              <ProgressBar @intent="default" data-test-id="progress-bar" />
+            </template>
+          );
+
+          assert
+            .dom('[data-test-id="progress-bar"] > div.pb-base')
+            .hasClass('color-neutral');
+        });
+
+        test('@color wins when both are passed', async function (assert) {
+          await render(
+            <template>
+              <ProgressBar
+                @color="success"
+                @intent="danger"
+                data-test-id="progress-bar"
+              />
+            </template>
+          );
+
+          assert
+            .dom('[data-test-id="progress-bar"] > div.pb-base')
+            .hasClass('color-success');
+          assert
+            .dom('[data-test-id="progress-bar"] > div.pb-base')
+            .doesNotHaveClass('color-danger');
+        });
+
+        test('ARIA does not depend on @color', async function (assert) {
+          await render(
+            <template>
+              <ProgressBar
+                @color="success"
+                @progress={{40}}
+                data-test-id="progress-bar"
+              />
+            </template>
+          );
+
+          assert
+            .dom('[data-test-id="progress-bar"] [role="progressbar"]')
+            .hasAttribute('aria-valuenow', '40');
         });
       });
 

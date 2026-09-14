@@ -78,8 +78,8 @@ const segmentedControl = tv({
     // modes -- the two express selection on different elements, so a rule per
     // mode is one mode away from being forgotten. Written literally: Tailwind
     // generates nothing from a composed class string.
-    intent: {
-      default: {
+    color: {
+      neutral: {
         // Opaque white in light mode. In dark, `surface-card` is translucent,
         // so an opaque neutral is used instead -- see the track above.
         indicator: 'bg-surface-card dark:bg-neutral-soft',
@@ -186,7 +186,7 @@ const segmentedControl = tv({
 
   defaultVariants: {
     variant: 'solid',
-    intent: 'default',
+    color: 'neutral',
     size: 'md',
     orientation: 'horizontal'
   }

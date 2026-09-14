@@ -9,7 +9,7 @@ A toggle button allows to toggle a selection on or off, for example switching
 between two states or modes.
 
 Unselected, it reads as an outlined button — ink and border only. Selected, it
-fills with its intent color and switches to the matching contrast ink; hovering
+fills with its color and switches to the matching contrast ink; hovering
 and pressing deepen that fill one step at a time, the same ramp a filled
 `Button` uses, so the label stays readable in every state.
 
@@ -49,7 +49,7 @@ export default class Example extends Component {
 }
 ```
 
-## Intents
+## Colors
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -81,7 +81,7 @@ export default class Example extends Component {
       <ToggleButton
         @isSelected={{val}}
         @onChange={{(fn this.onChange key)}}
-        @intent={{key}}
+        @color={{key}}
       >
         Toggle
       </ToggleButton>
@@ -113,13 +113,13 @@ import { ToggleButton } from 'frontile';
 
 <template>
   <div>
-    <ToggleButton @intent='default' disabled>ToggleButton</ToggleButton>
-    <ToggleButton @intent='primary' disabled>Primary</ToggleButton>
-    <ToggleButton @intent='secondary' disabled>Secondary</ToggleButton>
-    <ToggleButton @intent='tertiary' disabled>Tertiary</ToggleButton>
-    <ToggleButton @intent='success' disabled>Success</ToggleButton>
-    <ToggleButton @intent='warning' disabled>Warning</ToggleButton>
-    <ToggleButton @intent='danger' disabled>Danger</ToggleButton>
+    <ToggleButton @color='neutral' disabled>ToggleButton</ToggleButton>
+    <ToggleButton @color='primary' disabled>Primary</ToggleButton>
+    <ToggleButton @color='secondary' disabled>Secondary</ToggleButton>
+    <ToggleButton @color='tertiary' disabled>Tertiary</ToggleButton>
+    <ToggleButton @color='success' disabled>Success</ToggleButton>
+    <ToggleButton @color='warning' disabled>Warning</ToggleButton>
+    <ToggleButton @color='danger' disabled>Danger</ToggleButton>
   </div>
 </template>
 ```
@@ -172,7 +172,7 @@ export default class Example extends Component {
         <ToggleButton
           @isSelected={{selected}}
           @onChange={{fn this.onChange key}}
-          @intent='primary'
+          @color='primary'
         >
           {{key}}
         </ToggleButton>

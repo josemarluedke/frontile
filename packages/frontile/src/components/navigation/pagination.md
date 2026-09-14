@@ -34,10 +34,10 @@ import { Pagination } from 'frontile';
 Pagination renders its previous button, page items, and next button automatically. Two
 optional named blocks let you extend or replace that structure:
 
-| Block | Purpose |
-| --- | --- |
+| Block        | Purpose                                                                         |
+| ------------ | ------------------------------------------------------------------------------- |
 | `<:summary>` | Adds a result-range summary using the yielded `from`, `to`, and `total` values. |
-| `<:item>` | Replaces each page item while preserving Pagination's windowing calculations. |
+| `<:item>`    | Replaces each page item while preserving Pagination's windowing calculations.   |
 
 Use the default items for button-based navigation. When rendering links through `<:item>`,
 provide the appropriate URL and disabled semantics described in [Disabled](#disabled).
@@ -236,9 +236,9 @@ import { Pagination } from 'frontile';
 </template>
 ```
 
-## Intents
+## Colors
 
-`@intent` colors the active page chip's fill.
+`@color` colors the active page chip's fill.
 
 ```gts preview
 import { Pagination } from 'frontile';
@@ -248,43 +248,43 @@ import { Pagination } from 'frontile';
     <Pagination
       @total={{50}}
       @defaultPage={{2}}
-      @intent='default'
+      @color='neutral'
       aria-label='Default intent'
     />
     <Pagination
       @total={{50}}
       @defaultPage={{2}}
-      @intent='primary'
+      @color='primary'
       aria-label='Primary intent'
     />
     <Pagination
       @total={{50}}
       @defaultPage={{2}}
-      @intent='secondary'
+      @color='secondary'
       aria-label='Secondary intent'
     />
     <Pagination
       @total={{50}}
       @defaultPage={{2}}
-      @intent='tertiary'
+      @color='tertiary'
       aria-label='Tertiary intent'
     />
     <Pagination
       @total={{50}}
       @defaultPage={{2}}
-      @intent='success'
+      @color='success'
       aria-label='Success intent'
     />
     <Pagination
       @total={{50}}
       @defaultPage={{2}}
-      @intent='warning'
+      @color='warning'
       aria-label='Warning intent'
     />
     <Pagination
       @total={{50}}
       @defaultPage={{2}}
-      @intent='danger'
+      @color='danger'
       aria-label='Danger intent'
     />
   </div>

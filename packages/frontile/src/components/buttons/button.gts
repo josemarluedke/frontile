@@ -99,7 +99,19 @@ export interface ButtonArgs {
   appearance?: 'default' | 'soft' | 'outlined' | 'minimal' | 'tonal' | 'custom';
 
   /**
-   * The intent of the button
+   * The color of the button
+   */
+  color?:
+    | 'neutral'
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'success'
+    | 'warning'
+    | 'danger';
+
+  /**
+   * @deprecated Use `color`. `default` is now `neutral`.
    */
   intent?:
     | 'default'
@@ -189,7 +201,18 @@ class Button extends Component<ButtonSignature> {
     const { button } = useStyles();
 
     return button({
-      intent: this.args.intent || 'default',
+      color:
+        renamedArgValue(
+          this.args.color,
+          this.args.intent,
+          { default: 'neutral' } as const,
+          {
+            component: 'Button',
+            from: 'intent',
+            to: 'color',
+            id: 'frontile.button.intent'
+          }
+        ) || 'neutral',
       size: this.args.size,
       variant:
         renamedArgValue(

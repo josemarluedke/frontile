@@ -33,12 +33,12 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
       closeButton: ['alert-close-button']
     },
     variants: {
-      intent: {
-        default: 'intent-default',
-        info: 'intent-info',
-        success: 'intent-success',
-        warning: 'intent-warning',
-        danger: 'intent-danger'
+      status: {
+        neutral: 'status-neutral',
+        primary: 'status-primary',
+        success: 'status-success',
+        warning: 'status-warning',
+        danger: 'status-danger'
       },
       variant: {
         surface: 'variant-surface',
@@ -67,7 +67,7 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
       }
     },
     defaultVariants: {
-      intent: 'default',
+      status: 'neutral',
       variant: 'surface',
       layout: 'inline',
       hasDescription: false,
@@ -160,18 +160,46 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
   });
 
   module('icon', function () {
-    test('each intent gets its own default glyph', async function (assert) {
+    test('@status drives the ARIA role', async function (assert) {
       await render(
         <template>
-          <Alert @title="Default" data-test-id="d" />
-          <Alert @intent="info" @title="Info" data-test-id="i" />
-          <Alert @intent="success" @title="Success" data-test-id="s" />
-          <Alert @intent="warning" @title="Warning" data-test-id="w" />
-          <Alert @intent="danger" @title="Danger" data-test-id="x" />
+          <Alert @status="danger" @title="t" data-test-id="danger" />
+          <Alert @status="success" @title="t" data-test-id="success" />
         </template>
       );
 
-      // The `default` intent shares the info glyph, as NotificationCard does.
+      // `alert` interrupts a screen reader, so it is reserved for the
+      // statuses that warrant it. This coupling is why the prop is named
+      // `@status` rather than `@color`.
+      assert.dom('[data-test-id="danger"]').hasAttribute('role', 'alert');
+      assert.dom('[data-test-id="success"]').hasAttribute('role', 'status');
+    });
+
+    test('@status="primary" keeps the info glyph and a polite role', async function (assert) {
+      await render(
+        <template>
+          <Alert @status="primary" @title="t" data-test-id="a" />
+        </template>
+      );
+
+      // `primary` absorbed the old `info`, which painted primary's classes
+      // already and carried the info glyph.
+      assert.dom('[data-test-id="a"]').hasClass('status-primary');
+      assert.dom('[data-test-id="a"]').hasAttribute('role', 'status');
+    });
+
+    test('each status gets its own default glyph', async function (assert) {
+      await render(
+        <template>
+          <Alert @title="Default" data-test-id="d" />
+          <Alert @status="primary" @title="Info" data-test-id="i" />
+          <Alert @status="success" @title="Success" data-test-id="s" />
+          <Alert @status="warning" @title="Warning" data-test-id="w" />
+          <Alert @status="danger" @title="Danger" data-test-id="x" />
+        </template>
+      );
+
+      // The `neutral` status shares the info glyph, as NotificationCard does.
       assert.dom('[data-test-id="d"] [data-test-icon="info"]').exists();
       assert.dom('[data-test-id="i"] [data-test-icon="info"]').exists();
       assert.dom('[data-test-id="s"] [data-test-icon="success"]').exists();
@@ -182,7 +210,7 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
     test('the icon block replaces the default glyph', async function (assert) {
       await render(
         <template>
-          <Alert @intent="success" @title="Saved">
+          <Alert @status="success" @title="Saved">
             <:icon><span data-test-id="custom-icon">*</span></:icon>
           </Alert>
         </template>
@@ -195,7 +223,7 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
     test('@hideIcon removes the icon entirely', async function (assert) {
       await render(
         <template>
-          <Alert @intent="danger" @title="Failed" @hideIcon={{true}} />
+          <Alert @status="danger" @title="Failed" @hideIcon={{true}} />
         </template>
       );
 
@@ -400,7 +428,7 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
     test('the actions block renders', async function (assert) {
       await render(
         <template>
-          <Alert @intent="danger" @title="Unable to connect">
+          <Alert @status="danger" @title="Unable to connect">
             <:actions><button
                 type="button"
                 data-test-id="retry"
@@ -475,10 +503,10 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       await render(
         <template>
           <Alert @title="Default" data-test-id="d" />
-          <Alert @intent="info" @title="Info" data-test-id="i" />
-          <Alert @intent="success" @title="Success" data-test-id="s" />
-          <Alert @intent="warning" @title="Warning" data-test-id="w" />
-          <Alert @intent="danger" @title="Danger" data-test-id="x" />
+          <Alert @status="primary" @title="Info" data-test-id="i" />
+          <Alert @status="success" @title="Success" data-test-id="s" />
+          <Alert @status="warning" @title="Warning" data-test-id="w" />
+          <Alert @status="danger" @title="Danger" data-test-id="x" />
         </template>
       );
 
@@ -489,17 +517,17 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       assert.dom('[data-test-id="x"]').hasAttribute('role', 'alert');
     });
 
-    test('@role overrides the intent-derived default', async function (assert) {
+    test('@role overrides the status-derived default', async function (assert) {
       await render(
         <template>
           <Alert
-            @intent="danger"
+            @status="danger"
             @title="Quiet"
             @role="status"
             data-test-id="quiet"
           />
           <Alert
-            @intent="info"
+            @status="primary"
             @title="Loud"
             @role="alert"
             data-test-id="loud"
@@ -515,7 +543,7 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       await render(
         <template>
           <Alert
-            @intent="danger"
+            @status="danger"
             @title="Static"
             @role="none"
             data-test-id="static"

@@ -55,7 +55,7 @@ export default class BasicModal extends Component {
           <Button @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @intent='primary'>
+          <Button @color='primary'>
             Confirm
           </Button>
         </m.Footer>
@@ -362,7 +362,7 @@ export default class ConfirmationDialog extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
-      <Button @intent='danger' @onPress={{this.openDialog}}>
+      <Button @color='danger' @onPress={{this.openDialog}}>
         Delete Item
       </Button>
 
@@ -390,7 +390,7 @@ export default class ConfirmationDialog extends Component {
 
             {{#if this.isDeleting}}
               <div class='flex items-center space-x-2'>
-                <Spinner @size='xs' @intent='danger' />
+                <Spinner @size='xs' @color='danger' />
                 <span class='text-sm'>Deleting...</span>
               </div>
             {{/if}}
@@ -401,7 +401,7 @@ export default class ConfirmationDialog extends Component {
             Cancel
           </Button>
           <Button
-            @intent='danger'
+            @color='danger'
             @onPress={{this.confirm}}
             disabled={{this.isDeleting}}
           >
@@ -568,7 +568,7 @@ export default class FormModal extends Component {
             Cancel
           </Button>
           <Button
-            @intent='primary'
+            @color='primary'
             @onPress={{this.handleSubmit}}
             disabled={{this.isSubmitDisabled}}
           >
@@ -769,7 +769,7 @@ export default class NestedModals extends Component {
                   <Button @onPress={{this.toggleThird}}>
                     Close This
                   </Button>
-                  <Button @intent='danger' @onPress={{this.closeAll}}>
+                  <Button @color='danger' @onPress={{this.closeAll}}>
                     Close All
                   </Button>
                 </m.Footer>
@@ -779,7 +779,7 @@ export default class NestedModals extends Component {
               <Button @onPress={{this.toggleSecond}}>
                 Close
               </Button>
-              <Button @intent='primary' @onPress={{this.toggleThird}}>
+              <Button @color='primary' @onPress={{this.toggleThird}}>
                 Open Third Modal
               </Button>
             </m.Footer>
@@ -790,7 +790,7 @@ export default class NestedModals extends Component {
           <Button @onPress={{this.toggleFirst}}>
             Close
           </Button>
-          <Button @intent='primary' @onPress={{this.toggleSecond}}>
+          <Button @color='primary' @onPress={{this.toggleSecond}}>
             Open Second Modal
           </Button>
         </m.Footer>

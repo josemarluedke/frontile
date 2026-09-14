@@ -447,8 +447,29 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   /**
-   * Resolved chip appearance: `@chip` wins, then the Select's own `@intent`,
-   * then chip defaults tuned for sitting inside a field.
+   * Resolved once (`@cached`) and forwarded to the internal `Listbox` as
+   * `@color` only -- never `@intent` as well, which would make the inner
+   * `Listbox` raise its own deprecation for the same usage.
+   */
+  @cached
+  get color() {
+    return renamedArgValue(
+      this.args.color,
+      this.args.intent,
+      { default: 'neutral' } as const,
+      {
+        component: 'Select',
+        from: 'intent',
+        to: 'color',
+        id: 'frontile.select.intent'
+      }
+    );
+  }
+
+  /**
+   * Resolved chip appearance: `@chip` wins, then the Select's own `@color`
+   * (or deprecated `@intent`), then chip defaults tuned for sitting inside a
+   * field.
    */
   get chipOptions(): ResolvedSelectChipOptions {
     const chip =
@@ -458,7 +479,15 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       // it a default would make Chip's deprecation fire on every chip render.
       variant: chip?.variant ?? (chip?.appearance ? undefined : 'soft'),
       appearance: chip?.appearance,
-      intent: chip?.intent ?? this.args.intent ?? 'default',
+      // `intent` is passed through only when the consumer (or Select's own
+      // deprecated `@intent`) actually set it. Defaulting it would fire
+      // Chip's `intent` deprecation on every chip render, for a prop nobody
+      // wrote.
+      color:
+        chip?.color ??
+        this.args.color ??
+        ((chip?.intent ?? this.args.intent) ? undefined : 'neutral'),
+      intent: chip?.intent ?? this.args.intent,
       size: chip?.size ?? 'sm',
       radius: chip?.radius,
       withDot: chip?.withDot ?? false
@@ -624,9 +653,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   get classes() {
     const { select } = useStyles();
     // Referenced here, on the always-rendered root, so `@appearance`/
-    // `@variant` raises its deprecation regardless of whether the popover
-    // content (and so the internal `Listbox`) is currently mounted.
+    // `@variant` (and `@intent`/`@color`) raises its deprecation regardless
+    // of whether the popover content (and so the internal `Listbox`) is
+    // currently mounted.
     void this.variant;
+    void this.color;
     return select({
       size: this.args.inputSize,
       hasChips: this.showChips,
@@ -905,7 +936,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @allowEmpty={{@allowEmpty}}
               @variant={{this.variant}}
               @disabledKeys={{@disabledKeys}}
-              @intent={{@intent}}
+              @color={{this.color}}
               @isKeyboardEventsEnabled={{true}}
               @onAction={{this.onAction}}
               @onSelectionChange={{this.onSelectionChange}}
@@ -924,7 +955,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   <l.Item
                     @key={{l.key}}
                     @variant={{this.variant}}
-                    @intent={{@intent}}
+                    @color={{this.color}}
                   >
                     {{l.label}}
                   </l.Item>

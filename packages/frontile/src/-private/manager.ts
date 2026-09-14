@@ -12,7 +12,7 @@ import type {
   DefaultConfig,
   NotificationOptions,
   NotificationContent,
-  NotificationIntent,
+  NotificationStatus,
   PromiseMessage,
   PromiseNotificationOptions
 } from './types';
@@ -118,7 +118,7 @@ export default class NotificationsManager {
 
     const settle = (
       content: NotificationContent,
-      intent: NotificationIntent
+      status: NotificationStatus
     ) => {
       // The user may have dismissed the toast before the promise settled; in
       // that case there is nothing left to update.
@@ -135,7 +135,7 @@ export default class NotificationsManager {
         // `description` key at all) would leave the loading phase's stale
         // description on screen instead of clearing it.
         description: content.description ?? '',
-        intent,
+        status,
         allowClosing: true,
         isLoading: false
       });
