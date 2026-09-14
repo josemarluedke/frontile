@@ -4,9 +4,9 @@ import DocfyHeader from '../components/docfy/docfy-header';
 import DocfyRouteLoadingBar from '../components/docfy/docfy-route-loading-bar';
 import DocfyJumpTo from '../components/docfy/docfy-jump-to';
 import VersionDropdown from '../components/version-dropdown';
+import DocfyPrimaryNav from '../components/docfy/docfy-primary-nav';
 import { VisuallyHidden } from 'frontile';
 import { PortalTarget } from 'frontile';
-import { DocfyLink } from '@docfy/ember';
 
 <template>
   {{pageTitle "Frontile"}}
@@ -17,29 +17,23 @@ import { DocfyLink } from '@docfy/ember';
       navigation the reader just asked for, so it should stay visible even over
       an open modal or drawer. }}
   <DocfyRouteLoadingBar />
-  <DocfyHeader
-    @githubUrl="https://github.com/josemarluedke/frontile"
-    class="max-w-full overflow-x-auto"
-  >
+  <DocfyHeader @githubUrl="https://github.com/josemarluedke/frontile">
     <:title>
       <VisuallyHidden>Frontile</VisuallyHidden>
       <Logo class="h-7" @color="#076873" />
     </:title>
-    <:left>
+
+    <:brand>
+      <VersionDropdown />
+    </:brand>
+
+    <:center>
       <DocfyJumpTo />
-    </:left>
+    </:center>
 
-    <:right as |linkClass linkClassActive|>
-      <DocfyLink
-        @to="/docs/get-started"
-        class="{{linkClass}} hidden sm:block"
-        @activeClass={{linkClassActive}}
-      >
-        Docs
-      </DocfyLink>
-
-      <VersionDropdown class="hidden sm:block" />
-    </:right>
+    <:nav as |linkClass|>
+      <DocfyPrimaryNav @itemClass={{linkClass}} />
+    </:nav>
   </DocfyHeader>
 
   {{outlet}}

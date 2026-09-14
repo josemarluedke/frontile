@@ -42,15 +42,17 @@
         const prefersDarkFromMQ = mql.matches;
         const persistedPreference = localStorage.getItem('prefersMode');
 
-        let colorMode = 'light';
+        // 'system' is a real, storable choice, not the absence of one: it
+        // means "keep following the OS" and must resolve through the media
+        // query here, before first paint, exactly as a missing key does.
+        const isExplicit =
+          persistedPreference === 'light' || persistedPreference === 'dark';
 
-        const hasUsedToggle = typeof persistedPreference === 'string';
-
-        if (hasUsedToggle) {
-          colorMode = persistedPreference;
-        } else {
-          colorMode = prefersDarkFromMQ ? 'dark' : 'light';
-        }
+        const colorMode = isExplicit
+          ? persistedPreference
+          : prefersDarkFromMQ
+            ? 'dark'
+            : 'light';
 
         const root = document.documentElement;
 
