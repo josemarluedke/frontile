@@ -3711,4 +3711,24 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert.strictEqual(ownParts(root, 'placeholder').length, 1);
   });
+
+  test('the clear button raises no deprecation', async function (assert) {
+    // The clear button is a CloseButton, whose `transparent`/`subtle` variant
+    // values are deprecated in favour of `ghost`/`soft`. Nothing else catches
+    // the old spelling: it still renders, and renders identically.
+    const { ids } = trackDeprecations();
+
+    await render(
+      <template>
+        <Select @selectedKey="item-1" @isClearable={{true}} as |l|>
+          <l.Item @key="item-1">Item 1</l.Item>
+        </Select>
+      </template>
+    );
+
+    assert
+      .dom('[data-component="close-button"]')
+      .exists('the clear button renders');
+    assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
+  });
 });

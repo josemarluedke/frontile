@@ -23,6 +23,45 @@ module(
   function (hooks) {
     setupRenderingTest(hooks);
 
+    test('autofocus takes focus without scrolling the page', async function (assert) {
+      // A Calendar rendered inside a popover is focused on insert, before
+      // floating-ui has positioned the portaled content. Focusing without
+      // `preventScroll` makes the browser scroll to wherever the unpositioned
+      // element currently sits -- in practice the end of the document, which
+      // yanks the page to the bottom the moment a date picker is opened.
+      const calls: (boolean | undefined)[] = [];
+      const original = HTMLElement.prototype.focus;
+
+      HTMLElement.prototype.focus = function (options?: {
+        preventScroll?: boolean;
+      }) {
+        if (this.getAttribute('data-part') === 'day') {
+          calls.push(options?.preventScroll);
+        }
+        return original.call(this, options);
+      };
+
+      try {
+        await render(
+          <template>
+            <Calendar
+              @defaultMonth={{sep2026}}
+              @locale="en-US"
+              @autofocus={{true}}
+            />
+          </template>
+        );
+      } finally {
+        HTMLElement.prototype.focus = original;
+      }
+
+      assert.strictEqual(calls.length, 1, 'autofocus focused exactly one day');
+      assert.true(calls[0], 'it asked the browser not to scroll');
+      assert
+        .dom('[data-part="day"][tabindex="0"]')
+        .isFocused('focus still landed');
+    });
+
     test('it renders a month as an accessible grid', async function (assert) {
       await render(
         <template>

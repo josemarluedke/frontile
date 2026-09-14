@@ -269,7 +269,7 @@ class Input extends Component<InputSignature> {
             {{#if this.isClearable}}
               <CloseButton
                 @title="Clear"
-                @variant="subtle"
+                @variant="soft"
                 @size="xs"
                 @onPress={{this.clearValue}}
               />

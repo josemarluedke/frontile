@@ -4,6 +4,7 @@ import { render, fillIn, find, settled, click } from '@ember/test-helpers';
 
 import { Form, Input } from 'frontile';
 import { cell } from 'ember-resources';
+import { trackDeprecations } from '../../../helpers/deprecations';
 
 module('Integration | Component | @frontile/forms/Input', function (hooks) {
   setupRenderingTest(hooks);
@@ -471,5 +472,23 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
     // User can change the value and it persists
     await fillIn('[data-test-input]', 'Changed by user');
     assert.dom('[data-test-input]').hasValue('Changed by user');
+  });
+
+  test('the clear button raises no deprecation', async function (assert) {
+    // The clear button is a CloseButton, whose `transparent`/`subtle` variant
+    // values are deprecated in favour of `ghost`/`soft`. Nothing else catches
+    // the old spelling: it still renders, and still renders the same.
+    const { ids } = trackDeprecations();
+
+    await render(
+      <template>
+        <Input @label="Name" @value="something" @isClearable={{true}} />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="close-button"]')
+      .exists('the clear button renders');
+    assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
   });
 });
