@@ -2,11 +2,11 @@ import Component from '@glimmer/component';
 import {
   Avatar,
   Button,
-  ButtonGroup,
   Chip,
   Divider,
   Field,
   ProgressBar,
+  SegmentedControl,
   Table,
   type ColumnConfig,
   type SortItem,
@@ -186,11 +186,16 @@ export default class AppSpecimen extends Component {
           </Field>
         </div>
 
-        <ButtonGroup @size="xs" as |g|>
-          <g.ToggleButton @isSelected={{true}}>All</g.ToggleButton>
-          <g.ToggleButton>Employees</g.ToggleButton>
-          <g.ToggleButton>Contractors</g.ToggleButton>
-        </ButtonGroup>
+        <SegmentedControl
+          @defaultValue="all"
+          @size="sm"
+          aria-label="Filter members"
+          as |Ctl|
+        >
+          <Ctl.Item @value="all">All</Ctl.Item>
+          <Ctl.Item @value="employees">Employees</Ctl.Item>
+          <Ctl.Item @value="contractors">Contractors</Ctl.Item>
+        </SegmentedControl>
 
         <Button @variant="outline" @size="xs" class="ml-auto">
           <FilterIcon />
