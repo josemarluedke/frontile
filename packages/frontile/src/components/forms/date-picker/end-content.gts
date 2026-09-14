@@ -44,7 +44,7 @@ const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
     {{#if @isClearable}}
       <CloseButton
         @title="Clear"
-        @variant="subtle"
+        @variant="soft"
         @size="xs"
         @class={{@classes.clearButton class=@userClasses.clearButton}}
         data-part="clear-button"

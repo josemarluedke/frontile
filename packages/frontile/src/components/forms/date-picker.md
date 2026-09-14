@@ -158,15 +158,15 @@ export default class DatePickerPresets extends Component {
         <:footer as |f|>
           {{#each this.presets as |preset|}}
             <Button
-              @appearance='soft'
-              @intent='primary'
+              @variant='subtle'
+              @color='primary'
               @size='xs'
               @onPress={{fn f.setValue preset.date}}
             >{{preset.label}}</Button>
           {{/each}}
 
           <Button
-            @appearance='minimal'
+            @variant='plain'
             @size='xs'
             @class='ml-auto'
             @onPress={{f.close}}

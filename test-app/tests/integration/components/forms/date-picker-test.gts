@@ -8,6 +8,7 @@ import {
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
+import { trackDeprecations } from '../../../helpers/deprecations';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { DatePicker, Form } from 'frontile';
@@ -876,6 +877,30 @@ module(
         filled.getBoundingClientRect().height,
         'an empty field does not collapse'
       );
+    });
+    test('raises no deprecations', async function (assert) {
+      // DatePicker is new in 0.18, so it has nothing to be deprecated from.
+      // Any id here means it is calling a sibling through a renamed argument
+      // or a renamed value -- the CloseButton in its end-content cluster and
+      // the Button in its docs demo both have deprecated spellings that still
+      // work, so nothing else would catch it.
+      const { ids } = trackDeprecations();
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isClearable={{true}}
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
     });
   }
 );
