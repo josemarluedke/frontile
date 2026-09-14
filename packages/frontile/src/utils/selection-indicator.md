@@ -121,7 +121,7 @@ Note the two rules the rest of this page argues for. The gate is
 indicator — and the bar is positioned with `left` / `width` from
 `--fr-si-x` / `--fr-si-width`, never with `transform`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';

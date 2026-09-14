@@ -87,7 +87,7 @@ Emphasis text for numerics, prices, and metrics. Shares the Header size, trackin
 
 Standard body text with spacious line height optimized for readability.
 
-```gts preview
+```gts preview collapsible
 <template>
   <div class='flex flex-col gap-6'>
     <p class='font-body text-body-3xl'>

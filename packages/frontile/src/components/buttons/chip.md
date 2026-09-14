@@ -47,7 +47,7 @@ import { Chip } from 'frontile';
 Every color is available in every variant. The label on each row is the
 `@variant` value; the chip labels are the `@color` values.
 
-```gts preview
+```gts preview collapsible
 import { Chip } from 'frontile';
 import { array } from '@ember/helper';
 
@@ -156,7 +156,7 @@ import { array } from '@ember/helper';
 `@withDot` adds a small color-tinted dot before the content — useful when the
 chip stands for a status and the color needs to read at a glance.
 
-```gts preview
+```gts preview collapsible
 import { Chip } from 'frontile';
 import { array } from '@ember/helper';
 
@@ -194,7 +194,7 @@ const colors = [
 
 Passing `@onClose` makes the close button visible.
 
-```gts preview
+```gts preview collapsible
 import { Chip } from 'frontile';
 import { array, concat } from '@ember/helper';
 
@@ -237,7 +237,7 @@ const noop = (): void => {};
 
 ### Dot and Close Button Together
 
-```gts preview
+```gts preview collapsible
 import { Chip } from 'frontile';
 import { array, concat } from '@ember/helper';
 
@@ -332,7 +332,7 @@ them with no route at all is worse than the extra tab stops.
 `@isDisabled` dims the chip and disables its close button, so the value can no
 longer be removed.
 
-```gts preview
+```gts preview collapsible
 import { Chip } from 'frontile';
 import { array } from '@ember/helper';
 
@@ -413,7 +413,7 @@ When chips represent a set that changes, the container should say so, or removal
 happen silently for anyone not watching the screen. A `role='list'` wrapper gives
 the set a size and position; an `aria-live` region announces the change:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { concat, fn } from '@ember/helper';

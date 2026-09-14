@@ -20,7 +20,7 @@ import { Form } from 'frontile';
 Give every control a `@name` and Form collects it. `@onSubmit` is the only required argument;
 it receives the serialized data and the `SubmitEvent`, with `preventDefault()` already applied.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Button, Form, Input, type FormResultData } from 'frontile';
@@ -69,7 +69,7 @@ Without `@onChange` the form is uncontrolled. `@data` seeds the initial values, 
 current values internally, and you only see them in `@onSubmit`. Both patterns support
 `@schema` and `@validate`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, Input, Select, type FormResultData } from 'frontile';
@@ -153,7 +153,7 @@ Every Frontile form component participates, as do plain HTML form elements. Data
 the markup: text inputs give strings, checkboxes and switches booleans, multi-selects arrays,
 file inputs `File` objects.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import {
@@ -304,7 +304,7 @@ schema can't express (comparing two fields, for instance) and returns Standard S
 Built-in validation requires the yielded `Field` component — it is what binds a field's errors
 to its control. See [Field](field) for its own arguments and more examples.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
@@ -557,7 +557,7 @@ Two limits: the field-level values (`change`, `blur`, `input`) need
 covers only the keys present in that initial data, so a field you never seeded is never
 reported dirty. Submitting clears the set.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, Input, Checkbox, type FormResultData } from 'frontile';
@@ -636,7 +636,7 @@ export default class DirtyTrackingForm extends Component {
 `Field` is unnecessary when you are not using built-in validation. Pass `@errors` to each
 control yourself and you keep full control of when and how validation runs.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, Input, Checkbox, type FormResultData } from 'frontile';
@@ -844,7 +844,7 @@ type error, and no per-index issue is ever produced. Validate collections with `
 instead, reading the indexed paths off the object you are given. The same applies to the data
 handed to `@onChange` and `@onSubmit`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -946,7 +946,7 @@ export default class NestedForm extends Component {
 
 Mirror the data shape in the schema and issues land on the right control.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData, type FormErrors } from 'frontile';
@@ -1086,7 +1086,7 @@ export default class ValidatedNestedForm extends Component {
 
 Flat and nested names can sit side by side in one form.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -1165,7 +1165,7 @@ errors, and empties the dirty set. In a controlled form it reports the initial d
 `@onChange`; in an uncontrolled one it updates the internal state. With no `@data` at all it
 just clears the fields.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -1238,7 +1238,7 @@ export default class ResetForm extends Component {
 
 Errors already on screen are cleared along with the values.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData, type FormErrors } from 'frontile';
@@ -1329,7 +1329,7 @@ export default class ResetValidationForm extends Component {
 submission is in flight, in read-only views, or for steps of a wizard that are already done. It
 reaches `Field` children only; controls used without `Field` manage their own `disabled`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';

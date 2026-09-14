@@ -52,7 +52,7 @@ The component is controlled. `@selectedKey` is what the user sees selected, so i
 
 Objects work too. The key comes from `key` or `id`, and the label from `label`, `value`, `name` or `title`. Anything else needs the `:item` block, which yields the raw item along with an `Item` component to render it with.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { NativeSelect } from 'frontile';

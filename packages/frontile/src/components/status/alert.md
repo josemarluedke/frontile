@@ -169,7 +169,7 @@ the row, so the centred text stays put whether or not the alert is
 dismissible — two banners, one dismissible and one not, still line up with
 each other.
 
-```gts preview
+```gts preview collapsible
 import { Alert, Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';

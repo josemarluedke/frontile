@@ -20,7 +20,7 @@ import { Listbox } from 'frontile';
 
 A simple listbox with single selection mode.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -70,7 +70,7 @@ export default class BasicListbox extends Component {
 
 Enable users to select multiple items from the list.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -123,7 +123,7 @@ Define items explicitly with icons, descriptions, and shortcuts.
 
 > **Note:** The `@shortcut` argument is for display purposes only. You'll need to implement actual keyboard shortcut handling in your application.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Listbox } from 'frontile';
@@ -193,7 +193,7 @@ export default class StaticItems extends Component {
 
 Use selection mode "none" for action menus where items trigger actions rather than being selected.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Listbox } from 'frontile';
@@ -231,7 +231,7 @@ export default class ActionMenu extends Component {
 
 Control the visual style with the `@variant` argument.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -326,7 +326,7 @@ export default class IntentColors extends Component {
 
 Prevent interaction with specific items using `@disabledKeys`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -369,7 +369,7 @@ export default class DisabledItems extends Component {
 
 Render complex objects with custom templates.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -483,7 +483,7 @@ export default class WithDividers extends Component {
 
 Control whether users can deselect all items.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';

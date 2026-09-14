@@ -55,7 +55,7 @@ import { StarIcon } from 'site/components/icons';
 
 Here are all available icon sizes with visual examples:
 
-```gts preview
+```gts preview collapsible
 import { CheckIcon } from 'site/components/icons';
 
 <template>

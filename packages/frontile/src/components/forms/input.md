@@ -185,7 +185,7 @@ export default class ClearableInput extends Component {
 
 The Input component integrates with form validation by displaying error messages and updating ARIA attributes accordingly. This example demonstrates validation using Valibot schema with the Form/Field components.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData, type FormErrors } from 'frontile';
@@ -259,7 +259,7 @@ export default class ValidatedInput extends Component {
 
 The Input component supports various optional configurations for sizing, states, and styling.
 
-```gts preview
+```gts preview collapsible
 import { Input } from 'frontile';
 import { hash } from '@ember/helper';
 

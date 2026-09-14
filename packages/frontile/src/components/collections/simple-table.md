@@ -27,7 +27,7 @@ import { SimpleTable } from 'frontile';
 
 SimpleTable uses block form composition where you manually define the table structure:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 
@@ -74,7 +74,7 @@ from data for you.
 
 Create complex header layouts with custom content:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 import { Button, Chip } from 'frontile';
@@ -162,7 +162,7 @@ export default class DemoComponent extends Component {
 
 SimpleTable excels at complex cell layouts and interactive content:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 import { Button, Chip } from 'frontile';
@@ -250,7 +250,7 @@ export default class DemoComponent extends Component {
 
 Control table spacing with size variants:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 
@@ -326,7 +326,7 @@ export default class DemoComponent extends Component {
 
 Control column sizing behavior:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 
@@ -403,7 +403,7 @@ export default class DemoComponent extends Component {
 
 Enable alternating row colors for better readability:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 import { Chip } from 'frontile';
@@ -467,7 +467,7 @@ export default class DemoComponent extends Component {
 
 Apply custom styling to specific table elements:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 import { Chip } from 'frontile';
@@ -536,7 +536,7 @@ export default class DemoComponent extends Component {
 
 Add footers for summaries and totals:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 
@@ -601,7 +601,7 @@ export default class DemoComponent extends Component {
 
 The SimpleTable component supports loading states with different color variants to indicate when data is being fetched or processed. Loading states provide visual feedback to users during async operations.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 import { Select } from 'frontile';

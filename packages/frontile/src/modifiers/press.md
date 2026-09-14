@@ -25,7 +25,7 @@ events, so calling `element.click()` programmatically does not trigger
 
 ## Usage
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { press, type PressEvent } from 'frontile';

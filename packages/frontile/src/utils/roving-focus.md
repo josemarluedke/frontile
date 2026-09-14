@@ -166,7 +166,7 @@ Arrow between the options below — focus and selection move together, `Home`
 and `End` jump to the ends, the disabled option is skipped, and `Tab` leaves
 the group in one press rather than stepping through all four.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { rovingFocus } from 'frontile';

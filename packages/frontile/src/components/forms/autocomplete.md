@@ -57,7 +57,7 @@ const countries = [
 
 Pass `@selectedKey` and update it in `@onSelectionChange` to maintain two-way binding, the same data flow as `Select`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Autocomplete } from 'frontile';
@@ -100,7 +100,7 @@ Pass `@onSearch` to load options from an API as the user types. The component de
 
 This example simulates a request with network latency:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Autocomplete } from 'frontile';
@@ -168,7 +168,7 @@ Pass `@searchMessage` (or a `:searchMessage` block for rich content) to prompt u
 
 If you want full control over filtering — for example, filtering server-side while controlling the request lifecycle yourself — pass `@disableFiltering={{true}}` and update `@items` from `@onInputChange`:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Autocomplete } from 'frontile';
@@ -237,7 +237,7 @@ const startsWith = (itemValue: string, inputValue: string) =>
 
 Use the `:item` block to render richer options. Objects with `key` and `label` properties work out of the box.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Autocomplete } from 'frontile';

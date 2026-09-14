@@ -21,7 +21,7 @@ import { Drawer } from 'frontile';
 
 A simple drawer that slides in from the right side.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -76,7 +76,7 @@ The header API is identical in both variants: `@title`/`@description` and a bloc
 `h.Icon`, `h.Title` and `h.Description` work the same way regardless of which variant is
 selected.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -132,7 +132,7 @@ export default class DrawerVariants extends Component {
 
 The same switch works with the block form of `<d.Header>`, including an icon:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -232,7 +232,7 @@ export default class DrawerHeaderArgs extends Component {
 }
 ```
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -275,7 +275,7 @@ export default class DrawerHeaderBlock extends Component {
 
 Use the `:actions` named block to put controls beside the close button.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -342,7 +342,7 @@ Using `:actions` means your main header content moves into an explicit `:default
 render between them becomes a sibling in the drawer's column. The drawer applies no
 padding of its own, so a full-bleed element placed there spans the panel edge to edge.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -398,7 +398,7 @@ export default class DrawerWithBanner extends Component {
 
 Drawers can slide in from any edge of the screen.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -482,7 +482,7 @@ export default class DrawerPlacements extends Component {
 
 Control the drawer size with the `@size` argument.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -590,7 +590,7 @@ handle's side dismisses, while scrolling through a longer body still scrolls nor
 of being hijacked. This distinction is decided a few pixels into the gesture, not at the very
 first touch, so tapping or starting to scroll never has a false start.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -640,7 +640,7 @@ export default class DrawerDragBottom extends Component {
 }
 ```
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -682,7 +682,7 @@ export default class DrawerDragRight extends Component {
 
 Control the appearance of the backdrop behind the drawer.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -771,7 +771,7 @@ add `data-part="close-button"` to it explicitly — Drawer cannot inject that
 attribute into markup you write in your own template, so it is on you to
 carry it forward for anatomy consumers styling or querying by `data-part`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -858,7 +858,7 @@ export default class DrawerCloseButton extends Component {
 
 A drawer that cannot be closed by normal means.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -980,7 +980,7 @@ no Header falls back to a standalone close button in its top-right corner.
 
 A practical example showing a form inside a drawer.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -1079,7 +1079,7 @@ export default class DrawerForm extends Component {
 
 A drawer used for navigation with a list of links.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';

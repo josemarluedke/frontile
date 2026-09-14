@@ -37,7 +37,7 @@ import { Switch } from 'frontile';
 
 The recommended pattern for using Switch is with Form and Field components, which provides automatic data binding and state management without manual onChange handlers.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -82,7 +82,7 @@ export default class ControlledSwitch extends Component {
 
 The Switch component integrates with the Form validation system, providing automatic error display and field-level validation. This example demonstrates using Valibot schema validation with the Form/Field components.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -240,7 +240,7 @@ export default class CustomContentSwitchExample extends Component {
 
 The Switch component supports various optional configurations for sizing, visual styling, states, and custom classes.
 
-```gts preview
+```gts preview collapsible
 import { Switch } from 'frontile';
 import { hash } from '@ember/helper';
 

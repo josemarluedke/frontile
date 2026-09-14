@@ -78,7 +78,7 @@ export default class ControlledRadioGroup extends Component {
 
 RadioGroup integrates seamlessly with Form validation through Valibot schemas.  RadioGroup supports field-level validation that runs on change events based on the `@validateOn` setting, providing feedback as users make selections.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
@@ -170,7 +170,7 @@ export default class FormValidation extends Component {
 
 The RadioGroup component supports various optional configurations for layout, sizing, descriptions, and custom styling.
 
-```gts preview
+```gts preview collapsible
 import { RadioGroup } from 'frontile';
 import { hash } from '@ember/helper';
 

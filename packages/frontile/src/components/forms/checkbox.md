@@ -68,7 +68,7 @@ export default class ControlledCheckbox extends Component {
 
 When you need multiple independent checkboxes, each should have a unique name and state.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Checkbox } from 'frontile';
@@ -143,7 +143,7 @@ export default class IndependentCheckboxes extends Component {
 
 Control the size of checkboxes using the `@size` argument.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Checkbox } from 'frontile';
@@ -236,7 +236,7 @@ export default class DisabledCheckbox extends Component {
 
 The indeterminate state represents a "partially checked" state, commonly used for "select all" checkboxes when only some child items are selected. Since HTML doesn't support setting indeterminate via an attribute, you need to use a modifier to set it via JavaScript.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
@@ -308,7 +308,7 @@ export default class IndeterminateCheckbox extends Component {
 
 Add helpful description text that appears below the checkbox label.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Checkbox } from 'frontile';
@@ -353,7 +353,7 @@ export default class CheckboxWithDescription extends Component {
 
 The Checkbox component integrates with the Form validation system, providing automatic error display and field-level validation. This example demonstrates using a required checkbox with the Form/Field components.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -439,7 +439,7 @@ Create a horizontal layout using CSS Grid or Flexbox.
 
 > **Note:** For horizontal layouts of related checkboxes, consider using `CheckboxGroup` with `@orientation='horizontal'`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Checkbox } from 'frontile';
@@ -498,7 +498,7 @@ export default class HorizontalCheckboxes extends Component {
 
 Here's a comprehensive example showing Checkbox components integrated with the Form validation system. This example demonstrates a registration form with an Input field, a required checkbox, and an optional checkbox.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
