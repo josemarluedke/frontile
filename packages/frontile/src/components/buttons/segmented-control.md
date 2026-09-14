@@ -98,7 +98,7 @@ meaning rather than the control as a whole. `default` keeps the neutral raised
 pill; the rest tint it and switch the selected label to the matching contrast
 ink.
 
-```gts preview
+```gts preview collapsible
 import { SegmentedControl } from 'frontile';
 
 <template>
@@ -179,7 +179,7 @@ import { SegmentedControl } from 'frontile';
 
 ## Sizes
 
-```gts preview
+```gts preview collapsible
 import { SegmentedControl } from 'frontile';
 
 <template>
@@ -407,7 +407,7 @@ object value submits as the literal `[object Object]`, and a `null` as
 with string (or otherwise string-round-trippable) item values, and reach for
 button mode when the values are objects.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';

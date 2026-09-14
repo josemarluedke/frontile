@@ -28,7 +28,7 @@ import { Form } from 'frontile';
 
 The Field component is yielded from the Form component when validation is configured. It automatically passes validation errors to the appropriate form components.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
@@ -108,7 +108,7 @@ export default class BasicFieldExample extends Component {
 
 The Field component yields bound versions of all form components, each automatically receiving the correct errors for its field name.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -208,7 +208,7 @@ export default class FieldComponentTypes extends Component {
 
 Use custom validation functions alongside Field components for complex validation logic.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -290,7 +290,7 @@ export default class CustomValidationField extends Component {
 
 **Note on Radio Components:** When using individual `field.Radio` components (not within `field.RadioGroup`), you must manually specify the `@value` prop on each radio to identify it uniquely (e.g., `@value="junior"`, `@value="senior"`). The Field component automatically binds the form data to the `@checkedValue` parameter to control which radio is selected. For most use cases, prefer using `field.RadioGroup` which handles this binding automatically.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -365,7 +365,7 @@ export default class FieldWithGroups extends Component {
 
 A comprehensive example showing Field components in a real-world scenario.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';

@@ -77,23 +77,12 @@
  * Copy
  *
  * Anchored to the card, not the header, because a block with no `title=` has
- * no header to sit in. It stays visible on keyboard focus and on touch, where
- * there is no hover to reveal it.
+ * no header to sit in. Keep it visible at rest so the affordance is discoverable
+ * with a pointer, keyboard, or touch.
  * ------------------------------------------------------------------ */
 
 .docfy-code-block__copy {
-  @apply rounded-md border border-neutral-soft bg-surface-app px-2 py-1 font-mono text-xs text-neutral-firm opacity-0 transition;
-}
-
-.docfy-code-block:hover .docfy-code-block__copy,
-.docfy-code-block__copy:focus-visible {
-  @apply opacity-100;
-}
-
-@media (hover: none) {
-  .docfy-code-block__copy {
-    @apply opacity-100;
-  }
+  @apply z-10 rounded-md border border-neutral-soft bg-surface-app px-2 py-1 font-mono text-xs text-neutral-firm transition;
 }
 
 .docfy-code-block__copy:hover {

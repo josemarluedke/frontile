@@ -63,7 +63,7 @@ const options = ['Option 1', 'Option 2', 'Option 3'];
 
 When working with forms, the Form component automatically manages the selected value and provides data binding:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -115,7 +115,7 @@ inside the control at that point, and `@onBlur` does not fire; it fires on the n
 interaction, once focus leaves. Blur validation on a multiple Select runs one
 interaction later than on a single one.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -236,7 +236,7 @@ export default class SelectFormValidation extends Component {
 
 Enable filtering so users can quickly search through the options. Filtering only applies when options are provided via the `@items` argument. Options are ranked by relevance, so the closest match is listed first; pass `@filter` to score or match them yourself. The Select component works seamlessly with Form/Field data binding while providing search functionality:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -304,7 +304,7 @@ Customize the display of each option by yielding the item to a block. This is us
 
 > **Note:** This example uses direct component state management (`@selectedKey` and `@onSelectionChange`) to focus on demonstrating the custom rendering feature. For form-integrated examples with validation and automatic data binding, see the "Form Validation" section.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Select } from 'frontile';
@@ -402,7 +402,7 @@ a compact version of it.
 > the block does not render there: a filterable Select still shows the selection as plain
 > text inside the input. The chips beside that input do use the block.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Select } from 'frontile';
@@ -535,7 +535,7 @@ You can also define options directly inside the component using block syntax (re
 
 > **Note:** This example uses direct state management to demonstrate the declarative items feature. For most form use cases, prefer using `@items` with Form/Field as shown in earlier examples.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
@@ -651,7 +651,7 @@ This example demonstrates how to use the `:startContent`, `:endContent`, and `:e
 
 > **Note:** This example focuses on demonstrating custom content blocks. These blocks also work with Form/Field integration.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Select } from 'frontile';
@@ -740,7 +740,7 @@ Every selection renders as a removable [Chip](../buttons/chip) beside the trigge
 default, with no extra configuration. Use `@selectedItemsDisplay='text'` to opt back out to a
 comma-joined string.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Select } from 'frontile';
@@ -794,7 +794,7 @@ at a time.
 `@allowEmpty`, so a clearable Select can always be emptied even though its last chip has no
 close button.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Select } from 'frontile';
@@ -849,7 +849,7 @@ export default class RemovableChipsSelect extends Component {
 listbox options and the chips together and you only set `@chip.color` when you want them to
 differ.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
@@ -950,7 +950,7 @@ Pressing `Backspace` while the filter is empty removes the last chip. With text 
 filter, `Backspace` edits the text as usual, and the final chip is still protected by
 `@allowEmpty`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Select } from 'frontile';
@@ -998,7 +998,7 @@ Three `@classes` keys cover the chips: `chipsField` is the field shell that wrap
 and the trigger together, `chipsContainer` is the flex row holding the chips, and `chip` is
 merged onto every individual chip.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';

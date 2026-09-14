@@ -25,7 +25,7 @@ import { Collapsible } from 'frontile';
 
 `@isOpen` is required and the component is fully controlled: keep the state in the parent and render your own trigger. Expanding animates height and opacity over `0.4s`, collapsing over `0.2s`; once expanded the height is set back to `auto` so content can keep growing.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Collapsible, Button } from 'frontile';
@@ -63,7 +63,7 @@ export default class BasicCollapsible extends Component {
 
 `@initialHeight` keeps part of the content visible while collapsed — the "Read more" pattern. Opacity stays at `1` instead of fading out, and only the height animates. Include the unit in the value (`80px`, `5rem`) — a bare number isn't a valid CSS height and is ignored.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Collapsible, Button } from 'frontile';
@@ -106,7 +106,7 @@ export default class PreviewCollapsible extends Component {
 
 Passing `@isOpen={{true}}` on the first render shows the content immediately, with no opening animation. Closing it afterwards animates as usual.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Collapsible, Button } from 'frontile';
@@ -153,7 +153,7 @@ export default class InitiallyOpen extends Component {
 
 A Collapsible can contain others. The outer one measures its content when it opens, so a nested panel that expands later grows the outer panel with it.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { fn } from '@ember/helper';

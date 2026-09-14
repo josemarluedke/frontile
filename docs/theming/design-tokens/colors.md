@@ -82,7 +82,7 @@ Background colors with automatic text colors:
 
 **Usage Examples:**
 
-```gts preview
+```gts preview collapsible
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Filled Button }}

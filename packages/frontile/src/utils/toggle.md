@@ -55,7 +55,7 @@ state.toggle(true); // Sets the state to true.
 
 Below is an example of a component that uses toggleState:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { toggleState } from 'frontile';

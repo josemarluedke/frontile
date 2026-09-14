@@ -27,7 +27,7 @@ import { ProgressBar } from 'frontile';
 
 ## ProgressBar Colors
 
-```gts preview
+```gts preview collapsible
 import { ProgressBar } from 'frontile';
 
 <template>
@@ -107,7 +107,7 @@ import { ProgressBar } from 'frontile';
 
 ## ProgressBar Radius
 
-```gts preview
+```gts preview collapsible
 import { ProgressBar } from 'frontile';
 
 <template>

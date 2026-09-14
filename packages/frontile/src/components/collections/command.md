@@ -21,7 +21,7 @@ The usual form is a dialog, opened from a button or from a keyboard shortcut any
 page. `mod` is Cmd on Apple platforms and Ctrl elsewhere — press it now. Pass an array to
 accept several, e.g. `@shortcut={{array "/" "mod+k"}}`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
@@ -327,7 +327,7 @@ By default groups are ordered by their best-scoring member, so the closest match
 top. `@groups` pins the groups you name to the top, in that order — anything not named still
 renders after them, so pinning a "Recent" section cannot hide search results.
 
-```gts preview
+```gts preview collapsible
 import { Command } from 'frontile';
 import { array } from '@ember/helper';
 
@@ -435,7 +435,7 @@ overwrite a newer one. Built-in filtering is disabled, since the server did the 
 Before anything is typed an async palette has nothing to show and nothing to report, so it
 renders the `:prompt` block rather than claiming there are no results.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Command } from 'frontile';
 
@@ -507,7 +507,7 @@ soon as the first response landed.
 
 Instead, own the merge and reuse the library's own scorer, which is exported:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Command } from 'frontile';

@@ -195,7 +195,7 @@ const backdrops = ['none', 'faded', 'blur', 'transparent'];
 Easily specify the placement of the popover relative to its trigger element,
 ensuring optimal positioning in various UI layouts.
 
-```gts preview
+```gts preview collapsible
 import { Button } from 'frontile';
 import { Popover } from 'frontile';
 
@@ -297,7 +297,7 @@ you do not need it at all in the usual case.
 You can use the `isOpen` and `onOpenChange` arguments to control whether the
 popover is open or closed.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Popover } from 'frontile';
@@ -354,7 +354,7 @@ added overlay and closes it, ensuring a natural and intuitive user experience.
 Similarly, clicking outside of the overlays prioritizes the most recent addition,
 closing it before proceeding to the underlying layers.
 
-```gts preview
+```gts preview collapsible
 import { Popover } from 'frontile';
 import { Button } from 'frontile';
 

@@ -33,7 +33,7 @@ import { Textarea } from 'frontile';
 
 You can control the textarea value using the Form component's data binding system.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -106,7 +106,7 @@ export default class DisabledTextarea extends Component {
 
 When using Form and Field components, all change events are handled centrally by the Form component via its `@onChange` callback. This demonstrates how Form automatically captures all field updates in real-time as the user types.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -167,7 +167,7 @@ export default class TextareaWithFormChange extends Component {
 
 The Textarea component integrates with the Form validation system, providing automatic error display and field-level validation using Valibot schema.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
@@ -248,7 +248,7 @@ export default class ValidatedTextarea extends Component {
 
 Here's a comprehensive example showing a Textarea integrated with the Form validation system, combining Input and Textarea fields with Valibot schema validation.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
@@ -338,7 +338,7 @@ export default class CompleteFormWithTextarea extends Component {
 
 The Textarea component supports various optional configurations for sizing, layout, and styling.
 
-```gts preview
+```gts preview collapsible
 import { Textarea } from 'frontile';
 import { hash } from '@ember/helper';
 

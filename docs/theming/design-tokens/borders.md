@@ -82,7 +82,7 @@ re-rounds the entire library — see [Scaling the whole system](#scaling-the-who
 
 ### Available Radii
 
-```gts preview
+```gts preview collapsible
 <template>
   <div class='grid grid-cols-2 md:grid-cols-4 gap-4'>
     <div class='rounded-none bg-primary-subtle p-4 flex items-center justify-center min-h-24'>

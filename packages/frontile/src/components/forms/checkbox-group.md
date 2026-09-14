@@ -37,7 +37,7 @@ import { CheckboxGroup } from 'frontile';
 
 You can control individual checkbox states by providing `@checked` and handling updates with `@onChange`. This example uses an array-based data structure with a single reusable handler.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -135,7 +135,7 @@ The CheckboxGroup component integrates with form validation by displaying error 
 
 This example demonstrates the recommended pattern for using CheckboxGroup with the Form component's validation system. It uses an array-based data structure with a single reusable handler for managing checkbox state.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -255,7 +255,7 @@ export default class ValidatedCheckboxGroup extends Component {
 
 Here's a comprehensive example showing CheckboxGroup with the modern Form validation system, combining multiple CheckboxGroups with other input types. This example demonstrates array-based checkbox data and schema validation with both required and optional checkbox groups.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -427,7 +427,7 @@ This example demonstrates various optional arguments and configurations availabl
 - **Description**: Add helpful text to the group with `@description`, and to individual checkboxes with `@description` on each Checkbox
 - **Custom Styling**: Customize appearance with `@classes` argument
 
-```gts preview
+```gts preview collapsible
 import { CheckboxGroup } from 'frontile';
 import { hash } from '@ember/helper';
 

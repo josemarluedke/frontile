@@ -95,7 +95,7 @@ export default class DemoComponent extends Component {
 
 Define reusable Cell components in your column configuration:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig, type CellSignature } from 'frontile';
 import { Chip } from 'frontile';
@@ -265,7 +265,7 @@ export default class DemoComponent extends Component {
 
 Pin columns to the left or right during horizontal scrolling:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from 'frontile';
 import { employees, type Employee } from 'site/components/table-demo-data';
@@ -311,7 +311,7 @@ export default class DemoComponent extends Component {
 
 Freeze specific rows by their keys:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
@@ -402,7 +402,7 @@ export default class DemoComponent extends Component {
 
 Show loading indicators while data is being fetched:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -481,7 +481,7 @@ items. It is opt-in, and the row count is required — there is no default.
 
 Load the data below to watch the placeholders hand off to real rows.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
@@ -600,7 +600,7 @@ screen — use the `loading` named block described next.
 
 Use the `loading` named block for custom indicators:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -720,7 +720,7 @@ export default class DemoComponent extends Component {
 
 Use the `:cell` block for custom cell content. Alternatively, you can define a `Cell` component in the [column configuration](#column-level-cell-components) for reusable cell rendering.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
@@ -788,7 +788,7 @@ function eq(a: string | undefined, b: string) {
 
 Customize column headers with the `header` block:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
@@ -828,7 +828,7 @@ function eq(a: string, b: string) {
 
 Add custom rows at the top or bottom of the table body:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from 'frontile';
 import { products, type Product } from 'site/components/table-demo-data';
@@ -976,7 +976,7 @@ same way `wrapper` and `table` are.
 
 Enable column sorting with `isSortable` and `@onSort`:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Table, type ColumnConfig, type SortItem } from 'frontile';
@@ -1036,7 +1036,7 @@ Enable row selection with `@selectionMode` for single or multiple row selection.
 
 Use checkboxes for multi-select with `selectionMode="multiple"`:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Table, type ColumnConfig } from 'frontile';
@@ -1086,7 +1086,7 @@ export default class DemoComponent extends Component {
 
 Use row clicks for single selection with `selectionMode="single"`:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Table, type ColumnConfig } from 'frontile';
@@ -1140,7 +1140,7 @@ export default class DemoComponent extends Component {
 
 Prevent specific rows from being selected with `@disabledKeys`:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Table, type ColumnConfig } from 'frontile';
@@ -1191,7 +1191,7 @@ export default class DemoComponent extends Component {
 
 Provide a custom function to extract unique keys from items:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Table, type ColumnConfig } from 'frontile';
@@ -1242,7 +1242,7 @@ export default class DemoComponent extends Component {
 
 The Table supports uncontrolled selection where internal state is managed automatically. Simply omit `@selectedKeys` and provide `@onSelectionChange` to monitor selections:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
@@ -1303,7 +1303,7 @@ When selection is enabled, rows follow the WAI-ARIA grid pattern:
 This is the shared [`rovingFocus`](/docs/components/utilities/roving-focus) utility in vertical,
 manual-activation mode — arrows move focus only, and selection waits for Space or Enter.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
@@ -1342,7 +1342,7 @@ export default class DemoComponent extends Component {
 
 Customize the selection highlight color with `@selectionColor`. Available colors: `default`, `primary`, `success`, `warning`, `danger`:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';

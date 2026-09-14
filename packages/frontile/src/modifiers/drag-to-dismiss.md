@@ -21,7 +21,7 @@ import { dragToDismiss } from 'frontile';
 
 ## Usage
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { dragToDismiss, Button } from 'frontile';

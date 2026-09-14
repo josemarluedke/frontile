@@ -17,7 +17,7 @@ Higher elevations indicate elements that are more prominent or interactive, such
 
 ## Elevation Levels
 
-```gts preview
+```gts preview collapsible
 <template>
   <div class='grid grid-cols-2 md:grid-cols-3 gap-8 p-8'>
     <div class='shadow-elevation-0 bg-surface-canvas p-6 rounded'>
@@ -69,7 +69,7 @@ Higher elevations indicate elements that are more prominent or interactive, such
 
 ### Cards and Panels
 
-```gts preview
+```gts preview collapsible
 <template>
   <div class='grid md:grid-cols-2 gap-6'>
     {{! Basic card with level 2 elevation }}

@@ -92,7 +92,7 @@ content they asked for is on its way.
 Put the state on the thing that is loading. `aria-busy` marks the region, and a
 polite live region announces the transition once:
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Button, Spinner } from 'frontile';

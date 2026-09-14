@@ -19,7 +19,7 @@ import { Dropdown } from 'frontile';
 
 A feature-rich action menu showcasing icons, descriptions, shortcuts, dividers, and color intents.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
@@ -108,7 +108,7 @@ Add descriptions and keyboard shortcuts to menu items for better UX.
 
 > **Note:** The `@shortcut` argument is for display purposes only. You'll need to implement actual keyboard shortcut handling in your application using a library or custom implementation.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
@@ -154,7 +154,7 @@ export default class DropdownWithDetails extends Component {
 
 Enable single or multiple selection mode for choosing options.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -201,7 +201,7 @@ export default class SelectableDropdown extends Component {
 
 Customize the trigger button appearance.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
@@ -271,7 +271,7 @@ export default class TriggerStyles extends Component {
 
 Control where the menu appears relative to the trigger.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -344,7 +344,7 @@ export default class MenuPositioning extends Component {
 
 Disable specific menu items.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
@@ -384,7 +384,7 @@ export default class DisabledItems extends Component {
 
 Prevent the menu from closing when items are selected.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -431,7 +431,7 @@ export default class KeepOpenDropdown extends Component {
 
 Organize menu items into logical groups.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
@@ -469,7 +469,7 @@ export default class SectionedDropdown extends Component {
 
 Use individual click handlers for specific items.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
@@ -521,7 +521,7 @@ export default class CustomHandlers extends Component {
 
 Control the backdrop appearance behind the dropdown menu.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -633,7 +633,7 @@ working unchanged, and you only reach for `Sub` where a nested menu is
 actually needed. Submenus open on hover, on click, or with <kbd>→</kbd>, and
 close with <kbd>←</kbd> or <kbd>Esc</kbd>.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
@@ -678,7 +678,7 @@ export default class SubmenuDropdown extends Component {
 
 Submenus nest to any depth: a `Sub`'s `Menu` yields `Sub` again.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';

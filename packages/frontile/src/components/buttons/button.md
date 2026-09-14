@@ -49,7 +49,7 @@ The default styles are mainly structural. Colors are applied as `color`.
 Every color is available in every variant. The label on each row is the
 `@variant` value; the button labels are the `@color` values.
 
-```gts preview
+```gts preview collapsible
 import { Button } from 'frontile';
 import { array } from '@ember/helper';
 
@@ -438,7 +438,7 @@ synthesises the `click` event it would normally follow with — so a
 `{{on "click"}}` handler on a default `@type='button'` fires for the mouse but
 **not** for the keyboard:
 
-```gts preview
+```gts preview collapsible
 import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';

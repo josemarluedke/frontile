@@ -20,7 +20,7 @@ import { Modal } from 'frontile';
 
 A simple modal with header, body, and footer sections.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -69,7 +69,7 @@ export default class BasicModal extends Component {
 
 Control the modal size with the `@size` argument.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -172,7 +172,7 @@ export default class ModalSizes extends Component {
 By default the modal sits toward the top of the screen. `@isCentered={{true}}` centers it
 vertically.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -240,7 +240,7 @@ export default class ModalPositioning extends Component {
 
 Control the appearance of the backdrop behind the modal.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -324,7 +324,7 @@ export default class ModalBackdrops extends Component {
 
 A practical example showing a confirmation dialog pattern.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -422,7 +422,7 @@ export default class ConfirmationDialog extends Component {
 
 A modal containing a complete form with validation.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -593,7 +593,7 @@ add `data-part="close-button"` to it explicitly — Modal cannot inject that
 attribute into markup you write in your own template, so it is on you to
 carry it forward for anatomy consumers styling or querying by `data-part`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -688,7 +688,7 @@ export default class ModalCloseButton extends Component {
 
 Example showing modals that can open other modals.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';

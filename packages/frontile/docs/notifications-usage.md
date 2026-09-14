@@ -78,7 +78,7 @@ produces a `neutral` toast. It still renders the same info glyph as `'primary'`,
 in a neutral color rather than the primary accent, so callers who want the old
 accented look pass `status: 'primary'` explicitly.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { Button } from 'frontile';
@@ -133,7 +133,7 @@ export default class StatusExample extends Component {
 
 `add` takes the title as a string, with an optional `description` alongside it, or a single content object with both fields.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { Button } from 'frontile';
@@ -217,7 +217,7 @@ drives that one container from every argument covered in this section as well as
 [Variants](#variants) and [Placement](#placement) above — rather than mounting a second
 container per argument.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
@@ -377,7 +377,7 @@ export default class StackingExample extends Component {
 
 Add action buttons to notifications for user interaction.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
@@ -454,7 +454,7 @@ export default class ActionsExample extends Component {
 Every notification auto-dismisses after `duration` milliseconds (default `5000`), unless
 `preserve: true` keeps it open until the user (or a custom action) closes it.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
@@ -520,7 +520,7 @@ Use `preserve: true` to prevent automatic dismissal entirely, and `allowClosing:
 also hide the close button — pair the latter with a custom action so the notification still
 has a way out.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { Button } from 'frontile';
@@ -583,7 +583,7 @@ passed alongside `loading`/`success`/`error` — `preserve` included — carries
 settled notification: the loading phase is always non-dismissible while pending, but once it
 settles, a caller's own `preserve: true` is honored rather than silently overridden.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { Button } from 'frontile';

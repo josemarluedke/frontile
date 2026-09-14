@@ -223,7 +223,7 @@ import { Tooltip } from 'frontile';
 The `<:footer>` block renders below the grid. Combine it with `@month`/`@onMonthChange` and
 `@value`/`@onChange` to drive the calendar from preset buttons.
 
-```gts preview
+```gts preview collapsible
 import { Calendar } from 'frontile/collections';
 import { Button } from 'frontile';
 import Component from '@glimmer/component';
@@ -352,7 +352,7 @@ uses, so nothing about paging or bounds has to be reimplemented.
 Nothing is rendered for you, including the year-grid trigger: call `toggleYearGrid` from
 your own control to keep it, as below, or leave it out for a calendar with no year picker.
 
-```gts preview
+```gts preview collapsible
 import { Calendar } from 'frontile/collections';
 import { Button } from 'frontile';
 import { on } from '@ember/modifier';

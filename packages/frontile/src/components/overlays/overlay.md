@@ -19,7 +19,7 @@ import { Overlay } from 'frontile';
 
 The most basic usage of the Overlay component.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -63,7 +63,7 @@ export default class BasicOverlay extends Component {
 
 Control the appearance of the backdrop behind the overlay.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -145,7 +145,7 @@ export default class BackdropTypes extends Component {
 
 By default, overlays are rendered in a portal. You can render them in-place instead.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -214,7 +214,7 @@ export default class RenderInPlace extends Component {
 
 Control when and how the overlay can be closed.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -319,7 +319,7 @@ export default class CustomCloseBehavior extends Component {
 
 Demonstrate focus trapping and restoration features.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -403,7 +403,7 @@ export default class FocusManagement extends Component {
 
 Customize overlay animations and transition duration.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -492,7 +492,7 @@ Pass `@animateOnMount={{false}}` when an already-open overlay should simply be t
 no reveal — Modal and Drawer forward it too. An overlay opened later by interaction animates
 either way, and so does closing.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -565,7 +565,7 @@ The Overlay component has two different click-to-close mechanisms that work toge
 - **`@closeOnOutsideClick`** (default: `true`): Closes when clicking the backdrop/outside area
 - **`@closeOnOverlayElementClick`** (default: `true`): Closes when clicking the overlay element itself
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';

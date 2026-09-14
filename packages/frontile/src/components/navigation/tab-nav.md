@@ -26,7 +26,7 @@ page uses `@href` and `@isActive` directly rather than `@route`. In an app
 with routes, `@route` (below) is the tier to reach for — it derives
 `@isActive` from the router for you.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';

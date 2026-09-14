@@ -102,7 +102,7 @@ Note this differs from [Tabs](../navigation/tabs), which names its arguments
 `@value`/`@defaultValue`. Tabs holds one scalar selection; an accordion holds a
 _set_ of open items identified by each item's `@key`.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';

@@ -105,7 +105,7 @@ The window keeps a constant number of slots as the page moves, so the row
 never reflows as you page through — a chip near the middle of a long list
 takes exactly as much space as one at either end.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Pagination } from 'frontile';
@@ -240,7 +240,7 @@ import { Pagination } from 'frontile';
 
 `@color` colors the active page chip's fill.
 
-```gts preview
+```gts preview collapsible
 import { Pagination } from 'frontile';
 
 <template>
