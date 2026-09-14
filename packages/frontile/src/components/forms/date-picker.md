@@ -117,7 +117,7 @@ There is no `@presets` argument. Presets are ordinary buttons composed into the 
 block, which yields `{ setValue, close, value, isOpen }`. `setValue` behaves exactly like
 clicking a day: it fires `@onChange` and closes the popover once the value is complete.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { fn } from '@ember/helper';
