@@ -207,23 +207,28 @@ export default class DocfyJumpTo extends Component {
   };
 
   <template>
+    {{! On a phone this is an icon-only button so the bar still fits; from the
+        md breakpoint up it takes the shape of the thing it opens — a bounded
+        search field with its shortcut parked on the right edge. It is still a
+        button, not an input: typing happens in the dialog. }}
     <button
       type="button"
-      class="transition flex items-center rounded focus-visible:ring outline-none hover:text-neutral-strong"
+      class="flex items-center justify-center transition rounded-lg outline-none md:justify-start size-9 md:size-auto md:w-64 lg:w-80 md:h-9 md:px-3 text-neutral-firm focus-visible:ring hover:text-neutral-strong hover:bg-neutral-subtle md:bg-surface-canvas/60 md:border md:border-neutral-subtle md:hover:border-neutral-soft md:hover:bg-surface-canvas"
       {{on "click" this.open}}
     >
-      <SearchIcon aria-hidden="true" class="w-4 h-4 mr-2" />
+      <SearchIcon aria-hidden="true" class="shrink-0 size-4 md:mr-2" />
 
-      Search
+      <span class="hidden md:inline">Search</span>
       <Kbd
         @keys="/"
         @size="sm"
         @variant="outline"
-        @class="hidden sm:inline-flex ml-3"
+        @class="hidden md:inline-flex ml-auto"
       />
       {{! Rendered through Kbd rather than spelled out, so the announced
           shortcut follows the platform instead of always saying "Command". }}
-      <VisuallyHidden>or <Kbd @keys="mod+k" /></VisuallyHidden>
+      <VisuallyHidden>Search documentation, or
+        <Kbd @keys="mod+k" /></VisuallyHidden>
     </button>
 
     <CommandDialog
