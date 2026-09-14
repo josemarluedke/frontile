@@ -78,7 +78,7 @@ const THEMES = ['light', 'dark'] as const;
 
 const INTENTS = ['default', 'info', 'success', 'warning', 'danger'] as const;
 
-/** Maps a notification `intent` to the semantic color category its
+/** Maps a notification `status` to the semantic color category its
  * compound variants (in notification-card.ts) actually pull from. */
 const CATEGORY_FOR_INTENT: Record<(typeof INTENTS)[number], string> = {
   default: 'neutral',
@@ -88,7 +88,7 @@ const CATEGORY_FOR_INTENT: Record<(typeof INTENTS)[number], string> = {
   danger: 'danger'
 };
 
-/** The `default`/`tonal` title+icon color level per intent, mirroring the
+/** The `default`/`tonal` title+icon color level per status, mirroring the
  * compound variants in notification-card.ts. */
 const DEFAULT_VARIANT_TEXT_LEVEL: Record<(typeof INTENTS)[number], string> = {
   default: 'firm',
@@ -128,11 +128,11 @@ module('Unit | Notifications | notification-card contrast', function () {
       );
     });
 
-    for (const intent of INTENTS) {
-      const category = CATEGORY_FOR_INTENT[intent];
+    for (const status of INTENTS) {
+      const category = CATEGORY_FOR_INTENT[status];
 
-      test(`${theme}: default variant ${intent} title/icon clears AA`, function (assert) {
-        const level = DEFAULT_VARIANT_TEXT_LEVEL[intent];
+      test(`${theme}: default variant ${status} title/icon clears AA`, function (assert) {
+        const level = DEFAULT_VARIANT_TEXT_LEVEL[status];
         const fg = levelValue(colors[category] as ColorTree, level);
         const ratio = contrastHex(fg, surfaceModal);
         assert.true(
@@ -141,7 +141,7 @@ module('Unit | Notifications | notification-card contrast', function () {
         );
       });
 
-      test(`${theme}: tonal variant ${intent} icon/title clears AA (on-${category}-soft on composited ${category}-soft)`, function (assert) {
+      test(`${theme}: tonal variant ${status} icon/title clears AA (on-${category}-soft on composited ${category}-soft)`, function (assert) {
         const soft = levelValue(colors[category] as ColorTree, 'soft');
         const onSoft = levelValue(
           colors[`on-${category}`] as ColorTree,
@@ -155,7 +155,7 @@ module('Unit | Notifications | notification-card contrast', function () {
         );
       });
 
-      test(`${theme}: solid variant ${intent} title/icon clears AA (this is the pairing BUG 1 broke)`, function (assert) {
+      test(`${theme}: solid variant ${status} title/icon clears AA (this is the pairing BUG 1 broke)`, function (assert) {
         const bg = levelValue(colors[category] as ColorTree, 'DEFAULT');
         const fg = getContrastingColor(bg);
         const ratio = wcagContrast(fg, bg);
@@ -166,7 +166,7 @@ module('Unit | Notifications | notification-card contrast', function () {
         );
       });
 
-      test(`${theme}: solid variant ${intent} description uses the shipped theme class and clears AA`, function (assert) {
+      test(`${theme}: solid variant ${status} description uses the shipped theme class and clears AA`, function (assert) {
         // Reads the *actual* shipped `description` class from
         // notification-card.ts (not a hand-copied literal), so this catches
         // a regression to a translucent cut like the old `/80` — not just
@@ -178,7 +178,7 @@ module('Unit | Notifications | notification-card contrast', function () {
         // silently check the wrong thing, since a mock slot never contains
         // an opacity-modifier suffix either.
         const { description } = useStyles().notificationCard({
-          intent,
+          status,
           variant: 'solid'
         });
         const descriptionClass = description();

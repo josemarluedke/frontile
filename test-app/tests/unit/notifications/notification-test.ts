@@ -38,7 +38,7 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     assert.equal(notification.message, 'Message');
     assert.equal(notification.title, 'Message', 'title aliases message');
     assert.equal(typeof notification.description, 'undefined');
-    assert.equal(notification.intent, 'default');
+    assert.equal(notification.status, 'neutral');
     assert.equal(notification.isLoading, false);
     assert.equal(typeof notification.customActions, 'undefined');
     assert.equal(notification.duration, 5000);
@@ -82,36 +82,36 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     );
   });
 
-  test('it accepts an intent', async function (assert) {
-    const notification = new Notification({}, 'Message', { intent: 'danger' });
+  test('it accepts an status', async function (assert) {
+    const notification = new Notification({}, 'Message', { status: 'danger' });
 
-    assert.equal(notification.intent, 'danger');
+    assert.equal(notification.status, 'danger');
   });
 
-  test('a bare notification resolves to the default intent, not info', async function (assert) {
+  test('a bare notification resolves to the neutral status, not primary', async function (assert) {
     const notification = new Notification({}, 'Message');
 
-    assert.equal(notification.intent, 'default');
+    assert.equal(notification.status, 'neutral');
   });
 
-  test('an explicit info intent stays distinct from default', async function (assert) {
-    const notification = new Notification({}, 'Message', { intent: 'info' });
+  test('an explicit primary status stays distinct from neutral', async function (assert) {
+    const notification = new Notification({}, 'Message', { status: 'primary' });
 
-    assert.equal(notification.intent, 'info');
+    assert.equal(notification.status, 'primary');
   });
 
-  test('appearance reads back "default" for the default intent', async function (assert) {
+  test('appearance reads back "default" for the neutral status', async function (assert) {
     const notification = new Notification({}, 'Message');
 
     assert.equal(notification.appearance, 'default');
   });
 
-  test('the deprecated appearance option maps onto intent', async function (assert) {
+  test('the deprecated appearance option maps onto status', async function (assert) {
     const notification = new Notification({}, 'Message', {
       appearance: 'error'
     });
 
-    assert.equal(notification.intent, 'danger');
+    assert.equal(notification.status, 'danger');
     assert.equal(
       notification.appearance,
       'error',
@@ -119,21 +119,21 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     );
   });
 
-  test('appearance reads back from intent for the shared names', async function (assert) {
+  test('appearance reads back from status for the shared names', async function (assert) {
     const notification = new Notification({}, 'Message', {
-      intent: 'success'
+      status: 'success'
     });
 
     assert.equal(notification.appearance, 'success');
   });
 
-  test('intent wins when both are supplied', async function (assert) {
+  test('status wins when both are supplied', async function (assert) {
     const notification = new Notification({}, 'Message', {
-      intent: 'warning',
+      status: 'warning',
       appearance: 'error'
     });
 
-    assert.equal(notification.intent, 'warning');
+    assert.equal(notification.status, 'warning');
   });
 
   test('a config-level appearance is honored as a fallback', async function (assert) {
@@ -143,7 +143,7 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
         'Message'
       );
 
-      assert.equal(notification.intent, 'success');
+      assert.equal(notification.status, 'success');
     });
 
     assert.ok(
@@ -155,55 +155,55 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
   test('a config-level appearance of "error" maps onto "danger"', async function (assert) {
     const notification = new Notification({ appearance: 'error' }, 'Message');
 
-    assert.equal(notification.intent, 'danger');
+    assert.equal(notification.status, 'danger');
   });
 
-  test('precedence: option intent > option appearance > config intent > config appearance > default', async function (assert) {
+  test('precedence: option status > option appearance > config status > config appearance > default', async function (assert) {
     assert.equal(
-      new Notification({ intent: 'info', appearance: 'error' }, 'Message', {
-        intent: 'danger',
+      new Notification({ status: 'primary', appearance: 'error' }, 'Message', {
+        status: 'danger',
         appearance: 'warning'
-      }).intent,
+      }).status,
       'danger',
-      'option intent wins over everything'
+      'option status wins over everything'
     );
 
     assert.equal(
-      new Notification({ intent: 'info', appearance: 'error' }, 'Message', {
+      new Notification({ status: 'primary', appearance: 'error' }, 'Message', {
         appearance: 'warning'
-      }).intent,
+      }).status,
       'warning',
       'option appearance wins over config'
     );
 
     assert.equal(
-      new Notification({ intent: 'info', appearance: 'error' }, 'Message')
-        .intent,
-      'info',
-      'config intent wins over config appearance'
+      new Notification({ status: 'primary', appearance: 'error' }, 'Message')
+        .status,
+      'primary',
+      'config status wins over config appearance'
     );
 
     assert.equal(
-      new Notification({ appearance: 'error' }, 'Message').intent,
+      new Notification({ appearance: 'error' }, 'Message').status,
       'danger',
       'config appearance is used when nothing more specific is set'
     );
 
     assert.equal(
-      new Notification({}, 'Message').intent,
-      'default',
+      new Notification({}, 'Message').status,
+      'neutral',
       'the built-in default is the last resort'
     );
   });
 
-  test('using intent alone does not emit the appearance deprecation', async function (assert) {
+  test('using status alone does not emit the appearance deprecation', async function (assert) {
     const ids = captureDeprecations(() => {
-      new Notification({ intent: 'info' }, 'Message', { intent: 'success' });
+      new Notification({ status: 'primary' }, 'Message', { status: 'success' });
     });
 
     assert.notOk(
       ids.includes('frontile.notification-appearance'),
-      'no deprecation when only intent is used'
+      'no deprecation when only status is used'
     );
   });
 
@@ -218,9 +218,9 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     );
   });
 
-  test('update replaces content and intent', async function (assert) {
+  test('update replaces content and status', async function (assert) {
     const notification = new Notification({}, 'Saving…', {
-      intent: 'info',
+      status: 'primary',
       allowClosing: false
     });
     notification.isLoading = true;
@@ -228,14 +228,14 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     notification.update({
       title: 'Saved',
       description: 'All good.',
-      intent: 'success',
+      status: 'success',
       allowClosing: true,
       isLoading: false
     });
 
     assert.equal(notification.title, 'Saved');
     assert.equal(notification.description, 'All good.');
-    assert.equal(notification.intent, 'success');
+    assert.equal(notification.status, 'success');
     assert.equal(notification.allowClosing, true);
     assert.equal(notification.isLoading, false);
   });
@@ -245,11 +245,11 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
       description: 'Description'
     });
 
-    notification.update({ intent: 'warning' });
+    notification.update({ status: 'warning' });
 
     assert.equal(notification.title, 'Title');
     assert.equal(notification.description, 'Description');
-    assert.equal(notification.intent, 'warning');
+    assert.equal(notification.status, 'warning');
   });
 
   test('update can clear a description with an empty string', async function (assert) {
@@ -264,7 +264,7 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
 
   test('it can create with custom options', async function (assert) {
     const notification = new Notification({}, 'Message', {
-      intent: 'success',
+      status: 'success',
       duration: 1,
       transitionDuration: 0,
       allowClosing: false,
@@ -279,7 +279,7 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     });
 
     assert.equal(notification.message, 'Message');
-    assert.equal(notification.intent, 'success');
+    assert.equal(notification.status, 'success');
     assert.equal(notification.transitionDuration, 0);
     assert.equal(notification.allowClosing, false);
     assert.equal(notification.customActions?.length, 1);

@@ -5,7 +5,7 @@ import { getConfigOption } from './get-config';
 import type {
   NotificationOptions,
   NotificationContent,
-  NotificationIntent,
+  NotificationStatus,
   NotificationAppearance,
   NotificationUpdate,
   CustomAction,
@@ -22,11 +22,11 @@ function toContent(content: string | NotificationContent): NotificationContent {
 /**
  * Emit the shared deprecation notice and remap `error` onto `danger`. Used
  * for both the option-level and config-level `appearance` fallbacks in
- * `resolveIntent`, which must apply the same remap.
+ * `resolveStatus`, which must apply the same remap.
  */
-function mapAppearance(appearance: NotificationAppearance): NotificationIntent {
+function mapAppearance(appearance: NotificationAppearance): NotificationStatus {
   deprecate(
-    'The `appearance` option for notifications is deprecated. Use `intent` instead, and `danger` in place of `error`.',
+    'The `appearance` option for notifications is deprecated. Use `status` instead, and `danger` in place of `error`.',
     false,
     {
       id: 'frontile.notification-appearance',
@@ -36,36 +36,40 @@ function mapAppearance(appearance: NotificationAppearance): NotificationIntent {
     }
   );
 
-  return appearance === 'error' ? 'danger' : appearance;
+  if (appearance === 'error') return 'danger';
+  // `info` folded into `primary` when the axis became `status`.
+  if (appearance === 'info') return 'primary';
+
+  return appearance;
 }
 
 /**
- * Resolve the notification intent from the current option, the deprecated
+ * Resolve the notification status from the current option, the deprecated
  * `appearance` option, and the app config, in that order.
  */
-function resolveIntent(
+function resolveStatus(
   config: DefaultConfig,
   options: NotificationOptions
-): NotificationIntent {
-  if (options.intent) {
-    return options.intent;
+): NotificationStatus {
+  if (options.status) {
+    return options.status;
   }
 
   if (options.appearance) {
     return mapAppearance(options.appearance);
   }
 
-  if (config.intent) {
-    return config.intent;
+  if (config.status) {
+    return config.status;
   }
 
   if (config.appearance) {
     return mapAppearance(config.appearance);
   }
 
-  // `config.intent`/`config.appearance` were already read directly above, so
+  // `config.status`/`config.appearance` were already read directly above, so
   // there is no distinct config lookup left to fall back to.
-  return 'default';
+  return 'neutral';
 }
 
 export default class Notification<
@@ -77,7 +81,7 @@ export default class Notification<
    */
   @tracked message: string;
   @tracked description?: string;
-  @tracked intent: NotificationIntent;
+  @tracked status: NotificationStatus;
   @tracked allowClosing: boolean;
   @tracked isLoading: boolean;
   @tracked customActions?: CustomAction[];
@@ -101,7 +105,7 @@ export default class Notification<
     // a convenience for the string form.
     this.description =
       typeof content === 'string' ? options.description : description;
-    this.intent = resolveIntent(config, options);
+    this.status = resolveStatus(config, options);
     this.isLoading = options.isLoading === true;
     this.hideIcon = options.hideIcon === true;
     this.customActions = options.customActions;
@@ -121,16 +125,20 @@ export default class Notification<
   }
 
   /**
-   * @deprecated Read `intent` instead.
+   * @deprecated Read `status` instead.
    *
    * The return type is widened to include `'default'` because `default` is
    * new vocabulary introduced alongside this getter's deprecation — it has
    * no equivalent in the old `NotificationAppearance` names, so mapping it
-   * onto `'info'` here would silently lie about the notification's intent.
+   * onto `'info'` here would silently lie about the notification's status.
    * Everything else keeps the old four-value shape.
    */
   get appearance(): 'default' | 'info' | 'success' | 'warning' | 'error' {
-    return this.intent === 'danger' ? 'error' : this.intent;
+    if (this.status === 'danger') return 'error';
+    if (this.status === 'neutral') return 'default';
+    if (this.status === 'primary') return 'info';
+
+    return this.status;
   }
 
   /**
@@ -147,8 +155,8 @@ export default class Notification<
       this.description = changes.description;
     }
 
-    if (typeof changes.intent !== 'undefined') {
-      this.intent = changes.intent;
+    if (typeof changes.status !== 'undefined') {
+      this.status = changes.status;
     }
 
     if (typeof changes.allowClosing !== 'undefined') {

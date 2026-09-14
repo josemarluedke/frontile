@@ -14,7 +14,7 @@ export {
   type NotificationsService,
   type NotificationOptions,
   type NotificationContent,
-  type NotificationIntent,
+  type NotificationStatus,
   type NotificationAppearance,
   type NotificationUpdate,
   type CustomAction,
