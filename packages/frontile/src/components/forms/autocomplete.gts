@@ -831,7 +831,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               {{else if this.isClearable}}
                 <CloseButton
                   @title="Clear"
-                  @variant="subtle"
+                  @variant="soft"
                   @size="xs"
                   @class={{this.classes.clearButton class=@classes.clearButton}}
                   data-part="clear-button"
