@@ -22,6 +22,7 @@ interface BaseDatePickerArgs
   extends
     Pick<
       CalendarArgs,
+      | 'color'
       | 'minValue'
       | 'maxValue'
       | 'isDateUnavailable'
@@ -195,6 +196,7 @@ interface DatePickerValueBlockArg<M extends CalendarMode = 'single'> {
  */
 interface DatePickerCalendarArgs<M extends CalendarMode = 'single'> {
   mode: CalendarMode;
+  color?: CalendarArgs['color'];
   value: CalendarValue<M> | null;
   onChange: (value: CalendarValue<M>) => void;
   locale: string;

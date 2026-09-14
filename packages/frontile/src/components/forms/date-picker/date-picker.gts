@@ -295,6 +295,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   get calendarBlockArg(): DatePickerCalendarArgs<M> {
     return {
       mode: this.mode,
+      color: this.args.color,
       value: this.value,
       onChange: this.handleChange,
       locale: this.locale,
@@ -430,6 +431,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
             {{else}}
               <Calendar
                 @mode={{this.mode}}
+                @color={{@color}}
                 @value={{this.value}}
                 @onChange={{this.handleChange}}
                 @locale={{@locale}}

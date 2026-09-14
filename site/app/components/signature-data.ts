@@ -33410,6 +33410,28 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
       },
       {
+        identifier: 'color',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: [
+            "'neutral'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The color used for the selected day and the range band.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'primary'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'primary\'</span></span>',
+      },
+      {
         identifier: 'defaultValue',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -35310,7 +35332,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>A <code>{ start, end }</code> pair, each a <code>Date</code> or a <code>yyyy-MM-dd</code> string; <code>end</code> may\nbe <code>null</code> while only the anchor is chosen. Synced the same way as single\nmode's <code>@value</code>: setting it replaces the displayed range, <code>undefined</code> is\nignored, and the field updates on its own as the user picks.\nA <code>Date</code>, or the same <code>yyyy-MM-dd</code> string this component writes to its\nhidden input.</p>\n<p>The field keeps its own selection and syncs <em>from</em> this argument: setting\nit replaces what is displayed, while picking a date updates the field\nimmediately rather than waiting for <code>@value</code> to come back. <code>undefined</code> is\nignored, which is why a <code>&#x3C;form.Field></code>-bound picker — which always passes\na <code>value</code> key — still honors <code>@defaultValue</code> before form data exists. This is why a <code>&#x3C;form.Field></code>-bound picker, which always passes\na <code>value</code> key, still honors <code>@defaultValue</code> before form data exists.</p>",
+          "<p>A <code>{ start, end }</code> pair, each a <code>Date</code> or a <code>yyyy-MM-dd</code> string; <code>end</code> may\nbe <code>null</code> while only the anchor is chosen. Synced the same way as single\nmode's <code>@value</code>: setting it replaces the displayed range, <code>undefined</code> is\nignored, and the field updates on its own as the user picks.\nA <code>Date</code>, or the same <code>yyyy-MM-dd</code> string this component writes to its\nhidden input.</p>\n<p>The field keeps its own selection and syncs <em>from</em> this argument: setting\nit replaces what is displayed, while picking a date updates the field\nimmediately rather than waiting for <code>@value</code> to come back. <code>undefined</code> is\nignored, which is why a <code>&#x3C;form.Field></code>-bound picker — which always passes\na <code>value</code> key — still honors <code>@defaultValue</code> before form data exists.</p>",
         tags: {},
       },
       {
@@ -35418,6 +35440,26 @@ const data: ComponentDoc[] = [
                       items: ["'single'", "'range'"],
                     },
                     isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'color',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+                      items: [
+                        "'neutral'",
+                        "'primary'",
+                        "'secondary'",
+                        "'tertiary'",
+                        "'success'",
+                        "'warning'",
+                        "'danger'",
+                      ],
+                    },
+                    isRequired: false,
                     isInternal: false,
                     description: '',
                     tags: {},

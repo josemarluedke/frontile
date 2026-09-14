@@ -902,5 +902,51 @@ module(
 
       assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
     });
+    test('@color reaches the calendar', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @color="success"
+          />
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      // Calendar colors the selected day and the range band from @color, as
+      // utility classes rather than a marker class -- so this asserts the
+      // colour is present rather than pinning the exact spelling.
+      const day = find('[data-part="day"][data-key="2026-01-20"]')!;
+
+      assert.ok(
+        day.className.includes('success'),
+        `the selected day is coloured by @color, got: ${day.className}`
+      );
+      assert.notOk(
+        day.className.includes('bg-primary'),
+        'and no longer carries the default primary'
+      );
+    });
+
+    test('the calendar block arg carries @color', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Start" @locale="en-US" @color="danger">
+            <:calendar as |args|>
+              <div data-test-color>{{args.color}}</div>
+            </:calendar>
+          </DatePicker>
+        </template>
+      );
+
+      await click('[data-part="input"]');
+
+      assert
+        .dom('[data-test-color]')
+        .hasText('danger', 'so a custom calendar can spread it');
+    });
   }
 );

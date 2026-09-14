@@ -238,6 +238,35 @@ const numeric = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
 </template>
 ```
 
+## Color
+
+`@color` picks the semantic color the calendar uses for the selected day and,
+in range mode, the band between the two ends. It defaults to `primary`.
+
+It colors the calendar only — the field itself is drawn from the form field
+styles it shares with every other input, so a picker still looks like the rest
+of the form.
+
+```gts preview
+import { DatePicker } from 'frontile';
+import { array } from '@ember/helper';
+
+const jan20 = new Date(2026, 0, 20);
+
+<template>
+  <div class='flex flex-wrap gap-4'>
+    {{#each (array 'primary' 'success' 'warning' 'danger') as |color|}}
+      <DatePicker
+        @label='{{color}}'
+        @color={{color}}
+        @defaultValue={{jan20}}
+        @locale='en-US'
+      />
+    {{/each}}
+  </div>
+</template>
+```
+
 ## Restricting Selectable Dates
 
 `@minValue` and `@maxValue` bound the range of selectable days; `@isDateUnavailable` marks
