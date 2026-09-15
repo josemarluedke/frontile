@@ -28,11 +28,14 @@ frontile/
 │   │   └── src/
 │   │       ├── components/          # Source grouped by category:
 │   │       │   ├── buttons/         #   Button, ButtonGroup, Chip, CloseButton, ToggleButton
-│   │       │   ├── collections/     #   Table, Listbox, Dropdown
-│   │       │   ├── forms/           #   Input, Select, Checkbox, Radio, Switch, Textarea
+│   │       │   ├── collections/     #   Table, SimpleTable, Listbox, Dropdown, Calendar, Command
+│   │       │   ├── disclosure/      #   Accordion
+│   │       │   ├── forms/           #   Input, Select, Checkbox, Radio, Switch, Textarea,
+│   │       │   │                    #   SegmentedControl, …
+│   │       │   ├── navigation/      #   Tabs, TabNav, Pagination, ExternalLink
 │   │       │   ├── overlays/        #   Modal, Drawer, Popover, Overlay, Portal
 │   │       │   ├── notifications/   #   NotificationCard, NotificationsContainer
-│   │       │   ├── status/          #   ProgressBar
+│   │       │   ├── status/          #   Alert, ProgressBar
 │   │       │   └── utilities/       #   Avatar, Collapsible, Divider, Spinner, VisuallyHidden
 │   │       ├── modifiers/  services/  utils/
 │   │       └── buttons.ts, collections.ts, …  # category barrel entry points
@@ -198,6 +201,11 @@ import { on } from '@ember/modifier';
 - Use Tailwind Variants via `@frontile/theme`
 - Components accept `@classes` argument for customization
 - Follow existing patterns in theme package
+- **Use `@color` and `@variant`, not `@intent` and `@appearance`.** v0.18 renamed them and
+  their values: `intent="default"` → `color="neutral"`, `appearance="default"` → `variant="solid"`,
+  `outlined` → `outline`, `minimal` → `plain`. The old names still resolve and remain all over
+  the repo, so copying a nearby call site will give you the deprecated form. Feedback
+  surfaces (Alert, form feedback) take `@status` rather than `@color`.
 
 ### Semantic Color System
 
@@ -205,8 +213,13 @@ Colors are **semantic categories with named levels** — not a numbered scale. U
 generated Tailwind utilities; there is no `primary-500`-style numbered class.
 
 - **Categories:** `neutral` (default UI), `primary` (brand/important actions),
-  `secondary`, `tertiary`, `success`, `warning`, `danger`, plus `inverse` (for inverted
-  surfaces) and `surface-*`.
+  `secondary`, `tertiary`, `success`, `warning`, `danger`, and `surface-*`. There is no
+  `inverse` category — the allowlist that generates these lives in
+  `packages/theme/src/plugin/resolve.ts` (`SEMANTIC_COLOR_PREFIXES`).
+- **Inverting a subtree:** every token is emitted under `.light, .dark .theme-inverse` and
+  `.dark, .light .theme-inverse`, so adding `.theme-inverse` to an element re-resolves the
+  whole palette to the opposite scheme for that subtree. This is a scoping class, not a
+  color category.
 - **Levels** (low → high emphasis): `subtle`, `muted`, `soft`, `mild`, `DEFAULT`, `firm`,
   `strong`, `bolder`. The `DEFAULT` level has no suffix — `bg-primary` is the resting fill.
 - **Surface overlay levels:** `subtle`, `soft`, `mild`, `firm`, `strong` (`strong` is the
