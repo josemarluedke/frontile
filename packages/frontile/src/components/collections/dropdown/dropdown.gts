@@ -11,8 +11,11 @@ import { assert } from '@ember/debug';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { Sub } from './sub';
-import { createRootMenuContext } from './menu-context';
-import type { MenuContext, SubHandle } from './menu-context';
+import {
+  createOverriddenMenuContext,
+  createRootMenuContext
+} from './menu-context';
+import type { MenuContext, OpenSource, SubHandle } from './menu-context';
 import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from '../listbox/item';
 import type { WithBoundArgs } from '@glint/template';
@@ -43,7 +46,10 @@ interface DropdownSignature {
   Blocks: {
     default: [
       {
-        Trigger: WithBoundArgs<typeof Trigger, 'anchor' | 'toggle' | 'trigger'>;
+        Trigger: WithBoundArgs<
+          typeof Trigger,
+          'anchor' | 'toggle' | 'trigger' | 'setOpenSource'
+        >;
         Menu: WithBoundArgs<
           typeof Menu,
           'toggle' | 'close' | 'Content' | 'closeOnItemSelect'
@@ -54,6 +60,27 @@ interface DropdownSignature {
 }
 
 class Dropdown extends Component<DropdownSignature> {
+  /**
+   * How the menu was last asked to open.
+   *
+   * The WAI-ARIA menu button pattern opens onto an item when the keyboard
+   * opened the menu, and onto nothing when a pointer did -- so the trigger has
+   * to tell the menu how it was reached. `Sub` already says this for submenus
+   * with `OpenSource`; the root says it the same way rather than inventing a
+   * second spelling of the same idea.
+   */
+  @tracked openSource: OpenSource = 'pointer';
+
+  setOpenSource = (source: OpenSource): void => {
+    // Only on a real change: Ember's tracked setter dirties its tag
+    // unconditionally, and the resting value is already `'pointer'`, so an
+    // unguarded write would invalidate this component -- and with it the two
+    // curried components it yields -- on every pointer press.
+    if (this.openSource !== source) {
+      this.openSource = source;
+    }
+  };
+
   <template>
     <Popover
       @placement={{@placement}}
@@ -68,7 +95,11 @@ class Dropdown extends Component<DropdownSignature> {
       {{yield
         (hash
           Trigger=(component
-            Trigger anchor=p.anchor trigger=p.trigger toggle=p.toggle
+            Trigger
+            anchor=p.anchor
+            trigger=p.trigger
+            toggle=p.toggle
+            setOpenSource=this.setOpenSource
           )
           Menu=(component
             Menu
@@ -76,6 +107,7 @@ class Dropdown extends Component<DropdownSignature> {
             toggle=p.toggle
             close=p.close
             closeOnItemSelect=@closeOnItemSelect
+            openSource=this.openSource
           )
         )
       }}
@@ -96,6 +128,14 @@ interface TriggerArgs extends Pick<
    * @internal
    */
   trigger: ModifierLike<{ Element: HTMLElement }>;
+
+  /**
+   * @internal
+   *
+   * Reports how this open was initiated, so the menu can decide whether to
+   * land on an item.
+   */
+  setOpenSource: (source: OpenSource) => void;
 
   /**
    * @internal
@@ -134,6 +174,20 @@ class Trigger extends Component<TriggerSignature> {
   };
 
   /**
+   * A pointer press opens onto nothing: moving the highlight somewhere the
+   * user never pointed is exactly what the menu button pattern avoids.
+   *
+   * On `pointerup` rather than `pointerdown`: the two are equivalent here
+   * because `pointerup` still precedes the `click` that Popover's `trigger`
+   * opens on, and binding the down event trips `no-pointer-down-event-binding`
+   * -- a rule worth keeping, since a press the user drags away from and
+   * cancels should leave nothing behind.
+   */
+  handlePointerUp = () => {
+    this.args.setOpenSource('pointer');
+  };
+
+  /**
    * Enter and Space have to be handled here rather than left to the button's
    * native activation. The trigger renders Frontile's Button, whose `press`
    * modifier calls preventDefault on Enter/Space keydown — that is deliberate,
@@ -152,6 +206,7 @@ class Trigger extends Component<TriggerSignature> {
       event.key === 'Enter' ||
       event.key === ' '
     ) {
+      this.args.setOpenSource('keyboard');
       this.args.toggle();
     }
   };
@@ -162,6 +217,7 @@ class Trigger extends Component<TriggerSignature> {
       {{this.anchor}}
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
+      {{on "pointerup" this.handlePointerUp}}
       @type="button"
       @variant={{@variant}}
       @appearance={{@appearance}}
@@ -264,6 +320,15 @@ interface MenuArgs
 
   /**
    * @internal
+   *
+   * How this level was reached -- by the root `Trigger` for the root menu, by
+   * its `Sub` for a submenu -- so a keyboard open highlights the first row per
+   * the WAI-ARIA menu button pattern. Translated by `autoActivateMode` below.
+   */
+  openSource?: OpenSource;
+
+  /**
+   * @internal
    */
   autoActivateMode?: 'none' | 'first';
 
@@ -343,10 +408,24 @@ class Menu extends Component<MenuSignature> {
   /**
    * A submenu is handed its level's context by the `Sub` that renders it. The
    * root builds its own, from the arguments the consumer wrote once.
+   *
+   * A submenu inherits that context, but may override any part of it with its
+   * own arguments -- so a navigation menu can hold a multi-select submenu
+   * without the root pretending to select, which is the shape every faceted
+   * filter menu needs. Inheritance remains the default: a submenu that
+   * declares nothing keeps using the root's settings, and is handed the
+   * parent's own context object back untouched.
+   *
+   * Resolved once (`@cached`) for the same reason `variant` is: `context` is
+   * read a dozen times per render, and the overriding branch below builds a
+   * new object each time it runs. Without the cache every read produced a
+   * fresh identity, which `Sub` then turned into a fresh child context for
+   * the level beneath it.
    */
+  @cached
   get context(): MenuContext {
     if (this.args.context) {
-      return this.args.context;
+      return createOverriddenMenuContext(this.args.context, this.args);
     }
 
     return createRootMenuContext({
@@ -407,8 +486,20 @@ class Menu extends Component<MenuSignature> {
     return false;
   }
 
+  /**
+   * The one place an open source becomes an activation mode.
+   *
+   * Every level is told only how it was reached -- the root by its own
+   * trigger, a submenu by its `Sub` -- and decides here, so the WAI-ARIA rule
+   * that a keyboard open lands on an item has a single home. A consumer's
+   * explicit `@autoActivateMode` outranks it.
+   */
   get autoActivateMode(): 'none' | 'first' {
-    return this.args.autoActivateMode ?? 'none';
+    if (this.args.autoActivateMode) {
+      return this.args.autoActivateMode;
+    }
+
+    return this.args.openSource === 'keyboard' ? 'first' : 'none';
   }
 
   /**

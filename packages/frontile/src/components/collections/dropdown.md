@@ -47,11 +47,19 @@ export default class BasicDropdown extends Component {
       </d.Trigger>
 
       <d.Menu @onAction={{this.onAction}} as |Item|>
-        <Item @key='view' @description='Open in read-only mode' @shortcut='mod+o'>
+        <Item
+          @key='view'
+          @description='Open in read-only mode'
+          @shortcut='mod+o'
+        >
           <:start><ViewIcon /></:start>
           <:default>View Details</:default>
         </Item>
-        <Item @key='edit' @description='Make changes to project' @shortcut='mod+e'>
+        <Item
+          @key='edit'
+          @description='Make changes to project'
+          @shortcut='mod+e'
+        >
           <:start><EditIcon /></:start>
           <:default>Edit Project</:default>
         </Item>
@@ -128,7 +136,11 @@ export default class DropdownWithDetails extends Component {
         <Item @key='profile' @description='View and edit your profile'>
           My Profile
         </Item>
-        <Item @key='settings' @description='Manage preferences' @shortcut='mod+,'>
+        <Item
+          @key='settings'
+          @description='Manage preferences'
+          @shortcut='mod+,'
+        >
           Settings
         </Item>
         <Item @key='billing' @description='View billing details'>
@@ -723,12 +735,12 @@ export default class NestedSubmenuDropdown extends Component {
 
 Dropdown yields the pieces you assemble the menu from:
 
-| Yielded     | Purpose                                                                                                 |
-| ----------- | -------------------------------------------------------------------------------------------------------- |
-| `d.Trigger` | Button that opens the menu                                                                              |
-| `d.Menu`    | The menu itself; yields an `Item` for each entry and, as a second block param, `Sub` for a nested menu  |
-| `Item`      | A single menu entry                                                                                     |
-| `Sub`       | A nested menu, yielded alongside `Item`; yields its own `s.Trigger` and `s.Menu`                        |
+| Yielded     | Purpose                                                                                                |
+| ----------- | ------------------------------------------------------------------------------------------------------ |
+| `d.Trigger` | Button that opens the menu                                                                             |
+| `d.Menu`    | The menu itself; yields an `Item` for each entry and, as a second block param, `Sub` for a nested menu |
+| `Item`      | A single menu entry                                                                                    |
+| `Sub`       | A nested menu, yielded alongside `Item`; yields its own `s.Trigger` and `s.Menu`                       |
 
 A `Sub`'s `s.Menu` yields `Item` and `Sub` again, the same as the root `d.Menu`, so menus can
 nest to any depth.
@@ -750,11 +762,17 @@ Dropdown is a Popover wrapping a Listbox with `@type="menu"`, and inherits from 
 
 The trigger — a real `<button>`, so it is focusable and activates on `Enter` and `Space` —
 carries `aria-haspopup="true"`, `aria-controls` pointing at the menu, and `aria-expanded`
-kept in sync. The menu itself is `role="menu"` and its items are `role="menuitem"` with
-`aria-labelledby`, plus `aria-disabled="true"` for keys in `@disabledKeys`.
+kept in sync. The menu itself is `role="menu"` and its items carry `aria-labelledby`, plus
+`aria-disabled="true"` for keys in `@disabledKeys`. Their role depends on whether the menu
+selects, as below.
 
-Menu items carry no `aria-selected` — it is invalid on a plain `menuitem`, which conveys
-state through `aria-checked` and only as `menuitemcheckbox` or `menuitemradio`.
+Menu items never carry `aria-selected` — it is invalid on a menu item, which conveys state
+through `aria-checked` instead. When the menu selects, its rows take the matching checkable
+role and report their state: `menuitemcheckbox` with `@selectionMode="multiple"`,
+`menuitemradio` with `"single"`, each with `aria-checked` kept in sync. A menu that does not
+select keeps plain `menuitem` rows and no checked state, and a row that opens a submenu stays
+a plain `menuitem` whatever the level selects — activating it opens a menu rather than
+toggling a value.
 
 Menu items share the Listbox's roving `tabindex`: exactly one item carries `tabindex="0"` —
 the active one, falling back to the first selected item and then to the first item that is not
@@ -772,19 +790,24 @@ Which keys are handled depends on where focus is:
 
 Once open, focus moves into the menu and the list takes over:
 
-| Focus is in the menu                  | Behavior                                                                          |
-| ------------------------------------- | ---------------------------------------------------------------------------------- |
-| `ArrowDown` / `ArrowUp`               | Move the active item, within the open level                                        |
-| `ArrowRight`                          | Opens the active row's submenu and moves to its first item                         |
+| Focus is in the menu                  | Behavior                                                                                    |
+| ------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `ArrowDown` / `ArrowUp`               | Move the active item, within the open level                                                 |
+| `ArrowRight`                          | Opens the active row's submenu and moves to its first item                                  |
 | `ArrowLeft`                           | Closes the current submenu and returns focus to its trigger; does nothing at the root level |
-| `Home` / `PageUp`, `End` / `PageDown` | First / last item, within the open level                                           |
-| `Enter`, `Space`                      | Runs the active item's action, or opens its submenu                                |
-| any single character                  | Type-ahead to a matching item, scoped to the open level                            |
-| `Escape`                              | Closes the innermost open menu — at the root, focus returns to the trigger         |
+| `Home` / `PageUp`, `End` / `PageDown` | First / last item, within the open level                                                    |
+| `Enter`, `Space`                      | Runs the active item's action, or opens its submenu                                         |
+| any single character                  | Type-ahead to a matching item, scoped to the open level                                     |
+| `Escape`                              | Closes the innermost open menu — at the root, focus returns to the trigger                  |
 
 Because the content is inside an Overlay with a focus trap, `Tab` from within the menu cycles
-inside it rather than leaving. `@autoActivateMode="none"` means no item is active when the
-menu opens, so the first `ArrowDown` lands on the first item rather than the second.
+inside it rather than leaving.
+
+Opening the menu from the keyboard — `Enter`, `Space`, `ArrowDown` or `ArrowUp` on the
+trigger — activates its first row, per the WAI-ARIA menu button pattern, so the keyboard is
+immediately useful. Opening it with a pointer activates nothing, since moving the highlight
+somewhere the user never pointed is exactly what that pattern avoids. Pass an explicit
+`@autoActivateMode` to override either behaviour.
 
 ### Submenus
 
@@ -792,6 +815,17 @@ A submenu also opens on hovering its trigger, after a short delay, and stays
 open while the pointer travels toward it; moving onto a sibling row closes it.
 Opening a submenu by hover or click highlights nothing inside it — only
 opening it with the keyboard highlights its first row.
+
+A submenu inherits its selection settings from the root menu, so `@selectionMode`,
+`@selectedKeys`, `@disabledKeys`, `@allowEmpty`, `@onAction`, `@onSelectionChange` and
+`@closeOnItemSelect` written once at the top apply at every depth. A submenu may also declare
+any of those seven itself, which wins for that level and the levels below it — so a
+navigation menu can hold a multi-select submenu without the root pretending to select. A
+submenu that declares nothing keeps inheriting.
+
+Only those seven are a submenu's to override. Appearance and timing — `@variant`, `@color`,
+`@shortcutVariant`, `@disableTransitions` and `@transitionDuration` — stay the root's for the
+whole chain, so one menu cannot end up looking like two.
 
 ## API
 

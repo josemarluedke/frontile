@@ -282,11 +282,34 @@ class ListboxItem extends Component<ListboxItemSignature> {
     return this.args.shortcutVariant ?? 'inherit';
   }
 
+  /**
+   * Whether this row carries selection state of its own.
+   *
+   * A row that opens a submenu never does, whatever the level selects:
+   * activating it reveals another menu rather than toggling a value. Both
+   * `role` and `ariaChecked` hang off this one question, so they cannot
+   * disagree about it.
+   */
+  get isCheckableMenuRow(): boolean {
+    return (
+      this.args.type === 'menu' &&
+      !this.args.hasSubmenu &&
+      this.manager.selectionMode !== 'none'
+    );
+  }
+
   get role() {
-    if (this.args.type === 'menu') {
+    if (this.args.type !== 'menu') {
+      return 'option';
+    }
+
+    if (!this.isCheckableMenuRow) {
       return 'menuitem';
     }
-    return 'option';
+
+    return this.manager.selectionMode === 'multiple'
+      ? 'menuitemcheckbox'
+      : 'menuitemradio';
   }
 
   /**
@@ -296,10 +319,24 @@ class ListboxItem extends Component<ListboxItemSignature> {
    * undefined omits the attribute rather than rendering an empty one.
    */
   get ariaSelected(): 'true' | 'false' | undefined {
-    if (this.role !== 'option') {
-      return undefined;
-    }
+    return this.role === 'option' ? this.selectedState : undefined;
+  }
+
+  /** Selection as an ARIA attribute value, for whichever attribute carries it. */
+  private get selectedState(): 'true' | 'false' {
     return this.listItem?.isSelected ? 'true' : 'false';
+  }
+
+  /**
+   * The menu counterpart to `aria-selected`.
+   *
+   * Rendered only for the two checkable menu roles: `aria-checked` on a plain
+   * `menuitem` is invalid ARIA, and a checkable row that omits it announces no
+   * state at all, which is how a selectable menu ends up sounding identical to
+   * a list of commands.
+   */
+  get ariaChecked(): 'true' | 'false' | undefined {
+    return this.isCheckableMenuRow ? this.selectedState : undefined;
   }
 
   /**
@@ -348,6 +385,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       role={{this.role}}
       aria-labelledby={{this.labelId}}
       aria-selected={{this.ariaSelected}}
+      aria-checked={{this.ariaChecked}}
       aria-haspopup={{this.ariaHasPopup}}
       aria-expanded={{this.ariaExpanded}}
       aria-controls={{if @hasSubmenu @submenuId}}

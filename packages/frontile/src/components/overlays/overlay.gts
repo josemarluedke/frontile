@@ -495,13 +495,23 @@ class Overlay extends Component<OverlaySignature> {
     return !(this.args.disableTransitions === true);
   }
 
+  /**
+   * Consumer options are merged over the defaults rather than replacing them.
+   *
+   * Swapping the object wholesale made setting any single option -- a
+   * `setReturnFocus`, an `initialFocus` -- silently drop
+   * `clickOutsideDeactivates` and `allowOutsideClick` with it, at which point
+   * the trap swallows outside clicks and the overlay can only be dismissed
+   * with Escape. Nothing warns, and the cause is nowhere near the symptom.
+   * A consumer that genuinely wants the trap to hold outside clicks can still
+   * say so by passing those two as `false`.
+   */
   get focusTrapOptions(): FocusTrapOptions {
-    return (
-      this.args.focusTrapOptions || {
-        clickOutsideDeactivates: true,
-        allowOutsideClick: true
-      }
-    );
+    return {
+      clickOutsideDeactivates: true,
+      allowOutsideClick: true,
+      ...this.args.focusTrapOptions
+    };
   }
 
   get createFocusTrap(): typeof createFocusTrap | undefined {

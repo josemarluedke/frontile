@@ -163,6 +163,42 @@ module(
       assert.dom('[data-test-id="overlay"]').doesNotExist();
     });
 
+    test('@focusTrapOptions is merged over the defaults, not swapped for them', async function (assert) {
+      assert.expect(2);
+
+      const disableTransitions = cell(true);
+      const isOpen = cell(true);
+      const onClose = () => {
+        assert.ok(true, 'an outside click still closes the overlay');
+        isOpen.current = false;
+      };
+
+      // Only `initialFocus` is set. Before the merge this replaced the whole
+      // default object, taking `clickOutsideDeactivates` and
+      // `allowOutsideClick` with it -- so the trap swallowed outside clicks
+      // and the overlay could no longer be dismissed by clicking away.
+      const focusTrapOptions = { initialFocus: false as const };
+
+      await render(
+        <template>
+          <button type="button" data-test-id="some-button">Button</button>
+          <Overlay
+            @isOpen={{isOpen.current}}
+            @onClose={{onClose}}
+            @focusTrapOptions={{focusTrapOptions}}
+            @disableTransitions={{disableTransitions.current}}
+            data-test-id="overlay"
+          >
+            My Content
+            <button type="button">Something focusable</button>
+          </Overlay>
+        </template>
+      );
+
+      await click('.overlay__backdrop');
+      assert.dom('[data-test-id="overlay"]').doesNotExist();
+    });
+
     test('when @closeOnOutsideClick={{false}} does not close overlay', async function (assert) {
       assert.expect(1);
 

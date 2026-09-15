@@ -49,13 +49,13 @@ type MenuComponent = typeof Menu;
 
 /**
  * The bound-args shape `Sub` produces for its own `s.Menu` -- `Content`,
- * `context`, `depth`, `menuId`, `autoActivateMode` and `close` are all curried
+ * `context`, `depth`, `menuId`, `openSource` and `close` are all curried
  * by `Sub` itself (see the template below), so a consumer only ever supplies
  * the public args (`@selectionMode`, `@onAction`, and so on).
  */
 type BoundMenuComponent = WithBoundArgs<
   typeof Menu,
-  'context' | 'depth' | 'menuId' | 'autoActivateMode' | 'close' | 'Content'
+  'context' | 'depth' | 'menuId' | 'openSource' | 'close' | 'Content'
 >;
 
 interface SubArgs extends Pick<
@@ -83,7 +83,7 @@ interface SubArgs extends Pick<
    * @internal
    *
    * The raw, unbound `Menu` -- `Sub` curries `Content`/`context`/`depth`/
-   * `menuId`/`autoActivateMode`/`close` onto it itself (see `BoundMenuComponent`
+   * `menuId`/`openSource`/`close` onto it itself (see `BoundMenuComponent`
    * above and the template below).
    */
   menu: MenuComponent;
@@ -302,14 +302,6 @@ class Sub extends Component<SubSignature> {
     });
   }
 
-  /**
-   * `first` only for a keyboard open. A hover-opened submenu that highlighted
-   * its first row would move the selection somewhere the user never pointed.
-   */
-  get autoActivateMode(): 'none' | 'first' {
-    return this.openSource === 'keyboard' ? 'first' : 'none';
-  }
-
   get depth(): number {
     return this.args.parentContext.depth + 1;
   }
@@ -344,7 +336,7 @@ class Sub extends Component<SubSignature> {
             context=this.childContext
             depth=this.depth
             menuId=this.submenuId
-            autoActivateMode=this.autoActivateMode
+            openSource=this.openSource
             close=this.close
           )
           isOpen=this.isOpen
