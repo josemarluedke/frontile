@@ -80,10 +80,9 @@ module(
       await render(<template><Divider @variant="sketch" /></template>);
 
       assert.dom('[data-component="divider"]').hasClass('divider-sketch');
-      // 8px — chosen for legibility, since the mask's wobble amplitude scales
-      // with the element's height and 4px reads as a straight hairline. It
-      // must win over the `h-px` the horizontal orientation sets.
-      assert.dom('[data-component="divider"]').hasClass('h-2');
+      // 4px — the artwork's native height, and deliberately subtle. It must
+      // win over the `h-px` the horizontal orientation sets.
+      assert.dom('[data-component="divider"]').hasClass('h-1');
       assert.dom('[data-component="divider"]').doesNotHaveClass('h-px');
     });
 
@@ -126,10 +125,10 @@ module(
 
       assert.dom('[data-test-colored]').hasClass('divider-sketch');
       // The artwork carries no colour of its own — it is a mask — so the line's
-      // colour is just the element's background, and overriding it is a plain
-      // utility override.
+      // colour is just the element's background (the translucent `divider`
+      // token by default), and overriding it is a plain utility override.
       assert.dom('[data-test-colored]').hasClass('bg-primary');
-      assert.dom('[data-test-colored]').doesNotHaveClass('bg-neutral-subtle');
+      assert.dom('[data-test-colored]').doesNotHaveClass('bg-divider');
       assert.dom('[data-test-as]').hasTagName('li');
       assert.dom('[data-test-as]').hasClass('divider-sketch');
     });

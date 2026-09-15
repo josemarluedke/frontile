@@ -1,6 +1,13 @@
 import { tv } from '../tw';
 const divider = tv({
-  base: 'shrink-0 bg-neutral-subtle border-none',
+  // `divider` is the purpose-built token for rules, and unlike the solid
+  // `neutral-*` fills it is translucent — 15% ink over whatever sits behind it
+  // (near-black in light, white in dark). That is what makes one divider work on
+  // a page, a card and a tinted panel alike: it darkens or lightens its own
+  // background rather than trying to match a fixed surface colour. `bg-neutral-subtle`
+  // was the wrong choice here — it resolves to near-white in light and near-black
+  // in dark, so it vanished on exactly the surfaces a divider is drawn on.
+  base: 'shrink-0 bg-divider border-none',
   variants: {
     orientation: {
       horizontal: 'w-full h-px',
@@ -21,10 +28,11 @@ const divider = tv({
     // here means `orientation="vertical" variant="sketch"` silently falls back
     // to an ordinary vertical line.
     //
-    // `h-2` (8px) is chosen for legibility, not to match the source art. The
-    // mask is sized `100% 100%`, so the artwork's wobble amplitude scales with
-    // the element's height: at 4px the wave is only about a pixel and the line
-    // reads as a straight hairline, losing the hand-drawn character entirely.
+    // `h-1` (4px) is the artwork's native height, and the rule is deliberately
+    // subtle at that size. The mask is sized `100% 100%`, so the wobble
+    // amplitude scales with the element's height -- a taller divider reads as
+    // more obviously hand-drawn, but overstates a line the design intends to be
+    // quiet. Raise this only with design's agreement.
     //
     // The height lives here rather than in the variant so it beats `h-px`
     // deterministically: tv() applies compound variants after variants, so
@@ -33,7 +41,7 @@ const divider = tv({
     {
       orientation: 'horizontal',
       variant: 'sketch',
-      class: 'h-2 divider-sketch'
+      class: 'h-1 divider-sketch'
     }
   ],
   defaultVariants: {

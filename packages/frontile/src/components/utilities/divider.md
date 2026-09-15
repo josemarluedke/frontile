@@ -45,7 +45,7 @@ scaling it horizontally changes only how often it wobbles, never its thickness.
 import { Divider } from 'frontile';
 
 <template>
-  <div class='border border-neutral-soft not-prose w-full max-w-sm rounded-2xl p-6'>
+  <div class='bg-surface-card not-prose w-full max-w-sm rounded-2xl p-6'>
     <ul class='text-neutral-strong space-y-2'>
       <li>Parental controls</li>
       <li>Guest network</li>
@@ -60,8 +60,10 @@ import { Divider } from 'frontile';
 </template>
 ```
 
-The line takes its colour from the element's background, so it follows the
-theme in light and dark mode, and a utility class recolours it:
+The line takes its colour from the element's background. By default that is the
+`divider` token, which is translucent — 15% ink over whatever sits behind it — so
+one divider reads correctly on a page, a card or a tinted panel without being
+retuned for each. A utility class recolours it:
 
 ```gts preview
 import { Divider } from 'frontile';
