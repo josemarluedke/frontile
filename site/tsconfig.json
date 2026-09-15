@@ -3,12 +3,6 @@
   "include": [
     "app", "tests", "types"
   ],
-  "glint": {
-    "environment": [
-      "ember-loose",
-      "ember-template-imports"
-    ]
-  },
   "compilerOptions": {
     "allowJs": true,
     "paths": {

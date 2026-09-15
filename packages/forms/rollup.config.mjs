@@ -14,11 +14,7 @@ export default {
   output: addon.output(),
 
   plugins: [
-    addon.publicEntrypoints([
-      'index.js',
-      'test-support.js',
-      'template-registry.js'
-    ]),
+    addon.publicEntrypoints(['index.js', 'test-support.js']),
 
     addon.appReexports(['components/**/*.js']),
 

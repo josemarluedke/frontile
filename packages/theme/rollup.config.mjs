@@ -29,8 +29,7 @@ export default {
       'index.js',
       'colors.js',
       'plugin.js',
-      'plugin/default.js',
-      'template-registry.js'
+      'plugin/default.js'
     ]),
     // These are the modules that should get reexported into the traditional
     // "app" tree. Things in here should also be in publicEntrypoints above, but
