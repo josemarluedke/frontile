@@ -11,7 +11,10 @@ import { assert } from '@ember/debug';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { Sub } from './sub';
-import { createRootMenuContext } from './menu-context';
+import {
+  createOverriddenMenuContext,
+  createRootMenuContext
+} from './menu-context';
 import type { MenuContext, OpenSource, SubHandle } from './menu-context';
 import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from '../listbox/item';
@@ -69,7 +72,13 @@ class Dropdown extends Component<DropdownSignature> {
   @tracked openSource: OpenSource = 'pointer';
 
   setOpenSource = (source: OpenSource): void => {
-    this.openSource = source;
+    // Only on a real change: Ember's tracked setter dirties its tag
+    // unconditionally, and the resting value is already `'pointer'`, so an
+    // unguarded write would invalidate this component -- and with it the two
+    // curried components it yields -- on every pointer press.
+    if (this.openSource !== source) {
+      this.openSource = source;
+    }
   };
 
   <template>
@@ -312,8 +321,9 @@ interface MenuArgs
   /**
    * @internal
    *
-   * Set by the root `Trigger` to how the menu was reached, so a keyboard open
-   * highlights the first row per the WAI-ARIA menu button pattern.
+   * How this level was reached -- by the root `Trigger` for the root menu, by
+   * its `Sub` for a submenu -- so a keyboard open highlights the first row per
+   * the WAI-ARIA menu button pattern. Translated by `autoActivateMode` below.
    */
   openSource?: OpenSource;
 
@@ -415,7 +425,7 @@ class Menu extends Component<MenuSignature> {
   @cached
   get context(): MenuContext {
     if (this.args.context) {
-      return this.#withOwnOverrides(this.args.context);
+      return createOverriddenMenuContext(this.args.context, this.args);
     }
 
     return createRootMenuContext({
@@ -434,36 +444,6 @@ class Menu extends Component<MenuSignature> {
       disableTransitions: this.args.disableTransitions,
       transitionDuration: this.args.transitionDuration
     });
-  }
-
-  /**
-   * Layers this level's own arguments over the inherited context.
-   *
-   * Only arguments actually written on this level count: reading them
-   * unconditionally would overwrite inherited values with `undefined` and
-   * silently break inheritance, which is the default and by far the common
-   * case.
-   */
-  #withOwnOverrides(inherited: MenuContext): MenuContext {
-    const own: Partial<MenuContext> = {
-      selectionMode: this.args.selectionMode,
-      selectedKeys: this.args.selectedKeys,
-      disabledKeys: this.args.disabledKeys,
-      allowEmpty: this.args.allowEmpty,
-      onAction: this.args.onAction,
-      onSelectionChange: this.args.onSelectionChange,
-      closeOnItemSelect: this.args.closeOnItemSelect
-    };
-
-    const overrides = Object.fromEntries(
-      Object.entries(own).filter(([, value]) => value !== undefined)
-    ) as Partial<MenuContext>;
-
-    if (Object.keys(overrides).length === 0) {
-      return inherited;
-    }
-
-    return { ...inherited, ...overrides };
   }
 
   closeRoot = () => {
@@ -506,13 +486,19 @@ class Menu extends Component<MenuSignature> {
     return false;
   }
 
+  /**
+   * The one place an open source becomes an activation mode.
+   *
+   * Every level is told only how it was reached -- the root by its own
+   * trigger, a submenu by its `Sub` -- and decides here, so the WAI-ARIA rule
+   * that a keyboard open lands on an item has a single home. A consumer's
+   * explicit `@autoActivateMode` outranks it.
+   */
   get autoActivateMode(): 'none' | 'first' {
     if (this.args.autoActivateMode) {
       return this.args.autoActivateMode;
     }
 
-    // A submenu is told how it was opened by its `Sub`, which sets
-    // `autoActivateMode` above. The root is told by its own trigger.
     return this.args.openSource === 'keyboard' ? 'first' : 'none';
   }
 

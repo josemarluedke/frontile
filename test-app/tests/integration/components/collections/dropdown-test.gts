@@ -337,6 +337,41 @@ module(
         );
     });
 
+    test('an explicit @autoActivateMode outranks the open source', async function (assert) {
+      // The open source is translated into an activation mode in one place,
+      // and a consumer that states the mode outright wins over it -- in both
+      // directions.
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @autoActivateMode="none"
+              @disableTransitions={{true}}
+              as |Item|
+            >
+              <Item @key="profile">My Profile</Item>
+              <Item @key="settings">Settings</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await triggerKeyEvent(
+        '[data-test-id="dropdown-trigger"]',
+        'keyup',
+        'ArrowDown'
+      );
+
+      assert
+        .dom('[data-key="profile"]')
+        .hasAttribute(
+          'data-active',
+          'false',
+          'a keyboard open still highlights nothing when the consumer said none'
+        );
+    });
+
     test('it opens with Enter on the trigger', async function (assert) {
       await render(
         <template>

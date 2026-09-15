@@ -319,9 +319,11 @@ class ListboxItem extends Component<ListboxItemSignature> {
    * undefined omits the attribute rather than rendering an empty one.
    */
   get ariaSelected(): 'true' | 'false' | undefined {
-    if (this.role !== 'option') {
-      return undefined;
-    }
+    return this.role === 'option' ? this.selectedState : undefined;
+  }
+
+  /** Selection as an ARIA attribute value, for whichever attribute carries it. */
+  private get selectedState(): 'true' | 'false' {
     return this.listItem?.isSelected ? 'true' : 'false';
   }
 
@@ -334,10 +336,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
    * a list of commands.
    */
   get ariaChecked(): 'true' | 'false' | undefined {
-    if (!this.isCheckableMenuRow) {
-      return undefined;
-    }
-    return this.listItem?.isSelected ? 'true' : 'false';
+    return this.isCheckableMenuRow ? this.selectedState : undefined;
   }
 
   /**

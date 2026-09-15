@@ -226,21 +226,17 @@ class ListManager {
    * consumer that flips `@selectionMode` has to repaint the rows that derive
    * their role from it. Left plain, `role` kept its old value while the item's
    * own tracked `isSelected` moved on, which lands `aria-checked` on a plain
-   * `menuitem` -- the invalid ARIA the checkable roles exist to avoid. Written
-   * through a mirror guard for the reason `ListItem` documents at length.
+   * `menuitem` -- the invalid ARIA the checkable roles exist to avoid.
+   *
+   * `args.selectionMode` is the plain mirror this is guarded against -- it is
+   * already the untracked copy every internal read goes through, so no second
+   * one is needed. `updateArgs` writes the pair together; see `ListItem` above
+   * for why a redundant tracked write is worth avoiding.
    */
   @tracked private _selectionMode: SelectionMode = 'none';
-  private selectionModeMirror: SelectionMode = 'none';
 
   get selectionMode(): SelectionMode {
     return this._selectionMode;
-  }
-
-  private set selectionMode(value: SelectionMode) {
-    if (this.selectionModeMirror !== value) {
-      this.selectionModeMirror = value;
-      this._selectionMode = value;
-    }
   }
 
   /**
@@ -456,8 +452,11 @@ class ListManager {
     this.args.disabledKeys = args.disabledKeys || [];
     this.args.allowEmpty = args.allowEmpty || false;
     this.args.autoActivateMode = args.autoActivateMode || 'none';
-    this.args.selectionMode = args.selectionMode || 'none';
-    this.selectionMode = this.args.selectionMode;
+    const selectionMode = args.selectionMode || 'none';
+    if (this.args.selectionMode !== selectionMode) {
+      this.args.selectionMode = selectionMode;
+      this._selectionMode = selectionMode;
+    }
 
     for (let i = 0; i < this.#items.length; i++) {
       const item = this.#items[i] as ListItem;
