@@ -115,7 +115,7 @@
     "@babel/plugin-transform-typescript": "^7.29.7",
     "@ember/library-tsconfig": "^2.0.0",
     "@ember/test-helpers": "^5.4.3",
-    "@embroider/addon-dev": "8.3.1",
+    "@embroider/addon-dev": "8.4.0",
     "@glimmer/component": "^2.1.1",
     "@glimmer/tracking": "^1.1.2",
     "@glint/core": "1.5.2",
@@ -128,7 +128,7 @@
     "concurrently": "^10.0.5",
     "decorator-transforms": "^2.4.0",
     "ember-source": "^7.3.0",
-    "rollup": "^4.63.2",
+    "rollup": "^4.63.3",
     "rollup-plugin-copy": "^3.5.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.8.3"
