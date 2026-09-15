@@ -21,12 +21,12 @@ A horizontal divider renders an `<hr>`.
 import { Divider } from 'frontile';
 
 <template>
-  <div class='text-neutral-strong not-prose p-2'>
+  <div class='demo-stack text-neutral-strong'>
     <p>
       Quisque nibh est, posuere non purus eu, auctor molestie quam. Mauris ante
       sapien, accumsan et nibh eget, ultricies aliquam orci.
     </p>
-    <Divider @class='my-2' />
+    <Divider />
     <p>
       Vestibulum non justo enim. Etiam sed neque lobortis, suscipit elit id,
       dapibus erat. Nulla cursus scelerisque elit, id dictum urna iaculis a.
@@ -45,16 +45,18 @@ scaling it horizontally changes only how often it wobbles, never its thickness.
 import { Divider } from 'frontile';
 
 <template>
-  <div class='bg-surface-card not-prose w-full max-w-sm rounded-2xl p-6'>
+  <div class='demo-stack items-center'>
+    <div class='bg-surface-card w-full max-w-sm rounded-2xl p-6'>
     <ul class='text-neutral-strong space-y-2'>
       <li>Parental controls</li>
       <li>Guest network</li>
       <li>Security &amp; malware blocking</li>
     </ul>
     <Divider @variant='sketch' @class='my-5' />
-    <div class='text-neutral-strong flex items-baseline justify-between'>
-      <span>Starting at</span>
-      <span><strong>$10.00</strong> /mo</span>
+      <div class='text-neutral-strong flex items-baseline justify-between'>
+        <span>Starting at</span>
+        <span><strong>$10.00</strong> /mo</span>
+      </div>
     </div>
   </div>
 </template>
@@ -69,7 +71,7 @@ retuned for each. A utility class recolours it:
 import { Divider } from 'frontile';
 
 <template>
-  <div class='not-prose space-y-4 p-2'>
+  <div class='demo-stack'>
     <Divider @variant='sketch' />
     <Divider @variant='sketch' @class='bg-primary' />
     <Divider @variant='sketch' @class='bg-danger' />
@@ -96,12 +98,14 @@ disappears.
 import { Divider } from 'frontile';
 
 <template>
-  <div class='text-neutral-strong not-prose flex h-8 items-stretch gap-4 p-2'>
-    <span>Overview</span>
-    <Divider @orientation='vertical' />
-    <span>Pricing</span>
-    <Divider @orientation='vertical' />
-    <span>Support</span>
+  <div class='demo-stack items-center'>
+    <div class='text-neutral-strong flex h-8 items-stretch gap-4'>
+      <span>Overview</span>
+      <Divider @orientation='vertical' />
+      <span>Pricing</span>
+      <Divider @orientation='vertical' />
+      <span>Support</span>
+    </div>
   </div>
 </template>
 ```
@@ -113,12 +117,14 @@ divider itself instead:
 import { Divider } from 'frontile';
 
 <template>
-  <div class='text-neutral-strong not-prose flex items-center gap-4 p-2'>
-    <span>Overview</span>
-    <Divider @orientation='vertical' @class='h-4' />
-    <span>Pricing</span>
-    <Divider @orientation='vertical' @class='h-4' />
-    <span>Support</span>
+  <div class='demo-stack items-center'>
+    <div class='text-neutral-strong flex items-center gap-4'>
+      <span>Overview</span>
+      <Divider @orientation='vertical' @class='h-4' />
+      <span>Pricing</span>
+      <Divider @orientation='vertical' @class='h-4' />
+      <span>Support</span>
+    </div>
   </div>
 </template>
 ```
@@ -134,12 +140,14 @@ an `<li>`.
 import { Divider } from 'frontile';
 
 <template>
-  <ul class='text-neutral-strong not-prose w-48 p-2'>
-    <li>Recently opened</li>
-    <li>Shared with me</li>
-    <Divider @as='li' @class='my-2' />
-    <li>Trash</li>
-  </ul>
+  <div class='demo-stack items-center'>
+    <ul class='text-neutral-strong w-48'>
+      <li>Recently opened</li>
+      <li>Shared with me</li>
+      <Divider @as='li' @class='my-2' />
+      <li>Trash</li>
+    </ul>
+  </div>
 </template>
 ```
 
