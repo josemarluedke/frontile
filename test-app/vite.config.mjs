@@ -15,7 +15,6 @@ export default defineConfig({
     {
       name: 'debug-log-resolve-config',
       configResolved(config) {
-        // eslint-disable-next-line no-console
         console.log(
           'DEBUG_VITE_CONFIG',
           JSON.stringify({
