@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { ListManager, canDeselectKey } from 'frontile/utils/listManager';
-// eslint-disable-next-line ember/no-runloop
+
 import { run } from '@ember/runloop';
 import { settled, getSettledState } from '@ember/test-helpers';
 

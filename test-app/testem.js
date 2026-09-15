@@ -1,5 +1,5 @@
-'use strict';;
-if (typeof module !== "undefined") {
+'use strict';
+if (typeof module !== 'undefined') {
   module.exports = {
     test_page: 'tests/index.html?hidepassed',
     disable_watching: true,
@@ -16,9 +16,9 @@ if (typeof module !== "undefined") {
           '--disable-software-rasterizer',
           '--mute-audio',
           '--remote-debugging-port=0',
-          '--window-size=1440,900',
-        ].filter(Boolean),
-      },
-    },
+          '--window-size=1440,900'
+        ].filter(Boolean)
+      }
+    }
   };
 }

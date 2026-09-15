@@ -162,7 +162,6 @@ function resolveThemes(
         themeRules[cssVar] = formatted;
         resolved.colors[colorName] = `var(${cssVar})`;
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.warn(`Failed to parse color "${colorName}":`, error);
       }
     }
@@ -191,7 +190,6 @@ function resolveThemes(
         themeRules[cssVar] = formatted;
         resolved.colors[onColorName] = `var(${cssVar})`;
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.warn(`Failed to generate on-color for "${colorName}":`, error);
       }
     }

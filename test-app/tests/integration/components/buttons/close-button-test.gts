@@ -7,7 +7,6 @@ import { CloseButton } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
 import { trackDeprecations } from '../../../helpers/deprecations';
 
 registerCustomStyles({

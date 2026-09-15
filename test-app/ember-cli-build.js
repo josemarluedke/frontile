@@ -1,14 +1,10 @@
-'use strict';;
+'use strict';
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
-const {
-  compatBuild
-} = require("@embroider/compat");
+const { compatBuild } = require('@embroider/compat');
 
-module.exports = async function(defaults) {
-  const {
-    buildOnce
-  } = await import("@embroider/vite");
+module.exports = async function (defaults) {
+  const { buildOnce } = await import('@embroider/vite');
 
   const app = new EmberApp(defaults, {
     'ember-cli-babel': {
@@ -25,7 +21,7 @@ module.exports = async function(defaults) {
         '@frontile/changeset-form',
         ['@frontile/forms', '@frontile/changeset-form']
       ]
-    },
+    }
   });
 
   /*
@@ -35,6 +31,5 @@ module.exports = async function(defaults) {
   behave. You most likely want to be modifying `./index.js` or app's build file
 */
 
-  const { maybeEmbroider } = require('@embroider/test-setup');
   return compatBuild(app, buildOnce);
 };

@@ -34,7 +34,7 @@ class Backdrop extends Component<BackdropSignature> {
   }
 
   get transition() {
-    let options: BackdropSignature['Args']['transition'] = {
+    const options: BackdropSignature['Args']['transition'] = {
       name: 'overlay-transition--fade'
     };
 

@@ -52,7 +52,7 @@ module('Unit | @frontile/notifications/Timer', function (hooks) {
       () => {
         return timer.isRunning === false;
       },
-      { timeout: timer.remaining + 1 } // eslint-disable-line
+      { timeout: timer.remaining + 1 }
     );
   });
 

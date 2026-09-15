@@ -373,7 +373,7 @@ function buildMigrationPatterns() {
 /**
  * Migrate content using defined patterns
  */
-function migrateContent(content, filename) {
+function migrateContent(content) {
   let modified = content;
   const changes = [];
   const patterns = buildMigrationPatterns();
@@ -383,14 +383,11 @@ function migrateContent(content, filename) {
 
     if (matches.length > 0) {
       for (const match of matches) {
-        const fullMatch = match[0];
-        const prefix = match[1] || '';
         const utilityPrefix = match[2] || '';
 
         // Construct the replacement
         const oldText = `${utilityPrefix}${oldColor}`;
         const newText = `${utilityPrefix}${newColor}`;
-        const replacement = `${prefix}${newText}`;
 
         // Track the change
         changes.push({
@@ -424,7 +421,7 @@ function getLineNumber(content, index) {
  */
 function processFile(filepath) {
   const content = readFileSync(filepath, 'utf-8');
-  const { modified, changes } = migrateContent(content, filepath);
+  const { modified, changes } = migrateContent(content);
 
   if (changes.length === 0) {
     return null;
@@ -507,7 +504,7 @@ function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
         results.push(fullPath);
       }
     }
-  } catch (error) {
+  } catch {
     // Skip directories we can't read
   }
 

@@ -98,7 +98,7 @@ class CloseButton extends Component<CloseButtonSignature> {
   get classes() {
     const { closeButton } = useStyles();
 
-    let { base, icon } = closeButton({
+    const { base, icon } = closeButton({
       size: this.args.size || 'md',
       variant: this.variant
     });

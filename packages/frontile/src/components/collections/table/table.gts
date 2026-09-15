@@ -233,8 +233,7 @@ const calculateHeaderHeight = modifier(
       requestAnimationFrame(updateHeight);
 
       // Update on resize
-      let observer: ResizeObserver;
-      observer = new ResizeObserver(updateHeight);
+      const observer: ResizeObserver = new ResizeObserver(updateHeight);
       observer.observe(el);
 
       return () => {

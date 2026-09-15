@@ -123,7 +123,6 @@ function findInterfaceBlock(source, name) {
 function parseMembers(body) {
   const members = [];
   let depth = 0;
-  let lineStart = 0;
   const lines = body.split('\n');
   let pendingDoc = false;
   let inDoc = false;
@@ -151,7 +150,6 @@ function parseMembers(body) {
       if (ch === '{' || ch === '(' || ch === '[') depth++;
       else if (ch === '}' || ch === ')' || ch === ']') depth--;
     }
-    lineStart += rawLine.length;
   }
   return members;
 }

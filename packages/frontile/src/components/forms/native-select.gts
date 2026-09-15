@@ -262,7 +262,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
     const selectElement = event.target as HTMLSelectElement;
     let newSelectedKeys: string[] = [];
 
-    for (var i = 0; i < selectElement.options.length; i++) {
+    for (let i = 0; i < selectElement.options.length; i++) {
       const option = selectElement.options[i];
       if (option && option.selected && option.value !== '') {
         newSelectedKeys.push(option.value);

@@ -1,12 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import {
-  render,
-  settled,
-  click,
-  focus,
-  triggerKeyEvent
-} from '@ember/test-helpers';
+import { render, click, focus, triggerKeyEvent } from '@ember/test-helpers';
 import { on } from '@ember/modifier';
 import { Table, type ColumnConfig } from 'frontile';
 import Component from '@glimmer/component';
@@ -108,8 +102,6 @@ module(
         { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
         { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
       ];
-
-      let capturedKeys: Set<string> | null = null;
 
       await render(
         <template>

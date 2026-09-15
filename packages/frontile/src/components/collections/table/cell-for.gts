@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import type { CellRenderingContext } from './cell-rendering-context';
-import type { Column, Row, ColumnConfig, ColumnKeys } from './types';
+import type { Column, ColumnConfig, ColumnKeys } from './types';
 
 interface CellForSignature<
   T,

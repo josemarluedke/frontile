@@ -429,7 +429,7 @@ class Popover extends Component<PopoverSignature> {
       let observer: ResizeObserver;
       if (eventType !== 'hover') {
         observer = new ResizeObserver((entries) => {
-          for (let entry of entries) {
+          for (const entry of entries) {
             if (this.widthEl) {
               continue;
             }
@@ -836,7 +836,7 @@ class Content extends Component<ContentSignature> {
   }
 
   get transition() {
-    let options: OverlaySignature['Args']['transition'] = {
+    const options: OverlaySignature['Args']['transition'] = {
       name: 'overlay-transition--scale'
     };
 

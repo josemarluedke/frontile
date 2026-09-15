@@ -39,7 +39,7 @@ function modalSizes(
 
   sizes.forEach((key) => {
     const sizeVar = `var(--modal-${key})`;
-    let rules: CSSRuleObject = {};
+    let rules: CSSRuleObject;
 
     if (key === 'full') {
       rules = {

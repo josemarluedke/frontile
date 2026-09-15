@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, blur, focus, find } from '@ember/test-helpers';
 import FormTextarea from '@frontile/forms-legacy/components/form-textarea';
-import { fn, array } from '@ember/helper';
+import { array } from '@ember/helper';
 import { cell } from 'ember-resources';
 
 module(

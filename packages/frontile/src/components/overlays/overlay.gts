@@ -1,4 +1,3 @@
-/* eslint-disable ember/no-runloop */
 import Component from '@glimmer/component';
 import { cached, tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
