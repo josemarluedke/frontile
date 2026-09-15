@@ -762,8 +762,9 @@ Dropdown is a Popover wrapping a Listbox with `@type="menu"`, and inherits from 
 
 The trigger — a real `<button>`, so it is focusable and activates on `Enter` and `Space` —
 carries `aria-haspopup="true"`, `aria-controls` pointing at the menu, and `aria-expanded`
-kept in sync. The menu itself is `role="menu"` and its items are `role="menuitem"` with
-`aria-labelledby`, plus `aria-disabled="true"` for keys in `@disabledKeys`.
+kept in sync. The menu itself is `role="menu"` and its items carry `aria-labelledby`, plus
+`aria-disabled="true"` for keys in `@disabledKeys`. Their role depends on whether the menu
+selects, as below.
 
 Menu items never carry `aria-selected` — it is invalid on a menu item, which conveys state
 through `aria-checked` instead. When the menu selects, its rows take the matching checkable
@@ -816,10 +817,15 @@ Opening a submenu by hover or click highlights nothing inside it — only
 opening it with the keyboard highlights its first row.
 
 A submenu inherits its selection settings from the root menu, so `@selectionMode`,
-`@selectedKeys`, `@onAction` and `@onSelectionChange` written once at the top apply at every
-depth. A submenu may also declare any of them itself, which wins for that level and the
-levels below it — so a navigation menu can hold a multi-select submenu without the root
-pretending to select. A submenu that declares nothing keeps inheriting.
+`@selectedKeys`, `@disabledKeys`, `@allowEmpty`, `@onAction`, `@onSelectionChange` and
+`@closeOnItemSelect` written once at the top apply at every depth. A submenu may also declare
+any of those seven itself, which wins for that level and the levels below it — so a
+navigation menu can hold a multi-select submenu without the root pretending to select. A
+submenu that declares nothing keeps inheriting.
+
+Only those seven are a submenu's to override. Appearance and timing — `@variant`, `@color`,
+`@shortcutVariant`, `@disableTransitions` and `@transitionDuration` — stay the root's for the
+whole chain, so one menu cannot end up looking like two.
 
 ## API
 

@@ -282,27 +282,34 @@ class ListboxItem extends Component<ListboxItemSignature> {
     return this.args.shortcutVariant ?? 'inherit';
   }
 
+  /**
+   * Whether this row carries selection state of its own.
+   *
+   * A row that opens a submenu never does, whatever the level selects:
+   * activating it reveals another menu rather than toggling a value. Both
+   * `role` and `ariaChecked` hang off this one question, so they cannot
+   * disagree about it.
+   */
+  get isCheckableMenuRow(): boolean {
+    return (
+      this.args.type === 'menu' &&
+      !this.args.hasSubmenu &&
+      this.manager.selectionMode !== 'none'
+    );
+  }
+
   get role() {
     if (this.args.type !== 'menu') {
       return 'option';
     }
 
-    // A row that opens a submenu is never itself checkable: activating it
-    // reveals another menu rather than toggling a value, so it stays a plain
-    // `menuitem` even in a list that selects.
-    if (this.args.hasSubmenu) {
+    if (!this.isCheckableMenuRow) {
       return 'menuitem';
     }
 
-    if (this.manager.selectionMode === 'multiple') {
-      return 'menuitemcheckbox';
-    }
-
-    if (this.manager.selectionMode === 'single') {
-      return 'menuitemradio';
-    }
-
-    return 'menuitem';
+    return this.manager.selectionMode === 'multiple'
+      ? 'menuitemcheckbox'
+      : 'menuitemradio';
   }
 
   /**
@@ -327,7 +334,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
    * a list of commands.
    */
   get ariaChecked(): 'true' | 'false' | undefined {
-    if (this.role !== 'menuitemcheckbox' && this.role !== 'menuitemradio') {
+    if (!this.isCheckableMenuRow) {
       return undefined;
     }
     return this.listItem?.isSelected ? 'true' : 'false';

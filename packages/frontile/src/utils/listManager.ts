@@ -221,9 +221,26 @@ class ListManager {
    * A menu row, for one, is only a `menuitemcheckbox` or `menuitemradio` when
    * the list actually selects -- and the row is handed the manager, not the
    * mode, so it has to be able to ask.
+   *
+   * Tracked, unlike the rest of `args`: this one is read while rendering, so a
+   * consumer that flips `@selectionMode` has to repaint the rows that derive
+   * their role from it. Left plain, `role` kept its old value while the item's
+   * own tracked `isSelected` moved on, which lands `aria-checked` on a plain
+   * `menuitem` -- the invalid ARIA the checkable roles exist to avoid. Written
+   * through a mirror guard for the reason `ListItem` documents at length.
    */
+  @tracked private _selectionMode: SelectionMode = 'none';
+  private selectionModeMirror: SelectionMode = 'none';
+
   get selectionMode(): SelectionMode {
-    return this.args.selectionMode ?? 'none';
+    return this._selectionMode;
+  }
+
+  private set selectionMode(value: SelectionMode) {
+    if (this.selectionModeMirror !== value) {
+      this.selectionModeMirror = value;
+      this._selectionMode = value;
+    }
   }
 
   /**
@@ -439,15 +456,13 @@ class ListManager {
     this.args.disabledKeys = args.disabledKeys || [];
     this.args.allowEmpty = args.allowEmpty || false;
     this.args.autoActivateMode = args.autoActivateMode || 'none';
+    this.args.selectionMode = args.selectionMode || 'none';
+    this.selectionMode = this.args.selectionMode;
 
     for (let i = 0; i < this.#items.length; i++) {
       const item = this.#items[i] as ListItem;
       item.isSelected = this.isKeySelected(item.key);
       item.isDisabled = this.isKeyDisabled(item.key);
-    }
-
-    if (args.selectionMode) {
-      this.args.selectionMode = args.selectionMode;
     }
 
     // Callbacks are replaced whenever the caller *mentions* them, rather than

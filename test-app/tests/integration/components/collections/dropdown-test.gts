@@ -719,6 +719,53 @@ module(
         );
     });
 
+    test('a submenu may override the other inherited context settings too', async function (assert) {
+      // `@selectionMode` and friends are the headline, but a level owns every
+      // setting `#withOwnOverrides` carries -- `@disabledKeys` among them.
+      // Documented in dropdown.md, so it is pinned here.
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @disabledKeys={{array "edit"}}
+              @disableTransitions={{true}}
+              as |Item Sub|
+            >
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>Scope</s.Trigger>
+                <s.Menu @disabledKeys={{array "market"}} as |Item|>
+                  <Item @key="global">Global</Item>
+                  <Item @key="market">Market</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+
+      assert
+        .dom('[data-key="market"]')
+        .hasAttribute(
+          'aria-disabled',
+          'true',
+          "the submenu's own disabledKeys apply at its level"
+        );
+      assert
+        .dom('[data-key="global"]')
+        .doesNotHaveAttribute(
+          'aria-disabled',
+          "and the root's disabledKeys no longer reach it"
+        );
+      assert
+        .dom('[data-key="edit"]')
+        .hasAttribute('aria-disabled', 'true', 'while the root keeps its own');
+    });
+
     test('a submenu with no selection args of its own still inherits the root', async function (assert) {
       let selected: string[] = [];
       const onSelectionChange = (keys: string[]) => {

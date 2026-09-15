@@ -12,7 +12,7 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { Sub } from './sub';
 import { createRootMenuContext } from './menu-context';
-import type { MenuContext, SubHandle } from './menu-context';
+import type { MenuContext, OpenSource, SubHandle } from './menu-context';
 import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from '../listbox/item';
 import type { WithBoundArgs } from '@glint/template';
@@ -45,7 +45,7 @@ interface DropdownSignature {
       {
         Trigger: WithBoundArgs<
           typeof Trigger,
-          'anchor' | 'toggle' | 'trigger' | 'setOpenedByKeyboard'
+          'anchor' | 'toggle' | 'trigger' | 'setOpenSource'
         >;
         Menu: WithBoundArgs<
           typeof Menu,
@@ -58,17 +58,18 @@ interface DropdownSignature {
 
 class Dropdown extends Component<DropdownSignature> {
   /**
-   * Whether the menu was opened from the keyboard.
+   * How the menu was last asked to open.
    *
    * The WAI-ARIA menu button pattern opens onto an item when the keyboard
    * opened the menu, and onto nothing when a pointer did -- so the trigger has
-   * to tell the menu how it was reached. `Sub` already does this for submenus
-   * through `OpenSource`; this is the root's equivalent.
+   * to tell the menu how it was reached. `Sub` already says this for submenus
+   * with `OpenSource`; the root says it the same way rather than inventing a
+   * second spelling of the same idea.
    */
-  @tracked openedByKeyboard = false;
+  @tracked openSource: OpenSource = 'pointer';
 
-  setOpenedByKeyboard = (value: boolean): void => {
-    this.openedByKeyboard = value;
+  setOpenSource = (source: OpenSource): void => {
+    this.openSource = source;
   };
 
   <template>
@@ -89,7 +90,7 @@ class Dropdown extends Component<DropdownSignature> {
             anchor=p.anchor
             trigger=p.trigger
             toggle=p.toggle
-            setOpenedByKeyboard=this.setOpenedByKeyboard
+            setOpenSource=this.setOpenSource
           )
           Menu=(component
             Menu
@@ -97,7 +98,7 @@ class Dropdown extends Component<DropdownSignature> {
             toggle=p.toggle
             close=p.close
             closeOnItemSelect=@closeOnItemSelect
-            openedByKeyboard=this.openedByKeyboard
+            openSource=this.openSource
           )
         )
       }}
@@ -125,7 +126,7 @@ interface TriggerArgs extends Pick<
    * Reports how this open was initiated, so the menu can decide whether to
    * land on an item.
    */
-  setOpenedByKeyboard: (value: boolean) => void;
+  setOpenSource: (source: OpenSource) => void;
 
   /**
    * @internal
@@ -166,9 +167,15 @@ class Trigger extends Component<TriggerSignature> {
   /**
    * A pointer press opens onto nothing: moving the highlight somewhere the
    * user never pointed is exactly what the menu button pattern avoids.
+   *
+   * On `pointerup` rather than `pointerdown`: the two are equivalent here
+   * because `pointerup` still precedes the `click` that Popover's `trigger`
+   * opens on, and binding the down event trips `no-pointer-down-event-binding`
+   * -- a rule worth keeping, since a press the user drags away from and
+   * cancels should leave nothing behind.
    */
-  handlePointerDown = () => {
-    this.args.setOpenedByKeyboard(false);
+  handlePointerUp = () => {
+    this.args.setOpenSource('pointer');
   };
 
   /**
@@ -190,7 +197,7 @@ class Trigger extends Component<TriggerSignature> {
       event.key === 'Enter' ||
       event.key === ' '
     ) {
-      this.args.setOpenedByKeyboard(true);
+      this.args.setOpenSource('keyboard');
       this.args.toggle();
     }
   };
@@ -201,7 +208,7 @@ class Trigger extends Component<TriggerSignature> {
       {{this.anchor}}
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
-      {{on "pointerdown" this.handlePointerDown}}
+      {{on "pointerup" this.handlePointerUp}}
       @type="button"
       @variant={{@variant}}
       @appearance={{@appearance}}
@@ -305,10 +312,10 @@ interface MenuArgs
   /**
    * @internal
    *
-   * Set by the root `Trigger` when the keyboard opened the menu, so the first
-   * row is highlighted per the WAI-ARIA menu button pattern.
+   * Set by the root `Trigger` to how the menu was reached, so a keyboard open
+   * highlights the first row per the WAI-ARIA menu button pattern.
    */
-  openedByKeyboard?: boolean;
+  openSource?: OpenSource;
 
   /**
    * @internal
@@ -396,9 +403,16 @@ class Menu extends Component<MenuSignature> {
    * own arguments -- so a navigation menu can hold a multi-select submenu
    * without the root pretending to select, which is the shape every faceted
    * filter menu needs. Inheritance remains the default: a submenu that
-   * declares nothing keeps using the root's settings, and gets the identical
-   * context object back so nothing downstream sees a new identity per render.
+   * declares nothing keeps using the root's settings, and is handed the
+   * parent's own context object back untouched.
+   *
+   * Resolved once (`@cached`) for the same reason `variant` is: `context` is
+   * read a dozen times per render, and the overriding branch below builds a
+   * new object each time it runs. Without the cache every read produced a
+   * fresh identity, which `Sub` then turned into a fresh child context for
+   * the level beneath it.
    */
+  @cached
   get context(): MenuContext {
     if (this.args.context) {
       return this.#withOwnOverrides(this.args.context);
@@ -431,29 +445,19 @@ class Menu extends Component<MenuSignature> {
    * case.
    */
   #withOwnOverrides(inherited: MenuContext): MenuContext {
-    const overrides: Partial<MenuContext> = {};
+    const own: Partial<MenuContext> = {
+      selectionMode: this.args.selectionMode,
+      selectedKeys: this.args.selectedKeys,
+      disabledKeys: this.args.disabledKeys,
+      allowEmpty: this.args.allowEmpty,
+      onAction: this.args.onAction,
+      onSelectionChange: this.args.onSelectionChange,
+      closeOnItemSelect: this.args.closeOnItemSelect
+    };
 
-    if (this.args.selectionMode !== undefined) {
-      overrides.selectionMode = this.args.selectionMode;
-    }
-    if (this.args.selectedKeys !== undefined) {
-      overrides.selectedKeys = this.args.selectedKeys;
-    }
-    if (this.args.disabledKeys !== undefined) {
-      overrides.disabledKeys = this.args.disabledKeys;
-    }
-    if (this.args.allowEmpty !== undefined) {
-      overrides.allowEmpty = this.args.allowEmpty;
-    }
-    if (this.args.onAction !== undefined) {
-      overrides.onAction = this.args.onAction;
-    }
-    if (this.args.onSelectionChange !== undefined) {
-      overrides.onSelectionChange = this.args.onSelectionChange;
-    }
-    if (this.args.closeOnItemSelect !== undefined) {
-      overrides.closeOnItemSelect = this.args.closeOnItemSelect;
-    }
+    const overrides = Object.fromEntries(
+      Object.entries(own).filter(([, value]) => value !== undefined)
+    ) as Partial<MenuContext>;
 
     if (Object.keys(overrides).length === 0) {
       return inherited;
@@ -509,7 +513,7 @@ class Menu extends Component<MenuSignature> {
 
     // A submenu is told how it was opened by its `Sub`, which sets
     // `autoActivateMode` above. The root is told by its own trigger.
-    return this.args.openedByKeyboard ? 'first' : 'none';
+    return this.args.openSource === 'keyboard' ? 'first' : 'none';
   }
 
   /**

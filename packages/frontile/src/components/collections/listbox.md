@@ -610,11 +610,19 @@ content.
 | -------- | ---------------------------------------------------------------------------------------------- |
 | The list | `role="listbox"`, or `role="menu"` with `@type="menu"`                                         |
 |          | `aria-multiselectable="true"` when `@selectionMode="multiple"` (listbox only)                  |
-| Items    | `role="option"` (or `menuitem`), `aria-labelledby` pointing at the item's label                |
-|          | `aria-selected` reflecting selection — options only, since it is invalid on a plain `menuitem` |
+| Items    | `role="option"`, or a menu role with `@type="menu"` — see below                                |
+|          | `aria-selected` reflecting selection — options only, since it is invalid on any menu item      |
+|          | `aria-checked` reflecting selection — checkable menu items only                                |
 |          | `aria-disabled="true"` for keys in `@disabledKeys`                                             |
 |          | a roving `tabindex` — exactly one option carries `0`, every other one `-1`                     |
 |          | `aria-haspopup="menu"`, `aria-expanded` and `aria-controls` on an item with `@hasSubmenu`      |
+
+With `@type="menu"` an item's role follows how the list selects, because a menu conveys
+state through `aria-checked` rather than `aria-selected`, and only on a checkable role:
+`menuitemcheckbox` with `@selectionMode="multiple"`, `menuitemradio` with `"single"`, and a
+plain `menuitem` with no `aria-checked` when the menu does not select. An item with
+`@hasSubmenu` stays a plain `menuitem` whatever the list selects — activating it opens a menu
+rather than toggling a value. The role follows `@selectionMode` if it changes at runtime.
 
 An item that opens a nested menu takes three arguments: `@hasSubmenu` renders a trailing
 chevron (unless the item supplies its own `:end` block) and switches its ARIA to

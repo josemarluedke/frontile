@@ -1594,6 +1594,65 @@ module(
           .dom('[data-component="listbox"]')
           .doesNotHaveAttribute('aria-multiselectable');
       });
+
+      test('a menu row follows @selectionMode when it changes at runtime', async function (assert) {
+        // `role` is derived from the manager's selection mode, and
+        // `aria-checked` from the item's own tracked selection. If the mode is
+        // not reactive the two disagree after a runtime change, leaving
+        // `aria-checked` on a plain `menuitem` -- the invalid ARIA the
+        // checkable roles exist to avoid.
+        const animals = ['cheetah', 'crocodile'];
+        const selectionMode = cell<'none' | 'single' | 'multiple'>('none');
+        const selectedKeys = cell<string[]>(['cheetah']);
+
+        await render(
+          <template>
+            <Listbox
+              @type="menu"
+              @selectionMode={{selectionMode.current}}
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-key="cheetah"]')
+          .hasAttribute('role', 'menuitem', 'a menu that does not select');
+        assert.dom('[data-key="cheetah"]').doesNotHaveAttribute('aria-checked');
+
+        selectionMode.current = 'multiple';
+        await settled();
+
+        assert
+          .dom('[data-key="cheetah"]')
+          .hasAttribute(
+            'role',
+            'menuitemcheckbox',
+            'the row becomes checkable with the mode'
+          );
+        assert.dom('[data-key="cheetah"]').hasAttribute('aria-checked', 'true');
+
+        selectionMode.current = 'single';
+        await settled();
+
+        assert
+          .dom('[data-key="cheetah"]')
+          .hasAttribute('role', 'menuitemradio');
+
+        selectionMode.current = 'none';
+        await settled();
+
+        assert
+          .dom('[data-key="cheetah"]')
+          .hasAttribute('role', 'menuitem', 'and plain again when it stops');
+        assert
+          .dom('[data-key="cheetah"]')
+          .doesNotHaveAttribute(
+            'aria-checked',
+            'no checked state on a plain menuitem'
+          );
+      });
     });
 
     /**
