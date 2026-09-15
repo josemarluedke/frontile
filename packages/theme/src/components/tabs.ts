@@ -167,7 +167,7 @@ const tabs = tv({
         // bar stays welded to the rule at `bottom-0` while the padding pushes
         // the tabs -- and with them their hover chips -- clear of it. A chip
         // that runs into the rule is the thing this buys off.
-        list: 'gap-1 pb-2 border-b border-neutral-mild dark:border-neutral-soft',
+        list: 'gap-1 pb-2 border-b border-divider',
         indicator: [
           'top-auto bottom-0 h-0.5 rounded-full',
           'w-[var(--fr-si-width)]',
@@ -180,7 +180,7 @@ const tabs = tv({
       orientation: 'vertical',
       class: {
         // The same gap, on the axis this orientation puts the rule on.
-        list: 'gap-1 ps-2 border-l border-neutral-mild dark:border-neutral-soft',
+        list: 'gap-1 ps-2 border-l border-divider',
         indicator: [
           'left-0 w-0.5 rounded-full',
           'h-[var(--fr-si-height)]',

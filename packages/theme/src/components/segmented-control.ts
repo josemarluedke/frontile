@@ -141,11 +141,14 @@ const segmentedControl = tv({
     hasSeparators: {
       true: {
         item: [
-          // A hairline before every item except the first. The level differs
-          // per mode: neither the neutral scale nor the track is symmetric
-          // across them, so one level cannot read on both.
+          // A hairline before every item except the first. `divider` is the
+          // token for rules, and it is translucent -- ink over whatever track
+          // is behind it -- so one value reads on both modes. The opaque
+          // neutral levels this used to carry could not: neither the neutral
+          // scale nor the track is symmetric across modes, which is why it
+          // needed a `dark:` override at all.
           'before:absolute before:content-[""]',
-          'before:bg-neutral-mild dark:before:bg-neutral-soft',
+          'before:bg-divider',
           'before:transition-opacity before:duration-200',
           'motion-reduce:before:transition-none',
           // The indicator's `<span>` is the container's true first child, so
