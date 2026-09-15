@@ -5,30 +5,44 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import FormFieldFeedback from '@frontile/forms-legacy/components/form-field/feedback';
 import { cell } from 'ember-resources';
-
-registerCustomStyles({
-  formFeedback: tv({
-    base: 'form-field-feedback' as never,
-    variants: {
-      status: {
-        danger: 'form-field-feedback--error'
-      },
-      size: {
-        sm: 'form-field-feedback--sm',
-        md: '',
-        lg: 'form-field-feedback--lg'
-      }
-    },
-    defaultVariants: {
-      size: 'sm'
-    }
-  })
-});
+import { realStyles } from '../../../../helpers/real-theme-styles';
 
 module(
   'Integration | Component | @frontile/forms-legacy/FormField::Feedback',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    // `registerCustomStyles` writes to a module-level slot shared by every
+    // test file (see `packages/theme/src/index.ts`), and `forms/
+    // from-feedback-test.gts` registers its own, incompatible `formFeedback`
+    // override. Which one is in effect for THIS module's tests would
+    // otherwise depend on load order between the two files -- scoping the
+    // override to this module's own before/after keeps it correct regardless
+    // of that order.
+    hooks.before(function () {
+      registerCustomStyles({
+        formFeedback: tv({
+          base: 'form-field-feedback' as never,
+          variants: {
+            status: {
+              danger: 'form-field-feedback--error'
+            },
+            size: {
+              sm: 'form-field-feedback--sm',
+              md: '',
+              lg: 'form-field-feedback--lg'
+            }
+          },
+          defaultVariants: {
+            size: 'sm'
+          }
+        })
+      });
+    });
+
+    hooks.after(function () {
+      registerCustomStyles({ formFeedback: realStyles.formFeedback });
+    });
 
     test('it renders an array of errors', async function (assert) {
       const errors = cell<string[]>(['Some error']);

@@ -1,5 +1,5 @@
 import kebabCase from 'lodash.kebabcase';
-import type { CSSRuleObject, PluginAPI } from 'tailwindcss/types/config';
+import type { CSSRuleObject, PluginAPI } from './types';
 
 type Transition = {
   enter: CSSRuleObject;

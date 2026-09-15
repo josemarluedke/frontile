@@ -296,7 +296,7 @@ export default class Drawer extends Component<DrawerSignature> {
     });
   }
   get transition() {
-    let options: OverlaySignature['Args']['transition'] = {
+    const options: OverlaySignature['Args']['transition'] = {
       name: `overlay-transition--slide-from-${this.placement}`
     };
 

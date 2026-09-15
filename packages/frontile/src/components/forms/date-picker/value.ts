@@ -1,8 +1,4 @@
-import {
-  formatter,
-  toDayKey,
-  fromDayKey
-} from '../../collections/calendar/utils';
+import { toDayKey, fromDayKey } from '../../collections/calendar/utils';
 import type {
   CalendarMode,
   CalendarValue,

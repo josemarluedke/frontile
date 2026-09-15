@@ -207,7 +207,7 @@ export default class Modal extends Component<ModalSignature> {
   }
 
   get transition() {
-    let options: OverlaySignature['Args']['transition'] = {
+    const options: OverlaySignature['Args']['transition'] = {
       name: 'overlay-transition--zoom'
     };
 

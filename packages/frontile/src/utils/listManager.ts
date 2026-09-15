@@ -1,4 +1,3 @@
-/* eslint-disable ember/no-runloop */
 import { tracked } from '@glimmer/tracking';
 import { cancel, debounce, later } from '@ember/runloop';
 import { modifier } from 'ember-modifier';

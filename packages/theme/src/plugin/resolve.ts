@@ -10,7 +10,7 @@ import type {
   PluginConfig,
   ConfigTheme
 } from '../types';
-import type { CSSRuleObject } from 'tailwindcss/types/config';
+import type { CSSRuleObject } from './types';
 import { defaultConfig } from './default-config';
 import { getContrastingColor } from '../colors/util';
 
@@ -23,8 +23,12 @@ const parsedColorsCache: Record<string, ParsedColor> = {};
 
 interface ResolvedConfig {
   variants: { name: string; definition: string[] }[];
-  utilities: CSSRuleObject | CSSRuleObject[];
-  base: CSSRuleObject | CSSRuleObject[];
+  // Every entry is a selector mapped to its own nested rule object (see the
+  // `resolved.utilities[cssSelector] = themeRules` assignment below) --
+  // never a bare CSS declaration -- so this is narrower than `base`, which
+  // `addBase` accepts as either shape.
+  utilities: Record<string, CSSRuleObject>;
+  base: CSSRuleObject;
   colors: Record<string, string>;
 }
 
@@ -162,7 +166,6 @@ function resolveThemes(
         themeRules[cssVar] = formatted;
         resolved.colors[colorName] = `var(${cssVar})`;
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.warn(`Failed to parse color "${colorName}":`, error);
       }
     }
@@ -191,7 +194,6 @@ function resolveThemes(
         themeRules[cssVar] = formatted;
         resolved.colors[onColorName] = `var(${cssVar})`;
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.warn(`Failed to generate on-color for "${colorName}":`, error);
       }
     }

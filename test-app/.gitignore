@@ -1,3 +1,5 @@
+/tmp/
+
 # compiled output
 /dist/
 /declarations/
@@ -7,6 +9,16 @@
 
 # misc
 /.env*
+# .env.development is committed intentionally: it pins Vite's NODE_ENV to
+# "development" for `ember test`/`ember build`. Without it, Vite's `build()`
+# API defaults NODE_ENV to "production" regardless of the --mode flag it is
+# invoked with (embroider passes --mode development for `EMBER_ENV=test`),
+# which silently swaps ember-source's real @ember/debug (deprecate/assert)
+# implementation for its stripped-for-production no-op stub. This bit CI
+# (a fresh clone, so the untracked file was absent) while every local
+# machine that had ever manually created the file kept working, masking the
+# bug for a long time. See PR #587.
+!/.env.development
 /.pnp*
 /.eslintcache
 /coverage/

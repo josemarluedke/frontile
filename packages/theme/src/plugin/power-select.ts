@@ -1,5 +1,5 @@
 import powerSelectPlugin from 'tailwindcss-ember-power-select';
-import type { PluginAPI } from 'tailwindcss/types/config';
+import type { PluginAPI } from './types';
 
 function registerPowerSelectComponents(
   addComponents: PluginAPI['addComponents']

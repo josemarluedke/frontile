@@ -1328,8 +1328,8 @@ module(
       // `w-[var(--fr-si-width)]` for an unrecognised name like
       // `.test-underline`. So the rule below first neutralises the theme's
       // geometry outright -- `translate: none` kills its translate-x/y,
-      // `width: auto` its w-[var(...)], `top: auto` its top-0, and the
-      // explicit `height` its h-[var(...)] -- and only then re-derives the box
+      // `width: auto` its width var, `top: auto` its top-0, and the
+      // explicit `height` its height var -- and only then re-derives the box
       // from the published custom properties alone: `left` straight from
       // --fr-si-x, and the width implied by `left` plus a `right` computed
       // from both properties. `.test-underline` is unlayered while Tailwind's

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, settled } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import { FormCheckboxGroup } from '@frontile/forms-legacy';
 import { cell } from 'ember-resources';
 

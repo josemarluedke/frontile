@@ -1,4 +1,3 @@
-/* eslint-disable ember/no-runloop */
 import Notification from './notification';
 import Timer from './timer';
 import { tracked } from '@glimmer/tracking';

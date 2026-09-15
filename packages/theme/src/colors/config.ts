@@ -1,6 +1,3 @@
-import * as colors from './palette';
-import * as absolute from './palette-absolute';
-
 import type { SemanticBaseColors } from './types';
 import tokens from './semantic';
 

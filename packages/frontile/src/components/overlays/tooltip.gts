@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { assert } from '@ember/debug';
 import { hash } from '@ember/helper';
 import { modifier } from 'ember-modifier';
-/* eslint-disable ember/no-runloop */
+
 import { next, cancel } from '@ember/runloop';
 import type { Timer as EmberTimer } from '@ember/runloop';
 import { useStyles } from '@frontile/theme';

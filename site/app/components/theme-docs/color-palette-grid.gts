@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { hash } from '@ember/helper';
 import ColorSwatch from './color-swatch';
 import { CheckIcon } from '../icons';
 

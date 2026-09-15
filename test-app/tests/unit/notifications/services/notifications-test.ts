@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { NotificationsService, Timer } from 'frontile/notifications';
+import { Timer } from 'frontile/notifications';
+import type { NotificationsService } from 'frontile/notifications';
 import { waitUntil, settled } from '@ember/test-helpers';
 
 module(

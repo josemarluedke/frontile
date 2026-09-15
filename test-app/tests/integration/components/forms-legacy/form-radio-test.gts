@@ -3,7 +3,6 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, find, settled } from '@ember/test-helpers';
 import 'qunit-dom';
 import FormRadio from '@frontile/forms-legacy/components/form-radio';
-import { fn } from '@ember/helper';
 import { cell } from 'ember-resources';
 
 module(

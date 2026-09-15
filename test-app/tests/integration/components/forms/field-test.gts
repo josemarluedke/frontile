@@ -14,7 +14,6 @@ import { cell } from 'ember-resources';
 import type { FormErrors } from 'frontile';
 import * as v from 'valibot';
 import sinon from 'sinon';
-import { array } from '@ember/helper';
 
 const noop = () => {};
 

@@ -1,4 +1,3 @@
-/* eslint-disable node/no-missing-require */
 const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = frontile({

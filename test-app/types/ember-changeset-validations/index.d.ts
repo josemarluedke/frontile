@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-type-alias */
-
 declare module 'ember-changeset-validations' {
   import {
     ValidationResult,

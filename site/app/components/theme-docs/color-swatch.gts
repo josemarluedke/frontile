@@ -1,8 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { fn } from '@ember/helper';
-import type { TOC } from '@ember/component/template-only';
 
 import {
   getColorLevelDescription,

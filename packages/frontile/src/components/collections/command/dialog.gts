@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 import { Overlay } from '../../overlays/overlay';

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, fillIn, settled } from '@ember/test-helpers';
+import { render, click, fillIn } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import {
