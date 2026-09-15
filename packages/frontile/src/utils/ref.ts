@@ -1,7 +1,7 @@
 import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 
-class Ref<T extends Element = Element> {
+export class Ref<T extends Element = Element> {
   @tracked current: T | undefined;
   #onChange?: (el: T | undefined) => void;
 
