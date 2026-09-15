@@ -80,9 +80,10 @@ module(
       await render(<template><Divider @variant="sketch" /></template>);
 
       assert.dom('[data-component="divider"]').hasClass('divider-sketch');
-      // 4px — the artwork's native height. It must win over the `h-px` the
-      // horizontal orientation sets.
-      assert.dom('[data-component="divider"]').hasClass('h-1');
+      // 8px — chosen for legibility, since the mask's wobble amplitude scales
+      // with the element's height and 4px reads as a straight hairline. It
+      // must win over the `h-px` the horizontal orientation sets.
+      assert.dom('[data-component="divider"]').hasClass('h-2');
       assert.dom('[data-component="divider"]').doesNotHaveClass('h-px');
     });
 
