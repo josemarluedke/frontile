@@ -43,7 +43,10 @@ interface DropdownSignature {
   Blocks: {
     default: [
       {
-        Trigger: WithBoundArgs<typeof Trigger, 'anchor' | 'toggle' | 'trigger'>;
+        Trigger: WithBoundArgs<
+          typeof Trigger,
+          'anchor' | 'toggle' | 'trigger' | 'setOpenedByKeyboard'
+        >;
         Menu: WithBoundArgs<
           typeof Menu,
           'toggle' | 'close' | 'Content' | 'closeOnItemSelect'
@@ -54,6 +57,20 @@ interface DropdownSignature {
 }
 
 class Dropdown extends Component<DropdownSignature> {
+  /**
+   * Whether the menu was opened from the keyboard.
+   *
+   * The WAI-ARIA menu button pattern opens onto an item when the keyboard
+   * opened the menu, and onto nothing when a pointer did -- so the trigger has
+   * to tell the menu how it was reached. `Sub` already does this for submenus
+   * through `OpenSource`; this is the root's equivalent.
+   */
+  @tracked openedByKeyboard = false;
+
+  setOpenedByKeyboard = (value: boolean): void => {
+    this.openedByKeyboard = value;
+  };
+
   <template>
     <Popover
       @placement={{@placement}}
@@ -68,7 +85,11 @@ class Dropdown extends Component<DropdownSignature> {
       {{yield
         (hash
           Trigger=(component
-            Trigger anchor=p.anchor trigger=p.trigger toggle=p.toggle
+            Trigger
+            anchor=p.anchor
+            trigger=p.trigger
+            toggle=p.toggle
+            setOpenedByKeyboard=this.setOpenedByKeyboard
           )
           Menu=(component
             Menu
@@ -76,6 +97,7 @@ class Dropdown extends Component<DropdownSignature> {
             toggle=p.toggle
             close=p.close
             closeOnItemSelect=@closeOnItemSelect
+            openedByKeyboard=this.openedByKeyboard
           )
         )
       }}
@@ -96,6 +118,14 @@ interface TriggerArgs extends Pick<
    * @internal
    */
   trigger: ModifierLike<{ Element: HTMLElement }>;
+
+  /**
+   * @internal
+   *
+   * Reports how this open was initiated, so the menu can decide whether to
+   * land on an item.
+   */
+  setOpenedByKeyboard: (value: boolean) => void;
 
   /**
    * @internal
@@ -134,6 +164,14 @@ class Trigger extends Component<TriggerSignature> {
   };
 
   /**
+   * A pointer press opens onto nothing: moving the highlight somewhere the
+   * user never pointed is exactly what the menu button pattern avoids.
+   */
+  handlePointerDown = () => {
+    this.args.setOpenedByKeyboard(false);
+  };
+
+  /**
    * Enter and Space have to be handled here rather than left to the button's
    * native activation. The trigger renders Frontile's Button, whose `press`
    * modifier calls preventDefault on Enter/Space keydown — that is deliberate,
@@ -152,6 +190,7 @@ class Trigger extends Component<TriggerSignature> {
       event.key === 'Enter' ||
       event.key === ' '
     ) {
+      this.args.setOpenedByKeyboard(true);
       this.args.toggle();
     }
   };
@@ -162,6 +201,7 @@ class Trigger extends Component<TriggerSignature> {
       {{this.anchor}}
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
+      {{on "pointerdown" this.handlePointerDown}}
       @type="button"
       @variant={{@variant}}
       @appearance={{@appearance}}
@@ -264,6 +304,14 @@ interface MenuArgs
 
   /**
    * @internal
+   *
+   * Set by the root `Trigger` when the keyboard opened the menu, so the first
+   * row is highlighted per the WAI-ARIA menu button pattern.
+   */
+  openedByKeyboard?: boolean;
+
+  /**
+   * @internal
    */
   autoActivateMode?: 'none' | 'first';
 
@@ -343,10 +391,17 @@ class Menu extends Component<MenuSignature> {
   /**
    * A submenu is handed its level's context by the `Sub` that renders it. The
    * root builds its own, from the arguments the consumer wrote once.
+   *
+   * A submenu inherits that context, but may override any part of it with its
+   * own arguments -- so a navigation menu can hold a multi-select submenu
+   * without the root pretending to select, which is the shape every faceted
+   * filter menu needs. Inheritance remains the default: a submenu that
+   * declares nothing keeps using the root's settings, and gets the identical
+   * context object back so nothing downstream sees a new identity per render.
    */
   get context(): MenuContext {
     if (this.args.context) {
-      return this.args.context;
+      return this.#withOwnOverrides(this.args.context);
     }
 
     return createRootMenuContext({
@@ -365,6 +420,46 @@ class Menu extends Component<MenuSignature> {
       disableTransitions: this.args.disableTransitions,
       transitionDuration: this.args.transitionDuration
     });
+  }
+
+  /**
+   * Layers this level's own arguments over the inherited context.
+   *
+   * Only arguments actually written on this level count: reading them
+   * unconditionally would overwrite inherited values with `undefined` and
+   * silently break inheritance, which is the default and by far the common
+   * case.
+   */
+  #withOwnOverrides(inherited: MenuContext): MenuContext {
+    const overrides: Partial<MenuContext> = {};
+
+    if (this.args.selectionMode !== undefined) {
+      overrides.selectionMode = this.args.selectionMode;
+    }
+    if (this.args.selectedKeys !== undefined) {
+      overrides.selectedKeys = this.args.selectedKeys;
+    }
+    if (this.args.disabledKeys !== undefined) {
+      overrides.disabledKeys = this.args.disabledKeys;
+    }
+    if (this.args.allowEmpty !== undefined) {
+      overrides.allowEmpty = this.args.allowEmpty;
+    }
+    if (this.args.onAction !== undefined) {
+      overrides.onAction = this.args.onAction;
+    }
+    if (this.args.onSelectionChange !== undefined) {
+      overrides.onSelectionChange = this.args.onSelectionChange;
+    }
+    if (this.args.closeOnItemSelect !== undefined) {
+      overrides.closeOnItemSelect = this.args.closeOnItemSelect;
+    }
+
+    if (Object.keys(overrides).length === 0) {
+      return inherited;
+    }
+
+    return { ...inherited, ...overrides };
   }
 
   closeRoot = () => {
@@ -408,7 +503,13 @@ class Menu extends Component<MenuSignature> {
   }
 
   get autoActivateMode(): 'none' | 'first' {
-    return this.args.autoActivateMode ?? 'none';
+    if (this.args.autoActivateMode) {
+      return this.args.autoActivateMode;
+    }
+
+    // A submenu is told how it was opened by its `Sub`, which sets
+    // `autoActivateMode` above. The root is told by its own trigger.
+    return this.args.openedByKeyboard ? 'first' : 'none';
   }
 
   /**

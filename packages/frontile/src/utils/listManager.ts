@@ -215,6 +215,18 @@ class ListManager {
   }
 
   /**
+   * How this list selects, for consumers that have to render differently
+   * depending on it.
+   *
+   * A menu row, for one, is only a `menuitemcheckbox` or `menuitemradio` when
+   * the list actually selects -- and the row is handed the manager, not the
+   * mode, so it has to be able to ask.
+   */
+  get selectionMode(): SelectionMode {
+    return this.args.selectionMode ?? 'none';
+  }
+
+  /**
    * Registered items that are still in the document, in DOM order.
    *
    * The order cannot be maintained eagerly as items register: Glimmer moves

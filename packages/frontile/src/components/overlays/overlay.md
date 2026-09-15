@@ -664,19 +664,26 @@ semantic role is the consuming component's job, which is why Modal and Drawer ad
 `role="dialog"` themselves. If you build directly on Overlay, give it a role and an
 accessible name.
 
-| Behavior       | Detail                                                                     |
-| -------------- | -------------------------------------------------------------------------- |
-| Focus on open  | Moves into the overlay; `ember-focus-trap` keeps it there                  |
-| Focus trap     | Disable with `@disableFocusTrap={{true}}`, or tune via `@focusTrapOptions` |
+| Behavior           | Detail                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| Focus on open      | Moves into the overlay; `ember-focus-trap` keeps it there                                             |
+| Focus trap         | Disable with `@disableFocusTrap={{true}}`, or tune via `@focusTrapOptions`                            |
 | Focus without trap | Still auto-focuses the overlay when `@disableFocusTrap={{true}}`, unless `@preventAutoFocus={{true}}` |
-| Focus on close | Returns to the previously focused element, unless `@preventFocusRestore`   |
-| `Escape`       | Closes, unless `@closeOnEscapeKey={{false}}`                               |
-| Backdrop click | Closes, unless `@closeOnOutsideClick={{false}}`                            |
-| Body scroll    | Blocked while open, unless `@blockScroll={{false}}`                        |
-| Nested scroll  | Reference counted, so closing an inner overlay keeps the outer lock        |
+| Focus on close     | Returns to the previously focused element, unless `@preventFocusRestore`                              |
+| `Escape`           | Closes, unless `@closeOnEscapeKey={{false}}`                                                          |
+| Backdrop click     | Closes, unless `@closeOnOutsideClick={{false}}`                                                       |
+| Body scroll        | Blocked while open, unless `@blockScroll={{false}}`                                                   |
+| Nested scroll      | Reference counted, so closing an inner overlay keeps the outer lock                                   |
 
 **The overlay needs at least one focusable element inside it.** A focus trap with nothing to
 focus leaves the keyboard stranded, and nothing warns you at runtime.
+
+`@focusTrapOptions` is merged over the defaults (`clickOutsideDeactivates: true`,
+`allowOutsideClick: true`), so naming one option does not cost you the rest. Setting either
+of those to `false` explicitly still holds outside clicks inside the trap. `setReturnFocus`
+is the supported way to send focus somewhere other than the trigger when the overlay closes —
+it runs when the trap tears down, which is after the close transition, so focusing an element
+yourself beforehand is undone.
 
 Overlays that block scroll are reference counted, so a Modal that opens a Drawer stays
 locked until the last of them closes. Whatever inline `overflow` the page had before the

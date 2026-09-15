@@ -283,10 +283,26 @@ class ListboxItem extends Component<ListboxItemSignature> {
   }
 
   get role() {
-    if (this.args.type === 'menu') {
+    if (this.args.type !== 'menu') {
+      return 'option';
+    }
+
+    // A row that opens a submenu is never itself checkable: activating it
+    // reveals another menu rather than toggling a value, so it stays a plain
+    // `menuitem` even in a list that selects.
+    if (this.args.hasSubmenu) {
       return 'menuitem';
     }
-    return 'option';
+
+    if (this.manager.selectionMode === 'multiple') {
+      return 'menuitemcheckbox';
+    }
+
+    if (this.manager.selectionMode === 'single') {
+      return 'menuitemradio';
+    }
+
+    return 'menuitem';
   }
 
   /**
@@ -297,6 +313,21 @@ class ListboxItem extends Component<ListboxItemSignature> {
    */
   get ariaSelected(): 'true' | 'false' | undefined {
     if (this.role !== 'option') {
+      return undefined;
+    }
+    return this.listItem?.isSelected ? 'true' : 'false';
+  }
+
+  /**
+   * The menu counterpart to `aria-selected`.
+   *
+   * Rendered only for the two checkable menu roles: `aria-checked` on a plain
+   * `menuitem` is invalid ARIA, and a checkable row that omits it announces no
+   * state at all, which is how a selectable menu ends up sounding identical to
+   * a list of commands.
+   */
+  get ariaChecked(): 'true' | 'false' | undefined {
+    if (this.role !== 'menuitemcheckbox' && this.role !== 'menuitemradio') {
       return undefined;
     }
     return this.listItem?.isSelected ? 'true' : 'false';
@@ -348,6 +379,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       role={{this.role}}
       aria-labelledby={{this.labelId}}
       aria-selected={{this.ariaSelected}}
+      aria-checked={{this.ariaChecked}}
       aria-haspopup={{this.ariaHasPopup}}
       aria-expanded={{this.ariaExpanded}}
       aria-controls={{if @hasSubmenu @submenuId}}

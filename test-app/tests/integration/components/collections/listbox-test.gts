@@ -1549,9 +1549,9 @@ module(
           .hasAttribute('aria-multiselectable', 'true');
       });
 
-      test('menu items do not carry aria-selected', async function (assert) {
-        // `aria-selected` on a plain menuitem is invalid ARIA - menus convey
-        // state via aria-checked, and only as menuitemcheckbox/menuitemradio.
+      test('menu items convey selection as aria-checked, never aria-selected', async function (assert) {
+        // `aria-selected` on a menuitem is invalid ARIA - menus convey state
+        // via aria-checked, and only as menuitemcheckbox/menuitemradio.
         const animals = ['cheetah', 'crocodile'];
         const selectedKeys = cell<string[]>(['cheetah']);
 
@@ -1571,13 +1571,25 @@ module(
           </template>
         );
 
-        assert.dom('[data-key="cheetah"]').hasAttribute('role', 'menuitem');
+        assert
+          .dom('[data-key="cheetah"]')
+          .hasAttribute(
+            'role',
+            'menuitemradio',
+            'a single-selection menu row is a radio item'
+          );
         assert
           .dom('[data-key="cheetah"]')
           .doesNotHaveAttribute(
             'aria-selected',
             'selected menu item has no aria-selected'
           );
+        assert
+          .dom('[data-key="cheetah"]')
+          .hasAttribute('aria-checked', 'true', 'it is checked instead');
+        assert
+          .dom('[data-key="crocodile"]')
+          .hasAttribute('aria-checked', 'false');
         assert
           .dom('[data-component="listbox"]')
           .doesNotHaveAttribute('aria-multiselectable');

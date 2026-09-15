@@ -10,6 +10,7 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Dropdown } from 'frontile';
 import { cell } from 'ember-resources';
+import { array } from '@ember/helper';
 import { settled } from '@ember/test-helpers';
 import { trackDeprecations } from '../../../helpers/deprecations';
 
@@ -284,6 +285,58 @@ module(
       assert.dom('[data-component="listbox"]').exists();
     });
 
+    test('opening with the keyboard lands on the first item', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item|>
+              <Item @key="profile">My Profile</Item>
+              <Item @key="settings">Settings</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await triggerKeyEvent(
+        '[data-test-id="dropdown-trigger"]',
+        'keyup',
+        'ArrowDown'
+      );
+
+      assert
+        .dom('[data-key="profile"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'a keyboard open highlights the first row, per the menu button pattern'
+        );
+    });
+
+    test('opening with a pointer highlights nothing', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item|>
+              <Item @key="profile">My Profile</Item>
+              <Item @key="settings">Settings</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+
+      assert
+        .dom('[data-key="profile"]')
+        .hasAttribute(
+          'data-active',
+          'false',
+          'a pointer open moves the highlight nowhere the user did not point'
+        );
+    });
+
     test('it opens with Enter on the trigger', async function (assert) {
       await render(
         <template>
@@ -467,6 +520,293 @@ module(
         selected,
         ['nested'],
         'the root selection handler fired'
+      );
+    });
+
+    test('a selectable menu item exposes its state as menuitemcheckbox/aria-checked', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @selectionMode="multiple"
+              @selectedKeys={{array "edit"}}
+              @closeOnItemSelect={{false}}
+              @disableTransitions={{true}}
+              as |Item|
+            >
+              <Item @key="edit">Edit</Item>
+              <Item @key="delete">Delete</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+
+      assert
+        .dom('[data-key="edit"]')
+        .hasAttribute(
+          'role',
+          'menuitemcheckbox',
+          'a multiple-selection menu row is a checkbox item'
+        );
+      assert
+        .dom('[data-key="edit"]')
+        .hasAttribute('aria-checked', 'true', 'the selected row is checked');
+      assert
+        .dom('[data-key="delete"]')
+        .hasAttribute(
+          'aria-checked',
+          'false',
+          'an unselected row reports unchecked rather than omitting the state'
+        );
+    });
+
+    test('a single-selection menu item is a menuitemradio', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @selectionMode="single"
+              @selectedKeys={{array "asc"}}
+              @closeOnItemSelect={{false}}
+              @disableTransitions={{true}}
+              as |Item|
+            >
+              <Item @key="asc">Ascending</Item>
+              <Item @key="desc">Descending</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+
+      assert
+        .dom('[data-key="asc"]')
+        .hasAttribute('role', 'menuitemradio', 'single selection is a radio');
+      assert.dom('[data-key="asc"]').hasAttribute('aria-checked', 'true');
+      assert.dom('[data-key="desc"]').hasAttribute('aria-checked', 'false');
+    });
+
+    test('a menu without selection keeps plain menuitem rows', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item|>
+              <Item @key="edit">Edit</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+
+      assert.dom('[data-key="edit"]').hasAttribute('role', 'menuitem');
+      assert
+        .dom('[data-key="edit"]')
+        .doesNotHaveAttribute(
+          'aria-checked',
+          'a row that cannot be checked carries no checked state'
+        );
+    });
+
+    test('a submenu trigger stays a plain menuitem inside a selection menu', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @selectionMode="multiple"
+              @closeOnItemSelect={{false}}
+              @disableTransitions={{true}}
+              as |Item Sub|
+            >
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+
+      assert
+        .dom('[data-test-id="dropdown-submenu-trigger"]')
+        .hasAttribute(
+          'role',
+          'menuitem',
+          'a row that opens a submenu is not itself checkable'
+        );
+      assert
+        .dom('[data-test-id="dropdown-submenu-trigger"]')
+        .doesNotHaveAttribute('aria-checked');
+    });
+
+    test('a submenu may declare its own selection, overriding the inherited one', async function (assert) {
+      const submenuSelection = cell<string[]>([]);
+      const onSubSelectionChange = (keys: string[]) => {
+        submenuSelection.current = keys;
+      };
+
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @closeOnItemSelect={{false}}
+              @disableTransitions={{true}}
+              as |Item Sub|
+            >
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>Scope</s.Trigger>
+                <s.Menu
+                  @selectionMode="multiple"
+                  @selectedKeys={{submenuSelection.current}}
+                  @onSelectionChange={{onSubSelectionChange}}
+                  as |Item|
+                >
+                  <Item @key="global">Global</Item>
+                  <Item @key="market">Market</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+
+      assert
+        .dom('[data-key="global"]')
+        .hasAttribute(
+          'role',
+          'menuitemcheckbox',
+          "the submenu's own selectionMode drives its rows"
+        );
+      assert
+        .dom('[data-key="edit"]')
+        .hasAttribute(
+          'role',
+          'menuitem',
+          'the parent level, which declared no selection, is unaffected'
+        );
+
+      await click('[data-key="global"]');
+      await click('[data-key="market"]');
+
+      assert.deepEqual(
+        submenuSelection.current,
+        ['global', 'market'],
+        "the submenu's own handler receives its own selection"
+      );
+      assert
+        .dom('[data-key="global"]')
+        .hasAttribute(
+          'aria-checked',
+          'true',
+          'and the rows report the checked state back'
+        );
+    });
+
+    test('a submenu with no selection args of its own still inherits the root', async function (assert) {
+      let selected: string[] = [];
+      const onSelectionChange = (keys: string[]) => {
+        selected = keys;
+      };
+
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @selectionMode="multiple"
+              @onSelectionChange={{onSelectionChange}}
+              @closeOnItemSelect={{false}}
+              @disableTransitions={{true}}
+              as |Item Sub|
+            >
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+
+      assert
+        .dom('[data-key="nested"]')
+        .hasAttribute(
+          'role',
+          'menuitemcheckbox',
+          'the inherited selectionMode still reaches the submenu'
+        );
+
+      await click('[data-key="nested"]');
+      assert.deepEqual(selected, ['nested'], 'the root handler still fires');
+    });
+
+    test("a submenu's own @onAction takes precedence over the inherited one", async function (assert) {
+      const rootActions: string[] = [];
+      const subActions: string[] = [];
+      const onRootAction = (key: string) => rootActions.push(key);
+      const onSubAction = (key: string) => subActions.push(key);
+
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @onAction={{onRootAction}}
+              @closeOnItemSelect={{false}}
+              @disableTransitions={{true}}
+              as |Item Sub|
+            >
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu @onAction={{onSubAction}} as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+      await click('[data-key="nested"]');
+
+      assert.deepEqual(subActions, ['nested'], "the submenu's handler fired");
+      assert.deepEqual(
+        rootActions,
+        [],
+        'and the inherited one did not fire as well'
+      );
+
+      await click('[data-key="edit"]');
+      assert.deepEqual(
+        rootActions,
+        ['edit'],
+        'the root level still uses its own handler'
       );
     });
 
