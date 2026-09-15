@@ -11,6 +11,23 @@ export default defineConfig({
     babel({
       babelHelpers: 'runtime',
       extensions
-    })
+    }),
+    {
+      name: 'debug-log-resolve-config',
+      configResolved(config) {
+        // eslint-disable-next-line no-console
+        console.log(
+          'DEBUG_VITE_CONFIG',
+          JSON.stringify({
+            mode: config.mode,
+            command: config.command,
+            conditions: config.resolve?.conditions,
+            resolveMainFields: config.resolve?.mainFields,
+            NODE_ENV: process.env.NODE_ENV,
+            EMBER_ENV: process.env.EMBER_ENV
+          })
+        );
+      }
+    }
   ]
 });
