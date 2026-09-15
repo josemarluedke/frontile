@@ -14,7 +14,7 @@
     "build": "vite build",
     "start": "vite",
     "lint:types": "glint",
-    "test": "ember test",
+    "test": "node -e \"console.log('DEBUG_NODE_ENV_AT_EMBER_TEST_START', JSON.stringify(process.env.NODE_ENV))\" && ember test",
     "ember": "ember",
     "try:one": "ember try:one",
     "test:ember": "vite build --mode development && ember test --path dist"
