@@ -7,6 +7,7 @@ import { ButtonGroup } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { deprecate } from '@ember/debug';
 
 module(
   'Integration | Component | ButtonGroup | @frontile/buttons',
@@ -147,6 +148,41 @@ module(
           assert.dom('[data-test-id="button"]').hasClass('button-outline');
         });
 
+        test('DIAGNOSTIC 1: bare synthetic deprecate() reaches its own handler', function (assert) {
+          const { ids } = trackDeprecations();
+
+          deprecate('diagnostic synthetic', false, {
+            id: 'diagnostic.synthetic-inline',
+            until: '1.0.0',
+            for: 'diagnostic',
+            since: { available: '1.0.0', enabled: '1.0.0' }
+          });
+
+          assert.deepEqual(
+            ids,
+            ['diagnostic.synthetic-inline'],
+            `DIAGNOSTIC 1 saw: ${JSON.stringify(ids)}; userAgent=${navigator.userAgent}`
+          );
+        });
+
+        test('DIAGNOSTIC 2: same shape as the real appearance test, duplicated', async function (assert) {
+          const { ids } = trackDeprecations();
+
+          await render(
+            <template>
+              <ButtonGroup @appearance="outlined" as |g|>
+                <g.Button data-test-id="button">x</g.Button>
+              </ButtonGroup>
+            </template>
+          );
+
+          assert.deepEqual(
+            ids,
+            ['frontile.button-group.appearance'],
+            `DIAGNOSTIC 2 saw: ${JSON.stringify(ids)}`
+          );
+        });
+
         test('ButtonGroup @appearance deprecates exactly once', async function (assert) {
           const { ids } = trackDeprecations();
 
@@ -159,7 +195,11 @@ module(
           );
 
           assert.dom('[data-test-id="button"]').hasClass('button-outline');
-          assert.deepEqual(ids, ['frontile.button-group.appearance']);
+          assert.deepEqual(
+            ids,
+            ['frontile.button-group.appearance'],
+            `real test saw: ${JSON.stringify(ids)}`
+          );
         });
       });
 
