@@ -35,10 +35,55 @@ import { Divider } from 'frontile';
 </template>
 ```
 
+## Variants
+
+`@variant='sketch'` swaps the flat rule for a hand-drawn one. It stretches to
+any width without distorting: the artwork is a near-horizontal filled shape, so
+scaling it horizontally changes only how often it wobbles, never its thickness.
+
+```gts preview
+import { Divider } from 'frontile';
+
+<template>
+  <div class='bg-surface-card not-prose w-full max-w-sm rounded-2xl p-6'>
+    <ul class='text-neutral-strong space-y-2'>
+      <li>Parental controls</li>
+      <li>Guest network</li>
+      <li>Security &amp; malware blocking</li>
+    </ul>
+    <Divider @variant='sketch' @class='my-5' />
+    <div class='text-neutral-strong flex items-baseline justify-between'>
+      <span>Starting at</span>
+      <span><strong>$10.00</strong> /mo</span>
+    </div>
+  </div>
+</template>
+```
+
+The line takes its colour from the element's background, so it follows the
+theme in light and dark mode, and a utility class recolours it:
+
+```gts preview
+import { Divider } from 'frontile';
+
+<template>
+  <div class='not-prose space-y-4 p-2'>
+    <Divider @variant='sketch' />
+    <Divider @variant='sketch' @class='bg-primary' />
+    <Divider @variant='sketch' @class='bg-danger' />
+  </div>
+</template>
+```
+
+`sketch` is horizontal only. The artwork cannot be squashed into a vertical
+rule, so `@orientation='vertical'` ignores it and renders the plain line.
+
 ## Orientation
 
 `@orientation='vertical'` renders a `<div>` instead, because `<hr>` cannot
 express a vertical rule.
+
+`@variant='sketch'` has no effect on a vertical divider — see Variants.
 
 The vertical divider is styled `h-full`, which resolves against its parent — so
 the parent needs a **definite** height. `items-stretch` alone is not enough:
