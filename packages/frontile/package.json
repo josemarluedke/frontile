@@ -105,6 +105,7 @@
     "ember-focus-trap": "^2.0.0",
     "ember-modifier": "^4.3.0",
     "ember-velcro": "^2.2.0",
+    "focus-trap": "^8.0.0",
     "focus-visible": "^5.2.1",
     "form-data-utils": "^0.6.0",
     "fuzzysort": "^4.0.2"
