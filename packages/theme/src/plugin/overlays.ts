@@ -1,4 +1,4 @@
-import type { CSSRuleObject, PluginAPI } from 'tailwindcss/types/config';
+import type { CSSRuleObject, PluginAPI } from './types';
 
 function drawerSizes(
   addComponents: PluginAPI['addComponents'],

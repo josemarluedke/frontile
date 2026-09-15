@@ -64,8 +64,8 @@
     "lodash.kebabcase": "^4.1.1",
     "lodash.mapkeys": "^4.6.0",
     "mini-svg-data-uri": "^1.4.4",
-    "tailwind-merge": "^2.6.1",
-    "tailwind-variants": "^0.3.1",
+    "tailwind-merge": "^3.7.0",
+    "tailwind-variants": "^3.3.1",
     "tailwindcss-ember-power-select": "^0.4.3"
   },
   "devDependencies": {
@@ -92,7 +92,7 @@
     "ember-source": "^7.3.0",
     "rollup": "^4.63.2",
     "rollup-plugin-copy": "^3.5.0",
-    "tailwindcss": "^3.4.19",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
