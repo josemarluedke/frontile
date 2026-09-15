@@ -47,3 +47,6 @@ packages/docs/tmp/
 .superpowers/
 .worktrees/
 docs/superpowers/
+
+# Impeccable question-server scratch output
+.impeccable/
