@@ -7,34 +7,48 @@ import { tv } from 'tailwind-variants';
 import { FormFeedback, type FormFeedbackSignature } from 'frontile';
 import { cell } from 'ember-resources';
 import { trackDeprecations } from '../../../helpers/deprecations';
-
-registerCustomStyles({
-  formFeedback: tv({
-    base: 'form-field-feedback' as never,
-    variants: {
-      status: {
-        primary: 'status-primary',
-        secondary: 'status-secondary',
-        success: 'status-success',
-        warning: 'status-warning',
-        danger: 'form-field-feedback--error'
-      },
-      size: {
-        sm: 'form-field-feedback--sm',
-        md: '',
-        lg: 'form-field-feedback--lg'
-      }
-    },
-    defaultVariants: {
-      size: 'sm'
-    }
-  }) as never
-});
+import { realStyles } from '../../../helpers/real-theme-styles';
 
 module(
   'Integration | Component | @frontile/forms/FormFeedback',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    // `registerCustomStyles` writes to a module-level slot shared by every
+    // test file (see `packages/theme/src/index.ts`), and `forms-legacy/
+    // form-field/feedback-test.gts` registers its own, incompatible
+    // `formFeedback` override. Which one is in effect for THIS module's tests
+    // would otherwise depend on load order between the two files -- scoping
+    // the override to this module's own before/after keeps it correct
+    // regardless of that order.
+    hooks.before(function () {
+      registerCustomStyles({
+        formFeedback: tv({
+          base: 'form-field-feedback' as never,
+          variants: {
+            status: {
+              primary: 'status-primary',
+              secondary: 'status-secondary',
+              success: 'status-success',
+              warning: 'status-warning',
+              danger: 'form-field-feedback--error'
+            },
+            size: {
+              sm: 'form-field-feedback--sm',
+              md: '',
+              lg: 'form-field-feedback--lg'
+            }
+          },
+          defaultVariants: {
+            size: 'sm'
+          }
+        }) as never
+      });
+    });
+
+    hooks.after(function () {
+      registerCustomStyles({ formFeedback: realStyles.formFeedback });
+    });
 
     const messages = cell<string[] | string>();
     const status = cell<FormFeedbackSignature['Args']['status']>('danger');

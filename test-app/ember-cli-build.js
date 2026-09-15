@@ -1,8 +1,15 @@
-'use strict';
-
+'use strict';;
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
-module.exports = function (defaults) {
+const {
+  compatBuild
+} = require("@embroider/compat");
+
+module.exports = async function(defaults) {
+  const {
+    buildOnce
+  } = await import("@embroider/vite");
+
   const app = new EmberApp(defaults, {
     'ember-cli-babel': {
       enableTypeScriptTransform: true
@@ -29,36 +36,5 @@ module.exports = function (defaults) {
 */
 
   const { maybeEmbroider } = require('@embroider/test-setup');
-  return maybeEmbroider(app, {
-    packagerOptions: {
-      webpackConfig: {
-        module: {
-          rules: [
-            {
-              test: /\.css$/i,
-              use: [
-                {
-                  loader: 'postcss-loader',
-                  options: {
-                    postcssOptions: {
-                      config: 'postcss.config.js'
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              test: /\.(woff|woff2|ttf|eot|otf)$/i,
-              type: 'asset/resource'
-            }
-          ]
-        }
-      }
-    },
-    // staticAddonTestSupportTrees: true,
-    // staticAddonTrees: true,
-    // // staticInvokables: true,
-    // staticEmberSource: true
-    // splitAtRoutes: ['route.name'], // can also be a RegExp
-  });
+  return compatBuild(app, buildOnce);
 };
