@@ -8,7 +8,7 @@ export interface ChangesetFormFieldsSelectArgs
   extends BaseArgs, FormSelectArgs {
   onChange: (selection: unknown, select: unknown, event?: Event) => void;
   onFocusOut?: (select: unknown, event: FocusEvent) => void;
-  onClose?: (select: unknown, e: Event) => boolean | undefined;
+  onClose?: (select: unknown, e: Event | undefined) => boolean | undefined;
 }
 
 export interface ChangesetFormFieldsSelectSignature extends BaseSignature {
