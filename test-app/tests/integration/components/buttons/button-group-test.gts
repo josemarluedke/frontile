@@ -191,6 +191,13 @@ module(
           );
         });
 
+        test('DIAGNOSTIC 1d: source of deprecate/registerDeprecationHandler -- real impl or a stripped stub?', function (assert) {
+          assert.false(
+            true,
+            `deprecate.toString()=${deprecate.toString()} ||| registerDeprecationHandler.toString()=${registerDeprecationHandler.toString()}`
+          );
+        });
+
         test('DIAGNOSTIC 1c: identity check -- same @ember/debug module instance in both files?', function (assert) {
           assert.strictEqual(
             registerDeprecationHandler,
