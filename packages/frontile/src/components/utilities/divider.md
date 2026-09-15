@@ -45,7 +45,7 @@ scaling it horizontally changes only how often it wobbles, never its thickness.
 import { Divider } from 'frontile';
 
 <template>
-  <div class='bg-surface-card not-prose w-full max-w-sm rounded-2xl p-6'>
+  <div class='border border-neutral-soft not-prose w-full max-w-sm rounded-2xl p-6'>
     <ul class='text-neutral-strong space-y-2'>
       <li>Parental controls</li>
       <li>Guest network</li>
