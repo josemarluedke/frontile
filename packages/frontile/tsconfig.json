@@ -1,15 +1,13 @@
 {
   "extends": "@ember/library-tsconfig",
   "include": ["src/**/*", "unpublished-development-types/**/*"],
-  "glint": {
-    "environment": ["ember-template-imports", "ember-loose"]
-  },
   "compilerOptions": {
     "allowJs": true,
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "rootDir": "src",
     "declarationDir": "declarations",
+    "declaration": true,
     "emitDeclarationOnly": true,
     "noEmit": false,
     "noEmitOnError": false // https://github.com/typed-ember/glint/issues/599

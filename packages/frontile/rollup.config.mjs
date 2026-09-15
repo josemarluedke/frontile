@@ -34,8 +34,7 @@ export default {
       'utilities.js',
       'navigation.js',
       'disclosure.js',
-      'test-support.js',
-      'template-registry.js'
+      'test-support.js'
     ]),
 
     // Services need app-js registration for Ember's service lookup

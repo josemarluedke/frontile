@@ -59,10 +59,15 @@ const STATUS_CONFIG = {
 
 /**
  * `true` when either half of a content pair is present. Used for
- * `(or @description (has-block "description"))` in the template, since
- * `has-block` is a template-only keyword and cannot be read from JS.
+ * `(hasEither @description (has-block "description"))` in the template,
+ * since `has-block` is a template-only keyword and cannot be read from JS.
+ *
+ * Named to avoid `ember-source`'s built-in `{{or}}` keyword, which always
+ * shadows a same-named local identifier in curly-parens position and would
+ * otherwise silently take over the call, returning `string | boolean`
+ * instead of the strict `boolean` `classNames` requires.
  */
-function or(arg1: unknown, arg2: unknown): boolean {
+function hasEither(arg1: unknown, arg2: unknown): boolean {
   return !!(arg1 || arg2);
 }
 
@@ -245,7 +250,10 @@ class Alert extends Component<AlertSignature> {
   };
 
   <template>
-    {{#let (or @description (has-block "description")) as |hasDescription|}}
+    {{#let
+      (hasEither @description (has-block "description"))
+      as |hasDescription|
+    }}
       {{#let (this.classNames hasDescription) as |classNames|}}
         <div
           class={{classNames.base}}
