@@ -75,5 +75,62 @@ module(
         'data-component="divider" marks the root only'
       );
     });
+
+    test('@variant="sketch" applies the sketch styles', async function (assert) {
+      await render(<template><Divider @variant="sketch" /></template>);
+
+      assert.dom('[data-component="divider"]').hasClass('divider-sketch');
+      // 4px — the artwork's native height. It must win over the `h-px` the
+      // horizontal orientation sets.
+      assert.dom('[data-component="divider"]').hasClass('h-1');
+      assert.dom('[data-component="divider"]').doesNotHaveClass('h-px');
+    });
+
+    test('@variant="sketch" keeps the element and its semantics', async function (assert) {
+      await render(<template><Divider @variant="sketch" /></template>);
+
+      assert.dom('[data-component="divider"]').hasTagName('hr');
+      assert
+        .dom('[data-component="divider"]')
+        .hasAttribute('role', 'separator');
+    });
+
+    // The artwork is a near-horizontal ribbon. Squashed into a 1px-wide column
+    // it renders as a stub covering part of the height, not a rule — so the
+    // theme scopes the mask to horizontal and vertical falls back to a plain
+    // line. This test is the guard on that scoping.
+    test('@variant="sketch" is ignored for a vertical divider', async function (assert) {
+      await render(
+        <template>
+          <Divider @orientation="vertical" @variant="sketch" />
+        </template>
+      );
+
+      assert
+        .dom('[data-component="divider"]')
+        .doesNotHaveClass('divider-sketch');
+      assert.dom('[data-component="divider"]').hasClass('w-px');
+      assert
+        .dom('[data-component="divider"]')
+        .hasAttribute('aria-orientation', 'vertical');
+    });
+
+    test('@variant="sketch" composes with @class and @as', async function (assert) {
+      await render(
+        <template>
+          <Divider @variant="sketch" @class="bg-primary" data-test-colored />
+          <Divider @variant="sketch" @as="li" data-test-as />
+        </template>
+      );
+
+      assert.dom('[data-test-colored]').hasClass('divider-sketch');
+      // The artwork carries no colour of its own — it is a mask — so the line's
+      // colour is just the element's background, and overriding it is a plain
+      // utility override.
+      assert.dom('[data-test-colored]').hasClass('bg-primary');
+      assert.dom('[data-test-colored]').doesNotHaveClass('bg-neutral-subtle');
+      assert.dom('[data-test-as]').hasTagName('li');
+      assert.dom('[data-test-as]').hasClass('divider-sketch');
+    });
   }
 );

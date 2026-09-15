@@ -42,6 +42,18 @@ const Divider: TOC<{
     as?: string;
 
     /**
+     * The divider's visual treatment. `sketch` renders the hand-drawn rule in
+     * place of the flat line.
+     *
+     * Horizontal only — the artwork is a near-horizontal ribbon and cannot be
+     * squashed into a vertical rule, so a vertical divider ignores this and
+     * renders a plain line.
+     *
+     * @defaultValue 'solid'
+     */
+    variant?: 'solid' | 'sketch';
+
+    /**
      * Custom class name, it will override the default ones using Tailwind Merge
      * library.
      */
@@ -51,7 +63,9 @@ const Divider: TOC<{
 }> = <template>
   {{#let (element (getTag @orientation @as)) as |Tag|}}
     <Tag
-      class={{divider (hash class=@class orientation=@orientation)}}
+      class={{divider
+        (hash class=@class orientation=@orientation variant=@variant)
+      }}
       role="separator"
       aria-orientation={{if (isVertical @orientation) "vertical"}}
       data-component="divider"
