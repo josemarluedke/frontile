@@ -8,6 +8,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
+    "rootDir": "src",
     "declarationDir": "declarations",
     "emitDeclarationOnly": true,
     "noEmit": false,
