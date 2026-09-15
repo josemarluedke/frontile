@@ -58,7 +58,8 @@ export interface ExternalLinkSignature {
      *
      * @defaultValue '_blank'
      */
-    target?: '_blank' | '_self' | '_parent' | '_top' | (string & {});
+    target?:
+      '_blank' | '_self' | '_parent' | '_top' | (string & NonNullable<unknown>);
 
     /**
      * Replaces the default `rel`. Left off, `noopener noreferrer` is applied

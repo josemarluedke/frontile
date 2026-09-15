@@ -27,7 +27,7 @@ export type WithBoundArgsForSignature<
       >
     ]
   ) => ComponentReturn<
-    Sig extends { Blocks: infer B } ? B : {},
+    Sig extends { Blocks: infer B } ? B : Record<string, never>,
     Sig extends { Element: infer E } ? E : unknown
   >
 >;

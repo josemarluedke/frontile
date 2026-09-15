@@ -64,13 +64,13 @@
     "lodash.kebabcase": "^4.1.1",
     "lodash.mapkeys": "^4.6.0",
     "mini-svg-data-uri": "^1.4.4",
-    "tailwind-merge": "^2.6.0",
-    "tailwind-variants": "^0.3.0",
-    "tailwindcss-ember-power-select": "^0.4.2"
+    "tailwind-merge": "^2.6.1",
+    "tailwind-variants": "^0.3.1",
+    "tailwindcss-ember-power-select": "^0.4.3"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
-    "@babel/plugin-transform-typescript": "^7.26.7",
+    "@babel/plugin-transform-typescript": "^7.29.7",
     "@embroider/addon-dev": "8.3.1",
     "@embroider/addon-shim": "^1.8.6",
     "@glimmer/component": "^2.1.1",
@@ -78,7 +78,7 @@
     "@glint/core": "1.5.2",
     "@glint/environment-ember-loose": "1.5.2",
     "@glint/environment-ember-template-imports": "1.5.2",
-    "@glint/template": "^1.8.0",
+    "@glint/template": "^1.9.0",
     "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@tsconfig/ember": "^3.0.12",
@@ -86,14 +86,14 @@
     "@types/flat": "^5.0.5",
     "@types/lodash.kebabcase": "^4.1.9",
     "@types/lodash.mapkeys": "^4.6.9",
-    "babel-plugin-ember-template-compilation": "^2.2.1",
+    "babel-plugin-ember-template-compilation": "^2.4.1",
     "concurrently": "^10.0.5",
     "decorator-transforms": "^2.4.0",
     "ember-source": "^6.1.0",
-    "rollup": "^4.62.4",
+    "rollup": "^4.63.2",
     "rollup-plugin-copy": "^3.5.0",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.3"
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "@babel/runtime": ">= 7",
