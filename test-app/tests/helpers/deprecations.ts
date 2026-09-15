@@ -1,5 +1,8 @@
 import { registerDeprecationHandler } from '@ember/debug';
 
+// TEMPORARY diagnostic re-export -- see button-group-test.gts DIAGNOSTIC 1c.
+export { registerDeprecationHandler as debugRegisterDeprecationHandlerFromHelper };
+
 /**
  * Collect the ids of deprecations raised from this point on, in order.
  *
