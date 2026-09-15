@@ -98,6 +98,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -125,9 +128,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -180,6 +180,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -204,9 +207,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -256,6 +256,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -283,9 +286,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -329,6 +329,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@ember/test-helpers':
         specifier: ^5.4.3
         version: 5.4.3(@babel/core@7.29.7)
@@ -359,9 +362,6 @@ importers:
       '@standard-schema/spec':
         specifier: ^1.1.0
         version: 1.1.0
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -414,6 +414,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -438,9 +441,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -538,6 +538,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@ember/test-helpers':
         specifier: ^5.4.3
         version: 5.4.3(@babel/core@7.29.7)
@@ -568,9 +571,6 @@ importers:
       '@standard-schema/spec':
         specifier: ^1.1.0
         version: 1.1.0
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -614,6 +614,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -641,9 +644,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -687,6 +687,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -711,9 +714,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -757,6 +757,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -784,9 +787,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -854,6 +854,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -881,9 +884,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       '@types/culori':
         specifier: ^4.0.1
         version: 4.0.1
@@ -939,6 +939,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/library-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@embroider/addon-dev':
         specifier: 8.3.1
         version: 8.3.1(@glint/template@1.9.0)(rollup@4.63.2)
@@ -966,9 +969,6 @@ importers:
       '@rollup/plugin-node-resolve':
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.63.2)
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       babel-plugin-ember-template-compilation:
         specifier: ^4.0.0
         version: 4.0.0
@@ -1249,6 +1249,9 @@ importers:
       '@babel/plugin-transform-typescript':
         specifier: ^7.28.6
         version: 7.29.7(@babel/core@7.29.7)
+      '@ember/app-tsconfig':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@ember/optional-features':
         specifier: ^3.0.0
         version: 3.0.0(@types/node@26.5.1)
@@ -1306,9 +1309,6 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.3.0(@types/node@26.5.1)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
-      '@tsconfig/ember':
-        specifier: ^3.0.12
-        version: 3.0.12
       '@types/htmlbars-inline-precompile':
         specifier: ^3.0.4
         version: 3.0.4
@@ -2146,6 +2146,9 @@ packages:
 
   '@ember/edition-utils@1.2.0':
     resolution: {integrity: sha512-VmVq/8saCaPdesQmftPqbFtxJWrzxNGSQ+e8x8LLe3Hjm36pJ04Q8LeORGZkAeOhldoUX9seLGmSaHeXkIqoog==}
+
+  '@ember/library-tsconfig@2.0.0':
+    resolution: {integrity: sha512-DTGt9TYZ3bhObUviQXx4C0v46oWM7HsRrUTbgONw2QBhJVHlmXA89uXenlvuqVrCQkA0g5kz7wwyOlcjIZ8h0w==}
 
   '@ember/optional-features@3.0.0':
     resolution: {integrity: sha512-HMQqZoBb16I4NyHfQglIYjopSG6folcEJah2WPa0FuolWRA/8cS5ozQmFK5BQx7cijTQJxj6viLpQK9KrXuYdw==}
@@ -3620,10 +3623,6 @@ packages:
     resolution: {integrity: sha512-yYU8cogLeSh/ms2jh8Fj7jaba/EWa7Ja6GoUqYZaraEuCI5YS6ms6ObZgjjedm+jm6XZjdNRWBpPP6Z86oOxcw==}
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
-
-  '@tsconfig/ember@3.0.12':
-    resolution: {integrity: sha512-ypFTXqIzQAB5HpYPi4TwDElDcUheWrKsEaYXgjiCAvsH6zxcQ4zUeuJqmfT+FoUlHTPZ3Xyel81OxrcjI+rilw==}
-    deprecated: Please use @ember/app-tsconfig or @ember/library-tsconfig instead. These live at https://github.com/ember-cli/tsconfigs
 
   '@tufjs/canonical-json@2.0.0':
     resolution: {integrity: sha512-yVtV8zsdo8qFHe+/3kw81dSLyF7D576A5cCFCi4X7B39tWT7SekaEFUnvnWJHz+9qO7qJTah1JbrDjWKqFtdWA==}
@@ -10856,6 +10855,8 @@ snapshots:
 
   '@ember/edition-utils@1.2.0': {}
 
+  '@ember/library-tsconfig@2.0.0': {}
+
   '@ember/optional-features@3.0.0(@types/node@26.5.1)':
     dependencies:
       ember-cli-version-checker: 5.1.2
@@ -12347,8 +12348,6 @@ snapshots:
       '@tailwindcss/oxide': 4.3.3
       tailwindcss: 4.3.3
       vite: 8.3.0(@types/node@26.5.1)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
-
-  '@tsconfig/ember@3.0.12': {}
 
   '@tufjs/canonical-json@2.0.0': {}
 

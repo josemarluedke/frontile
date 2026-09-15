@@ -71,6 +71,7 @@
   "devDependencies": {
     "@babel/core": "7.26.7",
     "@babel/plugin-transform-typescript": "^7.29.7",
+    "@ember/library-tsconfig": "^2.0.0",
     "@embroider/addon-dev": "8.3.1",
     "@embroider/addon-shim": "^1.8.6",
     "@glimmer/component": "^2.1.1",
@@ -81,7 +82,6 @@
     "@glint/template": "^1.9.0",
     "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
-    "@tsconfig/ember": "^3.0.12",
     "@types/culori": "^4.0.1",
     "@types/flat": "^5.0.5",
     "@types/lodash.kebabcase": "^4.1.9",
