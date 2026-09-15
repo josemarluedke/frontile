@@ -27,10 +27,6 @@ jobs:
         run: pnpm lint:js
       - name: Build V2 Addons
         run: pnpm build
-      - name: DEBUG env dump
-        run: env | sort
-      - name: DEBUG node process.env.NODE_ENV
-        run: node -e "console.log('NODE_ENV as seen by node:', JSON.stringify(process.env.NODE_ENV))"
       - name: Test
         run: pnpm test
       - name: Test site (node:test)

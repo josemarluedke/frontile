@@ -6,11 +6,8 @@ import { tv } from 'tailwind-variants';
 import { ButtonGroup } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
-import {
-  trackDeprecations,
-  debugRegisterDeprecationHandlerFromHelper
-} from '../../../helpers/deprecations';
-import { deprecate, registerDeprecationHandler } from '@ember/debug';
+import { trackDeprecations } from '../../../helpers/deprecations';
+import { deprecate } from '@ember/debug';
 
 module(
   'Integration | Component | ButtonGroup | @frontile/buttons',
@@ -165,45 +162,6 @@ module(
             ids,
             ['diagnostic.synthetic-inline'],
             `DIAGNOSTIC 1 saw: ${JSON.stringify(ids)}; userAgent=${navigator.userAgent}`
-          );
-        });
-
-        test('DIAGNOSTIC 1b: same as 1, but handler registered from this same module (not the helper file)', function (assert) {
-          const ids: string[] = [];
-          registerDeprecationHandler((message, options, next) => {
-            if (options?.id) {
-              ids.push(options.id);
-            }
-            next(message, options);
-          });
-
-          deprecate('diagnostic synthetic same-module', false, {
-            id: 'diagnostic.synthetic-same-module',
-            until: '1.0.0',
-            for: 'diagnostic',
-            since: { available: '1.0.0', enabled: '1.0.0' }
-          });
-
-          assert.deepEqual(
-            ids,
-            ['diagnostic.synthetic-same-module'],
-            `DIAGNOSTIC 1b saw: ${JSON.stringify(ids)}`
-          );
-        });
-
-        test('DIAGNOSTIC 1d: source of deprecate/registerDeprecationHandler -- real impl or a stripped stub?', function (assert) {
-          assert.false(
-            true,
-            `deprecate.toString()=${deprecate.toString()} ||| registerDeprecationHandler.toString()=${registerDeprecationHandler.toString()}`
-          );
-        });
-
-        test('DIAGNOSTIC 1c: identity check -- same @ember/debug module instance in both files?', function (assert) {
-          assert.strictEqual(
-            registerDeprecationHandler,
-            debugRegisterDeprecationHandlerFromHelper,
-            `registerDeprecationHandler imported here === same import in the helper file? ` +
-              `(typeof here: ${typeof registerDeprecationHandler}, typeof helper: ${typeof debugRegisterDeprecationHandlerFromHelper})`
           );
         });
 
