@@ -4,6 +4,7 @@ import { hash } from '@ember/helper';
 import { modifier } from 'ember-modifier';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import BreadcrumbsItemComponent from './item';
+import BreadcrumbsEllipsisComponent from './ellipsis';
 import type { BreadcrumbsSlots, BreadcrumbsVariants } from '@frontile/theme';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
@@ -58,6 +59,10 @@ interface BreadcrumbsSignature {
           | 'separator'
           | 'setupItem'
         >;
+        Ellipsis: WithBoundArgs<
+          typeof BreadcrumbsEllipsisComponent,
+          'itemClass' | 'ellipsisClass' | 'separatorClass' | 'separator'
+        >;
         itemClass: string;
         linkClass: string;
         separatorClass: string;
@@ -106,6 +111,11 @@ class Breadcrumbs extends Component<BreadcrumbsSignature> {
     return this.styles.separator({ class: this.args.classes?.separator });
   }
 
+  @cached
+  get ellipsisClass(): string {
+    return this.styles.ellipsis({ class: this.args.classes?.ellipsis });
+  }
+
   /**
    * Marks an element as the current page. Yielded so a consumer can bring
    * their own link component -- `ember-link`, a custom `<AppLink>`, a plain
@@ -141,6 +151,13 @@ class Breadcrumbs extends Component<BreadcrumbsSignature> {
               separatorClass=this.separatorClass
               separator=@separator
               setupItem=this.setupItem
+            )
+            Ellipsis=(component
+              BreadcrumbsEllipsisComponent
+              itemClass=this.itemClass
+              ellipsisClass=this.ellipsisClass
+              separatorClass=this.separatorClass
+              separator=@separator
             )
             itemClass=this.itemClass
             linkClass=this.linkClass

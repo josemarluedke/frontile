@@ -273,5 +273,105 @@ module(
           'a 0 dynamic segment survives the != null check'
         );
     });
+
+    test('an author-placed Ellipsis renders the same li shape as a crumb', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/">Home</b.Item>
+            <b.Ellipsis />
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('nav ol > li').exists({ count: 3 });
+      assert.dom('[data-part="ellipsis"]').exists();
+      assert.dom('[data-part="ellipsis"]').hasAttribute('aria-hidden', 'true');
+      assert
+        .dom('[data-part="separator"]')
+        .exists(
+          { count: 3 },
+          'the ellipsis carries a separator like any other crumb'
+        );
+      assert
+        .dom('[data-part="ellipsis"]')
+        .hasClass('select-none', 'it is a gap marker, not an affordance');
+    });
+
+    test('Ellipsis announces the gap, with and without @hiddenCount', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Ellipsis @hiddenCount={{3}} data-test-counted />
+            <b.Ellipsis data-test-uncounted />
+          </Breadcrumbs>
+        </template>
+      );
+
+      const items = findAll('nav ol > li');
+
+      assert.dom(items[0]!).containsText('3 more levels');
+      assert.dom(items[1]!).containsText('More levels');
+    });
+
+    test('an Ellipsis block replaces the glyph and owns the announcement', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Ellipsis @hiddenCount={{2}} as |e|>
+              <button type="button" data-test-menu>Show
+                {{e.hiddenCount}}
+                more</button>
+            </b.Ellipsis>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-test-menu]').exists();
+      assert.dom('[data-test-menu]').hasText('Show 2 more');
+      assert
+        .dom('nav ol > li')
+        .doesNotContainText(
+          'more levels',
+          'a supplied block carries its own accessible name, so a second announcement would be read twice'
+        );
+    });
+
+    test('the Ellipsis block receives the crumbs it stands in for', async function (assert) {
+      const hidden = [{ label: 'B' }, { label: 'C' }];
+
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Ellipsis @hiddenItems={{hidden}} as |e|>
+              {{#each e.hiddenItems as |item|}}
+                <span data-test-hidden>{{item.label}}</span>
+              {{/each}}
+            </b.Ellipsis>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-test-hidden]').exists({ count: 2 });
+      assert.strictEqual(
+        findAll('[data-test-hidden]')
+          .map((el) => el.textContent?.trim())
+          .join(' '),
+        'B C'
+      );
+    });
+
+    test('@classes.ellipsis reaches the Ellipsis', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs @classes={{hash ellipsis="custom-ellipsis"}} as |b|>
+            <b.Ellipsis />
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-part="ellipsis"]').hasClass('custom-ellipsis');
+    });
   }
 );
