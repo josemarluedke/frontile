@@ -3,6 +3,31 @@ import { buildWaiter } from '@ember/test-waiters';
 type When = 'frame' | 'microtask';
 
 /**
+ * One waiter per label, shared by every instance using it.
+ *
+ * `buildWaiter` registers by name into a single global map, so building the
+ * same name twice both warns and evicts the first waiter -- and an evicted
+ * waiter considers itself registered forever, so its pending work stays
+ * invisible to `settled()`. Every call site here passes a constant label from
+ * a per-instance field, so two segmented controls, or a segmented control and
+ * a tab nav on one page, would do exactly that. A waiter is only a token
+ * registry and `beginAsync` hands out a distinct token per call, so sharing
+ * one across instances loses nothing.
+ */
+const waiters = new Map<string, ReturnType<typeof buildWaiter>>();
+
+function waiterFor(label: string): ReturnType<typeof buildWaiter> {
+  let waiter = waiters.get(label);
+
+  if (!waiter) {
+    waiter = buildWaiter(label);
+    waiters.set(label, waiter);
+  }
+
+  return waiter;
+}
+
+/**
  * A single piece of deferred work that must not outlive a `settled()`.
  *
  * Scheduling something for a later turn and cleaning it up correctly is the
@@ -17,9 +42,12 @@ class DeferredWork {
   #token?: unknown;
   #cancelScheduled?: () => void;
 
-  /** @param label the test-waiter name, which must be unique per instance. */
+  /**
+   * @param label the test-waiter name. Instances may share one; see
+   * `waiterFor`.
+   */
   constructor(label: string) {
-    this.#waiter = buildWaiter(label);
+    this.#waiter = waiterFor(label);
   }
 
   get isPending(): boolean {
