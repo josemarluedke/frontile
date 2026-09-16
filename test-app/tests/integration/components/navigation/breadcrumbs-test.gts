@@ -373,5 +373,140 @@ module(
 
       assert.dom('[data-part="ellipsis"]').hasClass('custom-ellipsis');
     });
+
+    const TRAIL = [
+      { label: 'Home', href: '/' },
+      { label: 'Library', href: '/library' },
+      { label: 'Data', href: '/library/data' },
+      { label: 'Reports', href: '/library/data/reports' },
+      { label: 'Q3' }
+    ];
+
+    test('the @items form renders the same DOM as the equivalent block form', async function (assert) {
+      await render(<template><Breadcrumbs @items={{TRAIL}} /></template>);
+
+      assert.dom('nav ol > li').exists({ count: 5 });
+      assert.dom('[data-part="separator"]').exists({ count: 5 });
+
+      const links = findAll('[data-part="link"]');
+      assert.dom(links[0]!).hasTagName('a');
+      assert.dom(links[0]!).hasAttribute('href', '/');
+      assert.dom(links[0]!).hasText('Home');
+
+      assert.dom(links[4]!).hasTagName('span', 'the unlinked last crumb');
+      assert.dom(links[4]!).hasAttribute('aria-current', 'page');
+    });
+
+    test('@maxItems collapses the middle of the trail', async function (assert) {
+      await render(
+        <template><Breadcrumbs @items={{TRAIL}} @maxItems={{3}} /></template>
+      );
+
+      assert.dom('nav ol > li').exists({ count: 3 });
+      assert.dom('[data-part="ellipsis"]').exists({ count: 1 });
+
+      const links = findAll('[data-part="link"]');
+      assert.strictEqual(links.length, 2);
+      assert.dom(links[0]!).hasText('Home');
+      assert.dom(links[1]!).hasText('Q3');
+      assert.dom('nav').containsText('3 more levels');
+    });
+
+    test('without @maxItems nothing collapses', async function (assert) {
+      await render(<template><Breadcrumbs @items={{TRAIL}} /></template>);
+
+      assert.dom('[data-part="ellipsis"]').doesNotExist();
+    });
+
+    test('@itemsBeforeCollapse and @itemsAfterCollapse move the split', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs
+            @items={{TRAIL}}
+            @maxItems={{4}}
+            @itemsBeforeCollapse={{2}}
+            @itemsAfterCollapse={{1}}
+          />
+        </template>
+      );
+
+      const links = findAll('[data-part="link"]');
+      assert.strictEqual(links.length, 3);
+      assert.dom(links[0]!).hasText('Home');
+      assert.dom(links[1]!).hasText('Library');
+      assert.dom(links[2]!).hasText('Q3');
+    });
+
+    test('only the last statically-current crumb keeps aria-current', async function (assert) {
+      const ambiguous = [
+        { label: 'Home', href: '/' },
+        { label: 'Orphan' },
+        { label: 'Current' }
+      ];
+
+      await render(<template><Breadcrumbs @items={{ambiguous}} /></template>);
+
+      assert
+        .dom('[aria-current="page"]')
+        .exists(
+          { count: 1 },
+          'two unlinked crumbs would otherwise produce two current pages'
+        );
+      assert.dom('[aria-current="page"]').hasText('Current');
+    });
+
+    test('the item block renders each crumb and receives the original object', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs @items={{TRAIL}} @maxItems={{3}}>
+            <:item as |ctx|>
+              <li class={{ctx.itemClass}}>
+                <span
+                  class={{ctx.linkClass}}
+                  data-test-crumb={{ctx.index}}
+                >{{ctx.item.label}}</span>
+              </li>
+            </:item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      const crumbs = findAll('[data-test-crumb]');
+      assert.strictEqual(crumbs.length, 2);
+      assert.dom(crumbs[0]!).hasAttribute('data-test-crumb', '0');
+      assert
+        .dom(crumbs[1]!)
+        .hasAttribute(
+          'data-test-crumb',
+          '4',
+          'the index is the position in @items, not in the rendered list'
+        );
+      assert.dom(crumbs[1]!).hasText('Q3');
+    });
+
+    test('the ellipsis block reaches the auto-placed Ellipsis', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs @items={{TRAIL}} @maxItems={{3}}>
+            <:ellipsis as |e|>
+              <button type="button" data-test-menu>{{e.hiddenCount}}
+                hidden</button>
+            </:ellipsis>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-test-menu]').hasText('3 hidden');
+      assert.dom('nav').doesNotContainText('more levels');
+    });
+
+    test('an empty @items renders an empty list, not a broken one', async function (assert) {
+      const none: { label: string }[] = [];
+
+      await render(<template><Breadcrumbs @items={{none}} /></template>);
+
+      assert.dom('nav ol').exists();
+      assert.dom('nav ol > li').doesNotExist();
+    });
   }
 );
