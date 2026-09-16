@@ -1,0 +1,257 @@
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, findAll } from '@ember/test-helpers';
+import { hash } from '@ember/helper';
+import { Breadcrumbs } from 'frontile';
+
+module(
+  'Integration | Component | Breadcrumbs | frontile/navigation',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    test('it renders a labelled nav landmark wrapping an ordered list', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/">Home</b.Item>
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('nav').exists('renders a nav landmark');
+      assert
+        .dom('nav')
+        .hasAria('label', 'Breadcrumb', 'defaults its accessible name');
+      assert.dom('nav > ol').exists('the trail is an ordered list');
+      assert.dom('nav ol > li').exists({ count: 2 });
+      assert.dom('nav').hasAttribute('data-component', 'breadcrumbs');
+    });
+
+    test('@label overrides the accessible name', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs @label="You are here" as |b|>
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('nav').hasAria('label', 'You are here');
+    });
+
+    test('a crumb with no link target is the current page and is not a link', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/">Home</b.Item>
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      const links = findAll('[data-part="link"]');
+
+      assert.dom(links[0]!).hasTagName('a');
+      assert
+        .dom(links[0]!)
+        .doesNotHaveAttribute('aria-current', 'a linked crumb is not current');
+      assert.dom(links[0]!).hasAttribute('data-current', 'false');
+
+      assert
+        .dom(links[1]!)
+        .hasTagName('span', 'the current crumb is not a link');
+      assert.dom(links[1]!).hasAttribute('aria-current', 'page');
+      assert.dom(links[1]!).hasAttribute('data-current', 'true');
+    });
+
+    test('@isCurrent overrides the no-link-target rule in both directions', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/" @isCurrent={{true}}>Forced current</b.Item>
+            <b.Item @isCurrent={{false}}>Forced not current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      const links = findAll('[data-part="link"]');
+
+      assert.dom(links[0]!).hasAttribute('aria-current', 'page');
+      assert.dom(links[1]!).doesNotHaveAttribute('aria-current');
+      assert.dom(links[1]!).hasAttribute('data-current', 'false');
+    });
+
+    test('a separator follows every crumb but the last', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/">Home</b.Item>
+            <b.Item @href="/posts">Posts</b.Item>
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      // Every item renders one; the last one's is hidden by CSS
+      // (`group-last/item:hidden`) rather than omitted, which is what lets
+      // neither authoring form need to know which crumb is last.
+      const separators = findAll('[data-part="separator"]');
+      assert.strictEqual(separators.length, 3, 'one separator per crumb');
+
+      separators.forEach((separator) => {
+        assert.dom(separator).hasAttribute('aria-hidden', 'true');
+        assert.dom(separator).hasClass('group-last/item:hidden');
+      });
+
+      assert.dom('[data-part="separator"] svg').exists('renders a glyph');
+    });
+
+    test('@separator replaces the glyph', async function (assert) {
+      const Slash = <template>
+        <span data-test-slash>/</span>
+      </template>;
+
+      await render(
+        <template>
+          <Breadcrumbs @separator={{Slash}} as |b|>
+            <b.Item @href="/">Home</b.Item>
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-part="separator"] [data-test-slash]').exists();
+      assert
+        .dom('[data-part="separator"] svg')
+        .doesNotExist('the default chevron is replaced, not joined');
+    });
+
+    test('@isDisabled drops the href and marks the crumb', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/posts" @isDisabled={{true}}>Posts</b.Item>
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      const link = findAll('[data-part="link"]')[0]!;
+
+      assert.dom(link).hasTagName('a');
+      assert
+        .dom(link)
+        .doesNotHaveAttribute(
+          'href',
+          'aria-disabled alone leaves an anchor clickable, so the href goes'
+        );
+      assert.dom(link).hasAttribute('aria-disabled', 'true');
+      assert.dom(link).hasAttribute('data-disabled', 'true');
+    });
+
+    test('@size, @color and @underline reach the rendered classes', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs @size="lg" @color="primary" @underline="always" as |b|>
+            <b.Item @href="/">Home</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-part="list"]').hasClass('text-body-md');
+      assert.dom('[data-part="link"]').hasClass('hover:text-primary');
+      assert.dom('[data-part="link"]').hasClass('underline');
+    });
+
+    test('defaults are md / neutral / hover', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/">Home</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-part="list"]').hasClass('text-body-sm');
+      assert.dom('[data-part="link"]').hasClass('hover:text-neutral-strong');
+      assert.dom('[data-part="link"]').hasClass('hover:underline');
+    });
+
+    test('@classes overrides reach every slot', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs
+            @classes={{hash
+              base="custom-base"
+              list="custom-list"
+              item="custom-item"
+              link="custom-link"
+              separator="custom-separator"
+            }}
+            as |b|
+          >
+            <b.Item @href="/">Home</b.Item>
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-part="base"]').hasClass('custom-base');
+      assert.dom('[data-part="list"]').hasClass('custom-list');
+      assert.dom('[data-part="item"]').hasClass('custom-item');
+      assert.dom('[data-part="link"]').hasClass('custom-link');
+      assert.dom('[data-part="separator"]').hasClass('custom-separator');
+    });
+
+    test('@class on an item is appended to its link classes', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/" @class="mine">Home</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-part="link"]').hasClass('mine');
+      assert.dom('[data-part="link"]').hasClass('text-neutral');
+    });
+
+    test('a consumer-supplied element gets the same classes and ARIA via the yielded pieces', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <li class={{b.itemClass}}>
+              <a href="/" class={{b.linkClass}} {{b.setupItem false}}>Home</a>
+              <span class={{b.separatorClass}} aria-hidden="true">/</span>
+            </li>
+            <li class={{b.itemClass}}>
+              <span class={{b.linkClass}} {{b.setupItem true}}>Current</span>
+            </li>
+          </Breadcrumbs>
+        </template>
+      );
+
+      const crumbs = findAll('nav ol li > :first-child');
+
+      assert.dom(crumbs[0]!).hasClass('text-neutral');
+      assert.dom(crumbs[0]!).hasAttribute('data-current', 'false');
+      assert.dom(crumbs[0]!).doesNotHaveAttribute('aria-current');
+      assert.dom(crumbs[1]!).hasAttribute('data-current', 'true');
+      assert.dom(crumbs[1]!).hasAttribute('aria-current', 'page');
+    });
+
+    test('...attributes land on the crumb, not the list item', async function (assert) {
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/" data-test-crumb="home">Home</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert.dom('[data-part="link"]').hasAttribute('data-test-crumb', 'home');
+      assert.dom('li').doesNotHaveAttribute('data-test-crumb');
+    });
+  }
+);
