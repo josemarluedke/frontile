@@ -253,5 +253,25 @@ module(
       assert.dom('[data-part="link"]').hasAttribute('data-test-crumb', 'home');
       assert.dom('li').doesNotHaveAttribute('data-test-crumb');
     });
+
+    test('a falsy @model is not dropped from models', async function (assert) {
+      // The acceptance test routes through a string segment, which is truthy
+      // and so does not exercise `!= null`. This one hits the getter directly.
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @route="breadcrumbs-demo.item" @model={{0}}>Zero</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="link"]')
+        .hasAttribute(
+          'href',
+          '/breadcrumbs-demo/item/0',
+          'a 0 dynamic segment survives the != null check'
+        );
+    });
   }
 );
