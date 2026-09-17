@@ -79,8 +79,9 @@ marker. There are two ways to get one, matching the two authoring forms.
 Passing `@items` renders the trail from an array instead of from blocks, and
 is what makes `@maxItems` meaningful — yielded blocks can't be counted before
 they render, so in the block form there's nothing for `@maxItems` to divide.
-Once `@items.length` exceeds `@maxItems`, the middle collapses into a single
-`b.Ellipsis`-shaped marker that announces how many crumbs it stands in for.
+Once `@items.length` exceeds `@maxItems`, the middle collapses into an
+ellipsis marker — the same one `b.Ellipsis` renders when placed by hand,
+below — that announces how many crumbs it stands in for.
 
 ```gts preview
 import { Breadcrumbs } from 'frontile';
@@ -122,10 +123,10 @@ const trail = [
 </template>
 ```
 
-Each entry in `@items` takes the same arguments as `b.Item` — `label`,
-`route`/`model`/`models`/`query` or `href`, `isCurrent`, `isDisabled` — plus a
-`label` used as the crumb's text. A crumb with neither `route` nor `href` is
-the current page, exactly as in the block form.
+Each entry in `@items` takes `label` (its text) plus the same arguments as
+`b.Item` — `route`/`model`/`models`/`query` or `href`, `isCurrent`,
+`isDisabled`. A crumb with neither `route` nor `href` is the current page,
+exactly as in the block form.
 
 ### A manual `<b.Ellipsis />`
 
@@ -200,8 +201,9 @@ import { Breadcrumbs } from 'frontile';
 `@separator` replaces the chevron glyph between crumbs with any component:
 
 ```gts preview
-const Slash = <template><span>/</span></template>;
 import { Breadcrumbs } from 'frontile';
+
+const Slash = <template><span>/</span></template>;
 
 <template>
   <Breadcrumbs @separator={{Slash}} as |b|>
