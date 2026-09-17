@@ -160,8 +160,40 @@ module(
       );
 
       assert.dom('[data-part="list"]').hasClass('text-body-md');
-      assert.dom('[data-part="link"]').hasClass('hover:text-primary');
+      assert.dom('[data-part="link"]').hasClass('hover:text-primary-firm');
       assert.dom('[data-part="link"]').hasClass('underline');
+    });
+
+    test('no slot uses a background-level token as ink', async function (assert) {
+      // `neutral-muted` is gray-100 in light mode -- a *background* value, 1.18:1
+      // as text. The separator shipped with it once; `button.ts` and
+      // `notification-card.ts` carry comments about the same trap. This locks the
+      // whole recipe out of the three levels that are backgrounds, rather than
+      // pinning the exact token each slot happens to use today.
+      await render(
+        <template>
+          <Breadcrumbs as |b|>
+            <b.Item @href="/">Home</b.Item>
+            <b.Ellipsis @hiddenCount={{2}} />
+            <b.Item>Current</b.Item>
+          </Breadcrumbs>
+        </template>
+      );
+
+      const backgroundLevels = ['subtle', 'muted', 'soft'];
+
+      for (const part of ['link', 'separator', 'ellipsis']) {
+        for (const element of findAll(`[data-part="${part}"]`)) {
+          for (const level of backgroundLevels) {
+            assert
+              .dom(element)
+              .doesNotHaveClass(
+                `text-neutral-${level}`,
+                `${part} must not use neutral-${level} as ink`
+              );
+          }
+        }
+      }
     });
 
     test('defaults are md / neutral / hover', async function (assert) {
@@ -214,7 +246,7 @@ module(
       );
 
       assert.dom('[data-part="link"]').hasClass('mine');
-      assert.dom('[data-part="link"]').hasClass('text-neutral');
+      assert.dom('[data-part="link"]').hasClass('text-neutral-firm');
     });
 
     test('a consumer-supplied element gets the same classes and ARIA via the yielded pieces', async function (assert) {
@@ -234,7 +266,7 @@ module(
 
       const crumbs = findAll('nav ol li > :first-child');
 
-      assert.dom(crumbs[0]!).hasClass('text-neutral');
+      assert.dom(crumbs[0]!).hasClass('text-neutral-firm');
       assert.dom(crumbs[0]!).hasAttribute('data-current', 'false');
       assert.dom(crumbs[0]!).doesNotHaveAttribute('aria-current');
       assert.dom(crumbs[1]!).hasAttribute('data-current', 'true');

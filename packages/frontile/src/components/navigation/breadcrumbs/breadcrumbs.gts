@@ -30,6 +30,11 @@ interface BreadcrumbsArgs {
   /**
    * The colour of the hover and current-page ink.
    *
+   * Three categories rather than the usual seven: the others are fill colours,
+   * meant to carry `text-on-*` on top of them, and as ink on a light surface
+   * they fall below the contrast a reader needs. See `breadcrumbs.ts` in the
+   * theme for the measurements.
+   *
    * @defaultValue 'neutral'
    */
   color?: BreadcrumbsVariants['color'];

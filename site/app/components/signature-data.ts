@@ -40087,20 +40087,13 @@ const data: ComponentDoc[] = [
         identifier: 'color',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
-          items: [
-            "'neutral'",
-            "'primary'",
-            "'secondary'",
-            "'tertiary'",
-            "'success'",
-            "'warning'",
-            "'danger'",
-          ],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: ["'neutral'", "'primary'", "'danger'"],
         },
         isRequired: false,
         isInternal: false,
-        description: 'The colour of the hover and current-page ink.',
+        description:
+          '<p>The colour of the hover and current-page ink.</p>\n<p>Three categories rather than the usual seven: the others are fill colours,\nmeant to carry <code>text-on-*</code> on top of them, and as ink on a light surface\nthey fall below the contrast a reader needs. See <code>breadcrumbs.ts</code> in the\ntheme for the measurements.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: "'neutral'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span></span>',

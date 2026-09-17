@@ -164,7 +164,7 @@ const hidden = [{ label: 'Library' }, { label: 'Data' }];
   <Breadcrumbs as |b|>
     <b.Item @href='/'>Home</b.Item>
     <b.Ellipsis @hiddenItems={{hidden}} as |e|>
-      <button type='button' class='text-neutral-muted'>
+      <button type='button'>
         {{e.hiddenItems.length}}
         hidden &hellip;
       </button>
@@ -217,10 +217,18 @@ const Slash = <template><span>/</span></template>;
 ## Sizes, colors, and underline
 
 `@size` (`sm` / `md` / `lg`, default `md`) scales the text and separator
-glyph. `@color` picks the hover and current-page ink from the seven semantic
-categories (default `neutral`). `@underline` (`always` / `hover` / `none`,
-default `hover`) controls when a crumb's link is underlined — the current
-crumb is never underlined in any mode, since it doesn't go anywhere.
+glyph. `@underline` (`always` / `hover` / `none`, default `hover`) controls when
+a crumb's link is underlined — the current crumb is never underlined in any
+mode, since it doesn't go anywhere.
+
+`@color` picks the hover and current-page ink, and takes `neutral` (the
+default), `primary` or `danger` — three categories rather than the seven most
+themed components offer. The other four are fill colours, designed to carry
+`text-on-*` text on top of them the way `Pagination`'s active chip does. A
+breadcrumb has no fill, so its colour lands on the text itself, and as ink on a
+light surface those categories fall well below the contrast a reader needs —
+`success` reaches only 2.3:1 at its darkest level, against the 4.5:1 WCAG AA
+asks for body text. Offering them would only offer illegible trails.
 
 ```gts preview
 import { Breadcrumbs } from 'frontile';
@@ -232,9 +240,9 @@ import { Breadcrumbs } from 'frontile';
       <b.Item>Small, primary</b.Item>
     </Breadcrumbs>
 
-    <Breadcrumbs @size='lg' @color='success' @underline='always' as |b|>
+    <Breadcrumbs @size='lg' @color='danger' @underline='always' as |b|>
       <b.Item @href='/'>Home</b.Item>
-      <b.Item>Large, always underlined</b.Item>
+      <b.Item>Large, danger, always underlined</b.Item>
     </Breadcrumbs>
   </div>
 </template>

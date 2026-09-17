@@ -26,7 +26,11 @@ const breadcrumbs = tv({
     link: [
       ...focusVisibleRing,
       'inline-flex items-center gap-1 rounded-sm',
-      'text-neutral',
+      // `neutral-firm`, not `neutral`: as text on the light surface `neutral` is
+      // only 3.13:1, under the 4.5:1 WCAG AA needs for normal text. `firm` is
+      // 8.06:1 light / 12.57:1 dark, and is what `pagination.ts` already uses
+      // for the same job on the same kind of row.
+      'text-neutral-firm',
       'transition-colors duration-200',
       'motion-reduce:transition-none',
       // The current crumb is the only weight change in the trail: colour alone
@@ -36,16 +40,27 @@ const breadcrumbs = tv({
       'aria-disabled:cursor-not-allowed aria-disabled:opacity-disabled aria-disabled:pointer-events-none'
     ],
 
-    // Muted below the resting crumb: it is punctuation, not content, and a
-    // separator with the same weight as the labels reads as a sixth crumb.
-    separator: 'shrink-0 text-neutral-muted group-last/item:hidden',
+    // Same ink as the crumbs, not a step below them. The obvious instinct is to
+    // recede the separator with colour, and this started at `neutral-muted` --
+    // gray-100 in light mode, a *background* value, 1.18:1 as ink, invisible.
+    // `button.ts` and `notification-card.ts` carry comments about the same trap.
+    //
+    // The next step down from the crumbs, `neutral`, measures 3.13:1 on a white
+    // surface but only 2.95:1 on the gray-50 canvas the docs use -- under the
+    // 3:1 a non-text graphic wants, and short of a fix worth defending. So the
+    // separator takes the crumb's own ink and gets its subordination from
+    // weight instead: a 1.5-stroke chevron at 60% of the cap height reads
+    // lighter than a word in the same colour, at any contrast ratio.
+    separator: 'shrink-0 text-neutral-firm group-last/item:hidden',
 
     // Not a button, so no focus ring and no hover: it is a gap marker, and
     // giving it an affordance would promise a destination it does not have.
     // A consumer who puts a Dropdown in the default block opts into
     // interactivity deliberately, and brings that trigger's own styling.
+    // Reads at the resting crumb's weight, because it stands in for crumbs.
+    // Its de-emphasis comes from being non-interactive, not from being fainter.
     ellipsis:
-      'inline-flex shrink-0 items-center justify-center select-none text-neutral'
+      'inline-flex shrink-0 items-center justify-center select-none text-neutral-firm'
   },
 
   variants: {
@@ -74,29 +89,30 @@ const breadcrumbs = tv({
     },
 
     // Hover and current share a colour: the current crumb is where the trail
-    // is going and hover is a preview of going there, so one ink for both
-    // keeps the row reading as a single control.
+    // is going and hover is a preview of going there, so one ink for both keeps
+    // the row reading as a single control.
+    //
+    // Only three categories, where every other themed component offers seven.
+    // The rest are fill colours, meant to be paired with `text-on-*` on top of
+    // them -- which is exactly how `pagination.ts` uses all seven. As *ink on
+    // the light surface* they are unusable at every level: success tops out at
+    // 2.30:1 and secondary at 2.50:1 even at `firm`, against the 4.5:1 WCAG AA
+    // wants for normal text. Breadcrumbs colour their text and have no fill, so
+    // offering those categories here would only offer illegible trails.
+    //
+    // `firm`, not `DEFAULT`, for the same reason the base ink is firm.
     color: {
+      // 8.06:1 light / 12.57:1 dark resting, rising to 12.45 / 15.35 current.
       neutral: {
         link: 'hover:text-neutral-strong data-[current=true]:text-neutral-strong'
       },
+      // 16.58:1 light / 16.50:1 dark.
       primary: {
-        link: 'hover:text-primary data-[current=true]:text-primary'
+        link: 'hover:text-primary-firm data-[current=true]:text-primary-firm'
       },
-      secondary: {
-        link: 'hover:text-secondary data-[current=true]:text-secondary'
-      },
-      tertiary: {
-        link: 'hover:text-tertiary data-[current=true]:text-tertiary'
-      },
-      success: {
-        link: 'hover:text-success data-[current=true]:text-success'
-      },
-      warning: {
-        link: 'hover:text-warning data-[current=true]:text-warning'
-      },
+      // 6.36:1 light / 8.35:1 dark.
       danger: {
-        link: 'hover:text-danger data-[current=true]:text-danger'
+        link: 'hover:text-danger-firm data-[current=true]:text-danger-firm'
       }
     },
 
