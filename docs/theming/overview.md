@@ -9,7 +9,7 @@ imports:
 
 # Theme System
 
-Frontile's theme system provides a comprehensive, accessible design foundation built on semantic colors, flexible surfaces, and automatic dark mode support.
+Frontile's theme system is an accessible design foundation built on semantic colors, a surface system, and automatic dark mode support.
 
 ## Installation
 
@@ -63,11 +63,11 @@ Flexible depth system with opaque surface roles and two families of translucent 
 
 ### Dark Mode
 
-Automatic theme adaptation with intelligent color inversion. Simply toggle the `dark` class to switch between light and dark modes.
+Automatic theme adaptation with color inversion. Toggle the `dark` class to switch between light and dark modes.
 
 ## Quick Example
 
-Here's how easy it is to create a themed button with Frontile:
+Frontile components resolve semantic colors automatically:
 
 ```gts preview
 import { Button } from 'frontile';
@@ -101,13 +101,13 @@ Remove the `dark` class to revert to light theme. You can also explicitly use th
 
 ### How Theme Classes Work
 
-Frontile uses custom CSS variants that intelligently apply theme-specific styles:
+Frontile uses custom CSS variants that apply theme-specific styles:
 
 - **`.dark`** - When present on a parent element, all descendant elements use dark theme colors
 - **`.light`** - When present on a parent element, all descendant elements use light theme colors (default)
 - **`.theme-inverse`** - Inverts the current theme for a section and its descendants
 
-The theme system uses sophisticated CSS selectors to ensure proper inheritance:
+The theme system uses CSS selectors to ensure proper inheritance:
 
 ```css
 /* Light theme applies to .light elements and .theme-inverse within .dark */

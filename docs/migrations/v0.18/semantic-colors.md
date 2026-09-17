@@ -11,12 +11,7 @@ This guide helps you migrate from the old numbered color system to the new seman
 
 ## Overview
 
-The semantic color system has been redesigned to use named levels instead of numbered scales. This provides:
-
-- **Better semantic meaning**: Names describe the emphasis rank (subtle, soft, firm, strong), not a numbered scale
-- **Improved accessibility**: Contrast colors are explicitly defined
-- **Theme consistency**: Colors adapt better to light/dark modes
-- **Clearer usage patterns**: Names indicate intended use cases
+The semantic color system has been redesigned to use named levels instead of numbered scales. Names describe emphasis rank (subtle, soft, firm, strong) rather than a numbered step, contrast colors are defined explicitly instead of inferred, and levels are chosen for how they read in both light and dark mode.
 
 ## Breaking Changes
 

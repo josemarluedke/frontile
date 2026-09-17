@@ -11,12 +11,7 @@ This guide helps you migrate your Frontile theme configuration to v0.18, which a
 
 ## Overview
 
-Frontile v0.18 updates the theme system to align with Tailwind CSS v4's new CSS-first approach. This brings several benefits:
-
-- **Simpler configuration**: CSS variables are easier to understand and customize
-- **Better performance**: CSS-first approach eliminates JavaScript config processing
-- **Direct CSS control**: Override theme values directly in your stylesheets
-- **Cleaner variable names**: Removed `--frontile-` prefix for shorter, cleaner names
+Frontile v0.18 updates the theme system to align with Tailwind CSS v4's CSS-first configuration. Theme values are now CSS variables you can read and override directly in your stylesheets, instead of JavaScript config processed at build time, and the `--frontile-` prefix is gone from variable names.
 
 ## Breaking Changes
 

@@ -6,9 +6,9 @@ category: accessibility
 
 # Focus management
 
-Focus indicators (typically an outline around a focused element) are essential for accessibility. They help keyboard users navigate and identify which element currently has focus, allowing users to interact with elements by pressing `Enter` instead of using a mouse.
+Focus indicators (typically an outline around a focused element) help keyboard users navigate and identify which element currently has focus, allowing users to interact with elements by pressing `Enter` instead of using a mouse.
 
-While focus indicators are critical for keyboard navigation, they can feel unnecessary when using a mouse. Frontile solves this with smart focus management.
+They're also unnecessary when using a mouse, so Frontile only shows them for keyboard input.
 
 ## How it works
 

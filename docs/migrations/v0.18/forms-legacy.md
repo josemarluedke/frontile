@@ -7,7 +7,7 @@ subcategory: v0.18
 
 # Migrating from Forms Legacy
 
-This guide will help you migrate from the legacy `@frontile/forms-legacy` package to the modern `frontile` forms. The new forms package provides improved developer experience, better accessibility, enhanced customization options, and reduced external dependencies.
+This guide covers migrating from the legacy `@frontile/forms-legacy` package to the modern `frontile` forms: a smaller API surface, better ARIA/keyboard support, slot-based customization, and no dependency on `ember-power-select` or `ember-basic-dropdown`.
 
 `@frontile/forms-legacy` is deprecated and will be removed in 0.19.0.
 
@@ -15,12 +15,12 @@ This guide will help you migrate from the legacy `@frontile/forms-legacy` packag
 
 ### What's New in Frontile Forms
 
-- **Modern Component Architecture**: Clean API with improved TypeScript support
-- **Enhanced Accessibility**: Better ARIA support and keyboard navigation
-- **Flexible Customization**: Slot-based content insertion and CSS class customization
-- **Reduced Dependencies**: No longer depends on ember-power-select or ember-basic-dropdown
-- **New Components**: Form wrapper with automatic data extraction, Switch component
-- **Improved Developer Experience**: Better error handling and validation integration
+- Simpler component API with better TypeScript support
+- Better ARIA support and keyboard navigation
+- Slot-based content insertion and CSS class customization
+- No dependency on `ember-power-select` or `ember-basic-dropdown`
+- New components: a `Form` wrapper with automatic data extraction, and `Switch`
+- Simplified error handling, and tighter integration with validation libraries
 
 ### Migration Effort
 
@@ -51,14 +51,13 @@ import { Input, Checkbox } from 'frontile';
 
 ## Recommended Approach: Form + Field Pattern
 
-The modern `frontile` package introduces a powerful **Form + Field pattern** that simplifies data binding and validation. This is the recommended approach for new forms and migrations.
+The modern `frontile` package introduces a **Form + Field pattern** that handles data binding and validation for you. This is the recommended approach for new forms and migrations.
 
 ### Why Use Form + Field?
 
-- **Automatic data binding** - no manual state management needed
-- **Built-in validation** with Valibot, Zod, or custom validators
-- **Less boilerplate** - Field handles value and error binding automatically
-- **Nested data support** - use dot notation for nested fields
+- No manual state management — `form.Field` binds value and errors automatically
+- Built-in validation with Valibot, Zod, or a custom validator
+- Nested data support via dot notation in field names
 
 ### Quick Example
 
@@ -112,7 +111,7 @@ export default class LoginForm extends Component {
 }
 ```
 
-**Key Benefits:**
+Compared to manual binding:
 
 - `form.Field` automatically binds the value and errors to the input
 - Validation runs automatically based on the schema
@@ -123,7 +122,7 @@ For complete documentation on the Form component, validation patterns, nested da
 
 ## Migrating Validation
 
-If you're using manual validation with forms-legacy, you can migrate to schema-based validation with Valibot for a better developer experience.
+If you're using manual validation with forms-legacy, you can migrate to schema-based validation with Valibot instead.
 
 ### Before (forms-legacy with manual validation)
 
@@ -237,13 +236,12 @@ export default class UserProfileForm extends Component {
 }
 ```
 
-**Key Improvements:**
+Compared to the manual version:
 
 - No need for `@tracked` properties or manual state management
 - Validation logic is declarative and reusable
 - Errors are automatically displayed by Field components
 - Validation runs automatically on blur and submit (configurable with `@validateOn`)
-- Less code overall
 
 For complex validation scenarios or custom validation functions, see the [Form Component Documentation](https://frontile.dev/docs/components/forms/form).
 
@@ -381,13 +379,13 @@ The Input component now supports start/end content slots and clearable functiona
 
 #### Key Changes
 
-- ✅ `@hint` → `@description`
-- ✅ `@containerClass` → `@classes={{hash base="..."}}`
-- ✅ `@inputClass` → `@classes={{hash input="..."}}`
-- ✅ Removed `@hasSubmitted`, `@hasError`, `@showError`
-- ✅ Added `@isClearable` option
-- ✅ Added `<:startContent>` and `<:endContent>` slots
-- ✅ Added `@startContentPointerEvents` and `@endContentPointerEvents` for click handling
+- `@hint` → `@description`
+- `@containerClass` → `@classes={{hash base="..."}}`
+- `@inputClass` → `@classes={{hash input="..."}}`
+- Removed `@hasSubmitted`, `@hasError`, `@showError`
+- Added `@isClearable` option
+- Added `<:startContent>` and `<:endContent>` slots
+- Added `@startContentPointerEvents` and `@endContentPointerEvents` for click handling
 
 ### FormTextarea → Textarea
 
@@ -420,8 +418,8 @@ Minimal changes required for textarea migration.
 
 #### Key Changes
 
-- ✅ Move `@rows` to attributes (`rows="4"`)
-- ✅ Removed error state props (`@hasSubmitted`, etc.)
+- Move `@rows` to attributes (`rows="4"`)
+- Removed error state props (`@hasSubmitted`, etc.)
 
 ### FormCheckbox → Checkbox
 
@@ -452,8 +450,8 @@ The Checkbox component now has better standalone usage and improved accessibilit
 
 #### Key Changes
 
-- ✅ **No change** - Still uses `@checked`
-- ✅ Removed error state props (`@hasSubmitted`, etc.)
+- **No change** - Still uses `@checked`
+- Removed error state props (`@hasSubmitted`, etc.)
 
 ### FormCheckboxGroup → CheckboxGroup
 
@@ -502,11 +500,11 @@ CheckboxGroup now uses a component-as-block pattern instead of an items-based AP
 
 #### Key Changes
 
-- ✅ **No change** - Still uses `@onChange`
-- ✅ Add `@name` prop for shared name attribute
-- ✅ Still uses block params, not items-based API
-- ✅ CheckboxGroup provides shared onChange to child checkboxes
-- ✅ Manual tracking of selected values still required
+- **No change** - Still uses `@onChange`
+- Add `@name` prop for shared name attribute
+- Still uses block params, not items-based API
+- CheckboxGroup provides shared onChange to child checkboxes
+- Manual tracking of selected values still required
 
 #### Data Management (No Change)
 
@@ -559,9 +557,9 @@ Minimal changes required for radio migration.
 
 #### Key Changes
 
-- ✅ `@checked` → `@checkedValue` (same concept, just renamed)
-- ✅ Both expect the currently selected value, not a boolean
-- ✅ Removed error state props (`@hasSubmitted`, etc.)
+- `@checked` → `@checkedValue` (same concept, just renamed)
+- Both expect the currently selected value, not a boolean
+- Removed error state props (`@hasSubmitted`, etc.)
 
 ### FormRadioGroup → RadioGroup
 
@@ -608,11 +606,11 @@ RadioGroup now uses a component-as-block pattern instead of an items-based API.
 
 #### Key Changes
 
-- ✅ **No change** - Still uses `@onChange`
-- ✅ Uses `@value` for current selected value
-- ✅ Add `@name` prop for shared name attribute
-- ✅ Still uses block params, not items-based API
-- ✅ RadioGroup automatically passes `@checkedValue` to child radios
+- **No change** - Still uses `@onChange`
+- Uses `@value` for current selected value
+- Add `@name` prop for shared name attribute
+- Still uses block params, not items-based API
+- RadioGroup automatically passes `@checkedValue` to child radios
 
 ### FormSelect → Select
 
@@ -657,13 +655,13 @@ This is the most significant change. The new Select component is completely rebu
 
 #### Key Changes
 
-- ✅ `@options` → `@items`
-- ✅ `@selected` → `@selectedKey` (string | null for single selection)
-- ✅ `@onChange` → `@onSelectionChange` (callback receives string | null for single selection)
-- ✅ `@searchEnabled` → `@isFilterable`
-- ✅ Removed `@searchField` (filtering works on label automatically)
-- ✅ Use `<:item>` slot instead of block param
-- ✅ Built-in filtering instead of external dependency
+- `@options` → `@items`
+- `@selected` → `@selectedKey` (string | null for single selection)
+- `@onChange` → `@onSelectionChange` (callback receives string | null for single selection)
+- `@searchEnabled` → `@isFilterable`
+- Removed `@searchField` (filtering works on label automatically)
+- Use `<:item>` slot instead of block param
+- Built-in filtering instead of external dependency
 
 #### Data Format Migration
 
@@ -883,4 +881,4 @@ For form validation patterns, see the [Migrating Validation](#migrating-validati
 
 ---
 
-This migration guide covers the essential changes needed to move from `@frontile/forms-legacy` to `frontile`. The new package provides improved developer experience with better accessibility, flexibility, and maintainability. For detailed Form component documentation, see [frontile.dev/docs/forms/form](https://frontile.dev/docs/components/forms/form).
+For detailed Form component documentation, see [frontile.dev/docs/forms/form](https://frontile.dev/docs/components/forms/form).

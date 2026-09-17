@@ -7,7 +7,7 @@ subcategory: design-tokens
 
 # Typography System
 
-Frontile's typography system provides a comprehensive, scalable type system built on semantic text styles and a modular scale. It uses Tailwind v4's `@theme` directive for base tokens and `@layer utilities` for explicit utility classes.
+Frontile's typography system is a scalable type system built on semantic text styles and a modular scale. It uses Tailwind v4's `@theme` directive for base tokens and `@layer utilities` for explicit utility classes.
 
 ## Overview
 
@@ -213,7 +213,7 @@ All text style utilities require both a font-family utility and a sized text sty
 
 ## Combining with Other Utilities
 
-Typography utilities work seamlessly with other Tailwind utilities:
+Typography utilities work with other Tailwind utilities:
 
 ```gts preview
 <template>

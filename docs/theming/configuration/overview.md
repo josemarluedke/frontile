@@ -18,7 +18,7 @@ Frontile provides two primary methods for configuring your theme:
 
 ## CSS Variables (Recommended)
 
-The most straightforward way to customize Frontile is using CSS variables in your stylesheet. This approach leverages Tailwind v4's `@theme` directive for simple, performant customization.
+The most straightforward way to customize Frontile is using CSS variables in your stylesheet. This approach uses Tailwind v4's `@theme` directive for simple, performant customization.
 
 ### Quick Start
 

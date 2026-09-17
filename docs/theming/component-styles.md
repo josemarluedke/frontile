@@ -6,7 +6,7 @@ category: theming
 
 # Customizing Component Styles
 
-Frontile provides flexibility for customizing the styles of its components, allowing developers to create a cohesive design that aligns with your application's requirements. This guide details how to customize component styles using Tailwind Variants and discusses global versus local style overrides.
+Frontile components can be customized with Tailwind Variants, either globally or per-instance. This guide covers both approaches.
 
 ## Overview
 
@@ -213,7 +213,7 @@ Use global customization when you want consistency across your entire applicatio
 
 ### Local Customization with Component Arguments
 
-If you only need to customize the styles of a specific component instance, it is recommended to use arguments like `class` or `classes`, depending on the component. Frontile leverages Tailwind Variants with `tw-merge` to allow the merging of Tailwind classes, meaning any class passed locally will effectively overwrite the default styles.
+If you only need to customize the styles of a specific component instance, use arguments like `class` or `classes`, depending on the component. Frontile uses Tailwind Variants with `tw-merge` to merge Tailwind classes, so any class passed locally overwrites the default styles.
 
 #### Example: Local Customization with Drawer Component
 

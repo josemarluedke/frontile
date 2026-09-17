@@ -7,7 +7,7 @@ subcategory: v0.18
 
 # Upgrading to v0.18
 
-Frontile v0.18 is a major release that includes several breaking changes aimed at improving the design system's consistency, accessibility, and developer experience. This guide provides an overview of all breaking changes and links to detailed migration guides for each.
+Frontile v0.18 is a major release with several breaking changes to theming, colors, DOM anatomy, and component APIs. This guide gives an overview of all of them and links to a detailed migration guide for each.
 
 ## What breaks, and how loudly
 

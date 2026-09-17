@@ -7,7 +7,7 @@ subcategory: v0.18
 
 # Migrating from Changeset Form
 
-This guide will help you migrate from the deprecated `@frontile/changeset-form` package to the modern `frontile` forms. We recommend migrating to the modern Form + Field pattern with Valibot validation for the best experience, but also provide paths for teams that need to keep ember-changeset validation.
+This guide covers migrating from the deprecated `@frontile/changeset-form` package to the modern `frontile` forms. We recommend the Form + Field pattern with Valibot validation, and also cover paths for teams that need to keep `ember-changeset` validation.
 
 ## Overview
 
@@ -27,11 +27,11 @@ You have three main migration paths, **ordered by recommendation**:
 
 | Approach                                | Validation | Components                           | Effort     | Tech Debt | Best For                                       |
 | --------------------------------------- | ---------- | ------------------------------------ | ---------- | --------- | ---------------------------------------------- |
-| **1. Modern Forms + Valibot** ⭐        | Valibot    | Form + Field pattern                 | Low-Medium | None      | New features, best long-term choice            |
+| **1. Modern Forms + Valibot**           | Valibot    | Form + Field pattern                 | Low-Medium | None      | New features, best long-term choice            |
 | **2. Changeset + Modern Components**    | Changeset  | Standalone modern components         | Medium     | Medium    | Keep validation, modernize UI                  |
 | **3. Changeset + Forms-Legacy**         | Changeset  | Legacy components                    | Medium     | High      | Large codebases needing gradual migration only |
 
-**Recommendation:** Approach 1 (Modern Forms + Valibot) provides the best developer experience, performance, and maintainability. Choose it unless you have specific constraints requiring changeset validation.
+**Recommendation:** choose Approach 1 (Modern Forms + Valibot) unless you have a specific constraint that requires changeset validation.
 
 ## Before You Start
 
@@ -39,17 +39,16 @@ Build the package you'll use: `pnpm --filter frontile build` (Approaches 1 & 2) 
 
 ---
 
-## Approach 1: Modern Forms + Valibot ⭐ (Recommended)
+## Approach 1: Modern Forms + Valibot (Recommended)
 
-This is the **recommended approach** that provides the best developer experience and long-term maintainability. It uses the modern Form + Field pattern with Valibot validation.
+Uses the modern Form + Field pattern with Valibot validation.
 
 ### When to Choose This Approach
 
-✅ **Starting new features or components** - Best choice for greenfield development
-✅ **Modernizing existing forms** - Clean break from legacy patterns
-✅ **TypeScript-first validation** - Type-safe schemas with excellent IDE support
-✅ **Simpler validation logic** - No complex changeset dependencies
-✅ **Future-proof** - Built on modern web standards
+- Starting new features or components — a clean break from legacy patterns
+- Modernizing existing forms
+- Want type-safe, TypeScript-first validation schemas
+- Want simpler validation logic without changeset dependencies
 
 ### Step 1: Install Dependencies
 
@@ -187,11 +186,11 @@ This approach keeps ember-changeset validation while using modern `frontile` for
 
 ### When to Choose This Approach
 
-✅ **Complex changeset validation** - Don't want to rewrite working validation logic
-✅ **Need modern UI features** - Want slots, clearable, filtering, better accessibility
-✅ **Hybrid migration strategy** - Modernize components now, validation later
-✅ **Team familiar with changeset** - Minimize learning curve
-⚠️ **Willing to accept more boilerplate** - Manual binding required
+- Complex changeset validation you don't want to rewrite
+- Need modern UI features — slots, clearable, filtering, better accessibility
+- Modernizing components now and validation later
+- Team is familiar with changeset and wants to minimize the learning curve
+- Willing to accept the extra boilerplate that manual binding requires
 
 ### Step 1: Install Modern Forms
 
@@ -339,17 +338,16 @@ export default class ChangesetFormComponent extends Component {
 
 ## Approach 3: Keep Changeset, Use Forms-Legacy
 
-This is the **minimal-effort approach** for large codebases that need gradual migration. It keeps changeset validation while using legacy form components.
+This is the minimal-effort approach for large codebases that need gradual migration. It keeps changeset validation while using legacy form components.
 
-**⚠️ Warning:** This approach incurs the most technical debt and should only be chosen when time/resource constraints prevent other approaches.
+**Warning:** this approach carries the most technical debt of the three, and should only be chosen when time or resource constraints rule out the other two.
 
 ### When to Choose This Approach
 
-✅ **Very large codebase** - Hundreds of forms to migrate
-✅ **Limited development resources** - Need absolute minimal effort
-✅ **Complex changeset dependencies** - Extensive custom changeset logic
-✅ **Short-term solution** - Plan to revisit later
-⚠️ **Accepting technical debt** - Understanding this is a stopgap
+- Very large codebase — hundreds of forms to migrate
+- Limited development resources, need the smallest possible effort now
+- Extensive custom changeset validation logic
+- A short-term solution you plan to revisit later, accepting the technical debt as a stopgap
 
 ### Step 1: Install Forms-Legacy
 
