@@ -95,7 +95,7 @@ entry stylesheet is usually `app/app.css`):
 ```css
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
-@import "@frontile/theme";
+@import '@frontile/theme';
 
 @source '../../node_modules/frontile';
 @source '../../node_modules/@frontile';
@@ -113,7 +113,7 @@ To customize the theme, create `frontile.js` at the project root:
 
 ```js
 const { frontile } = require('@frontile/theme/plugin');
-module.exports = frontile({ /* your config */ });
+module.exports = frontile({/* your config */});
 ```
 
 and swap the `@plugin` line to `@plugin "./../../frontile.js";`.
@@ -144,6 +144,41 @@ Verified on two real components with opposite shapes:
 
 Check a component's own `.d.ts`/`.md` to see which shape it uses — do not assume `@classes` is
 universal; components with a single root element use `@class` instead.
+
+### Finding the slot names
+
+`SlotsToClasses<ModalSlots>` does not tell you what the keys are — `ModalSlots` is derived as
+`keyof ReturnType<typeof modal>`, so the names appear nowhere in the component's own
+declaration. They are in the theme package's declarations, which ship for the same reason
+`frontile`'s do:
+
+```
+node_modules/@frontile/theme/declarations/components/<name>.d.ts
+```
+
+One file per component (`button.d.ts`, `listbox.d.ts`, …), with overlays grouped in
+`overlays.d.ts` and form controls under `components/forms/`. The `tv()` return type spells out
+every slot and every variant value. For `modal`:
+
+```ts
+declare const modal: import('tailwind-variants').TVReturnType<
+  {
+    size: { xs: 'modal--xs'; sm: 'modal--sm'; md: 'modal--md' /* … */ };
+    isCentered: { true: 'my-auto' };
+  },
+  {
+    base: string;
+    closeButton: string;
+    header: string;
+    body: string;
+    footer: string;
+  } /* … */
+>;
+```
+
+The second type argument is the slot map, so Modal's `@classes` keys are `base`,
+`closeButton`, `header`, `body`, and `footer`. This is version-exact the same way the
+component declarations are, so prefer it over any list written down elsewhere.
 
 ## Finding exact arguments for any component
 
