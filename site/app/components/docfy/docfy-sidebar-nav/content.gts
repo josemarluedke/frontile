@@ -23,17 +23,17 @@ interface Signature {
 class Label extends Component<{ Args: { label: unknown } }> {
   get color() {
     if (typeof this.args.label !== 'string') {
-      return 'default';
+      return 'neutral';
     }
 
     if (this.args.label.toLowerCase() == 'new') {
-      return 'default';
+      return 'neutral';
     } else if (this.args.label.toLowerCase() == 'updated') {
       return 'success';
     } else if (this.args.label.toLowerCase() == 'deprecated') {
       return 'danger';
     } else {
-      return 'default';
+      return 'neutral';
     }
   }
 

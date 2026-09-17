@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
 import data, { type ComponentDoc } from './signature-data';
-import { Popover } from 'frontile';
+import { Chip, Popover } from 'frontile';
 import type { TOC } from '@ember/component/template-only';
 import IconInfo from '~icons/lucide/info';
 
@@ -29,6 +29,35 @@ function shouldIgnoreTag(tags?: Record<string, unknown>): boolean {
     return true;
   }
   return false;
+}
+
+function isDeprecated(tags?: Record<string, unknown>): boolean {
+  return Boolean(tags && Object.keys(tags).includes('deprecated'));
+}
+
+// A `@deprecated` tag's value carries the migration instruction, and for most
+// deprecated arguments it is the *only* documentation they have: when the whole
+// JSDoc body is the tag, `description` comes back empty. Rendering just the
+// tag's presence would drop the one sentence saying what to use instead.
+//
+// Unlike descriptions, tag values are raw JSDoc text rather than rendered HTML,
+// so this returns a plain string — deliberately not `htmlSafe`.
+//
+// Mirrors `formatDeprecation` in site/lib/docfy-plugin-signature-markdown.mjs,
+// which does the same for the exported Markdown. The two must agree.
+function deprecationMessage(tags?: Record<string, unknown>): string {
+  const tag = tags?.['deprecated'];
+
+  if (!tag) {
+    return '';
+  }
+
+  const value =
+    typeof tag === 'object' && tag !== null && 'value' in tag
+      ? (tag as { value?: unknown }).value
+      : tag;
+
+  return typeof value === 'string' ? value : '';
 }
 
 export default class Signature extends Component<SignatureSignature> {
@@ -81,7 +110,9 @@ export default class Signature extends Component<SignatureSignature> {
   </template>
 }
 
-const PropertiesTable: TOC<{
+// Exported so the rendering test can mount the table directly with a fixture,
+// rather than going through <Signature> and the real generated data.
+export const PropertiesTable: TOC<{
   Element: HTMLDivElement;
   Args: {
     items?: ComponentDoc['Args'];
@@ -125,6 +156,16 @@ const PropertiesTable: TOC<{
                   <span class="text-danger pl-2">
                     *
                   </span>
+                {{/if}}
+                {{#if (isDeprecated arg.tags)}}
+                  <Chip
+                    @color="warning"
+                    @variant="soft"
+                    @size="sm"
+                    class="ml-2 align-middle"
+                  >
+                    Deprecated
+                  </Chip>
                 {{/if}}
                 {{#if arg.isInternal}}
                   <Popover as |pop|>
@@ -192,7 +233,15 @@ const PropertiesTable: TOC<{
               </td>
 
               <td>
-                {{htmlSafe arg.description}}
+                {{#if (isDeprecated arg.tags)}}
+                  <p class="text-warning-firm">
+                    <strong>Deprecated.</strong>
+                    {{deprecationMessage arg.tags}}
+                  </p>
+                {{/if}}
+                {{#if arg.description}}
+                  {{htmlSafe arg.description}}
+                {{/if}}
               </td>
             </tr>
           {{/unless}}

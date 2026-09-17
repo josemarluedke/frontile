@@ -42,6 +42,22 @@ const fixtureData = [
         description: 'Should not appear',
         tags: { ignore: true },
       },
+      {
+        // Mirrors the real shape of a deprecated argument: the whole JSDoc body
+        // is the tag, so `description` is empty and the migration instruction
+        // lives only in `tags.deprecated.value`.
+        identifier: 'intent',
+        type: { type: "'default' | 'primary'", raw: "'default' | 'primary'" },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value: 'Use `color`. `default` is now\n`neutral`.',
+          },
+        },
+      },
     ],
     Blocks: [],
   },
@@ -95,6 +111,52 @@ test('replaces a single <Signature> tag with its Markdown block', () => {
   assert.ok(result.includes('`appearance`'));
   assert.ok(result.startsWith('Intro'));
   assert.ok(result.endsWith('Outro'));
+});
+
+test('marks a deprecated argument and carries its migration text', () => {
+  const markdown = '<Signature @component="Button" />';
+  const result = resolveSignatureTags(
+    markdown,
+    fixtureData,
+    '/docs/components/buttons/button',
+  );
+
+  const row = result.split('\n').find((line) => line.startsWith('| `intent'));
+
+  assert.ok(row, 'expected a table row for the deprecated argument');
+
+  // Without a marker the row is indistinguishable from a current argument, and
+  // `intent` sorts ahead of `variant` — so an agent reading the table has every
+  // reason to pick it.
+  assert.match(row, /deprecated/i);
+
+  // The migration instruction is the only documentation these arguments carry,
+  // and it lives in the tag rather than in `description`.
+  assert.ok(
+    row.includes('Use `color`'),
+    `expected the migration text in the row, got: ${row}`,
+  );
+
+  // Newlines in JSDoc must not break out of the table cell.
+  assert.ok(!row.includes('\n'));
+  assert.ok(row.includes('`neutral`'));
+});
+
+test('leaves a non-deprecated argument unmarked', () => {
+  const markdown = '<Signature @component="Button" />';
+  const result = resolveSignatureTags(
+    markdown,
+    fixtureData,
+    '/docs/components/buttons/button',
+  );
+
+  const row = result
+    .split('\n')
+    .find((line) => line.startsWith('| `appearance'));
+
+  assert.ok(row);
+  assert.doesNotMatch(row, /deprecated/i);
+  assert.ok(row.includes('The button appearance'));
 });
 
 test('replaces multiple <Signature> tags in one page', () => {

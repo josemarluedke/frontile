@@ -78,6 +78,21 @@ cd test-app && pnpm ember test --filter="table"
 pnpm test
 ```
 
+**Site tests** (the docs app — `<Signature>`, the Docfy components):
+
+```bash
+pnpm build && cd site && pnpm test
+```
+
+Two things differ from the test-app suite:
+
+- It needs the **full** `pnpm build`, not just theme + `frontile` — see Building Packages.
+- Each run leaves an orphaned browser holding testem's port 7357, so a second run fails
+  with `listen EADDRINUSE :::7357`. Testem reports that as a single `not ok 1 - Error`
+  with `# tests 1`, which looks like a catastrophic suite failure but is only a port
+  clash. Either free the port (`lsof -tnP -i :7357 | xargs kill -9`) or run on another
+  one: `pnpm vite build --mode development && pnpm testem ci --port 7412`.
+
 ### Building Packages
 
 **Build the main package (most component work):**
@@ -249,6 +264,18 @@ Common dependency/build order (build in this order if modifying multiple):
 3. Legacy wrapper packages (`buttons`, `collections`, …) only if you specifically need them
 
 In practice, most work is just: build `@frontile/theme` (if styles changed), then `frontile`.
+
+**Except for the site test suite, which needs a full `pnpm build`.** The docs render live
+demos from every package, including `forms-legacy` and `changeset-form`, so a theme +
+`frontile` build is not enough. A partial build fails during `site`'s Vite build with
+
+```
+Rolldown failed to resolve import "@embroider/virtual/components/form-checkbox"
+  from ".../forms-legacy/form-checkbox_gen/docfy-demo-src-components-form-checkbox-usage.hbs"
+```
+
+which names a demo template rather than the missing build, so it reads as a broken site
+rather than an incomplete one.
 
 ## Testing Guidelines
 
