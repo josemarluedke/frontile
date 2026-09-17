@@ -19,6 +19,7 @@
   "exclude": ["node_modules", "app/templates/docs"],
   "compilerOptions": {
     "allowJs": true,
+    "resolveJsonModule": true,
     "paths": {
       "site/tests/*": ["./tests/*"],
       "site/*": ["./app/*"],

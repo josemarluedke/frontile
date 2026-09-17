@@ -1,9 +1,29 @@
+import { readFileSync } from 'fs';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import { extensions, classicEmberSupport, ember } from '@embroider/vite';
 import { babel } from '@rollup/plugin-babel';
 import docfy from '@docfy/ember-vite';
 import Icons from 'unplugin-icons/vite';
+import { llmsPreamble } from './lib/llms-preamble.mjs';
+
+// Agents and scripts fetching the component inventory shouldn't have to know
+// it lives inside an Ember app's module graph - emitting it at dist's root
+// makes it fetchable directly, the same way llms.txt is.
+function emitComponentInventoryJson() {
+  return {
+    name: 'emit-component-inventory-json',
+    generateBundle() {
+      this.emitFile({
+        type: 'asset',
+        fileName: 'component-inventory.json',
+        source: readFileSync(
+          new URL('./app/components/component-inventory.json', import.meta.url),
+        ),
+      });
+    },
+  };
+}
 
 // Two builds from one config:
 //
@@ -37,11 +57,58 @@ export default defineConfig(({ isSsrBuild }) => ({
                 projectName: 'Frontile',
                 projectDescription:
                   'A modern, accessible, and extensible component library for Ember.js applications, built with Tailwind CSS and Tailwind Variants.',
+                projectPreamble: llmsPreamble,
+                sectionNotes: {
+                  // These pages are still published because apps on 0.17 need
+                  // them, but an agent reading the index has no other way to
+                  // tell them apart from the current Forms components, which
+                  // sit directly above them under a near-identical heading.
+                  'Forms (Legacy)':
+                    'Deprecated, removed in 0.19.0. New code should use the Forms components above.',
+                },
+                // llms-full.txt is ~1.2 MB, past what most agents will load in
+                // one go. These are the same content sliced by topic, so an
+                // agent working on a component never has to pull the theming
+                // and migration prose along with it. Keys are section labels,
+                // which is what `sections` below resolves them to.
+                llmsSplits: [
+                  {
+                    name: 'components',
+                    sections: [
+                      'Components',
+                      'Buttons',
+                      'Utilities',
+                      'Status',
+                      'Collections',
+                      'Forms',
+                      'Notifications',
+                      'Overlays',
+                      'Navigation',
+                      'Disclosure',
+                    ],
+                  },
+                  {
+                    name: 'theming',
+                    sections: [
+                      'Theming & Styles',
+                      'Design Tokens',
+                      'Configuration',
+                    ],
+                  },
+                  {
+                    name: 'migrations',
+                    sections: ['Migrations — v0.18'],
+                  },
+                ],
               },
             }),
       },
     ),
     Icons({ compiler: 'ember' }),
+
+    // The component inventory JSON belongs to dist/, which the client build
+    // owns, same as staticExport above.
+    ...(isSsrBuild ? [] : [emitComponentInventoryJson()]),
 
     // Nothing serves CSS out of the Node bundle.
     ...(isSsrBuild ? [] : [tailwindcss()]),
