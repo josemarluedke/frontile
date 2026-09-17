@@ -455,6 +455,22 @@ module(
       assert.dom('[aria-current="page"]').hasText('Current');
     });
 
+    test('an explicit isCurrent false on an unlinked crumb is honoured', async function (assert) {
+      // "Not current" is last and unlinked -- if the no-target fallback
+      // ignored its explicit `isCurrent: false`, last-wins would hand it
+      // `aria-current`, overriding the crumb that actually claims it.
+      const optOut = [
+        { label: 'Home', href: '/' },
+        { label: 'Current', isCurrent: true },
+        { label: 'Not current', isCurrent: false }
+      ];
+
+      await render(<template><Breadcrumbs @items={{optOut}} /></template>);
+
+      assert.dom('[aria-current="page"]').exists({ count: 1 });
+      assert.dom('[aria-current="page"]').hasText('Current');
+    });
+
     test('the item block renders each crumb and receives the original object', async function (assert) {
       await render(
         <template>

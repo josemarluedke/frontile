@@ -187,14 +187,21 @@ class Breadcrumbs extends Component<BreadcrumbsSignature> {
 
   /**
    * The indices the root can see as current *without* consulting the router:
-   * an explicit `isCurrent: true`, or a crumb with no link target at all.
+   * an explicit `isCurrent: true`, or a crumb with no link target at all
+   * *and* no explicit `isCurrent` of its own. The no-target fallback must not
+   * override an explicit `isCurrent: false` -- that would make the `@items`
+   * form disagree with the block form, where `@isCurrent={{false}}` always
+   * wins (see the "in both directions" test on `Breadcrumbs.Item`).
    * Router-derived currency stays with `Item`, so this deliberately does not
    * cover `route` crumbs.
    */
   @cached
   get staticallyCurrentIndices(): number[] {
     return (this.args.items ?? []).reduce<number[]>((found, item, index) => {
-      if (item.isCurrent === true || (!item.route && !item.href)) {
+      if (
+        item.isCurrent === true ||
+        (item.isCurrent === undefined && !item.route && !item.href)
+      ) {
         found.push(index);
       }
 
@@ -221,6 +228,25 @@ class Breadcrumbs extends Component<BreadcrumbsSignature> {
     return indices.at(-1);
   }
 
+  /**
+   * A placeholder satisfying `RenderedSlot.context`'s required type for an
+   * ellipsis slot, which never actually yields it -- see the field doc on
+   * `RenderedSlot.context` for why the field can't be optional instead. Named
+   * so its unreachability is obvious at the one place it's constructed,
+   * rather than only in a comment several lines above.
+   */
+  @cached
+  get unreachableEllipsisContext(): BreadcrumbsItemContext {
+    return {
+      item: {},
+      index: -1,
+      isCurrent: false,
+      itemClass: this.itemClass,
+      linkClass: this.linkClass,
+      separatorClass: this.separatorClass
+    };
+  }
+
   @cached
   get slots(): RenderedSlot[] {
     const collapsed: BreadcrumbsSlot[] = collapseBreadcrumbs(
@@ -240,16 +266,7 @@ class Breadcrumbs extends Component<BreadcrumbsSignature> {
           isEllipsis: true,
           hiddenCount: slot.hiddenItems.length,
           hiddenItems: slot.hiddenItems,
-          // Never yielded for an ellipsis slot -- see the field doc on
-          // `RenderedSlot.context` for why this still has to exist.
-          context: {
-            item: {},
-            index: -1,
-            isCurrent: false,
-            itemClass: this.itemClass,
-            linkClass: this.linkClass,
-            separatorClass: this.separatorClass
-          }
+          context: this.unreachableEllipsisContext
         };
       }
 
