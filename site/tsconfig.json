@@ -1,20 +1,28 @@
 {
   "extends": "@ember/app-tsconfig",
-  "include": [
-    "app", "tests", "types"
-  ],
+  "include": ["app", "tests", "types"],
+  // `app/templates/docs/` is Docfy build output, not source: the site build
+  // writes ~90 `.gjs` route templates there (gitignored) from the `.md` files
+  // beside each component. They must stay out of the type-check program.
+  //
+  // Beyond being generated, they actively break it. Docfy inlines each page's
+  // Shiki-highlighted HTML into a `<template>`, so a doc demo containing a JS
+  // template literal (e.g. `${name}` in chip.md) lands a bare `${` in template
+  // content. Glint's gjs preprocessor escapes backticks and `${{` when it wraps
+  // that content in a synthesized tagged template literal, but not a lone `${`
+  // — so the `${...}` becomes a real interpolation and Glint's
+  // `calculateTaggedTemplateSpans` throws "No interpolated values in template
+  // strings", crashing `ember-tsc` outright. The crash names no file (Glint
+  // reports its internal placeholder `root.gjs`), and it only appears once the
+  // site has been built, which is why it reads as a broken type gate rather
+  // than a bad input. Upstream: Glint should escape `${` here too.
+  "exclude": ["node_modules", "app/templates/docs"],
   "compilerOptions": {
     "allowJs": true,
     "paths": {
-      "site/tests/*": [
-        "./tests/*"
-      ],
-      "site/*": [
-        "./app/*"
-      ],
-      "*": [
-        "./types/*"
-      ]
+      "site/tests/*": ["./tests/*"],
+      "site/*": ["./app/*"],
+      "*": ["./types/*"]
     },
     "types": [
       "ember-source/types",
@@ -22,5 +30,5 @@
       "vite/client",
       "unplugin-icons/types/ember"
     ]
-  },
+  }
 }
