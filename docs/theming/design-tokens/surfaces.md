@@ -9,7 +9,7 @@ imports:
 
 # Surface System
 
-The Surface system provides a flexible way to create depth and hierarchy in your interfaces using opaque roles and two families of translucent veils.
+The Surface system creates depth and hierarchy in your interfaces using opaque roles and two families of translucent veils.
 
 ## Overview
 

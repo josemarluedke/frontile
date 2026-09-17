@@ -7,7 +7,6 @@ export type {
   Sort
 } from './types';
 
-// SimpleTable exports
 export { SimpleTable, type SimpleTableSignature } from '../simple-table';
 
 export { default } from './table';

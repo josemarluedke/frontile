@@ -88,7 +88,7 @@ import { Accordion } from 'frontile';
 
 An item's `@key` names it so something outside the accordion can address it —
 controlled mode, a query parameter, persisted state. Without one an item still
-works; it simply is not addressable. Identity then falls back to a generated id,
+works; it just isn't addressable. Identity then falls back to a generated id,
 never to a position, so an item behind an `{{#if}}` cannot inherit its
 neighbour's open state.
 

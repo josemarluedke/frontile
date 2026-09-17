@@ -26,7 +26,6 @@ type ItemCompBoundedWithItem = WithBoundArgs<
   'manager' | 'item'
 >;
 
-// Base interface for shared properties
 interface BaseArgs<T> extends FormControlSharedArgs {
   /**
    * Keys of the options that cannot be selected. Disabled options are still
@@ -109,7 +108,6 @@ interface BaseArgs<T> extends FormControlSharedArgs {
   endContentPointerEvents?: 'none' | 'auto';
 }
 
-// Single selection mode interface
 interface SingleNativeSelectArgs<T> extends BaseArgs<T> {
   /**
    * Whether one option or several can be selected. Multiple renders the native
@@ -137,7 +135,6 @@ interface SingleNativeSelectArgs<T> extends BaseArgs<T> {
   onSelectionChange?: (key: string | null) => void;
 }
 
-// Multiple selection mode interface
 interface MultipleNativeSelectArgs<T> extends BaseArgs<T> {
   /**
    * Whether one option or several can be selected. Multiple renders the native
@@ -164,7 +161,6 @@ interface MultipleNativeSelectArgs<T> extends BaseArgs<T> {
   onSelectionChange?: (keys: string[]) => void;
 }
 
-// Union type for the component
 type Args<T> = SingleNativeSelectArgs<T> | MultipleNativeSelectArgs<T>;
 
 interface NativeSelectSignature<T> {
@@ -183,7 +179,6 @@ interface NativeSelectSignature<T> {
 class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
   constructor(owner: Owner, args: Args<T>) {
     super(owner, args);
-    // Runtime warnings for incorrect API usage
     this.validateArgs();
   }
 
@@ -215,7 +210,6 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
     if (this.args.selectionMode === 'multiple') {
       return this.args.selectedKeys || [];
     } else {
-      // Single mode: convert selectedKey to array for ListManager
       const singleArgs = this.args as SingleNativeSelectArgs<T>;
       return singleArgs.selectedKey ? [singleArgs.selectedKey] : [];
     }
@@ -268,7 +262,6 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
         newSelectedKeys.push(option.value);
       }
 
-      // handle allowEmpty
       if (
         this.args.selectionMode !== 'multiple' &&
         this.args.allowEmpty === true &&

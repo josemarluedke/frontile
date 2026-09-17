@@ -6,13 +6,11 @@ import type {
   SkeletonVariants
 } from '@frontile/theme';
 
-// Re-export universal-ember/table types for convenience
 export type { Column, Row, Table } from '@universal-ember/table';
 import type { Row, Column } from '@universal-ember/table';
 import type { ContentValue } from '@glint/template';
 import type { ComponentLike } from '@glint/template';
 
-// Re-export sorting types from universal-ember/table
 export {
   SortDirection,
   type Sort,
@@ -31,7 +29,6 @@ export interface CellSignature<T> {
   };
 }
 
-// Frontile per-column options carried through universal-ember's pluginOptions
 export interface FrontileColumnOptions {
   isSticky?: boolean;
   stickyPosition?: 'left' | 'right';
@@ -44,10 +41,8 @@ export interface FrontileColumnOptions {
  */
 export type FrontileStickyOptions = FrontileColumnOptions;
 
-// Frontile plugin option type for embedding in universal-ember pluginOptions
 export type FrontilePluginOption = [string, () => FrontileColumnOptions];
 
-// Our own independent ColumnConfig interface
 export interface ColumnConfig<T = unknown> {
   /** The key to extract data from items */
   key: string;
@@ -75,7 +70,6 @@ export interface ColumnConfig<T = unknown> {
   skeleton?: SkeletonVariants['shape'];
 }
 
-// Type utility to extract column keys from ColumnConfig array as literal string union
 export type ColumnKeys<T extends unknown[]> = T[number] extends {
   key: infer K;
 }
@@ -84,7 +78,6 @@ export type ColumnKeys<T extends unknown[]> = T[number] extends {
     : never
   : never;
 
-// Selection types
 export type SelectionMode = 'none' | 'single' | 'multiple';
 
 export type { TableVariants, TableSlots, SlotsToClasses, ClassValue };

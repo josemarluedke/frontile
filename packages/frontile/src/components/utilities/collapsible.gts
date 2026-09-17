@@ -69,7 +69,7 @@ interface CollapsibleSignature {
 class Collapsible extends Component<CollapsibleSignature> {
   isInitiallyOpen = false;
   waiterToken?: unknown;
-  isCurrentlyOpen = false; // Internal value to track if open or not
+  isCurrentlyOpen = false;
 
   constructor(owner: Owner, args: CollapsibleArgs) {
     super(owner, args);
@@ -166,10 +166,8 @@ class Collapsible extends Component<CollapsibleSignature> {
       element.style.overflow = '';
     }
     if (this.waiterToken) {
-      // when is opened, wait for height transition to finish
-      // when is opened, wait for opacity transition to finish at 1
-      // when closed, wait for opacity transition to finish at 0
-      // when closed and has initialHeight, wait for height transition to finish
+      // End the waiter once the transition that matters for the current
+      // direction (open/close, with/without initialHeight) has settled.
       if (
         (this.args.isOpen && event.propertyName === 'height') ||
         (!this.args.isOpen &&

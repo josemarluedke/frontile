@@ -25,8 +25,8 @@ const SUBMENU_OPEN_DELAY = 100;
 
 /**
  * The pointer has to cross a gap to reach the submenu, so leaving the trigger
- * cannot close it instantly. Task 11's safe area decides *where* the pointer
- * is allowed to go; this is how long it has to get there.
+ * cannot close it instantly. The safe-area check below decides *where* the
+ * pointer is allowed to go; this is how long it has to get there.
  */
 const SUBMENU_CLOSE_DELAY = 300;
 

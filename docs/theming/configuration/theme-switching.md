@@ -7,7 +7,7 @@ subcategory: configuration
 
 # Theme Switching
 
-Frontile supports light and dark themes with seamless switching and theme inversion for creating visual contrast within your application.
+Frontile supports light and dark themes, and theme inversion for creating visual contrast within your application.
 
 ## Basic Light/Dark Mode
 
@@ -122,7 +122,7 @@ if (!savedTheme) {
 
 ## How Theme Classes Work
 
-Frontile uses CSS selectors that intelligently apply theme-specific styles:
+Frontile uses CSS selectors that apply theme-specific styles:
 
 ```css
 /* Light theme styles apply to: */

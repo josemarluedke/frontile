@@ -5,7 +5,7 @@ imports:
 
 # Avatar
 
-The Avatar component is used to represent a user by displaying either their initials or an image. It supports customization of size and shape.
+Represents a user by displaying their initials or an image. Supports customizable size and shape.
 
 ## Import
 
@@ -17,7 +17,7 @@ import { Avatar } from 'frontile';
 
 ### Basic
 
-By default, the Avatar component will display initials derived from the `@name`, `@firstName`, and `@lastName` arguments.
+By default, Avatar displays initials derived from the `@name`, `@firstName`, and `@lastName` arguments.
 
 ```gts preview
 import { Avatar } from 'frontile';
@@ -32,7 +32,7 @@ import { Avatar } from 'frontile';
 
 ### With an Image
 
-If an `@src` is provided, the avatar will display the image instead of initials.
+If `@src` is provided, the avatar displays the image instead of initials.
 
 ```gts preview
 import { Avatar } from 'frontile';
@@ -44,7 +44,7 @@ import { Avatar } from 'frontile';
 
 ### Different Sizes
 
-The `@size` property allows you to customize the avatar's size.
+`@size` sets the avatar's size.
 
 ```gts preview
 import { Avatar } from 'frontile';
@@ -70,7 +70,7 @@ import { Avatar } from 'frontile';
 
 ### Shapes
 
-The `@shape` property changes the avatar shape.
+`@shape` changes the avatar's shape.
 
 ```gts preview
 import { Avatar } from 'frontile';

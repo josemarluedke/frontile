@@ -5,21 +5,21 @@ category: get-started
 
 # Introduction
 
-Frontile is a modern, accessible, and extensible component library for Ember.js applications. Built with [Tailwind CSS](https://tailwindcss.com/) and [Tailwind Variants](https://www.tailwind-variants.org/), Frontile provides the building blocks you need to create consistent, beautiful, and accessible user interfaces while following best practices from the Ember.js community.
+Frontile is a component library for Ember.js applications, built with [Tailwind CSS](https://tailwindcss.com/) and [Tailwind Variants](https://www.tailwind-variants.org/).
 
 ## Why Frontile?
 
-Frontile aims to provide the legos (components, helpers, modifiers, and styles) necessary for building consistent and powerful Ember.js apps while following best practices from the community. Whether you're building a simple application or a complex design system, Frontile offers both low-level primitives and high-level components to meet your needs.
+Frontile provides components, helpers, modifiers, and styles for building Ember.js apps, offering both low-level primitives and high-level components.
 
 ### Key Features
 
-- **🎯 Built for Ember** – Seamless integration with Ember Octane & Glimmer components
-- **♿ Accessibility First** – Built with accessibility in mind into every component, following WAI-ARIA guidelines
-- **🎨 Fully Customizable** – Uses Tailwind CSS with Tailwind Variants for highly customizable styling
-- **🔧 TypeScript & Glint Support** – Fully typed templates with Glint for a better developer experience
-- **🌙 Theme Support** – Dark & light mode support with theme-aware components that automatically adapt
-- **📱 Responsive foundations** – Components can be composed with Tailwind CSS responsive utilities
-- **🔄 Composable & Extensible** – Designed to be customized and extended to fit any design system
+- **Built for Ember** – Integrates with Ember Octane & Glimmer components
+- **Accessibility** – ARIA attributes, keyboard navigation, and focus management built into every component
+- **Customizable** – Uses Tailwind CSS with Tailwind Variants for styling
+- **TypeScript & Glint Support** – Fully typed templates with Glint
+- **Theme Support** – Dark & light mode support with theme-aware components
+- **Responsive foundations** – Components can be composed with Tailwind CSS responsive utilities
+- **Composable & Extensible** – Designed to be customized and extended to fit any design system
 
 ## Quick Start
 
@@ -88,7 +88,7 @@ Frontile follows a component composition pattern that prioritizes:
 - **Consistency** – Unified design language across all components
 - **Accessibility** – Keyboard, focus, labeling, and ARIA behavior are built into interactive components
 - **Performance** – Optimized for Ember's rendering system
-- **Developer Experience** – Clear APIs with comprehensive TypeScript support
+- **Developer Experience** – Clear APIs with TypeScript support
 
 ## Browser Support
 
@@ -109,16 +109,16 @@ Frontile is currently in active development and approaching v1.0. While the API 
 
 ## Acknowledgments
 
-Frontile draws inspiration from the excellent work of many frontend component libraries and design systems. We're grateful to these projects for paving the way and establishing patterns that make building accessible, beautiful user interfaces possible:
+Frontile draws on patterns from other component libraries and design systems:
 
-- **[HeroUI](https://www.heroui.com/)** – Modern React UI library with excellent accessibility and theming
+- **[HeroUI](https://www.heroui.com/)** – React UI library with accessibility and theming
 - **[IntentUI](https://intentui.com/)** – Design system focused on developer experience and component composition
-- **[Mantine](https://mantine.dev/)** – Full-featured React components library with comprehensive theming
-- **[Chakra UI](https://chakra-ui.com/)** – Modular and accessible component library for React
+- **[Mantine](https://mantine.dev/)** – Full-featured React components library with theming
+- **[Chakra UI](https://chakra-ui.com/)** – Modular, accessible component library for React
 - **[Ember Primitives](https://ember-primitives.pages.dev/)** – Low-level UI primitives for Ember applications
 
-These projects have significantly influenced Frontile's approach to component design, accessibility, theming, and developer experience. We encourage you to explore these libraries as they represent some of the best practices in modern frontend development.
+These projects have influenced Frontile's approach to component design, accessibility, theming, and developer experience.
 
 ---
 
-Ready to get started? Check out our [Installation Guide](./installation.md) to begin building with Frontile.
+See the [Installation Guide](./installation.md) to start building with Frontile.

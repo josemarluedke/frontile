@@ -48,12 +48,10 @@ export default class CellDefaultComponent<T> extends Component<
   get shouldRender(): boolean {
     const currentKey = this.args.column.key;
 
-    // Check explicit exclusions first
     if (this.args.except?.includes(currentKey)) {
       return false;
     }
 
-    // Check if any CellForComponent has claimed this key
     return !this.args.registry.isKeyClaimed(currentKey);
   }
 

@@ -139,7 +139,7 @@ Use elevation consistently to indicate the z-axis position of elements:
 
 ### Avoid Elevation Confusion
 
-Don't use high elevation for non-interactive or less important elements. Reserve levels 4-5 for elements that truly need to command attention.
+Don't use high elevation for non-interactive or less important elements. Reserve levels 4-5 for elements that need to command attention.
 
 ### Transition Elevations
 

@@ -5,7 +5,7 @@ imports:
 
 # Checkbox Group
 
-A flexible checkbox group component that allows users to select multiple options from a set of choices. It provides a clean interface with support for labels, validation, different orientations, and comprehensive accessibility features.
+A checkbox group component for selecting multiple options from a set of choices. Supports labels, validation, different orientations, and accessibility features.
 
 ## Import
 
@@ -253,7 +253,7 @@ export default class ValidatedCheckboxGroup extends Component {
 
 ### Complete Form Example
 
-Here's a comprehensive example showing CheckboxGroup with the modern Form validation system, combining multiple CheckboxGroups with other input types. This example demonstrates array-based checkbox data and schema validation with both required and optional checkbox groups.
+This example shows CheckboxGroup with the Form validation system, combining multiple CheckboxGroups with other input types, array-based checkbox data, and schema validation with both required and optional checkbox groups.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';

@@ -5,7 +5,7 @@ imports:
 
 # Overlay
 
-The Overlay component is the foundation for building overlay interactions like Modal, Drawer, Popover, and more. It provides all the essential features needed for accessible and user-friendly overlay experiences.
+The Overlay component is the foundation for Modal, Drawer, Popover, and similar overlays. It handles focus management, the backdrop, escape/outside-click dismissal, and scroll locking.
 
 ## Import
 

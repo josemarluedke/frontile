@@ -7,7 +7,7 @@ subcategory: design-tokens
 
 # Icon Sizes
 
-Frontile provides a comprehensive icon sizing scale that pairs harmoniously with typography for consistent visual alignment.
+Frontile provides an icon sizing scale that pairs with typography for consistent visual alignment.
 
 ## Overview
 

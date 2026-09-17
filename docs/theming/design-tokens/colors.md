@@ -275,7 +275,7 @@ All color combinations in Frontile meet WCAG 2.1 Level AA contrast requirements 
 
 ### Automatic "On-" Colors
 
-Frontile automatically generates optimal contrasting text colors for every background color using WCAG contrast calculations. Simply use the `on-` prefix with the same color level:
+Frontile automatically generates optimal contrasting text colors for every background color using WCAG contrast calculations. Use the `on-` prefix with the same color level:
 
 ```html
 <!-- Automatically generates optimal text color (black or white) -->

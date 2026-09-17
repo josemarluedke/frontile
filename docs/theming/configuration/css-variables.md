@@ -54,7 +54,7 @@ Variables defined in `:root` or theme-specific selectors are for component-speci
 
 ### Text Styles
 
-Frontile provides comprehensive text style variables. Each text style category has multiple size variants:
+Frontile provides text style variables. Each text style category has multiple size variants:
 
 - **Marquee**: `--text-marquee-5xs` through `--text-marquee-3xl`
 - **Header**: `--text-header-4xs` through `--text-header-3xl`
@@ -212,7 +212,7 @@ These variables are used by specific Frontile components and should be defined i
 
 **Important:** Color variables should be customized using JavaScript configuration, not CSS variables directly. See [Color Customization](customization.md#colors) for details.
 
-Frontile's semantic colors use a sophisticated system that automatically calculates:
+Frontile's semantic colors use a system that automatically calculates:
 - Light and dark theme variations
 - Contrasting text colors (`on-{color}` classes)
 - Colors in OKLCH format for perceptual uniformity

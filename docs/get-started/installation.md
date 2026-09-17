@@ -6,7 +6,7 @@ category: get-started
 
 # Installation
 
-Frontile is a comprehensive component library for Ember.js that provides all the components you need in a single package. Modern build tools with tree-shaking will ensure only the components you use are included in your final bundle.
+Frontile is a component library for Ember.js that ships all its components in a single package. Modern build tools with tree-shaking include only the components you use in your final bundle.
 
 ## Install Frontile
 
@@ -28,7 +28,7 @@ yarn add frontile @frontile/theme
 
 :::
 
-That's it! You now have access to all Frontile components:
+You now have access to all Frontile components:
 
 ```js
 import { Button, Input, Modal, Table } from 'frontile';
@@ -41,7 +41,7 @@ With modern build tools and explicit imports (`.gts`/`.gjs`), only the component
 > - [`@frontile/changeset-form`](/docs/migrations/v0-18/changeset-form) - Use `frontile` forms instead
 > - [`@frontile/forms-legacy`](/docs/migrations/v0-18/forms-legacy) - Migrate to the new `frontile` forms
 >
-> If you're currently using the separate scoped packages (`@frontile/buttons`, `@frontile/forms`, etc.), you can migrate to the consolidated `frontile` package. Simply update your imports:
+> If you're currently using the separate scoped packages (`@frontile/buttons`, `@frontile/forms`, etc.), you can migrate to the consolidated `frontile` package by updating your imports:
 >
 > ```diff
 > - import { Button } from '@frontile/buttons';

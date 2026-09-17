@@ -363,7 +363,7 @@ export default class FieldWithGroups extends Component {
 
 ### Complex Form with Multiple Fields
 
-A comprehensive example showing Field components in a real-world scenario.
+Field components used together in a realistic form.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';

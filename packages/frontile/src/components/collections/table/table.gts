@@ -161,8 +161,6 @@ const and = (a: unknown, b: unknown) => {
   return a && b;
 };
 
-// Standalone helper functions that don't depend on component state
-
 function columnIsSticky<T>(column: Column<T>): boolean {
   const frontileOptions = extractFrontileOptions(column);
   return frontileOptions?.isSticky ?? false;
@@ -232,7 +230,6 @@ const calculateHeaderHeight = modifier(
 
       requestAnimationFrame(updateHeight);
 
-      // Update on resize
       const observer: ResizeObserver = new ResizeObserver(updateHeight);
       observer.observe(el);
 
@@ -255,21 +252,17 @@ class Table<
   SortButton = SortButtonComponent<T>;
   Checkbox = CheckboxComponent;
 
-  // Tracked state for sorting
   @tracked sorts: SortItem<T>[] = [];
 
-  // Tracked state for uncontrolled selection
   @tracked private internalSelectedKeys = new Set<string>();
 
   constructor(owner: Owner, args: TableSignature<T, TColumns>['Args']) {
     super(owner, args);
-    // Initialize sorts from initialSort if provided (only on mount)
     if (args.initialSort) {
       this.sorts = [args.initialSort];
     }
   }
 
-  // Selection helpers
   get selectionMode(): SelectionMode {
     return this.args.selectionMode ?? 'none';
   }
@@ -280,7 +273,6 @@ class Table<
 
   @cached
   get selectedKeysSet(): Set<string> {
-    // Use controlled state if provided, otherwise use internal state
     const isControlled = this.args.selectedKeys !== undefined;
     const sourceKeys = isControlled
       ? this.args.selectedKeys
@@ -323,7 +315,6 @@ class Table<
     return this.hasSelection ? this.roving.setupItem : this.noopRowSetup;
   }
 
-  // Extract actual data from row (handles both row.data and direct row)
   getRowData = (row: Row<T>): T => {
     if (row.data && row.table) {
       return row.data;
@@ -331,7 +322,6 @@ class Table<
     return row as T;
   };
 
-  // Get key from item or row - unified method
   getKey = (itemOrRow: T | Row<T>): string => {
     // Extract the actual item from row if needed. Note `getRowData`'s check is
     // structural, so a plain item carrying both `data` and `table` is still
@@ -339,48 +329,39 @@ class Table<
     // keys have to line up with the rendered rows.
     const item = this.getRowData(itemOrRow as Row<T>);
 
-    // Use provided getKey function if available
     if (this.args.getKey) {
       return this.args.getKey(item);
     }
 
-    // Try keyAndLabelForItem helper
     try {
       const { key } = keyAndLabelForItem(item);
       return key;
     } catch {
-      // Final fallback
       return String(item);
     }
   };
 
-  // Check if a key is disabled
   isKeyDisabled = (key: string): boolean => {
     return this.disabledKeysSet.has(key);
   };
 
-  // Selection handlers
   handleSelect = (key: string): void => {
     if (this.isKeyDisabled(key)) return;
 
     const newSelection = new Set(this.selectedKeysSet);
 
     if (this.selectionMode === 'single') {
-      // Single selection: clear all and add only the new one
       newSelection.clear();
       newSelection.add(key);
     } else {
-      // Multiple selection: add to existing
       newSelection.add(key);
     }
 
-    // Update internal state if uncontrolled
     const isControlled = this.args.selectedKeys !== undefined;
     if (!isControlled) {
       this.internalSelectedKeys = newSelection;
     }
 
-    // Always call onChange callback if provided
     this.args.onSelectionChange?.(newSelection);
   };
 
@@ -390,13 +371,11 @@ class Table<
     const newSelection = new Set(this.selectedKeysSet);
     newSelection.delete(key);
 
-    // Update internal state if uncontrolled
     const isControlled = this.args.selectedKeys !== undefined;
     if (!isControlled) {
       this.internalSelectedKeys = newSelection;
     }
 
-    // Always call onChange callback if provided
     this.args.onSelectionChange?.(newSelection);
   };
 
@@ -406,17 +385,14 @@ class Table<
   // yields a different key from the one rendered into `data-key` — which is
   // what keyboard selection reads back.
 
-  // Check if a row is selected
   isRowSelected = (row: Row<T>): boolean => {
     return this.selectedKeysSet.has(this.getKey(row));
   };
 
-  // Check if a row is disabled
   isRowDisabled = (row: Row<T>): boolean => {
     return this.isKeyDisabled(this.getKey(row));
   };
 
-  // Handler for row checkbox change
   handleRowSelectionChange = (row: Row<T>, checked: boolean): void => {
     const key = this.getKey(row);
     if (checked) {
@@ -435,7 +411,6 @@ class Table<
     if (key === undefined || this.isKeyDisabled(key)) return;
 
     if (this.selectionMode === 'single') {
-      // Single selection: always select the row
       this.handleSelect(key);
     } else if (this.selectedKeysSet.has(key)) {
       this.handleDeselect(key);
@@ -444,7 +419,6 @@ class Table<
     }
   };
 
-  // Get all selectable (non-disabled) item keys
   get selectableKeys(): string[] {
     // Derived from the rendered rows rather than `@items` for the same reason
     // as the row helpers above: only a `Row` keys the same way `data-key`
@@ -454,55 +428,46 @@ class Table<
       .filter((key) => !this.isKeyDisabled(key));
   }
 
-  // Check if all selectable rows are selected
   get isAllSelected(): boolean {
     if (this.selectableKeys.length === 0) return false;
     return this.selectableKeys.every((key) => this.selectedKeysSet.has(key));
   }
 
-  // Check if some (but not all) selectable rows are selected
   get isSomeSelected(): boolean {
     if (this.selectedKeysSet.size === 0) return false;
     if (this.isAllSelected) return false;
     return this.selectableKeys.some((key) => this.selectedKeysSet.has(key));
   }
 
-  // Handler for select all checkbox change
   handleSelectAllChange = (checked: boolean): void => {
     const newSelection = new Set(this.selectedKeysSet);
 
     if (checked) {
-      // Select all selectable rows
       this.selectableKeys.forEach((key) => {
         newSelection.add(key);
       });
     } else {
-      // Deselect all selectable rows
       this.selectableKeys.forEach((key) => {
         newSelection.delete(key);
       });
     }
 
-    // Update internal state if uncontrolled
     const isControlled = this.args.selectedKeys !== undefined;
     if (!isControlled) {
       this.internalSelectedKeys = newSelection;
     }
 
-    // Always call onChange callback if provided
     this.args.onSelectionChange?.(newSelection);
   };
 
-  // Add checkbox column for multiple selection
   get columnsWithSelection(): readonly ColumnConfig<T>[] {
     if (this.selectionMode !== 'multiple') {
       return this.args.columns;
     }
 
-    // Add checkbox column as the first column
     const checkboxColumn: ColumnConfig<T> = {
       key: '__selection__',
-      name: '', // Empty name, we'll render checkbox in header
+      name: '',
       isSticky: this.args.isScrollable || false,
       stickyPosition: 'left'
     };
@@ -510,7 +475,6 @@ class Table<
     return [checkboxColumn, ...this.args.columns];
   }
 
-  // Transform Frontile ColumnConfig to universal-ember ColumnConfig with pluginOptions
   processColumns(
     columns: readonly ColumnConfig<T>[]
   ): UniversalColumnConfig<T>[] {
@@ -530,7 +494,6 @@ class Table<
 
       const pluginOptions: unknown[] = [];
 
-      // Add Frontile per-column options if any are present
       if (
         isSticky !== undefined ||
         stickyPosition !== undefined ||
@@ -543,20 +506,19 @@ class Table<
         pluginOptions.push(frontileOption);
       }
 
-      // Add ColumnVisibility plugin option if isVisible is explicitly set
       if (isVisible !== undefined) {
         pluginOptions.push(ColumnVisibility.forColumn(() => ({ isVisible })));
       }
 
-      // Add DataSorting plugin option - always add it to override the default (true) with our default (false)
+      // universal-ember's DataSorting plugin defaults isSortable to true;
+      // Frontile columns default to false unless explicitly opted in.
       pluginOptions.push(
         DataSorting.forColumn(() => ({
-          isSortable: isSortable ?? false, // Default to false (override universal-ember's default of true)
+          isSortable: isSortable ?? false,
           sortProperty
         }))
       );
 
-      // Create the universal-ember column configuration
       const universalColumn: UniversalColumnConfig<T> = {
         key: baseColumn.key,
         name: baseColumn.name,
@@ -566,12 +528,10 @@ class Table<
             : undefined
       };
 
-      // Add value function if provided
       if (value) {
         universalColumn.value = value;
       }
 
-      // Add Cell component if provided
       if (Cell) {
         universalColumn.Cell = Cell;
       }
@@ -580,7 +540,6 @@ class Table<
     });
   }
 
-  // Handler for sort state changes from the DataSorting plugin
   handleSortChange = (newSorts: SortItem<T>[]) => {
     this.sorts = newSorts;
   };
@@ -607,16 +566,14 @@ class Table<
     ]
   });
 
-  // Computed property that returns sorted items based on current sort state
   get sortedItems(): T[] {
     const items = this.args.items || [];
 
-    // If no onSort handler or no active sorts, return items as-is
     if (!this.args.onSort || this.sorts.length === 0) {
       return items;
     }
 
-    // Only use the first sort item (single column sorting)
+    // Only single-column sorting is supported, so only the first sort applies.
     const sortDescriptor = this.sorts[0];
     if (!sortDescriptor) {
       return items;
@@ -679,7 +636,6 @@ class Table<
     return Array.from({ length: count }, (_, index) => index);
   }
 
-  // Helper to check if a row is sticky
   isRowSticky = (row: Row<T>): boolean => {
     return !!this.args.stickyKeys?.includes(this.getKey(row));
   };

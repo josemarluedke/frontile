@@ -300,8 +300,8 @@ class Tooltip extends Component<TooltipSignature> {
    * and possibly infinite" (reproduces the same way typed as `unknown`).
    * Applying a modifier directly (`{{this.someModifier someArg}}`) type-checks
    * fine; it is specifically the currying keyword's overload resolution that
-   * Glint chokes on, matching the brief's anticipated fallback: build the
-   * bound modifier value from plain JS instead of templated currying.
+   * Glint chokes on, so this file builds the bound modifier value from plain
+   * JS instead of templated currying.
    *
    * `modifier()` from `ember-modifier` returns the exact function it is
    * given, with only a modifier manager attached out of band (see its
@@ -329,16 +329,15 @@ class Tooltip extends Component<TooltipSignature> {
    * reading `this.args.isDisabled` there is what makes ember-modifier tear
    * down and reinstall the trigger's listeners when it changes, without
    * needing a new outer modifier identity (so the element itself is never
-   * remounted). The brief's sketch instead made `@isDisabled` an unreachable
-   * `openDelay` (`Number.MAX_SAFE_INTEGER`) passed through to `Popover`. That
-   * does not work: `@ember/test-helpers`' `settled()` -- which every
-   * `await triggerEvent(...)` calls internally -- waits on
-   * `backburner.hasTimers()`, which is true for *any* pending `later()` call
-   * no matter how far in the future, so a `mouseenter` scheduling an
-   * effectively-infinite open left every subsequent `await` hanging until
-   * the QUnit test timeout (confirmed: the test hung at exactly 60000ms).
-   * Skipping the hover installation entirely while disabled avoids ever
-   * scheduling that timer in the first place.
+   * remounted). Passing `@isDisabled` through as an unreachable `openDelay`
+   * (`Number.MAX_SAFE_INTEGER`) does not work instead: `@ember/test-helpers`'
+   * `settled()` -- which every `await triggerEvent(...)` calls internally --
+   * waits on `backburner.hasTimers()`, which is true for *any* pending
+   * `later()` call no matter how far in the future, so a `mouseenter`
+   * scheduling an effectively-infinite open left every subsequent `await`
+   * hanging until the QUnit test timeout. Skipping the hover installation
+   * entirely while disabled avoids ever scheduling that timer in the first
+   * place.
    *
    * ANCHOR CHURN GUARD: the wrapper function below reads `this.isOpen`
    * *transitively* -- not directly, but through `trigger`'s own autotracking
@@ -358,16 +357,16 @@ class Tooltip extends Component<TooltipSignature> {
    * `ember-modifier` before *every* re-run, same-element re-runs included --
    * therefore does not tear the anchor down synchronously; it only tears
    * down `trigger` immediately (the half that legitimately needs to re-run on
-   * every open/close -- that's what keeps `aria-describedby` in sync, and
-   * Task 5 documented it as required for controlled mode) and *defers* the
-   * anchor decision via `scheduleAnchorTeardownCheck`.
+   * every open/close -- that's what keeps `aria-describedby` in sync, which
+   * controlled mode also depends on) and *defers* the anchor decision via
+   * `scheduleAnchorTeardownCheck`.
    *
-   * FIX ROUND 2 -- the leak this guard introduced, and why a deferred check:
+   * Why a deferred check, rather than just comparing `element` identity:
    * `ember-modifier` gives the destructor no way to tell "about to re-run for
    * the same element" apart from "genuinely destroyed" -- both call the same
-   * returned closure. Guarding the anchor by comparing `element` identity (as
-   * fix round 1 did) is correct for the re-run case but has no destructor
-   * path left for the case where `element` is removed entirely while
+   * returned closure. An identity comparison alone is correct for the
+   * re-run case but has no destructor path left for the case where `element`
+   * is removed entirely while
    * `Tooltip` itself keeps living (e.g. `{{#if this.show}}<button
    * {{t.trigger}}>{{/if}}`) -- nothing ever calls `ensureAnchor` again to
    * notice the change, and `willDestroy` only runs when `Tooltip` itself is
@@ -697,8 +696,7 @@ class TooltipContent extends Component<TooltipContentSignature> {
    * placed before its own ...attributes). Tooltip has no element of its own:
    * its "base"/"arrow" slots render on the exact same portaled div
    * Overlay/Popover.Content own, so this is the only way to mark it
-   * data-component="tooltip" without touching overlay.gts/popover.gts, which
-   * are out of scope for this migration.
+   * data-component="tooltip" without touching overlay.gts/popover.gts.
    */
   <template>
     <@PopoverContent
