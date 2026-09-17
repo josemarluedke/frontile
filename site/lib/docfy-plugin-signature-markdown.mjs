@@ -142,6 +142,27 @@ function formatType(type) {
   return value ? `\`${escapeCell(value)}\`` : '';
 }
 
+// `@deprecated` carries the migration instruction, and for most deprecated
+// arguments it is the *only* documentation they have: when the whole JSDoc body
+// is the tag, `description` comes back empty. Rendering just the tag's presence
+// would drop the one sentence telling you what to use instead.
+//
+// Unlike descriptions, tag values are raw JSDoc text rather than rendered HTML,
+// so they need escaping but not stripping.
+function formatDeprecation(tags) {
+  const tag = tags && tags.deprecated;
+
+  if (!tag) {
+    return '';
+  }
+
+  const value = typeof tag === 'object' ? tag.value : tag;
+
+  return value === true || !value
+    ? '**Deprecated.**'
+    : `**Deprecated.** ${escapeCell(value)}`;
+}
+
 function formatDescription(item) {
   // Descriptions are stored as rendered HTML for the browser table, the same as
   // types are stored highlighted. Strip back to text for the markdown output.
@@ -149,7 +170,11 @@ function formatDescription(item) {
     ? escapeCell(stripHtml(item.description))
     : '';
 
-  return item.isInternal ? `${description} _(internal)_`.trim() : description;
+  const text = [formatDeprecation(item.tags), description]
+    .filter(Boolean)
+    .join(' ');
+
+  return item.isInternal ? `${text} _(internal)_`.trim() : text;
 }
 
 function buildPropertiesTable(items) {
