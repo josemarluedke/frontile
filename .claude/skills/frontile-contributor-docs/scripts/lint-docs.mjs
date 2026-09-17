@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Lints Frontile component docs against the conventions in
- * .claude/skills/frontile-docs/references/structure.md.
+ * .claude/skills/frontile-contributor-docs/references/structure.md.
  *
  * The point of this script is to take the mechanical half of a docs review off the
  * model's plate: required sections, fence languages, <Signature> wiring, and drift
@@ -10,9 +10,9 @@
  * shape of thing that should be code rather than a checklist item.
  *
  * Usage:
- *   node .claude/skills/frontile-docs/scripts/lint-docs.mjs
- *   node .claude/skills/frontile-docs/scripts/lint-docs.mjs path/to/one.md [more.md]
- *   node .claude/skills/frontile-docs/scripts/lint-docs.mjs --json
+ *   node .claude/skills/frontile-contributor-docs/scripts/lint-docs.mjs
+ *   node .claude/skills/frontile-contributor-docs/scripts/lint-docs.mjs path/to/one.md [more.md]
+ *   node .claude/skills/frontile-contributor-docs/scripts/lint-docs.mjs --json
  *
  * Exits 1 when there is at least one error, so it can gate CI.
  */
