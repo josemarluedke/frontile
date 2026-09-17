@@ -5,7 +5,7 @@ imports:
 
 # Switch
 
-A customizable toggle control that allows users to switch between two states (on/off, enabled/disabled). The Switch component integrates seamlessly with the Form and Field components for automatic data binding and validation, providing a consistent and accessible experience. It supports custom content blocks for icons and labels.
+A toggle control that allows users to switch between two states (on/off, enabled/disabled). The Switch component integrates with the Form and Field components for automatic data binding and validation. It supports custom content blocks for icons and labels.
 
 > **Modern Usage:** For most use cases, prefer using Switch with the Form and Field components. This provides automatic data binding, validation, and state management without manual `@onChange` handlers.
 

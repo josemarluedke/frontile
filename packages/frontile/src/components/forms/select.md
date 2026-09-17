@@ -5,7 +5,7 @@ imports:
 
 # Select
 
-The `Select` component is a powerful and flexible dropdown component. It supports both **single** and **multiple** selection modes — multiple selections render as removable chips — provides built‐in filtering capabilities, and renders a hidden native `<select>` element to ensure full accessibility. Under the hood, it leverages the [Listbox](https://frontile.dev/docs/collections/listbox) and [Popover](https://frontile.dev/docs/overlays/popover) components to power its interactive behavior.
+`Select` is a dropdown component. It supports both **single** and **multiple** selection modes — multiple selections render as removable chips — provides built‐in filtering, and renders a hidden native `<select>` element for accessibility. It is built on the [Listbox](https://frontile.dev/docs/collections/listbox) and [Popover](https://frontile.dev/docs/overlays/popover) components.
 
 ## Import
 

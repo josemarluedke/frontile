@@ -5,7 +5,7 @@ imports:
 
 # Textarea
 
-A versatile textarea component that provides a clean interface for multi-line text input with support for labels, validation, different sizes, and comprehensive accessibility features.
+A textarea component for multi-line text input, with support for labels, validation, sizing, and accessibility.
 
 ## Import
 
@@ -246,7 +246,7 @@ export default class ValidatedTextarea extends Component {
 
 ### Complete Form Example
 
-Here's a comprehensive example showing a Textarea integrated with the Form validation system, combining Input and Textarea fields with Valibot schema validation.
+This example shows a Textarea integrated with the Form validation system, combining Input and Textarea fields with Valibot schema validation.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';

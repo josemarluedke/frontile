@@ -5,7 +5,7 @@ imports:
 
 # Input
 
-A versatile input component that provides a clean interface for text input with support for labels, validation, start/end content, and a clearable option.
+A text input component with support for labels, validation, start/end content, and a clearable option.
 
 ## Import
 

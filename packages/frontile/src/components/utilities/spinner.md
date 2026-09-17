@@ -5,7 +5,7 @@ imports:
 
 # Spinner
 
-Indicate loading state in your components, offering a smooth, animated visual cue that operations are in progress.
+Indicates a loading state with an animated visual cue.
 
 ## Import
 
@@ -23,10 +23,7 @@ import { Spinner } from 'frontile';
 
 ## Sizes
 
-The size option allows you to control the size of the Spinner. The available sizes
-are: `xs`, `sm`, `md`, `lg`, and `xl`. This makes it easy to integrate the
-Spinner into different areas of your UI, whether you need a small indicator for
-a button or a large one for page loading.
+`@size` controls the Spinner's size: `xs`, `sm`, `md`, `lg`, or `xl`.
 
 ```gts preview
 import { Spinner } from 'frontile';
@@ -44,7 +41,7 @@ import { Spinner } from 'frontile';
 
 ## Colors
 
-The intent option changes the Spinner's color to match common UI patterns, such
+`@color` changes the Spinner's color to match common UI patterns, such
 as `primary` actions, `success` states, `warnings`, and `danger` actions.
 
 ```gts preview
@@ -65,11 +62,10 @@ import { Spinner } from 'frontile';
 
 ## Style Customization
 
-You can further customize the Spinner by adding your own CSS classes using the
-`class` argument. This is particularly useful overwriting styles that does not
-work for your use case. You can also overwrite the colors using
-`fill-{*}` classes to modify the highlighted color and `text-{*}` classes to
-modify the background. Semantic color utilities adapt automatically across themes.
+Add custom CSS classes with the `class` argument for anything the built-in
+options don't cover. Override colors with `fill-{*}` classes for the
+highlighted color and `text-{*}` classes for the background. Semantic color
+utilities adapt automatically across themes.
 
 ```gts preview
 import { Spinner } from 'frontile';

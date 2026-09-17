@@ -5,7 +5,7 @@ imports:
 
 # ProgressBar
 
-ProgressBars shows visually the progression of a process or task
+Shows the progress of a process or task as a filled bar.
 
 ## Import
 
@@ -271,7 +271,7 @@ import { ProgressBar } from 'frontile';
 
 ## Indeterminate
 
-You can pass the argument `@isIndeterminate` to represent when the effort or duration can not be calculated
+Pass `@isIndeterminate` when the effort or duration cannot be calculated.
 
 ```gts preview
 import { ProgressBar } from 'frontile';

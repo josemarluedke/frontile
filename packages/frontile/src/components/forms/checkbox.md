@@ -351,7 +351,7 @@ export default class CheckboxWithDescription extends Component {
 
 **Note:** When used with `field.Checkbox` as demonstrated in the examples below, individual Checkbox components support field-level validation (validates on change/blur/input events based on `@validateOn`). This differs from CheckboxGroup, which currently only supports validation on form submit.
 
-The Checkbox component integrates with the Form validation system, providing automatic error display and field-level validation. This example demonstrates using a required checkbox with the Form/Field components.
+Checkbox integrates with the Form validation system, providing automatic error display and field-level validation. This example uses a required checkbox with the Form/Field components.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
@@ -496,7 +496,7 @@ export default class HorizontalCheckboxes extends Component {
 
 ### Complete Form Example
 
-Here's a comprehensive example showing Checkbox components integrated with the Form validation system. This example demonstrates a registration form with an Input field, a required checkbox, and an optional checkbox.
+A registration form with an Input field, a required checkbox, and an optional checkbox, all integrated with the Form validation system.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';

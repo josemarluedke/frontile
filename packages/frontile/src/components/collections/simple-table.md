@@ -5,17 +5,16 @@ imports:
 
 # SimpleTable
 
-The SimpleTable component provides a foundational HTML table structure with consistent styling and theming support. It's designed for manual composition when you need complete control over your table layout without the advanced features of the Table component.
+SimpleTable renders the HTML table structure — `<table>`, `<thead>`, `<tbody>`, `<tfoot>` — with Frontile's styling, for manual composition when you want full control over layout instead of automatic rendering from data.
 
 **Key Features:**
 
 - **Manual composition** with block-form yielding
-- **Flexible styling** with size variants and striped rows
-- **Consistent theming** with the Frontile design system
-- **Sticky support** when used with the Table component
-- **Lightweight** - no data management or complex behaviors
+- Size variants and striped rows
+- Sticky support when used with the Table component
+- No data management — just the table structure and styling
 
-For automatic rendering with advanced features like sticky elements and data management, use [Table](./table) instead.
+For automatic rendering with sticky elements and data management, use [Table](./table) instead.
 
 ## Import
 
@@ -599,7 +598,7 @@ export default class DemoComponent extends Component {
 
 ## Loading State
 
-The SimpleTable component supports loading states with different color variants to indicate when data is being fetched or processed. Loading states provide visual feedback to users during async operations.
+SimpleTable supports loading states with different color variants to indicate when data is being fetched or processed.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';

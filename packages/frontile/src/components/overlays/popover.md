@@ -5,19 +5,12 @@ imports:
 
 # Popover
 
-A Popover component is a UI element that presents supplementary information or
-actions related to a specific trigger element, typically appearing in a small overlay.
-It offers a convenient way to display contextual content such as tooltips, forms,
-or menus without cluttering the main interface, enhancing user experience and interaction.
-Popovers can be triggered by various user actions like hovering, clicking, or focusing on an
-element, providing flexibility in design and functionality.
+A Popover shows supplementary content — a form, a menu, extra detail — next to a
+trigger element, in a small overlay. It can be triggered by click, hover, or
+focus.
 
-The Popover component is built upon the [Overlay](./overlay.md) component,
-inheriting its functionality and extending it to cater specifically to popover
-behavior. This means that all options available in the Overlay component are also accessible as arguments in the
-`Content` yielded component. Thus, users can leverage the full range of
-customization options provided by the Overlay component seamlessly within the
-context of popovers, ensuring consistency and flexibility in UI design and behavior.
+Popover is built on [Overlay](./overlay.md), and all of Overlay's arguments are
+also accepted by the `Content` yielded component.
 
 ## Import
 
@@ -46,9 +39,9 @@ import { Popover } from 'frontile';
 
 ## Focus Trapping
 
-Prevents the user from tabbing outside of the popover content while it's open,
-ensuring better accessibility and usability. To enable this option, ensure a
-focusable element is rendered at all times within the popover content.
+Prevents the user from tabbing outside of the popover content while it's open.
+To enable this option, ensure a focusable element is rendered at all times
+within the popover content.
 
 ```gts preview
 import { Button } from 'frontile';
@@ -72,11 +65,10 @@ import { Input } from 'frontile';
 
 ## The Trigger
 
-Besides triggering the popover through a click event, alternative methods are
-available for managing the visibility of the content. The Popover component yields functions
-such as `open`, `close`, or `toggle`, offering convenient control over the popover's behavior.
+Besides a click on the trigger, Popover yields `open`, `close`, and `toggle`
+functions for controlling visibility directly.
 
-In the example below, the popover is showned when the user hovers the trigger button.
+In the example below, the popover shows when the user hovers the trigger button.
 
 ```gts preview
 import { on } from '@ember/modifier';
@@ -192,8 +184,7 @@ const backdrops = ['none', 'faded', 'blur', 'transparent'];
 
 ## Placement
 
-Easily specify the placement of the popover relative to its trigger element,
-ensuring optimal positioning in various UI layouts.
+Specify the placement of the popover relative to its trigger element.
 
 ```gts preview collapsible
 import { Button } from 'frontile';
@@ -345,14 +336,10 @@ export default class Example extends Component {
 
 ## Stacking Popovers
 
-When stacking Popovers, the behavior is designed to accommodate multiple layers
-of interaction seamlessly. Each Popover instance maintains its own context,
-allowing for a stacked arrangement of overlays. This means that users can trigger
-a new Popover from within an existing one, creating a stacked structure. When
-the "escape" key is pressed, the system intelligently identifies the most recently
-added overlay and closes it, ensuring a natural and intuitive user experience.
-Similarly, clicking outside of the overlays prioritizes the most recent addition,
-closing it before proceeding to the underlying layers.
+Each Popover instance maintains its own context, so a Popover can be triggered
+from within another, creating a stacked arrangement. Pressing Escape closes
+the most recently opened overlay first; clicking outside behaves the same way,
+closing the topmost layer before the ones beneath it.
 
 ```gts preview collapsible
 import { Popover } from 'frontile';

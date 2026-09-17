@@ -5,7 +5,7 @@ imports:
 
 # Radio
 
-A radio button component that allows users to select a single option from a group of choices. Radio components integrate seamlessly with the Form and Field components for automatic data binding and validation. For grouped radio buttons, use RadioGroup which provides built-in grouping and state management.
+A radio button component that allows users to select a single option from a group of choices. Radio components integrate with the Form and Field components for automatic data binding and validation. For grouped radio buttons, use RadioGroup which provides built-in grouping and state management.
 
 ## Import
 
@@ -73,7 +73,7 @@ export default class ControlledRadio extends Component {
 
 > **Field-Level Validation:** RadioGroup supports field-level validation that runs on change events based on the Form's `@validateOn` setting, providing immediate feedback.
 
-RadioGroup integrates with Form validation through Valibot schemas. The Form component handles validation automatically and displays errors through the Field component. Here's a comprehensive example showing RadioGroup with other form fields:
+RadioGroup integrates with Form validation through Valibot schemas. The Form component handles validation automatically and displays errors through the Field component. This example shows RadioGroup alongside other form fields:
 
 ```gts preview collapsible
 import Component from '@glimmer/component';

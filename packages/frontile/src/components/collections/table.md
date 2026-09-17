@@ -6,7 +6,7 @@ imports:
 
 # Table
 
-A powerful component for displaying structured data with features like sticky headers, sorting, column visibility, and scrollable containers.
+Renders structured data automatically from `@columns` and `@items`, with sticky headers, sorting, column visibility, and scrollable containers.
 
 **Key Features:**
 
@@ -1240,7 +1240,7 @@ export default class DemoComponent extends Component {
 
 ### Uncontrolled Selection
 
-The Table supports uncontrolled selection where internal state is managed automatically. Simply omit `@selectedKeys` and provide `@onSelectionChange` to monitor selections:
+The Table supports uncontrolled selection, where internal state is managed automatically. Omit `@selectedKeys` and provide `@onSelectionChange` to monitor selections:
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
