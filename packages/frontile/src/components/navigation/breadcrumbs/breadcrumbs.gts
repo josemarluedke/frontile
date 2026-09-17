@@ -98,6 +98,13 @@ interface RenderedSlot {
    */
   resolvedIsCurrent?: boolean;
   hiddenCount?: number;
+  /**
+   * Required, and an empty array on item slots, where `hiddenCount` beside it
+   * is merely omitted. The asymmetry is load-bearing rather than sloppy: this
+   * is yielded straight to the `ellipsis` block, whose contract promises
+   * consumers a real array to `{{#each}}` over, and Glint will not narrow the
+   * field to non-undefined through the template's branch.
+   */
   hiddenItems: BreadcrumbsItemData[];
   /**
    * Always populated, even for an ellipsis slot -- Glimmer's `{{#if
@@ -264,6 +271,13 @@ class Breadcrumbs extends Component<BreadcrumbsSignature> {
     );
     const currentIndex = this.currentIndex;
 
+    // Read once, not once per crumb: each is a `@cached` getter over a
+    // Tailwind-Variants slot function, and `pagination.gts`'s `renderedItems`
+    // hoists the same way.
+    const itemClass = this.itemClass;
+    const linkClass = this.linkClass;
+    const separatorClass = this.separatorClass;
+
     return collapsed.map((slot): RenderedSlot => {
       if (slot.type === 'ellipsis') {
         return {
@@ -296,9 +310,9 @@ class Breadcrumbs extends Component<BreadcrumbsSignature> {
           item: slot.item,
           index: slot.index,
           isCurrent: resolvedIsCurrent ?? false,
-          itemClass: this.itemClass,
-          linkClass: this.linkClass,
-          separatorClass: this.separatorClass
+          itemClass,
+          linkClass,
+          separatorClass
         }
       };
     });

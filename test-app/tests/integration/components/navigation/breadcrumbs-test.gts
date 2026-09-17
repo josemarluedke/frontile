@@ -1,37 +1,9 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, click } from '@ember/test-helpers';
+import { render, find, findAll } from '@ember/test-helpers';
 import { hash } from '@ember/helper';
 import { Breadcrumbs } from 'frontile';
-
-/**
- * Clicks with a modifier held and reports whether anything called
- * `preventDefault` on the way.
- *
- * The listener sits on `document` in the bubble phase, so it runs after any
- * handler the component or `LinkTo` attached to the element itself and sees
- * their verdict. It then prevents the default itself, because the point of the
- * test is a link with a real href and we do not want the test runner opening a
- * tab.
- */
-async function modifiedClick(element: Element): Promise<boolean> {
-  let prevented = false;
-
-  const spy = (event: Event): void => {
-    prevented = event.defaultPrevented;
-    event.preventDefault();
-  };
-
-  document.addEventListener('click', spy);
-
-  try {
-    await click(element, { metaKey: true });
-  } finally {
-    document.removeEventListener('click', spy);
-  }
-
-  return prevented;
-}
+import { modifiedClickWasPrevented } from '../../../helpers/modified-click';
 
 module(
   'Integration | Component | Breadcrumbs | frontile/navigation',
@@ -250,7 +222,7 @@ module(
         );
 
       assert.false(
-        await modifiedClick(link),
+        await modifiedClickWasPrevented(link),
         'nothing called preventDefault on a modified click'
       );
     });

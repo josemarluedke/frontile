@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit, click, currentURL } from '@ember/test-helpers';
+import { modifiedClickWasPrevented } from '../helpers/modified-click';
 
 module('Acceptance | breadcrumbs routing', function (hooks) {
   setupApplicationTest(hooks);
@@ -119,19 +120,7 @@ module('Acceptance | breadcrumbs routing', function (hooks) {
       'nav[data-component="breadcrumbs"] [data-part="link"]'
     ) as HTMLElement;
 
-    let prevented = false;
-    const spy = (event: Event): void => {
-      prevented = event.defaultPrevented;
-      event.preventDefault();
-    };
-
-    document.addEventListener('click', spy);
-
-    try {
-      await click(first, { metaKey: true });
-    } finally {
-      document.removeEventListener('click', spy);
-    }
+    const prevented = await modifiedClickWasPrevented(first);
 
     assert.false(prevented, 'LinkTo left the modified click to the browser');
     assert.strictEqual(
