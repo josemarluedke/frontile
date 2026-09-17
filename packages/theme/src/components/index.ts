@@ -1,5 +1,6 @@
 export * from './alert';
 export * from './avatar';
+export * from './breadcrumbs';
 export * from './button';
 export * from './chip';
 export * from './progress-bar';

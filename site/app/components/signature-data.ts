@@ -40067,6 +40067,769 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'breadcrumbs',
+    name: 'Breadcrumbs',
+    fileName:
+      'packages/frontile/declarations/components/navigation/breadcrumbs/breadcrumbs.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'base\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'item\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'separator\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'list\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'link\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ellipsis\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
+        tags: {},
+      },
+      {
+        identifier: 'color',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: ["'neutral'", "'primary'", "'danger'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The colour of the hover and current-page ink.</p>\n<p>Three categories rather than the usual seven: the others are fill colours,\nmeant to carry <code>text-on-*</code> on top of them, and as ink on a light surface\nthey fall below the contrast a reader needs. See <code>breadcrumbs.ts</code> in the\ntheme for the measurements.</p>',
+        tags: { defaultValue: { name: 'defaultValue', value: "'neutral'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span></span>',
+      },
+      {
+        identifier: 'items',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">BreadcrumbsItemData[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders the trail from an array instead of from blocks. Passing it is what\nmakes <code>@maxItems</code> meaningful -- yielded blocks cannot be counted before\nthey render, so in the block form there is nothing for it to divide.',
+        tags: {},
+      },
+      {
+        identifier: 'itemsAfterCollapse',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: '1' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span></span>',
+      },
+      {
+        identifier: 'itemsBeforeCollapse',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: '1' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span></span>',
+      },
+      {
+        identifier: 'label',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Accessible name for the navigation landmark.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'Breadcrumb'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'Breadcrumb\'</span></span>',
+      },
+      {
+        identifier: 'maxItems',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Collapses the middle of the trail once there are more crumbs than this.\n<code>@items</code> form only.',
+        tags: {},
+      },
+      {
+        identifier: 'separator',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ComponentLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: SVGElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Replaces the separator glyph. A component argument rather than a named\nblock because the separator is rendered inside each <code>&#x3C;li></code>, which <code>Item</code>\nowns -- a named block on this component cannot be handed down to a child.',
+        tags: {
+          defaultValue: { name: 'defaultValue', value: 'ChevronRightIcon' },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ChevronRightIcon</span></span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+      },
+      {
+        identifier: 'underline',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'always\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'hover\'</span></span>',
+          items: ["'none'", "'always'", "'hover'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'hover'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'hover\'</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">BreadcrumbsItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (itemClass, linkClass, separatorClass, separator, setupItem bound); Ellipsis: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">BreadcrumbsEllipsis</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (itemClass, ellipsisClass, separatorClass, separator bound); itemClass: string; linkClass: string; separatorClass: string; setupItem: Breadcrumbs[</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'setupItem\'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">]; }]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'Item',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">BreadcrumbsItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (itemClass, linkClass, separatorClass, separator, setupItem bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Ellipsis',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">BreadcrumbsEllipsis</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (itemClass, ellipsisClass, separatorClass, separator bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'itemClass',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'linkClass',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'separatorClass',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'setupItem',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">FunctionBasedModifier</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Args</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: { </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Positional</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: [boolean]; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Named</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: EmptyObject; }; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'item',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[BreadcrumbsItemContext]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'item',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                      items: [
+                        {
+                          identifier: 'label',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                          },
+                          isRequired: false,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'route',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                          },
+                          isRequired: false,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'model',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown</span></span>',
+                          },
+                          isRequired: false,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'models',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+                            raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown[]</span></span>',
+                          },
+                          isRequired: false,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'query',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Record</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string, unknown</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                          },
+                          isRequired: false,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'href',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                          },
+                          isRequired: false,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'isCurrent',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                          },
+                          isRequired: false,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                        {
+                          identifier: 'isDisabled',
+                          type: {
+                            type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                          },
+                          isRequired: false,
+                          isInternal: false,
+                          description: '',
+                          tags: {},
+                        },
+                      ],
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'index',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isCurrent',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'itemClass',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'linkClass',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'separatorClass',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'What the `item` block receives, once per rendered crumb.',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'ellipsis',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ hiddenCount?: number; hiddenItems: BreadcrumbsItemData[]; }]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'hiddenCount',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'hiddenItems',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">BreadcrumbsItemData[]</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description:
+      '<p>An ordered trail of links ending in the current page.</p>\n<p>Like <code>TabNav</code>, it deliberately does <strong>not</strong> use roving focus: these are\nlinks, so every one of them stays individually reachable by Tab and the\narrow keys are left to the browser.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'item',
+    name: 'BreadcrumbsItem',
+    fileName:
+      'packages/frontile/declarations/components/navigation/breadcrumbs/item.d.ts',
+    Args: [
+      {
+        identifier: 'itemClass',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: 'Supplied by Breadcrumbs. Not part of the public API.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'linkClass',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'separatorClass',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'setupItem',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Args</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: { </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Positional</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: [boolean]; }; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: "Class names appended to this crumb's theme classes.",
+        tags: {},
+      },
+      {
+        identifier: 'href',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Renders a plain anchor.',
+        tags: {},
+      },
+      {
+        identifier: 'isCurrent',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Overrides the current-page state. Wins over every other rule.',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Marks the crumb as disabled. An anchor cannot be natively disabled, so the\nhref is dropped as well -- <code>aria-disabled</code> alone still leaves it\nclickable. Only affects a linked crumb: an unlinked crumb (no <code>@route</code> or\n<code>@href</code>) renders as a <code>&#x3C;span></code> and never receives <code>aria-disabled</code> or\n<code>data-disabled</code> regardless of this arg.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'model',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'A single dynamic segment for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'models',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Dynamic segments for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'query',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Record</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string, unknown</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Query params for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'route',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders a <code>LinkTo</code> for this route and derives the current state from the\nrouter. Omit it (and pass <code>@href</code>) to stay entirely router-free.',
+        tags: {},
+      },
+      {
+        identifier: 'separator',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ComponentLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: SVGElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLElement</span></span>',
+      },
+      description:
+        "Not `HTMLAnchorElement`: this component's crumb element varies -- an `<a>`\nor a `<span>` for an unlinked current crumb -- so the signature has to name\nthe common supertype or `...attributes` is mistyped for the span case.",
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description:
+      "<p>One crumb: its <code>&#x3C;li></code>, the crumb itself, and the separator that follows it.</p>\n<p>The separator is rendered here rather than by the root, and hidden on the\nlast crumb by CSS. That is what lets both authoring forms work without\neither one knowing an item's position.</p>",
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'ellipsis',
+    name: 'BreadcrumbsEllipsis',
+    fileName:
+      'packages/frontile/declarations/components/navigation/breadcrumbs/ellipsis.d.ts',
+    Args: [
+      {
+        identifier: 'ellipsisClass',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'itemClass',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'separatorClass',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: "Class names appended to this marker's theme classes.",
+        tags: {},
+      },
+      {
+        identifier: 'hiddenCount',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Drives the visually-hidden announcement. The <code>@items</code> form passes it; in\nthe block form an author may supply it, and without it the announcement\nfalls back to an uncounted one rather than making the author count their\nown crumbs.',
+        tags: {},
+      },
+      {
+        identifier: 'hiddenItems',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">BreadcrumbsItemData[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The crumbs this marker stands in for. Yielded straight back to the block.',
+        tags: {},
+      },
+      {
+        identifier: 'separator',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ComponentLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: SVGElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ hiddenCount?: number; hiddenItems: BreadcrumbsItemData[]; }]</span></span>',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+                items: [
+                  {
+                    identifier: 'hiddenCount',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                    },
+                    isRequired: false,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'hiddenItems',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+                      raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">BreadcrumbsItemData[]</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Replaces the glyph. This is where a <code>Dropdown</code> goes.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description:
+      '<p>The gap marker standing in for a run of crumbs.</p>\n<p>It renders its own <code>&#x3C;li></code> including a separator, structurally identical to\nwhat <code>Item</code> renders -- a bare <code>&#x3C;span></code> would fall outside the\n<code>group-last/item:hidden</code> scheme that hides the trailing separator, and the\ntrail would end in a dangling chevron whenever an ellipsis came last.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'tab-nav',
     name: 'TabNav',
     fileName:

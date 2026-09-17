@@ -352,6 +352,12 @@ export const inventory: InventoryCategory[] = [
           'A navigation bar styled like Tabs, for links that change the page.',
       },
       {
+        name: 'Breadcrumbs',
+        path: '/docs/components/navigation/breadcrumbs',
+        description:
+          'A trail of links showing where the current page sits, collapsing the middle when it gets long.',
+      },
+      {
         name: 'Pagination',
         path: '/docs/components/navigation/pagination',
         description:

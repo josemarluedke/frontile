@@ -1,0 +1,1 @@
+<template>Second panel</template>
