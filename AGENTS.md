@@ -300,6 +300,23 @@ When changing public API or styling, update the affected `.md` files, type signa
 examples. After doc/style changes, it's worth running the site (`cd site && pnpm build` or
 `pnpm start`) to confirm the rendered demos still look right.
 
+### Two skill directories, two audiences
+
+Both are real skills and `npx skills add josemarluedke/frontile` discovers both, so the
+distinction has to stay legible in their `description` fields:
+
+- **`skills/frontile/`** ships to *consumers*. It is what an agent working in someone
+  else's Ember app installs. It deliberately carries no argument lists — it routes to
+  `node_modules/frontile/declarations/**/*.d.ts` (version-exact for whoever installed it)
+  and to the `.md` mirrors on frontile.dev. Adding an argument table here would go stale
+  on the next release and would be wrong for anyone not on latest.
+- **`.claude/skills/frontile-contributor-docs/`** is for work *inside this repo* — writing
+  the co-located component `.md` files. It never leaves the repo in practice.
+
+When Frontile's public API changes, `skills/frontile/references/api-naming.md` is the file
+to check: it is the one place in the consumer skill that names arguments, and it does so
+only to map removed names onto their replacements.
+
 ## Common Tasks
 
 ### Adding a New Component

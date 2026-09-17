@@ -149,6 +149,17 @@
   background-color: var(--color-surface-app);
 }
 
+/* A fence with no language is passed through unhighlighted, so Shiki never
+   wraps its rows in `.line` and the horizontal inset above has nothing to land
+   on — the code sits flush against the card's edge while every highlighted
+   block beside it is inset. Put the inset back on `<pre>` for that case alone.
+   The reason it was moved off `<pre>` does not apply here: with no `.line`
+   there is no full-width line background to clip. */
+.docfy-code-block__content pre:not(:has(.line)),
+.prose .docfy-code-block__content pre:not(:has(.line)) {
+  @apply px-4;
+}
+
 .prose .docfy-code-block code::before,
 .prose .docfy-code-block code::after {
   content: none;

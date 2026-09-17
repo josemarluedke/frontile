@@ -110,6 +110,9 @@ export default {
     // so it is this child that gets the heading.
     'v0-18': { label: 'Migrations — v0.18', order: 1 },
 
+    // Get Started subsections
+    ai: { label: 'AI & Agents', order: 1 },
+
     // Theming subsections
     'design-tokens': { label: 'Design Tokens', order: 1 },
     configuration: { label: 'Configuration', order: 2 },

@@ -1,6 +1,6 @@
 ---
-name: frontile-docs
-description: Write, review, and audit Frontile component documentation — the co-located `.md` files next to each `.gts` under `packages/frontile/src/components/`. Use this whenever the user is documenting a new component, editing any component `.md`, adding or changing usage demos, or asking whether the docs are accurate, complete, or consistent. Also use it whenever a change touches a component's public arguments, yielded blocks, or styling, because the docs and the JSDoc that generates the API table have to move with the code — reach for it even when the user only asked for the code change and didn't mention docs at all.
+name: frontile-contributor-docs
+description: For contributors working INSIDE the Frontile repository itself — not for apps that consume Frontile. Write, review, and audit Frontile component documentation — the co-located `.md` files next to each `.gts` under `packages/frontile/src/components/`. Use this whenever the user is documenting a new component, editing any component `.md`, adding or changing usage demos, or asking whether the docs are accurate, complete, or consistent. Also use it whenever a change touches a component's public arguments, yielded blocks, or styling, because the docs and the JSDoc that generates the API table have to move with the code — reach for it even when the user only asked for the code change and did not mention docs at all.
 ---
 
 # Frontile component documentation
@@ -227,8 +227,8 @@ for. When you must reach outside the doc and its component, say so and say why.
 ## Verify
 
 ```bash
-node .claude/skills/frontile-docs/scripts/lint-docs.mjs                    # everything
-node .claude/skills/frontile-docs/scripts/lint-docs.mjs --since HEAD FILE   # + demo loss
+node .claude/skills/frontile-contributor-docs/scripts/lint-docs.mjs                    # everything
+node .claude/skills/frontile-contributor-docs/scripts/lint-docs.mjs --since HEAD FILE   # + demo loss
 ```
 
 Zero dependencies, so it runs without `node_modules`, and it exits non-zero on errors for
