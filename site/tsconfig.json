@@ -5,6 +5,7 @@
   ],
   "compilerOptions": {
     "allowJs": true,
+    "resolveJsonModule": true,
     "paths": {
       "site/tests/*": [
         "./tests/*"

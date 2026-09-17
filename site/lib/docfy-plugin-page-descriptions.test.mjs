@@ -111,10 +111,10 @@ test('does not warn and does not touch a page with no inventory entry', () => {
   assert.strictEqual(page.meta.frontmatter.description, undefined);
 });
 
-test('loadInventory parses the real component-inventory.ts and returns non-empty items with path and description', () => {
+test('loadInventory parses the real component-inventory.json and returns non-empty items with path and description', () => {
   const inventoryPath = path.resolve(
     __dirname,
-    '../app/components/component-inventory.ts',
+    '../app/components/component-inventory.json',
   );
 
   const items = loadInventory(inventoryPath);
@@ -133,9 +133,9 @@ test('loadInventory parses the real component-inventory.ts and returns non-empty
   });
 });
 
-test('loadInventory throws a clear error when the file does not match the expected format', () => {
+test('loadInventory throws a clear error when the file does not exist', () => {
   const dir = path.dirname(fileURLToPath(import.meta.url));
-  const badPath = path.join(dir, 'does-not-exist-inventory.ts');
+  const badPath = path.join(dir, 'does-not-exist-inventory.json');
 
   assert.throws(() => {
     loadInventory(badPath);

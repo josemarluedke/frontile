@@ -1,25 +1,25 @@
 import { readFileSync } from 'fs';
 
-// component-inventory.ts is TypeScript, and this plugin is a plain .mjs run
-// by Vite/Node without a TS loader - the same problem
-// docfy-plugin-signature-markdown.mjs solves for signature-data.ts. The
-// array itself is plain JS object-literal syntax (no TS-only syntax inside
-// the literal), so it's evaluated as a JS expression rather than parsed as
-// TypeScript.
-const INVENTORY_ARRAY_PATTERN =
-  /export const inventory: InventoryCategory\[\] = (\[[\s\S]*?\]);\n\nexport const componentCount/;
-
-export function loadInventory(componentInventoryTsPath) {
-  const source = readFileSync(componentInventoryTsPath, 'utf-8');
-  const match = source.match(INVENTORY_ARRAY_PATTERN);
-
-  if (!match) {
+export function loadInventory(componentInventoryJsonPath) {
+  let source;
+  try {
+    source = readFileSync(componentInventoryJsonPath, 'utf-8');
+  } catch (error) {
     throw new Error(
-      `[docfy-plugin-page-descriptions] Could not find the inventory array in ${componentInventoryTsPath} — has component-inventory.ts's format changed?`,
+      `[docfy-plugin-page-descriptions] Could not read ${componentInventoryJsonPath}: ${error.message}`,
+      { cause: error },
     );
   }
 
-  const categories = new Function(`return (${match[1]});`)();
+  let categories;
+  try {
+    categories = JSON.parse(source);
+  } catch (error) {
+    throw new Error(
+      `[docfy-plugin-page-descriptions] Could not parse ${componentInventoryJsonPath} as JSON: ${error.message}`,
+      { cause: error },
+    );
+  }
 
   return categories.flatMap((category) => category.items);
 }

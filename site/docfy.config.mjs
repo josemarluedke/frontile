@@ -19,7 +19,7 @@ const signatureData = loadSignatureData(
 );
 
 const inventory = loadInventory(
-  path.resolve(__dirname, 'app/components/component-inventory.ts'),
+  path.resolve(__dirname, 'app/components/component-inventory.json'),
 );
 
 /**
