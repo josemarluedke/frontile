@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { VisuallyHidden } from '../../utilities/visually-hidden';
-import { ChevronRightIcon } from '../../../-private/icons';
+import { BreadcrumbsSeparator } from './separator';
 import type { BreadcrumbsItemData } from './collapse';
 import type { ComponentLike } from '@glint/template';
 
@@ -92,9 +92,10 @@ class BreadcrumbsEllipsis extends Component<BreadcrumbsEllipsisSignature> {
         {{/if}}
       {{/if}}
 
-      <span data-part="separator" aria-hidden="true" class={{@separatorClass}}>
-        {{#if @separator}}<@separator />{{else}}<ChevronRightIcon />{{/if}}
-      </span>
+      <BreadcrumbsSeparator
+        @class={{@separatorClass}}
+        @separator={{@separator}}
+      />
     </li>
   </template>
 }

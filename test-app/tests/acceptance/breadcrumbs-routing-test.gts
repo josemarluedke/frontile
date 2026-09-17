@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { visit, click } from '@ember/test-helpers';
+import { visit, click, currentURL } from '@ember/test-helpers';
 
 module('Acceptance | breadcrumbs routing', function (hooks) {
   setupApplicationTest(hooks);
@@ -107,5 +107,37 @@ module('Acceptance | breadcrumbs routing', function (hooks) {
         'LinkTo cannot be talked out of a navigable href, so a disabled route crumb renders a plain anchor instead'
       );
     assert.dom(disabled).hasAttribute('aria-disabled', 'true');
+  });
+
+  test('cmd-click on a @route crumb does not transition in place', async function (assert) {
+    // `LinkTo` intercepts only simple clicks; a modified one has to fall
+    // through so the browser can open it in a new tab. This is the tier where
+    // that could regress, since `LinkTo` is the thing attaching a handler.
+    await visit('/breadcrumbs-demo/second');
+
+    const first = document.querySelector(
+      'nav[data-component="breadcrumbs"] [data-part="link"]'
+    ) as HTMLElement;
+
+    let prevented = false;
+    const spy = (event: Event): void => {
+      prevented = event.defaultPrevented;
+      event.preventDefault();
+    };
+
+    document.addEventListener('click', spy);
+
+    try {
+      await click(first, { metaKey: true });
+    } finally {
+      document.removeEventListener('click', spy);
+    }
+
+    assert.false(prevented, 'LinkTo left the modified click to the browser');
+    assert.strictEqual(
+      currentURL(),
+      '/breadcrumbs-demo/second',
+      'the app did not transition in place'
+    );
   });
 });

@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { LinkTo } from '@ember/routing';
-import { ChevronRightIcon } from '../../../-private/icons';
+import { BreadcrumbsSeparator } from './separator';
 import type RouterService from '@ember/routing/router-service';
 import type { ComponentLike, ModifierLike } from '@glint/template';
 
@@ -204,9 +204,10 @@ class BreadcrumbsItem extends Component<BreadcrumbsItemSignature> {
         </span>
       {{/if}}
 
-      <span data-part="separator" aria-hidden="true" class={{@separatorClass}}>
-        {{#if @separator}}<@separator />{{else}}<ChevronRightIcon />{{/if}}
-      </span>
+      <BreadcrumbsSeparator
+        @class={{@separatorClass}}
+        @separator={{@separator}}
+      />
     </li>
   </template>
 }
