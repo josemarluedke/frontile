@@ -142,7 +142,7 @@ export const inventory: InventoryCategory[] = [
         name: 'Toggle',
         path: '/docs/components/utilities/toggle',
         description:
-          'A lightweight helper for tracking boolean state with a toggle() method.',
+          'A template helper, called as toggleState(), for tracking boolean state with a toggle() method.',
       },
       {
         name: 'Kbd',
@@ -166,7 +166,7 @@ export const inventory: InventoryCategory[] = [
         name: 'Ref',
         path: '/docs/components/utilities/ref',
         description:
-          'A utility for capturing a reactive reference to a DOM element.',
+          'A modifier factory, called as ref(), for capturing a reactive reference to a DOM element.',
       },
       {
         name: 'RovingFocus',
@@ -196,7 +196,7 @@ export const inventory: InventoryCategory[] = [
         name: 'Button',
         path: '/docs/components/buttons/button',
         description:
-          'The base pressable action, with intents, appearances, and sizes.',
+          'The base pressable action, with colors, variants, and sizes.',
       },
       {
         name: 'ButtonGroup',

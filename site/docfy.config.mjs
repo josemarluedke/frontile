@@ -7,12 +7,19 @@ import withProse from '@docfy/plugin-with-prose';
 import docfyPluginSignatureMarkdown, {
   loadSignatureData,
 } from './lib/docfy-plugin-signature-markdown.mjs';
+import docfyPluginPageDescriptions, {
+  loadInventory,
+} from './lib/docfy-plugin-page-descriptions.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const signatureData = loadSignatureData(
   path.resolve(__dirname, 'app/components/signature-data.ts'),
+);
+
+const inventory = loadInventory(
+  path.resolve(__dirname, 'app/components/component-inventory.ts'),
 );
 
 /**
@@ -27,6 +34,7 @@ export default {
   plugins: [
     withProse({ className: 'prose max-w-none dark:prose-invert' }),
     docfyPluginSignatureMarkdown(signatureData),
+    docfyPluginPageDescriptions(inventory),
   ],
   remarkPlugins: [
     // Every source below lives outside this app (../docs, ../packages/*), and
@@ -96,6 +104,11 @@ export default {
     components: { label: 'Components', order: 3 },
     accessibility: { label: 'Accessibility', order: 4 },
     migrations: { label: 'Migrations', order: 5 },
+    // Without this the section falls back to its directory name and renders as
+    // a bare `v0-18` heading, in the sidebar and in llms.txt alike. The parent
+    // `migrations` label does not cover it: that node has no pages of its own,
+    // so it is this child that gets the heading.
+    'v0-18': { label: 'Migrations — v0.18', order: 1 },
 
     // Theming subsections
     'design-tokens': { label: 'Design Tokens', order: 1 },
