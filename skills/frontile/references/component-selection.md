@@ -2,7 +2,7 @@
 
 Judgment calls between components that look similar but aren't interchangeable. Verified
 against each component's source and co-located `.md` under `packages/frontile/src/components/`.
-This is not an argument reference — read the component's own `.md` or `.d.ts` for that.
+For arguments, read the component's own `.md` or `.d.ts`.
 
 ## Modal vs Drawer vs Popover
 
@@ -16,10 +16,10 @@ and weight:
 - **Drawer** — slide-out panel from an edge, with drag-to-dismiss support
   (`modifiers/drag-to-dismiss` wired in via `overlays/drawer.gts`). "A slide-out panel that
   appears from any edge of the screen" (`overlays/drawer.md`). Reach for it for supplementary
-  content that keeps spatial context with the trigger — filters, details panel, mobile nav.
+  content that keeps spatial context with the trigger: filters, details panel, mobile nav.
 - **Popover** — small overlay anchored to a trigger element, can open on click, hover, or focus
-  (`overlays/popover.md`). Reach for it for a small amount of content tied to one control — a
-  menu, a tooltip-like explanation, a compact form — not a full task flow.
+  (`overlays/popover.md`). Reach for it for a small amount of content tied to one control, such
+  as a menu, a tooltip-like explanation, or a compact form, rather than a full task flow.
 
 Wrong choice here is mostly a UX weight mismatch, not an accessibility break, since all three
 inherit Overlay's a11y behavior.
@@ -81,16 +81,16 @@ dismisses itself."
   just happened (saved, failed, item removed) that should not persist in the page's content flow.
 
 Choosing Alert for a transient toast (or vice versa) is a UX/persistence mismatch more than an
-accessibility one — but a toast used for content the user needs to re-find later (e.g. a
+accessibility one, but a toast used for content the user needs to re-find later (e.g. a
 validation error) is a real usability regression since it disappears on its own.
 
 ## Button vs ToggleButton vs SegmentedControl vs Chip
 
-Overlapping visuals, different semantics — verified per component `.md`:
+Overlapping visuals, different semantics, verified per component `.md`:
 
 - **Button** (`buttons/button.md`) — triggers a one-shot action (submit, open a modal, navigate).
   No persistent on/off state.
-- **ToggleButton** (`buttons/toggle-button.md`) — "allows to toggle a selection on or off... 
+- **ToggleButton** (`buttons/toggle-button.md`) — "allows to toggle a selection on or off...
   switching between two states or modes." Carries boolean pressed/selected state itself
   (renders with `aria-pressed` semantics as a toggle, not a momentary action). Use for a single
   binary option (e.g. bold on/off in a toolbar), not for an action that fires once.
@@ -109,7 +109,7 @@ Overlapping visuals, different semantics — verified per component `.md`:
   unit (e.g. what `Select`'s multi-select mode renders per selected value).
 
 Rule: one-shot action → `Button`. Single independent on/off → `ToggleButton`. Mutually-exclusive
-choice among a small fixed set → `SegmentedControl` (never a row of `ToggleButton`s — that drops
+choice among a small fixed set → `SegmentedControl` (never a row of `ToggleButton`s: that drops
 required radiogroup semantics). Representing an applied value/tag → `Chip`.
 
 ## Listbox vs Dropdown
@@ -126,22 +126,22 @@ components."
 
 Reach for `Dropdown` directly for a standard "click button, get a menu" interaction. Reach for
 `Listbox` directly only when composing your own overlay/trigger behavior that none of `Select`,
-`Autocomplete`, or `Dropdown` already covers — it is the escape hatch, not the default.
+`Autocomplete`, or `Dropdown` already covers. It is the escape hatch, not the default.
 
 ## Modifiers/utilities invoked in templates, not rendered as components
 
 These are plain functions/classes from `packages/frontile/src/utils/` and
 `packages/frontile/src/modifiers/`, imported from `frontile` like anything else, but they are
-**not components** — never write `<Press />`, `<Ref />`, etc. Verified invocation form for each:
+**not components**. Never write `<Press />`, `<Ref />`, etc. Verified invocation form for each:
 
-| Utility | What it is | Verified invocation |
-|---|---|---|
-| `press` | A modifier (not a class) for cross-platform press interactions | `<button {{press onPressStart=this.a onPressEnd=this.b onPress=this.c}}>...</button>` — used directly as an element modifier, supports named args (`press.md`). |
-| `ref` | Factory returning a `Ref` instance with a `.setup` modifier and a `.current` tracked property | `myRef = ref<HTMLDivElement>();` in the class, then `<div {{this.myRef.setup}}>` in the template; read the element back via `this.myRef.current` (`utils/ref.md`, `utils/ref.ts`). |
-| `rovingFocus` | Factory returning a `RovingFocus` instance whose `.setupItem` modifier goes on every item in the group | `roving = rovingFocus(() => ({ orientation: 'horizontal' }));` then `<button {{this.roving.setupItem}}>` on each item — `setupItem` takes no arguments itself; it reads selected/disabled state live from the element's own attributes (`utils/roving-focus.md`). Options are passed as a **thunk** (`() => options`), not a plain object, so a reactive arg stays live. |
-| `dragToDismiss` | A modifier taking named args directly | `{{dragToDismiss axis='y' direction=1 isEnabled=true onDismiss=this.close handleSelector="[data-test-id='panel-handle']"}}` on the draggable element (`modifiers/drag-to-dismiss.md`). |
-| `toggleState` | Factory returning a `ToggleState` instance with a tracked `.current` boolean and a `.toggle` method | `toggle = toggleState(true);` in the class; `this.toggle.current` to read, `{{on 'click' this.toggle.toggle}}` or `this.toggle.toggle()` to flip — `.toggle` also accepts an explicit boolean or a change `Event` (reads `event.currentTarget.checked`) (`utils/toggle.md`, `utils/toggle.ts`). |
-| `selectionIndicator` | Factory returning a `SelectionIndicator` instance with two modifiers | `indicator = selectionIndicator();` then `<div {{this.indicator.setupContainer}}>` on the container and `<button {{this.indicator.setupTarget isSelected}}>` on each candidate, passing the selected boolean as the sole positional arg (`utils/selection-indicator.md`). For consumers that can't use a modifier, `.claim(element)` / `.release(element)` are the same operations as plain methods. |
+| Utility              | What it is                                                                                             | Verified invocation                                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `press`              | A modifier (not a class) for cross-platform press interactions                                         | `<button {{press onPressStart=this.a onPressEnd=this.b onPress=this.c}}>...</button>` — used directly as an element modifier, supports named args (`press.md`).                                                                                                                                                                                                                                      |
+| `ref`                | Factory returning a `Ref` instance with a `.setup` modifier and a `.current` tracked property          | `myRef = ref<HTMLDivElement>();` in the class, then `<div {{this.myRef.setup}}>` in the template; read the element back via `this.myRef.current` (`utils/ref.md`, `utils/ref.ts`).                                                                                                                                                                                                                   |
+| `rovingFocus`        | Factory returning a `RovingFocus` instance whose `.setupItem` modifier goes on every item in the group | `roving = rovingFocus(() => ({ orientation: 'horizontal' }));` then `<button {{this.roving.setupItem}}>` on each item — `setupItem` takes no arguments itself; it reads selected/disabled state live from the element's own attributes (`utils/roving-focus.md`). Options are passed as a **thunk** (`() => options`), not a plain object, so a reactive arg stays live.                             |
+| `dragToDismiss`      | A modifier taking named args directly                                                                  | `{{dragToDismiss axis='y' direction=1 isEnabled=true onDismiss=this.close handleSelector="[data-test-id='panel-handle']"}}` on the draggable element (`modifiers/drag-to-dismiss.md`).                                                                                                                                                                                                               |
+| `toggleState`        | Factory returning a `ToggleState` instance with a tracked `.current` boolean and a `.toggle` method    | `toggle = toggleState(true);` in the class; `this.toggle.current` to read, `{{on 'click' this.toggle.toggle}}` or `this.toggle.toggle()` to flip — `.toggle` also accepts an explicit boolean or a change `Event` (reads `event.currentTarget.checked`) (`utils/toggle.md`, `utils/toggle.ts`).                                                                                                      |
+| `selectionIndicator` | Factory returning a `SelectionIndicator` instance with two modifiers                                   | `indicator = selectionIndicator();` then `<div {{this.indicator.setupContainer}}>` on the container and `<button {{this.indicator.setupTarget isSelected}}>` on each candidate, passing the selected boolean as the sole positional arg (`utils/selection-indicator.md`). For consumers that can't use a modifier, `.claim(element)` / `.release(element)` are the same operations as plain methods. |
 
 They come in two shapes, and mixing them up is the usual error:
 
@@ -149,6 +149,6 @@ They come in two shapes, and mixing them up is the usual error:
   straight to an element with named args: `{{press onPress=this.go}}`.
 - **Factories returning an instance** — `ref`, `rovingFocus`, `toggleState`,
   `selectionIndicator`. Call the lowercase factory in a class field, then invoke the modifier
-  *off the instance*: `{{this.myRef.setup}}`.
+  _off the instance_: `{{this.myRef.setup}}`.
 
 None of the six is a component. None is ever invoked as `<PascalCase />`.

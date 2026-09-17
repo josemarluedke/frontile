@@ -52,7 +52,7 @@ version. Where they disagree about an argument, tier 1 wins.
 
 ## The four things most likely to go wrong
 
-Detail for each is in the reference files below; this is what to watch for.
+Detail for each is in the reference files below.
 
 1. **There is no numbered color scale.** `bg-primary-500` does not exist. Colors are
    semantic categories with named levels: `bg-primary-firm`, `text-on-primary-firm`.
