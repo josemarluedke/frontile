@@ -202,15 +202,11 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    */
   constructor(owner: Owner, args: FormSignature<T>['Args']) {
     super(owner, args);
-    // Create copy of initial data
     if (args.data) {
-      // Always store flattened snapshot for dirty tracking
-      // This ensures consistent comparison regardless of initial structure
       this.initialDataSnapshot = flattenData(
         args.data as Record<string, unknown>
       );
 
-      // Keep uncontrolled data in original structure
       this.uncontrolledData = { ...args.data };
     }
   }
@@ -256,19 +252,16 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    * @returns A promise that resolves to the validation errors, if any.
    */
   async validate(data: T): Promise<FormErrors | undefined> {
-    // Run validator and get issues
     const errors = await StandardValidator.validateAll(
       data,
       this.args.schema,
       this.args.validate
     );
-    // Convert validator errors to FormErrors
     if (errors) {
       const formErrors = validatorToFormErrors(errors);
       this.errors = formErrors;
       return formErrors;
     }
-    // Clear errors if no issues
     this.errors = {};
   }
 
@@ -287,31 +280,19 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     if (!this.args.schema && !this.args.validate) {
       return;
     }
-    // Run validator and get issues
     const errors = await StandardValidator.validateFieldAll(
       data,
       name,
       this.args.schema,
       this.args.validate
     );
-    // Convert validator errors to FormErrors
     if (errors) {
       const formErrors = validatorToFormErrors(errors);
       if (formErrors[name]) {
-        // Merge with existing errors immutably
         this.errors = { ...this.errors, [name]: formErrors[name] };
       }
       return { [name]: formErrors[name] };
     }
-    // Clear field error if no issues
-    // Remove field error using immutable pattern:
-    // 1. Use destructuring to extract the field we want to remove
-    //    (assigned to '_' since unused)
-    // 2. Capture all remaining fields in 'rest' using the spread operator
-    // 3. Reassign this.errors to the 'rest' object, effectively removing
-    //    the field
-    // This approach maintains immutability by creating a new object rather than
-    // mutating the existing errors object with 'delete'
     if (this.errors[name]) {
       const { [name]: _, ...rest } = this.errors;
       this.errors = rest;
@@ -333,17 +314,14 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       return dirty;
     }
 
-    // Flatten current data to same representation as snapshot
     const currentFlat = flattenData(data as Record<string, unknown>);
 
-    // Compare all keys in current data
     for (const key in currentFlat) {
       if (!deepEqual(currentFlat[key], this.initialDataSnapshot[key])) {
         dirty.add(key);
       }
     }
 
-    // Check for keys in initial data that are missing in current data
     for (const key in this.initialDataSnapshot) {
       if (
         !(key in currentFlat) &&
@@ -366,7 +344,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   buildFormResultData(data: T): FormResultData<T> {
     const { isValid, isInvalid, errors } = this;
     const dirty = this.computeDirtyFields(data);
-    this.dirty = dirty; // Update tracked state
+    this.dirty = dirty;
     return {
       data,
       isValid,
@@ -386,9 +364,6 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     const form = event.currentTarget;
     if (form instanceof HTMLFormElement) {
       let data = dataFrom(event) as T;
-
-      // Always unflatten form data to handle dotted field names
-      // This is safe for flat data too - keys without dots remain unchanged
       data = unflattenData(data as Record<string, unknown>) as T;
 
       const resultData = this.buildFormResultData(data);
@@ -410,9 +385,6 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     if (form instanceof HTMLFormElement) {
       this.isLoading = true;
       let data = dataFrom(event) as T;
-
-      // Always unflatten form data to handle dotted field names
-      // This is safe for flat data too - keys without dots remain unchanged
       data = unflattenData(data as Record<string, unknown>) as T;
 
       let errors: FormErrors | undefined;
@@ -424,16 +396,12 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       this.uncontrolledData = data;
       try {
         if (errors && this.args.onError) {
-          // Call onError handler when there are validation errors
           await this.args.onError(errors, data, event);
         } else if (!errors && this.args.onSubmit) {
-          // Run `onSubmit` if validation was skipped OR if validation passed
           await this.args.onSubmit(resultData, event);
-          // Update snapshot on successful submit (new baseline)
           this.initialDataSnapshot = flattenData(
             data as Record<string, unknown>
           );
-          // Clear dirty state since we've updated the baseline
           this.dirty = new Set();
         }
       } finally {
@@ -450,26 +418,20 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    */
   @action
   handleReset(event: Event) {
-    // Clear state
     this.errors = {};
     this.dirty = new Set();
 
-    // Restore initial data
     if (this.initialDataSnapshot) {
-      // Unflatten data if it was nested
       const restoredData = unflattenData(this.initialDataSnapshot) as T;
 
-      // For controlled forms, call onChange to let parent update state
       if (this.isControlled && this.args.onChange) {
         const resultData = this.buildFormResultData(restoredData);
 
         this.args.onChange(resultData, event);
       } else {
-        // For uncontrolled forms, update internal state
         this.uncontrolledData = restoredData;
       }
     } else {
-      // No initial data, just clear uncontrolled data
       this.uncontrolledData = undefined;
     }
   }
@@ -518,7 +480,6 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
 }
 
 /**
- * Helper function.
  * Converts validation type `Issues` from StandardValidator into a format
  * suitable for the form component, type `FormErrors`.
  *
@@ -542,7 +503,6 @@ function validatorToFormErrors(errors: Issues): FormErrors {
     const fieldName = issuePathToFieldName(issue);
     const message = issue.message;
 
-    // Add message to the field's errors
     const existing = formErrors[fieldName];
     if (existing === undefined) {
       formErrors[fieldName] = message;

@@ -185,17 +185,14 @@ class ProgressBar extends Component<ProgressBarSignature> {
   }
 
   get formattedValueLabel(): string {
-    // check if the value label should not be shown
     if (!this.showValueLabel || this.args.isIndeterminate) {
       return '';
     }
 
-    // if @labelValue is provided use it
     if (this.args.valueLabel) {
       return this.args.valueLabel;
     }
 
-    // if format options are provided
     if (this.args.formatOptions) {
       const options: Intl.NumberFormatOptions = {
         ...(this.args.formatOptions || {})

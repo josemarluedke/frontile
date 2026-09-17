@@ -156,7 +156,6 @@ class Field<
   get fieldValue() {
     if (!this.args.formData) return undefined;
 
-    // Ember's get() handles both flat keys and dotted paths correctly
     return get(this.args.formData, this.args.name);
   }
 

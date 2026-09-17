@@ -127,7 +127,6 @@ function unlockBodyScroll(): void {
   }
 }
 
-// finds if the el has a parent with the id `ember-basic-dropdown-wormhole` or a role of `alert`
 function hasWormholeOrAlertParentElement(el: HTMLElement) {
   let parent = el.parentElement;
   while (parent) {

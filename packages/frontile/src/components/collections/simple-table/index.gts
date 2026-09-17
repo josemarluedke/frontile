@@ -94,7 +94,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
       layout: this.args.layout,
       striped: this.args.isStriped,
       isScrollable: this.args.isScrollable || false,
-      hasStickyHeader: false, // Will be determined by header component
+      hasStickyHeader: false,
       isLoading: this.args.hasCustomLoading
         ? false
         : this.args.isLoading || false,

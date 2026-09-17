@@ -97,7 +97,6 @@ interface SelectChipOptions extends Pick<
   size?: ChipSignature['Args']['size'];
 }
 
-// Base interface for shared properties
 interface BaseSelectArgs<T>
   extends
     Pick<
@@ -136,7 +135,6 @@ interface BaseSelectArgs<T>
     >,
     FormControlSharedArgs {}
 
-// Base interface for single selection mode (backward compatible)
 interface BaseSingleSelectArgs<T> extends BaseSelectArgs<T> {
   /**
    * The currently selected key for single selection mode.
@@ -184,7 +182,6 @@ interface BaseSingleSelectArgs<T> extends BaseSelectArgs<T> {
   onSelectionChange?: (key: string | null) => void;
 }
 
-// Single selection mode interface (when selectionMode is explicitly 'single')
 interface ExplicitSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
   /**
    * Determines the selection mode of the select component.
@@ -203,7 +200,6 @@ interface ExplicitSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
   chip?: never;
 }
 
-// Single selection mode interface (when selectionMode is omitted - default behavior)
 interface DefaultSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
   /**
    * Determines the selection mode of the select component.
@@ -223,7 +219,6 @@ interface DefaultSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
   chip?: never;
 }
 
-// Multiple selection mode interface
 interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
   /**
    * Determines the selection mode of the select component.
@@ -311,7 +306,6 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
   onSelectionChange?: (keys: string[]) => void;
 }
 
-// Proper discriminated union type that handles all cases
 type SelectArgs<T> = (
   | ExplicitSingleSelectArgs<T>
   | DefaultSingleSelectArgs<T>
