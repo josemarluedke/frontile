@@ -823,10 +823,16 @@ export default class IndexPage extends Component {
               to the llms.txt standard, mirrors every page as plain Markdown at
               the same URL plus
               <code class="font-code text-code-sm text-primary-firm">.md</code>,
-              and puts a one-click handoff to ChatGPT or Claude on each one.
-              Point your coding agent at a component's real documentation
-              instead of hoping it guessed the API.
+              and ships an installable agent skill. Point your coding agent at a
+              component's real documentation instead of hoping it guessed the
+              API.
             </p>
+            <DocfyLink
+              @to="/docs/get-started/ai"
+              class="mt-3 inline-flex items-center font-body text-body-sm text-primary-firm hover:text-primary-strong underline underline-offset-2"
+            >
+              AI &amp; Agents
+            </DocfyLink>
           </div>
 
           <div class="mt-10 reveal">
