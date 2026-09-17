@@ -27,7 +27,7 @@ works. See [Agent Skill](./skill.md).
 
 **Using a chat tool**, or wiring something up yourself, point it at
 [`/llms.txt`](/llms.txt) and let it follow the links. See
-[llms.txt & Markdown](./llms-txt.md).
+[LLMs.txt](./llms-txt.md).
 
 Neither is required. Every page on this site is available as Markdown at its own URL plus
 `.md`, and that works with no setup at all.
@@ -74,7 +74,7 @@ Anything deprecated is marked `@deprecated` here too, with the replacement named
 
 **2. The Markdown mirror of the component's page.** Every page on this site is also served as
 plain Markdown at the same URL plus `.md`, carrying the prose, examples, and yielded blocks
-that type declarations cannot express. See [llms.txt & Markdown](./llms-txt.md).
+that type declarations cannot express. See [LLMs.txt](./llms-txt.md).
 
 **3. The index**, when the component's name is not yet known: [`/llms.txt`](/llms.txt).
 

@@ -1,11 +1,11 @@
 ---
-title: llms.txt & Markdown
+title: LLMs.txt
 order: 2
 category: get-started
 subcategory: ai
 ---
 
-# llms.txt & Markdown
+# LLMs.txt
 
 Every page of these docs is published twice: once as the HTML you are reading, and once as
 plain Markdown for anything that would rather not parse a single-page app. Alongside them

@@ -119,7 +119,7 @@ generated code compiles come from your own `node_modules`.
 
 Everything the skill points at is fetchable directly, and [`/llms.txt`](/llms.txt) states the
 same lookup order in its preamble, so an agent pointed at the index alone arrives at the same
-place. See [llms.txt & Markdown](./llms-txt.md).
+place. See [LLMs.txt](./llms-txt.md).
 
 ## Found a problem?
 
