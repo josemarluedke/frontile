@@ -7,7 +7,7 @@ subcategory: ai
 
 # Agent Skill
 
-Frontile ships an [Agent Skill](https://github.com/vercel-labs/skills) — a small set of
+Frontile ships an [Agent Skill](https://github.com/vercel-labs/skills), a small set of
 instructions a coding agent loads when it is working with Frontile, so it stops guessing at
 an API it half-remembers.
 
@@ -23,24 +23,23 @@ The skill is installed into your project, not into Frontile. It works with any a
 The skill holds judgment and routes to facts. It deliberately does **not** restate arguments,
 types, or defaults.
 
-That restraint is the whole design. An installed skill is a copy of a file, frozen at install
-time, while your `frontile` dependency moves independently. Any argument list written into it
-would eventually describe a version nobody has. So instead it states where to look — first
+An installed skill is a copy of a file, frozen at install time, while your `frontile`
+dependency moves independently. Any argument list written into it would eventually describe a
+version nobody has. So it states where to look instead: first
 `node_modules/frontile/declarations/**/*.d.ts`, which is exact for the version you installed,
 then the [Markdown mirrors](./llms-txt.md) for prose and examples.
 
 What it does carry:
 
-- **The lookup order**, as a rule rather than a suggestion.
-- **Current versus deprecated argument names.** `@color` and `@variant` are current;
-  `@intent` and `@appearance` are pre-0.18, still resolve, and are removed in 0.19.0. This is
-  the one place the skill names arguments, because describing a completed rename stays true
-  whichever version is installed.
-- **The semantic color system** — categories with named levels, and why `bg-primary-500`
-  does not exist.
+- **The lookup order.**
+- **The semantic color system:** categories with named levels, and why `bg-primary-500` does
+  not exist.
 - **Component selection** for the genuinely ambiguous choices: Modal versus Drawer versus
   Popover, Select versus NativeSelect versus Autocomplete, Table versus SimpleTable.
 - **`.gts` conventions**, including the imports that are not where an agent expects them.
+- **The pre-0.18 argument names**, for upgrades and for the older examples still circulating.
+  `@intent` and `@appearance` became `@color` and `@variant`, and the old spellings still
+  resolve, so nothing fails loudly when an agent reaches for one.
 
 ## Keeping it current
 
@@ -51,17 +50,16 @@ npx skills update
 ```
 
 Worth running after upgrading Frontile, particularly across a minor version. An installed
-skill can sit arbitrarily far behind — or, if you installed while tracking the development
-branch, ahead of — the version in your `package.json`.
+skill can sit arbitrarily far behind the version in your `package.json`, or ahead of it if you
+installed while tracking the development branch.
 
-This is survivable precisely because of the split above: the facts that decide whether
-generated code compiles come from your own `node_modules`, so a stale skill costs you
-guidance, not correctness.
+A stale skill costs you guidance rather than correctness: the facts that decide whether
+generated code compiles come from your own `node_modules`.
 
 ## Two skills are offered
 
 Installing surfaces a second skill, `frontile-contributor-docs`. That one is for work inside
-the Frontile repository itself — writing the component documentation files that live beside
+the Frontile repository itself: writing the component documentation files that live beside
 the source. It is of no use in an app that consumes Frontile.
 
 Choose `frontile`. To skip the prompt:
@@ -72,6 +70,5 @@ npx skills add josemarluedke/frontile --skill frontile
 
 ## Without installing anything
 
-The skill is a convenience, not a requirement. Everything it points at is fetchable
-directly, and [`/llms.txt`](/llms.txt) states the same lookup order in its preamble — so an
+Everything the skill points at is fetchable directly, and [`/llms.txt`](/llms.txt) states the same lookup order in its preamble, so an
 agent pointed at the index alone arrives at the same place.

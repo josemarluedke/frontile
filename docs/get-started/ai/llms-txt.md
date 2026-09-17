@@ -24,7 +24,7 @@ Any page URL plus `.md` returns that page as Markdown:
 ```
 
 The mirror is not a stripped-down summary. Component pages carry the full generated API
-table — every argument, its type, its default, and a **Deprecated** marker with the
+table: every argument, its type, its default, and a Deprecated marker with the
 migration instruction where one applies. The `<Signature />` tag is expanded into a real
 Markdown table before export, so nothing arrives as an unresolved component tag.
 
@@ -45,7 +45,7 @@ The index: every page, grouped by section, each as a link to its `.md` mirror.
 Component entries carry a one-line description, so the right component can usually be chosen
 without fetching anything else. Guide pages are listed without one.
 
-The file opens with a preamble covering the conventions that are easiest to get wrong —
+The file opens with a preamble covering the conventions that are easiest to get wrong:
 `@color` versus the deprecated `@intent`, the absence of a numbered color scale, the fact
 that some Utilities pages document template modifiers rather than components. Sections that
 are deprecated are marked as such, so `Forms (Legacy)` cannot be mistaken for current
@@ -70,7 +70,7 @@ the migration prose.
 ## The component inventory
 
 `/component-inventory.json` lists every current component with its path and a one-line
-description — the same data behind the [components overview](/docs/components/overview).
+description, the same data behind the [components overview](/docs/components/overview).
 Useful when something needs the catalogue as structured data rather than as prose.
 
 Legacy packages are deliberately excluded from it.
@@ -89,6 +89,6 @@ versions built after the export existed have them:
 An origin without them returns the site's HTML shell with **HTTP 200**, not a 404. Check the
 body, not the status code: Markdown that begins with `<!DOCTYPE html>` is a failed fetch.
 
-For anything version-sensitive — an argument's exact type, whether it is deprecated — read
+For anything version-sensitive, such as an argument's exact type or whether it is deprecated, read
 `node_modules/frontile/declarations/**/*.d.ts` in the consuming app instead. That is exact
 for the installed version by construction.

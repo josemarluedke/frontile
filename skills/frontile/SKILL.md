@@ -9,19 +9,19 @@ An Ember.js component library styled with Tailwind CSS and Tailwind Variants. Ev
 ships from the single `frontile` package; `@frontile/theme` supplies the styling system.
 
 This skill carries judgment and routes to facts. It does not restate argument lists, types,
-or defaults — those live in the declarations on disk, they are version-exact there, and any
+or defaults. Those live in the declarations on disk, they are version-exact there, and any
 copy kept here would go stale on the next release.
 
 ## Get the facts before writing the code
 
-Frontile's arguments changed names in 0.18, and both spellings still work. That makes
-guessing, and copying from memory or from an older example, unusually likely to produce
-code that runs but is wrong. Look the arguments up. In this order:
+Look arguments up rather than recalling them. Some of Frontile's older spellings still
+resolve, so a wrong guess produces code that runs and is wrong instead of failing. In this
+order:
 
 **1. `node_modules/frontile/declarations/**/*.d.ts` — prefer this.**
 Authoritative for arguments, types, defaults, and deprecations. Version-exact by
 construction, and no network. `frontile` publishes `declarations/`, and Glint needs it, so
-every consuming app already has it. The JSDoc is complete — `@defaultValue` for defaults and
+every consuming app already has it. The JSDoc is complete: `@defaultValue` for defaults and
 `@deprecated` carrying the migration instruction:
 
 ```ts
@@ -54,25 +54,24 @@ version. Where they disagree about an argument, tier 1 wins.
 
 Detail for each is in the reference files below; this is what to watch for.
 
-1. **`@color` and `@variant` are the current names.** `@intent` and `@appearance` are the
-   pre-0.18 names. They still resolve, they log a deprecation warning, and they are removed
-   in 0.19.0. They also still appear in older examples — so copying a nearby working call
-   site is not evidence that a spelling is current.
-2. **There is no numbered color scale.** `bg-primary-500` does not exist. Colors are
+1. **There is no numbered color scale.** `bg-primary-500` does not exist. Colors are
    semantic categories with named levels: `bg-primary-firm`, `text-on-primary-firm`.
-3. **`eq` is not importable from `@ember/helper`.** Reaching for it is a compile error.
-4. **Tailwind skips `node_modules`.** Without the `@source` directives in the app's
+2. **`eq` is not importable from `@ember/helper`.** Reaching for it is a compile error.
+3. **Tailwind skips `node_modules`.** Without the `@source` directives in the app's
    stylesheet, every Frontile class is purged and components render unstyled with no error
    anywhere. If components look unstyled, check this before anything else.
+4. **`@color` and `@variant` are the current styling arguments.** The pre-0.18 `@intent` and
+   `@appearance` still resolve, so older examples and nearby call sites are not evidence that
+   a spelling is current. See `references/api-naming.md` when upgrading or when one appears.
 
 ## References
 
 Load only what the task needs.
 
-| Task | Read |
-| --- | --- |
-| Writing or editing any `.gts` that renders Frontile | `references/gts-conventions.md` |
-| Setting or changing colors, variants, or styling | `references/colors.md` |
-| Seeing `@intent`/`@appearance`, or upgrading from 0.17 | `references/api-naming.md` |
-| Choosing between similar components | `references/component-selection.md` |
-| A component's exact arguments | The declarations — tier 1 above, not a reference file |
+| Task                                                   | Read                                                 |
+| ------------------------------------------------------ | ---------------------------------------------------- |
+| Writing or editing any `.gts` that renders Frontile    | `references/gts-conventions.md`                      |
+| Setting or changing colors, variants, or styling       | `references/colors.md`                               |
+| Seeing `@intent`/`@appearance`, or upgrading from 0.17 | `references/api-naming.md`                           |
+| Choosing between similar components                    | `references/component-selection.md`                  |
+| A component's exact arguments                          | The declarations, tier 1 above, not a reference file |
