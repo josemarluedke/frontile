@@ -827,12 +827,12 @@ export default class IndexPage extends Component {
               component's real documentation instead of hoping it guessed the
               API.
             </p>
-            <DocfyLink
-              @to="/docs/get-started/ai"
-              class="mt-3 inline-flex items-center font-body text-body-sm text-primary-firm hover:text-primary-strong underline underline-offset-2"
-            >
-              AI &amp; Agents
-            </DocfyLink>
+            <p class="mt-3 font-body text-body-sm">
+              <DocfyLink
+                @to="/docs/get-started/ai"
+                class="text-primary-firm underline"
+              >AI &amp; Agents</DocfyLink>
+            </p>
           </div>
 
           <div class="mt-10 reveal">
