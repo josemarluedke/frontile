@@ -22,9 +22,8 @@ import { Breadcrumbs } from 'frontile';
 ## Usage
 
 The docs site has no routes for `Breadcrumbs` to link to, so every demo on
-this page uses `@href` rather than `@route`. In an app with routes, `@route`
-(below) is the tier to reach for — it derives the current crumb from the
-router for you.
+this page uses `@href` rather than `@route`. In an app with routes, prefer
+`@route` (below). It derives the current crumb from the router for you.
 
 A crumb with no link target at all is the current page: `<b.Item>` needs no
 arguments to say "you are here."
@@ -42,17 +41,17 @@ import { Breadcrumbs } from 'frontile';
 ```
 
 `Breadcrumbs` has two authoring forms. The block form above gives full
-control over each crumb, and is the one to reach for by default. The
-`@items` form, covered under [Collapsing long trails](#collapsing-long-trails),
-renders the trail from a plain array instead — worth it once the trail is
-long enough that you want it to collapse automatically.
+control over each crumb; use it by default. The `@items` form, covered under
+[Collapsing long trails](#collapsing-long-trails), renders the trail from a
+plain array instead, which is worth it once the trail is long enough to
+collapse automatically.
 
 ## Linking to routes
 
 Pass `@route` (with `@model`, `@models`, or `@query` as needed) and `b.Item`
-renders an Ember `LinkTo`, deriving its current state from the router — no
-`@isCurrent` needed. This tier isn't rendered on this page, since the docs
-site has no matching routes; it is shown here as reference.
+renders an Ember `LinkTo`, deriving its current state from the router. No
+`@isCurrent` needed. The demo below isn't rendered, since the docs site has
+no matching routes; it is here as reference.
 
 ```gts
 import { Breadcrumbs } from 'frontile';
@@ -65,9 +64,9 @@ import { Breadcrumbs } from 'frontile';
 </template>
 ```
 
-`@isCurrent` always wins over the router, in both directions — pass it to
-override a route crumb that the router would otherwise mark current, or to
-force one current that isn't.
+`@isCurrent` always wins over the router, in both directions. Pass it to
+override a route crumb the router would otherwise mark current, or to force
+one current that isn't.
 
 ## Collapsing long trails
 
@@ -77,11 +76,11 @@ marker. There are two ways to get one, matching the two authoring forms.
 ### `@items` and `@maxItems`
 
 Passing `@items` renders the trail from an array instead of from blocks, and
-is what makes `@maxItems` meaningful — yielded blocks can't be counted before
+is what makes `@maxItems` meaningful. Yielded blocks can't be counted before
 they render, so in the block form there's nothing for `@maxItems` to divide.
 Once `@items.length` exceeds `@maxItems`, the middle collapses into an
-ellipsis marker — the same one `b.Ellipsis` renders when placed by hand,
-below — that announces how many crumbs it stands in for.
+ellipsis marker that announces how many crumbs it stands in for. It is the
+same marker `b.Ellipsis` renders when you place one by hand, below.
 
 ```gts preview
 import { Breadcrumbs } from 'frontile';
@@ -124,13 +123,13 @@ const trail = [
 ```
 
 Each entry in `@items` takes `label` (its text) plus the same arguments as
-`b.Item` — `route`/`model`/`models`/`query` or `href`, `isCurrent`,
+`b.Item`: `route`/`model`/`models`/`query` or `href`, `isCurrent`,
 `isDisabled`. A crumb with neither `route` nor `href` is the current page,
 exactly as in the block form.
 
 ### A manual `<b.Ellipsis />`
 
-In the block form, you place the ellipsis yourself — useful when the trail
+In the block form, you place the ellipsis yourself. That helps when the trail
 doesn't come from a flat array, or the collapse point isn't a simple count:
 
 ```gts preview
@@ -150,8 +149,8 @@ it whenever you know how many crumbs the marker stands in for. Omit it and
 the announcement falls back to an uncounted "More levels" rather than making
 you count your own crumbs.
 
-Passing a block replaces the glyph and takes over the announcement entirely
-— this is where a `Dropdown` listing the hidden crumbs goes. The block
+Passing a block replaces the glyph and takes over the announcement entirely.
+This is where a `Dropdown` listing the hidden crumbs goes. The block
 yields `hiddenCount` and `hiddenItems` (empty unless you pass `@hiddenItems`),
 so you can render the crumbs it stands in for:
 
@@ -174,10 +173,10 @@ const hidden = [{ label: 'Library' }, { label: 'Data' }];
 </template>
 ```
 
-In the `@items` form, the same two blocks are available as named blocks —
+In the `@items` form, the same two blocks are available as named blocks:
 `:item` to render every crumb yourself, and `:ellipsis` to render the
-auto-placed marker — so `@maxItems` still computes the split while you
-control the markup:
+auto-placed marker. `@maxItems` still computes the split while you control
+the markup:
 
 ```gts
 import { Breadcrumbs } from 'frontile';
@@ -218,17 +217,17 @@ const Slash = <template><span>/</span></template>;
 
 `@size` (`sm` / `md` / `lg`, default `md`) scales the text and separator
 glyph. `@underline` (`always` / `hover` / `none`, default `hover`) controls when
-a crumb's link is underlined — the current crumb is never underlined in any
+a crumb's link is underlined. The current crumb is never underlined in any
 mode, since it doesn't go anywhere.
 
 `@color` picks the hover and current-page ink, and takes `neutral` (the
-default), `primary` or `danger` — three categories rather than the seven most
-themed components offer. The other four are fill colours, designed to carry
+default), `primary` or `danger`. That is three categories where most themed
+components offer seven. The other four are fill colours, designed to carry
 `text-on-*` text on top of them the way `Pagination`'s active chip does. A
-breadcrumb has no fill, so its colour lands on the text itself, and as ink on a
-light surface those categories fall well below the contrast a reader needs —
+breadcrumb has no fill, so its colour lands on the text itself, and as ink on
+a light surface those categories fall well below the contrast a reader needs:
 `success` reaches only 2.3:1 at its darkest level, against the 4.5:1 WCAG AA
-asks for body text. Offering them would only offer illegible trails.
+asks for body text.
 
 ```gts preview
 import { Breadcrumbs } from 'frontile';
@@ -250,8 +249,8 @@ import { Breadcrumbs } from 'frontile';
 
 ## Disabled crumbs
 
-`@isDisabled` drops the `href` as well as marking the crumb `aria-disabled` —
-an anchor can't be natively disabled, so removing the href is what actually
+`@isDisabled` drops the `href` as well as marking the crumb `aria-disabled`.
+An anchor can't be natively disabled, so removing the href is what actually
 stops navigation. It only affects a linked crumb; an unlinked crumb (no
 `@route` or `@href`) never receives `aria-disabled`, since it isn't a link to
 begin with.
@@ -271,12 +270,11 @@ import { Breadcrumbs } from 'frontile';
 ## Bring your own link component
 
 `b` also yields `itemClass`, `linkClass`, `separatorClass`, and `setupItem`
-directly, for a link component other than `b.Item` — `ember-link`, a custom
-`<AppLink>`. Apply `linkClass` to the link's class and `{{b.setupItem
-isCurrent}}` to its element (with a boolean for whether it's the current
-crumb), and it gets the same theme classes and ARIA as `b.Item`. Wrap it in
-an `<li>` with `itemClass`, and add the separator yourself with
-`separatorClass`:
+directly, for a link component other than `b.Item`: `ember-link`, or a custom
+`<AppLink>`. Apply `linkClass` to the link's class, and `{{b.setupItem
+isCurrent}}` to its element, passing a boolean for whether it's the current
+crumb. It then gets the same theme classes and ARIA as `b.Item`. Wrap it in an
+`<li>` with `itemClass`, and add the separator yourself with `separatorClass`:
 
 ```gts
 import { Breadcrumbs } from 'frontile';
@@ -299,7 +297,7 @@ import { Breadcrumbs } from 'frontile';
 ## Accessibility
 
 `Breadcrumbs` renders a `<nav>` landmark with an accessible name from
-`@label` (default `'Breadcrumb'`), wrapping an `<ol>` — the trail is an
+`@label` (default `'Breadcrumb'`), wrapping an `<ol>`, since the trail is an
 ordered list. Every crumb stays in the natural tab order; there is no roving
 `tabindex` and no keyboard handling beyond ordinary link navigation.
 
@@ -308,18 +306,18 @@ The current crumb carries `aria-current="page"` and is rendered as a
 derives current from, in order: an explicit `@isCurrent`; the router, for a
 `@route` crumb; then the fallback that a crumb with no link target at all is
 the page you're on. Only the last statically-current crumb keeps
-`aria-current`, since two would be invalid — `Breadcrumbs` warns if `@items`
+`aria-current`, since two would be invalid. `Breadcrumbs` warns if `@items`
 produces more than one.
 
-A separator follows every crumb, including the last — it is hidden by CSS
-rather than omitted, and carries `aria-hidden="true"` either way, so it never
-reaches assistive technology.
+A separator follows every crumb, including the last, where it is hidden by
+CSS rather than omitted. It carries `aria-hidden="true"` either way, so it
+never reaches assistive technology.
 
 An ellipsis marker with no block carries `aria-hidden="true"` on its glyph
 and a visually-hidden announcement ("N more levels", or "More levels" without
 a count). Supplying a block to `b.Ellipsis` suppresses that built-in
-announcement, since the block's own content — typically a button that opens
-a menu — carries its own accessible name.
+announcement, since the block's own content (typically a button that opens a
+menu) carries its own accessible name.
 
 ## API
 
