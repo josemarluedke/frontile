@@ -3,12 +3,9 @@ import { focusVisibleRing } from './shared';
 import type { VariantProps } from 'tailwind-variants';
 
 /**
- * The separator is rendered *inside* each `<li>`, after the crumb, and hidden
- * on the last one with `group-last/item:hidden` (the `<li>` carries
- * `group/item`). That is why neither authoring form has to know which crumb is
- * last -- the same instinct as `pagination.ts`'s `:has()` layout: let the
- * rendered structure drive the CSS rather than computing a variant and
- * threading it through.
+ * The separator is rendered *inside* each `<li>` and hidden on the last one
+ * with `group-last/item:hidden` (the `<li>` carries `group/item`), so neither
+ * authoring form has to know which crumb is last.
  */
 const breadcrumbs = tv({
   slots: {
@@ -26,10 +23,8 @@ const breadcrumbs = tv({
     link: [
       ...focusVisibleRing,
       'inline-flex items-center gap-1 rounded-sm',
-      // `neutral-firm`, not `neutral`: as text on the light surface `neutral` is
-      // only 3.13:1, under the 4.5:1 WCAG AA needs for normal text. `firm` is
-      // 8.06:1 light / 12.57:1 dark, and is what `pagination.ts` already uses
-      // for the same job on the same kind of row.
+      // `firm`, not `DEFAULT`: as ink on the light surface `neutral` is 3.13:1,
+      // under WCAG AA. `pagination.ts` uses `firm` for the same job.
       'text-neutral-firm',
       'transition-colors duration-200',
       'motion-reduce:transition-none',
@@ -40,25 +35,14 @@ const breadcrumbs = tv({
       'aria-disabled:cursor-not-allowed aria-disabled:opacity-disabled aria-disabled:pointer-events-none'
     ],
 
-    // Same ink as the crumbs, not a step below them. The obvious instinct is to
-    // recede the separator with colour, and this started at `neutral-muted` --
-    // gray-100 in light mode, a *background* value, 1.18:1 as ink, invisible.
-    // `button.ts` and `notification-card.ts` carry comments about the same trap.
-    //
-    // The next step down from the crumbs, `neutral`, measures 3.13:1 on a white
-    // surface but only 2.95:1 on the gray-50 canvas the docs use -- under the
-    // 3:1 a non-text graphic wants, and short of a fix worth defending. So the
-    // separator takes the crumb's own ink and gets its subordination from
-    // weight instead: a 1.5-stroke chevron at 60% of the cap height reads
-    // lighter than a word in the same colour, at any contrast ratio.
+    // The crumb's own ink, deliberately: receding a separator with colour costs
+    // more contrast than it buys -- `neutral` lands at 2.95:1 on a gray-50
+    // canvas. A thin chevron already reads lighter than a word beside it.
     separator: 'shrink-0 text-neutral-firm group-last/item:hidden',
 
-    // Not a button, so no focus ring and no hover: it is a gap marker, and
-    // giving it an affordance would promise a destination it does not have.
-    // A consumer who puts a Dropdown in the default block opts into
-    // interactivity deliberately, and brings that trigger's own styling.
-    // Reads at the resting crumb's weight, because it stands in for crumbs.
-    // Its de-emphasis comes from being non-interactive, not from being fainter.
+    // The crumbs' weight, since it stands in for crumbs, but no focus ring and
+    // no hover: it is a gap marker, and an affordance would promise a
+    // destination it does not have.
     ellipsis:
       'inline-flex shrink-0 items-center justify-center select-none text-neutral-firm'
   },
@@ -88,29 +72,18 @@ const breadcrumbs = tv({
       }
     },
 
-    // Hover and current share a colour: the current crumb is where the trail
-    // is going and hover is a preview of going there, so one ink for both keeps
-    // the row reading as a single control.
+    // Hover and current share one ink, so the row reads as a single control.
     //
-    // Only three categories, where every other themed component offers seven.
-    // The rest are fill colours, meant to be paired with `text-on-*` on top of
-    // them -- which is exactly how `pagination.ts` uses all seven. As *ink on
-    // the light surface* they are unusable at every level: success tops out at
-    // 2.30:1 and secondary at 2.50:1 even at `firm`, against the 4.5:1 WCAG AA
-    // wants for normal text. Breadcrumbs colour their text and have no fill, so
-    // offering those categories here would only offer illegible trails.
-    //
-    // `firm`, not `DEFAULT`, for the same reason the base ink is firm.
+    // Three categories, not the usual seven: the other four are fill colours,
+    // meant to carry `text-on-*` on top of them the way `pagination.ts` uses
+    // them. As ink they fail at every level -- `success` tops out at 2.30:1.
     color: {
-      // 8.06:1 light / 12.57:1 dark resting, rising to 12.45 / 15.35 current.
       neutral: {
         link: 'hover:text-neutral-strong data-[current=true]:text-neutral-strong'
       },
-      // 16.58:1 light / 16.50:1 dark.
       primary: {
         link: 'hover:text-primary-firm data-[current=true]:text-primary-firm'
       },
-      // 6.36:1 light / 8.35:1 dark.
       danger: {
         link: 'hover:text-danger-firm data-[current=true]:text-danger-firm'
       }

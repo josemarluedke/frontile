@@ -99,11 +99,9 @@ interface RenderedSlot {
   resolvedIsCurrent?: boolean;
   hiddenCount?: number;
   /**
-   * Required, and an empty array on item slots, where `hiddenCount` beside it
-   * is merely omitted. The asymmetry is load-bearing rather than sloppy: this
-   * is yielded straight to the `ellipsis` block, whose contract promises
-   * consumers a real array to `{{#each}}` over, and Glint will not narrow the
-   * field to non-undefined through the template's branch.
+   * Required, not optional: it is yielded to the `ellipsis` block, whose
+   * contract promises consumers a real array, and Glint will not narrow it
+   * through the template's branch.
    */
   hiddenItems: BreadcrumbsItemData[];
   /**
