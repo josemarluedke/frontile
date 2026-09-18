@@ -6,7 +6,7 @@ category: releases
 
 # Releases
 
-This section covers notable Frontile releases — what changed, what it means for
+This section covers notable Frontile releases: what changed, what it means for
 your app, and where to look for the details. Each page favors highlights and,
 where it helps, live demos over an exhaustive PR list.
 
