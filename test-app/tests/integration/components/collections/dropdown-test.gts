@@ -1254,6 +1254,115 @@ module(
         .exists('moving into the submenu kept it open');
     });
 
+    test('opening a sibling submenu closes the one already open', async function (assert) {
+      // Two sub-triggers next to each other: moving from one onto the other
+      // used to leave both levels on screen at once, because nothing told the
+      // first one to go away and the pointer never left the first one's safe
+      // area in a way that stuck (see the test below).
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger data-test-id="sub-a">Move to</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested-a">Inbox</Item>
+                </s.Menu>
+              </Sub>
+              <Sub as |s|>
+                <s.Trigger data-test-id="sub-b">Share with</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested-b">Team</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await triggerEvent('[data-test-id="sub-a"]', 'pointerenter');
+      assert.dom('[data-key="nested-a"]').exists('the first submenu opened');
+
+      await triggerEvent('[data-test-id="sub-b"]', 'pointerenter');
+
+      assert.dom('[data-key="nested-b"]').exists('the second submenu opened');
+      assert
+        .dom('[data-key="nested-a"]')
+        .doesNotExist('and the first one is gone');
+    });
+
+    test('a pending close is not postponed by further pointer movement', async function (assert) {
+      // The close scheduled when the pointer leaves the safe area used to be
+      // cancelled and re-scheduled by every subsequent `pointermove` — so a
+      // pointer that kept moving anywhere on the page (into a *sibling*
+      // submenu, for instance) held the abandoned level open indefinitely.
+      //
+      // Timed with real waits rather than `settled()`: `settled()` waits for
+      // the pending runloop timer to fire, which is precisely the thing under
+      // test, and would make this pass against the broken code.
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await triggerEvent(
+        '[data-test-id="dropdown-submenu-trigger"]',
+        'pointerenter'
+      );
+      assert.dom('[data-key="nested"]').exists('open to begin with');
+
+      const trigger = document.querySelector(
+        '[data-test-id="dropdown-submenu-trigger"]'
+      ) as HTMLElement;
+      trigger.dispatchEvent(
+        new PointerEvent('pointerleave', { bubbles: true })
+      );
+
+      // Well clear of both the trigger and the submenu, so every move is
+      // outside the safe area.
+      const wander = () =>
+        document.dispatchEvent(
+          new PointerEvent('pointermove', {
+            bubbles: true,
+            clientX: 5000,
+            clientY: 5000
+          })
+        );
+      const wait = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
+
+      // SUBMENU_CLOSE_DELAY is 300ms; keep moving well past it.
+      for (let i = 0; i < 4; i++) {
+        await wait(100);
+        wander();
+      }
+      await wait(100);
+
+      assert
+        .dom('[data-key="nested"]')
+        .doesNotExist(
+          'the close scheduled on leaving the safe area still fired'
+        );
+
+      await settled();
+    });
+
     test('closing a submenu returns focus to the parent level', async function (assert) {
       await render(
         <template>
@@ -1334,6 +1443,71 @@ module(
 
       assert.dom('[data-key="edit"]').exists('root menu stayed open');
       assert.dom('[data-key="nested"]').doesNotExist('submenu did not open');
+    });
+
+    test('moving into a grandchild submenu keeps the whole chain open', async function (assert) {
+      // Every level runs its own safe-area check, and a third level sits
+      // outside the *second* level's area entirely -- so the outer level used
+      // to schedule its own close the moment the pointer went deeper, taking
+      // the second and third levels down with it. A level has to treat the
+      // pointer being anywhere its open descendants consider safe as safe for
+      // itself too.
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Share</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="copy-link">Copy Link</Item>
+
+              <Sub as |s1|>
+                <s1.Trigger data-test-id="sub-1">Other</s1.Trigger>
+                <s1.Menu as |Item Sub|>
+                  <Item @key="whatsapp">WhatsApp</Item>
+
+                  <Sub as |s2|>
+                    <s2.Trigger data-test-id="sub-2">Email</s2.Trigger>
+                    <s2.Menu as |Item|>
+                      <Item @key="work-email">Work email</Item>
+                    </s2.Menu>
+                  </Sub>
+                </s1.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await triggerEvent('[data-test-id="sub-1"]', 'pointerenter');
+      await triggerEvent('[data-test-id="sub-2"]', 'pointerenter');
+
+      assert.dom('[data-key="whatsapp"]').exists('level 1 opened');
+      assert.dom('[data-key="work-email"]').exists('level 2 opened');
+
+      const level2Id = document
+        .querySelector('[data-test-id="sub-2"]')
+        ?.getAttribute('aria-controls') as string;
+      const level2 = document.querySelector(`#${level2Id}`) as HTMLElement;
+      const box = level2.getBoundingClientRect();
+
+      // Leave the level-2 trigger for the level-2 menu itself -- the same
+      // native dispatch as the gap test above, so the pending close is not
+      // waited out before the move lands.
+      (
+        document.querySelector('[data-test-id="sub-2"]') as HTMLElement
+      ).dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+      await triggerEvent(document, 'pointermove', {
+        clientX: box.left + box.width / 2,
+        clientY: box.top + box.height / 2
+      });
+
+      assert
+        .dom('[data-key="work-email"]')
+        .exists('the level the pointer is in stayed open');
+      assert
+        .dom('[data-key="whatsapp"]')
+        .exists('and so did the level above it');
+      assert.dom('[data-key="copy-link"]').exists('and the root');
     });
 
     test('submenus nest to arbitrary depth', async function (assert) {

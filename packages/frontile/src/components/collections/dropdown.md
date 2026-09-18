@@ -731,6 +731,55 @@ export default class NestedSubmenuDropdown extends Component {
 }
 ```
 
+### Sibling Submenus
+
+Two submenu rows next to each other are mutually exclusive: moving from one
+onto the other closes the first as the second opens, so only one level is ever
+on screen.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { Dropdown } from 'frontile';
+
+export default class SiblingSubmenuDropdown extends Component {
+  @action
+  onAction(key: string) {
+    // eslint-disable-next-line
+    console.log('Action triggered:', key);
+  }
+
+  <template>
+    <Dropdown as |d|>
+      <d.Trigger @variant='outline' @size='sm'>Organize</d.Trigger>
+
+      <d.Menu @onAction={{this.onAction}} as |Item Sub|>
+        <Item @key='rename'>Rename</Item>
+        <Item @key='duplicate' @withDivider={{true}}>Duplicate</Item>
+
+        <Sub as |s|>
+          <s.Trigger>Move to</s.Trigger>
+          <s.Menu as |Item|>
+            <Item @key='move-inbox'>Inbox</Item>
+            <Item @key='move-archive'>Archive</Item>
+            <Item @key='move-trash'>Trash</Item>
+          </s.Menu>
+        </Sub>
+
+        <Sub as |s|>
+          <s.Trigger>Share with</s.Trigger>
+          <s.Menu as |Item|>
+            <Item @key='share-team'>Team</Item>
+            <Item @key='share-guests'>Guests</Item>
+            <Item @key='share-link'>Anyone with the link</Item>
+          </s.Menu>
+        </Sub>
+      </d.Menu>
+    </Dropdown>
+  </template>
+}
+```
+
 ## Anatomy
 
 Dropdown yields the pieces you assemble the menu from:
@@ -813,7 +862,9 @@ somewhere the user never pointed is exactly what that pattern avoids. Pass an ex
 
 A submenu also opens on hovering its trigger, after a short delay, and stays
 open while the pointer travels toward it; moving onto a sibling row closes it.
-Opening a submenu by hover or click highlights nothing inside it — only
+Only one submenu per level is ever open: opening one closes whichever sibling
+was open, so moving between two adjacent submenu rows swaps levels instead of
+stacking them. Opening a submenu by hover or click highlights nothing inside it — only
 opening it with the keyboard highlights its first row.
 
 A submenu inherits its selection settings from the root menu, so `@selectionMode`,

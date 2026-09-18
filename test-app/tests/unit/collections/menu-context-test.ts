@@ -117,7 +117,11 @@ module('Unit | Collections | menu-context', function () {
   test('each level registers subs into its own map', function (assert) {
     const rootSubs = new Map<string, SubHandle>();
     const childSubs = new Map<string, SubHandle>();
-    const handle: SubHandle = { open: noop, close: noop };
+    const handle: SubHandle = {
+      open: noop,
+      close: noop,
+      isPointSafe: () => false
+    };
 
     const root = buildRoot({ subs: rootSubs });
     const child = createChildMenuContext(root, {
