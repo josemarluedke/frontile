@@ -1,11 +1,38 @@
 import { tv, type VariantProps } from '../../tw';
 import { focusVisibleRing, focusVisibleWithinRing } from '../shared';
 
+/**
+ * A note on the colour levels used for text and borders below.
+ *
+ * The `soft` level is a *translucent* fill (10-25% alpha) -- it exists to tint
+ * a surface, and composites to ~1.1-1.5:1 against whatever is behind it. Used
+ * as a border or a text colour it is effectively invisible, which is what the
+ * invalid field state used to be in dark mode. Borders and rings here take an
+ * opaque level instead, and the translucent-halo job is left to `muted`, which
+ * is what `ring-focus` (`--color-primary-muted`) already resolves to.
+ *
+ * For text, the `DEFAULT` level of the tint-shaped categories (`secondary`,
+ * `tertiary`, `success`, `warning`) is a light fill colour, not an ink: in
+ * light mode it lands at 1.3-2.6:1, well under AA. `alert.ts` hit the same
+ * thing first and settled on `bolder` for success/warning, `firm` for danger
+ * and `neutral`, and plain `DEFAULT` for primary; the levels below match it so
+ * that the same status reads the same weight in an Alert and in form feedback.
+ *
+ * Two known failures are deliberately left alone, because changing either one
+ * restyles every field in the library and is a design decision rather than a
+ * bug:
+ *   - the resting `border-neutral-soft` is 1.37:1 in light mode, against the
+ *     3:1 WCAG 1.4.11 asks of a control's visual boundary (and in light mode
+ *     `surface-input` equals `surface-app`, so the border is the only boundary);
+ *   - `placeholder-neutral` is 3.13:1 in light mode, against AA's 4.5:1.
+ * `tests/unit/forms/forms-contrast-test.ts` in test-app asserts everything
+ * else, and documents these two as the deliberate gaps.
+ */
 const label = tv({
   slots: {
     // label text role (Open Sans semibold, tight leading)
     base: 'text-neutral-bolder inline-block font-label text-label-sm pb-2',
-    asterisk: 'text-danger'
+    asterisk: 'text-danger-firm'
   },
   variants: {
     size: {
@@ -24,8 +51,10 @@ const label = tv({
 });
 
 const formDescription = tv({
-  // help/description text — body role
-  base: 'text-neutral font-body text-body-2xs pb-1 last:pb-0',
+  // help/description text — body role. `text-neutral` (the DEFAULT level) is
+  // only ~3:1 on a light surface; `firm` clears AA in both modes, and is the
+  // same level `alert.ts` uses for its description.
+  base: 'text-neutral-firm font-body text-body-2xs pb-1 last:pb-0',
   variants: {
     size: {
       sm: 'text-body-2xs',
@@ -45,12 +74,15 @@ const formFeedback = tv({
     // `status`, not `color`: this value also decides whether the message is
     // announced assertively. See `isError` in form-feedback.gts.
     status: {
+      // Levels, not bare categories: see the note above `label`. Each one is
+      // the lightest level that clears AA against both `surface-app` and
+      // `surface-card` in light *and* dark mode.
       primary: 'text-primary',
-      secondary: 'text-secondary',
-      tertiary: 'text-tertiary',
-      success: 'text-success',
-      danger: 'text-danger',
-      warning: 'text-warning'
+      secondary: 'text-secondary-bolder',
+      tertiary: 'text-tertiary-strong',
+      success: 'text-success-bolder',
+      danger: 'text-danger-firm',
+      warning: 'text-warning-bolder'
     },
     size: {
       sm: 'text-body-2xs',
@@ -93,10 +125,11 @@ const input = tv({
       'focus:ring-3',
       'focus:ring-focus',
       'focus:outline-hidden',
-      'focus:border-primary-soft',
+      'focus:border-primary',
       'disabled:border-neutral-subtle disabled:text-neutral-soft',
-      'aria-invalid:border-danger-soft',
-      'aria-invalid:focus:ring-danger-soft'
+      'aria-invalid:border-danger',
+      // The invalid counterpart of `ring-focus`, which is `primary-muted`.
+      'aria-invalid:focus:ring-danger-muted'
     ]
   },
   variants: {
@@ -239,12 +272,12 @@ const inputOtp = tv({
     },
     // z-10 keeps the active cell's ring from being clipped by its neighbour.
     isActive: {
-      true: { cell: 'z-10 border-primary-soft ring-3 ring-focus' }
+      true: { cell: 'z-10 border-primary ring-3 ring-focus' }
     },
-    // Mirrors `input`'s `aria-invalid:focus:ring-danger-soft`: a focused invalid
-    // cell must ring red, not keep the neutral focus ring.
+    // Mirrors `input`'s `aria-invalid:focus:ring-danger-muted`: a focused
+    // invalid cell must ring red, not keep the neutral focus ring.
     isInvalid: {
-      true: { cell: 'border-danger-soft ring-danger-soft' }
+      true: { cell: 'border-danger ring-danger-muted' }
     },
     isDisabled: {
       true: { cell: 'border-neutral-subtle text-neutral-soft' }
@@ -407,9 +440,9 @@ const select = tv({
           'cursor-default',
           'focus-within:ring-3',
           'focus-within:ring-focus',
-          'focus-within:border-primary-soft',
-          'data-[invalid=true]:border-danger-soft',
-          'data-[invalid=true]:focus-within:ring-danger-soft',
+          'focus-within:border-primary',
+          'data-[invalid=true]:border-danger',
+          'data-[invalid=true]:focus-within:ring-danger-muted',
           'data-[disabled=true]:border-neutral-subtle',
           'data-[disabled=true]:text-neutral-soft'
         ]
