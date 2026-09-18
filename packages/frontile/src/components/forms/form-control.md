@@ -67,7 +67,7 @@ import { FormControl } from 'frontile';
         value='0'
         aria-invalid={{if c.isInvalid 'true'}}
         aria-describedby={{c.describedBy true c.isInvalid}}
-        class='bg-surface-input text-neutral-strong border-neutral-soft aria-invalid:border-danger-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
+        class='bg-surface-input text-neutral-strong border-neutral-soft aria-invalid:border-danger focus:ring-focus aria-invalid:focus:ring-danger-muted w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
       />
     </FormControl>
   </div>
@@ -196,7 +196,7 @@ import { FormControl } from 'frontile';
           value='Platform'
           aria-invalid='true'
           aria-describedby={{c.describedBy true true}}
-          class='bg-surface-input text-neutral-strong border-neutral-soft aria-invalid:border-danger-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
+          class='bg-surface-input text-neutral-strong border-neutral-soft aria-invalid:border-danger focus:ring-focus aria-invalid:focus:ring-danger-muted w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
         />
       </FormControl>
     {{/each}}
