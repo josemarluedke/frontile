@@ -104,6 +104,7 @@ export default {
     components: { label: 'Components', order: 3 },
     accessibility: { label: 'Accessibility', order: 4 },
     migrations: { label: 'Migrations', order: 5 },
+    releases: { label: 'Releases', order: 6 },
     // Without this the section falls back to its directory name and renders as
     // a bare `v0-18` heading, in the sidebar and in llms.txt alike. The parent
     // `migrations` label does not cover it: that node has no pages of its own,

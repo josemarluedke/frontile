@@ -122,8 +122,8 @@ filter?: (itemValue: string, inputValue: string) => boolean | number;
 
 `Select` with `@selectionMode="multiple"` used to show its selections as a
 comma-joined string inside the trigger. It now renders each selection as a
-removable [Chip](https://frontile.dev/docs/buttons/chip), so users can drop one
-selection without reopening the dropdown. The control grows taller as chips
+removable [Chip](https://frontile.dev/docs/components/buttons/chip), so users
+can drop one selection without reopening the dropdown. The control grows taller as chips
 wrap, and a chips field is deliberately the same height as a same-size single
 select (46px at `md`).
 
@@ -141,7 +141,7 @@ selection's chip renders with no close button; `@isClearable` clears
 everything and ignores `@allowEmpty`. Chip close buttons are deliberately not
 in the tab order — the combobox is the single tab stop, and `Backspace` on
 the field removes the last chip in both filterable and non-filterable modes.
-See the [Select docs](https://frontile.dev/docs/forms/select#multiple-selection)
+See the [Select docs](https://frontile.dev/docs/components/forms/select#multiple-selection)
 for the full section.
 
 **Impact:** visual only. **Time:** none required; a few minutes if you want to

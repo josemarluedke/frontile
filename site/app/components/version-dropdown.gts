@@ -27,16 +27,22 @@ const VERSIONS: Version[] = [
   {
     key: 'next',
     label: 'Next',
-    note: 'v0.18 beta',
+    note: 'v0.19 dev',
     url: 'https://next.frontile.dev/',
     isLatest: false,
   },
   {
-    key: 'v0.17',
-    label: 'v0.17',
+    key: 'v0.18',
+    label: 'v0.18',
     note: 'latest',
     url: 'https://frontile.dev/',
     isLatest: true,
+  },
+  {
+    key: 'v0.17',
+    label: 'v0.17',
+    url: 'https://v0.17.frontile.dev/',
+    isLatest: false,
   },
   {
     key: 'v0.16',
