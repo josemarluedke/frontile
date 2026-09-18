@@ -122,8 +122,8 @@ filter?: (itemValue: string, inputValue: string) => boolean | number;
 
 `Select` with `@selectionMode="multiple"` used to show its selections as a
 comma-joined string inside the trigger. It now renders each selection as a
-removable [Chip](https://frontile.dev/docs/components/buttons/chip), so users can drop one
-selection without reopening the dropdown. The control grows taller as chips
+removable [Chip](https://frontile.dev/docs/components/buttons/chip), so users
+can drop one selection without reopening the dropdown. The control grows taller as chips
 wrap, and a chips field is deliberately the same height as a same-size single
 select (46px at `md`).
 
