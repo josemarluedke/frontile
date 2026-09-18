@@ -1,4 +1,5 @@
 import type { SelectionMode } from '../../../utils/listManager';
+import type { Point } from '../../../utils/safe-area';
 import type { ListboxItemSignature } from '../listbox/item';
 
 /**
@@ -23,6 +24,16 @@ type OpenSource = 'pointer' | 'keyboard';
 interface SubHandle {
   open: (source: OpenSource) => void;
   close: () => void;
+
+  /**
+   * Whether this submenu is open and the pointer is somewhere that should
+   * keep it that way -- its own safe area, or one of its own descendants'.
+   *
+   * A level asks this of its children before closing itself. A third level
+   * sits outside the second level's safe area entirely, so without it the
+   * whole chain unwinds the moment the pointer goes deeper than one level.
+   */
+  isPointSafe: (point: Point) => boolean;
 }
 
 interface MenuContext extends MenuSelectionContext {

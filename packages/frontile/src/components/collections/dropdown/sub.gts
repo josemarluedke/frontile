@@ -14,7 +14,11 @@ import type { Timer } from '@ember/runloop';
 import type { WithBoundArgs } from '@glint/template';
 import type { ModifierLike } from '@glint/template';
 import type { Menu } from './dropdown';
-import { isPointInSafeArea, type Rect } from '../../../utils/safe-area';
+import {
+  isPointInSafeArea,
+  type Point,
+  type Rect
+} from '../../../utils/safe-area';
 
 /**
  * Long enough that dragging the pointer across a row on its way somewhere else
@@ -162,22 +166,47 @@ class Sub extends Component<SubSignature> {
     this.args.parentContext.unregisterSub(this.triggerKey);
     this.stopTracking();
     cancel(this.#openTimer);
-    cancel(this.#closeTimer);
+    this.cancelClose();
   }
 
   handle: SubHandle = {
     open: (source: OpenSource) => this.open(source),
-    close: () => this.close()
+    close: () => this.close(),
+    isPointSafe: (point: Point) => this.isPointSafe(point)
   };
 
   open = (source: OpenSource = 'pointer') => {
+    this.closeSiblings();
     this.openSource = source;
     this.isOpen = true;
     this.startTracking();
   };
 
+  /**
+   * Close every other submenu at this level.
+   *
+   * Two sub-triggers next to each other would otherwise both stay on screen:
+   * the abandoned level's own close is on a timer, and the pointer moving
+   * toward the new one keeps re-arming it. A level's siblings are exactly the
+   * other entries in the parent's registry, so closing them as this one opens
+   * makes the two states mutually exclusive in a single render -- there is no
+   * frame in which both are painted.
+   */
+  closeSiblings = () => {
+    for (const [key, handle] of this.args.parentContext.subs) {
+      if (key !== this.triggerKey) {
+        handle.close();
+      }
+    }
+  };
+
   close = () => {
     this.stopTracking();
+    // Not just bookkeeping: a close that arrives from elsewhere -- a sibling
+    // opening, ArrowLeft -- while a timer is pending would otherwise leave
+    // that timer to fire later and close a level the pointer had meanwhile
+    // brought back.
+    this.cancelClose();
 
     if (this.isDestroyed || this.isDestroying) {
       return;
@@ -213,20 +242,53 @@ class Sub extends Component<SubSignature> {
    * is outside the safe area, so moving onto one closes the submenu.
    */
   trackPointer = (event: PointerEvent) => {
-    const submenu = document.getElementById(this.submenuId);
-    if (!this.#triggerEl || !submenu) {
+    // Nothing to measure against yet -- neither close nor cancel, just wait
+    // for the next move.
+    if (!this.#triggerEl || !document.getElementById(this.submenuId)) {
       return;
     }
 
-    const trigger: Rect = this.#triggerEl.getBoundingClientRect();
-    const content: Rect = submenu.getBoundingClientRect();
-    const point = { x: event.clientX, y: event.clientY };
-
-    if (isPointInSafeArea(point, trigger, content)) {
+    if (this.isPointSafe({ x: event.clientX, y: event.clientY })) {
       this.cancelClose();
     } else {
       this.scheduleClose();
     }
+  };
+
+  /**
+   * Whether the pointer is somewhere that should keep this level open.
+   *
+   * Its own safe area, or -- recursively -- any open descendant's. A third
+   * level opens to the right of the second, well outside the polygon that
+   * runs from *this* trigger to *this* content, so a level that only
+   * consulted its own area would close the instant the pointer went deeper,
+   * taking every level below it along. Asking the children means the chain
+   * survives exactly as long as the pointer is still somewhere in it.
+   */
+  isPointSafe = (point: Point): boolean => {
+    if (!this.isOpen) {
+      return false;
+    }
+
+    const submenu = document.getElementById(this.submenuId);
+    if (!this.#triggerEl || !submenu) {
+      return false;
+    }
+
+    const trigger: Rect = this.#triggerEl.getBoundingClientRect();
+    const content: Rect = submenu.getBoundingClientRect();
+
+    if (isPointInSafeArea(point, trigger, content)) {
+      return true;
+    }
+
+    for (const handle of this.#childSubs.values()) {
+      if (handle.isPointSafe(point)) {
+        return true;
+      }
+    }
+
+    return false;
   };
 
   startTracking = () => {
@@ -255,9 +317,24 @@ class Sub extends Component<SubSignature> {
     );
   };
 
+  /**
+   * Arm the close, but never re-arm one already pending.
+   *
+   * This runs from every `pointermove` that lands outside the safe area, so
+   * cancelling and re-scheduling here would let a pointer that simply keeps
+   * moving -- across a sibling row, into a sibling's submenu, anywhere on the
+   * page -- push the close out indefinitely and strand the level open. Once
+   * the pointer has left, the countdown is from that moment and nothing
+   * outside the safe area extends it; only `cancelClose` (the pointer coming
+   * back inside) stops it.
+   */
   scheduleClose = () => {
     cancel(this.#openTimer);
-    cancel(this.#closeTimer);
+
+    if (this.#closeTimer) {
+      return;
+    }
+
     this.#closeTimer = later(this, this.close, SUBMENU_CLOSE_DELAY);
   };
 
@@ -275,7 +352,7 @@ class Sub extends Component<SubSignature> {
       el.removeEventListener('pointerenter', this.scheduleOpen);
       el.removeEventListener('pointerleave', this.scheduleClose);
       cancel(this.#openTimer);
-      cancel(this.#closeTimer);
+      this.cancelClose();
       this.stopTracking();
       if (this.#triggerEl === el) {
         this.#triggerEl = undefined;
