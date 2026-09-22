@@ -2,10 +2,14 @@ import Component from '@glimmer/component';
 import { cached, tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 import { concat, hash } from '@ember/helper';
+import { on } from '@ember/modifier';
+import { warn } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
 import { DatePickerTrigger } from './trigger';
 import { DatePickerEndContent } from './end-content';
+import { SegmentGroup } from '../date-input/segment-group';
+import { buildParts, toDate, fromDate } from '../date-input/segments';
 import { Popover } from '../../overlays/popover';
 import { Calendar } from '../../collections/calendar/calendar';
 import { ref } from '../../../utils/ref';
@@ -23,6 +27,7 @@ import type {
   CalendarValue,
   DateRange
 } from '../../collections/calendar/types';
+import type { Part } from '../date-input/types';
 import type {
   DatePickerArgs,
   DatePickerValueBlockArg,
@@ -41,9 +46,11 @@ interface DatePickerSignature<M extends CalendarMode = 'single'> {
 }
 
 /**
- * A date field: a button trigger showing the formatted value, and a calendar
- * in a popover. `@mode="range"` switches both the calendar and the value shape
- * to a `{ start, end }` range.
+ * A date field: segments the value can be typed into, a calendar button that
+ * opens a calendar in a popover, and -- under `@isEditable={{false}}` -- the
+ * older button trigger showing the formatted value instead. `@mode="range"`
+ * switches both the calendar and the value shape to a `{ start, end }` range,
+ * and always uses the button trigger.
  */
 class DatePicker<M extends CalendarMode = 'single'> extends Component<
   DatePickerSignature<M>
@@ -62,6 +69,24 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
   @tracked isOpen = false;
 
+  /**
+   * The segments, on the editable path. They are not a second source of truth
+   * for the value -- {@link internalValue} is -- but they cannot be derived
+   * from it either: mid-entry they hold digits that compose to no date at all,
+   * which no `Date` can represent. The calendar writes here through
+   * {@link commitValue}; typing writes there through {@link handlePartsChange}.
+   */
+  @tracked private trackedParts: Part[] = [];
+
+  /**
+   * An untracked mirror of {@link parts}. The sync modifiers below rebuild the
+   * segments from the current ones, and reading the tracked field inside a
+   * modifier would put it in that modifier's own tracking frame -- which the
+   * same modifier then writes to, re-running itself forever. `DateInput`
+   * carries the same pair for the same reason.
+   */
+  #currentParts: Part[] = [];
+
   constructor(owner: unknown, args: DatePickerArgs<M>) {
     super(owner as never, args as never);
 
@@ -69,6 +94,68 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     if (seed !== undefined) {
       this.internalValue = this.parseIncoming(seed);
     }
+
+    this.setParts(
+      fromDate(
+        buildParts(this.locale, this.segmentFormat),
+        this.isRangeMode ? null : (this.internalValue as Date | null)
+      )
+    );
+  }
+
+  get parts(): Part[] {
+    return this.trackedParts;
+  }
+
+  private setParts(parts: Part[]): void {
+    this.#currentParts = parts;
+    this.trackedParts = parts;
+  }
+
+  /**
+   * Whether the value is typed rather than only picked.
+   *
+   * Range mode is excluded regardless of `@isEditable`: a range needs two
+   * groups of segments and a separator, which is a later change. Until then a
+   * range picker is the button trigger it has always been.
+   */
+  get isSegmented(): boolean {
+    return (this.args.isEditable ?? true) && !this.isRangeMode;
+  }
+
+  /**
+   * The format the segments are built from. The editable default is numeric;
+   * `{ dateStyle: 'medium' }` -- this component's own button default --
+   * renders "Jan" and has no numeric segment to type into, so a textual
+   * format falls back to the numeric default rather than rendering a field
+   * nobody can type in.
+   */
+  get segmentFormat(): Intl.DateTimeFormatOptions | undefined {
+    const given = this.args.formatOptions;
+    if (!given) return undefined;
+
+    const isTextual =
+      given.dateStyle !== undefined ||
+      given.month === 'long' ||
+      given.month === 'short' ||
+      given.month === 'narrow';
+
+    if (isTextual) {
+      warn(
+        'An editable <DatePicker> needs numeric segments; ' +
+          'a textual @formatOptions month falls back to a numeric one. ' +
+          'Pass @isEditable={{false}} for the formatted button trigger.',
+        false,
+        { id: 'frontile.date-picker.textual-format' }
+      );
+      return undefined;
+    }
+
+    return given;
+  }
+
+  get placeholderValue(): Date {
+    return this.args.placeholderValue ?? new Date();
   }
 
   get mode(): M {
@@ -107,10 +194,36 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
    * before the form holds anything for it -- keeps whatever the user chose.
    */
   syncValue = modifier((_: HTMLDivElement, [raw]: [unknown]) => {
-    if (raw !== undefined) {
-      this.internalValue = this.parseIncoming(raw);
+    if (raw === undefined) return;
+
+    const parsed = this.parseIncoming(raw);
+    this.internalValue = parsed;
+    // The segments are a second rendering of the same value, so an argument
+    // change has to reach them too; without this a `@value`-controlled picker
+    // shows empty segments. `#currentParts` rather than `this.parts` -- see
+    // the field's own comment.
+    if (this.isSegmented) {
+      this.setParts(fromDate(this.#currentParts, parsed as Date | null));
     }
   });
+
+  /**
+   * Rebuilds the segment order when the locale or format changes, carrying the
+   * current value across so switching en-US to en-GB reorders the field
+   * without emptying it. Reads no tracked state, so it runs on an argument
+   * change and never on a keystroke.
+   */
+  syncSegmentFormat = modifier(
+    (
+      _: HTMLDivElement,
+      [locale, format]: [string, Intl.DateTimeFormatOptions | undefined]
+    ) => {
+      if (!this.isSegmented) return;
+      this.setParts(
+        fromDate(buildParts(locale, format), toDate(this.#currentParts))
+      );
+    }
+  );
 
   get formatted(): string {
     return formatValue(this.value, this.locale, this.args.formatOptions);
@@ -149,7 +262,17 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
    * calendar and on every day click.
    */
   blurTracker = new ControlBlurTracker({
-    trigger: () => this.triggerRef.current,
+    // Resolved through whichever element the popover's `trigger` modifier sits
+    // on, because the tracker finds the portaled content by that element's
+    // `aria-controls`. On the segmented path there is no button trigger: the
+    // calendar button in the end content opens the popover instead, and
+    // pointing this at nothing would make a click into the open calendar read
+    // as a blur.
+    trigger: () =>
+      this.triggerRef.current ??
+      this.containerRef.current?.querySelector<HTMLElement>(
+        '[data-part="calendar-button"]'
+      ),
     container: () => this.containerRef.current,
     isOpen: () => this.isOpen,
     isDestroyed: () => this.isDestroyed || this.isDestroying,
@@ -191,11 +314,30 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
    * away -- closing would just make them reopen it.
    */
   clear = (): void => {
-    this.internalValue = null;
-    (this.args.onChange as ((v: null) => void) | undefined)?.(null);
-    this.notifyForm();
-    this.triggerRef.current?.focus();
+    this.commitValue(null, { writeParts: true });
+    this.focusField();
   };
+
+  /**
+   * Whatever the field's own focusable thing is: the button trigger, or --
+   * when segmented -- the segment the user was last in, falling back to the
+   * first one. A recorded segment that has left the DOM is not one focus can
+   * go back to.
+   */
+  private focusTarget(): HTMLElement | null | undefined {
+    if (!this.isSegmented) return this.triggerRef.current;
+
+    const last = this.lastFocusedSegment;
+    if (last && last.isConnected) return last;
+
+    return this.containerRef.current?.querySelector<HTMLElement>(
+      '[data-part="segment"]'
+    );
+  }
+
+  private focusField(): void {
+    this.focusTarget()?.focus();
+  }
 
   /**
    * Whether the selection is finished, and the popover should therefore close.
@@ -208,17 +350,79 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return (value as DateRange).end !== null;
   }
 
-  handleChange = (value: CalendarValue<M>): void => {
+  /**
+   * The one path a value change takes, whichever editor produced it.
+   *
+   * `writeParts` says whether the segments are that editor's output or its
+   * input. The calendar, the `:footer` block and the clear button are all
+   * *other* editors, and the segments have to be rewritten to show what they
+   * did. Typing is the segments themselves: rewriting them there would
+   * overwrite the buffer the user is still typing into, turning a half-typed
+   * year back into a padded one on every completed keystroke.
+   */
+  private commitValue(
+    value: CalendarValue<M> | null,
+    { writeParts }: { writeParts: boolean }
+  ): void {
     // Internal state updates even when controlled, so the calendar's own
     // rendering stays responsive; the `value` getter ignores it in that case,
     // so the consumer still has the last word.
     this.internalValue = value;
-    (this.args.onChange as ((v: CalendarValue<M>) => void) | undefined)?.(
-      value
-    );
+
+    if (writeParts && this.isSegmented) {
+      this.setParts(fromDate(this.#currentParts, value as Date | null));
+    }
+
+    (
+      this.args.onChange as ((v: CalendarValue<M> | null) => void) | undefined
+    )?.(value);
     this.notifyForm();
+  }
+
+  handleChange = (value: CalendarValue<M>): void => {
+    this.commitValue(value, { writeParts: true });
 
     if (this.isComplete(value)) this.close();
+  };
+
+  /**
+   * The segments changed. Only value *transitions* are reported: the four
+   * keystrokes that fill a month and a day compose no date at all, and report
+   * nothing. The popover is deliberately left alone -- typing never opened it,
+   * so completing a date by typing has nothing to close.
+   */
+  handlePartsChange = (parts: Part[]): void => {
+    const before = toDate(this.#currentParts);
+    this.setParts(parts);
+    const after = toDate(parts);
+
+    const changed =
+      (before === null) !== (after === null) ||
+      (before !== null &&
+        after !== null &&
+        before.getTime() !== after.getTime());
+
+    if (!changed) return;
+
+    this.commitValue(after as CalendarValue<M> | null, { writeParts: false });
+  };
+
+  /**
+   * The segment that last held focus, so that closing the calendar can hand
+   * focus back to where the user was. Recorded from the group's `focusin`
+   * rather than captured when the popover opens, because the calendar button
+   * is clicked *after* focus has already left the segment.
+   */
+  private lastFocusedSegment: HTMLElement | null = null;
+
+  handleSegmentFocusIn = (event: FocusEvent): void => {
+    const target = event.target;
+    if (
+      target instanceof HTMLElement &&
+      target.getAttribute('data-part') === 'segment'
+    ) {
+      this.lastFocusedSegment = target;
+    }
   };
 
   /**
@@ -261,7 +465,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
    */
   close = (): void => {
     this.isOpen = false;
-    this.triggerRef.current?.focus();
+    this.focusField();
   };
 
   @cached
@@ -272,6 +476,17 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
   get isRangeMode(): boolean {
     return this.mode === 'range';
+  }
+
+  /**
+   * The segmented field has no button trigger for a click to fall through to,
+   * and its calendar icon is a real button, so the cluster has to take pointer
+   * events. An explicit argument still wins.
+   */
+  get endContentPointerEvents(): 'none' | 'auto' {
+    return (
+      this.args.endContentPointerEvents ?? (this.isSegmented ? 'auto' : 'none')
+    );
   }
 
   /**
@@ -325,6 +540,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
   <template>
     <div
+      {{this.syncSegmentFormat this.locale this.segmentFormat}}
       {{this.syncValue @value}}
       {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
@@ -379,34 +595,61 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
             class={{this.classes.innerContainer class=@classes.innerContainer}}
             data-part="inner-container"
           >
-            <DatePickerTrigger
-              @id={{c.id}}
-              @trigger={{p.trigger}}
-              @placeholder={{@placeholder}}
-              @formatted={{this.formatted}}
-              @isEmpty={{this.isEmpty}}
-              @isDisabled={{@isDisabled}}
-              @isInvalid={{c.isInvalid}}
-              @hasCustomContent={{has-block "value"}}
-              @accessibleName={{this.accessibleName}}
-              @triggerRef={{this.triggerRef.setup}}
-              @classes={{this.classes}}
-              @userClasses={{@classes}}
-              @onFocusOut={{this.blurTracker.handleFocusOut}}
-            >
-              <:value>
-                {{#if (has-block "value")}}
-                  {{yield this.valueBlockArg to="value"}}
-                {{/if}}
-              </:value>
-            </DatePickerTrigger>
+            {{#if this.isSegmented}}
+              {{! Blur tracking and focus recording ride on splattributes:
+              the group renders `...attributes` on its `role="group"` element,
+              and both events bubble there from the segments. }}
+              <SegmentGroup
+                @parts={{this.parts}}
+                @onPartsChange={{this.handlePartsChange}}
+                @locale={{this.locale}}
+                @placeholderValue={{this.placeholderValue}}
+                @isDisabled={{@isDisabled}}
+                @isReadOnly={{@isReadOnly}}
+                @isInvalid={{c.isInvalid}}
+                @id={{c.id}}
+                @label={{@label}}
+                @describedBy={{c.describedBy @description c.isInvalid}}
+                @segmentLabels={{@segmentLabels}}
+                @classes={{this.classes}}
+                @userClasses={{@classes}}
+                {{on "focusin" this.handleSegmentFocusIn}}
+                {{on "focusout" this.blurTracker.handleFocusOut}}
+              />
+            {{else}}
+              <DatePickerTrigger
+                @id={{c.id}}
+                @trigger={{p.trigger}}
+                @placeholder={{@placeholder}}
+                @formatted={{this.formatted}}
+                @isEmpty={{this.isEmpty}}
+                @isDisabled={{@isDisabled}}
+                @isInvalid={{c.isInvalid}}
+                @hasCustomContent={{has-block "value"}}
+                @accessibleName={{this.accessibleName}}
+                @triggerRef={{this.triggerRef.setup}}
+                @classes={{this.classes}}
+                @userClasses={{@classes}}
+                @onFocusOut={{this.blurTracker.handleFocusOut}}
+              >
+                <:value>
+                  {{#if (has-block "value")}}
+                    {{yield this.valueBlockArg to="value"}}
+                  {{/if}}
+                </:value>
+              </DatePickerTrigger>
+            {{/if}}
 
             <DatePickerEndContent
               @classes={{this.classes}}
               @userClasses={{@classes}}
-              @endContentPointerEvents={{@endContentPointerEvents}}
+              @endContentPointerEvents={{this.endContentPointerEvents}}
               @isClearable={{this.isClearable}}
               @onClear={{this.clear}}
+              @isEditable={{this.isSegmented}}
+              @trigger={{p.trigger}}
+              @label={{@label}}
+              @isDisabled={{@isDisabled}}
             />
           </div>
 
@@ -423,6 +666,12 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
             @disableTransitions={{@disableTransitions}}
             @blockScroll={{false}}
             @preventAutoFocus={{true}}
+            {{! Overlay captures document.activeElement when the content
+            mounts -- the calendar button, on the segmented path -- and
+            refocuses it on teardown, after close() has already put focus back
+            on the segment. `close()` is the one answer; this stops the
+            overlay giving a second. }}
+            @preventFocusRestore={{this.isSegmented}}
             role="dialog"
             aria-label={{@label}}
           >

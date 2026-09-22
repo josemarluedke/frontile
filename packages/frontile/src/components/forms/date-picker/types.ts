@@ -17,6 +17,7 @@ import type {
 } from '../../collections/calendar/types';
 import type { FormControlSharedArgs } from '../form-control';
 import type { DatePickerInput, DatePickerRangeInput } from './value';
+import type { SegmentType } from '../date-input/types';
 
 interface BaseDatePickerArgs
   extends
@@ -66,6 +67,33 @@ interface BaseDatePickerArgs
    */
   middleware?: PopoverSignature['Args']['middleware'];
 
+  /**
+   * Whether the value can be typed into segments. `false` restores the button
+   * trigger showing the formatted value, which is what `@placeholder`,
+   * `@formatOptions` and the `:value` block describe.
+   *
+   * `@mode="range"` ignores this and always renders the button trigger: the
+   * two-group range anatomy is not built yet.
+   *
+   * @defaultValue true
+   */
+  isEditable?: boolean;
+
+  /**
+   * Where ArrowUp on an empty segment starts. Only read on the segmented
+   * path.
+   *
+   * @defaultValue today
+   */
+  placeholderValue?: Date;
+
+  /**
+   * The accessible names of the segments, for localizing them.
+   *
+   * @defaultValue { year: 'year', month: 'month', day: 'day' }
+   */
+  segmentLabels?: Partial<Record<SegmentType, string>>;
+
   /** Text shown in the trigger when there is no value. */
   placeholder?: string;
 
@@ -105,7 +133,11 @@ interface BaseDatePickerArgs
    * included -- falls through to the trigger and opens the picker. The clear
    * button opts back in on its own.
    *
-   * @defaultValue 'none'
+   * The segmented path defaults to `'auto'` instead: there is no button
+   * trigger for a click to fall through to, and the calendar icon is itself
+   * the button that opens the popover.
+   *
+   * @defaultValue 'none', or 'auto' when the field is segmented
    */
   endContentPointerEvents?: 'none' | 'auto';
 

@@ -12,8 +12,13 @@ import {
   displaySegment
 } from './segments';
 import { parsePasted, formatForClipboard } from './clipboard';
-import type { Part, Segment, SegmentType, DateInputClasses } from './types';
-import type { SlotsToClasses, DateInputSlots } from '@frontile/theme';
+import type {
+  Part,
+  Segment,
+  SegmentType,
+  SegmentGroupClasses,
+  SegmentGroupUserClasses
+} from './types';
 
 interface SegmentGroupSignature {
   Args: {
@@ -35,8 +40,13 @@ interface SegmentGroupSignature {
     labelledBy?: string;
     describedBy?: string;
     segmentLabels?: Partial<Record<SegmentType, string>>;
-    classes: DateInputClasses;
-    userClasses?: SlotsToClasses<DateInputSlots>;
+    /**
+     * Only the three slots this group renders, so that `DateInput`'s
+     * `dateInput` recipe and `DatePicker`'s `datePicker` recipe both satisfy
+     * it. See {@link SegmentGroupClasses}.
+     */
+    classes: SegmentGroupClasses;
+    userClasses?: SegmentGroupUserClasses;
   };
   Element: HTMLDivElement;
 }

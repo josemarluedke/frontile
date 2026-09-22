@@ -1,4 +1,5 @@
 import type {
+  ClassValue,
   DateInputSlots,
   SlotsToClasses,
   useStyles
@@ -7,6 +8,27 @@ import type { FormControlSharedArgs } from '../form-control';
 
 /** The resolved Tailwind Variants slot functions for this component. */
 type DateInputClasses = ReturnType<ReturnType<typeof useStyles>['dateInput']>;
+
+/** One resolved Tailwind Variants slot function, called as `slot(class=...)`. */
+type SegmentSlotFn = (props?: { class?: ClassValue }) => string;
+
+/**
+ * The slots `SegmentGroup` renders, named structurally rather than by recipe.
+ * `DateInput` hands it `useStyles().dateInput(...)` and `DatePicker` hands it
+ * `useStyles().datePicker(...)`: two separate `tv()` calls, because tv() loses
+ * slot types across a two-level `extend` and so neither recipe can extend the
+ * other. Naming either one here would make the other a type error, so the
+ * group asks only for the three slots it actually uses -- which both recipes
+ * have.
+ */
+interface SegmentGroupClasses {
+  group: SegmentSlotFn;
+  segment: SegmentSlotFn;
+  literal: SegmentSlotFn;
+}
+
+/** The consumer overrides for those same three slots. */
+type SegmentGroupUserClasses = SlotsToClasses<'group' | 'segment' | 'literal'>;
 
 /** The editable units. Day granularity only -- see the spec's Out of scope. */
 type SegmentType = 'year' | 'month' | 'day';
@@ -84,6 +106,9 @@ interface DateInputArgs extends FormControlSharedArgs {
 
 export type {
   SegmentType,
+  SegmentSlotFn,
+  SegmentGroupClasses,
+  SegmentGroupUserClasses,
   Segment,
   LiteralPart,
   Part,

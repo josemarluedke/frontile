@@ -4,7 +4,9 @@ import {
   render,
   click,
   find,
+  focus,
   settled,
+  triggerEvent,
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
@@ -947,6 +949,354 @@ module(
       assert
         .dom('[data-test-color]')
         .hasText('danger', 'so a custom calendar can spread it');
+    });
+  }
+);
+
+module(
+  'Integration | Component | DatePicker | segmented trigger',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    /** The focused segment, which every typing test types into. */
+    function active(): Element {
+      return document.activeElement as Element;
+    }
+
+    async function type(digits: string): Promise<void> {
+      for (const digit of digits) {
+        await triggerKeyEvent(active(), 'keydown', digit);
+      }
+    }
+
+    test('renders segments by default, not a button trigger', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      assert.dom('[data-part="segment"]').exists({ count: 3 });
+      assert
+        .dom('button[data-part="input"]')
+        .doesNotExist('the old trigger is gone');
+    });
+
+    test('@isEditable={{false}} restores the button trigger', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @isEditable={{false}}
+          />
+        </template>
+      );
+
+      assert.dom('button[data-part="input"]').exists();
+      assert.dom('[data-part="segment"]').doesNotExist();
+    });
+
+    test('range mode keeps the button trigger', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @label="Stay" @locale="en-US" @mode="range" />
+        </template>
+      );
+
+      assert
+        .dom('button[data-part="input"]')
+        .exists('the two-group anatomy is not built yet');
+      assert.dom('[data-part="segment"]').doesNotExist();
+    });
+
+    test('the calendar button opens the popover', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      assert.dom('[role="dialog"]').doesNotExist();
+      await click('[data-part="calendar-button"]');
+      assert
+        .dom('[role="dialog"]')
+        .exists('typing and opening are separate gestures');
+    });
+
+    test('typing does not open the popover', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      await focus(
+        find('[data-part="segment"][data-type="month"]') as HTMLElement
+      );
+      await type('1');
+
+      assert.dom('[role="dialog"]').doesNotExist();
+      // Padded, because a non-year segment always renders at its full width.
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('01');
+    });
+
+    test('@value writes the segments', async function (assert) {
+      const value = new Date(2026, 0, 20);
+
+      await render(
+        <template>
+          <DatePicker @label="Start date" @locale="en-US" @value={{value}} />
+        </template>
+      );
+
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('01');
+      assert.dom('[data-part="segment"][data-type="day"]').hasText('20');
+      assert.dom('[data-part="segment"][data-type="year"]').hasText('2026');
+    });
+
+    test('picking a day writes the segments', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+          />
+        </template>
+      );
+
+      await click('[data-part="calendar-button"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('01');
+      assert.dom('[data-part="segment"][data-type="day"]').hasText('22');
+      assert.dom('[data-part="segment"][data-type="year"]').hasText('2026');
+    });
+
+    test('typing a complete date reports it and moves the calendar', async function (assert) {
+      const received = cell<Date | null>(null);
+      const onChange = (v: Date | null) => (received.current = v);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(
+        find('[data-part="segment"][data-type="month"]') as HTMLElement
+      );
+      await type('03152027');
+
+      assert.strictEqual(received.current?.getFullYear(), 2027);
+      assert.strictEqual(received.current?.getMonth(), 2);
+      assert.strictEqual(received.current?.getDate(), 15);
+
+      await click('[data-part="calendar-button"]');
+      assert
+        .dom('[role="dialog"]')
+        .includesText('March', 'the calendar followed the typing');
+    });
+
+    test('typing on does not rewrite the segments underneath it', async function (assert) {
+      const received = cell<Date | null | undefined>(undefined);
+      const onChange = (v: Date | null) => (received.current = v);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(
+        find('[data-part="segment"][data-type="month"]') as HTMLElement
+      );
+      await type('03152027');
+
+      // Retyping the year un-commits it, so the composed value drops back to
+      // null -- a value change like any other. If that change wrote the
+      // segments back, it would clear the month and day the user just typed
+      // and replace the year they are mid-way through.
+      await type('1');
+
+      assert.strictEqual(
+        received.current,
+        null,
+        'an incomplete date composes nothing'
+      );
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('03');
+      assert.dom('[data-part="segment"][data-type="day"]').hasText('15');
+      assert.dom('[data-part="segment"][data-type="year"]').hasText('1');
+    });
+
+    test('Escape closes the popover and returns focus to the segment', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      // The year, not the month: the first segment is also the fallback, so
+      // only a later one can show that the field remembers where focus was.
+      const year = find(
+        '[data-part="segment"][data-type="year"]'
+      ) as HTMLElement;
+      await focus(year);
+      await click('[data-part="calendar-button"]');
+      assert.dom('[role="dialog"]').exists();
+
+      await triggerKeyEvent(active(), 'keydown', 'Escape');
+
+      assert.dom('[role="dialog"]').doesNotExist();
+      assert.strictEqual(
+        document.activeElement,
+        year,
+        'focus returns to the segment the user was in, not to <body>'
+      );
+    });
+
+    test('closing with no segment ever focused falls back to the first one', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+          />
+        </template>
+      );
+
+      await click('[data-part="calendar-button"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert
+        .dom('[role="dialog"]')
+        .doesNotExist('a complete pick closes the popover');
+      assert.strictEqual(
+        document.activeElement,
+        find('[data-part="segment"][data-type="month"]'),
+        'focus lands on the first segment rather than <body>'
+      );
+    });
+
+    test('clearing empties the segments and keeps focus in the field', async function (assert) {
+      const value = new Date(2026, 0, 20);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @value={{value}}
+            @isClearable={{true}}
+          />
+        </template>
+      );
+
+      await click('[data-part="clear-button"]');
+
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('mm');
+      assert.dom('[data-part="segment"][data-type="year"]').hasText('yyyy');
+      assert.strictEqual(
+        document.activeElement,
+        find('[data-part="segment"][data-type="month"]'),
+        'focus does not fall to <body> when the clear button disappears'
+      );
+    });
+
+    test('a typed date reaches an enclosing Form', async function (assert) {
+      const { submitted, onSubmit } = captureSubmit();
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}} as |form|>
+            <form.Field @name="start" as |field|>
+              <field.DatePicker @label="Start date" @locale="en-US" />
+            </form.Field>
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      await focus(
+        find('[data-part="segment"][data-type="month"]') as HTMLElement
+      );
+      await type('03152027');
+      await click('button[type="submit"]');
+
+      assert.deepEqual(submitted.current, { start: '2027-03-15' });
+    });
+
+    test('the end-content cluster takes pointer events', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      // There is no button trigger underneath for a click to fall through to:
+      // with pointer events off, the calendar button is a dead control and the
+      // calendar cannot be opened at all.
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="end-content"]') as Element)
+          .pointerEvents,
+        'auto',
+        'the cluster is clickable on the segmented path'
+      );
+    });
+
+    test('onBlur does not fire when focus moves from a segment into the calendar', async function (assert) {
+      const blurs = cell(0);
+      const onBlur = () => blurs.current++;
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @onBlur={{onBlur}}
+          />
+        </template>
+      );
+
+      await click('[data-part="calendar-button"]');
+      assert.dom('[data-component="calendar"]').exists('the calendar is open');
+
+      // The popover is portaled, so a day is not a DOM descendant of the
+      // field: the blur tracker has to find the content through the element
+      // the popover's trigger modifier sits on, which on this path is the
+      // calendar button rather than the (absent) button trigger. Dispatched
+      // rather than performed because reaching a day from a segment by hand
+      // takes the focus through the button first.
+      await triggerEvent('[data-part="group"]', 'focusout', {
+        relatedTarget: find('[data-part="day"][data-key="2026-01-22"]')
+      });
+
+      assert.strictEqual(
+        blurs.current,
+        0,
+        'entering the popover is not leaving the control'
+      );
+    });
+
+    test('a textual @formatOptions falls back to numeric segments', async function (assert) {
+      const options = { dateStyle: 'medium' } as Intl.DateTimeFormatOptions;
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Date"
+            @locale="en-US"
+            @formatOptions={{options}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="segment"]').exists({ count: 3 });
+      // `{ dateStyle: 'medium' }` would lay the field out as "mmm dd, yyyy".
+      // The fallback is the numeric default, separators and all.
+      assert.dom('[data-part="literal"]').hasText('/');
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('mm');
     });
   }
 );
