@@ -28,7 +28,9 @@ function fill(parts: Part[], numbers: number[]): Part[] | null {
     next.push({
       ...part,
       value,
-      buffer: String(value).padStart(part.width, '0')
+      buffer: String(value).padStart(part.width, '0'),
+      // A paste is a finished answer for every segment it fills.
+      isCommitted: true
     });
   }
 

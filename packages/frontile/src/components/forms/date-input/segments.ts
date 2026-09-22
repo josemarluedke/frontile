@@ -36,7 +36,8 @@ function emptySegment(type: SegmentType): Segment {
     max,
     width,
     placeholder,
-    buffer: ''
+    buffer: '',
+    isCommitted: false
   };
 }
 
@@ -88,11 +89,18 @@ function resolveTwoDigitYear(digits: string, now: Date = new Date()): number {
   return candidate < start ? candidate + 100 : candidate;
 }
 
-/** The numeric value a buffer represents, or null when it represents none. */
+/**
+ * The numeric value a buffer represents, or null when it represents none.
+ *
+ * A buffer is always its literal number, including a year's: `26` is the year
+ * 26 here, not 2026. The two-digit window is applied once, by `commitSegment`,
+ * at the moment the user is finished with the segment -- applying it per
+ * keystroke would make the first digit of `2026` compose the year 2002 and
+ * push a date nobody typed out to `@onChange` and the calendar.
+ */
 function bufferValue(segment: Segment, buffer: string): number | null {
   if (buffer === '') return null;
-  const n =
-    segment.type === 'year' ? resolveTwoDigitYear(buffer) : Number(buffer);
+  const n = Number(buffer);
   return n < segment.min ? null : n;
 }
 
@@ -123,27 +131,65 @@ function applyDigit(
       return { segment, isFull: false };
   }
 
-  const next: Segment = { ...segment, buffer, value };
-
   const atWidth = buffer.length >= segment.width;
   // Would any digit 0-9 appended here still fit? If not, there is nothing
   // left to wait for. `bufferValue` returning null (below `min`) behaves like
   // 0 here, same as the original non-null-assertion-based comparison did.
   const extended = bufferValue(segment, buffer + '0') ?? 0;
   const canExtend = !atWidth && extended <= segment.max;
+  const isFull = atWidth || !canExtend;
 
-  return { segment: next, isFull: atWidth || !canExtend };
+  // A segment that can take no further digit is finished, so it commits here
+  // rather than waiting for focus to leave.
+  const next: Segment = { ...segment, buffer, value, isCommitted: isFull };
+
+  return { segment: next, isFull };
+}
+
+/**
+ * Marks a segment as the user's finished answer, expanding a one- or
+ * two-digit year through the sliding window on the way: typing `26` and
+ * moving on means 2026, while `0026` typed in full means the year 26.
+ *
+ * An empty segment has nothing to commit and stays uncommitted, so leaving a
+ * blank field does not invent a value for it.
+ */
+function commitSegment(segment: Segment): Segment {
+  if (segment.value === null) return segment;
+
+  if (
+    segment.type === 'year' &&
+    segment.buffer.length > 0 &&
+    segment.buffer.length <= 2
+  ) {
+    const value = resolveTwoDigitYear(segment.buffer);
+    return {
+      ...segment,
+      value,
+      buffer: String(value).padStart(segment.width, '0'),
+      isCommitted: true
+    };
+  }
+
+  return { ...segment, isCommitted: true };
 }
 
 /** Clears both the value and the digits behind it. */
 function clearSegment(segment: Segment): Segment {
-  return { ...segment, value: null, buffer: '' };
+  return { ...segment, value: null, buffer: '', isCommitted: false };
 }
 
 /** Drops the last digit typed, for Backspace. */
 function deleteDigit(segment: Segment): Segment {
   const buffer = segment.buffer.slice(0, -1);
-  return { ...segment, buffer, value: bufferValue(segment, buffer) };
+  // Un-commits: a year being backspaced through is being typed again, and the
+  // 202 it passes through must not compose a date.
+  return {
+    ...segment,
+    buffer,
+    value: bufferValue(segment, buffer),
+    isCommitted: false
+  };
 }
 
 /** The unit of `placeholderValue` this segment seeds from when empty. */
@@ -168,7 +214,8 @@ function step(
     return {
       ...segment,
       value: seeded,
-      buffer: String(seeded).padStart(segment.width, '0')
+      buffer: String(seeded).padStart(segment.width, '0'),
+      isCommitted: true
     };
   }
 
@@ -182,7 +229,8 @@ function step(
   return {
     ...segment,
     value,
-    buffer: String(value).padStart(segment.width, '0')
+    buffer: String(value).padStart(segment.width, '0'),
+    isCommitted: true
   };
 }
 
@@ -201,15 +249,23 @@ function daysInMonth(year: number, month: number): number {
  * resolve to the 28th in February, not roll forward into March the way the
  * `Date` constructor would.
  */
+/** A segment holding a finished value, as opposed to one mid-entry. */
+function isReady(
+  segment: Segment | undefined
+): segment is Segment & { value: number } {
+  return segment !== undefined && segment.value !== null && segment.isCommitted;
+}
+
 function toDate(parts: Part[]): Date | null {
-  const year = findSegment(parts, 'year')?.value ?? null;
-  const month = findSegment(parts, 'month')?.value ?? null;
-  const day = findSegment(parts, 'day')?.value ?? null;
+  const year = findSegment(parts, 'year');
+  const month = findSegment(parts, 'month');
+  const day = findSegment(parts, 'day');
 
-  if (year === null || month === null || day === null) return null;
+  // Uncommitted counts as empty: half a year is not a date.
+  if (!isReady(year) || !isReady(month) || !isReady(day)) return null;
 
-  const clamped = Math.min(day, daysInMonth(year, month));
-  return new Date(year, month - 1, clamped);
+  const clamped = Math.min(day.value, daysInMonth(year.value, month.value));
+  return new Date(year.value, month.value - 1, clamped);
 }
 
 /** Writes a value across the segments, leaving literals untouched. */
@@ -219,7 +275,12 @@ function fromDate(parts: Part[], date: Date | null): Part[] {
     if (!date) return clearSegment(part);
 
     const value = seedFrom(part.type, date);
-    return { ...part, value, buffer: String(value).padStart(part.width, '0') };
+    return {
+      ...part,
+      value,
+      buffer: String(value).padStart(part.width, '0'),
+      isCommitted: true
+    };
   });
 }
 
@@ -230,6 +291,7 @@ export {
   DEFAULT_FORMAT,
   BOUNDS,
   applyDigit,
+  commitSegment,
   clearSegment,
   deleteDigit,
   step,

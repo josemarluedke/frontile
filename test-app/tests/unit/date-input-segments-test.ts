@@ -3,6 +3,7 @@ import {
   buildParts,
   isSegment,
   applyDigit,
+  commitSegment,
   step,
   clearSegment,
   deleteDigit,
@@ -75,6 +76,7 @@ module('Unit | date-input segments | applyDigit', function () {
     const { segment, isFull } = applyDigit(emptySegment('month'), '5');
     assert.strictEqual(segment.value, 5);
     assert.true(isFull, 'focus should advance');
+    assert.true(segment.isCommitted, 'and the value is final');
   });
 
   test('a first digit that could be extended waits', function (assert) {
@@ -83,6 +85,7 @@ module('Unit | date-input segments | applyDigit', function () {
     assert.strictEqual(segment.value, 1);
     assert.strictEqual(segment.buffer, '1');
     assert.false(isFull, 'focus stays put for a possible second digit');
+    assert.false(segment.isCommitted, 'and 1 is not yet the answer');
   });
 
   test('a second digit completes the segment', function (assert) {
@@ -117,10 +120,23 @@ module('Unit | date-input segments | applyDigit', function () {
       const r = applyDigit(seg, d);
       seg = r.segment;
       assert.false(r.isFull, `${seg.buffer} is still incomplete`);
+      assert.false(
+        seg.isCommitted,
+        `${seg.buffer} is mid-entry, not an answer`
+      );
     }
     const last = applyDigit(seg, '6');
     assert.strictEqual(last.segment.value, 2026);
     assert.true(last.isFull);
+    assert.true(last.segment.isCommitted, 'a full segment commits itself');
+  });
+
+  test('a partial year is its literal number, not a windowed one', function (assert) {
+    // The window belongs to commitSegment. Applying it per keystroke would
+    // make the first digit of 2026 compose the year 2002.
+    const { segment } = applyDigit(emptySegment('year'), '2');
+    assert.strictEqual(segment.value, 2, 'the literal 2, not 2002');
+    assert.false(segment.isCommitted);
   });
 
   test('non-digits are ignored', function (assert) {
@@ -183,11 +199,30 @@ module('Unit | date-input segments | clearing', function () {
     assert.strictEqual(cleared.buffer, '');
   });
 
+  test('clearSegment leaves nothing committed', function (assert) {
+    const filled = {
+      ...emptySegment('day'),
+      value: 20,
+      buffer: '20',
+      isCommitted: true
+    };
+    assert.false(clearSegment(filled).isCommitted);
+  });
+
   test('deleteDigit drops the last digit typed', function (assert) {
-    const year = { ...emptySegment('year'), value: 2026, buffer: '2026' };
+    const year = {
+      ...emptySegment('year'),
+      value: 2026,
+      buffer: '2026',
+      isCommitted: true
+    };
     const once = deleteDigit(year);
     assert.strictEqual(once.buffer, '202');
-    assert.strictEqual(once.value, 202, 'still a usable partial year');
+    assert.strictEqual(once.value, 202, 'the literal remaining digits');
+    assert.false(
+      once.isCommitted,
+      'a year being backspaced through is being typed again'
+    );
 
     const empty = deleteDigit({
       ...emptySegment('day'),
@@ -196,6 +231,68 @@ module('Unit | date-input segments | clearing', function () {
     });
     assert.strictEqual(empty.buffer, '');
     assert.strictEqual(empty.value, null);
+  });
+});
+
+module('Unit | date-input segments | commitSegment', function () {
+  test('a two-digit year expands through the window', function (assert) {
+    const typed = applyDigit(
+      applyDigit(emptySegment('year'), '2').segment,
+      '6'
+    ).segment;
+    assert.strictEqual(typed.value, 26, 'the literal 26 while it is typed');
+
+    const committed = commitSegment(typed);
+    assert.strictEqual(
+      committed.value,
+      resolveTwoDigitYear('26'),
+      'and 2026 once the user is done with it'
+    );
+    assert.strictEqual(committed.buffer, '2026', 'the buffer follows');
+    assert.true(committed.isCommitted);
+  });
+
+  test('a four-digit year is taken as written', function (assert) {
+    const year = {
+      ...emptySegment('year'),
+      value: 26,
+      buffer: '0026',
+      isCommitted: false
+    };
+    assert.strictEqual(
+      commitSegment(year).value,
+      26,
+      'spelled out in full, the year 26 is the year 26'
+    );
+  });
+
+  test('a three-digit year is taken as written', function (assert) {
+    const year = {
+      ...emptySegment('year'),
+      value: 202,
+      buffer: '202',
+      isCommitted: false
+    };
+    assert.strictEqual(commitSegment(year).value, 202);
+    assert.true(commitSegment(year).isCommitted);
+  });
+
+  test('an empty segment stays empty and uncommitted', function (assert) {
+    const empty = emptySegment('year');
+    const committed = commitSegment(empty);
+    assert.strictEqual(committed.value, null);
+    assert.false(
+      committed.isCommitted,
+      'leaving a blank field invents nothing'
+    );
+  });
+
+  test('a non-year segment only flips the flag', function (assert) {
+    const month = applyDigit(emptySegment('month'), '1').segment;
+    const committed = commitSegment(month);
+    assert.strictEqual(committed.value, 1, 'January, unchanged');
+    assert.strictEqual(committed.buffer, '1');
+    assert.true(committed.isCommitted);
   });
 });
 
@@ -214,6 +311,15 @@ module('Unit | date-input segments | toDate and fromDate', function () {
       month!.buffer,
       '01',
       'buffer is padded to the segment width'
+    );
+  });
+
+  test('fromDate commits every segment it fills', function (assert) {
+    assert.true(
+      filled()
+        .filter(isSegment)
+        .every((s) => (s as Segment).isCommitted),
+      'a value handed in is nobody mid-keystroke'
     );
   });
 
@@ -245,6 +351,22 @@ module('Unit | date-input segments | toDate and fromDate', function () {
       isSegment(p) && p.type === 'day' ? clearSegment(p) : p
     );
     assert.strictEqual(toDate(cleared), null, 'two of three is still nothing');
+  });
+
+  test('toDate returns null while any segment is mid-entry', function (assert) {
+    const parts = fromDate(buildParts('en-US'), new Date(2026, 0, 20));
+    // The year as it stands one keystroke into being retyped.
+    const typing = parts.map((p) =>
+      isSegment(p) && p.type === 'year'
+        ? { ...p, value: 2, buffer: '2', isCommitted: false }
+        : p
+    );
+
+    assert.strictEqual(
+      toDate(typing),
+      null,
+      'half a year composes no date at all'
+    );
   });
 
   test('the day clamps to the length of the chosen month', function (assert) {

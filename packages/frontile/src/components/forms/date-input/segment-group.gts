@@ -5,6 +5,7 @@ import { on } from '@ember/modifier';
 import {
   isSegment,
   applyDigit,
+  commitSegment,
   step,
   clearSegment,
   deleteDigit
@@ -96,13 +97,14 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
   };
 
   /**
-   * What the segment shows. The digits the user typed are the display where
-   * there are any, so backspacing 2026 reads `202` rather than jumping to
-   * `0202`; a two-digit segment is still padded, so a lone `1` in the month
-   * reads `01` and the field does not reflow as it is typed. A year is never
-   * padded mid-entry: its value is a two-digit year already resolved to four,
-   * and showing `2002` the moment `2` is pressed would be a lie about what has
-   * been entered.
+   * What the segment shows: the digits the user typed, where there are any.
+   *
+   * A year still being typed is shown exactly as typed -- `202` on the way to
+   * `2026`, and `26` before the two-digit window has expanded it -- because
+   * padding it would claim digits the user has not entered. Once committed it
+   * is padded like everything else, so the year 202 does read `0202`. Every
+   * other segment is padded throughout, so a lone `1` in the month reads `01`
+   * and the field does not reflow as it is typed.
    */
   displayFor = (segment: Segment): string => {
     if (segment.value === null) return segment.placeholder;
@@ -110,7 +112,7 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
     const digits =
       segment.buffer === '' ? String(segment.value) : segment.buffer;
 
-    return segment.type === 'year'
+    return segment.type === 'year' && !segment.isCommitted
       ? digits
       : digits.padStart(segment.width, '0');
   };
@@ -242,6 +244,23 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
   };
 
   /**
+   * Leaving a segment finishes it: the digits in it stop being something the
+   * user is still typing and become their answer, which is what turns a typed
+   * `26` into 2026. Tab, arrow-key navigation and a click elsewhere all arrive
+   * here, because moving focus is the one thing they have in common.
+   */
+  handleFocusOut = (index: number): void => {
+    if (!this.isEditable) return;
+
+    const part = this.args.parts[index];
+    if (!part || !isSegment(part) || part.isCommitted) return;
+
+    const committed = commitSegment(part);
+    // An empty segment commits to itself; reporting it would be churn.
+    if (committed !== part) this.replace(index, committed);
+  };
+
+  /**
    * `contenteditable`'s hazard: anything not handled above arrives here and
    * would be written into the span's DOM, desynchronising the display from the
    * model. Every input type is refused; the model is the only writer.
@@ -260,7 +279,8 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
       aria-label={{@label}}
       aria-labelledby={{@labelledBy}}
       aria-describedby={{@describedBy}}
-      aria-disabled={{if @isDisabled "true"}} class={{@classes.group class=@userClasses.group}}
+      aria-disabled={{if @isDisabled "true"}}
+      class={{@classes.group class=@userClasses.group}}
       {{on "focusout" (if @onFocusOut @onFocusOut this.noop)}}
       ...attributes
     >
@@ -284,6 +304,7 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
             aria-valuetext={{cell.valueText}}
             class={{@classes.segment class=@userClasses.segment}}
             {{on "keydown" (fn this.handleKeyDown cell.index)}}
+            {{on "focusout" (fn this.handleFocusOut cell.index)}}
             {{on "beforeinput" this.handleBeforeInput}}
           >{{cell.text}}</span>
         {{else}}

@@ -23,6 +23,15 @@ interface Segment {
    * typing `0` must show `00` and wait, which no number can represent.
    */
   buffer: string;
+  /**
+   * Whether `value` is the user's finished answer for this segment rather than
+   * a number they are still typing through. A year typed digit by digit passes
+   * through 2, 20 and 202 on its way to 2026, and none of those are a year
+   * anybody meant -- so an uncommitted segment composes no date at all. A
+   * segment commits when it can take no further digit, or when focus leaves it
+   * (which is what turns a typed `26` into 2026).
+   */
+  isCommitted: boolean;
   /** How many digits the segment shows when filled: 2, or 4 for a year. */
   width: number;
   /** Rendered when `value` is null: 'mm', 'dd', 'yyyy'. */

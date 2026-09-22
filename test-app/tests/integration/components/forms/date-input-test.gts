@@ -106,7 +106,7 @@ module(
       assert.strictEqual((received as Date | null)?.getDate(), 25);
     });
 
-    test('onChange fires on value transitions, not on every keystroke', async function (assert) {
+    test('onChange fires once on completion, not on every keystroke', async function (assert) {
       const seen: (Date | null)[] = [];
       const onChange = (v: Date | null): void => {
         seen.push(v);
@@ -131,24 +131,87 @@ module(
       );
 
       await type('2026');
-      assert.strictEqual(
-        seen[seen.length - 1]?.getFullYear(),
-        2026,
-        'the last report carries the composed date'
-      );
+      assert.strictEqual(seen.length, 1, 'eight keystrokes, one change');
+      assert.strictEqual(seen[0]?.getFullYear(), 2026);
+      assert.strictEqual(seen[0]?.getMonth(), 11);
+      assert.strictEqual(seen[0]?.getDate(), 25);
 
-      const afterTyping = seen.length;
       await focus(segment('day'));
       await triggerKeyEvent(segment('day'), 'keydown', 'Delete');
-      assert.strictEqual(seen.length, afterTyping + 1, 'clearing reports once');
-      assert.strictEqual(seen[seen.length - 1], null, 'and reports null');
+      assert.strictEqual(seen.length, 2, 'clearing reports once');
+      assert.strictEqual(seen[1], null, 'and reports null');
 
       await triggerKeyEvent(segment('day'), 'keydown', 'Delete');
       assert.strictEqual(
         seen.length,
-        afterTyping + 1,
+        2,
         'a keystroke that changes no value reports nothing'
       );
+    });
+
+    test('retyping a year never reports the years it is typed through', async function (assert) {
+      const seen: (Date | null)[] = [];
+      const onChange = (v: Date | null): void => {
+        seen.push(v);
+      };
+      const value = new Date(2020, 11, 25);
+
+      await render(
+        <template>
+          <DateInput
+            @label="Start date"
+            @locale="en-US"
+            @value={{value}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(segment('year'));
+      await type('2026');
+
+      // 2, 20 and 202 are digits on the way to 2026, not years anybody meant.
+      // Task 9 drives a calendar from this value, which would otherwise jump to
+      // 2002 and then to the year 202 AD while the user is still typing.
+      assert.deepEqual(
+        seen.map((d) => d?.getFullYear() ?? null),
+        [null, 2026],
+        'the old value drops, and only 2026 is ever reported'
+      );
+      assert.dom(segment('year')).hasText('2026');
+    });
+
+    test('a two-digit year expands when focus leaves the segment', async function (assert) {
+      let received: Date | null = null;
+      const onChange = (v: Date | null): void => {
+        received = v;
+      };
+
+      await render(
+        <template>
+          <DateInput
+            @label="Start date"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(segment('month'));
+      await type('122526');
+      assert.dom(segment('year')).hasText('26', 'shown as typed, so far');
+      assert.strictEqual(
+        received as Date | null,
+        null,
+        'and composing nothing while it could still become 2601'
+      );
+
+      // Any way out of the segment commits it; Home is the arrow-navigation one.
+      await triggerKeyEvent(segment('year'), 'keydown', 'Home');
+
+      assert.dom(segment('year')).hasText('2026');
+      assert.strictEqual((received as Date | null)?.getFullYear(), 2026);
+      assert.strictEqual((received as Date | null)?.getDate(), 25);
     });
 
     test('arrow keys move between segments and step values', async function (assert) {
