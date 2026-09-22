@@ -1669,8 +1669,10 @@ module(
 
     test('typing both ends produces a range', async function (assert) {
       const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const calls = cell(0);
       const onChange = (value: { start: Date; end: Date | null } | null) => {
         seen.current = value;
+        calls.current = calls.current + 1;
       };
 
       await render(
@@ -1688,6 +1690,11 @@ module(
       await type('01202026');
 
       assert.strictEqual(
+        calls.current,
+        1,
+        'eight keystrokes, one report -- only the one that completed a date'
+      );
+      assert.strictEqual(
         seen.current?.start.getDate(),
         20,
         'the start is reported as soon as it composes'
@@ -1701,6 +1708,7 @@ module(
       await focus(firstSegment(1));
       await type('01252026');
 
+      assert.strictEqual(calls.current, 2, 'and one more for the second end');
       assert.strictEqual(seen.current?.start.getDate(), 20);
       assert.strictEqual(seen.current?.end?.getDate(), 25);
     });
@@ -1754,6 +1762,21 @@ module(
         textOf(1, 'day'),
         '25',
         'the digits the user did not touch stay on screen'
+      );
+
+      // Clearing an already-empty segment is a keystroke that moves nothing.
+      // Without a transition check every one of them would report `null`
+      // again, and a consumer would see churn for input it already has.
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Delete'
+      );
+
+      assert.strictEqual(
+        calls.current,
+        before + 1,
+        'and a keystroke that changes no date reports nothing'
       );
     });
 
@@ -1861,6 +1884,12 @@ module(
         </template>
       );
 
+      assert.strictEqual(
+        textOf(1, 'day'),
+        '06',
+        'the seeded end is in the end group to begin with'
+      );
+
       await click('[data-part="calendar-button"]');
       await click('[data-part="day"][data-key="2026-01-22"]');
 
@@ -1872,7 +1901,15 @@ module(
       assert.strictEqual(
         textOf(1, 'day'),
         'dd',
-        'and the end is cleared until the second click'
+        'and the end group is cleared with it, until the second click'
+      );
+
+      await click('[data-part="day"][data-key="2026-01-25"]');
+
+      assert.strictEqual(
+        textOf(1, 'day'),
+        '25',
+        'which then writes the end group'
       );
     });
   }

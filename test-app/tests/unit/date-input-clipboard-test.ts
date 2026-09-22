@@ -284,6 +284,12 @@ module('Unit | date-input clipboard | splitRange', function () {
       null,
       'a lone ISO date is one date, not a range'
     );
+    assert.strictEqual(
+      splitRange('2026-01'),
+      null,
+      'and so is one with a single hyphen in it, which the refusal above ' +
+        'would otherwise get right only via the two-halves check'
+    );
   });
 
   test('splits on the word "to"', function (assert) {
