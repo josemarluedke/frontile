@@ -68,13 +68,35 @@ interface LiteralPart {
 type Part = Segment | LiteralPart;
 
 interface DateInputArgs extends FormControlSharedArgs {
+  /** The unique identifier for the control. */
   id?: string;
+
   /** The value submits under this name as `yyyy-MM-dd`. */
   name?: string;
 
+  /**
+   * A `Date`, or the same `yyyy-MM-dd` string this component writes to its
+   * hidden input.
+   *
+   * The field keeps its own segments and syncs *from* this argument: setting
+   * it replaces what is displayed, while typing updates the field immediately
+   * rather than waiting for `@value` to come back. `undefined` is ignored,
+   * which is why a `<form.Field>`-bound input still honors `@defaultValue`
+   * before form data exists.
+   */
   value?: Date | string | null;
+
+  /** Seeds the value before any `@value` is supplied. */
   defaultValue?: Date | string | null;
+
+  /**
+   * Fires with the composed `Date`, or `null` once a complete value is no
+   * longer complete. A partially typed date composes nothing and reports
+   * nothing.
+   */
   onChange?: (value: Date | null) => void;
+
+  /** Fires when focus leaves the field, not when it moves between segments. */
   onBlur?: () => void;
 
   /** @defaultValue navigator.language */
@@ -90,17 +112,50 @@ interface DateInputArgs extends FormControlSharedArgs {
   /** Where ArrowUp on an empty segment starts. @defaultValue today */
   placeholderValue?: Date;
 
+  /** The earliest allowed date. A value before it marks the field invalid. */
   minValue?: Date;
+
+  /** The latest allowed date. A value after it marks the field invalid. */
   maxValue?: Date;
+
+  /**
+   * Marks individual dates disallowed. A value it returns `true` for marks
+   * the field invalid. Like `@minValue` and `@maxValue`, it never blocks a
+   * keystroke.
+   */
   isDateUnavailable?: (date: Date) => boolean;
 
+  /**
+   * Whether the value can be read and copied but not edited. The segments
+   * stay focusable and navigable.
+   *
+   * @defaultValue false
+   */
   isReadOnly?: boolean;
+
+  /**
+   * Whether a clear button appears at the end of the field once any segment
+   * holds a digit. Never rendered on a disabled or read-only field.
+   *
+   * @defaultValue false
+   */
   isClearable?: boolean;
+
+  /**
+   * The size of the field. Matches `Input`'s and `Select`'s `@inputSize`.
+   *
+   * @defaultValue 'md'
+   */
   inputSize?: 'sm' | 'md' | 'lg';
 
-  /** @defaultValue { year: 'year', month: 'month', day: 'day' } */
+  /**
+   * The accessible names of the segments, for localizing them.
+   *
+   * @defaultValue { year: 'year', month: 'month', day: 'day' }
+   */
   segmentLabels?: Partial<Record<SegmentType, string>>;
 
+  /** Per-slot class overrides. */
   classes?: SlotsToClasses<DateInputSlots>;
 }
 

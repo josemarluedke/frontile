@@ -354,10 +354,16 @@ Before committing, always run:
 ```bash
 pnpm --filter <package-name> build      # Build modified package(s)
 cd test-app && pnpm ember test          # Run tests
-pnpm lint:hbs --fix                     # Fix template linting
+pnpm lint:hbs                           # Template linting — NEVER with --fix
 pnpm lint:js --fix                      # Fix JS/TS linting
 pnpm --filter <package-name> lint:types # Type check
 ```
+
+**Never run `pnpm lint:hbs --fix`.** Several of `ember-template-lint`'s autofixers
+*delete* the attribute they object to rather than flagging it, and they do it silently —
+the diff is a deletion with no message. It has already removed ARIA attributes from a
+component on this repo, which was only noticed during review. Run `pnpm lint:hbs` without
+`--fix` and apply what it reports by hand. `pnpm lint:js --fix` is safe.
 
 ## Important Notes
 
