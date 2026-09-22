@@ -437,7 +437,9 @@ module(
       assert.dom(segment('month')).hasAttribute('contenteditable', 'false');
 
       await triggerKeyEvent(segment('month'), 'keydown', 'ArrowUp');
-      await type('5');
+      // Dispatched at the segment rather than through `type`, which would go to
+      // <body>: a disabled field has nothing focusable to receive it.
+      await triggerKeyEvent(segment('month'), 'keydown', '5');
       assert
         .dom(segment('month'))
         .hasText(
@@ -453,6 +455,7 @@ module(
         </template>
       );
 
+      assert.strictEqual(segments().length, 3, 'three segments to assert on');
       for (const s of segments()) {
         assert.dom(s).hasAttribute('aria-invalid', 'true');
       }
@@ -477,13 +480,29 @@ module(
       assert.dom(segment('month')).hasAttribute('aria-invalid', 'true');
     });
 
-    test('a valid field claims nothing', async function (assert) {
+    test('a read-only field says so on the segments themselves', async function (assert) {
+      await render(
+        <template>
+          <DateInput @label="Date" @locale="en-US" @isReadOnly={{true}} />
+        </template>
+      );
+
+      assert.strictEqual(segments().length, 3, 'three segments to assert on');
+      for (const s of segments()) {
+        assert.dom(s).hasAttribute('aria-readonly', 'true');
+      }
+      assert.dom('[data-part="group"]').hasAttribute('data-readonly', 'true');
+    });
+
+    test('a plain field claims neither invalid nor read-only', async function (assert) {
       await render(
         <template><DateInput @label="Date" @locale="en-US" /></template>
       );
 
       assert.dom(segment('month')).doesNotHaveAttribute('aria-invalid');
+      assert.dom(segment('month')).doesNotHaveAttribute('aria-readonly');
       assert.dom('[data-part="group"]').hasAttribute('data-invalid', 'false');
+      assert.dom('[data-part="group"]').hasAttribute('data-readonly', 'false');
     });
 
     test('text input into the contenteditable segment is refused', async function (assert) {
