@@ -1590,6 +1590,53 @@ module(
         .doesNotExist('range mode no longer forces the button trigger');
     });
 
+    test('the two groups sit together rather than splitting the field', async function (assert) {
+      // Both groups growing would leave the separator stranded mid-field with
+      // dead space on either side of it, instead of reading as one
+      // "start - end" phrase. Measured rather than asserted on class names, so
+      // it survives the classes being renamed.
+      await render(
+        <template>
+          <DatePicker @mode="range" @label="Trip dates" @locale="en-US" />
+        </template>
+      );
+
+      const [start, end] = groups();
+
+      // Each group must be exactly as wide as the segments inside it: too wide
+      // and the separator is stranded mid-field, but zero-wide is the opposite
+      // failure -- dropping only `grow` from `flex-1` leaves a 0% basis with
+      // shrink still on, which collapses the group and overflows its segments.
+      for (const group of [start!, end!]) {
+        const segments = Array.from(
+          group.querySelectorAll('[data-part="segment"], [data-part="literal"]')
+        );
+        const first = segments[0] as HTMLElement;
+        const last = segments[segments.length - 1] as HTMLElement;
+        const content =
+          last.getBoundingClientRect().right -
+          first.getBoundingClientRect().left;
+
+        assert.ok(content > 0, 'the group has rendered content');
+        assert.ok(
+          Math.abs(group.getBoundingClientRect().width - content) < 4,
+          `the group hugs its segments (group ${Math.round(
+            group.getBoundingClientRect().width
+          )}px vs content ${Math.round(content)}px)`
+        );
+      }
+
+      const separator = find('[data-part="separator"]') as HTMLElement;
+      const gap =
+        separator.getBoundingClientRect().left -
+        start!.getBoundingClientRect().right;
+
+      assert.ok(
+        gap < 4,
+        `the separator follows the start group directly (gap was ${gap}px)`
+      );
+    });
+
     test('@isEditable={{false}} still restores the button trigger', async function (assert) {
       await render(
         <template>

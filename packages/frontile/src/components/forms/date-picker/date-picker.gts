@@ -582,7 +582,8 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     const { datePicker } = useStyles();
     return datePicker({
       size: this.args.inputSize,
-      isSegmented: this.isSegmented
+      isSegmented: this.isSegmented,
+      isRange: this.isSegmented && this.isRangeMode
     });
   }
 

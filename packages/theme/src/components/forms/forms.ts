@@ -607,8 +607,23 @@ const datePicker = tv({
         // With no trigger underneath to click through to, the cluster sits in
         // flow beside the segments instead of floating over the field's right
         // edge.
-        endContent: 'static top-auto bottom-auto right-auto p-0 gap-1 shrink-0'
+        // `ms-auto` rather than relying on the group's `flex-1` to push it:
+        // in range mode the groups no longer grow (see `isRange`), so without
+        // this the cluster would sit tight against the end group instead of
+        // at the field's right edge.
+        endContent:
+          'static top-auto bottom-auto right-auto p-0 gap-1 shrink-0 ms-auto'
       }
+    },
+    // Two groups sharing one shell must not each claim half of it -- growing
+    // would strand the separator in the middle of the field with a gap of
+    // dead space on either side, instead of reading as one `start - end`
+    // phrase. The end content takes the slack instead.
+    // `flex-none`, not `grow-0`: the group's `flex-1` is `flex: 1 1 0%`, so
+    // removing only the grow leaves a 0% basis with shrink still on and the
+    // group collapses to zero width with its segments overflowing it.
+    isRange: {
+      true: { group: 'flex-none' }
     }
   },
   compoundVariants: [
