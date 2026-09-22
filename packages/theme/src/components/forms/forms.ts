@@ -542,7 +542,6 @@ const datePicker = tv({
       'data-[disabled=true]:pointer-events-none'
     ],
     literal: 'text-neutral-soft px-px',
-    separator: 'text-neutral px-1',
     calendarButton: 'pointer-events-auto'
   },
   variants: {
@@ -578,7 +577,7 @@ const dateInput = tv({
     // The row of segments. `tabular-nums` stops the field twitching as digits
     // change width; `select-none` keeps a drag across segments from starting a
     // text selection that spans them.
-    group: 'flex items-center flex-1 min-w-0 tabular-nums select-none',
+    group: 'flex items-center flex-1 min-w-0 gap-0 tabular-nums select-none',
     segment: [
       'rounded-xs px-px outline-none caret-transparent',
       'focus:bg-primary focus:text-on-primary',
@@ -586,23 +585,13 @@ const dateInput = tv({
       'data-[disabled=true]:pointer-events-none'
     ],
     literal: 'text-neutral-soft px-px',
-    // Between the two groups in a range field.
-    separator: 'text-neutral px-1',
     endContent: 'flex items-center gap-1 shrink-0',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     calendarButton: 'pointer-events-auto'
-  },
-  variants: {
-    size: {
-      sm: { group: 'gap-0' },
-      md: { group: 'gap-0' },
-      lg: { group: 'gap-0' }
-    }
-  },
-  defaultVariants: {
-    size: 'md'
   }
+  // No size variant of its own: `input`'s carries the sizing, and the segment
+  // row spaces itself the same way at every size.
 });
 
 // Note: extends `input` rather than `select` because tailwind-variants

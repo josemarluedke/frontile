@@ -73,17 +73,18 @@ const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
     }}
     ...attributes
   >
+    {{#if @isClearable}}
+      <CloseButton
+        @title="Clear"
+        @variant="soft"
+        @size="xs"
+        @class={{@classes.clearButton class=@userClasses.clearButton}}
+        data-part="clear-button"
+        @onPress={{@onClear}}
+      />
+    {{/if}}
+
     {{#if @isEditable}}
-      {{#if @isClearable}}
-        <CloseButton
-          @title="Clear"
-          @variant="soft"
-          @size="xs"
-          @class={{@classes.clearButton class=@userClasses.clearButton}}
-          data-part="clear-button"
-          @onPress={{@onClear}}
-        />
-      {{/if}}
       <button
         type="button"
         data-part="calendar-button"
@@ -98,20 +99,16 @@ const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
           class={{@classes.icon class=@userClasses.icon}}
         />
       </button>
-    {{else if @isClearable}}
-      <CloseButton
-        @title="Clear"
-        @variant="soft"
-        @size="xs"
-        @class={{@classes.clearButton class=@userClasses.clearButton}}
-        data-part="clear-button"
-        @onPress={{@onClear}}
-      />
     {{else}}
-      <IconCalendar
-        data-part="icon"
-        class={{@classes.icon class=@userClasses.icon}}
-      />
+      {{! On the button-trigger path the icon is decorative and the clear
+          button takes its place, so it only renders when there is no clear
+          button to show. }}
+      {{#unless @isClearable}}
+        <IconCalendar
+          data-part="icon"
+          class={{@classes.icon class=@userClasses.icon}}
+        />
+      {{/unless}}
     {{/if}}
   </div>
 </template>;
