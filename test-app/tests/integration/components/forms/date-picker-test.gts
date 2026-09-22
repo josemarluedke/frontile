@@ -38,6 +38,18 @@ function captureSubmit(): {
   };
 }
 
+/**
+ * The segmented trigger's displayed value. Each non-year segment renders at
+ * its full width, so a month reads "01" rather than "1", and an empty one
+ * reads its placeholder ("mm", "dd", "yyyy").
+ */
+function segmentText(): { month?: string; day?: string; year?: string } {
+  const read = (type: string) =>
+    find(`[data-part="segment"][data-type="${type}"]`)?.textContent?.trim();
+
+  return { month: read('month'), day: read('day'), year: read('year') };
+}
+
 module(
   'Integration | Component | DatePicker | frontile/forms',
   function (hooks) {
@@ -46,7 +58,11 @@ module(
     test('it renders the field with a label and a placeholder', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start date" @placeholder="Pick a date" />
+          <DatePicker
+            @label="Start date"
+            @placeholder="Pick a date"
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -72,6 +88,7 @@ module(
             @placeholder="Pick a date"
             @value={{jan20}}
             @locale="en-US"
+            @isEditable={{false}}
           />
         </template>
       );
@@ -81,13 +98,20 @@ module(
     });
 
     test('it accepts a yyyy-MM-dd string value', async function (assert) {
+      // Kept on the default (segmented) path: parsing a wire string into a
+      // value is the same contract either way, and this is the path a
+      // consumer gets without opting out.
       await render(
         <template>
           <DatePicker @label="Start" @value="2026-01-20" @locale="en-US" />
         </template>
       );
 
-      assert.dom('[data-part="input"]').hasText('Jan 20, 2026');
+      assert.deepEqual(
+        segmentText(),
+        { month: '01', day: '20', year: '2026' },
+        'the string is parsed into the segments'
+      );
     });
 
     test('it honours formatOptions', async function (assert) {
@@ -100,6 +124,7 @@ module(
             @value={{jan20}}
             @locale="en-US"
             @formatOptions={{full}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -112,7 +137,12 @@ module(
 
       await render(
         <template>
-          <DatePicker @label="Start" @isDisabled={{true}} @errors={{errors}} />
+          <DatePicker
+            @label="Start"
+            @isDisabled={{true}}
+            @errors={{errors}}
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -121,10 +151,47 @@ module(
       assert.dom('[data-part="input"]').hasAttribute('data-disabled', 'true');
     });
 
+    test('it reflects disabled and invalid state on the segments', async function (assert) {
+      const errors = ['Required'];
+
+      await render(
+        <template>
+          <DatePicker @label="Start" @isDisabled={{true}} @errors={{errors}} />
+        </template>
+      );
+
+      // There is no <button> to carry the state on this path. It lands on the
+      // field shell (the inner container, which draws the border) and on the
+      // segments themselves -- `role="group"` supports neither aria-invalid
+      // nor aria-disabled as a styling hook, so the group mirrors it as data.
+      assert
+        .dom('[data-part="inner-container"]')
+        .hasAttribute('data-invalid', 'true');
+      assert
+        .dom('[data-part="inner-container"]')
+        .hasAttribute('data-disabled', 'true');
+      assert.dom('[data-part="group"]').hasAttribute('data-invalid', 'true');
+      assert.dom('[data-part="group"]').hasAttribute('aria-disabled', 'true');
+      assert
+        .dom('[data-part="segment"][data-type="month"]')
+        .hasAttribute('aria-invalid', 'true');
+      assert
+        .dom('[data-part="segment"][data-type="month"]')
+        .doesNotHaveAttribute(
+          'tabindex',
+          'a disabled field takes no keyboard focus'
+        );
+    });
+
     test('clicking the trigger opens a calendar in a dialog', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US" />
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -152,6 +219,7 @@ module(
             @defaultValue={{jan20}}
             @locale="en-US"
             @onChange={{onChange}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -182,14 +250,20 @@ module(
         </template>
       );
 
-      assert.dom('[data-part="input"]').hasText('Jan 20, 2026');
+      assert.deepEqual(segmentText(), {
+        month: '01',
+        day: '20',
+        year: '2026'
+      });
 
       external.current = new Date(2026, 1, 14);
       await settled();
 
-      assert
-        .dom('[data-part="input"]')
-        .hasText('Feb 14, 2026', 'a new @value replaces what is displayed');
+      assert.deepEqual(
+        segmentText(),
+        { month: '02', day: '14', year: '2026' },
+        'a new @value replaces what is displayed'
+      );
     });
 
     test('picking a date updates the field without waiting for @value', async function (assert) {
@@ -211,17 +285,26 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
       await click('[data-part="day"][data-key="2026-01-22"]');
 
       assert.strictEqual(seen.current?.getDate(), 22, 'onChange still fires');
-      assert.dom('[data-part="input"]').hasText('Jan 22, 2026');
+      assert.deepEqual(
+        segmentText(),
+        { month: '01', day: '22', year: '2026' },
+        'the field moved although @value is pinned to the 20th'
+      );
     });
 
     test('escape closes and returns focus to the trigger', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US" />
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -239,7 +322,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert.dom('[data-part="day"][data-key="2026-01-20"]').isFocused();
     });
@@ -263,7 +346,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       // Calendar deliberately never sets the native `disabled` attribute on a
       // day button -- a disabled day must stay focusable so the grid can
@@ -288,9 +371,11 @@ module(
         null,
         'clicking an out-of-range day does not fire onChange'
       );
-      assert
-        .dom('[data-part="input"]')
-        .hasText('Jan 20, 2026', 'the trigger text is unchanged');
+      assert.deepEqual(
+        segmentText(),
+        { month: '01', day: '20', year: '2026' },
+        'the displayed value is unchanged'
+      );
       assert
         .dom('[data-component="calendar"]')
         .exists('the popover stays open');
@@ -311,7 +396,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert
         .dom('[data-part="day"][data-key="2026-01-25"]')
@@ -520,14 +605,18 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert.dom('[data-part="footer"]').exists('the footer renders its slot');
       assert.dom('[data-test-open]').hasText('open');
 
       await click('[data-test-preset]');
 
-      assert.dom('[data-part="input"]').hasText('Jan 31, 2026');
+      assert.deepEqual(
+        segmentText(),
+        { month: '01', day: '31', year: '2026' },
+        'f.setValue writes the field'
+      );
       assert
         .dom('[data-component="calendar"]')
         .doesNotExist('setValue with a complete value closes');
@@ -544,7 +633,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert.dom('[data-test-custom]').hasText('single');
       assert
@@ -555,7 +644,12 @@ module(
     test('the value block owns the trigger content and names the button', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start" @value={{jan20}} @locale="en-US">
+          <DatePicker
+            @label="Start"
+            @value={{jan20}}
+            @locale="en-US"
+            @isEditable={{false}}
+          >
             <:value as |v|>
               <span data-test-custom-value>{{v.formatted}}!</span>
             </:value>
@@ -588,6 +682,36 @@ module(
             @locale="en-US"
             @isClearable={{true}}
             @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-part="clear-button"]');
+
+      assert.true(cleared.current, 'onChange is called with null');
+      assert.deepEqual(
+        segmentText(),
+        { month: 'mm', day: 'dd', year: 'yyyy' },
+        'and the segments fall back to their placeholders'
+      );
+    });
+
+    test('the clear button restores the placeholder on the button trigger', async function (assert) {
+      const cleared = cell(false);
+      const onChange = (value: Date | null) => {
+        if (value === null) cleared.current = true;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @placeholder="Pick a date"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isClearable={{true}}
+            @onChange={{onChange}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -644,6 +768,7 @@ module(
             @defaultValue={{jan20}}
             @locale="en-US"
             @isClearable={{true}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -675,6 +800,7 @@ module(
             @defaultValue={{jan20}}
             @locale="en-US"
             @onBlur={{onBlur}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -738,7 +864,11 @@ module(
     test('the end-content cluster lets clicks fall through to the trigger', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start" @placeholder="Pick a date" />
+          <DatePicker
+            @label="Start"
+            @placeholder="Pick a date"
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -764,10 +894,20 @@ module(
             @label="Start"
             @defaultValue={{jan20}}
             @isClearable={{true}}
+            @isEditable={{false}}
           />
         </template>
       );
 
+      // Only meaningful on the button-trigger path: that is the one whose
+      // cluster is `pointer-events: none`, so this is where the clear button
+      // has something to opt back out of. On the segmented path the whole
+      // cluster is clickable already.
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="end-content"]')!).pointerEvents,
+        'none',
+        'the surrounding cluster is transparent'
+      );
       assert.strictEqual(
         getComputedStyle(find('[data-part="clear-button"]')!).pointerEvents,
         'auto',
@@ -780,7 +920,7 @@ module(
         <template><DatePicker @label="Start" @locale="en-US" /></template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       const content = find('[data-component="calendar"]')!.parentElement!;
 
@@ -806,7 +946,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert
         .dom(find('[data-component="calendar"]')!.parentElement)
@@ -862,9 +1002,16 @@ module(
     test('an empty trigger is as tall as one showing a value', async function (assert) {
       await render(
         <template>
-          <div data-test-empty><DatePicker @label="Empty" /></div>
+          <div data-test-empty>
+            <DatePicker @label="Empty" @isEditable={{false}} />
+          </div>
           <div data-test-filled>
-            <DatePicker @label="Filled" @value={{jan20}} @locale="en-US" />
+            <DatePicker
+              @label="Filled"
+              @value={{jan20}}
+              @locale="en-US"
+              @isEditable={{false}}
+            />
           </div>
         </template>
       );
@@ -899,7 +1046,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
       await click('[data-part="day"][data-key="2026-01-22"]');
 
       assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
@@ -916,7 +1063,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       // Calendar colors the selected day and the range band from @color, as
       // utility classes rather than a marker class -- so this asserts the
@@ -944,7 +1091,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert
         .dom('[data-test-color]')
