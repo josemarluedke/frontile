@@ -47,10 +47,20 @@ interface DatePickerEndContentSignature {
 }
 
 /**
- * The cluster at the end of the field: exactly one of the clear button, the
- * calendar button, or a decorative calendar icon. Pointer events are off so a
- * click anywhere in the field still reaches the button trigger; the clear
- * button opts back in, and the segmented field turns them on wholesale.
+ * The cluster at the end of the field.
+ *
+ * The segmented field shows the clear button *and* the calendar button: the
+ * calendar button is the only way to open the popover on that path, so
+ * swapping it out for a clear button would mean a clearable picker holding a
+ * value could not be picked from at all.
+ *
+ * The button-trigger path keeps the either/or it shipped with. There the
+ * trigger itself opens the popover and the calendar icon is decorative, so the
+ * clear button takes its place with nothing lost.
+ *
+ * Pointer events are off on that path so a click anywhere in the field still
+ * reaches the trigger; the clear button opts back in per element, and the
+ * segmented field turns them on for the whole cluster.
  */
 const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
   <div
@@ -63,16 +73,17 @@ const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
     }}
     ...attributes
   >
-    {{#if @isClearable}}
-      <CloseButton
-        @title="Clear"
-        @variant="soft"
-        @size="xs"
-        @class={{@classes.clearButton class=@userClasses.clearButton}}
-        data-part="clear-button"
-        @onPress={{@onClear}}
-      />
-    {{else if @isEditable}}
+    {{#if @isEditable}}
+      {{#if @isClearable}}
+        <CloseButton
+          @title="Clear"
+          @variant="soft"
+          @size="xs"
+          @class={{@classes.clearButton class=@userClasses.clearButton}}
+          data-part="clear-button"
+          @onPress={{@onClear}}
+        />
+      {{/if}}
       <button
         type="button"
         data-part="calendar-button"
@@ -87,6 +98,15 @@ const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
           class={{@classes.icon class=@userClasses.icon}}
         />
       </button>
+    {{else if @isClearable}}
+      <CloseButton
+        @title="Clear"
+        @variant="soft"
+        @size="xs"
+        @class={{@classes.clearButton class=@userClasses.clearButton}}
+        data-part="clear-button"
+        @onPress={{@onClear}}
+      />
     {{else}}
       <IconCalendar
         data-part="icon"

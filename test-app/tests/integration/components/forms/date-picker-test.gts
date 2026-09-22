@@ -1205,6 +1205,96 @@ module(
       );
     });
 
+    test('a clearable field keeps its calendar button', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+          />
+        </template>
+      );
+
+      // The clear button cannot take the calendar button's place here the way
+      // it does on the button-trigger path: nothing else opens the popover, so
+      // a clearable picker holding a value would stop being a picker.
+      assert
+        .dom('[data-part="clear-button"]')
+        .exists('both controls are present');
+      assert.dom('[data-part="calendar-button"]').exists();
+
+      await click('[data-part="calendar-button"]');
+      assert
+        .dom('[role="dialog"]')
+        .exists('the calendar still opens with a value set');
+    });
+
+    test('@isEditable={{false}} still swaps the icon for the clear button', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+            @isEditable={{false}}
+          />
+        </template>
+      );
+
+      // On that path the trigger itself opens the popover, so the icon is
+      // decorative and the either/or costs nothing.
+      assert.dom('[data-part="clear-button"]').exists();
+      // Not `[data-part="icon"]`: CloseButton renders one of its own, so the
+      // absence of the *calendar* is what the either/or actually says.
+      assert
+        .dom('[data-part="calendar-button"]')
+        .doesNotExist('the calendar icon gave way to the clear button');
+    });
+
+    test('no clear button on a disabled or a read-only field', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+            @isDisabled={{true}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-part="clear-button"]')
+        .doesNotExist('a disabled field offers nothing to press');
+      assert
+        .dom('[data-part="calendar-button"]')
+        .exists('the calendar button stays');
+      assert.dom('[data-part="calendar-button"]').isDisabled();
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+            @isReadOnly={{true}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-part="clear-button"]')
+        .doesNotExist('nor does a read-only one, which may not be changed');
+      assert
+        .dom('[data-part="calendar-button"]')
+        .exists('but it can still be read');
+    });
+
     test('a typed date reaches an enclosing Form', async function (assert) {
       const { submitted, onSubmit } = captureSubmit();
 
