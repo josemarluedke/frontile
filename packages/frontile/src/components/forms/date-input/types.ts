@@ -1,4 +1,12 @@
+import type {
+  DateInputSlots,
+  SlotsToClasses,
+  useStyles
+} from '@frontile/theme';
 import type { FormControlSharedArgs } from '../form-control';
+
+/** The resolved Tailwind Variants slot functions for this component. */
+type DateInputClasses = ReturnType<ReturnType<typeof useStyles>['dateInput']>;
 
 /** The editable units. Day granularity only -- see the spec's Out of scope. */
 type SegmentType = 'year' | 'month' | 'day';
@@ -61,6 +69,15 @@ interface DateInputArgs extends FormControlSharedArgs {
 
   /** @defaultValue { year: 'year', month: 'month', day: 'day' } */
   segmentLabels?: Partial<Record<SegmentType, string>>;
+
+  classes?: SlotsToClasses<DateInputSlots>;
 }
 
-export type { SegmentType, Segment, LiteralPart, Part, DateInputArgs };
+export type {
+  SegmentType,
+  Segment,
+  LiteralPart,
+  Part,
+  DateInputArgs,
+  DateInputClasses
+};

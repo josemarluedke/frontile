@@ -533,7 +533,17 @@ const datePicker = tv({
       'border-t border-neutral-soft p-2'
     ],
     icon: 'w-5 h-5',
-    clearButton: 'pointer-events-auto'
+    clearButton: 'pointer-events-auto',
+    group: 'flex items-center flex-1 min-w-0 tabular-nums select-none',
+    segment: [
+      'rounded-xs px-px outline-none caret-transparent',
+      'focus:bg-primary focus:text-on-primary',
+      'data-[placeholder=true]:text-neutral',
+      'data-[disabled=true]:pointer-events-none'
+    ],
+    literal: 'text-neutral-soft px-px',
+    separator: 'text-neutral px-1',
+    calendarButton: 'pointer-events-auto'
   },
   variants: {
     // The trigger is a `<button>` whose text *is* the value, so with neither a
@@ -551,6 +561,43 @@ const datePicker = tv({
       sm: { input: 'min-h-[calc(1.25rem+1rem+2px)]' },
       md: { input: 'min-h-[calc(1.25rem+1.5rem+2px)]' },
       lg: { input: 'min-h-[calc(1.25rem+2rem+2px)]' }
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
+// Extends `input` directly, not `datePicker`: tv() loses slot types across a
+// two-level extend, which is why `datePicker` extends `input` too.
+const dateInput = tv({
+  extend: input,
+  slots: {
+    base: [],
+    innerContainer: 'flex items-center w-full',
+    // The row of segments. `tabular-nums` stops the field twitching as digits
+    // change width; `select-none` keeps a drag across segments from starting a
+    // text selection that spans them.
+    group: 'flex items-center flex-1 min-w-0 tabular-nums select-none',
+    segment: [
+      'rounded-xs px-px outline-none caret-transparent',
+      'focus:bg-primary focus:text-on-primary',
+      'data-[placeholder=true]:text-neutral',
+      'data-[disabled=true]:pointer-events-none'
+    ],
+    literal: 'text-neutral-soft px-px',
+    // Between the two groups in a range field.
+    separator: 'text-neutral px-1',
+    endContent: 'flex items-center gap-1 shrink-0',
+    icon: 'w-5 h-5',
+    clearButton: 'pointer-events-auto',
+    calendarButton: 'pointer-events-auto'
+  },
+  variants: {
+    size: {
+      sm: { group: 'gap-0' },
+      md: { group: 'gap-0' },
+      lg: { group: 'gap-0' }
     }
   },
   defaultVariants: {
@@ -781,6 +828,8 @@ export type SwitchVariants = VariantProps<typeof switchInput>;
 export type SwitchSlots = keyof ReturnType<typeof switchInput>;
 export type DatePickerVariants = VariantProps<typeof datePicker>;
 export type DatePickerSlots = keyof ReturnType<typeof datePicker>;
+export type DateInputVariants = VariantProps<typeof dateInput>;
+export type DateInputSlots = keyof ReturnType<typeof dateInput>;
 
 export {
   label,
@@ -797,5 +846,6 @@ export {
   checkboxGroup,
   radioGroup,
   switchInput,
-  datePicker
+  datePicker,
+  dateInput
 };
