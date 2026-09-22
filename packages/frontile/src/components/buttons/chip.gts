@@ -47,7 +47,7 @@ interface ChipSignature {
      *
      * @defaultValue 'md'
      */
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'xs' | 'sm' | 'md' | 'lg';
 
     /**
      * The border radius of the chip

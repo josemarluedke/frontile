@@ -63,6 +63,17 @@ const chip = tv({
       }
     },
     size: {
+      // For dense UI — table cells, list rows, multi-select fields. It keeps
+      // `sm`'s text size and loses height and padding instead: 12px is about
+      // as small as a label stays readable. The close button drops to
+      // `label-micro` so its circle (icon plus `p-0.5`) still fits the 20px
+      // chip.
+      xs: {
+        base: 'text-label-2xs px-0.5 h-5',
+        content: 'px-1',
+        dot: 'size-1.5',
+        closeButton: 'text-label-micro'
+      },
       sm: {
         base: 'text-label-2xs px-1 h-6',
         content: 'px-1',

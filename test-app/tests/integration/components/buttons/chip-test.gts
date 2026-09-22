@@ -30,6 +30,7 @@ registerCustomStyles({
         danger: 'chip-danger'
       },
       size: {
+        xs: 'chip-xs',
         sm: 'chip-sm',
         md: 'chip-md',
         lg: 'chip-lg'
@@ -180,6 +181,16 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
     });
 
     module('@size', () => {
+      test('it adds class size xs', async function (assert) {
+        await render(
+          <template>
+            <Chip @size="xs" data-test-id="button">My Chip</Chip>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').hasClass('chip-xs');
+      });
+
       test('it adds class size sm"', async function (assert) {
         await render(
           <template>

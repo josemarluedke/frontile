@@ -6,6 +6,9 @@ const Comp: TOC<null> = <template>
     Sizes
   </h2>
   <div class="mt-6">
+    <Chip @size="xs" @onClose={{true}}>
+      Extra small
+    </Chip>
     <Chip @size="sm" @onClose={{true}}>
       Small
     </Chip>
