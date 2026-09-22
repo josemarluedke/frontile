@@ -8,8 +8,10 @@ import {
   commitSegment,
   step,
   clearSegment,
-  deleteDigit
+  deleteDigit,
+  displaySegment
 } from './segments';
+import { parsePasted, formatForClipboard } from './clipboard';
 import type { Part, Segment, SegmentType, DateInputClasses } from './types';
 import type { SlotsToClasses, DateInputSlots } from '@frontile/theme';
 
@@ -105,17 +107,7 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
    * other segment is padded throughout, so a lone `1` in the month reads `01`
    * and the field does not reflow as it is typed.
    */
-  displayFor = (segment: Segment): string => {
-    // A segment with a value always has the digits behind it: every producer
-    // in the model writes `buffer` and `value` together.
-    if (segment.value === null) return segment.placeholder;
-
-    const digits = segment.buffer;
-
-    return segment.type === 'year' && !segment.isCommitted
-      ? digits
-      : digits.padStart(segment.width, '0');
-  };
+  displayFor = (segment: Segment): string => displaySegment(segment);
 
   @cached
   get cells(): Cell[] {
@@ -269,6 +261,38 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
     event.preventDefault();
   };
 
+  /**
+   * Always `preventDefault`: the browser would otherwise write the pasted text
+   * into the contenteditable span, and the model would no longer describe what
+   * is on screen. Unparseable text is dropped silently -- a date field that
+   * guessed would be worse than one that declined.
+   */
+  handlePaste = (event: ClipboardEvent): void => {
+    event.preventDefault();
+    if (!this.isEditable) return;
+
+    const text = event.clipboardData?.getData('text/plain') ?? '';
+    const parsed = parsePasted(text, this.args.parts);
+    if (parsed) this.args.onPartsChange(parsed);
+  };
+
+  handleCopy = (event: ClipboardEvent): void => {
+    event.preventDefault();
+    event.clipboardData?.setData(
+      'text/plain',
+      formatForClipboard(this.args.parts)
+    );
+  };
+
+  handleCut = (event: ClipboardEvent): void => {
+    this.handleCopy(event);
+    if (!this.isEditable) return;
+
+    this.args.onPartsChange(
+      this.args.parts.map((p) => (isSegment(p) ? clearSegment(p) : p))
+    );
+  };
+
   <template>
     <div
       role="group"
@@ -289,6 +313,9 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
       data-readonly={{if @isReadOnly "true" "false"}}
       data-invalid={{if @isInvalid "true" "false"}}
       class={{@classes.group class=@userClasses.group}}
+      {{on "paste" this.handlePaste}}
+      {{on "copy" this.handleCopy}}
+      {{on "cut" this.handleCut}}
       ...attributes
     >
       {{#each this.cells key="index" as |cell|}}

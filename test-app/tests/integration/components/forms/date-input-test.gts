@@ -620,3 +620,162 @@ module(
     });
   }
 );
+
+/** Dispatches a real ClipboardEvent at the focused segment. */
+function clipboard(kind: 'paste' | 'copy' | 'cut', text = ''): DataTransfer {
+  const data = new DataTransfer();
+  if (kind === 'paste') data.setData('text/plain', text);
+
+  const event = new ClipboardEvent(kind, {
+    clipboardData: data,
+    bubbles: true,
+    cancelable: true
+  });
+  (document.activeElement as HTMLElement).dispatchEvent(event);
+  return data;
+}
+
+module('Integration | Component | DateInput | clipboard', function (hooks) {
+  setupRenderingTest(hooks);
+
+  test('pasting an ISO date fills every segment', async function (assert) {
+    let received: Date | null = null;
+    const onChange = (v: Date | null) => {
+      received = v;
+    };
+
+    await render(
+      <template>
+        <DateInput @label="Date" @locale="en-US" @onChange={{onChange}} />
+      </template>
+    );
+
+    await focus(segment('month'));
+    clipboard('paste', '2026-01-20');
+    await settled();
+
+    assert.dom(segment('month')).hasText('01');
+    assert.dom(segment('day')).hasText('20');
+    assert.dom(segment('year')).hasText('2026');
+    assert.strictEqual((received as Date | null)?.getMonth(), 0);
+  });
+
+  test('pasting a locale-shaped date respects the locale order', async function (assert) {
+    await render(
+      <template><DateInput @label="Date" @locale="en-GB" /></template>
+    );
+
+    await focus(segment('day'));
+    clipboard('paste', '25/12/2026');
+    await settled();
+
+    assert.dom(segment('day')).hasText('25');
+    assert.dom(segment('month')).hasText('12');
+  });
+
+  test('pasting unparseable text changes nothing', async function (assert) {
+    await render(
+      <template><DateInput @label="Date" @locale="en-US" /></template>
+    );
+
+    await focus(segment('month'));
+    clipboard('paste', 'next tuesday');
+    await settled();
+
+    assert.dom(segment('month')).hasText('mm', 'no guess, no partial fill');
+  });
+
+  test('pasting is always prevented, so contenteditable never swallows raw text', async function (assert) {
+    await render(
+      <template><DateInput @label="Date" @locale="en-US" /></template>
+    );
+
+    await focus(segment('month'));
+    const event = new ClipboardEvent('paste', {
+      clipboardData: (() => {
+        const data = new DataTransfer();
+        data.setData('text/plain', 'hello');
+        return data;
+      })(),
+      bubbles: true,
+      cancelable: true
+    });
+    (document.activeElement as HTMLElement).dispatchEvent(event);
+    await settled();
+
+    // A synthetically dispatched ClipboardEvent does not mutate
+    // contenteditable DOM in the test environment regardless of whether
+    // `preventDefault` was called, so asserting on `textContent` here would
+    // pass even with no handler at all. `defaultPrevented` is what actually
+    // proves the handler ran and refused the browser's own paste behavior.
+    assert.true(event.defaultPrevented, 'paste is always prevented');
+    assert.dom(segment('month')).hasText('mm');
+  });
+
+  test('copy writes the displayed date', async function (assert) {
+    const value = new Date(2026, 0, 20);
+
+    await render(
+      <template>
+        <DateInput @label="Date" @locale="en-US" @value={{value}} />
+      </template>
+    );
+
+    await focus(segment('month'));
+    const data = clipboard('copy');
+    await settled();
+
+    assert.strictEqual(data.getData('text/plain'), '01/20/2026');
+  });
+
+  test('cut copies and then clears', async function (assert) {
+    const value = new Date(2026, 0, 20);
+    let received: Date | null | undefined;
+    const onChange = (v: Date | null) => {
+      received = v;
+    };
+
+    await render(
+      <template>
+        <DateInput
+          @label="Date"
+          @locale="en-US"
+          @value={{value}}
+          @onChange={{onChange}}
+        />
+      </template>
+    );
+
+    await focus(segment('month'));
+    const data = clipboard('cut');
+    await settled();
+
+    assert.strictEqual(data.getData('text/plain'), '01/20/2026');
+    assert.dom(segment('month')).hasText('mm');
+    assert.strictEqual(received, null);
+  });
+
+  test('a read-only field copies but does not paste', async function (assert) {
+    const value = new Date(2026, 0, 20);
+
+    await render(
+      <template>
+        <DateInput
+          @label="Date"
+          @locale="en-US"
+          @value={{value}}
+          @isReadOnly={{true}}
+        />
+      </template>
+    );
+
+    await focus(segment('month'));
+    const copied = clipboard('copy');
+    await settled();
+    assert.strictEqual(copied.getData('text/plain'), '01/20/2026');
+
+    clipboard('paste', '1999-12-31');
+    await settled();
+    assert.dom(segment('year')).hasText('2026', 'unchanged');
+  });
+});

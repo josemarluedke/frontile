@@ -1,4 +1,9 @@
-import { isSegment, fromDate, resolveTwoDigitYear } from './segments';
+import {
+  isSegment,
+  fromDate,
+  resolveTwoDigitYear,
+  displaySegment
+} from './segments';
 import { parseDate } from '../date-picker/value';
 import type { Part, Segment } from './types';
 
@@ -87,14 +92,15 @@ function parsePasted(text: string, parts: Part[]): Part[] | null {
  * The field as it reads on screen, literals included. Copying the display
  * rather than an ISO string means the text round-trips through `parsePasted`
  * and still reads naturally when pasted into a document.
+ *
+ * Delegates each segment to `displaySegment`, the same function the group
+ * renders from, so a mid-entry year (buffer `26`, uncommitted) copies as
+ * `26` rather than being padded to `0026` -- padding would claim digits the
+ * user never typed and would contradict what is on screen.
  */
 function formatForClipboard(parts: Part[]): string {
   return parts
-    .map((part) => {
-      if (!isSegment(part)) return part.text;
-      if (part.value === null) return part.placeholder;
-      return String(part.value).padStart(part.width, '0');
-    })
+    .map((part) => (isSegment(part) ? displaySegment(part) : part.text))
     .join('');
 }
 

@@ -240,6 +240,27 @@ function step(
   };
 }
 
+/**
+ * The segment's display text: the digits behind it, or its placeholder when
+ * empty. A year still being typed shows exactly what has been typed --
+ * `26` on the way to `2026` -- because padding it would claim digits the
+ * user has not entered. Every other segment, and a committed year, is padded
+ * to its full width.
+ *
+ * This is the single source of truth for "what does this segment read as
+ * right now" -- both the rendered cell text and `formatForClipboard` call
+ * it, so a mid-entry copy always matches what is on screen.
+ */
+function displaySegment(segment: Segment): string {
+  if (segment.value === null) return segment.placeholder;
+
+  const digits = segment.buffer;
+
+  return segment.type === 'year' && !segment.isCommitted
+    ? digits
+    : digits.padStart(segment.width, '0');
+}
+
 function findSegment(parts: Part[], type: SegmentType): Segment | undefined {
   return parts.find((p): p is Segment => isSegment(p) && p.type === type);
 }
@@ -305,5 +326,6 @@ export {
   fromDate,
   findSegment,
   resolveTwoDigitYear,
-  daysInMonth
+  daysInMonth,
+  displaySegment
 };

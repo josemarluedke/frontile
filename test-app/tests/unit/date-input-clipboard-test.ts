@@ -4,11 +4,13 @@ import {
   fromDate,
   isSegment,
   parsePasted,
+  applyDigit,
+  commitSegment,
   formatForClipboard,
   resolveTwoDigitYear,
   toDate
 } from 'frontile';
-import type { Part } from 'frontile';
+import type { Part, Segment } from 'frontile';
 
 function dateOf(parts: Part[] | null): string | null {
   const d = parts && toDate(parts);
@@ -111,5 +113,67 @@ module('Unit | date-input clipboard | formatForClipboard', function () {
 
   test('an empty field copies its placeholders', function (assert) {
     assert.strictEqual(formatForClipboard(buildParts('en-US')), 'mm/dd/yyyy');
+  });
+
+  test('a mid-entry, uncommitted year copies as typed rather than padded', function (assert) {
+    // Typing "2" then "6" into a bare year: two digits can still extend
+    // (260 is within bounds only if... regardless, a 2-digit year buffer
+    // stays uncommitted until focus leaves it), so this reproduces the
+    // on-screen state `displayFor` renders as "26".
+    const parts = buildParts('en-US');
+    const year = parts.find(
+      (p): p is Segment => isSegment(p) && p.type === 'year'
+    );
+    if (!year) throw new Error('en-US always has a year segment');
+
+    const { segment: afterFirstDigit } = applyDigit(year, '2');
+    const { segment: afterSecondDigit } = applyDigit(afterFirstDigit, '6');
+
+    assert.false(
+      afterSecondDigit.isCommitted,
+      'a two-digit year buffer has not committed yet'
+    );
+    assert.strictEqual(afterSecondDigit.buffer, '26');
+
+    const withMidEntryYear = parts.map((p) =>
+      isSegment(p) && p.type === 'year' ? afterSecondDigit : p
+    );
+
+    assert.strictEqual(
+      formatForClipboard(withMidEntryYear),
+      'mm/dd/26',
+      'copies the digits actually typed, matching the on-screen display -- ' +
+        'not "0026", which the old padStart(String(value)) implementation wrote'
+    );
+  });
+
+  test('a committed year still copies padded to width', function (assert) {
+    // Typing all four digits of "0026" is a finished answer for the year
+    // 26 (as opposed to two digits, which run through the sliding window
+    // instead) -- see segments.ts's `commitSegment` docstring.
+    const parts = buildParts('en-US');
+    const year = parts.find(
+      (p): p is Segment => isSegment(p) && p.type === 'year'
+    );
+    if (!year) throw new Error('en-US always has a year segment');
+
+    let typed = year;
+    for (const digit of '0026') {
+      typed = applyDigit(typed, digit).segment;
+    }
+    const committed = commitSegment(typed);
+
+    assert.true(committed.isCommitted);
+    assert.strictEqual(committed.value, 26);
+
+    const withYear = parts.map((p) =>
+      isSegment(p) && p.type === 'year' ? committed : p
+    );
+
+    assert.strictEqual(
+      formatForClipboard(withYear),
+      'mm/dd/0026',
+      'a fully committed year of 26 reads as 0026, not the mid-entry "26"'
+    );
   });
 });
