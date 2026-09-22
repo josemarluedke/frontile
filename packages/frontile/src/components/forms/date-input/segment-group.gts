@@ -97,18 +97,6 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
     );
   };
 
-  /**
-   * What the segment shows: the digits the user typed, where there are any.
-   *
-   * A year still being typed is shown exactly as typed -- `202` on the way to
-   * `2026`, and `26` before the two-digit window has expanded it -- because
-   * padding it would claim digits the user has not entered. Once committed it
-   * is padded like everything else, so the year 202 does read `0202`. Every
-   * other segment is padded throughout, so a lone `1` in the month reads `01`
-   * and the field does not reflow as it is typed.
-   */
-  displayFor = (segment: Segment): string => displaySegment(segment);
-
   @cached
   get cells(): Cell[] {
     return this.args.parts.map((part, index) => {
@@ -119,7 +107,7 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
       return {
         index,
         isSegment: true,
-        text: this.displayFor(part),
+        text: displaySegment(part),
         type: part.type,
         isEmpty: part.value === null,
         label: this.labelFor(part.type),

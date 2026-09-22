@@ -116,10 +116,9 @@ module('Unit | date-input clipboard | formatForClipboard', function () {
   });
 
   test('a mid-entry, uncommitted year copies as typed rather than padded', function (assert) {
-    // Typing "2" then "6" into a bare year: two digits can still extend
-    // (260 is within bounds only if... regardless, a 2-digit year buffer
-    // stays uncommitted until focus leaves it), so this reproduces the
-    // on-screen state `displayFor` renders as "26".
+    // Typing "2" then "6" into a bare year: a two-digit buffer stays
+    // uncommitted until focus leaves the segment, so this reproduces the
+    // on-screen state `displaySegment` renders as "26".
     const parts = buildParts('en-US');
     const year = parts.find(
       (p): p is Segment => isSegment(p) && p.type === 'year'

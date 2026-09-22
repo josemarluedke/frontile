@@ -622,7 +622,10 @@ module(
 );
 
 /** Dispatches a real ClipboardEvent at the focused segment. */
-function clipboard(kind: 'paste' | 'copy' | 'cut', text = ''): DataTransfer {
+function clipboard(
+  kind: 'paste' | 'copy' | 'cut',
+  text = ''
+): { data: DataTransfer; event: ClipboardEvent } {
   const data = new DataTransfer();
   if (kind === 'paste') data.setData('text/plain', text);
 
@@ -632,7 +635,7 @@ function clipboard(kind: 'paste' | 'copy' | 'cut', text = ''): DataTransfer {
     cancelable: true
   });
   (document.activeElement as HTMLElement).dispatchEvent(event);
-  return data;
+  return { data, event };
 }
 
 module('Integration | Component | DateInput | clipboard', function (hooks) {
@@ -674,15 +677,27 @@ module('Integration | Component | DateInput | clipboard', function (hooks) {
   });
 
   test('pasting unparseable text changes nothing', async function (assert) {
+    // A field rendered empty would still read "mm" after a bug that wiped
+    // the segment, or one that guessed at "next tuesday" and left the month
+    // blank for some other reason -- the assertion would not tell those
+    // apart from a working refusal. Starting from a populated, known value
+    // means only "unchanged" passes: a guess would overwrite a segment, and
+    // a handler that clears the field on any unparseable paste would wipe it.
+    const value = new Date(2026, 0, 20);
+
     await render(
-      <template><DateInput @label="Date" @locale="en-US" /></template>
+      <template>
+        <DateInput @label="Date" @locale="en-US" @value={{value}} />
+      </template>
     );
 
     await focus(segment('month'));
     clipboard('paste', 'next tuesday');
     await settled();
 
-    assert.dom(segment('month')).hasText('mm', 'no guess, no partial fill');
+    assert.dom(segment('month')).hasText('01', 'unchanged, no guess');
+    assert.dom(segment('day')).hasText('20', 'unchanged, no guess');
+    assert.dom(segment('year')).hasText('2026', 'unchanged, no guess');
   });
 
   test('pasting is always prevented, so contenteditable never swallows raw text', async function (assert) {
@@ -691,16 +706,7 @@ module('Integration | Component | DateInput | clipboard', function (hooks) {
     );
 
     await focus(segment('month'));
-    const event = new ClipboardEvent('paste', {
-      clipboardData: (() => {
-        const data = new DataTransfer();
-        data.setData('text/plain', 'hello');
-        return data;
-      })(),
-      bubbles: true,
-      cancelable: true
-    });
-    (document.activeElement as HTMLElement).dispatchEvent(event);
+    const { event } = clipboard('paste', 'hello');
     await settled();
 
     // A synthetically dispatched ClipboardEvent does not mutate
@@ -722,10 +728,14 @@ module('Integration | Component | DateInput | clipboard', function (hooks) {
     );
 
     await focus(segment('month'));
-    const data = clipboard('copy');
+    const { data, event } = clipboard('copy');
     await settled();
 
     assert.strictEqual(data.getData('text/plain'), '01/20/2026');
+    // Without `preventDefault`, a real browser overwrites the clipboard
+    // with its own DOM-selection serialization right after this handler
+    // runs, discarding the `formatForClipboard` string above.
+    assert.true(event.defaultPrevented, 'copy is always prevented');
   });
 
   test('cut copies and then clears', async function (assert) {
@@ -747,15 +757,18 @@ module('Integration | Component | DateInput | clipboard', function (hooks) {
     );
 
     await focus(segment('month'));
-    const data = clipboard('cut');
+    const { data, event } = clipboard('cut');
     await settled();
 
     assert.strictEqual(data.getData('text/plain'), '01/20/2026');
+    // Without `preventDefault`, a real browser deletes the contenteditable
+    // segment's own DOM content on cut, on top of whatever the handler did.
+    assert.true(event.defaultPrevented, 'cut is always prevented');
     assert.dom(segment('month')).hasText('mm');
     assert.strictEqual(received, null);
   });
 
-  test('a read-only field copies but does not paste', async function (assert) {
+  test('a read-only field copies but does not paste or cut', async function (assert) {
     const value = new Date(2026, 0, 20);
 
     await render(
@@ -770,12 +783,21 @@ module('Integration | Component | DateInput | clipboard', function (hooks) {
     );
 
     await focus(segment('month'));
-    const copied = clipboard('copy');
+    const { data: copied } = clipboard('copy');
     await settled();
     assert.strictEqual(copied.getData('text/plain'), '01/20/2026');
 
     clipboard('paste', '1999-12-31');
     await settled();
-    assert.dom(segment('year')).hasText('2026', 'unchanged');
+    assert.dom(segment('year')).hasText('2026', 'unchanged by paste');
+
+    // Cutting a read-only field is still a copy: `handleCopy` runs
+    // unconditionally, and only the clearing step is gated on `isEditable`.
+    const { data: cut } = clipboard('cut');
+    await settled();
+    assert.strictEqual(cut.getData('text/plain'), '01/20/2026');
+    assert.dom(segment('month')).hasText('01', 'unchanged by cut');
+    assert.dom(segment('day')).hasText('20', 'unchanged by cut');
+    assert.dom(segment('year')).hasText('2026', 'unchanged by cut');
   });
 });
