@@ -6,10 +6,11 @@ import {
   findAll,
   focus,
   settled,
+  click,
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
-import { DateInput } from 'frontile';
+import { DateInput, Form } from 'frontile';
 
 /** The segments, in document order. */
 function segments(): HTMLElement[] {
@@ -799,5 +800,122 @@ module('Integration | Component | DateInput | clipboard', function (hooks) {
     assert.dom(segment('month')).hasText('01', 'unchanged by cut');
     assert.dom(segment('day')).hasText('20', 'unchanged by cut');
     assert.dom(segment('year')).hasText('2026', 'unchanged by cut');
+  });
+});
+
+module('Integration | Component | DateInput | forms', function (hooks) {
+  setupRenderingTest(hooks);
+
+  test('submits yyyy-MM-dd under its name', async function (assert) {
+    const submitted = cell<Record<string, unknown> | null>(null);
+    const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+      submitted.current = data;
+    };
+
+    await render(
+      <template>
+        <Form @onSubmit={{onSubmit}} as |f|>
+          <f.Field @name="start" as |field|>
+            <field.DateInput @label="Start date" @locale="en-US" />
+          </f.Field>
+          <button type="submit">Submit</button>
+        </Form>
+      </template>
+    );
+
+    await focus(segment('month'));
+    await type('01202026');
+    await click('button[type="submit"]');
+
+    assert.deepEqual(submitted.current, { start: '2026-01-20' });
+  });
+
+  test('an incomplete entry submits empty rather than a partial date', async function (assert) {
+    const submitted = cell<Record<string, unknown> | null>(null);
+    const onSubmit = ({ data }: { data: Record<string, unknown> }) => {
+      submitted.current = data;
+    };
+
+    await render(
+      <template>
+        <Form @onSubmit={{onSubmit}} as |f|>
+          <f.Field @name="start" as |field|>
+            <field.DateInput @label="Start date" @locale="en-US" />
+          </f.Field>
+          <button type="submit">Submit</button>
+        </Form>
+      </template>
+    );
+
+    await focus(segment('month'));
+    await type('01');
+    await click('button[type="submit"]');
+
+    assert.deepEqual(submitted.current, { start: '' });
+  });
+
+  test('the clear button empties the field and returns focus', async function (assert) {
+    const value = new Date(2026, 0, 20);
+
+    await render(
+      <template>
+        <DateInput
+          @label="Date"
+          @locale="en-US"
+          @value={{value}}
+          @isClearable={{true}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-part="clear-button"]').exists();
+    await click('[data-part="clear-button"]');
+
+    assert.dom(segment('month')).hasText('mm');
+    assert.dom('[data-part="clear-button"]').doesNotExist('gone once empty');
+    assert.strictEqual(
+      document.activeElement,
+      segment('month'),
+      'focus did not fall to body'
+    );
+  });
+
+  test('a disabled or read-only field shows no clear button', async function (assert) {
+    const value = new Date(2026, 0, 20);
+
+    await render(
+      <template>
+        <DateInput
+          @label="Date"
+          @locale="en-US"
+          @value={{value}}
+          @isClearable={{true}}
+          @isReadOnly={{true}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-part="clear-button"]').doesNotExist();
+  });
+
+  test('marks itself invalid outside @minValue and @maxValue', async function (assert) {
+    const min = new Date(2026, 0, 10);
+
+    await render(
+      <template>
+        <DateInput @label="Date" @locale="en-US" @minValue={{min}} />
+      </template>
+    );
+
+    await focus(segment('month'));
+    await type('01052026');
+
+    // `role="group"` supports neither `aria-invalid` nor `aria-readonly`
+    // (see the comment in segment-group.gts) -- that state lives on each
+    // spinbutton segment instead, and on the group only as `data-invalid`
+    // for styling/tests. Asserting `aria-invalid` here would pass against a
+    // stub and fail against the real, correct markup.
+    assert.dom('[data-part="group"]').hasAttribute('data-invalid', 'true');
+    assert.dom(segment('month')).hasAttribute('aria-invalid', 'true');
   });
 });

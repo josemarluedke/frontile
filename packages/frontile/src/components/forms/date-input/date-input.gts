@@ -5,6 +5,7 @@ import { modifier } from 'ember-modifier';
 import { warn } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
+import { CloseButton } from '../../buttons/close-button';
 import { SegmentGroup } from './segment-group';
 import { buildParts, toDate, fromDate, isSegment } from './segments';
 import { parseDate, toWire } from '../date-picker/value';
@@ -187,8 +188,30 @@ class DateInput extends Component<DateInputSignature> {
     this.args.onBlur?.();
   };
 
+  /**
+   * A disabled or read-only field never offers it: it carries no disabled
+   * state of its own and would be a live button clearing a field the user may
+   * not change.
+   */
+  get isClearable(): boolean {
+    return (
+      Boolean(this.args.isClearable) &&
+      !this.isEmpty &&
+      !this.args.isDisabled &&
+      !this.args.isReadOnly
+    );
+  }
+
+  /**
+   * Clearing removes the clear button from the DOM (`isClearable` flips
+   * false the instant the value is gone), so focus must be handed somewhere
+   * explicitly or it falls to `<body>` and a keyboard user loses their place.
+   */
   clear = (): void => {
     this.handlePartsChange(fromDate(this.#currentParts, null));
+    this.containerRef.current
+      ?.querySelector<HTMLElement>('[data-part="segment"]')
+      ?.focus();
   };
 
   @cached
@@ -242,6 +265,21 @@ class DateInput extends Component<DateInputSignature> {
             @classes={{this.classes}}
             @userClasses={{@classes}}
           />
+          {{#if this.isClearable}}
+            <div
+              data-part="end-content"
+              class={{this.classes.endContent class=@classes.endContent}}
+            >
+              <CloseButton
+                @title="Clear"
+                @variant="soft"
+                @size="xs"
+                @class={{this.classes.clearButton class=@classes.clearButton}}
+                data-part="clear-button"
+                @onPress={{this.clear}}
+              />
+            </div>
+          {{/if}}
         </div>
       </FormControl>
     </div>
