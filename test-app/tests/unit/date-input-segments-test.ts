@@ -269,17 +269,38 @@ module('Unit | date-input segments | two-digit years', function () {
 
   test('maps into the window from 80 years back to 19 forward', function (assert) {
     assert.strictEqual(resolveTwoDigitYear('26', now), 2026);
-    assert.strictEqual(resolveTwoDigitYear('45', now), 1945);
+    assert.strictEqual(
+      resolveTwoDigitYear('45', now),
+      2045,
+      '2045 -- the last year in the window'
+    );
     assert.strictEqual(resolveTwoDigitYear('00', now), 2000);
     assert.strictEqual(
       resolveTwoDigitYear('46', now),
-      2046,
-      'the last year in the window'
+      1946,
+      '1946 -- the first year in the window'
     );
     assert.strictEqual(
       resolveTwoDigitYear('47', now),
       1947,
-      'one past it falls back a century'
+      '1947, just inside the window on the low side'
+    );
+  });
+
+  test('the window boundaries resolve to themselves', function (assert) {
+    const currentYear = now.getFullYear();
+    const lowYear = currentYear - 80;
+    const highYear = currentYear + 19;
+
+    assert.strictEqual(
+      resolveTwoDigitYear(String(lowYear).slice(-2), now),
+      lowYear,
+      'the two-digit form of the low bound resolves to the low bound itself'
+    );
+    assert.strictEqual(
+      resolveTwoDigitYear(String(highYear).slice(-2), now),
+      highYear,
+      'the two-digit form of the high bound resolves to the high bound itself'
     );
   });
 
