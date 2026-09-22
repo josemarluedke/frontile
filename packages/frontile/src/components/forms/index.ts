@@ -17,6 +17,7 @@ export * from './form-control';
 export * from './switch';
 export * from './date-picker';
 export * from './date-picker/value';
+export * from './date-input';
 export { StandardValidator } from '../../utils/standard-validator';
 export type { Issues, CustomValidatorFn } from '../../utils/standard-validator';
 export * from '../../utils/nested-data';
