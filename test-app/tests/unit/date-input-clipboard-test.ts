@@ -80,10 +80,13 @@ module('Unit | date-input clipboard | parsePasted', function () {
   test('unparseable text yields null rather than a guess', function (assert) {
     assert.strictEqual(parsePasted('next tuesday', buildParts('en-US')), null);
     assert.strictEqual(parsePasted('', buildParts('en-US')), null);
+    // A lone `12` is *not* unparseable -- it is a partial paste that fills the
+    // month, which the partial-paste module below covers. A digit run that
+    // stops mid-segment is the real "no telling what was meant" case.
     assert.strictEqual(
-      parsePasted('12', buildParts('en-US')),
+      parsePasted('12345', buildParts('en-US')),
       null,
-      'one number is not a date'
+      'a digit run that does not end on a segment boundary is refused'
     );
     assert.strictEqual(
       parsePasted('99/99/2026', buildParts('en-US')),
@@ -174,5 +177,76 @@ module('Unit | date-input clipboard | formatForClipboard', function () {
       'mm/dd/0026',
       'a fully committed year of 26 reads as 0026, not the mid-entry "26"'
     );
+  });
+});
+
+module('Unit | date-input clipboard | paste bounds and partials', function () {
+  function segmentOf(parts: Part[] | null, type: string): Segment | undefined {
+    return (
+      parts?.find((p): p is Segment => isSegment(p) && p.type === type) ??
+      undefined
+    );
+  }
+
+  test('an ISO date out of bounds is refused, not rolled over', function (assert) {
+    assert.strictEqual(
+      parsePasted('2026-13-01', buildParts('en-US')),
+      null,
+      'month 13 is refused rather than becoming January 2027'
+    );
+    assert.strictEqual(
+      parsePasted('2026-00-10', buildParts('en-US')),
+      null,
+      'month 0 is refused rather than becoming December 2025'
+    );
+  });
+
+  test('an impossible ISO day clamps exactly as typing it does', function (assert) {
+    // The spec puts the day clamp at compose time, so 31 is in bounds for the
+    // segment and February shortens it -- it must not roll into March.
+    assert.strictEqual(
+      dateOf(parsePasted('2026-02-31', buildParts('en-US'))),
+      '2026-2-28'
+    );
+  });
+
+  test('a pasted four-digit year is taken literally', function (assert) {
+    assert.strictEqual(
+      segmentOf(parsePasted('12/25/0045', buildParts('en-US')), 'year')?.value,
+      45,
+      '0045 is the year 45, not 2045 -- same as typing it'
+    );
+  });
+
+  test('a pasted two-digit year still runs through the window', function (assert) {
+    assert.strictEqual(
+      segmentOf(parsePasted('12/25/45', buildParts('en-US')), 'year')?.value,
+      resolveTwoDigitYear('45')
+    );
+  });
+
+  test('a partial paste fills what it can', function (assert) {
+    const filled = parsePasted('12/25', buildParts('en-US'));
+
+    assert.strictEqual(segmentOf(filled, 'month')?.value, 12);
+    assert.strictEqual(segmentOf(filled, 'day')?.value, 25);
+    assert.strictEqual(
+      segmentOf(filled, 'year')?.value,
+      null,
+      'the segment it could not fill is left alone'
+    );
+    assert.strictEqual(
+      dateOf(filled),
+      null,
+      'and an incomplete field composes no date'
+    );
+  });
+
+  test('a partial paste that is out of bounds is still refused', function (assert) {
+    assert.strictEqual(parsePasted('99/25', buildParts('en-US')), null);
+  });
+
+  test('more numbers than segments is refused', function (assert) {
+    assert.strictEqual(parsePasted('12/25/2026/03', buildParts('en-US')), null);
   });
 });

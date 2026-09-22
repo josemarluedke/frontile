@@ -10,7 +10,10 @@ import {
   toDate,
   fromDate,
   emptySegment,
-  resolveTwoDigitYear
+  resolveTwoDigitYear,
+  carryOver,
+  toNumericFormat,
+  hasTextualMonth
 } from 'frontile';
 import type { Part, Segment } from 'frontile';
 
@@ -457,5 +460,77 @@ module('Unit | date-input segments | two-digit years', function () {
   test('three and four digits are taken literally', function (assert) {
     assert.strictEqual(resolveTwoDigitYear('045', now), 45);
     assert.strictEqual(resolveTwoDigitYear('1945', now), 1945);
+  });
+});
+
+module('Unit | date-input segments | carryOver', function () {
+  test('a rebuilt format keeps a complete value', function (assert) {
+    const filled = fromDate(buildParts('en-US'), new Date(2026, 11, 25));
+    const carried = carryOver(buildParts('en-GB'), filled);
+
+    assert.deepEqual(order(carried), ['day', 'month', 'year']);
+    assert.strictEqual(
+      toDate(carried)?.getTime(),
+      new Date(2026, 11, 25).getTime()
+    );
+  });
+
+  test('a rebuilt format keeps a half-typed entry', function (assert) {
+    // The whole point: a locale change mid-entry must not discard the digits
+    // already typed just because they compose no date yet.
+    const parts = buildParts('en-US');
+    const month = parts.find(
+      (p): p is Segment => isSegment(p) && p.type === 'month'
+    );
+    if (!month) throw new Error('en-US always has a month segment');
+
+    const typed = parts.map((p) =>
+      isSegment(p) && p.type === 'month' ? applyDigit(month, '7').segment : p
+    );
+
+    const carried = carryOver(buildParts('de-DE'), typed);
+    const carriedMonth = carried.find(
+      (p): p is Segment => isSegment(p) && p.type === 'month'
+    );
+
+    assert.strictEqual(carriedMonth?.value, 7);
+    assert.strictEqual(toDate(carried), null, 'still composes no date');
+  });
+
+  test('a segment the new format drops is simply gone', function (assert) {
+    const filled = fromDate(buildParts('en-US'), new Date(2026, 11, 25));
+    const carried = carryOver(
+      buildParts('en-US', { month: '2-digit', day: '2-digit' }),
+      filled
+    );
+
+    assert.deepEqual(order(carried), ['month', 'day']);
+  });
+});
+
+module('Unit | date-input segments | toNumericFormat', function () {
+  test('a textual month is detected', function (assert) {
+    assert.true(hasTextualMonth({ month: 'short', day: '2-digit' }));
+    assert.true(hasTextualMonth({ dateStyle: 'medium' }));
+    assert.false(hasTextualMonth({ month: '2-digit', day: '2-digit' }));
+  });
+
+  test('only the month falls back -- the rest of the format survives', function (assert) {
+    const parts = buildParts(
+      'en-US',
+      toNumericFormat({ month: 'short', day: '2-digit' })
+    );
+
+    assert.deepEqual(
+      order(parts),
+      ['month', 'day'],
+      'no year segment is invented that the consumer never asked for'
+    );
+  });
+
+  test('a dateStyle preset falls back to the default numeric format', function (assert) {
+    const parts = buildParts('en-US', toNumericFormat({ dateStyle: 'medium' }));
+
+    assert.deepEqual(order(parts), ['month', 'day', 'year']);
   });
 });

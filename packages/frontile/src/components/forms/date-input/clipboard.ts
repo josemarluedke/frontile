@@ -1,20 +1,30 @@
-import {
-  isSegment,
-  fromDate,
-  resolveTwoDigitYear,
-  displaySegment
-} from './segments';
-import { parseDate } from '../date-picker/value';
-import type { Part, Segment } from './types';
+import { isSegment, resolveTwoDigitYear, displaySegment } from './segments';
+import type { Part, Segment, SegmentType } from './types';
 
-const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+const ISO_DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
 
-/** Writes a list of numbers onto the segments, in segment order. */
-function fill(parts: Part[], numbers: number[]): Part[] | null {
-  const segments = parts.filter(isSegment);
-  if (numbers.length !== segments.length) return null;
+/** The digits destined for each segment, keyed by type. */
+type Digits = Partial<Record<SegmentType, string>>;
 
-  let i = 0;
+/**
+ * Writes digit strings onto the segments they name.
+ *
+ * Digits stay *strings* all the way in, because a year's leading zeros carry
+ * meaning: `0045` is the year 45, while `45` runs through the sliding window.
+ * Passing numbers here would erase that distinction and make a pasted `0045`
+ * resolve differently from a typed one.
+ *
+ * A segment no key names is left untouched, which is what lets a partial paste
+ * fill what it can. Out of bounds refuses the *whole* paste rather than
+ * clamping: clamping would turn a paste of `99/99/2026` into a plausible
+ * looking date the user never meant. The day is the exception by design -- its
+ * bound is 31 and the real length of the month is applied later, by `toDate`,
+ * so a pasted 31st of February shortens to the 28th exactly as a typed one
+ * does.
+ */
+function fill(parts: Part[], digits: Digits): Part[] | null {
+  let filled = 0;
+
   const next: Part[] = [];
   for (const part of parts) {
     if (!isSegment(part)) {
@@ -22,14 +32,18 @@ function fill(parts: Part[], numbers: number[]): Part[] | null {
       continue;
     }
 
-    const raw = numbers[i++];
-    if (raw === undefined) return null;
-    const value = part.type === 'year' ? resolveTwoDigitYear(String(raw)) : raw;
+    const raw = digits[part.type];
+    if (raw === undefined) {
+      next.push(part);
+      continue;
+    }
 
-    // Out of bounds is refused outright. Clamping here would turn a paste of
-    // "99/99/2026" into a plausible-looking date the user never meant.
-    if (value < part.min || value > part.max) return null;
+    const value = part.type === 'year' ? resolveTwoDigitYear(raw) : Number(raw);
+    if (Number.isNaN(value) || value < part.min || value > part.max) {
+      return null;
+    }
 
+    filled++;
     next.push({
       ...part,
       value,
@@ -39,51 +53,70 @@ function fill(parts: Part[], numbers: number[]): Part[] | null {
     });
   }
 
-  return next;
+  // Nothing landed anywhere -- treat that as a refusal rather than quietly
+  // handing back an untouched field.
+  return filled === 0 ? null : next;
+}
+
+/** Maps digit groups onto the segments in their rendered order. */
+function byPosition(segments: Segment[], groups: string[]): Digits | null {
+  if (groups.length === 0 || groups.length > segments.length) return null;
+
+  const digits: Digits = {};
+  groups.forEach((group, i) => {
+    const segment = segments[i];
+    if (segment) digits[segment.type] = group;
+  });
+  return digits;
 }
 
 /**
  * Reads pasted text into the segments, trying each strategy in turn and
  * stopping at the first that works.
  *
- * There is deliberately no `new Date(text)` fallback: it parses differently in
- * every engine, and a date field that silently guesses wrong is worse than one
- * that declines.
+ * Every strategy lands in `fill`, so all three share one bounds policy. There
+ * is deliberately no `new Date(text)` fallback: it parses differently in every
+ * engine, and a date field that silently guesses wrong is worse than one that
+ * declines.
  */
 function parsePasted(text: string, parts: Part[]): Part[] | null {
   const trimmed = text.trim();
   if (trimmed === '') return null;
 
   // 1. ISO, which is unambiguous and so outranks the locale's own order.
-  if (ISO_DAY.test(trimmed)) {
-    const date = parseDate(trimmed);
-    return date ? fromDate(parts, date) : null;
+  const iso = ISO_DAY.exec(trimmed);
+  if (iso) {
+    const [, year, month, day] = iso;
+    return fill(parts, { year, month, day });
   }
 
-  const segments = parts.filter(isSegment) as Segment[];
+  const segments = parts.filter(isSegment);
 
-  // 2. Separated numbers, mapped positionally onto the locale's order.
-  const groups = trimmed.split(/\D+/).filter(Boolean);
-  if (groups.length === segments.length) {
-    return fill(
-      parts,
-      groups.map((g) => Number(g))
-    );
-  }
-
-  // 3. A bare digit run, split by each segment's width.
+  // 2. A bare digit run, split by each segment's width. Checked before the
+  //    separated form, because an unseparated run also splits into a single
+  //    "group" and would otherwise be read as one enormous month.
   if (/^\d+$/.test(trimmed)) {
-    const width = segments.reduce((sum, s) => sum + s.width, 0);
-    if (trimmed.length === width) {
-      const numbers: number[] = [];
-      let at = 0;
-      for (const segment of segments) {
-        numbers.push(Number(trimmed.slice(at, at + segment.width)));
-        at += segment.width;
-      }
-      return fill(parts, numbers);
+    const widths: string[] = [];
+    let at = 0;
+    for (const segment of segments) {
+      if (at >= trimmed.length) break;
+      widths.push(trimmed.slice(at, at + segment.width));
+      at += segment.width;
     }
+
+    // It has to end on a segment boundary, otherwise there is no telling
+    // where the last number was meant to stop.
+    if (at !== trimmed.length) return null;
+
+    const digits = byPosition(segments, widths);
+    return digits ? fill(parts, digits) : null;
   }
+
+  // 3. Separated numbers, mapped positionally onto the locale's order. Fewer
+  //    groups than segments is a partial date and fills a prefix of them.
+  const groups = trimmed.split(/\D+/).filter(Boolean);
+  const digits = byPosition(segments, groups);
+  if (digits) return fill(parts, digits);
 
   return null;
 }

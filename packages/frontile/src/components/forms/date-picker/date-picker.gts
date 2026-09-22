@@ -9,7 +9,15 @@ import { FormControl } from '../form-control';
 import { DatePickerTrigger } from './trigger';
 import { DatePickerEndContent } from './end-content';
 import { SegmentGroup } from '../date-input/segment-group';
-import { buildParts, toDate, fromDate } from '../date-input/segments';
+import {
+  buildParts,
+  toDate,
+  fromDate,
+  carryOver,
+  hasTextualMonth,
+  toNumericFormat,
+  hasDateChanged
+} from '../date-input/segments';
 import { Popover } from '../../overlays/popover';
 import { Calendar } from '../../collections/calendar/calendar';
 import { ref } from '../../../utils/ref';
@@ -134,24 +142,18 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     const given = this.args.formatOptions;
     if (!given) return undefined;
 
-    const isTextual =
-      given.dateStyle !== undefined ||
-      given.month === 'long' ||
-      given.month === 'short' ||
-      given.month === 'narrow';
+    if (!hasTextualMonth(given)) return given;
 
-    if (isTextual) {
-      warn(
-        'An editable <DatePicker> needs numeric segments; ' +
-          'a textual @formatOptions month falls back to a numeric one. ' +
-          'Pass @isEditable={{false}} for the formatted button trigger.',
-        false,
-        { id: 'frontile.date-picker.textual-format' }
-      );
-      return undefined;
-    }
+    warn(
+      'An editable <DatePicker> needs numeric segments; ' +
+        'a textual @formatOptions month falls back to a numeric one. ' +
+        'Pass @isEditable={{false}} for the formatted button trigger.',
+      false,
+      { id: 'frontile.date-picker.textual-format' }
+    );
 
-    return given;
+    // Only the month is replaced; any other field the consumer named stands.
+    return toNumericFormat(given);
   }
 
   get placeholderValue(): Date {
@@ -219,9 +221,9 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
       [locale, format]: [string, Intl.DateTimeFormatOptions | undefined]
     ) => {
       if (!this.isSegmented) return;
-      this.setParts(
-        fromDate(buildParts(locale, format), toDate(this.#currentParts))
-      );
+      // Segment by segment rather than through the composed value, so a
+      // half-typed entry survives the rebuild.
+      this.setParts(carryOver(buildParts(locale, format), this.#currentParts));
     }
   );
 
@@ -396,13 +398,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     this.setParts(parts);
     const after = toDate(parts);
 
-    const changed =
-      (before === null) !== (after === null) ||
-      (before !== null &&
-        after !== null &&
-        before.getTime() !== after.getTime());
-
-    if (!changed) return;
+    if (!hasDateChanged(before, after)) return;
 
     this.commitValue(after as CalendarValue<M> | null, { writeParts: false });
   };

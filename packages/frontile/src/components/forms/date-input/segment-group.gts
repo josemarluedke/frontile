@@ -139,10 +139,22 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
       : [];
   }
 
+  /**
+   * Left and right are *visual* directions, so in an RTL locale they run
+   * against document order: pressing the left arrow in `yyyy/mm/dd` laid out
+   * right-to-left should move to the segment drawn to the left, which is the
+   * later one in the DOM.
+   */
   private focusSibling(from: HTMLElement, delta: number): void {
     const all = this.segmentElements(from);
-    const next = all[all.indexOf(from) + delta];
+    const step = this.isRtl(from) ? -delta : delta;
+    const next = all[all.indexOf(from) + step];
     next?.focus();
+  }
+
+  private isRtl(from: HTMLElement): boolean {
+    const group = from.closest<HTMLElement>('[data-part="group"]') ?? from;
+    return getComputedStyle(group).direction === 'rtl';
   }
 
   private focusEdge(from: HTMLElement, edge: 'first' | 'last'): void {

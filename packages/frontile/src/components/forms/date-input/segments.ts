@@ -295,6 +295,67 @@ function toDate(parts: Part[]): Date | null {
   return new Date(year.value, month.value - 1, clamped);
 }
 
+/**
+ * Carries the segments' state onto a freshly built list, matching by type.
+ *
+ * Used when the locale or the format changes under a field that is already
+ * holding something. Going via `toDate` instead would discard a half-typed
+ * entry, because a partial entry composes no date -- and losing the user's
+ * digits to a locale switch is exactly the failure this component exists to
+ * avoid. A segment the new format has no place for is simply dropped.
+ */
+function carryOver(next: Part[], previous: Part[]): Part[] {
+  return next.map((part) => {
+    if (!isSegment(part)) return part;
+
+    const was = findSegment(previous, part.type);
+    if (!was || was.value === null) return part;
+
+    return {
+      ...part,
+      value: was.value,
+      buffer: was.buffer,
+      isCommitted: was.isCommitted
+    };
+  });
+}
+
+/**
+ * Whether a format would render a month no one can type into -- either a
+ * textual month outright, or a `dateStyle` preset, which picks its own and
+ * cannot be reasoned about field by field.
+ */
+function hasTextualMonth(options: Intl.DateTimeFormatOptions): boolean {
+  return (
+    options.dateStyle !== undefined ||
+    options.month === 'long' ||
+    options.month === 'short' ||
+    options.month === 'narrow'
+  );
+}
+
+/**
+ * The nearest typeable format to the one asked for.
+ *
+ * A textual month is swapped for a numeric one and *everything else is left
+ * alone*: a format asking for month and day keeps exactly those two segments
+ * rather than growing a year the consumer never requested. A `dateStyle`
+ * preset names no fields at all, so there is nothing to preserve and the
+ * default numeric format stands in for the whole thing.
+ */
+function toNumericFormat(
+  options: Intl.DateTimeFormatOptions
+): Intl.DateTimeFormatOptions {
+  if (options.dateStyle !== undefined) return DEFAULT_FORMAT;
+  return { ...options, month: 'numeric' };
+}
+
+/** Whether two composed values differ -- `null` (no date) included. */
+function hasDateChanged(before: Date | null, after: Date | null): boolean {
+  if (before === null || after === null) return before !== after;
+  return before.getTime() !== after.getTime();
+}
+
 /** Writes a value across the segments, leaving literals untouched. */
 function fromDate(parts: Part[], date: Date | null): Part[] {
   return parts.map((part) => {
@@ -327,5 +388,9 @@ export {
   findSegment,
   resolveTwoDigitYear,
   daysInMonth,
-  displaySegment
+  displaySegment,
+  carryOver,
+  hasTextualMonth,
+  toNumericFormat,
+  hasDateChanged
 };

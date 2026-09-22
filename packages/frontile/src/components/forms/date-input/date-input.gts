@@ -7,7 +7,16 @@ import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
 import { CloseButton } from '../../buttons/close-button';
 import { SegmentGroup } from './segment-group';
-import { buildParts, toDate, fromDate, isSegment } from './segments';
+import {
+  buildParts,
+  toDate,
+  fromDate,
+  isSegment,
+  carryOver,
+  hasTextualMonth,
+  toNumericFormat,
+  hasDateChanged
+} from './segments';
 import { parseDate, toWire } from '../date-picker/value';
 import { ref } from '../../../utils/ref';
 import { triggerFormInputEvent } from '../../../utils/forms-utils-index';
@@ -69,26 +78,20 @@ class DateInput extends Component<DateInputSignature> {
     const given = this.args.formatOptions;
     if (!given) return undefined;
 
-    // A textual month has no numeric segment to type into, so it is refused
-    // rather than rendered unusable. `dateStyle: 'medium'` is the common way
-    // to hit this -- it is DatePicker's button-trigger default.
-    const isTextual =
-      given.dateStyle !== undefined ||
-      given.month === 'long' ||
-      given.month === 'short' ||
-      given.month === 'narrow';
+    // A textual month has no numeric segment to type into, so it falls back
+    // to a numeric one. `dateStyle: 'medium'` is the common way to hit this --
+    // it is DatePicker's button-trigger default. Only the month is replaced:
+    // the rest of the format is the consumer's and stands.
+    if (!hasTextualMonth(given)) return given;
 
-    if (isTextual) {
-      warn(
-        '<DateInput> needs numeric segments; ' +
-          'a textual @formatOptions month falls back to a numeric one.',
-        false,
-        { id: 'frontile.date-input.textual-format' }
-      );
-      return undefined;
-    }
+    warn(
+      '<DateInput> needs numeric segments; ' +
+        'a textual @formatOptions month falls back to a numeric one.',
+      false,
+      { id: 'frontile.date-input.textual-format' }
+    );
 
-    return given;
+    return toNumericFormat(given);
   }
 
   /** The composed value, or null while any segment is empty. */
@@ -139,17 +142,17 @@ class DateInput extends Component<DateInputSignature> {
   );
 
   /**
-   * Rebuilds the segment order when the locale or format changes, carrying the
-   * current value across so switching en-US to en-GB reorders the field
-   * without emptying it.
+   * Rebuilds the segment order when the locale or format changes, carrying
+   * each segment's own state across so switching en-US to en-GB reorders the
+   * field without emptying it -- half-typed digits included, which is why
+   * this goes segment by segment rather than through the composed value.
    */
   syncLocale = modifier(
     (
       _: HTMLElement,
       [locale, format]: [string, Intl.DateTimeFormatOptions | undefined]
     ) => {
-      const current = toDate(this.#currentParts);
-      this.setParts(fromDate(buildParts(locale, format), current));
+      this.setParts(carryOver(buildParts(locale, format), this.#currentParts));
     }
   );
 
@@ -160,13 +163,7 @@ class DateInput extends Component<DateInputSignature> {
 
     // Only value transitions are reported. The four keystrokes that fill a
     // month and a day compose no date at all, and report nothing.
-    const changed =
-      (before === null) !== (after === null) ||
-      (before !== null &&
-        after !== null &&
-        before.getTime() !== after.getTime());
-
-    if (changed) {
+    if (hasDateChanged(before, after)) {
       this.args.onChange?.(after);
       triggerFormInputEvent(this.containerRef.current);
     }
