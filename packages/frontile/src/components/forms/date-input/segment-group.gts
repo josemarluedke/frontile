@@ -35,7 +35,6 @@ interface SegmentGroupSignature {
     segmentLabels?: Partial<Record<SegmentType, string>>;
     classes: DateInputClasses;
     userClasses?: SlotsToClasses<DateInputSlots>;
-    onFocusOut?: (event: FocusEvent) => void;
   };
   Element: HTMLDivElement;
 }
@@ -107,10 +106,11 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
    * and the field does not reflow as it is typed.
    */
   displayFor = (segment: Segment): string => {
+    // A segment with a value always has the digits behind it: every producer
+    // in the model writes `buffer` and `value` together.
     if (segment.value === null) return segment.placeholder;
 
-    const digits =
-      segment.buffer === '' ? String(segment.value) : segment.buffer;
+    const digits = segment.buffer;
 
     return segment.type === 'year' && !segment.isCommitted
       ? digits
@@ -269,8 +269,6 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
     event.preventDefault();
   };
 
-  noop = (): void => {};
-
   <template>
     <div
       role="group"
@@ -280,8 +278,17 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
       aria-labelledby={{@labelledBy}}
       aria-describedby={{@describedBy}}
       aria-disabled={{if @isDisabled "true"}}
+      {{! `role="group"` supports neither aria-readonly nor aria-invalid --
+          neither is global in ARIA 1.2, and ember-template-lint's
+          no-unsupported-role-attributes is right to reject them here (its
+          autofixer deletes them silently, which is how they went missing
+          once already). Both live on the spinbuttons below instead, where
+          the role does support them and where assistive technology actually
+          lands. These data attributes carry the same state for styling and
+          for tests. }}
+      data-readonly={{if @isReadOnly "true" "false"}}
+      data-invalid={{if @isInvalid "true" "false"}}
       class={{@classes.group class=@userClasses.group}}
-      {{on "focusout" (if @onFocusOut @onFocusOut this.noop)}}
       ...attributes
     >
       {{#each this.cells key="index" as |cell|}}
@@ -297,6 +304,8 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
             data-type={{cell.type}}
             data-placeholder={{if cell.isEmpty "true" "false"}}
             data-disabled={{if @isDisabled "true" "false"}}
+            aria-readonly={{if @isReadOnly "true"}}
+            aria-invalid={{if @isInvalid "true"}}
             aria-label={{cell.label}}
             aria-valuenow={{cell.valueNow}}
             aria-valuemin={{cell.valueMin}}

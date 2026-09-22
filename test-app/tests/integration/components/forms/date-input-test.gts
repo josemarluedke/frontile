@@ -382,6 +382,17 @@ module(
       await focus(segment('month'));
       await triggerKeyEvent(segment('month'), 'keydown', 'ArrowUp');
       assert.dom(segment('month')).hasText('01', 'unchanged');
+
+      // Navigation is handled before the editability gate, deliberately: a
+      // read-only field is still one a keyboard user reads through.
+      await triggerKeyEvent(segment('month'), 'keydown', 'ArrowRight');
+      assert.strictEqual(
+        document.activeElement,
+        segment('day'),
+        'navigation still works'
+      );
+      await triggerKeyEvent(segment('day'), 'keydown', 'End');
+      assert.strictEqual(document.activeElement, segment('year'));
     });
 
     test('changing the locale reorders segments and keeps their values', async function (assert) {
@@ -415,7 +426,7 @@ module(
       assert.dom(segment('month')).hasText('01');
     });
 
-    test('disabled segments leave the tab order', async function (assert) {
+    test('disabled segments leave the tab order and refuse edits', async function (assert) {
       await render(
         <template>
           <DateInput @label="Date" @locale="en-US" @isDisabled={{true}} />
@@ -423,6 +434,170 @@ module(
       );
 
       assert.dom(segment('month')).doesNotHaveAttribute('tabindex');
+      assert.dom(segment('month')).hasAttribute('contenteditable', 'false');
+
+      await triggerKeyEvent(segment('month'), 'keydown', 'ArrowUp');
+      await type('5');
+      assert
+        .dom(segment('month'))
+        .hasText(
+          'mm',
+          'out of the tab order is not the only thing disabled means'
+        );
+    });
+
+    test('an invalid field says so on the segments themselves', async function (assert) {
+      await render(
+        <template>
+          <DateInput @label="Date" @locale="en-US" @isInvalid={{true}} />
+        </template>
+      );
+
+      for (const s of segments()) {
+        assert.dom(s).hasAttribute('aria-invalid', 'true');
+      }
+      assert.dom('[data-part="group"]').hasAttribute('data-invalid', 'true');
+    });
+
+    test('a value outside the allowed range is invalid', async function (assert) {
+      const value = new Date(2026, 0, 20);
+      const maxValue = new Date(2026, 0, 10);
+
+      await render(
+        <template>
+          <DateInput
+            @label="Date"
+            @locale="en-US"
+            @value={{value}}
+            @maxValue={{maxValue}}
+          />
+        </template>
+      );
+
+      assert.dom(segment('month')).hasAttribute('aria-invalid', 'true');
+    });
+
+    test('a valid field claims nothing', async function (assert) {
+      await render(
+        <template><DateInput @label="Date" @locale="en-US" /></template>
+      );
+
+      assert.dom(segment('month')).doesNotHaveAttribute('aria-invalid');
+      assert.dom('[data-part="group"]').hasAttribute('data-invalid', 'false');
+    });
+
+    test('text input into the contenteditable segment is refused', async function (assert) {
+      await render(
+        <template><DateInput @label="Date" @locale="en-US" /></template>
+      );
+
+      await focus(segment('month'));
+
+      // Dispatched by hand rather than through triggerKeyEvent because the
+      // assertion is on the event object itself. Per the Task 4 spike a
+      // synthetic InputEvent never mutates contenteditable DOM either way, so
+      // asserting on textContent would pass even with the handler deleted.
+      const insert = new InputEvent('beforeinput', {
+        inputType: 'insertText',
+        data: '5',
+        cancelable: true,
+        bubbles: true
+      });
+      segment('month').dispatchEvent(insert);
+      await settled();
+
+      assert.true(
+        insert.defaultPrevented,
+        'the model is the only thing that writes to the span'
+      );
+      assert.dom(segment('month')).hasText('mm', 'and nothing landed in it');
+    });
+
+    test('a printable key is swallowed, but a navigation key is not', async function (assert) {
+      await render(
+        <template><DateInput @label="Date" @locale="en-US" /></template>
+      );
+
+      await focus(segment('month'));
+
+      const letter = new KeyboardEvent('keydown', {
+        key: 'a',
+        cancelable: true,
+        bubbles: true
+      });
+      segment('month').dispatchEvent(letter);
+      await settled();
+      assert.true(
+        letter.defaultPrevented,
+        'a letter would otherwise be typed into the span as text'
+      );
+
+      const tab = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        cancelable: true,
+        bubbles: true
+      });
+      segment('month').dispatchEvent(tab);
+      await settled();
+      assert.false(
+        tab.defaultPrevented,
+        'Tab stays native, or the field cannot be left by keyboard'
+      );
+    });
+
+    test('a date can be composed with arrow keys alone', async function (assert) {
+      const seen: (Date | null)[] = [];
+      const onChange = (v: Date | null): void => {
+        seen.push(v);
+      };
+      const placeholder = new Date(2026, 8, 22);
+
+      await render(
+        <template>
+          <DateInput
+            @label="Date"
+            @locale="en-US"
+            @placeholderValue={{placeholder}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(segment('month'));
+      await triggerKeyEvent(segment('month'), 'keydown', 'ArrowUp');
+      await triggerKeyEvent(segment('month'), 'keydown', 'ArrowRight');
+      await triggerKeyEvent(segment('day'), 'keydown', 'ArrowUp');
+      await triggerKeyEvent(segment('day'), 'keydown', 'ArrowRight');
+      await triggerKeyEvent(segment('year'), 'keydown', 'ArrowUp');
+
+      // Stepping is a finished answer, so a date reached without a single
+      // digit key still composes -- which is what Task 9's calendar reads.
+      assert.strictEqual(seen.length, 1, 'one date, reported once');
+      assert.strictEqual(seen[0]?.getFullYear(), 2026);
+      assert.strictEqual(seen[0]?.getMonth(), 8, 'September');
+      assert.strictEqual(seen[0]?.getDate(), 22);
+    });
+
+    test('@onBlur fires when focus leaves the field, not when it moves inside it', async function (assert) {
+      let blurs = 0;
+      const onBlur = (): void => {
+        blurs++;
+      };
+
+      await render(
+        <template>
+          <DateInput @label="Date" @locale="en-US" @onBlur={{onBlur}} />
+          <button id="elsewhere" type="button">elsewhere</button>
+        </template>
+      );
+
+      await focus(segment('month'));
+      await triggerKeyEvent(segment('month'), 'keydown', 'ArrowRight');
+      assert.strictEqual(document.activeElement, segment('day'));
+      assert.strictEqual(blurs, 0, 'moving between segments is not a blur');
+
+      await focus('#elsewhere');
+      assert.strictEqual(blurs, 1, 'leaving the field is');
     });
   }
 );

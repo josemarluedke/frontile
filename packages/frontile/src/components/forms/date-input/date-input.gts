@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { cached, tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import { warn } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
@@ -170,6 +171,22 @@ class DateInput extends Component<DateInputSignature> {
     }
   };
 
+  /**
+   * `@onBlur` means "the user left the field", not "the user left a segment",
+   * so a move between segments is filtered out by asking whether focus landed
+   * inside the container. `DatePicker` needs `ControlBlurTracker` for this
+   * because its focus can legitimately be in a popover outside its own DOM;
+   * this field has no popover, so containment is the whole question.
+   */
+  handleFocusOut = (event: FocusEvent): void => {
+    const container = this.containerRef.current;
+    const next = event.relatedTarget;
+
+    if (container && next instanceof Node && container.contains(next)) return;
+
+    this.args.onBlur?.();
+  };
+
   clear = (): void => {
     this.handlePartsChange(fromDate(this.#currentParts, null));
   };
@@ -185,6 +202,7 @@ class DateInput extends Component<DateInputSignature> {
       {{this.syncLocale this.locale this.formatOptions}}
       {{this.syncValue @value}}
       {{this.containerRef.setup}}
+      {{on "focusout" this.handleFocusOut}}
       class={{this.classes.base class=@classes.base}}
       data-component="date-input"
       data-part="base"

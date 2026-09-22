@@ -121,9 +121,15 @@ function applyDigit(
   let buffer = segment.buffer + digit;
   let value = bufferValue(segment, buffer);
 
-  // The accumulated digits overflow the segment, so this keystroke starts a
-  // fresh entry instead of being discarded.
-  if (value !== null && value > segment.max) {
+  // The accumulated digits no longer fit the segment, so this keystroke starts
+  // a fresh entry instead of being discarded. Width is checked as well as the
+  // bound because leading zeros pile up without ever exceeding it: `00` then
+  // `1` in a month is the buffer `001`, which is still only January and would
+  // render three characters wide in a two-character segment.
+  if (
+    buffer.length > segment.width ||
+    (value !== null && value > segment.max)
+  ) {
     buffer = digit;
     value = bufferValue(segment, buffer);
     // A single digit that still overflows cannot be entered at all.
@@ -243,12 +249,6 @@ function daysInMonth(year: number, month: number): number {
   return new Date(year, month, 0).getDate();
 }
 
-/**
- * The composed value, or `null` while any segment is still empty. The day is
- * clamped to the chosen month's real length: a 31 left over from January must
- * resolve to the 28th in February, not roll forward into March the way the
- * `Date` constructor would.
- */
 /** A segment holding a finished value, as opposed to one mid-entry. */
 function isReady(
   segment: Segment | undefined
@@ -256,6 +256,12 @@ function isReady(
   return segment !== undefined && segment.value !== null && segment.isCommitted;
 }
 
+/**
+ * The composed value, or `null` while any segment is still empty or still
+ * being typed. The day is clamped to the chosen month's real length: a 31 left
+ * over from January must resolve to the 28th in February, not roll forward
+ * into March the way the `Date` constructor would.
+ */
 function toDate(parts: Part[]): Date | null {
   const year = findSegment(parts, 'year');
   const month = findSegment(parts, 'month');

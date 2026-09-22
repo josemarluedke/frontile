@@ -139,6 +139,23 @@ module('Unit | date-input segments | applyDigit', function () {
     assert.false(segment.isCommitted);
   });
 
+  test('the buffer never outgrows the segment', function (assert) {
+    // 0 then 0 is a held '00', and neither overflows a month's bound -- so
+    // without a width check the next digit makes '001', which padStart cannot
+    // trim back to two characters and the segment would render three wide.
+    let seg = applyDigit(emptySegment('month'), '0').segment;
+    seg = applyDigit(seg, '0').segment;
+    assert.strictEqual(seg.buffer, '00');
+
+    const third = applyDigit(seg, '1');
+    assert.strictEqual(
+      third.segment.buffer,
+      '1',
+      'the third digit starts over'
+    );
+    assert.strictEqual(third.segment.value, 1, 'January');
+  });
+
   test('non-digits are ignored', function (assert) {
     const { segment } = applyDigit(emptySegment('day'), 'x');
     assert.strictEqual(segment.buffer, '');
@@ -183,6 +200,17 @@ module('Unit | date-input segments | step', function () {
 
     const year = { ...emptySegment('year'), value: 2026, buffer: '2026' };
     assert.strictEqual(step(year, 10, placeholder).value, 2036);
+  });
+
+  test('a stepped segment is a finished answer', function (assert) {
+    // Arrow keys alone must compose a date: nothing else commits them, and
+    // an uncommitted segment composes nothing.
+    const march = { ...emptySegment('month'), value: 3, buffer: '03' };
+    assert.true(step(march, 1, placeholder).isCommitted);
+    assert.true(
+      step(emptySegment('year'), 1, placeholder).isCommitted,
+      'including one seeded from the placeholder'
+    );
   });
 
   test('the buffer follows the stepped value so Backspace stays coherent', function (assert) {
