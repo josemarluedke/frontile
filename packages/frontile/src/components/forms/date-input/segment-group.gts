@@ -11,7 +11,7 @@ import {
   deleteDigit,
   displaySegment
 } from './segments';
-import { parsePasted, formatForClipboard } from './clipboard';
+import { parsePasted, formatForClipboard, splitRange } from './clipboard';
 import type {
   Part,
   Segment,
@@ -25,6 +25,13 @@ interface SegmentGroupSignature {
     parts: Part[];
     /** Hands the whole list back; the group holds no state of its own. */
     onPartsChange: (parts: Part[]) => void;
+    /**
+     * Offered text that reads as two dates rather than one. Only `DatePicker`
+     * in `@mode="range"` supplies it, and only to its *start* group: pasting
+     * a range into the end of a field and having it rewrite the start would
+     * be surprising. Without it, such text is simply declined.
+     */
+    onRangePaste?: (start: Part[], end: Part[]) => void;
     locale: string;
     placeholderValue: Date;
     isDisabled?: boolean;
@@ -283,8 +290,34 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
 
     const text = event.clipboardData?.getData('text/plain') ?? '';
     const parsed = parsePasted(text, this.args.parts);
-    if (parsed) this.args.onPartsChange(parsed);
+    if (parsed) {
+      this.args.onPartsChange(parsed);
+      return;
+    }
+
+    this.tryRangePaste(text);
   };
+
+  /**
+   * A second reading of text a single date could not be made of.
+   *
+   * Both halves are parsed against *this* group's parts, which is sound
+   * because the two groups of a range are built from the same locale and
+   * format and so have identical shape, and because a half only counts when
+   * it parses in full -- nothing of this group's own state survives into the
+   * list handed to the other one.
+   */
+  private tryRangePaste(text: string): void {
+    const onRangePaste = this.args.onRangePaste;
+    if (!onRangePaste) return;
+
+    const halves = splitRange(text);
+    if (!halves) return;
+
+    const start = parsePasted(halves[0], this.args.parts);
+    const end = parsePasted(halves[1], this.args.parts);
+    if (start && end) onRangePaste(start, end);
+  }
 
   handleCopy = (event: ClipboardEvent): void => {
     event.preventDefault();

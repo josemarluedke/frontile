@@ -72,8 +72,8 @@ interface BaseDatePickerArgs
    * trigger showing the formatted value, which is what `@placeholder`,
    * `@formatOptions` and the `:value` block describe.
    *
-   * `@mode="range"` ignores this and always renders the button trigger: the
-   * two-group range anatomy is not built yet.
+   * `@mode="range"` is segmented too: two groups with a separator between
+   * them, one for each end of the range.
    *
    * @defaultValue true
    */

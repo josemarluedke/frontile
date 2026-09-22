@@ -137,4 +137,40 @@ function formatForClipboard(parts: Part[]): string {
     .join('');
 }
 
-export { parsePasted, formatForClipboard };
+/**
+ * What separates the two halves of a pasted range.
+ *
+ * An en or em dash needs no surrounding space, because neither ever appears
+ * inside a date. A plain hyphen does: it is the ISO separator, so splitting on
+ * an unspaced one would tear `2026-01-20` into pieces. The same reasoning
+ * applies to the words -- `\s+` on both sides keeps "to" from matching inside
+ * "total".
+ */
+const RANGE_SEPARATOR = /\s*[\u2013\u2014]\s*|\s+(?:-|to|until|through)\s+/i;
+
+/**
+ * Splits pasted text into the two dates of a range, or returns `null` when it
+ * does not read as two.
+ *
+ * Only the shape is decided here; neither half is parsed. The caller runs each
+ * through {@link parsePasted} and keeps the result only when both halves are
+ * dates -- so text that merely contains a dash falls through to the ordinary
+ * single-date handling rather than being consumed.
+ */
+function splitRange(text: string): [string, string] | null {
+  const trimmed = text.trim();
+  const match = RANGE_SEPARATOR.exec(trimmed);
+  if (!match) return null;
+
+  const start = trimmed.slice(0, match.index).trim();
+  const end = trimmed.slice(match.index + match[0].length).trim();
+  if (start === '' || end === '') return null;
+
+  // Three halves is not a range, and guessing which two were meant would be
+  // exactly the silent wrong guess this module declines to make elsewhere.
+  if (RANGE_SEPARATOR.test(end)) return null;
+
+  return [start, end];
+}
+
+export { parsePasted, formatForClipboard, splitRange };

@@ -58,7 +58,8 @@ interface DatePickerSignature<M extends CalendarMode = 'single'> {
  * opens a calendar in a popover, and -- under `@isEditable={{false}}` -- the
  * older button trigger showing the formatted value instead. `@mode="range"`
  * switches both the calendar and the value shape to a `{ start, end }` range,
- * and always uses the button trigger.
+ * and -- when editable -- renders two groups of segments with a separator
+ * between them.
  */
 class DatePicker<M extends CalendarMode = 'single'> extends Component<
   DatePickerSignature<M>
@@ -87,6 +88,12 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   @tracked private trackedParts: Part[] = [];
 
   /**
+   * The second group, in `@mode="range"` only. {@link trackedParts} is that
+   * mode's *start* group, so every path that writes one writes both.
+   */
+  @tracked private trackedEndParts: Part[] = [];
+
+  /**
    * An untracked mirror of {@link parts}. The sync modifiers below rebuild the
    * segments from the current ones, and reading the tracked field inside a
    * modifier would put it in that modifier's own tracking frame -- which the
@@ -94,6 +101,9 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
    * carries the same pair for the same reason.
    */
   #currentParts: Part[] = [];
+
+  /** The same mirror, for {@link trackedEndParts}. */
+  #currentEndParts: Part[] = [];
 
   constructor(owner: unknown, args: DatePickerArgs<M>) {
     super(owner as never, args as never);
@@ -103,11 +113,8 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
       this.internalValue = this.parseIncoming(seed);
     }
 
-    this.setParts(
-      fromDate(
-        buildParts(this.locale, this.segmentFormat),
-        this.isRangeMode ? null : (this.internalValue as Date | null)
-      )
+    this.writeParts(this.internalValue, () =>
+      buildParts(this.locale, this.segmentFormat)
     );
   }
 
@@ -115,20 +122,45 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return this.trackedParts;
   }
 
+  get endParts(): Part[] {
+    return this.trackedEndParts;
+  }
+
   private setParts(parts: Part[]): void {
     this.#currentParts = parts;
     this.trackedParts = parts;
   }
 
+  private setEndParts(parts: Part[]): void {
+    this.#currentEndParts = parts;
+    this.trackedEndParts = parts;
+  }
+
   /**
-   * Whether the value is typed rather than only picked.
+   * Writes a value across the segments, whichever mode is in play.
    *
-   * Range mode is excluded regardless of `@isEditable`: a range needs two
-   * groups of segments and a separator, which is a later change. Until then a
-   * range picker is the button trigger it has always been.
+   * `onto` supplies the list each group is written into -- the current
+   * segments when a value moved, a freshly built row when the locale or the
+   * format changed. It is a function because range mode needs two independent
+   * lists and must not hand the same array to both groups.
    */
+  private writeParts(
+    value: CalendarValue<M> | null,
+    onto: (edge: 'start' | 'end') => Part[]
+  ): void {
+    if (!this.isRangeMode) {
+      this.setParts(fromDate(onto('start'), value as Date | null));
+      return;
+    }
+
+    const range = value as DateRange | null;
+    this.setParts(fromDate(onto('start'), range?.start ?? null));
+    this.setEndParts(fromDate(onto('end'), range?.end ?? null));
+  }
+
+  /** Whether the value is typed rather than only picked. */
   get isSegmented(): boolean {
-    return (this.args.isEditable ?? true) && !this.isRangeMode;
+    return this.args.isEditable ?? true;
   }
 
   /**
@@ -205,7 +237,9 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     // shows empty segments. `#currentParts` rather than `this.parts` -- see
     // the field's own comment.
     if (this.isSegmented) {
-      this.setParts(fromDate(this.#currentParts, parsed as Date | null));
+      this.writeParts(parsed, (edge) =>
+        edge === 'start' ? this.#currentParts : this.#currentEndParts
+      );
     }
   });
 
@@ -224,6 +258,11 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
       // Segment by segment rather than through the composed value, so a
       // half-typed entry survives the rebuild.
       this.setParts(carryOver(buildParts(locale, format), this.#currentParts));
+      if (this.isRangeMode) {
+        this.setEndParts(
+          carryOver(buildParts(locale, format), this.#currentEndParts)
+        );
+      }
     }
   );
 
@@ -372,7 +411,9 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     this.internalValue = value;
 
     if (writeParts && this.isSegmented) {
-      this.setParts(fromDate(this.#currentParts, value as Date | null));
+      this.writeParts(value, (edge) =>
+        edge === 'start' ? this.#currentParts : this.#currentEndParts
+      );
     }
 
     (
@@ -402,6 +443,78 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
     this.commitValue(after as CalendarValue<M> | null, { writeParts: false });
   };
+
+  /**
+   * The two range groups report separately, but a range is one value: each
+   * one recomposes the whole thing and reports only what moved.
+   */
+  handleStartParts = (parts: Part[]): void => {
+    const before = this.rangeFromParts();
+    this.setParts(parts);
+    this.reportRange(before);
+  };
+
+  handleEndParts = (parts: Part[]): void => {
+    const before = this.rangeFromParts();
+    this.setEndParts(parts);
+    this.reportRange(before);
+  };
+
+  /** Two dates pasted into the start group, which fill both. */
+  handleRangePaste = (start: Part[], end: Part[]): void => {
+    const before = this.rangeFromParts();
+    this.setParts(start);
+    this.setEndParts(end);
+    this.reportRange(before);
+  };
+
+  /**
+   * The range the two groups currently compose, or `null`.
+   *
+   * `DateRange.start` is a `Date`, not `Date | null`: a range is anchored at
+   * its start, and the half-open shape the calendar produces mid-selection is
+   * `{ start, end: null }` -- never the other way round. So segments that
+   * compose no start compose no range at all, however complete the end group
+   * is. That is what makes clearing the start report `null` rather than
+   * leaving a consumer holding a range the field no longer shows; the end's
+   * digits stay on screen, exactly as a half-typed single date's do.
+   */
+  private rangeFromParts(): DateRange | null {
+    const start = toDate(this.#currentParts);
+    if (!start) return null;
+
+    return { start, end: toDate(this.#currentEndParts) };
+  }
+
+  /**
+   * Reports the range only if it moved, which is the single-mode contract
+   * applied to two ends: the keystrokes that fill a month and a day compose
+   * nothing and report nothing, and either end changing is a change.
+   */
+  private reportRange(before: DateRange | null): void {
+    const after = this.rangeFromParts();
+
+    const moved =
+      hasDateChanged(before?.start ?? null, after?.start ?? null) ||
+      hasDateChanged(before?.end ?? null, after?.end ?? null);
+    if (!moved) return;
+
+    this.commitValue(after as CalendarValue<M> | null, { writeParts: false });
+  }
+
+  /**
+   * The start and end groups' accessible names. Two `role="group"`s cannot
+   * share one id or one name, and `FormControl`'s label can only be
+   * associated with one element -- so each group names itself, deriving from
+   * `@label` so that the visible label is contained in both names.
+   */
+  get startLabel(): string {
+    return this.args.label ? `${this.args.label} start` : 'start date';
+  }
+
+  get endLabel(): string {
+    return this.args.label ? `${this.args.label} end` : 'end date';
+  }
 
   /**
    * The segment that last held focus, so that closing the calendar can hand
@@ -604,23 +717,73 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
               {{! Blur tracking and focus recording ride on splattributes:
               the group renders `...attributes` on its `role="group"` element,
               and both events bubble there from the segments. }}
-              <SegmentGroup
-                @parts={{this.parts}}
-                @onPartsChange={{this.handlePartsChange}}
-                @locale={{this.locale}}
-                @placeholderValue={{this.placeholderValue}}
-                @isDisabled={{@isDisabled}}
-                @isReadOnly={{@isReadOnly}}
-                @isInvalid={{c.isInvalid}}
-                @id={{c.id}}
-                @label={{@label}}
-                @describedBy={{c.describedBy @description c.isInvalid}}
-                @segmentLabels={{@segmentLabels}}
-                @classes={{this.classes}}
-                @userClasses={{@classes}}
-                {{on "focusin" this.handleSegmentFocusIn}}
-                {{on "focusout" this.blurTracker.handleFocusOut}}
-              />
+              {{#if this.isRangeMode}}
+                {{! Two groups, so neither can take `c.id` or `@label`: ids
+                must be unique and a name shared by both would leave a screen
+                reader unable to tell the ends apart. Each derives its own
+                from the field's. }}
+                <SegmentGroup
+                  @parts={{this.parts}}
+                  @onPartsChange={{this.handleStartParts}}
+                  @onRangePaste={{this.handleRangePaste}}
+                  @locale={{this.locale}}
+                  @placeholderValue={{this.placeholderValue}}
+                  @isDisabled={{@isDisabled}}
+                  @isReadOnly={{@isReadOnly}}
+                  @isInvalid={{c.isInvalid}}
+                  @id={{concat c.id "-start"}}
+                  @label={{this.startLabel}}
+                  @describedBy={{c.describedBy @description c.isInvalid}}
+                  @segmentLabels={{@segmentLabels}}
+                  @classes={{this.classes}}
+                  @userClasses={{@classes}}
+                  {{on "focusin" this.handleSegmentFocusIn}}
+                  {{on "focusout" this.blurTracker.handleFocusOut}}
+                />
+                <span
+                  data-part="separator"
+                  aria-hidden="true"
+                  class={{this.classes.separator class=@classes.separator}}
+                >&ndash;</span>
+                {{! No `@onRangePaste`: pasting "20 Jan - 25 Jan" into the end
+                of a range and having it rewrite the start would be
+                surprising. }}
+                <SegmentGroup
+                  @parts={{this.endParts}}
+                  @onPartsChange={{this.handleEndParts}}
+                  @locale={{this.locale}}
+                  @placeholderValue={{this.placeholderValue}}
+                  @isDisabled={{@isDisabled}}
+                  @isReadOnly={{@isReadOnly}}
+                  @isInvalid={{c.isInvalid}}
+                  @id={{concat c.id "-end"}}
+                  @label={{this.endLabel}}
+                  @describedBy={{c.describedBy @description c.isInvalid}}
+                  @segmentLabels={{@segmentLabels}}
+                  @classes={{this.classes}}
+                  @userClasses={{@classes}}
+                  {{on "focusin" this.handleSegmentFocusIn}}
+                  {{on "focusout" this.blurTracker.handleFocusOut}}
+                />
+              {{else}}
+                <SegmentGroup
+                  @parts={{this.parts}}
+                  @onPartsChange={{this.handlePartsChange}}
+                  @locale={{this.locale}}
+                  @placeholderValue={{this.placeholderValue}}
+                  @isDisabled={{@isDisabled}}
+                  @isReadOnly={{@isReadOnly}}
+                  @isInvalid={{c.isInvalid}}
+                  @id={{c.id}}
+                  @label={{@label}}
+                  @describedBy={{c.describedBy @description c.isInvalid}}
+                  @segmentLabels={{@segmentLabels}}
+                  @classes={{this.classes}}
+                  @userClasses={{@classes}}
+                  {{on "focusin" this.handleSegmentFocusIn}}
+                  {{on "focusout" this.blurTracker.handleFocusOut}}
+                />
+              {{/if}}
             {{else}}
               <DatePickerTrigger
                 @id={{c.id}}

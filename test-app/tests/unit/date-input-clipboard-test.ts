@@ -4,6 +4,7 @@ import {
   fromDate,
   isSegment,
   parsePasted,
+  splitRange,
   applyDigit,
   commitSegment,
   formatForClipboard,
@@ -248,5 +249,77 @@ module('Unit | date-input clipboard | paste bounds and partials', function () {
 
   test('more numbers than segments is refused', function (assert) {
     assert.strictEqual(parsePasted('12/25/2026/03', buildParts('en-US')), null);
+  });
+});
+
+module('Unit | date-input clipboard | splitRange', function () {
+  test('a two-date string is beyond what parsePasted can read', function (assert) {
+    // The premise splitRange exists for: six digit groups is more than any
+    // single-date format has segments, so parsePasted declines it outright
+    // rather than filling a prefix.
+    assert.strictEqual(
+      parsePasted('2026-01-20 \u2013 2026-01-25', buildParts('en-US')),
+      null
+    );
+  });
+
+  test('splits on an en or em dash, spaces or not', function (assert) {
+    assert.deepEqual(splitRange('2026-01-20 \u2013 2026-01-25'), [
+      '2026-01-20',
+      '2026-01-25'
+    ]);
+    assert.deepEqual(splitRange('2026-01-20\u20142026-01-25'), [
+      '2026-01-20',
+      '2026-01-25'
+    ]);
+  });
+
+  test('splits on a spaced hyphen but never on an ISO one', function (assert) {
+    assert.deepEqual(splitRange('01/20/2026 - 01/25/2026'), [
+      '01/20/2026',
+      '01/25/2026'
+    ]);
+    assert.strictEqual(
+      splitRange('2026-01-20'),
+      null,
+      'a lone ISO date is one date, not a range'
+    );
+  });
+
+  test('splits on the word "to"', function (assert) {
+    assert.deepEqual(splitRange('01/20/2026 to 01/25/2026'), [
+      '01/20/2026',
+      '01/25/2026'
+    ]);
+    assert.strictEqual(
+      splitRange('12/25/2026'),
+      null,
+      'and not on letters inside a word'
+    );
+  });
+
+  test('refuses anything that is not exactly two halves', function (assert) {
+    assert.strictEqual(splitRange(''), null);
+    assert.strictEqual(splitRange('   '), null);
+    assert.strictEqual(splitRange('\u2013 2026-01-25'), null, 'no start half');
+    assert.strictEqual(splitRange('2026-01-20 \u2013'), null, 'no end half');
+    assert.strictEqual(
+      splitRange('01/01 \u2013 01/02 \u2013 01/03'),
+      null,
+      'three halves is not a range'
+    );
+  });
+
+  test('each half is then a date parsePasted can read', function (assert) {
+    const halves = splitRange('2026-01-20 \u2013 2026-01-25');
+    assert.ok(halves);
+    assert.strictEqual(
+      dateOf(parsePasted(halves![0], buildParts('en-US'))),
+      '2026-1-20'
+    );
+    assert.strictEqual(
+      dateOf(parsePasted(halves![1], buildParts('en-US'))),
+      '2026-1-25'
+    );
   });
 });

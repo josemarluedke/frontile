@@ -575,6 +575,10 @@ const datePicker = tv({
       'data-[disabled=true]:pointer-events-none'
     ],
     literal: 'text-neutral-soft px-px',
+    // Sits between the two groups of a `@mode="range"` field. `DatePicker`
+    // renders it, not `SegmentGroup` -- it separates groups rather than
+    // living inside one.
+    separator: 'text-neutral px-1',
     calendarButton: 'pointer-events-auto'
   },
   variants: {

@@ -4,6 +4,7 @@ import {
   render,
   click,
   find,
+  findAll,
   focus,
   settled,
   triggerEvent,
@@ -414,6 +415,7 @@ module(
           <DatePicker
             @label="Stay"
             @mode="range"
+            @isEditable={{false}}
             @value={{range}}
             @locale="en-US"
           />
@@ -434,6 +436,7 @@ module(
           <DatePicker
             @label="Stay"
             @mode="range"
+            @isEditable={{false}}
             @defaultValue={{janAnchor}}
             @locale="en-US"
             @onChange={{onChange}}
@@ -464,6 +467,7 @@ module(
           <DatePicker
             @label="Stay"
             @mode="range"
+            @isEditable={{false}}
             @defaultValue={{janAnchor}}
             @locale="en-US"
           />
@@ -492,7 +496,15 @@ module(
         </template>
       );
 
-      assert.dom('[data-part="input"]').hasText('Jan 20, 2026 – Feb 9, 2026');
+      // The default trigger is segmented, so each end is read from its own
+      // group rather than from one formatted string.
+      const ends = findAll('[data-part="group"]').map((group) =>
+        Array.from(group.querySelectorAll('[data-part="segment"]'))
+          .map((segment) => segment.textContent?.trim())
+          .join('/')
+      );
+
+      assert.deepEqual(ends, ['01/20/2026', '02/09/2026']);
     });
 
     test('single mode submits one input under the given name', async function (assert) {
@@ -841,7 +853,11 @@ module(
         <template>
           <Form @data={{initial}} @onSubmit={{onSubmit}} as |form|>
             <form.Field @name="stay" as |field|>
-              <field.DateRangePicker @label="Stay" @locale="en-US" />
+              <field.DateRangePicker
+                @label="Stay"
+                @locale="en-US"
+                @isEditable={{false}}
+              />
             </form.Field>
             <button type="submit">Save</button>
           </Form>
@@ -962,6 +978,7 @@ module(
               <field.DateRangePicker
                 @label="Stay"
                 @locale="en-US"
+                @isEditable={{false}}
                 @defaultValue={{janAnchor}}
               />
             </form.Field>
@@ -1139,19 +1156,6 @@ module(
       );
 
       assert.dom('button[data-part="input"]').exists();
-      assert.dom('[data-part="segment"]').doesNotExist();
-    });
-
-    test('range mode keeps the button trigger', async function (assert) {
-      await render(
-        <template>
-          <DatePicker @label="Stay" @locale="en-US" @mode="range" />
-        </template>
-      );
-
-      assert
-        .dom('button[data-part="input"]')
-        .exists('the two-group anatomy is not built yet');
       assert.dom('[data-part="segment"]').doesNotExist();
     });
 
@@ -1534,6 +1538,342 @@ module(
       // The fallback is the numeric default, separators and all.
       assert.dom('[data-part="literal"]').hasText('/');
       assert.dom('[data-part="segment"][data-type="month"]').hasText('mm');
+    });
+  }
+);
+
+module(
+  'Integration | Component | DatePicker | range segments',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    /** The two `role="group"` elements, start first. */
+    function groups(): HTMLElement[] {
+      return findAll('[data-part="group"]') as HTMLElement[];
+    }
+
+    /** The first segment of one of them, which is where typing starts. */
+    function firstSegment(which: 0 | 1): HTMLElement {
+      return groups()[which]!.querySelector(
+        '[data-part="segment"]'
+      ) as HTMLElement;
+    }
+
+    function textOf(which: 0 | 1, type: string): string | undefined {
+      return groups()
+        [which]!.querySelector(`[data-part="segment"][data-type="${type}"]`)
+        ?.textContent?.trim();
+    }
+
+    async function type(digits: string): Promise<void> {
+      for (const digit of digits) {
+        await triggerKeyEvent(
+          document.activeElement as Element,
+          'keydown',
+          digit
+        );
+      }
+    }
+
+    test('renders two groups, a separator and six segments', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @mode="range" @label="Trip dates" @locale="en-US" />
+        </template>
+      );
+
+      assert.dom('[data-part="group"]').exists({ count: 2 });
+      assert.dom('[data-part="separator"]').exists({ count: 1 });
+      assert.dom('[data-part="segment"]').exists({ count: 6 });
+      assert
+        .dom('button[data-part="input"]')
+        .doesNotExist('range mode no longer forces the button trigger');
+    });
+
+    test('@isEditable={{false}} still restores the button trigger', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @isEditable={{false}}
+            @label="Trip dates"
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      assert.dom('button[data-part="input"]').exists();
+      assert.dom('[data-part="group"]').doesNotExist();
+    });
+
+    test('each group carries its own accessible name and id', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @description="When you travel"
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      const [start, end] = groups();
+
+      assert
+        .dom(start)
+        .hasAttribute(
+          'aria-label',
+          'Trip dates start',
+          'the start group names itself from @label'
+        );
+      assert
+        .dom(end)
+        .hasAttribute(
+          'aria-label',
+          'Trip dates end',
+          'and the end group differs from it'
+        );
+
+      const startId = start!.getAttribute('id');
+      const endId = end!.getAttribute('id');
+      assert.ok(startId, 'the start group has an id');
+      assert.ok(endId, 'the end group has an id');
+      assert.notStrictEqual(startId, endId, 'the two ids are distinct');
+      assert.strictEqual(
+        document.querySelectorAll(`#${CSS.escape(startId!)}`).length,
+        1,
+        'and each is unique in the document'
+      );
+
+      const describedBy = start!.getAttribute('aria-describedby');
+      assert.ok(
+        describedBy && find(`#${CSS.escape(describedBy.split(' ')[0]!)}`),
+        'aria-describedby still reaches the description'
+      );
+      assert.strictEqual(
+        end!.getAttribute('aria-describedby'),
+        describedBy,
+        'both groups are described by the same help text'
+      );
+    });
+
+    test('a group with no @label is still named', async function (assert) {
+      await render(
+        <template><DatePicker @mode="range" @locale="en-US" /></template>
+      );
+
+      assert.dom(groups()[0]).hasAttribute('aria-label', 'start date');
+      assert.dom(groups()[1]).hasAttribute('aria-label', 'end date');
+    });
+
+    test('typing both ends produces a range', async function (assert) {
+      const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const onChange = (value: { start: Date; end: Date | null } | null) => {
+        seen.current = value;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(firstSegment(0));
+      await type('01202026');
+
+      assert.strictEqual(
+        seen.current?.start.getDate(),
+        20,
+        'the start is reported as soon as it composes'
+      );
+      assert.strictEqual(
+        seen.current?.end,
+        null,
+        'with a half-open end, the shape the calendar produces mid-selection'
+      );
+
+      await focus(firstSegment(1));
+      await type('01252026');
+
+      assert.strictEqual(seen.current?.start.getDate(), 20);
+      assert.strictEqual(seen.current?.end?.getDate(), 25);
+    });
+
+    test('clearing the start reports null rather than keeping a stale range', async function (assert) {
+      const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const calls = cell(0);
+      const onChange = (value: { start: Date; end: Date | null } | null) => {
+        seen.current = value;
+        calls.current = calls.current + 1;
+      };
+      const range = {
+        start: new Date(2026, 0, 20),
+        end: new Date(2026, 0, 25)
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @defaultValue={{range}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      assert.strictEqual(textOf(0, 'day'), '20', 'the start group is seeded');
+      assert.strictEqual(textOf(1, 'day'), '25', 'and so is the end group');
+
+      const before = calls.current;
+      await focus(firstSegment(0));
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Delete'
+      );
+
+      assert.strictEqual(
+        seen.current,
+        null,
+        'a range with no start is no range at all'
+      );
+      assert.strictEqual(
+        calls.current,
+        before + 1,
+        'reported exactly once, on the transition'
+      );
+      assert.strictEqual(
+        textOf(1, 'day'),
+        '25',
+        'the digits the user did not touch stay on screen'
+      );
+    });
+
+    test('submits start and end under dot-notated names', async function (assert) {
+      const { submitted, onSubmit } = captureSubmit();
+      const range = {
+        start: new Date(2026, 0, 20),
+        end: new Date(2026, 0, 25)
+      };
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}}>
+            <DatePicker
+              @mode="range"
+              @name="trip"
+              @label="Trip"
+              @locale="en-US"
+              @value={{range}}
+            />
+            <button type="submit">Submit</button>
+          </Form>
+        </template>
+      );
+
+      await click('button[type="submit"]');
+      assert.deepEqual(submitted.current, {
+        trip: { start: '2026-01-20', end: '2026-01-25' }
+      });
+    });
+
+    test('pasting two dates into the start group fills both ends', async function (assert) {
+      const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const onChange = (value: { start: Date; end: Date | null } | null) => {
+        seen.current = value;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(firstSegment(0));
+
+      const data = new DataTransfer();
+      data.setData('text/plain', '2026-01-20 – 2026-01-25');
+      const event = new ClipboardEvent('paste', {
+        clipboardData: data,
+        bubbles: true,
+        cancelable: true
+      });
+      (document.activeElement as HTMLElement).dispatchEvent(event);
+      await settled();
+
+      assert.true(event.defaultPrevented, 'the raw text never reaches the DOM');
+      assert.strictEqual(textOf(0, 'day'), '20', 'the start group is filled');
+      assert.strictEqual(textOf(1, 'day'), '25', 'and so is the end group');
+      assert.strictEqual(seen.current?.start.getDate(), 20);
+      assert.strictEqual(seen.current?.end?.getDate(), 25);
+    });
+
+    test('pasting two dates into the end group is declined', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @mode="range" @label="Trip dates" @locale="en-US" />
+        </template>
+      );
+
+      await focus(firstSegment(1));
+
+      const data = new DataTransfer();
+      data.setData('text/plain', '2026-01-20 – 2026-01-25');
+      (document.activeElement as HTMLElement).dispatchEvent(
+        new ClipboardEvent('paste', {
+          clipboardData: data,
+          bubbles: true,
+          cancelable: true
+        })
+      );
+      await settled();
+
+      assert.strictEqual(
+        textOf(1, 'day'),
+        'dd',
+        'rewriting the start from the end of the field would be surprising'
+      );
+      assert.strictEqual(textOf(0, 'day'), 'dd', 'and the start is untouched');
+    });
+
+    test('picking a range in the calendar writes both groups', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @defaultValue={{janAnchor}}
+          />
+        </template>
+      );
+
+      await click('[data-part="calendar-button"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert.strictEqual(
+        textOf(0, 'day'),
+        '22',
+        'a fresh anchor lands in the start group'
+      );
+      assert.strictEqual(
+        textOf(1, 'day'),
+        'dd',
+        'and the end is cleared until the second click'
+      );
     });
   }
 );
