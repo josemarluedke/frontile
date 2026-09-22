@@ -467,7 +467,10 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   @cached
   get classes() {
     const { datePicker } = useStyles();
-    return datePicker({ size: this.args.inputSize });
+    return datePicker({
+      size: this.args.inputSize,
+      isSegmented: this.isSegmented
+    });
   }
 
   get isRangeMode(): boolean {
@@ -590,6 +593,12 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
             {{p.anchor}}
             class={{this.classes.innerContainer class=@classes.innerContainer}}
             data-part="inner-container"
+            {{! The shell is on this element when segmented, so its invalid and
+            disabled styling has to read from here. `role="group"` inside
+            cannot carry aria-invalid, which is why these are data
+            attributes. }}
+            data-invalid={{if c.isInvalid "true" "false"}}
+            data-disabled={{if @isDisabled "true" "false"}}
           >
             {{#if this.isSegmented}}
               {{! Blur tracking and focus recording ride on splattributes:

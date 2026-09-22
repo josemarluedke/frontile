@@ -246,6 +246,11 @@ class DateInput extends Component<DateInputSignature> {
         <div
           class={{this.classes.innerContainer class=@classes.innerContainer}}
           data-part="inner-container"
+          {{! The field shell lives here, not on the segment row, so the clear
+          button sits inside the border. `role="group"` supports neither
+          aria-invalid nor aria-disabled, so the shell styles off these. }}
+          data-invalid={{if c.isInvalid "true" "false"}}
+          data-disabled={{if @isDisabled "true" "false"}}
         >
           <SegmentGroup
             @parts={{this.parts}}
