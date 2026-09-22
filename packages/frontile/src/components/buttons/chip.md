@@ -88,12 +88,18 @@ import { Chip } from 'frontile';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
+    <Chip @size='xs'>Chip xs</Chip>
     <Chip @size='sm'>Chip sm</Chip>
     <Chip @size='md'>Chip md</Chip>
     <Chip @size='lg'>Chip lg</Chip>
   </div>
 </template>
 ```
+
+`xs` is for dense layouts such as table cells, list rows, and chips inside a form
+field. It uses the same text size as `sm` and gets smaller by dropping height and
+padding, because 12px is about the smallest a label stays readable. Its close
+button is small. If removing the chip is the main action, use `sm` or larger.
 
 The dot and the close button scale with the chip, so a size change does not need
 any other adjustment.
@@ -112,7 +118,7 @@ const noop = (): void => {};
           @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
-          {{#each (array 'sm' 'md' 'lg') as |size|}}
+          {{#each (array 'xs' 'sm' 'md' 'lg') as |size|}}
             <Chip
               @variant={{variant}}
               @color='primary'
