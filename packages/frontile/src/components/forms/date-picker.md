@@ -254,7 +254,7 @@ const value = new Date(2026, 0, 20);
 `@formatOptions` is passed to `Intl.DateTimeFormat` alongside `@locale`. On the button
 trigger it formats the value for display and defaults to `{ dateStyle: 'medium' }`.
 
-```gts preview
+```gts preview collapsible
 import { DatePicker } from 'frontile';
 
 const value = new Date(2026, 0, 20);
