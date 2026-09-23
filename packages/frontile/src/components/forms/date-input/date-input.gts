@@ -137,7 +137,18 @@ class DateInput extends Component<DateInputSignature> {
   syncValue = modifier(
     (_: HTMLElement, [raw]: [Date | string | null | undefined]) => {
       if (raw === undefined) return;
-      this.setParts(fromDate(this.#currentParts, parseDate(raw)));
+
+      const parsed = parseDate(raw);
+
+      // Ignore the echo of our own `@onChange`. A controlled consumer writes
+      // back the value this field just reported, and rewriting the segments
+      // from it would destroy a partial entry: backspacing one digit of the
+      // year un-commits it, so the field composes `null`, reports `null`, and
+      // is handed `null` straight back -- which `fromDate` would spend on
+      // clearing every other segment too. One keystroke would empty the field.
+      if (!hasDateChanged(toDate(this.#currentParts), parsed)) return;
+
+      this.setParts(fromDate(this.#currentParts, parsed));
     }
   );
 

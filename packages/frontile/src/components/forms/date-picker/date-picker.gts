@@ -236,7 +236,15 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     // change has to reach them too; without this a `@value`-controlled picker
     // shows empty segments. `#currentParts` rather than `this.parts` -- see
     // the field's own comment.
-    if (this.isSegmented) {
+    //
+    // Unless the argument is merely the echo of our own `@onChange`: a
+    // controlled consumer writes back what we just reported, and rewriting the
+    // segments from it would destroy a partial entry. Backspacing one digit of
+    // the year un-commits it, so the field composes `null`, reports `null`, and
+    // is handed `null` straight back -- and `writeParts` would spend that on
+    // clearing every other segment, both groups in range mode. One keystroke
+    // would empty the field.
+    if (this.isSegmented && this.segmentsWouldChange(parsed)) {
       this.writeParts(parsed, (edge) =>
         edge === 'start' ? this.#currentParts : this.#currentEndParts
       );
@@ -434,6 +442,30 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
    * nothing. The popover is deliberately left alone -- typing never opened it,
    * so completing a date by typing has nothing to close.
    */
+  /**
+   * Whether an incoming value differs from what the segments already compose.
+   *
+   * Compared edge by edge in range mode rather than by identity: the two are
+   * distinct objects on every report, so an object comparison would always
+   * say "changed" and defeat the guard entirely.
+   */
+  private segmentsWouldChange(incoming: CalendarValue<M> | null): boolean {
+    if (!this.isRangeMode) {
+      return hasDateChanged(
+        toDate(this.#currentParts),
+        incoming as Date | null
+      );
+    }
+
+    const composed = this.rangeFromParts();
+    const next = incoming as DateRange | null;
+
+    return (
+      hasDateChanged(composed?.start ?? null, next?.start ?? null) ||
+      hasDateChanged(composed?.end ?? null, next?.end ?? null)
+    );
+  }
+
   handlePartsChange = (parts: Part[]): void => {
     const before = toDate(this.#currentParts);
     this.setParts(parts);

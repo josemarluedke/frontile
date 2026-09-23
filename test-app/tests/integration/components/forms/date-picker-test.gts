@@ -1961,3 +1961,152 @@ module(
     });
   }
 );
+
+module(
+  'Integration | Component | DatePicker | controlled round-trip',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    function seg(type: 'year' | 'month' | 'day'): HTMLElement {
+      return find(`[data-part="segment"][data-type="${type}"]`) as HTMLElement;
+    }
+
+    async function typeDigits(digits: string): Promise<void> {
+      for (const digit of digits) {
+        await triggerKeyEvent(
+          document.activeElement as Element,
+          'keydown',
+          digit
+        );
+      }
+    }
+
+    test('a controlled picker keeps its digits when Backspace clears the value', async function (assert) {
+      // Backspace un-commits the year, the picker composes null and reports
+      // it, and a controlled consumer writes that null back into @value. The
+      // digits that were not deleted have to survive the round trip.
+      const value = cell<Date | null>(null);
+      const onChange = (next: Date | null) => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @value={{value.current}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(seg('month'));
+      await typeDigits('01202026');
+      assert.strictEqual(
+        (value.current as Date | null)?.getFullYear(),
+        2026,
+        'precondition: a complete date was composed'
+      );
+
+      await focus(seg('year'));
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Backspace'
+      );
+
+      assert.strictEqual(
+        value.current,
+        null,
+        'a partial year composes no date'
+      );
+      assert.dom(seg('month')).hasText('01', 'the month is untouched');
+      assert.dom(seg('day')).hasText('20', 'the day is untouched');
+      assert.dom(seg('year')).hasText('202', 'only the last digit went');
+    });
+
+    test('a controlled range keeps both groups when Backspace clears the value', async function (assert) {
+      const value = cell<{ start: Date; end: Date | null } | null>(null);
+      const onChange = (next: { start: Date; end: Date | null } | null) => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @value={{value.current}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      const groupEls = findAll('[data-part="group"]') as HTMLElement[];
+      await focus(
+        groupEls[0]!.querySelector('[data-part="segment"]') as HTMLElement
+      );
+      await typeDigits('01202026');
+      await focus(
+        groupEls[1]!.querySelector('[data-part="segment"]') as HTMLElement
+      );
+      await typeDigits('01252026');
+
+      assert.strictEqual(
+        value.current?.end?.getDate(),
+        25,
+        'precondition: both ends composed'
+      );
+
+      const startYear = groupEls[0]!.querySelector(
+        '[data-part="segment"][data-type="year"]'
+      ) as HTMLElement;
+      await focus(startYear);
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Backspace'
+      );
+
+      assert.strictEqual(
+        value.current,
+        null,
+        'no start means no range, however complete the end is'
+      );
+      assert
+        .dom(startYear)
+        .hasText('202', 'the start keeps what was not typed');
+      assert
+        .dom(
+          groupEls[1]!.querySelector(
+            '[data-part="segment"][data-type="day"]'
+          ) as HTMLElement
+        )
+        .hasText('25', 'and the end group is not wiped with it');
+    });
+
+    test('a controlled picker still accepts a value its segments do not hold', async function (assert) {
+      const value = cell<Date | null>(new Date(2026, 0, 20));
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @value={{value.current}}
+          />
+        </template>
+      );
+
+      assert.dom(seg('day')).hasText('20');
+
+      value.current = new Date(2026, 1, 14);
+      await settled();
+
+      assert.dom(seg('month')).hasText('02');
+      assert.dom(seg('day')).hasText('14');
+    });
+  }
+);

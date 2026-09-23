@@ -919,3 +919,111 @@ module('Integration | Component | DateInput | forms', function (hooks) {
     assert.dom(segment('month')).hasAttribute('aria-invalid', 'true');
   });
 });
+
+module(
+  'Integration | Component | DateInput | controlled round-trip',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    test('a controlled field keeps its digits when Backspace clears the value', async function (assert) {
+      // The round trip that breaks: Backspace un-commits the year, so the
+      // field composes null and reports it; a controlled consumer writes that
+      // null straight back into @value. The digits the user has not deleted
+      // must survive that, or one Backspace empties the whole field.
+      const value = cell<Date | null>(null);
+      const onChange = (next: Date | null) => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <DateInput
+            @label="Start date"
+            @locale="en-US"
+            @value={{value.current}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(segment('month'));
+      await type('01202026');
+      assert.strictEqual(
+        value.current?.getFullYear(),
+        2026,
+        'precondition: the field composed a complete date'
+      );
+
+      await focus(segment('year'));
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Backspace'
+      );
+
+      assert.strictEqual(
+        value.current,
+        null,
+        'a partial year composes no date'
+      );
+      assert.dom(segment('month')).hasText('01', 'the month is untouched');
+      assert.dom(segment('day')).hasText('20', 'the day is untouched');
+      assert.dom(segment('year')).hasText('202', 'only the last digit went');
+    });
+
+    test('a Field-bound field keeps its digits when Backspace clears the value', async function (assert) {
+      // The case that matters most in practice: `Field` binds `@value` to the
+      // form's data and the field reports into it, so every Field-bound
+      // segmented date field is controlled whether the consumer meant it or
+      // not. Same round trip, reached without anyone opting in.
+      await render(
+        <template>
+          <Form as |f|>
+            <f.Field @name="start" as |field|>
+              <field.DateInput @label="Start date" @locale="en-US" />
+            </f.Field>
+          </Form>
+        </template>
+      );
+
+      await focus(segment('month'));
+      await type('01202026');
+      assert.dom(segment('year')).hasText('2026', 'precondition: fully typed');
+
+      await focus(segment('year'));
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Backspace'
+      );
+
+      assert.dom(segment('month')).hasText('01', 'the month is untouched');
+      assert.dom(segment('day')).hasText('20', 'the day is untouched');
+      assert.dom(segment('year')).hasText('202', 'only the last digit went');
+    });
+
+    test('a controlled field still accepts a value its segments do not hold', async function (assert) {
+      // The other half of the contract: suppressing the echo must not suppress
+      // a genuine argument change.
+      const value = cell<Date | null>(new Date(2026, 0, 20));
+
+      await render(
+        <template>
+          <DateInput
+            @label="Start date"
+            @locale="en-US"
+            @value={{value.current}}
+          />
+        </template>
+      );
+
+      assert.dom(segment('day')).hasText('20');
+
+      value.current = new Date(2026, 1, 14);
+      await settled();
+
+      assert.dom(segment('month')).hasText('02');
+      assert.dom(segment('day')).hasText('14');
+    });
+  }
+);
