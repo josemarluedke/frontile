@@ -13678,10 +13678,10 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Draws a ring around the avatar, offset by a gap in the page background\ncolour.',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+          "Draws a faint hairline just inside the avatar's edge. Pass <code>false</code> to\nremove it.",
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
       },
       {
         identifier: 'lastName',

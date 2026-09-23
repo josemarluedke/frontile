@@ -203,7 +203,14 @@ module(
       assert.dom('[data-test-xl] img').hasClass('p-1');
     });
 
-    test('the ring is off by default', async function (assert) {
+    // The edge is drawn on an ::after layer so it sits over the image. An inset
+    // box-shadow on the root would paint beneath the <img> and be hidden.
+    function edgeOf(selector: string) {
+      const el = document.querySelector(selector) as HTMLElement;
+      return getComputedStyle(el, '::after');
+    }
+
+    test('a hairline edge is drawn over the image by default', async function (assert) {
       await render(
         <template>
           <Avatar data-test-image @src={{GOOD_SRC}} />
@@ -211,19 +218,35 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-image]').doesNotHaveClass('ring-1');
-      assert.dom('[data-test-initials]').doesNotHaveClass('ring-1');
+      for (const selector of ['[data-test-image]', '[data-test-initials]']) {
+        const edge = edgeOf(selector);
+        assert.strictEqual(
+          edge.position,
+          'absolute',
+          `${selector} edge overlays`
+        );
+        assert.ok(
+          edge.boxShadow.includes('inset'),
+          `${selector} edge is an inset hairline, got "${edge.boxShadow}"`
+        );
+      }
+      assert
+        .dom('[data-test-image]')
+        .doesNotHaveClass('ring-offset-1', 'no offset gap around the image');
     });
 
-    test('@isBordered draws the ring', async function (assert) {
+    test('@isBordered={{false}} removes the edge', async function (assert) {
       await render(
         <template>
-          <Avatar data-test-avatar @src={{GOOD_SRC}} @isBordered={{true}} />
+          <Avatar data-test-avatar @src={{GOOD_SRC}} @isBordered={{false}} />
         </template>
       );
 
-      assert.dom('[data-test-avatar]').hasClass('ring-1');
-      assert.dom('[data-test-avatar]').hasClass('ring-offset-1');
+      const edge = edgeOf('[data-test-avatar]');
+      assert.ok(
+        !edge.boxShadow.includes('inset'),
+        `no hairline, got "${edge.boxShadow}"`
+      );
     });
 
     test('a failed image falls back to the initials', async function (assert) {

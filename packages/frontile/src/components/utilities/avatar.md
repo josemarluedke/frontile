@@ -113,25 +113,24 @@ import { hash } from '@ember/helper';
 </template>
 ```
 
-### Bordered
+### Border
 
-`@isBordered` draws a ring around the avatar, offset by a gap in the page
-background colour. It separates the avatar from a busy background, or from its
-neighbours in an overlapping stack.
+Every avatar has a faint hairline just inside its edge, so its shape still
+shows against a page or a photo of the same colour. Pass `@isBordered={{false}}`
+to remove it.
 
 ```gts preview
 import { Avatar } from 'frontile';
 
 <template>
   <div class='flex items-center space-x-4 py-2'>
-    <Avatar @name='Jon Snow' @isBordered={{true}} />
-    <Avatar @src='https://i.pravatar.cc/150?img=5' @isBordered={{true}} />
+    <Avatar @name='Jon Snow' />
+    <Avatar @src='https://i.pravatar.cc/150?img=5' />
+    <Avatar @name='Jon Snow' @isBordered={{false}} />
+    <Avatar @src='https://i.pravatar.cc/150?img=5' @isBordered={{false}} />
   </div>
 </template>
 ```
-
-Before v0.19 every avatar had this ring. It is now off by default; pass
-`@isBordered={{true}}` to keep the previous look.
 
 ### Different Sizes
 

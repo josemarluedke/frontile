@@ -49,12 +49,19 @@ const avatar = tv({
       contain: { img: 'object-contain' }
     },
     /**
-     * Draws a ring with an offset around the avatar, to separate it from a
-     * busy background or from its neighbours in a stack.
+     * Draws a hairline just inside the edge, so the avatar's shape holds
+     * against a page or photo of the same colour.
      */
     isBordered: {
       true: {
-        base: 'ring-1 ring-default ring-offset-1 ring-offset-background'
+        // On ::after so it paints over the image; an inset box-shadow on the
+        // root would sit beneath the <img>. A single translucent line, not an
+        // offset ring, so an image does not get a gap and a second edge.
+        base: [
+          'after:absolute after:inset-0 after:rounded-[inherit]',
+          'after:pointer-events-none',
+          'after:ring-1 after:ring-inset after:ring-surface-overlay-mild'
+        ]
       }
     }
   },
@@ -71,7 +78,7 @@ const avatar = tv({
     size: 'md',
     shape: 'circle',
     fit: 'cover',
-    isBordered: false
+    isBordered: true
   }
 });
 

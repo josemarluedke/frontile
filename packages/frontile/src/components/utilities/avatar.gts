@@ -35,10 +35,10 @@ interface AvatarSignature {
     fit?: AvatarVariants['fit'];
 
     /**
-     * Draws a ring around the avatar, offset by a gap in the page background
-     * colour.
+     * Draws a faint hairline just inside the avatar's edge. Pass `false` to
+     * remove it.
      *
-     * @defaultValue false
+     * @defaultValue true
      */
     isBordered?: boolean;
 
