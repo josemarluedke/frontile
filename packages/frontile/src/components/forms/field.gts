@@ -4,6 +4,7 @@ import { action, get } from '@ember/object';
 import { debounce } from '@ember/runloop';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
+import DateInput from './date-input';
 import DatePicker from './date-picker';
 import Input from './input';
 import InputOtp from './input-otp';
@@ -15,6 +16,7 @@ import Textarea from './textarea';
 
 import type { WithBoundArgs } from '@glint/template';
 import type { FormDataCompiled, FormErrors } from './form';
+import type { DateInputSignature } from './date-input';
 import type { DatePickerSignature } from './date-picker';
 import type { SelectSignature } from './select';
 import type { WithBoundArgsForSignature } from './field-types';
@@ -31,6 +33,11 @@ type BoundMultiSelect<S = unknown> = WithBoundArgsForSignature<
 
 type BoundDatePicker = WithBoundArgsForSignature<
   DatePickerSignature<'single'>,
+  'name' | 'errors' | 'value' | 'onBlur' | 'isDisabled'
+>;
+
+type BoundDateInput = WithBoundArgsForSignature<
+  DateInputSignature,
   'name' | 'errors' | 'value' | 'onBlur' | 'isDisabled'
 >;
 
@@ -103,6 +110,7 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         MultiSelect: BoundMultiSelect;
         DatePicker: BoundDatePicker;
         DateRangePicker: BoundDateRangePicker;
+        DateInput: BoundDateInput;
         Switch: WithBoundArgs<
           typeof Switch,
           | 'name'
@@ -278,6 +286,14 @@ class Field<
         DateRangePicker=(component
           DatePicker
           mode="range"
+          name=@name
+          errors=this.fieldErrors
+          value=this.fieldValue
+          isDisabled=@disabled
+          onBlur=this.handleBlur
+        )
+        DateInput=(component
+          DateInput
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue

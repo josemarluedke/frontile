@@ -4,7 +4,10 @@ import {
   render,
   click,
   find,
+  findAll,
+  focus,
   settled,
+  triggerEvent,
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
@@ -12,6 +15,7 @@ import { trackDeprecations } from '../../../helpers/deprecations';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { DatePicker, Form } from 'frontile';
+import { fillDate, fillDateRange } from 'frontile/test-support';
 
 const jan20 = new Date(2026, 0, 20);
 const janAnchor = { start: new Date(2026, 0, 5), end: new Date(2026, 0, 6) };
@@ -36,6 +40,18 @@ function captureSubmit(): {
   };
 }
 
+/**
+ * The segmented trigger's displayed value. Each non-year segment renders at
+ * its full width, so a month reads "01" rather than "1", and an empty one
+ * reads its placeholder ("mm", "dd", "yyyy").
+ */
+function segmentText(): { month?: string; day?: string; year?: string } {
+  const read = (type: string) =>
+    find(`[data-part="segment"][data-type="${type}"]`)?.textContent?.trim();
+
+  return { month: read('month'), day: read('day'), year: read('year') };
+}
+
 module(
   'Integration | Component | DatePicker | frontile/forms',
   function (hooks) {
@@ -44,7 +60,11 @@ module(
     test('it renders the field with a label and a placeholder', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start date" @placeholder="Pick a date" />
+          <DatePicker
+            @label="Start date"
+            @placeholder="Pick a date"
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -70,6 +90,7 @@ module(
             @placeholder="Pick a date"
             @value={{jan20}}
             @locale="en-US"
+            @isEditable={{false}}
           />
         </template>
       );
@@ -79,13 +100,20 @@ module(
     });
 
     test('it accepts a yyyy-MM-dd string value', async function (assert) {
+      // Kept on the default (segmented) path: parsing a wire string into a
+      // value is the same contract either way, and this is the path a
+      // consumer gets without opting out.
       await render(
         <template>
           <DatePicker @label="Start" @value="2026-01-20" @locale="en-US" />
         </template>
       );
 
-      assert.dom('[data-part="input"]').hasText('Jan 20, 2026');
+      assert.deepEqual(
+        segmentText(),
+        { month: '01', day: '20', year: '2026' },
+        'the string is parsed into the segments'
+      );
     });
 
     test('it honours formatOptions', async function (assert) {
@@ -98,6 +126,7 @@ module(
             @value={{jan20}}
             @locale="en-US"
             @formatOptions={{full}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -110,7 +139,12 @@ module(
 
       await render(
         <template>
-          <DatePicker @label="Start" @isDisabled={{true}} @errors={{errors}} />
+          <DatePicker
+            @label="Start"
+            @isDisabled={{true}}
+            @errors={{errors}}
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -119,10 +153,47 @@ module(
       assert.dom('[data-part="input"]').hasAttribute('data-disabled', 'true');
     });
 
+    test('it reflects disabled and invalid state on the segments', async function (assert) {
+      const errors = ['Required'];
+
+      await render(
+        <template>
+          <DatePicker @label="Start" @isDisabled={{true}} @errors={{errors}} />
+        </template>
+      );
+
+      // There is no <button> to carry the state on this path. It lands on the
+      // field shell (the inner container, which draws the border) and on the
+      // segments themselves -- `role="group"` supports neither aria-invalid
+      // nor aria-disabled as a styling hook, so the group mirrors it as data.
+      assert
+        .dom('[data-part="inner-container"]')
+        .hasAttribute('data-invalid', 'true');
+      assert
+        .dom('[data-part="inner-container"]')
+        .hasAttribute('data-disabled', 'true');
+      assert.dom('[data-part="group"]').hasAttribute('data-invalid', 'true');
+      assert.dom('[data-part="group"]').hasAttribute('aria-disabled', 'true');
+      assert
+        .dom('[data-part="segment"][data-type="month"]')
+        .hasAttribute('aria-invalid', 'true');
+      assert
+        .dom('[data-part="segment"][data-type="month"]')
+        .doesNotHaveAttribute(
+          'tabindex',
+          'a disabled field takes no keyboard focus'
+        );
+    });
+
     test('clicking the trigger opens a calendar in a dialog', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US" />
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -150,6 +221,7 @@ module(
             @defaultValue={{jan20}}
             @locale="en-US"
             @onChange={{onChange}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -180,14 +252,20 @@ module(
         </template>
       );
 
-      assert.dom('[data-part="input"]').hasText('Jan 20, 2026');
+      assert.deepEqual(segmentText(), {
+        month: '01',
+        day: '20',
+        year: '2026'
+      });
 
       external.current = new Date(2026, 1, 14);
       await settled();
 
-      assert
-        .dom('[data-part="input"]')
-        .hasText('Feb 14, 2026', 'a new @value replaces what is displayed');
+      assert.deepEqual(
+        segmentText(),
+        { month: '02', day: '14', year: '2026' },
+        'a new @value replaces what is displayed'
+      );
     });
 
     test('picking a date updates the field without waiting for @value', async function (assert) {
@@ -209,17 +287,26 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
       await click('[data-part="day"][data-key="2026-01-22"]');
 
       assert.strictEqual(seen.current?.getDate(), 22, 'onChange still fires');
-      assert.dom('[data-part="input"]').hasText('Jan 22, 2026');
+      assert.deepEqual(
+        segmentText(),
+        { month: '01', day: '22', year: '2026' },
+        'the field moved although @value is pinned to the 20th'
+      );
     });
 
     test('escape closes and returns focus to the trigger', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start" @defaultValue={{jan20}} @locale="en-US" />
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -237,7 +324,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert.dom('[data-part="day"][data-key="2026-01-20"]').isFocused();
     });
@@ -261,7 +348,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       // Calendar deliberately never sets the native `disabled` attribute on a
       // day button -- a disabled day must stay focusable so the grid can
@@ -286,9 +373,11 @@ module(
         null,
         'clicking an out-of-range day does not fire onChange'
       );
-      assert
-        .dom('[data-part="input"]')
-        .hasText('Jan 20, 2026', 'the trigger text is unchanged');
+      assert.deepEqual(
+        segmentText(),
+        { month: '01', day: '20', year: '2026' },
+        'the displayed value is unchanged'
+      );
       assert
         .dom('[data-component="calendar"]')
         .exists('the popover stays open');
@@ -309,7 +398,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert
         .dom('[data-part="day"][data-key="2026-01-25"]')
@@ -327,6 +416,7 @@ module(
           <DatePicker
             @label="Stay"
             @mode="range"
+            @isEditable={{false}}
             @value={{range}}
             @locale="en-US"
           />
@@ -347,6 +437,7 @@ module(
           <DatePicker
             @label="Stay"
             @mode="range"
+            @isEditable={{false}}
             @defaultValue={{janAnchor}}
             @locale="en-US"
             @onChange={{onChange}}
@@ -377,6 +468,7 @@ module(
           <DatePicker
             @label="Stay"
             @mode="range"
+            @isEditable={{false}}
             @defaultValue={{janAnchor}}
             @locale="en-US"
           />
@@ -405,7 +497,15 @@ module(
         </template>
       );
 
-      assert.dom('[data-part="input"]').hasText('Jan 20, 2026 – Feb 9, 2026');
+      // The default trigger is segmented, so each end is read from its own
+      // group rather than from one formatted string.
+      const ends = findAll('[data-part="group"]').map((group) =>
+        Array.from(group.querySelectorAll('[data-part="segment"]'))
+          .map((segment) => segment.textContent?.trim())
+          .join('/')
+      );
+
+      assert.deepEqual(ends, ['01/20/2026', '02/09/2026']);
     });
 
     test('single mode submits one input under the given name', async function (assert) {
@@ -518,14 +618,18 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert.dom('[data-part="footer"]').exists('the footer renders its slot');
       assert.dom('[data-test-open]').hasText('open');
 
       await click('[data-test-preset]');
 
-      assert.dom('[data-part="input"]').hasText('Jan 31, 2026');
+      assert.deepEqual(
+        segmentText(),
+        { month: '01', day: '31', year: '2026' },
+        'f.setValue writes the field'
+      );
       assert
         .dom('[data-component="calendar"]')
         .doesNotExist('setValue with a complete value closes');
@@ -542,7 +646,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert.dom('[data-test-custom]').hasText('single');
       assert
@@ -553,7 +657,12 @@ module(
     test('the value block owns the trigger content and names the button', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start" @value={{jan20}} @locale="en-US">
+          <DatePicker
+            @label="Start"
+            @value={{jan20}}
+            @locale="en-US"
+            @isEditable={{false}}
+          >
             <:value as |v|>
               <span data-test-custom-value>{{v.formatted}}!</span>
             </:value>
@@ -586,6 +695,36 @@ module(
             @locale="en-US"
             @isClearable={{true}}
             @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await click('[data-part="clear-button"]');
+
+      assert.true(cleared.current, 'onChange is called with null');
+      assert.deepEqual(
+        segmentText(),
+        { month: 'mm', day: 'dd', year: 'yyyy' },
+        'and the segments fall back to their placeholders'
+      );
+    });
+
+    test('the clear button restores the placeholder on the button trigger', async function (assert) {
+      const cleared = cell(false);
+      const onChange = (value: Date | null) => {
+        if (value === null) cleared.current = true;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @placeholder="Pick a date"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isClearable={{true}}
+            @onChange={{onChange}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -642,6 +781,7 @@ module(
             @defaultValue={{jan20}}
             @locale="en-US"
             @isClearable={{true}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -673,6 +813,7 @@ module(
             @defaultValue={{jan20}}
             @locale="en-US"
             @onBlur={{onBlur}}
+            @isEditable={{false}}
           />
         </template>
       );
@@ -713,7 +854,11 @@ module(
         <template>
           <Form @data={{initial}} @onSubmit={{onSubmit}} as |form|>
             <form.Field @name="stay" as |field|>
-              <field.DateRangePicker @label="Stay" @locale="en-US" />
+              <field.DateRangePicker
+                @label="Stay"
+                @locale="en-US"
+                @isEditable={{false}}
+              />
             </form.Field>
             <button type="submit">Save</button>
           </Form>
@@ -736,7 +881,11 @@ module(
     test('the end-content cluster lets clicks fall through to the trigger', async function (assert) {
       await render(
         <template>
-          <DatePicker @label="Start" @placeholder="Pick a date" />
+          <DatePicker
+            @label="Start"
+            @placeholder="Pick a date"
+            @isEditable={{false}}
+          />
         </template>
       );
 
@@ -762,10 +911,20 @@ module(
             @label="Start"
             @defaultValue={{jan20}}
             @isClearable={{true}}
+            @isEditable={{false}}
           />
         </template>
       );
 
+      // Only meaningful on the button-trigger path: that is the one whose
+      // cluster is `pointer-events: none`, so this is where the clear button
+      // has something to opt back out of. On the segmented path the whole
+      // cluster is clickable already.
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="end-content"]')!).pointerEvents,
+        'none',
+        'the surrounding cluster is transparent'
+      );
       assert.strictEqual(
         getComputedStyle(find('[data-part="clear-button"]')!).pointerEvents,
         'auto',
@@ -778,7 +937,7 @@ module(
         <template><DatePicker @label="Start" @locale="en-US" /></template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       const content = find('[data-component="calendar"]')!.parentElement!;
 
@@ -804,7 +963,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert
         .dom(find('[data-component="calendar"]')!.parentElement)
@@ -820,6 +979,7 @@ module(
               <field.DateRangePicker
                 @label="Stay"
                 @locale="en-US"
+                @isEditable={{false}}
                 @defaultValue={{janAnchor}}
               />
             </form.Field>
@@ -860,9 +1020,16 @@ module(
     test('an empty trigger is as tall as one showing a value', async function (assert) {
       await render(
         <template>
-          <div data-test-empty><DatePicker @label="Empty" /></div>
+          <div data-test-empty>
+            <DatePicker @label="Empty" @isEditable={{false}} />
+          </div>
           <div data-test-filled>
-            <DatePicker @label="Filled" @value={{jan20}} @locale="en-US" />
+            <DatePicker
+              @label="Filled"
+              @value={{jan20}}
+              @locale="en-US"
+              @isEditable={{false}}
+            />
           </div>
         </template>
       );
@@ -897,7 +1064,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
       await click('[data-part="day"][data-key="2026-01-22"]');
 
       assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
@@ -914,7 +1081,7 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       // Calendar colors the selected day and the range band from @color, as
       // utility classes rather than a marker class -- so this asserts the
@@ -942,11 +1109,1068 @@ module(
         </template>
       );
 
-      await click('[data-part="input"]');
+      await click('[data-part="calendar-button"]');
 
       assert
         .dom('[data-test-color]')
         .hasText('danger', 'so a custom calendar can spread it');
+    });
+  }
+);
+
+module(
+  'Integration | Component | DatePicker | segmented trigger',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    /** The focused segment, which every typing test types into. */
+    function active(): Element {
+      return document.activeElement as Element;
+    }
+
+    async function type(digits: string): Promise<void> {
+      for (const digit of digits) {
+        await triggerKeyEvent(active(), 'keydown', digit);
+      }
+    }
+
+    test('renders segments by default, not a button trigger', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      assert.dom('[data-part="segment"]').exists({ count: 3 });
+      assert
+        .dom('button[data-part="input"]')
+        .doesNotExist('the old trigger is gone');
+    });
+
+    test('@isEditable={{false}} restores the button trigger', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @isEditable={{false}}
+          />
+        </template>
+      );
+
+      assert.dom('button[data-part="input"]').exists();
+      assert.dom('[data-part="segment"]').doesNotExist();
+    });
+
+    test('the calendar button opens the popover', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      assert.dom('[role="dialog"]').doesNotExist();
+      await click('[data-part="calendar-button"]');
+      assert
+        .dom('[role="dialog"]')
+        .exists('typing and opening are separate gestures');
+    });
+
+    test('typing does not open the popover', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      await focus(
+        find('[data-part="segment"][data-type="month"]') as HTMLElement
+      );
+      await type('1');
+
+      assert.dom('[role="dialog"]').doesNotExist();
+      // Padded, because a non-year segment always renders at its full width.
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('01');
+    });
+
+    test('@value writes the segments', async function (assert) {
+      const value = new Date(2026, 0, 20);
+
+      await render(
+        <template>
+          <DatePicker @label="Start date" @locale="en-US" @value={{value}} />
+        </template>
+      );
+
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('01');
+      assert.dom('[data-part="segment"][data-type="day"]').hasText('20');
+      assert.dom('[data-part="segment"][data-type="year"]').hasText('2026');
+    });
+
+    test('picking a day writes the segments', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+          />
+        </template>
+      );
+
+      await click('[data-part="calendar-button"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('01');
+      assert.dom('[data-part="segment"][data-type="day"]').hasText('22');
+      assert.dom('[data-part="segment"][data-type="year"]').hasText('2026');
+    });
+
+    test('typing a complete date reports it and moves the calendar', async function (assert) {
+      const received = cell<Date | null>(null);
+      const onChange = (v: Date | null) => (received.current = v);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(
+        find('[data-part="segment"][data-type="month"]') as HTMLElement
+      );
+      await type('03152027');
+
+      assert.strictEqual(received.current?.getFullYear(), 2027);
+      assert.strictEqual(received.current?.getMonth(), 2);
+      assert.strictEqual(received.current?.getDate(), 15);
+
+      await click('[data-part="calendar-button"]');
+      assert
+        .dom('[role="dialog"]')
+        .includesText('March', 'the calendar followed the typing');
+    });
+
+    test('typing on does not rewrite the segments underneath it', async function (assert) {
+      const received = cell<Date | null | undefined>(undefined);
+      const onChange = (v: Date | null) => (received.current = v);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(
+        find('[data-part="segment"][data-type="month"]') as HTMLElement
+      );
+      await type('03152027');
+
+      // Retyping the year un-commits it, so the composed value drops back to
+      // null -- a value change like any other. If that change wrote the
+      // segments back, it would clear the month and day the user just typed
+      // and replace the year they are mid-way through.
+      await type('1');
+
+      assert.strictEqual(
+        received.current,
+        null,
+        'an incomplete date composes nothing'
+      );
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('03');
+      assert.dom('[data-part="segment"][data-type="day"]').hasText('15');
+      assert.dom('[data-part="segment"][data-type="year"]').hasText('1');
+    });
+
+    test('Escape closes the popover and returns focus to the segment', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      // The year, not the month: the first segment is also the fallback, so
+      // only a later one can show that the field remembers where focus was.
+      const year = find(
+        '[data-part="segment"][data-type="year"]'
+      ) as HTMLElement;
+      await focus(year);
+      await click('[data-part="calendar-button"]');
+      assert.dom('[role="dialog"]').exists();
+
+      await triggerKeyEvent(active(), 'keydown', 'Escape');
+
+      assert.dom('[role="dialog"]').doesNotExist();
+      assert.strictEqual(
+        document.activeElement,
+        year,
+        'focus returns to the segment the user was in, not to <body>'
+      );
+    });
+
+    test('closing with no segment ever focused falls back to the first one', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+          />
+        </template>
+      );
+
+      await click('[data-part="calendar-button"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert
+        .dom('[role="dialog"]')
+        .doesNotExist('a complete pick closes the popover');
+      assert.strictEqual(
+        document.activeElement,
+        find('[data-part="segment"][data-type="month"]'),
+        'focus lands on the first segment rather than <body>'
+      );
+    });
+
+    test('clearing empties the segments and keeps focus in the field', async function (assert) {
+      const value = new Date(2026, 0, 20);
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @value={{value}}
+            @isClearable={{true}}
+          />
+        </template>
+      );
+
+      await click('[data-part="clear-button"]');
+
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('mm');
+      assert.dom('[data-part="segment"][data-type="year"]').hasText('yyyy');
+      assert.strictEqual(
+        document.activeElement,
+        find('[data-part="segment"][data-type="month"]'),
+        'focus does not fall to <body> when the clear button disappears'
+      );
+    });
+
+    test('a clearable field keeps its calendar button', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+          />
+        </template>
+      );
+
+      // The clear button cannot take the calendar button's place here the way
+      // it does on the button-trigger path: nothing else opens the popover, so
+      // a clearable picker holding a value would stop being a picker.
+      assert
+        .dom('[data-part="clear-button"]')
+        .exists('both controls are present');
+      assert.dom('[data-part="calendar-button"]').exists();
+
+      await click('[data-part="calendar-button"]');
+      assert
+        .dom('[role="dialog"]')
+        .exists('the calendar still opens with a value set');
+    });
+
+    test('@isEditable={{false}} still swaps the icon for the clear button', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+            @isEditable={{false}}
+          />
+        </template>
+      );
+
+      // On that path the trigger itself opens the popover, so the icon is
+      // decorative and the either/or costs nothing.
+      assert.dom('[data-part="clear-button"]').exists();
+      // Not `[data-part="icon"]`: CloseButton renders one of its own, so the
+      // absence of the *calendar* is what the either/or actually says.
+      assert
+        .dom('[data-part="calendar-button"]')
+        .doesNotExist('the calendar icon gave way to the clear button');
+    });
+
+    test('no clear button on a disabled or a read-only field', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+            @isDisabled={{true}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-part="clear-button"]')
+        .doesNotExist('a disabled field offers nothing to press');
+      assert
+        .dom('[data-part="calendar-button"]')
+        .exists('the calendar button stays');
+      assert.dom('[data-part="calendar-button"]').isDisabled();
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @isClearable={{true}}
+            @isReadOnly={{true}}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-part="clear-button"]')
+        .doesNotExist('nor does a read-only one, which may not be changed');
+      assert
+        .dom('[data-part="calendar-button"]')
+        .exists('but it can still be read');
+    });
+
+    test('a typed date reaches an enclosing Form', async function (assert) {
+      const { submitted, onSubmit } = captureSubmit();
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}} as |form|>
+            <form.Field @name="start" as |field|>
+              <field.DatePicker @label="Start date" @locale="en-US" />
+            </form.Field>
+            <button type="submit">Save</button>
+          </Form>
+        </template>
+      );
+
+      await focus(
+        find('[data-part="segment"][data-type="month"]') as HTMLElement
+      );
+      await type('03152027');
+      await click('button[type="submit"]');
+
+      assert.deepEqual(submitted.current, { start: '2027-03-15' });
+    });
+
+    test('the end-content cluster takes pointer events', async function (assert) {
+      await render(
+        <template><DatePicker @label="Start date" @locale="en-US" /></template>
+      );
+
+      // There is no button trigger underneath for a click to fall through to:
+      // with pointer events off, the calendar button is a dead control and the
+      // calendar cannot be opened at all.
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="end-content"]') as Element)
+          .pointerEvents,
+        'auto',
+        'the cluster is clickable on the segmented path'
+      );
+    });
+
+    test('onBlur does not fire when focus moves from a segment into the calendar', async function (assert) {
+      const blurs = cell(0);
+      const onBlur = () => blurs.current++;
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @defaultValue={{jan20}}
+            @onBlur={{onBlur}}
+          />
+        </template>
+      );
+
+      await click('[data-part="calendar-button"]');
+      assert.dom('[data-component="calendar"]').exists('the calendar is open');
+
+      // The popover is portaled, so a day is not a DOM descendant of the
+      // field: the blur tracker has to find the content through the element
+      // the popover's trigger modifier sits on, which on this path is the
+      // calendar button rather than the (absent) button trigger. Dispatched
+      // rather than performed because reaching a day from a segment by hand
+      // takes the focus through the button first.
+      await triggerEvent('[data-part="group"]', 'focusout', {
+        relatedTarget: find('[data-part="day"][data-key="2026-01-22"]')
+      });
+
+      assert.strictEqual(
+        blurs.current,
+        0,
+        'entering the popover is not leaving the control'
+      );
+    });
+
+    test('a textual @formatOptions falls back to numeric segments', async function (assert) {
+      const options = { dateStyle: 'medium' } as Intl.DateTimeFormatOptions;
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Date"
+            @locale="en-US"
+            @formatOptions={{options}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="segment"]').exists({ count: 3 });
+      // `{ dateStyle: 'medium' }` would lay the field out as "mmm dd, yyyy".
+      // The fallback is the numeric default, separators and all.
+      assert.dom('[data-part="literal"]').hasText('/');
+      assert.dom('[data-part="segment"][data-type="month"]').hasText('mm');
+    });
+  }
+);
+
+module(
+  'Integration | Component | DatePicker | range segments',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    /** The two `role="group"` elements, start first. */
+    function groups(): HTMLElement[] {
+      return findAll('[data-part="group"]') as HTMLElement[];
+    }
+
+    /** The first segment of one of them, which is where typing starts. */
+    function firstSegment(which: 0 | 1): HTMLElement {
+      return groups()[which]!.querySelector(
+        '[data-part="segment"]'
+      ) as HTMLElement;
+    }
+
+    function textOf(which: 0 | 1, type: string): string | undefined {
+      return groups()
+        [which]!.querySelector(`[data-part="segment"][data-type="${type}"]`)
+        ?.textContent?.trim();
+    }
+
+    async function type(digits: string): Promise<void> {
+      for (const digit of digits) {
+        await triggerKeyEvent(
+          document.activeElement as Element,
+          'keydown',
+          digit
+        );
+      }
+    }
+
+    test('renders two groups, a separator and six segments', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @mode="range" @label="Trip dates" @locale="en-US" />
+        </template>
+      );
+
+      assert.dom('[data-part="group"]').exists({ count: 2 });
+      assert.dom('[data-part="separator"]').exists({ count: 1 });
+      assert.dom('[data-part="segment"]').exists({ count: 6 });
+      assert
+        .dom('button[data-part="input"]')
+        .doesNotExist('range mode no longer forces the button trigger');
+    });
+
+    test('the two groups sit together rather than splitting the field', async function (assert) {
+      // Both groups growing would leave the separator stranded mid-field with
+      // dead space on either side of it, instead of reading as one
+      // "start - end" phrase. Measured rather than asserted on class names, so
+      // it survives the classes being renamed.
+      await render(
+        <template>
+          <DatePicker @mode="range" @label="Trip dates" @locale="en-US" />
+        </template>
+      );
+
+      const [start, end] = groups();
+
+      // Each group must be exactly as wide as the segments inside it: too wide
+      // and the separator is stranded mid-field, but zero-wide is the opposite
+      // failure -- dropping only `grow` from `flex-1` leaves a 0% basis with
+      // shrink still on, which collapses the group and overflows its segments.
+      for (const group of [start!, end!]) {
+        const segments = Array.from(
+          group.querySelectorAll('[data-part="segment"], [data-part="literal"]')
+        );
+        const first = segments[0] as HTMLElement;
+        const last = segments[segments.length - 1] as HTMLElement;
+        const content =
+          last.getBoundingClientRect().right -
+          first.getBoundingClientRect().left;
+
+        assert.ok(content > 0, 'the group has rendered content');
+        assert.ok(
+          Math.abs(group.getBoundingClientRect().width - content) < 4,
+          `the group hugs its segments (group ${Math.round(
+            group.getBoundingClientRect().width
+          )}px vs content ${Math.round(content)}px)`
+        );
+      }
+
+      const separator = find('[data-part="separator"]') as HTMLElement;
+      const gap =
+        separator.getBoundingClientRect().left -
+        start!.getBoundingClientRect().right;
+
+      assert.ok(
+        gap < 4,
+        `the separator follows the start group directly (gap was ${gap}px)`
+      );
+    });
+
+    test('@isEditable={{false}} still restores the button trigger', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @isEditable={{false}}
+            @label="Trip dates"
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      assert.dom('button[data-part="input"]').exists();
+      assert.dom('[data-part="group"]').doesNotExist();
+    });
+
+    test('each group carries its own accessible name and id', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @description="When you travel"
+            @locale="en-US"
+          />
+        </template>
+      );
+
+      const [start, end] = groups();
+
+      assert
+        .dom(start)
+        .hasAttribute(
+          'aria-label',
+          'Trip dates start',
+          'the start group names itself from @label'
+        );
+      assert
+        .dom(end)
+        .hasAttribute(
+          'aria-label',
+          'Trip dates end',
+          'and the end group differs from it'
+        );
+
+      const startId = start!.getAttribute('id');
+      const endId = end!.getAttribute('id');
+      assert.ok(startId, 'the start group has an id');
+      assert.ok(endId, 'the end group has an id');
+      assert.notStrictEqual(startId, endId, 'the two ids are distinct');
+      assert.strictEqual(
+        document.querySelectorAll(`#${CSS.escape(startId!)}`).length,
+        1,
+        'and each is unique in the document'
+      );
+
+      const describedBy = start!.getAttribute('aria-describedby');
+      assert.ok(
+        describedBy && find(`#${CSS.escape(describedBy.split(' ')[0]!)}`),
+        'aria-describedby still reaches the description'
+      );
+      assert.strictEqual(
+        end!.getAttribute('aria-describedby'),
+        describedBy,
+        'both groups are described by the same help text'
+      );
+    });
+
+    test('a group with no @label is still named', async function (assert) {
+      await render(
+        <template><DatePicker @mode="range" @locale="en-US" /></template>
+      );
+
+      assert.dom(groups()[0]).hasAttribute('aria-label', 'start date');
+      assert.dom(groups()[1]).hasAttribute('aria-label', 'end date');
+    });
+
+    test('typing both ends produces a range', async function (assert) {
+      const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const calls = cell(0);
+      const onChange = (value: { start: Date; end: Date | null } | null) => {
+        seen.current = value;
+        calls.current = calls.current + 1;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(firstSegment(0));
+      await type('01202026');
+
+      assert.strictEqual(
+        calls.current,
+        1,
+        'eight keystrokes, one report -- only the one that completed a date'
+      );
+      assert.strictEqual(
+        seen.current?.start.getDate(),
+        20,
+        'the start is reported as soon as it composes'
+      );
+      assert.strictEqual(
+        seen.current?.end,
+        null,
+        'with a half-open end, the shape the calendar produces mid-selection'
+      );
+
+      await focus(firstSegment(1));
+      await type('01252026');
+
+      assert.strictEqual(calls.current, 2, 'and one more for the second end');
+      assert.strictEqual(seen.current?.start.getDate(), 20);
+      assert.strictEqual(seen.current?.end?.getDate(), 25);
+    });
+
+    test('clearing the start reports null rather than keeping a stale range', async function (assert) {
+      const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const calls = cell(0);
+      const onChange = (value: { start: Date; end: Date | null } | null) => {
+        seen.current = value;
+        calls.current = calls.current + 1;
+      };
+      const range = {
+        start: new Date(2026, 0, 20),
+        end: new Date(2026, 0, 25)
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @defaultValue={{range}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      assert.strictEqual(textOf(0, 'day'), '20', 'the start group is seeded');
+      assert.strictEqual(textOf(1, 'day'), '25', 'and so is the end group');
+
+      const before = calls.current;
+      await focus(firstSegment(0));
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Delete'
+      );
+
+      assert.strictEqual(
+        seen.current,
+        null,
+        'a range with no start is no range at all'
+      );
+      assert.strictEqual(
+        calls.current,
+        before + 1,
+        'reported exactly once, on the transition'
+      );
+      assert.strictEqual(
+        textOf(1, 'day'),
+        '25',
+        'the digits the user did not touch stay on screen'
+      );
+
+      // Clearing an already-empty segment is a keystroke that moves nothing.
+      // Without a transition check every one of them would report `null`
+      // again, and a consumer would see churn for input it already has.
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Delete'
+      );
+
+      assert.strictEqual(
+        calls.current,
+        before + 1,
+        'and a keystroke that changes no date reports nothing'
+      );
+    });
+
+    test('submits start and end under dot-notated names', async function (assert) {
+      const { submitted, onSubmit } = captureSubmit();
+      const range = {
+        start: new Date(2026, 0, 20),
+        end: new Date(2026, 0, 25)
+      };
+
+      await render(
+        <template>
+          <Form @onSubmit={{onSubmit}}>
+            <DatePicker
+              @mode="range"
+              @name="trip"
+              @label="Trip"
+              @locale="en-US"
+              @value={{range}}
+            />
+            <button type="submit">Submit</button>
+          </Form>
+        </template>
+      );
+
+      await click('button[type="submit"]');
+      assert.deepEqual(submitted.current, {
+        trip: { start: '2026-01-20', end: '2026-01-25' }
+      });
+    });
+
+    test('pasting two dates into the start group fills both ends', async function (assert) {
+      const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const onChange = (value: { start: Date; end: Date | null } | null) => {
+        seen.current = value;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(firstSegment(0));
+
+      const data = new DataTransfer();
+      data.setData('text/plain', '2026-01-20 – 2026-01-25');
+      const event = new ClipboardEvent('paste', {
+        clipboardData: data,
+        bubbles: true,
+        cancelable: true
+      });
+      (document.activeElement as HTMLElement).dispatchEvent(event);
+      await settled();
+
+      assert.true(event.defaultPrevented, 'the raw text never reaches the DOM');
+      assert.strictEqual(textOf(0, 'day'), '20', 'the start group is filled');
+      assert.strictEqual(textOf(1, 'day'), '25', 'and so is the end group');
+      assert.strictEqual(seen.current?.start.getDate(), 20);
+      assert.strictEqual(seen.current?.end?.getDate(), 25);
+    });
+
+    test('pasting two dates into the end group is declined', async function (assert) {
+      await render(
+        <template>
+          <DatePicker @mode="range" @label="Trip dates" @locale="en-US" />
+        </template>
+      );
+
+      await focus(firstSegment(1));
+
+      const data = new DataTransfer();
+      data.setData('text/plain', '2026-01-20 – 2026-01-25');
+      (document.activeElement as HTMLElement).dispatchEvent(
+        new ClipboardEvent('paste', {
+          clipboardData: data,
+          bubbles: true,
+          cancelable: true
+        })
+      );
+      await settled();
+
+      assert.strictEqual(
+        textOf(1, 'day'),
+        'dd',
+        'rewriting the start from the end of the field would be surprising'
+      );
+      assert.strictEqual(textOf(0, 'day'), 'dd', 'and the start is untouched');
+    });
+
+    test('picking a range in the calendar writes both groups', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @defaultValue={{janAnchor}}
+          />
+        </template>
+      );
+
+      assert.strictEqual(
+        textOf(1, 'day'),
+        '06',
+        'the seeded end is in the end group to begin with'
+      );
+
+      await click('[data-part="calendar-button"]');
+      await click('[data-part="day"][data-key="2026-01-22"]');
+
+      assert.strictEqual(
+        textOf(0, 'day'),
+        '22',
+        'a fresh anchor lands in the start group'
+      );
+      assert.strictEqual(
+        textOf(1, 'day'),
+        'dd',
+        'and the end group is cleared with it, until the second click'
+      );
+
+      await click('[data-part="day"][data-key="2026-01-25"]');
+
+      assert.strictEqual(
+        textOf(1, 'day'),
+        '25',
+        'which then writes the end group'
+      );
+    });
+  }
+);
+
+module(
+  'Integration | Component | DatePicker | controlled round-trip',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    function seg(type: 'year' | 'month' | 'day'): HTMLElement {
+      return find(`[data-part="segment"][data-type="${type}"]`) as HTMLElement;
+    }
+
+    async function typeDigits(digits: string): Promise<void> {
+      for (const digit of digits) {
+        await triggerKeyEvent(
+          document.activeElement as Element,
+          'keydown',
+          digit
+        );
+      }
+    }
+
+    test('a controlled picker keeps its digits when Backspace clears the value', async function (assert) {
+      // Backspace un-commits the year, the picker composes null and reports
+      // it, and a controlled consumer writes that null back into @value. The
+      // digits that were not deleted have to survive the round trip.
+      const value = cell<Date | null>(null);
+      const onChange = (next: Date | null) => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @value={{value.current}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      await focus(seg('month'));
+      await typeDigits('01202026');
+      assert.strictEqual(
+        (value.current as Date | null)?.getFullYear(),
+        2026,
+        'precondition: a complete date was composed'
+      );
+
+      await focus(seg('year'));
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Backspace'
+      );
+
+      assert.strictEqual(
+        value.current,
+        null,
+        'a partial year composes no date'
+      );
+      assert.dom(seg('month')).hasText('01', 'the month is untouched');
+      assert.dom(seg('day')).hasText('20', 'the day is untouched');
+      assert.dom(seg('year')).hasText('202', 'only the last digit went');
+    });
+
+    test('a controlled range keeps both groups when Backspace clears the value', async function (assert) {
+      const value = cell<{ start: Date; end: Date | null } | null>(null);
+      const onChange = (next: { start: Date; end: Date | null } | null) => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <DatePicker
+            @mode="range"
+            @label="Trip dates"
+            @locale="en-US"
+            @value={{value.current}}
+            @onChange={{onChange}}
+          />
+        </template>
+      );
+
+      const groupEls = findAll('[data-part="group"]') as HTMLElement[];
+      await focus(
+        groupEls[0]!.querySelector('[data-part="segment"]') as HTMLElement
+      );
+      await typeDigits('01202026');
+      await focus(
+        groupEls[1]!.querySelector('[data-part="segment"]') as HTMLElement
+      );
+      await typeDigits('01252026');
+
+      assert.strictEqual(
+        value.current?.end?.getDate(),
+        25,
+        'precondition: both ends composed'
+      );
+
+      const startYear = groupEls[0]!.querySelector(
+        '[data-part="segment"][data-type="year"]'
+      ) as HTMLElement;
+      await focus(startYear);
+      await triggerKeyEvent(
+        document.activeElement as Element,
+        'keydown',
+        'Backspace'
+      );
+
+      assert.strictEqual(
+        value.current,
+        null,
+        'no start means no range, however complete the end is'
+      );
+      assert
+        .dom(startYear)
+        .hasText('202', 'the start keeps what was not typed');
+      assert
+        .dom(
+          groupEls[1]!.querySelector(
+            '[data-part="segment"][data-type="day"]'
+          ) as HTMLElement
+        )
+        .hasText('25', 'and the end group is not wiped with it');
+    });
+
+    test('a controlled picker still accepts a value its segments do not hold', async function (assert) {
+      const value = cell<Date | null>(new Date(2026, 0, 20));
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Start date"
+            @locale="en-US"
+            @value={{value.current}}
+          />
+        </template>
+      );
+
+      assert.dom(seg('day')).hasText('20');
+
+      value.current = new Date(2026, 1, 14);
+      await settled();
+
+      assert.dom(seg('month')).hasText('02');
+      assert.dom(seg('day')).hasText('14');
+    });
+  }
+);
+
+module(
+  'Integration | Component | DatePicker | test-support helpers',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    test('fillDateRange fills both ends', async function (assert) {
+      const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const onChange = (next: { start: Date; end: Date | null } | null) => {
+        seen.current = next;
+      };
+
+      await render(
+        <template>
+          <div data-test-trip>
+            <DatePicker
+              @mode="range"
+              @label="Trip"
+              @locale="en-US"
+              @onChange={{onChange}}
+            />
+          </div>
+        </template>
+      );
+
+      await fillDateRange('[data-test-trip]', '2026-01-20', '2026-01-25');
+
+      assert.strictEqual(seen.current?.start.getDate(), 20);
+      assert.strictEqual(seen.current?.end?.getDate(), 25);
+
+      const groupEls = findAll('[data-part="group"]') as HTMLElement[];
+      assert
+        .dom(
+          groupEls[1]!.querySelector(
+            '[data-part="segment"][data-type="day"]'
+          ) as HTMLElement
+        )
+        .hasText('25', 'the end group really was filled, not just the start');
+    });
+
+    test('fillDate submits through a Form the same as typing', async function (assert) {
+      const { submitted, onSubmit } = captureSubmit();
+
+      await render(
+        <template>
+          <div data-test-field>
+            <Form @onSubmit={{onSubmit}} as |f|>
+              <f.Field @name="due" as |field|>
+                <field.DatePicker @label="Due" @locale="en-US" />
+              </f.Field>
+              <button type="submit">Submit</button>
+            </Form>
+          </div>
+        </template>
+      );
+
+      await fillDate('[data-test-field]', '2026-01-20');
+      await click('button[type="submit"]');
+
+      assert.deepEqual(submitted.current, { due: '2026-01-20' });
     });
   }
 );

@@ -106,6 +106,56 @@ const fieldShell = [
   'selection:bg-surface-overlay-soft'
 ];
 
+/**
+ * The field shell for a segmented date field.
+ *
+ * It goes on the container rather than on the segment row, so the clear and
+ * calendar buttons sit inside the border with the segments. Focus lands on an
+ * individual segment, never on the container, so the ring is `focus-within`;
+ * and `role="group"` supports neither `aria-invalid` nor `aria-readonly`, so
+ * the invalid and disabled states are read from data attributes the host
+ * writes instead of from ARIA.
+ */
+const segmentedFieldShell = [
+  'relative flex items-center w-full',
+  ...fieldShell,
+  'font-body text-base leading-tight text-neutral-strong',
+  'focus-within:ring-3',
+  'focus-within:ring-focus',
+  'focus-within:border-primary',
+  'data-[invalid=true]:border-danger',
+  'data-[invalid=true]:focus-within:ring-danger-muted',
+  'data-[disabled=true]:border-neutral-subtle',
+  'data-[disabled=true]:text-neutral-soft'
+];
+
+/**
+ * The segment row, shared by `dateInput` and `datePicker`.
+ *
+ * Spread into both rather than duplicated: the tv() note below excuses
+ * restating slots *inherited from `input`*, which is a typing constraint --
+ * these are new strings, and keeping two copies had already let `gap-0` land
+ * in one and not the other.
+ */
+const segmentRowSlots = {
+  // `tabular-nums` stops the field twitching as digits change width;
+  // `select-none` keeps a drag across segments from starting a text selection
+  // that spans them.
+  group: 'flex items-center flex-1 min-w-0 gap-0 tabular-nums select-none',
+  segment: [
+    'rounded-xs px-px outline-none caret-transparent',
+    'focus:bg-primary focus:text-on-primary',
+    'data-[placeholder=true]:text-neutral',
+    // The focused segment is filled with `primary`, so a placeholder sitting
+    // in it has to take the contrast colour too. Stated as a combined variant
+    // rather than relying on source order: both rules are one class deep
+    // otherwise, and whichever Tailwind emits last would win.
+    'focus:data-[placeholder=true]:text-on-primary',
+    'data-[disabled=true]:pointer-events-none'
+  ],
+  literal: 'text-neutral-soft px-px'
+};
+
 const input = tv({
   slots: {
     base: '',
@@ -516,6 +566,11 @@ const datePicker = tv({
     base: [],
     placeholder: 'text-neutral',
     input: 'cursor-default text-left',
+    // Restated from `input` rather than inherited: tv() drops inherited slot
+    // names from the variant type, and `isSegmented` below has to target
+    // both of these.
+    innerContainer: 'relative flex',
+    endContent: 'absolute inset-y-0 right-0 flex items-center',
     // The calendar sits in the popover, which supplies its own surface and
     // padding, so this only reserves room around the grid.
     calendar: 'p-2',
@@ -533,7 +588,13 @@ const datePicker = tv({
       'border-t border-neutral-soft p-2'
     ],
     icon: 'w-5 h-5',
-    clearButton: 'pointer-events-auto'
+    clearButton: 'pointer-events-auto',
+    ...segmentRowSlots,
+    // Sits between the two groups of a `@mode="range"` field. `DatePicker`
+    // renders it, not `SegmentGroup` -- it separates groups rather than
+    // living inside one.
+    separator: 'text-neutral px-1',
+    calendarButton: 'pointer-events-auto'
   },
   variants: {
     // The trigger is a `<button>` whose text *is* the value, so with neither a
@@ -551,6 +612,67 @@ const datePicker = tv({
       sm: { input: 'min-h-[calc(1.25rem+1rem+2px)]' },
       md: { input: 'min-h-[calc(1.25rem+1.5rem+2px)]' },
       lg: { input: 'min-h-[calc(1.25rem+2rem+2px)]' }
+    },
+    // The segmented trigger renders no `<button>`, so nothing carries the
+    // field shell. It moves onto the container, which is also what puts the
+    // clear and calendar buttons inside the border rather than beyond it.
+    isSegmented: {
+      true: {
+        innerContainer: segmentedFieldShell,
+        // With no trigger underneath to click through to, the cluster sits in
+        // flow beside the segments instead of floating over the field's right
+        // edge.
+        // `ms-auto` rather than relying on the group's `flex-1` to push it:
+        // in range mode the groups no longer grow (see `isRange`), so without
+        // this the cluster would sit tight against the end group instead of
+        // at the field's right edge.
+        endContent:
+          'static top-auto bottom-auto right-auto p-0 gap-1 shrink-0 ms-auto'
+      }
+    },
+    // Two groups sharing one shell must not each claim half of it -- growing
+    // would strand the separator in the middle of the field with a gap of
+    // dead space on either side, instead of reading as one `start - end`
+    // phrase. The end content takes the slack instead.
+    // `flex-none`, not `grow-0`: the group's `flex-1` is `flex: 1 1 0%`, so
+    // removing only the grow leaves a 0% basis with shrink still on and the
+    // group collapses to zero width with its segments overflowing it.
+    isRange: {
+      true: { group: 'flex-none' }
+    }
+  },
+  compoundVariants: [
+    // Padding follows the shell onto the container, for the same reason.
+    { isSegmented: true, size: 'sm', class: { innerContainer: 'p-2' } },
+    { isSegmented: true, size: 'md', class: { innerContainer: 'p-3' } },
+    { isSegmented: true, size: 'lg', class: { innerContainer: 'p-4' } }
+  ],
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
+// Extends `input` directly, not `datePicker`: tv() loses slot types across a
+// two-level extend, which is why `datePicker` extends `input` too.
+const dateInput = tv({
+  extend: input,
+  slots: {
+    base: [],
+    innerContainer: segmentedFieldShell,
+    ...segmentRowSlots,
+    endContent: 'flex items-center gap-1 shrink-0',
+    icon: 'w-5 h-5',
+    clearButton: 'pointer-events-auto',
+    calendarButton: 'pointer-events-auto'
+  },
+  variants: {
+    // `input`'s size variant pads the `input` slot, which a segmented field
+    // does not render -- the padding has to move onto the container that
+    // actually draws the shell.
+    size: {
+      sm: { innerContainer: 'p-2' },
+      md: { innerContainer: 'p-3' },
+      lg: { innerContainer: 'p-4' }
     }
   },
   defaultVariants: {
@@ -781,6 +903,8 @@ export type SwitchVariants = VariantProps<typeof switchInput>;
 export type SwitchSlots = keyof ReturnType<typeof switchInput>;
 export type DatePickerVariants = VariantProps<typeof datePicker>;
 export type DatePickerSlots = keyof ReturnType<typeof datePicker>;
+export type DateInputVariants = VariantProps<typeof dateInput>;
+export type DateInputSlots = keyof ReturnType<typeof dateInput>;
 
 export {
   label,
@@ -797,5 +921,6 @@ export {
   checkboxGroup,
   radioGroup,
   switchInput,
-  datePicker
+  datePicker,
+  dateInput
 };
