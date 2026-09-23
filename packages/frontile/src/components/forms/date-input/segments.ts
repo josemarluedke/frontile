@@ -1,3 +1,4 @@
+import { warn } from '@ember/debug';
 import type { Part, Segment, SegmentType } from './types';
 
 /**
@@ -142,8 +143,7 @@ function applyDigit(
   // left to wait for. `bufferValue` returning null (below `min`) behaves like
   // 0 here, same as the original non-null-assertion-based comparison did.
   const extended = bufferValue(segment, buffer + '0') ?? 0;
-  const canExtend = !atWidth && extended <= segment.max;
-  const isFull = atWidth || !canExtend;
+  const isFull = atWidth || extended > segment.max;
 
   // A segment that can take no further digit is finished, so it commits here
   // rather than waiting for focus to leave.
@@ -168,16 +168,26 @@ function commitSegment(segment: Segment): Segment {
     segment.buffer.length > 0 &&
     segment.buffer.length <= 2
   ) {
-    const value = resolveTwoDigitYear(segment.buffer);
-    return {
-      ...segment,
-      value,
-      buffer: String(value).padStart(segment.width, '0'),
-      isCommitted: true
-    };
+    return withValue(segment, resolveTwoDigitYear(segment.buffer));
   }
 
   return { ...segment, isCommitted: true };
+}
+
+/**
+ * A segment holding `value` as a finished answer.
+ *
+ * The zero-padded buffer is the paired invariant of `displaySegment`, which
+ * reads the buffer back out -- so every path that sets a value goes through
+ * here rather than restating the padding and risking the two drifting.
+ */
+function withValue(segment: Segment, value: number): Segment {
+  return {
+    ...segment,
+    value,
+    buffer: String(value).padStart(segment.width, '0'),
+    isCommitted: true
+  };
 }
 
 /** Clears both the value and the digits behind it. */
@@ -216,13 +226,7 @@ function step(
   placeholderValue: Date
 ): Segment {
   if (segment.value === null) {
-    const seeded = seedFrom(segment.type, placeholderValue);
-    return {
-      ...segment,
-      value: seeded,
-      buffer: String(seeded).padStart(segment.width, '0'),
-      isCommitted: true
-    };
+    return withValue(segment, seedFrom(segment.type, placeholderValue));
   }
 
   const span = segment.max - segment.min + 1;
@@ -230,14 +234,8 @@ function step(
   // Modulo twice: JavaScript's % keeps the sign of the dividend, so a
   // decrement past the floor would otherwise land on a negative value.
   const wrapped = ((offset % span) + span) % span;
-  const value = wrapped + segment.min;
 
-  return {
-    ...segment,
-    value,
-    buffer: String(value).padStart(segment.width, '0'),
-    isCommitted: true
-  };
+  return withValue(segment, wrapped + segment.min);
 }
 
 /**
@@ -350,6 +348,25 @@ function toNumericFormat(
   return { ...options, month: 'numeric' };
 }
 
+/**
+ * The format the segments should actually be built from, warning when that is
+ * not the one asked for.
+ *
+ * Both hosts need the identical policy and differ only in what they call
+ * themselves, so the message is passed in rather than the rule being written
+ * out twice and left to drift.
+ */
+function resolveSegmentFormat(
+  given: Intl.DateTimeFormatOptions | undefined,
+  warning: { message: string; id: string }
+): Intl.DateTimeFormatOptions | undefined {
+  if (!given || !hasTextualMonth(given)) return given;
+
+  warn(warning.message, false, { id: warning.id });
+
+  return toNumericFormat(given);
+}
+
 /** Whether two composed values differ -- `null` (no date) included. */
 function hasDateChanged(before: Date | null, after: Date | null): boolean {
   if (before === null || after === null) return before !== after;
@@ -362,13 +379,7 @@ function fromDate(parts: Part[], date: Date | null): Part[] {
     if (!isSegment(part)) return part;
     if (!date) return clearSegment(part);
 
-    const value = seedFrom(part.type, date);
-    return {
-      ...part,
-      value,
-      buffer: String(value).padStart(part.width, '0'),
-      isCommitted: true
-    };
+    return withValue(part, seedFrom(part.type, date));
   });
 }
 
@@ -389,8 +400,10 @@ export {
   resolveTwoDigitYear,
   daysInMonth,
   displaySegment,
+  withValue,
   carryOver,
   hasTextualMonth,
   toNumericFormat,
+  resolveSegmentFormat,
   hasDateChanged
 };

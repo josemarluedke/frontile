@@ -102,6 +102,17 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
     this.args.segmentLabels?.[type] ?? DEFAULT_LABELS[type];
 
   /**
+   * Built once per locale rather than inside {@link valueTextFor}: `cells`
+   * recomputes on every keystroke, and an `Intl` constructor is expensive
+   * enough that building one per keypress is the costliest thing this
+   * component would otherwise do.
+   */
+  @cached
+  get monthNames(): Intl.DateTimeFormat {
+    return new Intl.DateTimeFormat(this.args.locale, { month: 'long' });
+  }
+
+  /**
    * What a screen reader reads instead of the raw number. A month is read by
    * name -- "January", not "1" -- which is the whole point of `aria-valuetext`.
    */
@@ -109,9 +120,8 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
     if (segment.value === null) return undefined;
     if (segment.type !== 'month') return String(segment.value);
 
-    return new Intl.DateTimeFormat(this.args.locale, { month: 'long' }).format(
-      new Date(2026, segment.value - 1, 1)
-    );
+    // Any year and day will do; only the month is read back out.
+    return this.monthNames.format(new Date(2026, segment.value - 1, 1));
   };
 
   @cached

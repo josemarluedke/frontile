@@ -1,4 +1,9 @@
-import { isSegment, resolveTwoDigitYear, displaySegment } from './segments';
+import {
+  isSegment,
+  resolveTwoDigitYear,
+  displaySegment,
+  withValue
+} from './segments';
 import type { Part, Segment, SegmentType } from './types';
 
 const ISO_DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -44,13 +49,8 @@ function fill(parts: Part[], digits: Digits): Part[] | null {
     }
 
     filled++;
-    next.push({
-      ...part,
-      value,
-      buffer: String(value).padStart(part.width, '0'),
-      // A paste is a finished answer for every segment it fills.
-      isCommitted: true
-    });
+    // A paste is a finished answer for every segment it fills.
+    next.push(withValue(part, value));
   }
 
   // Nothing landed anywhere -- treat that as a refusal rather than quietly

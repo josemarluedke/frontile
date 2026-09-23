@@ -1,4 +1,5 @@
 import { triggerEvent, focus, triggerKeyEvent } from '@ember/test-helpers';
+import { parseDate } from './components/forms/date-picker/value';
 
 export function selectOptionByKey(
   selectSelector: string,
@@ -140,20 +141,21 @@ export async function fillDateRange(
   await fillGroup('fillDateRange', selector, end, 1);
 }
 
-/** `yyyy-MM-dd` -- the wire shape `@value` already accepts. */
-const WIRE_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
-
+/**
+ * Reuses the component's own parser rather than restating the wire format, so
+ * the helper cannot drift from what `@value` actually accepts -- but turns a
+ * refusal into a thrown error, since a test helper handed a bad date should
+ * say so rather than quietly fill nothing.
+ */
 function asDate(functionName: string, value: Date | string): Date {
-  if (value instanceof Date) return value;
-
-  const match = WIRE_DATE.exec(value);
-  if (!match) {
+  const parsed = parseDate(value);
+  if (!parsed) {
     throw new Error(
-      `You called "${functionName}" with "${value}", which is neither a Date nor a yyyy-MM-dd string.`
+      `You called "${functionName}" with "${String(value)}", which is neither a Date nor a yyyy-MM-dd string.`
     );
   }
 
-  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return parsed;
 }
 
 async function fillGroup(

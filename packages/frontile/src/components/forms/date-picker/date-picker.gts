@@ -3,7 +3,6 @@ import { cached, tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 import { concat, hash } from '@ember/helper';
 import { on } from '@ember/modifier';
-import { warn } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
 import { DatePickerTrigger } from './trigger';
@@ -14,8 +13,7 @@ import {
   toDate,
   fromDate,
   carryOver,
-  hasTextualMonth,
-  toNumericFormat,
+  resolveSegmentFormat,
   hasDateChanged
 } from '../date-input/segments';
 import { Popover } from '../../overlays/popover';
@@ -171,21 +169,14 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
    * nobody can type in.
    */
   get segmentFormat(): Intl.DateTimeFormatOptions | undefined {
-    const given = this.args.formatOptions;
-    if (!given) return undefined;
-
-    if (!hasTextualMonth(given)) return given;
-
-    warn(
-      'An editable <DatePicker> needs numeric segments; ' +
+    // Only the month is replaced; any other field the consumer named stands.
+    return resolveSegmentFormat(this.args.formatOptions, {
+      message:
+        'An editable <DatePicker> needs numeric segments; ' +
         'a textual @formatOptions month falls back to a numeric one. ' +
         'Pass @isEditable={{false}} for the formatted button trigger.',
-      false,
-      { id: 'frontile.date-picker.textual-format' }
-    );
-
-    // Only the month is replaced; any other field the consumer named stands.
-    return toNumericFormat(given);
+      id: 'frontile.date-picker.textual-format'
+    });
   }
 
   get placeholderValue(): Date {
@@ -263,13 +254,17 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
       [locale, format]: [string, Intl.DateTimeFormatOptions | undefined]
     ) => {
       if (!this.isSegmented) return;
+
+      // One `Intl.DateTimeFormat` for both edges: the arguments are identical,
+      // and the constructor is the expensive part. `carryOver` copies rather
+      // than mutates, so the two groups cannot share structure by accident.
+      const fresh = buildParts(locale, format);
+
       // Segment by segment rather than through the composed value, so a
       // half-typed entry survives the rebuild.
-      this.setParts(carryOver(buildParts(locale, format), this.#currentParts));
+      this.setParts(carryOver(fresh, this.#currentParts));
       if (this.isRangeMode) {
-        this.setEndParts(
-          carryOver(buildParts(locale, format), this.#currentEndParts)
-        );
+        this.setEndParts(carryOver(fresh, this.#currentEndParts));
       }
     }
   );
@@ -437,12 +432,6 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   };
 
   /**
-   * The segments changed. Only value *transitions* are reported: the four
-   * keystrokes that fill a month and a day compose no date at all, and report
-   * nothing. The popover is deliberately left alone -- typing never opened it,
-   * so completing a date by typing has nothing to close.
-   */
-  /**
    * Whether an incoming value differs from what the segments already compose.
    *
    * Compared edge by edge in range mode rather than by identity: the two are
@@ -466,6 +455,12 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     );
   }
 
+  /**
+   * The segments changed. Only value *transitions* are reported: the four
+   * keystrokes that fill a month and a day compose no date at all, and report
+   * nothing. The popover is deliberately left alone -- typing never opened it,
+   * so completing a date by typing has nothing to close.
+   */
   handlePartsChange = (parts: Part[]): void => {
     const before = toDate(this.#currentParts);
     this.setParts(parts);

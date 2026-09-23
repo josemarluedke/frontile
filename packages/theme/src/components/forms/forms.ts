@@ -129,6 +129,33 @@ const segmentedFieldShell = [
   'data-[disabled=true]:text-neutral-soft'
 ];
 
+/**
+ * The segment row, shared by `dateInput` and `datePicker`.
+ *
+ * Spread into both rather than duplicated: the tv() note below excuses
+ * restating slots *inherited from `input`*, which is a typing constraint --
+ * these are new strings, and keeping two copies had already let `gap-0` land
+ * in one and not the other.
+ */
+const segmentRowSlots = {
+  // `tabular-nums` stops the field twitching as digits change width;
+  // `select-none` keeps a drag across segments from starting a text selection
+  // that spans them.
+  group: 'flex items-center flex-1 min-w-0 gap-0 tabular-nums select-none',
+  segment: [
+    'rounded-xs px-px outline-none caret-transparent',
+    'focus:bg-primary focus:text-on-primary',
+    'data-[placeholder=true]:text-neutral',
+    // The focused segment is filled with `primary`, so a placeholder sitting
+    // in it has to take the contrast colour too. Stated as a combined variant
+    // rather than relying on source order: both rules are one class deep
+    // otherwise, and whichever Tailwind emits last would win.
+    'focus:data-[placeholder=true]:text-on-primary',
+    'data-[disabled=true]:pointer-events-none'
+  ],
+  literal: 'text-neutral-soft px-px'
+};
+
 const input = tv({
   slots: {
     base: '',
@@ -562,19 +589,7 @@ const datePicker = tv({
     ],
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
-    group: 'flex items-center flex-1 min-w-0 tabular-nums select-none',
-    segment: [
-      'rounded-xs px-px outline-none caret-transparent',
-      'focus:bg-primary focus:text-on-primary',
-      'data-[placeholder=true]:text-neutral',
-      // The focused segment is filled with `primary`, so a placeholder sitting
-      // in it has to take the contrast colour too. Stated as a combined
-      // variant rather than relying on source order: both rules are one class
-      // deep otherwise, and whichever Tailwind emits last would win.
-      'focus:data-[placeholder=true]:text-on-primary',
-      'data-[disabled=true]:pointer-events-none'
-    ],
-    literal: 'text-neutral-soft px-px',
+    ...segmentRowSlots,
     // Sits between the two groups of a `@mode="range"` field. `DatePicker`
     // renders it, not `SegmentGroup` -- it separates groups rather than
     // living inside one.
@@ -644,22 +659,7 @@ const dateInput = tv({
   slots: {
     base: [],
     innerContainer: segmentedFieldShell,
-    // The row of segments. `tabular-nums` stops the field twitching as digits
-    // change width; `select-none` keeps a drag across segments from starting a
-    // text selection that spans them.
-    group: 'flex items-center flex-1 min-w-0 gap-0 tabular-nums select-none',
-    segment: [
-      'rounded-xs px-px outline-none caret-transparent',
-      'focus:bg-primary focus:text-on-primary',
-      'data-[placeholder=true]:text-neutral',
-      // The focused segment is filled with `primary`, so a placeholder sitting
-      // in it has to take the contrast colour too. Stated as a combined
-      // variant rather than relying on source order: both rules are one class
-      // deep otherwise, and whichever Tailwind emits last would win.
-      'focus:data-[placeholder=true]:text-on-primary',
-      'data-[disabled=true]:pointer-events-none'
-    ],
-    literal: 'text-neutral-soft px-px',
+    ...segmentRowSlots,
     endContent: 'flex items-center gap-1 shrink-0',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',

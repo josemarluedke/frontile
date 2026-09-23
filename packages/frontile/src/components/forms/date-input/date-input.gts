@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { cached, tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
-import { warn } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
 import { CloseButton } from '../../buttons/close-button';
@@ -13,8 +12,7 @@ import {
   fromDate,
   isSegment,
   carryOver,
-  hasTextualMonth,
-  toNumericFormat,
+  resolveSegmentFormat,
   hasDateChanged
 } from './segments';
 import { parseDate, toWire } from '../date-picker/value';
@@ -75,26 +73,25 @@ class DateInput extends Component<DateInputSignature> {
   }
 
   get formatOptions(): Intl.DateTimeFormatOptions | undefined {
-    const given = this.args.formatOptions;
-    if (!given) return undefined;
-
     // A textual month has no numeric segment to type into, so it falls back
     // to a numeric one. `dateStyle: 'medium'` is the common way to hit this --
     // it is DatePicker's button-trigger default. Only the month is replaced:
     // the rest of the format is the consumer's and stands.
-    if (!hasTextualMonth(given)) return given;
-
-    warn(
-      '<DateInput> needs numeric segments; ' +
+    return resolveSegmentFormat(this.args.formatOptions, {
+      message:
+        '<DateInput> needs numeric segments; ' +
         'a textual @formatOptions month falls back to a numeric one.',
-      false,
-      { id: 'frontile.date-input.textual-format' }
-    );
-
-    return toNumericFormat(given);
+      id: 'frontile.date-input.textual-format'
+    });
   }
 
-  /** The composed value, or null while any segment is empty. */
+  /**
+   * The composed value, or null while any segment is empty.
+   *
+   * Cached because `wireValue`, `isOutOfRange` and the template all read it
+   * independently, and each `toDate` walks the parts three times over.
+   */
+  @cached
   get value(): Date | null {
     return toDate(this.parts);
   }
@@ -104,7 +101,7 @@ class DateInput extends Component<DateInputSignature> {
   }
 
   get isEmpty(): boolean {
-    return this.parts.filter(isSegment).every((p) => p.value === null);
+    return this.parts.every((p) => !isSegment(p) || p.value === null);
   }
 
   get placeholderValue(): Date {
