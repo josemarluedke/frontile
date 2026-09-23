@@ -11,8 +11,7 @@ const avatar = tv({
       'align-middle',
       'text-neutral-strong',
       'z-0',
-      'bg-neutral-subtle',
-      'ring-1 ring-default ring-offset-1 ring-offset-background'
+      'bg-neutral-subtle'
     ],
     img: 'size-full',
     name: [
@@ -39,11 +38,47 @@ const avatar = tv({
       md: { base: 'size-8 text-label-sm' },
       lg: { base: 'size-10 text-label-md' },
       xl: { base: 'size-12 text-label-lg' }
+    },
+    /**
+     * How the image fills the avatar. `cover` crops to fill, which suits
+     * photos. `contain` shows the whole image inset from the edge, which suits
+     * logos and wordmarks that must not be cropped.
+     */
+    fit: {
+      cover: { img: 'object-cover' },
+      contain: { img: 'object-contain' }
+    },
+    /**
+     * Draws a hairline just inside the edge, so the avatar's shape holds
+     * against a page or photo of the same colour.
+     */
+    isBordered: {
+      true: {
+        // On ::after so it paints over the image; an inset box-shadow on the
+        // root would sit beneath the <img>. A single translucent line, not an
+        // offset ring, so an image does not get a gap and a second edge.
+        base: [
+          'after:absolute after:inset-0 after:rounded-[inherit]',
+          'after:pointer-events-none',
+          'after:ring-1 after:ring-inset after:ring-surface-overlay-mild'
+        ]
+      }
     }
   },
+  compoundVariants: [
+    // The inset keeps a contained image off the round edge. It lives on the
+    // img, so padding shrinks the box `object-contain` fits into.
+    { fit: 'contain', size: 'xs', class: { img: 'p-px' } },
+    { fit: 'contain', size: 'sm', class: { img: 'p-0.5' } },
+    { fit: 'contain', size: 'md', class: { img: 'p-0.5' } },
+    { fit: 'contain', size: 'lg', class: { img: 'p-1' } },
+    { fit: 'contain', size: 'xl', class: { img: 'p-1' } }
+  ],
   defaultVariants: {
     size: 'md',
-    shape: 'circle'
+    shape: 'circle',
+    fit: 'cover',
+    isBordered: true
   }
 });
 

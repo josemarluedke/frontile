@@ -13656,6 +13656,34 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'fit',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'cover\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'contain\'</span></span>',
+          items: ["'cover'", "'contain'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'How the image fills the avatar. <code>cover</code> crops the image to fill the\navatar, which suits photos. <code>contain</code> shows the whole image, inset from\nthe edge, which suits logos and wordmarks.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'cover'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'cover\'</span></span>',
+      },
+      {
+        identifier: 'isBordered',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Draws a faint hairline just inside the avatar's edge. Pass <code>false</code> to\nremove it.",
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+      {
         identifier: 'lastName',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
@@ -13713,7 +13741,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'URL of the image to be displayed in the avatar.\nIf provided, the image will be used instead of initials.',
+          'URL of the image to be displayed in the avatar.\nIf provided, the image will be used instead of initials. If the image\nfails to load, the avatar falls back to the initials, or to an empty\nplate when there is no name.',
         tags: {},
       },
     ],

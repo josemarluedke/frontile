@@ -1,7 +1,15 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, rerender, waitUntil } from '@ember/test-helpers';
+import { tracked } from '@glimmer/tracking';
 import { Avatar } from 'frontile';
+
+// A 1x1 transparent GIF, so the "loads" case never touches the network.
+const GOOD_SRC =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+// Decodes to bytes that are not an image, so the browser fires `error`
+// without a network request.
+const BROKEN_SRC = 'data:image/png;base64,AAAA';
 
 module(
   'Integration | Component | @frontile/utilities/Avatar',
@@ -84,12 +92,12 @@ module(
     test('it renders image when src is provided', async function (assert) {
       await render(
         <template>
-          <Avatar data-test-avatar @src="/avatar.jpg" @alt="User Avatar" />
+          <Avatar data-test-avatar @src={{GOOD_SRC}} @alt="User Avatar" />
         </template>
       );
 
       assert.dom('[data-test-avatar] img').exists();
-      assert.dom('[data-test-avatar] img').hasAttribute('src', '/avatar.jpg');
+      assert.dom('[data-test-avatar] img').hasAttribute('src', GOOD_SRC);
       assert.dom('[data-test-avatar] img').hasAttribute('alt', 'User Avatar');
     });
 
@@ -98,7 +106,7 @@ module(
     // decorative instead, which is the right default beside a visible name.
     test('an image with no @alt is marked decorative', async function (assert) {
       await render(
-        <template><Avatar data-test-avatar @src="/avatar.jpg" /></template>
+        <template><Avatar data-test-avatar @src={{GOOD_SRC}} /></template>
       );
 
       assert.dom('[data-test-avatar] img').hasAttribute('alt', '');
@@ -131,7 +139,7 @@ module(
     test('it does not render initials when an image is present', async function (assert) {
       await render(
         <template>
-          <Avatar data-test-avatar @name="John Smith" @src="/avatar.jpg" />
+          <Avatar data-test-avatar @name="John Smith" @src={{GOOD_SRC}} />
         </template>
       );
 
@@ -143,7 +151,7 @@ module(
       await render(
         <template>
           <Avatar data-test-initials @name="John Smith" @alt="John Smith" />
-          <Avatar data-test-image @src="/avatar.jpg" @alt="John Smith" />
+          <Avatar data-test-image @src={{GOOD_SRC}} @alt="John Smith" />
         </template>
       );
 
@@ -158,6 +166,139 @@ module(
         2,
         'data-component="avatar" marks each root only, never a part'
       );
+    });
+
+    // Without an object-fit the image is stretched to the box, which distorts
+    // anything that is not already square.
+    test('an image covers the avatar by default', async function (assert) {
+      await render(
+        <template><Avatar data-test-avatar @src={{GOOD_SRC}} /></template>
+      );
+
+      assert.dom('[data-test-avatar] img').hasClass('object-cover');
+      assert.dom('[data-test-avatar] img').doesNotHaveClass('object-contain');
+    });
+
+    test('@fit="contain" shows the whole image, inset from the edge', async function (assert) {
+      await render(
+        <template>
+          <Avatar data-test-avatar @src={{GOOD_SRC}} @fit="contain" />
+        </template>
+      );
+
+      assert.dom('[data-test-avatar] img').hasClass('object-contain');
+      assert.dom('[data-test-avatar] img').doesNotHaveClass('object-cover');
+      assert.dom('[data-test-avatar] img').hasClass('p-0.5');
+    });
+
+    test('the inset of @fit="contain" scales with @size', async function (assert) {
+      await render(
+        <template>
+          <Avatar data-test-xs @src={{GOOD_SRC}} @fit="contain" @size="xs" />
+          <Avatar data-test-xl @src={{GOOD_SRC}} @fit="contain" @size="xl" />
+        </template>
+      );
+
+      assert.dom('[data-test-xs] img').hasClass('p-px');
+      assert.dom('[data-test-xl] img').hasClass('p-1');
+    });
+
+    // The edge is drawn on an ::after layer so it sits over the image. An inset
+    // box-shadow on the root would paint beneath the <img> and be hidden.
+    function edgeOf(selector: string) {
+      const el = document.querySelector(selector) as HTMLElement;
+      return getComputedStyle(el, '::after');
+    }
+
+    test('a hairline edge is drawn over the image by default', async function (assert) {
+      await render(
+        <template>
+          <Avatar data-test-image @src={{GOOD_SRC}} />
+          <Avatar data-test-initials @name="John Smith" />
+        </template>
+      );
+
+      for (const selector of ['[data-test-image]', '[data-test-initials]']) {
+        const edge = edgeOf(selector);
+        assert.strictEqual(
+          edge.position,
+          'absolute',
+          `${selector} edge overlays`
+        );
+        assert.ok(
+          edge.boxShadow.includes('inset'),
+          `${selector} edge is an inset hairline, got "${edge.boxShadow}"`
+        );
+      }
+      assert
+        .dom('[data-test-image]')
+        .doesNotHaveClass('ring-offset-1', 'no offset gap around the image');
+    });
+
+    test('@isBordered={{false}} removes the edge', async function (assert) {
+      await render(
+        <template>
+          <Avatar data-test-avatar @src={{GOOD_SRC}} @isBordered={{false}} />
+        </template>
+      );
+
+      const edge = edgeOf('[data-test-avatar]');
+      assert.ok(
+        !edge.boxShadow.includes('inset'),
+        `no hairline, got "${edge.boxShadow}"`
+      );
+    });
+
+    test('a failed image falls back to the initials', async function (assert) {
+      await render(
+        <template>
+          <Avatar data-test-avatar @src={{BROKEN_SRC}} @name="John Smith" />
+        </template>
+      );
+
+      await waitUntil(() => !document.querySelector('[data-test-avatar] img'), {
+        timeout: 2000
+      });
+
+      assert.dom('[data-test-avatar] img').doesNotExist();
+      assert.dom('[data-test-avatar] [data-part="name"]').hasText('JS');
+    });
+
+    test('a failed image with no name leaves the empty plate', async function (assert) {
+      await render(
+        <template><Avatar data-test-avatar @src={{BROKEN_SRC}} /></template>
+      );
+
+      await waitUntil(() => !document.querySelector('[data-test-avatar] img'), {
+        timeout: 2000
+      });
+
+      assert.dom('[data-test-avatar]').exists();
+      assert.dom('[data-test-avatar] img').doesNotExist();
+      assert.dom('[data-test-avatar]').hasText('');
+    });
+
+    test('changing @src after a failure tries the new image', async function (assert) {
+      class State {
+        @tracked src = BROKEN_SRC;
+      }
+      const state = new State();
+
+      await render(
+        <template>
+          <Avatar data-test-avatar @src={{state.src}} @name="John Smith" />
+        </template>
+      );
+
+      await waitUntil(() => !document.querySelector('[data-test-avatar] img'), {
+        timeout: 2000
+      });
+
+      state.src = GOOD_SRC;
+      await rerender();
+
+      assert.dom('[data-test-avatar] img').hasAttribute('src', GOOD_SRC);
+      assert.dom('[data-test-avatar] [data-part="name"]').doesNotExist();
     });
   }
 );
