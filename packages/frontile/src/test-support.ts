@@ -1,4 +1,4 @@
-import { triggerEvent } from '@ember/test-helpers';
+import { triggerEvent, focus, triggerKeyEvent } from '@ember/test-helpers';
 
 export function selectOptionByKey(
   selectSelector: string,
@@ -94,4 +94,111 @@ export function ownParts(root: Element, part: string): Element[] {
     }
     return node === root;
   });
+}
+
+/**
+ * Types a date into a segmented `DateInput` or `DatePicker`.
+ *
+ * `fillIn` cannot do this and, worse, does not fail when you try. The segments
+ * are `contenteditable`, so `fillIn` writes their text and fires `input`
+ * without complaint -- but the component renders from its own segments and
+ * listens only to `beforeinput`/`keydown`, so nothing reaches the value. The
+ * result is a test that reads green, whose `assert.dom(...).hasText('01')`
+ * even passes, while the component's value stayed `null` and the form would
+ * submit empty.
+ *
+ * This types the digits segment by segment the way a person does, so the value
+ * composes through the same commit path as real input.
+ *
+ * ```js
+ * await fillDate('[data-test-due]', '2026-01-20');
+ * await fillDate('[data-test-due]', new Date(2026, 0, 20));
+ * ```
+ *
+ * For `@mode="range"` use {@link fillDateRange}.
+ */
+export function fillDate(
+  selector: string,
+  value: Date | string
+): Promise<void> {
+  return fillGroup('fillDate', selector, value, 0);
+}
+
+/**
+ * Types both ends of a range into a segmented `DatePicker @mode="range"`.
+ *
+ * ```js
+ * await fillDateRange('[data-test-trip]', '2026-01-20', '2026-01-25');
+ * ```
+ */
+export async function fillDateRange(
+  selector: string,
+  start: Date | string,
+  end: Date | string
+): Promise<void> {
+  await fillGroup('fillDateRange', selector, start, 0);
+  await fillGroup('fillDateRange', selector, end, 1);
+}
+
+/** `yyyy-MM-dd` -- the wire shape `@value` already accepts. */
+const WIRE_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+function asDate(functionName: string, value: Date | string): Date {
+  if (value instanceof Date) return value;
+
+  const match = WIRE_DATE.exec(value);
+  if (!match) {
+    throw new Error(
+      `You called "${functionName}" with "${value}", which is neither a Date nor a yyyy-MM-dd string.`
+    );
+  }
+
+  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+}
+
+async function fillGroup(
+  functionName: string,
+  selector: string,
+  value: Date | string,
+  which: 0 | 1
+): Promise<void> {
+  const container = document.querySelector(selector);
+  if (!container) {
+    throw new Error(
+      `You called "${functionName}('${selector}', ...)" but no element was found using selector "${selector}".`
+    );
+  }
+
+  const group = container.querySelectorAll('[data-part="group"]')[which];
+
+  if (!group) {
+    // Far and away the likeliest cause: the field is on the button-trigger
+    // path, where there is nothing to type into at all.
+    const hasButtonTrigger = container.querySelector('[data-part="input"]');
+    throw new Error(
+      hasButtonTrigger
+        ? `You called "${functionName}('${selector}', ...)" on a date field rendering its button trigger, which cannot be typed into. Drop @isEditable={{false}}, or click the trigger and pick from the calendar.`
+        : `You called "${functionName}('${selector}', ...)" but found no date segments inside "${selector}".`
+    );
+  }
+
+  const date = asDate(functionName, value);
+  const digits: Record<string, string> = {
+    year: String(date.getFullYear()).padStart(4, '0'),
+    month: String(date.getMonth() + 1).padStart(2, '0'),
+    day: String(date.getDate()).padStart(2, '0')
+  };
+
+  for (const segment of group.querySelectorAll('[data-part="segment"]')) {
+    const element = segment as HTMLElement;
+    const run = element.dataset['type']
+      ? digits[element.dataset['type']]
+      : undefined;
+    if (!run) continue;
+
+    await focus(element);
+    for (const digit of run) {
+      await triggerKeyEvent(element, 'keydown', digit);
+    }
+  }
 }

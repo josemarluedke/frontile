@@ -386,6 +386,35 @@ do not.
 `@onBlur` fires when focus leaves the field, not when it moves from one segment to the
 next.
 
+## Testing
+
+`fillIn` does not work on this field — and, importantly, **it does not fail either**.
+The segments are `contenteditable`, so `fillIn` writes their text and fires `input`
+without complaint, but the component renders from its own segments and listens only to
+`beforeinput`/`keydown`. Nothing reaches the value. A test written that way reads green,
+its `assert.dom(...).hasText('01')` passes, and the component's value is still `null`.
+
+Use `fillDate` instead. It types the digits segment by segment the way a person does, so
+the value composes through the same path as real input.
+
+```js
+import { fillDate, fillDateRange } from 'frontile/test-support';
+
+await fillDate('[data-test-due]', '2026-01-20');
+await fillDate('[data-test-due]', new Date(2026, 0, 20));
+
+// DatePicker @mode="range"
+await fillDateRange('[data-test-trip]', '2026-01-20', '2026-01-25');
+```
+
+The selector points at any element containing the field, not at a segment. Both helpers
+accept a `Date` or a `yyyy-MM-dd` string, and route each run of digits by segment type —
+so the same call works whatever order the locale puts them in.
+
+Pointing `fillDate` at a `DatePicker` rendering its button trigger throws, and says so:
+there is nothing to type into on that path, so click the trigger and pick from the
+calendar instead.
+
 ## API
 
 <Signature @component="DateInput" />

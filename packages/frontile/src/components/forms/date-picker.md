@@ -517,6 +517,23 @@ closes the calendar and returns focus to the segment that had it — or to the b
 — as does completing a selection or clicking outside. `@onBlur` fires only once focus
 leaves the whole control — the field and its popover — not on the way into the calendar.
 
+## Testing
+
+The segmented trigger cannot be filled with `fillIn`, which fails silently rather than
+throwing. Use `fillDate` (or `fillDateRange` for `@mode="range"`) from
+`frontile/test-support`; see [DateInput](./date-input#testing) for the details and the
+reason.
+
+```js
+import { fillDate, fillDateRange } from 'frontile/test-support';
+
+await fillDate('[data-test-due]', '2026-01-20');
+await fillDateRange('[data-test-trip]', '2026-01-20', '2026-01-25');
+```
+
+With `@isEditable={{false}}` there is nothing to type into: click the trigger and pick
+from the calendar, as before.
+
 ## API
 
 <Signature @component="DatePicker" />

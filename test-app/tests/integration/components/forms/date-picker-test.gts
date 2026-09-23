@@ -15,6 +15,7 @@ import { trackDeprecations } from '../../../helpers/deprecations';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { DatePicker, Form } from 'frontile';
+import { fillDate, fillDateRange } from 'frontile/test-support';
 
 const jan20 = new Date(2026, 0, 20);
 const janAnchor = { start: new Date(2026, 0, 5), end: new Date(2026, 0, 6) };
@@ -2107,6 +2108,69 @@ module(
 
       assert.dom(seg('month')).hasText('02');
       assert.dom(seg('day')).hasText('14');
+    });
+  }
+);
+
+module(
+  'Integration | Component | DatePicker | test-support helpers',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    test('fillDateRange fills both ends', async function (assert) {
+      const seen = cell<{ start: Date; end: Date | null } | null>(null);
+      const onChange = (next: { start: Date; end: Date | null } | null) => {
+        seen.current = next;
+      };
+
+      await render(
+        <template>
+          <div data-test-trip>
+            <DatePicker
+              @mode="range"
+              @label="Trip"
+              @locale="en-US"
+              @onChange={{onChange}}
+            />
+          </div>
+        </template>
+      );
+
+      await fillDateRange('[data-test-trip]', '2026-01-20', '2026-01-25');
+
+      assert.strictEqual(seen.current?.start.getDate(), 20);
+      assert.strictEqual(seen.current?.end?.getDate(), 25);
+
+      const groupEls = findAll('[data-part="group"]') as HTMLElement[];
+      assert
+        .dom(
+          groupEls[1]!.querySelector(
+            '[data-part="segment"][data-type="day"]'
+          ) as HTMLElement
+        )
+        .hasText('25', 'the end group really was filled, not just the start');
+    });
+
+    test('fillDate submits through a Form the same as typing', async function (assert) {
+      const { submitted, onSubmit } = captureSubmit();
+
+      await render(
+        <template>
+          <div data-test-field>
+            <Form @onSubmit={{onSubmit}} as |f|>
+              <f.Field @name="due" as |field|>
+                <field.DatePicker @label="Due" @locale="en-US" />
+              </f.Field>
+              <button type="submit">Submit</button>
+            </Form>
+          </div>
+        </template>
+      );
+
+      await fillDate('[data-test-field]', '2026-01-20');
+      await click('button[type="submit"]');
+
+      assert.deepEqual(submitted.current, { due: '2026-01-20' });
     });
   }
 );

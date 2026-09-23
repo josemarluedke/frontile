@@ -7,10 +7,12 @@ import {
   focus,
   settled,
   click,
+  fillIn,
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
-import { DateInput, Form } from 'frontile';
+import { DateInput, DatePicker, Form } from 'frontile';
+import { fillDate } from 'frontile/test-support';
 
 /** The segments, in document order. */
 function segments(): HTMLElement[] {
@@ -1024,6 +1026,87 @@ module(
 
       assert.dom(segment('month')).hasText('02');
       assert.dom(segment('day')).hasText('14');
+    });
+  }
+);
+
+module(
+  'Integration | Component | DateInput | test-support helpers',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    test('fillDate composes a real value, which fillIn does not', async function (assert) {
+      const seen = cell<Date | null>(null);
+      const onChange = (next: Date | null) => {
+        seen.current = next;
+      };
+
+      await render(
+        <template>
+          <div data-test-field>
+            <DateInput @label="Due" @locale="en-US" @onChange={{onChange}} />
+          </div>
+        </template>
+      );
+
+      // The trap the helper exists for: `fillIn` writes the contenteditable
+      // segment's text and fires `input`, and reports success -- but the
+      // component listens to beforeinput/keydown and renders from its own
+      // segments, so the value never moves. A consumer doing this would get a
+      // green test asserting nothing.
+      await fillIn('[data-part="segment"][data-type="month"]', '01');
+      assert.strictEqual(
+        seen.current,
+        null,
+        'fillIn leaves the value untouched -- it does not throw, it just does nothing'
+      );
+
+      await fillDate('[data-test-field]', '2026-01-20');
+
+      assert.strictEqual(seen.current?.getFullYear(), 2026);
+      assert.strictEqual(seen.current?.getMonth(), 0);
+      assert.strictEqual(seen.current?.getDate(), 20);
+      assert.dom(segment('year')).hasText('2026');
+    });
+
+    test('fillDate accepts a Date as well as a wire string', async function (assert) {
+      const seen = cell<Date | null>(null);
+      const onChange = (next: Date | null) => {
+        seen.current = next;
+      };
+
+      await render(
+        <template>
+          <div data-test-field>
+            <DateInput @label="Due" @locale="en-GB" @onChange={{onChange}} />
+          </div>
+        </template>
+      );
+
+      // en-GB puts the day first, so this also proves the helper routes digits
+      // by segment type rather than by position.
+      await fillDate('[data-test-field]', new Date(2026, 11, 25));
+
+      assert.strictEqual(seen.current?.getMonth(), 11);
+      assert.strictEqual(seen.current?.getDate(), 25);
+      assert.dom(segment('day')).hasText('25');
+      assert.dom(segment('month')).hasText('12');
+    });
+
+    test('fillDate explains itself when pointed at a button trigger', async function (assert) {
+      await render(
+        <template>
+          <div data-test-field>
+            <DatePicker @label="Due" @locale="en-US" @isEditable={{false}} />
+          </div>
+        </template>
+      );
+
+      await assert.rejects(
+        fillDate('[data-test-field]', '2026-01-20'),
+        /button trigger, which cannot be typed into/,
+        'names the actual cause rather than failing on a missing selector'
+      );
     });
   }
 );
