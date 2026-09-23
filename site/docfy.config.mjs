@@ -110,7 +110,6 @@ export default {
     // `migrations` label does not cover it: that node has no pages of its own,
     // so it is this child that gets the heading.
     'v0-18': { label: 'Migrations — v0.18', order: 1 },
-    'v0-19': { label: 'Migrations — v0.19', order: 2 },
 
     // Get Started subsections
     ai: { label: 'AI & Agents', order: 1 },
