@@ -1,4 +1,7 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { on } from '@ember/modifier';
 import {
   useStyles,
   type AvatarVariants,
@@ -23,9 +26,27 @@ interface AvatarSignature {
     shape?: AvatarVariants['shape'];
 
     /**
-     * URL of the image to be displayed in the avatar.
-     * If provided, the image will be used instead of initials.
+     * How the image fills the avatar. `cover` crops the image to fill the
+     * avatar, which suits photos. `contain` shows the whole image, inset from
+     * the edge, which suits logos and wordmarks.
      *
+     * @defaultValue 'cover'
+     */
+    fit?: AvatarVariants['fit'];
+
+    /**
+     * Draws a ring around the avatar, offset by a gap in the page background
+     * colour.
+     *
+     * @defaultValue false
+     */
+    isBordered?: boolean;
+
+    /**
+     * URL of the image to be displayed in the avatar.
+     * If provided, the image will be used instead of initials. If the image
+     * fails to load, the avatar falls back to the initials, or to an empty
+     * plate when there is no name.
      */
     src?: string | null;
 
@@ -71,12 +92,28 @@ interface AvatarSignature {
 }
 
 class Avatar extends Component<AvatarSignature> {
+  // Keyed by URL rather than a boolean, so a new `@src` is tried afresh
+  // without having to reset anything when the argument changes.
+  @tracked failedSrc?: string | null;
+
   get classes() {
     const { avatar } = useStyles();
     return avatar({
       size: this.args.size,
-      shape: this.args.shape
+      shape: this.args.shape,
+      fit: this.args.fit,
+      isBordered: this.args.isBordered
     });
+  }
+
+  get hasImage() {
+    const { src } = this.args;
+    return Boolean(src) && src !== this.failedSrc;
+  }
+
+  @action
+  handleImageError() {
+    this.failedSrc = this.args.src;
   }
 
   get initials() {
@@ -101,8 +138,8 @@ class Avatar extends Component<AvatarSignature> {
   }
 
   get shouldShowInitials() {
-    const { src, name, firstName, lastName } = this.args;
-    if (src) {
+    const { name, firstName, lastName } = this.args;
+    if (this.hasImage) {
       return false;
     }
 
@@ -129,7 +166,7 @@ class Avatar extends Component<AvatarSignature> {
           {{this.initials}}
         </span>
       {{/if}}
-      {{#if @src}}
+      {{#if this.hasImage}}
         {{! An omitted alt makes screen readers fall back to the URL. An empty
         one marks the image decorative, which is right beside a visible name. }}
         <img
@@ -137,6 +174,7 @@ class Avatar extends Component<AvatarSignature> {
           data-part="img"
           src={{@src}}
           alt={{if @alt @alt ""}}
+          {{on "error" this.handleImageError}}
         />
       {{/if}}
     </span>

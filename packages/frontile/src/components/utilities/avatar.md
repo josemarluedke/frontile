@@ -42,6 +42,97 @@ import { Avatar } from 'frontile';
 </template>
 ```
 
+If the image fails to load, the avatar shows the initials instead, or an empty
+plate when there is no name. A new `@src` is tried again.
+
+```gts preview
+import { Avatar } from 'frontile';
+
+<template>
+  <div class='flex items-center space-x-4 py-2'>
+    <Avatar @src='https://example.invalid/missing.jpg' @name='Jon Snow' />
+    <Avatar @src='https://example.invalid/missing.jpg' />
+  </div>
+</template>
+```
+
+### Photos
+
+By default the image covers the avatar: it fills the whole shape and is
+cropped to fit, so a photo that is not square keeps its proportions.
+
+```gts preview
+import { Avatar } from 'frontile';
+
+<template>
+  <div class='flex items-center space-x-4 py-2'>
+    <Avatar @src='https://picsum.photos/id/64/300/200' @size='lg' />
+    <Avatar @src='https://picsum.photos/id/64/300/200' @size='xl' />
+  </div>
+</template>
+```
+
+### Logos
+
+`@fit='contain'` shows the whole image, with a small inset from the edge that
+scales with `@size`. Use it for logos and wordmarks, which must not be cropped.
+A square logo that brings its own background can keep the default `cover`.
+
+```gts preview
+import { Avatar } from 'frontile';
+
+<template>
+  <div class='flex items-center space-x-4 py-2'>
+    <Avatar @src='/images/avatar/logo-mark.svg' @size='xl' @alt='Teal Peak' />
+    <Avatar
+      @src='/images/avatar/logo-wordmark.svg'
+      @size='xl'
+      @fit='contain'
+      @alt='Northwind'
+    />
+  </div>
+</template>
+```
+
+The avatar does not choose a background for the image. A dark logo on a
+transparent background disappears against the dark-mode plate, so give it a
+light background through `@classes.base`:
+
+```gts preview
+import { Avatar } from 'frontile';
+import { hash } from '@ember/helper';
+
+<template>
+  <Avatar
+    @src='/images/avatar/logo-wordmark.svg'
+    @size='xl'
+    @fit='contain'
+    @alt='Northwind'
+    @classes={{hash base='bg-white'}}
+  />
+</template>
+```
+
+### Bordered
+
+`@isBordered` draws a ring around the avatar, offset by a gap in the page
+background colour. It separates the avatar from a busy background, or from its
+neighbours in an overlapping stack.
+
+```gts preview
+import { Avatar } from 'frontile';
+
+<template>
+  <div class='flex items-center space-x-4 py-2'>
+    <Avatar @name='Jon Snow' @isBordered={{true}} />
+    <Avatar @src='https://i.pravatar.cc/150?img=5' @isBordered={{true}} />
+  </div>
+</template>
+```
+
+Before v0.19 every avatar had this ring. It is now off by default; pass
+`@isBordered={{true}}` to keep the previous look.
+
 ### Different Sizes
 
 `@size` sets the avatar's size.
@@ -155,9 +246,9 @@ Two limits:
   takes no key handling. If the avatar should open a menu or a profile, wrap it
   in a `Button` or a link and put the accessible name there — an avatar with a
   click handler on the `<span>` cannot be reached by keyboard at all.
-- **A broken `@src` leaves an empty avatar.** There is no automatic fallback to
-  initials, so if the URL may fail, pass both a `@name` and no `@src` until you
-  know the image loads, or handle the failure yourself.
+- **A broken `@src` falls back to the initials only when there is a name.**
+  Pass `@name` (and `@alt` when the avatar stands alone) alongside `@src`, so a
+  failed image still leaves something to read.
 
 Colour alone should not carry status. An avatar tinted to mean "online" is
 invisible to anyone who cannot see it, so pair the treatment with text — a
