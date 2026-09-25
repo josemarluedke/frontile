@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { next } from '@ember/runloop';
 import { hash, fn } from '@ember/helper';
@@ -106,11 +105,10 @@ class ChangesetForm extends Component<ChangesetFormSignature> {
     }
   }
 
-  @action
-  async handleSubmit(
+  handleSubmit = async (
     changeset: BufferedChangeset,
     event: Event
-  ): Promise<void> {
+  ): Promise<void> => {
     event.preventDefault();
     await changeset.validate();
 
@@ -130,10 +128,9 @@ class ChangesetForm extends Component<ChangesetFormSignature> {
     if (typeof this.args.onSubmit === 'function') {
       this.args.onSubmit(result.data, event);
     }
-  }
+  };
 
-  @action
-  handleReset(changeset: BufferedChangeset, event: Event): void {
+  handleReset = (changeset: BufferedChangeset, event: Event): void => {
     event.preventDefault();
     this.hasSubmitted = false;
 
@@ -141,7 +138,7 @@ class ChangesetForm extends Component<ChangesetFormSignature> {
     if (typeof this.args.onReset === 'function') {
       this.args.onReset(data, event);
     }
-  }
+  };
 
   <template>
     <form

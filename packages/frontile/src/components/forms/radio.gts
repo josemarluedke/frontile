@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import {
@@ -64,17 +63,17 @@ class Radio<T extends string | boolean | number> extends Component<
     return this.args.checkedValue === this.args.value;
   }
 
-  @action handleChange(event: Event): void {
+  handleChange = (event: Event): void => {
     event.preventDefault();
 
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(this.args.value, event);
     }
-  }
+  };
 
-  @action handleBlur(): void {
+  handleBlur = (): void => {
     this.args.onBlur?.();
-  }
+  };
 
   get classes() {
     const { radio } = useStyles();

@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { assert } from '@ember/debug';
 import type Owner from '@ember/owner';
@@ -251,8 +250,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
     return this.args.selectionMode === 'multiple';
   }
 
-  @action
-  handleOnChange(event: Event) {
+  handleOnChange = (event: Event) => {
     const selectElement = event.target as HTMLSelectElement;
     let newSelectedKeys: string[] = [];
 
@@ -274,7 +272,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
     }
 
     this.handleSelectionChange(newSelectedKeys);
-  }
+  };
 
   <template>
     <FormControl
@@ -447,10 +445,9 @@ class NativeSelectItem extends Component<SelectItemSignature> {
     return this.args.key;
   }
 
-  @action
-  onRegister(item: ListItem) {
+  onRegister = (item: ListItem) => {
     this.listItem = item;
-  }
+  };
 
   <template>
     <option

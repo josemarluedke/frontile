@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { cached, tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { warn } from '@ember/debug';
 import { next } from '@ember/runloop';
@@ -435,13 +434,13 @@ class InputOtp extends Component<InputOtpSignature> {
     }
   }
 
-  @action handleOnInput(event: Event): void {
+  handleOnInput = (event: Event): void => {
     this.syncValue(event, 'input');
-  }
+  };
 
-  @action handleOnChange(event: Event): void {
+  handleOnChange = (event: Event): void => {
     this.syncValue(event, 'change');
-  }
+  };
 
   /**
    * Maps the input's text caret onto discrete cells. A collapsed caret sits
@@ -449,7 +448,7 @@ class InputOtp extends Component<InputOtpSignature> {
    * one-character range makes exactly one cell active and makes typing
    * overwrite rather than insert.
    */
-  @action onSelectionChange(): void {
+  onSelectionChange = (): void => {
     const input = this.inputRef.current;
     if (!input || document.activeElement !== input) {
       return;
@@ -525,9 +524,9 @@ class InputOtp extends Component<InputOtpSignature> {
     }
 
     this.prevSelection = [input.selectionStart, input.selectionEnd];
-  }
+  };
 
-  @action handleFocus(): void {
+  handleFocus = (): void => {
     this.isFocused = true;
 
     const input = this.inputRef.current;
@@ -539,15 +538,15 @@ class InputOtp extends Component<InputOtpSignature> {
     const start = Math.min(input.value.length, this.length - 1);
     input.setSelectionRange(start, input.value.length);
     this.onSelectionChange();
-  }
+  };
 
-  @action handleOnBlur(): void {
+  handleOnBlur = (): void => {
     this.isFocused = false;
     this.selectionStart = null;
     this.selectionEnd = null;
     this.prevSelection = [null, null];
     this.args.onBlur?.();
-  }
+  };
 
   <template>
     <FormControl

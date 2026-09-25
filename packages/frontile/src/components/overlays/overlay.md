@@ -22,16 +22,15 @@ The most basic usage of the Overlay component.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Overlay } from 'frontile';
 import { Button } from 'frontile';
 
 export default class BasicOverlay extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -66,7 +65,6 @@ Control the appearance of the backdrop behind the overlay.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Overlay } from 'frontile';
 import { Button } from 'frontile';
 
@@ -75,17 +73,17 @@ export default class BackdropTypes extends Component {
   @tracked blurredOpen = false;
   @tracked noneOpen = false;
 
-  @action toggleFaded() {
+  toggleFaded = () => {
     this.fadedOpen = !this.fadedOpen;
-  }
+  };
 
-  @action toggleBlurred() {
+  toggleBlurred = () => {
     this.blurredOpen = !this.blurredOpen;
-  }
+  };
 
-  @action toggleNone() {
+  toggleNone = () => {
     this.noneOpen = !this.noneOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -148,7 +146,6 @@ By default, overlays are rendered in a portal. You can render them in-place inst
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Overlay } from 'frontile';
 import { Button } from 'frontile';
 
@@ -156,13 +153,13 @@ export default class RenderInPlace extends Component {
   @tracked portalOpen = false;
   @tracked inPlaceOpen = false;
 
-  @action togglePortal() {
+  togglePortal = () => {
     this.portalOpen = !this.portalOpen;
-  }
+  };
 
-  @action toggleInPlace() {
+  toggleInPlace = () => {
     this.inPlaceOpen = !this.inPlaceOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -217,7 +214,6 @@ Control when and how the overlay can be closed.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Overlay } from 'frontile';
 import { Button } from 'frontile';
 
@@ -227,27 +223,27 @@ export default class CustomCloseBehavior extends Component {
   @tracked noOutsideClickOpen = false;
   @tracked confirmCloseOpen = false;
 
-  @action toggleNormal() {
+  toggleNormal = () => {
     this.normalOpen = !this.normalOpen;
-  }
+  };
 
-  @action toggleNoEscape() {
+  toggleNoEscape = () => {
     this.noEscapeOpen = !this.noEscapeOpen;
-  }
+  };
 
-  @action toggleNoOutsideClick() {
+  toggleNoOutsideClick = () => {
     this.noOutsideClickOpen = !this.noOutsideClickOpen;
-  }
+  };
 
-  @action toggleConfirmClose() {
+  toggleConfirmClose = () => {
     this.confirmCloseOpen = !this.confirmCloseOpen;
-  }
+  };
 
-  @action handleConfirmClose() {
+  handleConfirmClose = () => {
     if (confirm('Are you sure you want to close this overlay?')) {
       this.confirmCloseOpen = false;
     }
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -322,7 +318,6 @@ Demonstrate focus trapping and restoration features.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Overlay } from 'frontile';
 import { Button } from 'frontile';
 import { Input } from 'frontile';
@@ -331,13 +326,13 @@ export default class FocusManagement extends Component {
   @tracked focusTrapOpen = false;
   @tracked noFocusTrapOpen = false;
 
-  @action toggleFocusTrap() {
+  toggleFocusTrap = () => {
     this.focusTrapOpen = !this.focusTrapOpen;
-  }
+  };
 
-  @action toggleNoFocusTrap() {
+  toggleNoFocusTrap = () => {
     this.noFocusTrapOpen = !this.noFocusTrapOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -406,7 +401,6 @@ Customize overlay animations and transition duration.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Overlay } from 'frontile';
 import { Button } from 'frontile';
 
@@ -415,17 +409,17 @@ export default class AnimationsAndTransitions extends Component {
   @tracked slowOpen = false;
   @tracked noAnimationOpen = false;
 
-  @action toggleFast() {
+  toggleFast = () => {
     this.fastOpen = !this.fastOpen;
-  }
+  };
 
-  @action toggleSlow() {
+  toggleSlow = () => {
     this.slowOpen = !this.slowOpen;
-  }
+  };
 
-  @action toggleNoAnimation() {
+  toggleNoAnimation = () => {
     this.noAnimationOpen = !this.noAnimationOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -495,7 +489,6 @@ either way, and so does closing.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Overlay } from 'frontile';
 import { Button } from 'frontile';
 
@@ -503,21 +496,21 @@ export default class OverlaysThatStartOpen extends Component {
   @tracked showAnimated = false;
   @tracked showImmediate = false;
 
-  @action mountAnimated() {
+  mountAnimated = () => {
     this.showAnimated = true;
-  }
+  };
 
-  @action mountImmediate() {
+  mountImmediate = () => {
     this.showImmediate = true;
-  }
+  };
 
-  @action closeAnimated() {
+  closeAnimated = () => {
     this.showAnimated = false;
-  }
+  };
 
-  @action closeImmediate() {
+  closeImmediate = () => {
     this.showImmediate = false;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -568,7 +561,6 @@ The Overlay component has two different click-to-close mechanisms that work toge
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Overlay } from 'frontile';
 import { Button } from 'frontile';
 
@@ -576,13 +568,13 @@ export default class OverlayElementClick extends Component {
   @tracked defaultOpen = false;
   @tracked disabledOpen = false;
 
-  @action toggleDefault() {
+  toggleDefault = () => {
     this.defaultOpen = !this.defaultOpen;
-  }
+  };
 
-  @action toggleDisabled() {
+  toggleDisabled = () => {
     this.disabledOpen = !this.disabledOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>

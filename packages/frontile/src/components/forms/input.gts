@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import {
   useStyles,
@@ -140,7 +139,7 @@ class Input extends Component<InputSignature> {
     return 'text';
   }
 
-  @action handleOnInput(event: Event): void {
+  handleOnInput = (event: Event): void => {
     const value = (event.target as HTMLInputElement).value;
     this.elementValue = value;
 
@@ -149,9 +148,9 @@ class Input extends Component<InputSignature> {
     } else {
       this.uncontrolledValue = value;
     }
-  }
+  };
 
-  @action handleOnChange(event: Event): void {
+  handleOnChange = (event: Event): void => {
     const value = (event.target as HTMLInputElement).value;
     this.elementValue = value;
 
@@ -160,13 +159,13 @@ class Input extends Component<InputSignature> {
     } else {
       this.uncontrolledValue = value;
     }
-  }
+  };
 
-  @action handleOnBlur(): void {
+  handleOnBlur = (): void => {
     this.args.onBlur?.();
-  }
+  };
 
-  @action clearValue(): void {
+  clearValue = (): void => {
     // Clear the element first: a parent that owns the value may derive it from
     // the DOM (as `<Form>` does via FormData), in which case notifying it
     // before the element is empty would just hand back the stale value.
@@ -184,7 +183,7 @@ class Input extends Component<InputSignature> {
 
     this.inputRef.current?.focus();
     triggerFormInputEvent(this.inputRef.current);
-  }
+  };
 
   get isClearable(): boolean {
     if (

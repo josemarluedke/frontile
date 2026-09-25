@@ -1,5 +1,4 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import FormTextarea from '@frontile/forms-legacy/components/form-textarea';
 import { type FormInputArgs } from '@frontile/forms-legacy/components/form-input';
@@ -21,13 +20,13 @@ export default class ChangesetFormFieldsTextarea extends Base<
   ChangesetFormFieldsTextareaSignature,
   string | undefined
 > {
-  @action handleInput(value: string, event: InputEvent): void {
+  handleInput = (value: string, event: InputEvent): void => {
     this.args.changeset.set(this.args.fieldName, value);
 
     if (typeof this.args.onInput === 'function') {
       this.args.onInput(value, event);
     }
-  }
+  };
 
   <template>
     <FormTextarea

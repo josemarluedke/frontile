@@ -30,7 +30,6 @@ just pass `@isMultiple={{true}}` to the component.
 ```js component
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 
 export default class DemoComponent extends Component {
   @tracked selectedCountries;
@@ -53,8 +52,8 @@ export default class DemoComponent extends Component {
     }
   }
 
-  @action setCountry(value) {
+  setCountry = (value) => {
     this.selectedCountries = value;
-  }
+  };
 }
 ```

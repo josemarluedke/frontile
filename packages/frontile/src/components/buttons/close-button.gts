@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { deprecate } from '@ember/debug';
@@ -113,17 +112,17 @@ class CloseButton extends Component<CloseButtonSignature> {
     this.isPressed = isPressed;
   };
 
-  @action handlePress(event: PressEvent): void {
+  handlePress = (event: PressEvent): void => {
     if (typeof this.args.onPress === 'function') {
       this.args.onPress(event);
     }
-  }
+  };
 
-  @action handleClick(event: Event): void {
+  handleClick = (event: Event): void => {
     if (typeof this.args.onClick === 'function') {
       this.args.onClick(event);
     }
-  }
+  };
 
   <template>
     <button

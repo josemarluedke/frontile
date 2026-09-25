@@ -1,7 +1,6 @@
 import { tracked } from '@glimmer/tracking';
 import { later, cancel } from '@ember/runloop';
 import type { Timer as EmberTimer } from '@ember/runloop';
-import { action } from '@ember/object';
 
 export default class Timer {
   @tracked remaining: number;
@@ -17,15 +16,15 @@ export default class Timer {
     this.setup();
   }
 
-  @action clear(): void {
+  clear = (): void => {
     this.isRunning = false;
 
     if (this.timer) {
       cancel(this.timer);
     }
-  }
+  };
 
-  @action pause(): void {
+  pause = (): void => {
     // Pausing an already paused timer would subtract the elapsed time twice,
     // eventually driving `remaining` to zero or below.
     if (!this.isRunning) {
@@ -34,9 +33,9 @@ export default class Timer {
 
     this.clear();
     this.remaining = Math.max(0, this.remaining - (Date.now() - this.start));
-  }
+  };
 
-  @action resume(): void {
+  resume = (): void => {
     // Already counting down; resuming again would restart the remaining time.
     if (this.isRunning) {
       return;
@@ -44,7 +43,7 @@ export default class Timer {
 
     this.clear();
     this.setup();
-  }
+  };
 
   private setup(): void {
     this.start = Date.now();

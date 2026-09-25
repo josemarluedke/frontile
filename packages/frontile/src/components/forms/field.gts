@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
-import { action } from '@ember/object';
 import { debounce } from '@ember/runloop';
 import { getPath } from '../../utils/get-path';
 import Checkbox from './checkbox';
@@ -177,33 +176,30 @@ class Field<
   /**
    * Validates the field on change if change validation is enabled.
    */
-  @action
-  handleChange() {
+  handleChange = () => {
     if (this.validateOn?.includes('change')) {
       this.validateField();
     }
-  }
+  };
 
   /**
    * Validates the field on input if input validation is enabled.
    * Debounces validation to avoid excessive validation calls on every keystroke.
    */
-  @action
-  handleInput() {
+  handleInput = () => {
     if (this.validateOn?.includes('input')) {
       debounce(this, this.validateField, 300);
     }
-  }
+  };
 
   /**
    * Validates the field on blur if blur validation is enabled.
    */
-  @action
-  handleBlur() {
+  handleBlur = () => {
     if (this.validateOn.includes('blur')) {
       this.validateField();
     }
-  }
+  };
 
   <template>
     {{! @glint-nocheck component generics (radio, radio-group, select) trigger:  type instantiation is excessively deep and possibly infinite }}
