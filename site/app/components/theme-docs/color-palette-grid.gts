@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import ColorSwatch from './color-swatch';
 import { CheckIcon } from '../icons';
 
@@ -35,8 +34,7 @@ export default class ColorPaletteGrid extends Component<ColorPaletteGridSignatur
     return colorLevels;
   }
 
-  @action
-  handleCopy(className: string) {
+  handleCopy = (className: string) => {
     this.copiedClass = className;
 
     if (this.copyTimeout) {
@@ -46,7 +44,7 @@ export default class ColorPaletteGrid extends Component<ColorPaletteGridSignatur
     this.copyTimeout = setTimeout(() => {
       this.copiedClass = null;
     }, 2000);
-  }
+  };
 
   willDestroy() {
     super.willDestroy();

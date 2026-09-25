@@ -1,5 +1,4 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import FormRadio, {
   type FormRadioArgs
@@ -16,8 +15,7 @@ export interface ChangesetFormFieldsRadioSignature extends BaseSignature {
 }
 
 export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRadioSignature> {
-  @action
-  async handleChange(value: unknown, event: Event): Promise<void> {
+  handleChange = async (value: unknown, event: Event): Promise<void> => {
     event.preventDefault();
 
     this.args.changeset.set(this.args.fieldName, value);
@@ -26,7 +24,7 @@ export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRa
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
-  }
+  };
 
   <template>
     <FormRadio

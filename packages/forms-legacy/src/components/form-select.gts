@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import PowerSelect, {
   type PowerSelectArgs
@@ -76,25 +75,25 @@ export default class FormSelect extends Component<FormSelectSignature> {
     }
   }
 
-  @action handleOpen(select: Select, event: Event): void {
+  handleOpen = (select: Select, event: Event): void => {
     this.isOpen = true;
     this.shouldShowErrorFeedback = false;
 
     if (typeof this.args.onOpen === 'function') {
       this.args.onOpen(select, event);
     }
-  }
+  };
 
-  @action handleClose(select: Select, event: Event): void {
+  handleClose = (select: Select, event: Event): void => {
     this.isOpen = false;
     this.shouldShowErrorFeedback = true;
 
     if (typeof this.args.onClose === 'function') {
       this.args.onClose(select, event);
     }
-  }
+  };
 
-  @action handleFocusIn(select: Select, event: FocusEvent): void {
+  handleFocusIn = (select: Select, event: FocusEvent): void => {
     this.shouldShowErrorFeedback = false;
 
     if (typeof this.args.onFocusIn === 'function') {
@@ -105,9 +104,9 @@ export default class FormSelect extends Component<FormSelectSignature> {
     if (typeof this.args.onFocus === 'function') {
       this.args.onFocus(select, event);
     }
-  }
+  };
 
-  @action handleFocusOut(select: Select, event: FocusEvent): void {
+  handleFocusOut = (select: Select, event: FocusEvent): void => {
     if (!this.isOpen) {
       this.shouldShowErrorFeedback = true;
     }
@@ -120,16 +119,12 @@ export default class FormSelect extends Component<FormSelectSignature> {
     if (typeof this.args.onBlur === 'function') {
       this.args.onBlur(select, event);
     }
-  }
+  };
 
-  @action handleChange(
-    selection: unknown,
-    select: Select,
-    event?: Event
-  ): void {
+  handleChange = (selection: unknown, select: Select, event?: Event): void => {
     this.shouldShowErrorFeedback = true;
     this.args.onChange(selection, select, event);
-  }
+  };
 
   get classes() {
     const { formSelect } = useStyles();

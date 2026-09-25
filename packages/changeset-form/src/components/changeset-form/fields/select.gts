@@ -1,5 +1,4 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
-import { action } from '@ember/object';
 import FormSelect, {
   type FormSelectArgs
 } from '@frontile/forms-legacy/components/form-select';
@@ -20,37 +19,37 @@ export interface ChangesetFormFieldsSelectSignature extends BaseSignature {
 }
 
 export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsSelectSignature> {
-  @action
-  async handleChange(
+  handleChange = async (
     selection: unknown,
     select: unknown,
     event?: Event
-  ): Promise<void> {
+  ): Promise<void> => {
     this.args.changeset.set(this.args.fieldName, selection);
     await this.validate();
 
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(selection, select, event);
     }
-  }
+  };
 
-  @action
-  async handleFocusOut(select: unknown, event: FocusEvent): Promise<void> {
+  handleFocusOut = async (
+    select: unknown,
+    event: FocusEvent
+  ): Promise<void> => {
     await this.validate();
 
     if (typeof this.args.onFocusOut === 'function') {
       this.args.onFocusOut(select, event);
     }
-  }
+  };
 
-  @action
-  async handleClose(select: unknown, event: Event): Promise<void> {
+  handleClose = async (select: unknown, event: Event): Promise<void> => {
     await this.validate();
 
     if (typeof this.args.onClose === 'function') {
       this.args.onClose(select, event);
     }
-  }
+  };
 
   <template>
     {{! @glint-nocheck: need to fix powerselect types}}

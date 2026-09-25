@@ -21,7 +21,6 @@ A feature-rich action menu showcasing icons, descriptions, shortcuts, dividers, 
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 import {
   ViewIcon,
@@ -34,11 +33,10 @@ import {
 } from 'site/components/icons';
 
 export default class BasicDropdown extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action triggered:', key);
-  }
+  };
 
   <template>
     <Dropdown as |d|>
@@ -118,15 +116,13 @@ Add descriptions and keyboard shortcuts to menu items for better UX.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class DropdownWithDetails extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   <template>
     <Dropdown as |d|>
@@ -169,18 +165,16 @@ Enable single or multiple selection mode for choosing options.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class SelectableDropdown extends Component {
   @tracked selectedKeys = ['bold'];
 
-  @action
-  handleSelectionChange(keys: Set<string>) {
+  handleSelectionChange = (keys: Set<string>) => {
     this.selectedKeys = Array.from(keys);
     // eslint-disable-next-line
     console.log('Selected:', this.selectedKeys);
-  }
+  };
 
   <template>
     <div class='demo-stack items-center'>
@@ -215,15 +209,13 @@ Customize the trigger button appearance.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class TriggerStyles extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   <template>
     <div class='flex gap-2 flex-wrap'>
@@ -286,7 +278,6 @@ Control where the menu appears relative to the trigger.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Dropdown, ButtonGroup } from 'frontile';
 
@@ -304,16 +295,14 @@ export default class MenuPositioning extends Component {
     'right'
   ];
 
-  @action
-  setPlacement(placement: string) {
+  setPlacement = (placement: string) => {
     this.placement = placement;
-  }
+  };
 
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   isSelected = (p: string) => {
     return p === this.placement;
@@ -358,17 +347,15 @@ Disable specific menu items.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class DisabledItems extends Component {
   disabledKeys = ['share', 'delete'];
 
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   <template>
     <Dropdown as |d|>
@@ -399,18 +386,16 @@ Prevent the menu from closing when items are selected.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class KeepOpenDropdown extends Component {
   @tracked filters = ['recent'];
 
-  @action
-  handleSelectionChange(keys: Set<string>) {
+  handleSelectionChange = (keys: Set<string>) => {
     this.filters = Array.from(keys);
     // eslint-disable-next-line
     console.log('Filters:', this.filters);
-  }
+  };
 
   <template>
     <div class='demo-stack items-center'>
@@ -445,15 +430,13 @@ Organize menu items into logical groups.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class SectionedDropdown extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   <template>
     <Dropdown as |d|>
@@ -483,26 +466,22 @@ Use individual click handlers for specific items.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class CustomHandlers extends Component {
-  @action
-  handleEdit() {
+  handleEdit = () => {
     alert('Edit clicked');
-  }
+  };
 
-  @action
-  handleDelete() {
+  handleDelete = () => {
     if (confirm('Are you sure you want to delete?')) {
       alert('Deleted!');
     }
-  }
+  };
 
-  @action
-  handleDownload() {
+  handleDownload = () => {
     alert('Downloading...');
-  }
+  };
 
   <template>
     <Dropdown as |d|>
@@ -536,23 +515,20 @@ Control the backdrop appearance behind the dropdown menu.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Dropdown, ButtonGroup } from 'frontile';
 
 export default class DropdownBackdrop extends Component {
   @tracked backdrop = 'none';
 
-  @action
-  setBackdrop(type: string) {
+  setBackdrop = (type: string) => {
     this.backdrop = type;
-  }
+  };
 
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   isActiveBackdrop = (type: string) => {
     return this.backdrop === type;
@@ -607,21 +583,18 @@ Execute a callback when the dropdown closes.
 
 ```gts preview
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class DropdownWithCallback extends Component {
-  @action
-  handleDidClose() {
+  handleDidClose = () => {
     // eslint-disable-next-line
     console.log('Dropdown closed');
-  }
+  };
 
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   <template>
     <Dropdown @didClose={{this.handleDidClose}} as |d|>
@@ -647,15 +620,13 @@ close with <kbd>←</kbd> or <kbd>Esc</kbd>.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class SubmenuDropdown extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action triggered:', key);
-  }
+  };
 
   <template>
     <Dropdown as |d|>
@@ -692,15 +663,13 @@ Submenus nest to any depth: a `Sub`'s `Menu` yields `Sub` again.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class NestedSubmenuDropdown extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action triggered:', key);
-  }
+  };
 
   <template>
     <Dropdown as |d|>
@@ -739,15 +708,13 @@ on screen.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class SiblingSubmenuDropdown extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action triggered:', key);
-  }
+  };
 
   <template>
     <Dropdown as |d|>

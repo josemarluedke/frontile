@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { ToggleButton } from 'frontile/buttons';
 
@@ -16,11 +15,10 @@ export default class Example extends Component<ExampleArgs> {
     danger: false
   };
 
-  @action
-  onChange(ty: keyof typeof this.isSelected, value: boolean): void {
+  onChange = (ty: keyof typeof this.isSelected, value: boolean): void => {
     this.isSelected[ty] = value;
     this.isSelected = { ...this.isSelected };
-  }
+  };
 
   <template>
     <h2 class="text-2xl mt-6">

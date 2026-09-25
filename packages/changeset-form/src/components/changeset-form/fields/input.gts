@@ -1,5 +1,4 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import FormInput, {
   type FormInputArgs
@@ -19,13 +18,13 @@ export default class ChangesetFormFieldsInput extends Base<
   ChangesetFormFieldsInputSignature,
   string | undefined
 > {
-  @action handleInput(value: string, event: InputEvent): void {
+  handleInput = (value: string, event: InputEvent): void => {
     this.args.changeset.set(this.args.fieldName, value);
 
     if (typeof this.args.onInput === 'function') {
       this.args.onInput(value, event);
     }
-  }
+  };
 
   <template>
     <FormInput

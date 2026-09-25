@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import {
@@ -32,7 +31,7 @@ class Checkbox extends Component<CheckboxSignature> {
     return !!this.args.checked;
   }
 
-  @action handleChange(event: Event): void {
+  handleChange = (event: Event): void => {
     if (this.args.disabled) {
       return;
     }
@@ -43,7 +42,7 @@ class Checkbox extends Component<CheckboxSignature> {
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
-  }
+  };
 
   get classes() {
     const { checkbox } = useStyles();

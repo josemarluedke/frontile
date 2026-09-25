@@ -23,16 +23,15 @@ A simple modal with header, body, and footer sections.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Modal } from 'frontile';
 import { Button } from 'frontile';
 
 export default class BasicModal extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -72,7 +71,6 @@ Control the modal size with the `@size` argument.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Modal } from 'frontile';
 import { Button } from 'frontile';
@@ -125,14 +123,14 @@ export default class ModalSizes extends Component {
     }
   ];
 
-  @action openModal(size) {
+  openModal = (size) => {
     this.selectedSize = size;
     this.isOpen = true;
-  }
+  };
 
-  @action closeModal() {
+  closeModal = () => {
     this.isOpen = false;
-  }
+  };
 
   get currentSizeOption() {
     return this.sizeOptions.find((option) => option.key === this.selectedSize);
@@ -175,7 +173,6 @@ vertically.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Modal } from 'frontile';
 import { Button } from 'frontile';
 
@@ -183,13 +180,13 @@ export default class ModalPositioning extends Component {
   @tracked standardOpen = false;
   @tracked centeredOpen = false;
 
-  @action toggleStandard() {
+  toggleStandard = () => {
     this.standardOpen = !this.standardOpen;
-  }
+  };
 
-  @action toggleCentered() {
+  toggleCentered = () => {
     this.centeredOpen = !this.centeredOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -243,7 +240,6 @@ Control the appearance of the backdrop behind the modal.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Modal } from 'frontile';
 import { Button } from 'frontile';
@@ -273,14 +269,14 @@ export default class ModalBackdrops extends Component {
     }
   ];
 
-  @action openModal(backdrop) {
+  openModal = (backdrop) => {
     this.selectedBackdrop = backdrop;
     this.isOpen = true;
-  }
+  };
 
-  @action closeModal() {
+  closeModal = () => {
     this.isOpen = false;
-  }
+  };
 
   get currentBackdropOption() {
     return this.backdropOptions.find(
@@ -327,7 +323,6 @@ A practical example showing a confirmation dialog pattern.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Modal, Button, Spinner } from 'frontile';
 
 export default class ConfirmationDialog extends Component {
@@ -335,17 +330,17 @@ export default class ConfirmationDialog extends Component {
   @tracked isDeleting = false;
   @tracked result = '';
 
-  @action openDialog() {
+  openDialog = () => {
     this.isOpen = true;
     this.result = '';
-  }
+  };
 
-  @action cancel() {
+  cancel = () => {
     this.isOpen = false;
     this.result = 'Action cancelled';
-  }
+  };
 
-  @action async confirm() {
+  confirm = async () => {
     this.isDeleting = true;
 
     // Simulate async operation
@@ -354,7 +349,7 @@ export default class ConfirmationDialog extends Component {
     this.isDeleting = false;
     this.isOpen = false;
     this.result = 'Item deleted successfully';
-  }
+  };
 
   get allowClosing() {
     return !this.isDeleting;
@@ -425,7 +420,6 @@ A modal containing a complete form with validation.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Modal } from 'frontile';
 import { Button } from 'frontile';
 import { Input, Textarea, Select } from 'frontile';
@@ -446,27 +440,27 @@ export default class FormModal extends Component {
     { key: 'other', label: 'Other' }
   ];
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
-  @action updateName(value) {
+  updateName = (value) => {
     this.name = value;
-  }
+  };
 
-  @action updateEmail(value) {
+  updateEmail = (value) => {
     this.email = value;
-  }
+  };
 
-  @action updateCategory(key) {
+  updateCategory = (key) => {
     this.category = key;
-  }
+  };
 
-  @action updateMessage(value) {
+  updateMessage = (value) => {
     this.message = value;
-  }
+  };
 
-  @action async handleSubmit(event) {
+  handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!this.name || !this.email || !this.message) {
@@ -488,14 +482,14 @@ export default class FormModal extends Component {
     this.isSubmitting = false;
     this.resetForm();
     this.toggle();
-  }
+  };
 
-  @action resetForm() {
+  resetForm = () => {
     this.name = '';
     this.email = '';
     this.category = null;
     this.message = '';
-  }
+  };
 
   get isValid() {
     return this.name && this.email && this.message;
@@ -596,7 +590,6 @@ carry it forward for anatomy consumers styling or querying by `data-part`.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Modal } from 'frontile';
 import { Button } from 'frontile';
 
@@ -605,17 +598,17 @@ export default class ModalCloseButton extends Component {
   @tracked noCloseButtonOpen = false;
   @tracked customCloseOpen = false;
 
-  @action toggleNormal() {
+  toggleNormal = () => {
     this.normalOpen = !this.normalOpen;
-  }
+  };
 
-  @action toggleNoCloseButton() {
+  toggleNoCloseButton = () => {
     this.noCloseButtonOpen = !this.noCloseButtonOpen;
-  }
+  };
 
-  @action toggleCustomClose() {
+  toggleCustomClose = () => {
     this.customCloseOpen = !this.customCloseOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -691,7 +684,6 @@ Example showing modals that can open other modals.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Modal } from 'frontile';
 import { Button } from 'frontile';
 
@@ -700,23 +692,23 @@ export default class NestedModals extends Component {
   @tracked secondModalOpen = false;
   @tracked thirdModalOpen = false;
 
-  @action toggleFirst() {
+  toggleFirst = () => {
     this.firstModalOpen = !this.firstModalOpen;
-  }
+  };
 
-  @action toggleSecond() {
+  toggleSecond = () => {
     this.secondModalOpen = !this.secondModalOpen;
-  }
+  };
 
-  @action toggleThird() {
+  toggleThird = () => {
     this.thirdModalOpen = !this.thirdModalOpen;
-  }
+  };
 
-  @action closeAll() {
+  closeAll = () => {
     this.thirdModalOpen = false;
     this.secondModalOpen = false;
     this.firstModalOpen = false;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>

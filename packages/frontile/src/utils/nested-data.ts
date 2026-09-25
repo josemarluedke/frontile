@@ -163,6 +163,36 @@ export function unflattenData<T = unknown>(
 }
 
 /**
+ * Reads a dotted path (`'profile.email'`) from form data, returning
+ * `undefined` as soon as a segment is missing or lands on a non-object.
+ *
+ * The read-side counterpart of `unflattenData`, and refuses the same unsafe
+ * segments: field names are untrusted input, so `'__proto__'` must not reach
+ * `Object.prototype`.
+ *
+ * @example
+ * getPath({ profile: { email: 'john@example.com' } }, 'profile.email')
+ * // Returns: 'john@example.com'
+ *
+ * @param data - The data object to read from
+ * @param path - A flat key or dotted path
+ * @returns The value at `path`, or `undefined`
+ */
+export function getPath(data: unknown, path: string): unknown {
+  let current = data;
+
+  for (const key of path.split('.')) {
+    if (current === null || typeof current !== 'object' || isUnsafeKey(key)) {
+      return undefined;
+    }
+
+    current = (current as Record<string, unknown>)[key];
+  }
+
+  return current;
+}
+
+/**
  * Checks if the data structure contains any nested objects.
  * If true, we need to handle it as nested data.
  *

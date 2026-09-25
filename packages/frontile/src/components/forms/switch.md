@@ -85,7 +85,6 @@ The Switch component integrates with the Form validation system, providing autom
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Form, type FormResultData } from 'frontile';
 import { Button } from 'frontile';
 import { array } from '@ember/helper';
@@ -115,16 +114,14 @@ export default class ValidatedSwitch extends Component {
   };
   @tracked submitMessage = '';
 
-  @action
-  handleFormChange(data: FormResultData<Schema>) {
+  handleFormChange = (data: FormResultData<Schema>) => {
     this.formData = data.data;
-  }
+  };
 
-  @action
-  handleFormSubmit(data: FormResultData<Schema>) {
+  handleFormSubmit = (data: FormResultData<Schema>) => {
     this.submitMessage = 'Registration successful!';
     console.log('Form submitted:', data.data);
-  }
+  };
 
   <template>
     <div class='demo-stack'>

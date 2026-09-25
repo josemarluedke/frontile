@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import FormField from './form-field';
 import { useStyles } from '@frontile/theme';
 
@@ -48,7 +47,7 @@ export interface FormRadioSignature {
 }
 
 export default class FormRadio extends Component<FormRadioSignature> {
-  @action handleChange(value: unknown, event: Event): void {
+  handleChange = (value: unknown, event: Event): void => {
     event.preventDefault();
 
     if (typeof this.args.onChange === 'function') {
@@ -58,7 +57,7 @@ export default class FormRadio extends Component<FormRadioSignature> {
     if (typeof this.args._parentOnChange === 'function') {
       this.args._parentOnChange(value, event);
     }
-  }
+  };
 
   get isChecked(): boolean {
     return this.args.checked == this.args.value;

@@ -1,5 +1,4 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
-import { action } from '@ember/object';
 import type { FormRadioSignature } from '@frontile/forms-legacy/components/form-radio';
 import FormRadioGroup, {
   type FormRadioGroupArgs
@@ -21,8 +20,7 @@ export default class ChangesetFormFieldsRadioGroup extends Base<
   ChangesetFormFieldsRadioGroupSignature,
   string | boolean | number | undefined
 > {
-  @action
-  async handleChange(value: unknown, event: Event): Promise<void> {
+  handleChange = async (value: unknown, event: Event): Promise<void> => {
     event.preventDefault();
 
     this.args.changeset.set(this.args.fieldName, value);
@@ -31,7 +29,7 @@ export default class ChangesetFormFieldsRadioGroup extends Base<
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
-  }
+  };
 
   <template>
     <FormRadioGroup

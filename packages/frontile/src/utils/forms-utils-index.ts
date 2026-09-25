@@ -25,6 +25,7 @@ export { triggerFormInputEvent };
 export {
   flattenData,
   unflattenData,
+  getPath,
   hasNestedData,
   deepEqual
 } from './nested-data';

@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 
 import FormInput from '@frontile/forms-legacy/components/form-input';
@@ -85,18 +84,18 @@ export default class FormExample extends Component<FormExampleArgs> {
     return this.interests.includes('Entertainment');
   }
 
-  @action setCountry(value: unknown): void {
+  setCountry = (value: unknown): void => {
     this.country = value;
-  }
+  };
 
-  @action setField(
+  setField = (
     fieldName: 'firstName' | 'email' | 'accountType' | 'isInline' | 'size',
     value: string | boolean
-  ): void {
+  ): void => {
     this[fieldName] = value as never;
-  }
+  };
 
-  @action setInterest(interest: string, isChecked: boolean): void {
+  setInterest = (interest: string, isChecked: boolean): void => {
     if (isChecked) {
       this.interests = [...this.interests, interest];
     } else {
@@ -104,7 +103,7 @@ export default class FormExample extends Component<FormExampleArgs> {
         return element !== interest;
       });
     }
-  }
+  };
 
   <template>
     {{! @glint-nocheck }}
