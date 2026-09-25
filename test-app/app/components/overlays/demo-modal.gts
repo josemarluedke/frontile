@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Button } from 'frontile';
 import { Modal } from 'frontile';
-import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
 import { RadioGroup } from 'frontile';
@@ -16,19 +15,19 @@ export default class DemoModal extends Component<DemoModalArgs> {
   @tracked isLoading = false;
   @tracked size: ModalSignature['Args']['size'] = 'lg';
 
-  @action toggleModal(): void {
+  toggleModal = (): void => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
-  @action setSize(size: string): void {
+  setSize = (size: string): void => {
     this.size = size as ModalSignature['Args']['size'];
-  }
+  };
 
-  @action toggleInPlaceModal(): void {
+  toggleInPlaceModal = (): void => {
     this.isInPlaceOpen = !this.isInPlaceOpen;
-  }
+  };
 
-  @action save(): void {
+  save = (): void => {
     this.isLoading = true;
 
     later(
@@ -39,7 +38,7 @@ export default class DemoModal extends Component<DemoModalArgs> {
       },
       1000
     );
-  }
+  };
 
   <template>
     <div class="mt-6">

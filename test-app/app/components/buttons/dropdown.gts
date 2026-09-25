@@ -1,18 +1,15 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 
 export default class Example extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Click on key', key);
-  }
+  };
 
-  @action
-  delete() {
+  delete = () => {
     alert('delete');
-  }
+  };
 
   <template>
     <Dropdown as |d|>

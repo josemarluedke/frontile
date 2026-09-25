@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 import { concat } from '@ember/helper';
@@ -83,8 +82,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
     this.expandedSections = sectionsToExpand;
   }
 
-  @action
-  toggleSection(sectionKey: string) {
+  toggleSection = (sectionKey: string) => {
     if (this.expandedSections.has(sectionKey)) {
       // If section is expanded, collapse it
       this.expandedSections.delete(sectionKey);
@@ -108,7 +106,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
       }
     }
     this.expandedSections = new Set(this.expandedSections);
-  }
+  };
 
   private isCurrentPageInSection(
     sectionKey: string,
@@ -137,10 +135,9 @@ export default class DocfySidebarNavContent extends Component<Signature> {
     return subChild?.pages?.[0]?.url ?? null;
   }
 
-  @action
-  isExpanded(sectionKey: string) {
+  isExpanded = (sectionKey: string) => {
     return this.expandedSections.has(sectionKey);
-  }
+  };
   <template>
     <div ...attributes>
       {{! template-lint-disable no-invalid-interactive }}

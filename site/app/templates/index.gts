@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { hash } from '@ember/helper';
 import { NotificationCard, Notification } from 'frontile/notifications';
 import {
@@ -113,30 +112,25 @@ export default class IndexPage extends Component {
     { key: 'role', name: 'Role' },
   ] as const satisfies ColumnConfig<Member>[];
 
-  @action
-  openModal(): void {
+  openModal = (): void => {
     this.isModalOpen = true;
-  }
+  };
 
-  @action
-  closeModal(): void {
+  closeModal = (): void => {
     this.isModalOpen = false;
-  }
+  };
 
-  @action
-  openDrawer(): void {
+  openDrawer = (): void => {
     this.isDrawerOpen = true;
-  }
+  };
 
-  @action
-  closeDrawer(): void {
+  closeDrawer = (): void => {
     this.isDrawerOpen = false;
-  }
+  };
 
-  @action
-  setNotifyByEmail(value: boolean): void {
+  setNotifyByEmail = (value: boolean): void => {
     this.notifyByEmail = value;
-  }
+  };
 
   <template>
     <div class="bg-surface-app relative">

@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { htmlSafe } from '@ember/template';
 import { on } from '@ember/modifier';
 import { VisuallyHidden } from 'frontile';
@@ -79,8 +78,7 @@ export default class ThemeSeam extends Component<Signature> {
     this.split = this.clamp(((clientX - rect.left) / rect.width) * 100);
   }
 
-  @action
-  handlePointerDown(event: PointerEvent): void {
+  handlePointerDown = (event: PointerEvent): void => {
     const handle = event.currentTarget as HTMLElement;
 
     this.dragging = true;
@@ -89,19 +87,17 @@ export default class ThemeSeam extends Component<Signature> {
     handle.focus();
     this.setFromClientX(handle, event.clientX);
     event.preventDefault();
-  }
+  };
 
-  @action
-  handlePointerMove(event: PointerEvent): void {
+  handlePointerMove = (event: PointerEvent): void => {
     if (!this.dragging) {
       return;
     }
 
     this.setFromClientX(event.currentTarget as HTMLElement, event.clientX);
-  }
+  };
 
-  @action
-  handlePointerUp(event: PointerEvent): void {
+  handlePointerUp = (event: PointerEvent): void => {
     const handle = event.currentTarget as HTMLElement;
 
     this.dragging = false;
@@ -110,10 +106,9 @@ export default class ThemeSeam extends Component<Signature> {
     if (handle.hasPointerCapture(event.pointerId)) {
       handle.releasePointerCapture(event.pointerId);
     }
-  }
+  };
 
-  @action
-  handleKeyDown(event: KeyboardEvent): void {
+  handleKeyDown = (event: KeyboardEvent): void => {
     const step = event.shiftKey ? 10 : 2;
     let next: number;
 
@@ -141,7 +136,7 @@ export default class ThemeSeam extends Component<Signature> {
 
     this.split = this.clamp(next);
     event.preventDefault();
-  }
+  };
 
   <template>
     {{! --seam-handle-size and --seam-split are read by the positioning

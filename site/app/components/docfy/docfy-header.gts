@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { LinkTo } from '@ember/routing';
 import { Collapsible, VisuallyHidden } from 'frontile';
@@ -79,28 +78,28 @@ const PANEL_LINK =
 export default class DocfyHeader extends Component<DocfyHeaderSignature> {
   @tracked isMenuOpen = false;
 
-  @action toggleMenu(): void {
+  toggleMenu = (): void => {
     this.isMenuOpen = !this.isMenuOpen;
-  }
+  };
 
-  @action closeMenu(): void {
+  closeMenu = (): void => {
     this.isMenuOpen = false;
-  }
+  };
 
   /**
    * The panel holds nothing but links, so any click inside it is a navigation
    * and the panel should get out of the way. Keyed off the container rather
    * than each link so a link added later needs no wiring.
    */
-  @action handlePanelClick(): void {
+  handlePanelClick = (): void => {
     this.closeMenu();
-  }
+  };
 
-  @action handleKeydown(event: KeyboardEvent): void {
+  handleKeydown = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
       this.closeMenu();
     }
-  }
+  };
 
   <template>
     <div class="sticky top-0 z-1">

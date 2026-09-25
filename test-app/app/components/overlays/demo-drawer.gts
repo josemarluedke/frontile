@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { Button } from 'frontile';
 import { on } from '@ember/modifier';
@@ -18,23 +17,23 @@ export default class DemoDrawer extends Component {
   @tracked placement: DrawerSignature['Args']['placement'] = 'right';
   @tracked size: DrawerSignature['Args']['size'] = 'md';
 
-  @action toggleIsOpen(): void {
+  toggleIsOpen = (): void => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
-  @action toggleIsInPlaceOpen(): void {
+  toggleIsInPlaceOpen = (): void => {
     this.isInPlaceOpen = !this.isInPlaceOpen;
-  }
+  };
 
-  @action setPlacement(placement: string, _: Event): void {
+  setPlacement = (placement: string, _: Event): void => {
     this.placement = placement as DrawerSignature['Args']['placement'];
-  }
+  };
 
-  @action setSize(size: string): void {
+  setSize = (size: string): void => {
     this.size = size as DrawerSignature['Args']['size'];
-  }
+  };
 
-  @action save(): void {
+  save = (): void => {
     this.isLoading = true;
 
     later(
@@ -46,7 +45,7 @@ export default class DemoDrawer extends Component {
       },
       1000
     );
-  }
+  };
 
   <template>
     <div class="mt-10">
