@@ -1,7 +1,8 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
-import { action, get } from '@ember/object';
+import { action } from '@ember/object';
 import { debounce } from '@ember/runloop';
+import { getPath } from '../../utils/get-path';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import DateInput from './date-input';
@@ -159,12 +160,11 @@ class Field<
   /**
    * Returns the current value for the field from formData.
    * Supports both flat and dotted field names (e.g., 'email' or 'profile.email').
-   * Uses Ember's get() which handles both flat keys and dotted paths.
    */
   get fieldValue() {
     if (!this.args.formData) return undefined;
 
-    return get(this.args.formData, this.args.name);
+    return getPath(this.args.formData, this.args.name);
   }
 
   /**
