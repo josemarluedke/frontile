@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { debounce } from '@ember/runloop';
-import { getPath } from '../../utils/get-path';
+import { getPath } from '../../utils/nested-data';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import DateInput from './date-input';

@@ -3,8 +3,6 @@
  * These functions convert between nested objects and flat dotted-path notation.
  */
 
-import { isUnsafeKey } from '../-private/unsafe-keys';
-
 /**
  * `File` and `FileList` are browser globals. `FileList` in particular has no
  * counterpart in Node, so a bare `value instanceof FileList` is a hard
@@ -28,6 +26,37 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
     !(value instanceof Date) &&
     !isFileLike(value)
   );
+}
+
+/**
+ * Path segments that are refused as object keys.
+ *
+ * Field names come from the `name` attribute of the form's controls, which an
+ * app may render from a server-supplied schema, a CMS, or URL state — so they
+ * are untrusted input.
+ *
+ * `__proto__` is the real vector: `isPlainObject(Object.prototype)` is `true`,
+ * so when the walk below reached a `__proto__` segment it accepted
+ * `Object.prototype` as an already-existing nested object instead of creating a
+ * fresh one, and the final assignment wrote onto every object in the
+ * application.
+ *
+ * `constructor` and `prototype` do not reach `Object.prototype` through the
+ * walk as it is written — `current['constructor']` is a function, which
+ * `isPlainObject` rejects, so the walk shadows it with a fresh own key. They
+ * are refused anyway, as defense in depth: it keeps form data from shadowing
+ * those names, and it means a later change to the walk (or an intermediate that
+ * is a plain object with a `constructor` of its own) cannot quietly turn them
+ * into live vectors.
+ */
+const UNSAFE_KEYS = ['__proto__', 'constructor', 'prototype'];
+
+/**
+ * Checks a single path segment. Callers refuse the whole entry rather than
+ * substituting a safe key, so no partially-built path is left behind.
+ */
+function isUnsafeKey(key: string): boolean {
+  return UNSAFE_KEYS.includes(key);
 }
 
 /**
@@ -131,6 +160,36 @@ export function unflattenData<T = unknown>(
   }
 
   return result as Record<string, T>;
+}
+
+/**
+ * Reads a dotted path (`'profile.email'`) from form data, returning
+ * `undefined` as soon as a segment is missing or lands on a non-object.
+ *
+ * The read-side counterpart of `unflattenData`, and refuses the same unsafe
+ * segments: field names are untrusted input, so `'__proto__'` must not reach
+ * `Object.prototype`.
+ *
+ * @example
+ * getPath({ profile: { email: 'john@example.com' } }, 'profile.email')
+ * // Returns: 'john@example.com'
+ *
+ * @param data - The data object to read from
+ * @param path - A flat key or dotted path
+ * @returns The value at `path`, or `undefined`
+ */
+export function getPath(data: unknown, path: string): unknown {
+  let current = data;
+
+  for (const key of path.split('.')) {
+    if (current === null || typeof current !== 'object' || isUnsafeKey(key)) {
+      return undefined;
+    }
+
+    current = (current as Record<string, unknown>)[key];
+  }
+
+  return current;
 }
 
 /**
