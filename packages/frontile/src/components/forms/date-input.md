@@ -56,7 +56,7 @@ the 28th (the 29th in a leap year), and the segment redisplays.
 uncontrolled field. `@onChange` always hands back `Date`s, regardless of which form
 `@value` was given in.
 
-The field keeps its own segments and treats `@value` as something to sync *from*: setting
+The field keeps its own segments and treats `@value` as something to sync _from_: setting
 it rewrites what is displayed, and typing updates the field immediately without waiting
 for `@value` to come back. Passing `undefined` changes nothing, so a field whose `@value`
 has no data yet still honours `@defaultValue`. This is what lets it work inside a `<Form>`,
@@ -147,6 +147,54 @@ const yearAndMonth = { year: 'numeric', month: '2-digit' } as const;
 </template>
 ```
 
+## Time
+
+`@granularity="minute"` adds hour and minute segments after the date ones, and
+`@granularity="hour"` the hour alone. Their order and the literals between them come from
+the locale, as the date segments' do. The default, `day`, has no time segments.
+
+A locale with a 12-hour clock adds an AM/PM segment, typed with its first letter (`a`, `p`
+in English) and stepped with the arrow keys. `@hourCycle` forces one clock or the other.
+
+`@onChange` hands back a `Date` carrying the time, and the field submits the local
+`yyyy-MM-ddTHH:mm` that `<input type="datetime-local">` uses. `@value` accepts that string
+too, so a value round-trips through form data unchanged. The time is the user's
+wall-clock time and is never converted between time zones.
+
+```gts preview
+import { DateInput } from 'frontile';
+
+const value = new Date(2026, 0, 20, 21, 5);
+
+<template>
+  <div class='grid gap-4 md:grid-cols-3'>
+    <DateInput
+      @label='en-US'
+      @locale='en-US'
+      @granularity='minute'
+      @defaultValue={{value}}
+    />
+    <DateInput
+      @label='en-GB'
+      @locale='en-GB'
+      @granularity='minute'
+      @defaultValue={{value}}
+    />
+    <DateInput
+      @label='en-US, 24-hour'
+      @locale='en-US'
+      @granularity='minute'
+      @hourCycle={{24}}
+      @defaultValue={{value}}
+    />
+  </div>
+</template>
+```
+
+Pasting an ISO date and time (`2026-01-20T21:05`, or with a space) fills every segment;
+an ISO date alone fills the date and leaves the time. Positional text reads AM/PM from its
+words, and a 24-hour time pasted into a 12-hour field lands on the right side of noon.
+
 ## Copy and Paste
 
 Copying writes the field as it reads on screen, literals included, and cutting copies and
@@ -220,7 +268,11 @@ const value = new Date(2026, 0, 20);
 
 <template>
   <div class='demo-stack'>
-    <DateInput @label='Start date' @defaultValue={{value}} @isClearable={{true}} />
+    <DateInput
+      @label='Start date'
+      @defaultValue={{value}}
+      @isClearable={{true}}
+    />
   </div>
 </template>
 ```
@@ -252,7 +304,11 @@ const value = new Date(2026, 0, 20);
 <template>
   <div class='grid gap-4 md:grid-cols-2'>
     <DateInput @label='Disabled' @defaultValue={{value}} @isDisabled={{true}} />
-    <DateInput @label='Read-only' @defaultValue={{value}} @isReadOnly={{true}} />
+    <DateInput
+      @label='Read-only'
+      @defaultValue={{value}}
+      @isReadOnly={{true}}
+    />
   </div>
 </template>
 ```
@@ -323,14 +379,14 @@ export default class DateInputFieldExample extends Component {
 
 The field's parts carry `data-part` attributes, and state that CSS can select on:
 
-| Element                      | Attributes                                                                                                       |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `[data-part="base"]`         | `data-component="date-input"`                                                                                    |
-| `[data-part="inner-container"]` | `data-invalid`, `data-disabled` — the element that draws the field's border, background and focus ring        |
-| `[data-part="group"]`        | `data-invalid`, `data-readonly`                                                                                  |
-| `[data-part="segment"]`      | `data-type` (`year`, `month` or `day`), `data-placeholder`, `data-disabled`                                      |
-| `[data-part="literal"]`      | the separators between segments                                                                                  |
-| `[data-part="clear-button"]` | rendered only while `@isClearable` has something to clear                                                        |
+| Element                         | Attributes                                                                                                 |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `[data-part="base"]`            | `data-component="date-input"`                                                                              |
+| `[data-part="inner-container"]` | `data-invalid`, `data-disabled` — the element that draws the field's border, background and focus ring     |
+| `[data-part="group"]`           | `data-invalid`, `data-readonly`                                                                            |
+| `[data-part="segment"]`         | `data-type` (`year`, `month`, `day`, `hour`, `minute` or `dayPeriod`), `data-placeholder`, `data-disabled` |
+| `[data-part="literal"]`         | the separators between segments                                                                            |
+| `[data-part="clear-button"]`    | rendered only while `@isClearable` has something to clear                                                  |
 
 `@classes` takes the matching slots: `base`, `innerContainer`, `group`, `segment`,
 `literal`, `endContent` and `clearButton`.
@@ -357,7 +413,9 @@ import { hash } from '@ember/helper';
 Each segment is a `role="spinbutton"` carrying `aria-label` (`month`, `day`, `year`, and
 overridable through `@segmentLabels`), `aria-valuenow`, `aria-valuemin`, `aria-valuemax`
 and `aria-valuetext`. `aria-valuetext` is what makes a month announce as "January" rather
-than "1". The separators between them are `aria-hidden`.
+than "1", and AM/PM as "AM" or "PM" rather than "0" or "1". The AM/PM segment takes
+`inputmode="text"`, every other one `inputmode="numeric"`. The separators between them are
+`aria-hidden`.
 
 The segments sit in a `role="group"` named by `@label` and described by `@description` and
 any feedback. `role="group"` supports neither `aria-invalid` nor `aria-readonly` in ARIA
@@ -368,16 +426,16 @@ them.
 Every segment is in the tab order, which is three tab stops for one field. This follows
 `<input type="date">` in Chrome and Firefox.
 
-| Key                     | Behaviour                                                                    |
-| ----------------------- | ---------------------------------------------------------------------------- |
-| `Tab` / `Shift+Tab`     | Move between segments                                                        |
-| `←` / `→`               | Previous / next segment, skipping the literals; visual order in RTL          |
-| `Home` / `End`          | First / last segment                                                         |
-| `↑` / `↓`               | Increment / decrement, wrapping within the segment                           |
-| `PageUp` / `PageDown`   | Larger step: day ±7, month ±3, year ±10                                      |
-| digits                  | Fill the segment, advancing when it cannot take another digit                |
-| `Backspace`             | Remove the last digit typed in this segment                                  |
-| `Delete`                | Clear the segment                                                            |
+| Key                   | Behaviour                                                           |
+| --------------------- | ------------------------------------------------------------------- |
+| `Tab` / `Shift+Tab`   | Move between segments                                               |
+| `←` / `→`             | Previous / next segment, skipping the literals; visual order in RTL |
+| `Home` / `End`        | First / last segment                                                |
+| `↑` / `↓`             | Increment / decrement, wrapping within the segment                  |
+| `PageUp` / `PageDown` | Larger step: day ±7, month ±3, year ±10                             |
+| digits                | Fill the segment, advancing when it cannot take another digit       |
+| `Backspace`           | Remove the last digit typed in this segment                         |
+| `Delete`              | Clear the segment                                                   |
 
 `↑` and `↓` on an empty segment start from `@placeholderValue`, which defaults to today.
 Arrow-key navigation and `Home`/`End` keep working on a read-only field; the editing keys
@@ -403,13 +461,17 @@ import { fillDate, fillDateRange } from 'frontile/test-support';
 await fillDate('[data-test-due]', '2026-01-20');
 await fillDate('[data-test-due]', new Date(2026, 0, 20));
 
+// @granularity="minute": the time too, AM/PM included
+await fillDate('[data-test-starts]', '2026-01-20T21:05');
+
 // DatePicker @mode="range"
 await fillDateRange('[data-test-trip]', '2026-01-20', '2026-01-25');
 ```
 
 The selector points at any element containing the field, not at a segment. Both helpers
-accept a `Date` or a `yyyy-MM-dd` string, and route each run of digits by segment type —
-so the same call works whatever order the locale puts them in.
+accept a `Date` or a `yyyy-MM-dd` (or `yyyy-MM-ddTHH:mm`) string, and route each run of
+digits by segment type — so the same call works whatever order the locale puts them in,
+and on either clock.
 
 Pointing `fillDate` at a `DatePicker` rendering its button trigger throws, and says so:
 there is nothing to type into on that path, so click the trigger and pick from the

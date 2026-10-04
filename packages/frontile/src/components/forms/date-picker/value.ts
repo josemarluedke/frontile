@@ -1,4 +1,5 @@
 import { toDayKey, fromDayKey } from '../../collections/calendar/utils';
+import type { Granularity } from '../date-input/types';
 import type {
   CalendarMode,
   CalendarValue,
@@ -6,8 +7,9 @@ import type {
 } from '../../collections/calendar/types';
 
 /**
- * A date as accepted from a consumer: a `Date`, or the same `yyyy-MM-dd`
- * string this component writes to its hidden inputs.
+ * A date as accepted from a consumer: a `Date`, or the same `yyyy-MM-dd` (or,
+ * with a time, local `yyyy-MM-ddTHH:mm`) string this component writes to its
+ * hidden inputs.
  *
  * Strings are accepted because `Field` feeds form data — which is always
  * strings — straight back into `@value`. It also means a value hydrated from
@@ -24,6 +26,16 @@ interface DatePickerRangeInput {
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
+ * A day with a local wall-clock time, as `<input type="datetime-local">`
+ * writes it: `T` or a space between, seconds optional. No offset -- a time
+ * here is the user's own, never converted.
+ */
+const ISO_DATE_TIME =
+  /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?$/;
+
+const pad = (n: number): string => String(n).padStart(2, '0');
+
+/**
  * Normalizes one end of a value to a `Date`, or `null` when there is nothing
  * usable there.
  *
@@ -36,6 +48,14 @@ function parseDate(value: DatePickerInput | null | undefined): Date | null {
 
   if (value instanceof Date) {
     return Number.isNaN(value.getTime()) ? null : value;
+  }
+
+  const withTime = ISO_DATE_TIME.exec(value);
+  if (withTime?.[1]) {
+    const [, , hours, minutes, seconds] = withTime;
+    const parsed = fromDayKey(withTime[1]);
+    parsed.setHours(Number(hours), Number(minutes), Number(seconds ?? 0));
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
 
   // `fromDayKey` splits on `-` and would happily turn anything into a Date of
@@ -64,13 +84,38 @@ function parseRange(
   return { start, end: parseDate(value.end) };
 }
 
-/** The value as it is submitted: `yyyy-MM-dd`, from local calendar fields. */
-function toWire(date: Date | null | undefined): string {
+/**
+ * The value as it is submitted: `yyyy-MM-dd` from local calendar fields, and
+ * under an `hour` or `minute` granularity the local `yyyy-MM-ddTHH:mm` that
+ * `datetime-local` uses too.
+ */
+function toWire(
+  date: Date | null | undefined,
+  granularity: Granularity = 'day'
+): string {
   if (!date || Number.isNaN(date.getTime())) return '';
-  return toDayKey(date);
+  const day = toDayKey(date);
+  if (granularity === 'day') return day;
+  return `${day}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+/**
+ * Copies the wall-clock time of `from` onto the day of `day`. Picking a day in
+ * the calendar keeps the time the field already holds.
+ */
+function withTimeOf(day: Date, from: { hours: number; minutes: number }): Date {
+  const next = new Date(day);
+  next.setHours(from.hours, from.minutes, 0, 0);
+  return next;
 }
 
 const DEFAULT_FORMAT: Intl.DateTimeFormatOptions = { dateStyle: 'medium' };
+
+/** The button trigger's default once the value carries a time. */
+const DEFAULT_TIME_FORMAT: Intl.DateTimeFormatOptions = {
+  dateStyle: 'medium',
+  timeStyle: 'short'
+};
 
 function formatDate(
   date: Date,
@@ -130,6 +175,8 @@ export {
   parseDate,
   parseRange,
   toWire,
+  withTimeOf,
+  DEFAULT_TIME_FORMAT,
   formatValue,
   isEmptyValue,
   type DatePickerInput,

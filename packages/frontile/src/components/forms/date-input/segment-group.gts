@@ -5,6 +5,7 @@ import { on } from '@ember/modifier';
 import {
   isSegment,
   applyDigit,
+  applyLetter,
   commitSegment,
   step,
   clearSegment,
@@ -61,11 +62,21 @@ interface SegmentGroupSignature {
 const DEFAULT_LABELS: Record<SegmentType, string> = {
   year: 'year',
   month: 'month',
-  day: 'day'
+  day: 'day',
+  hour: 'hour',
+  minute: 'minute',
+  dayPeriod: 'AM/PM'
 };
 
 /** How much PageUp/PageDown moves, per segment. */
-const PAGE_STEP: Record<SegmentType, number> = { day: 7, month: 3, year: 10 };
+const PAGE_STEP: Record<SegmentType, number> = {
+  day: 7,
+  month: 3,
+  year: 10,
+  hour: 2,
+  minute: 15,
+  dayPeriod: 1
+};
 
 /**
  * Everything one rendered part needs, resolved to primitives.
@@ -83,6 +94,8 @@ interface Cell {
   type?: SegmentType;
   isEmpty: boolean;
   label?: string;
+  /** `text` for AM/PM, typed by letter; `numeric` for everything else. */
+  inputMode: 'numeric' | 'text';
   valueNow?: number;
   valueMin?: number;
   valueMax?: number;
@@ -118,6 +131,7 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
    */
   valueTextFor = (segment: Segment): string | undefined => {
     if (segment.value === null) return undefined;
+    if (segment.labels) return segment.labels[segment.value];
     if (segment.type !== 'month') return String(segment.value);
 
     // Any year and day will do; only the month is read back out.
@@ -128,7 +142,13 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
   get cells(): Cell[] {
     return this.args.parts.map((part, index) => {
       if (!isSegment(part)) {
-        return { index, isSegment: false, isEmpty: false, text: part.text };
+        return {
+          index,
+          isSegment: false,
+          isEmpty: false,
+          text: part.text,
+          inputMode: 'numeric'
+        };
       }
 
       return {
@@ -138,6 +158,7 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
         type: part.type,
         isEmpty: part.value === null,
         label: this.labelFor(part.type),
+        inputMode: part.labels ? 'text' : 'numeric',
         // `undefined` rather than `null`: an empty segment has no current
         // value, and `aria-valuenow="null"` would be a value of sorts.
         valueNow: part.value ?? undefined,
@@ -247,10 +268,20 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
 
     if (/^\d$/.test(key)) {
       event.preventDefault();
+      // AM/PM has no digits to take.
+      if (part.labels) return;
       const { segment, isFull } = applyDigit(part, key);
       this.replace(index, segment);
       // Advancing before the DOM has caught up is safe: the segment elements
       // are keyed by index and are updated, never re-created.
+      if (isFull) this.focusSibling(element, 1);
+      return;
+    }
+
+    if (part.labels && key.length === 1 && !event.metaKey && !event.ctrlKey) {
+      event.preventDefault();
+      const { segment, isFull } = applyLetter(part, key);
+      if (segment !== part) this.replace(index, segment);
       if (isFull) this.focusSibling(element, 1);
       return;
     }
@@ -377,7 +408,7 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
             role="spinbutton"
             tabindex={{unless @isDisabled "0"}}
             contenteditable={{if this.isEditable "true" "false"}}
-            inputmode="numeric"
+            inputmode={{cell.inputMode}}
             spellcheck="false"
             autocorrect="off"
             data-part="segment"

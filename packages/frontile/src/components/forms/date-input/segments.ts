@@ -1,5 +1,11 @@
 import { warn } from '@ember/debug';
-import type { Part, Segment, SegmentType } from './types';
+import type {
+  HourCycle,
+  Part,
+  Segment,
+  SegmentType,
+  TimeOptions
+} from './types';
 
 /**
  * The format an editable field uses when the consumer supplies none.
@@ -20,14 +26,35 @@ const BOUNDS: Record<
   // the real length of the chosen month, which is not known segment-locally.
   day: { min: 1, max: 31, width: 2, placeholder: 'dd' },
   month: { min: 1, max: 12, width: 2, placeholder: 'mm' },
-  year: { min: 1, max: 9999, width: 4, placeholder: 'yyyy' }
+  year: { min: 1, max: 9999, width: 4, placeholder: 'yyyy' },
+  // A 24-hour clock's bounds; `hourBounds` gives the other cycles'.
+  hour: { min: 0, max: 23, width: 2, placeholder: 'hh' },
+  minute: { min: 0, max: 59, width: 2, placeholder: 'mm' },
+  // AM is 0 and PM is 1. Its placeholder is the locale's AM, set by
+  // `buildParts`, which is the only place the locale is known.
+  dayPeriod: { min: 0, max: 1, width: 2, placeholder: 'AM' }
 };
+
+const HOUR_BOUNDS: Record<HourCycle, { min: number; max: number }> = {
+  h11: { min: 0, max: 11 },
+  h12: { min: 1, max: 12 },
+  h23: { min: 0, max: 23 },
+  h24: { min: 1, max: 24 }
+};
+
+/** Whether a cycle counts the hours twice a day, and so needs AM/PM. */
+function isTwelveHour(cycle: HourCycle): boolean {
+  return cycle === 'h11' || cycle === 'h12';
+}
 
 function isSegment(part: Part): part is Segment {
   return part.kind === 'segment';
 }
 
-function emptySegment(type: SegmentType): Segment {
+function emptySegment(
+  type: SegmentType,
+  overrides: Partial<Segment> = {}
+): Segment {
   const { min, max, width, placeholder } = BOUNDS[type];
   return {
     kind: 'segment',
@@ -38,8 +65,41 @@ function emptySegment(type: SegmentType): Segment {
     width,
     placeholder,
     buffer: '',
-    isCommitted: false
+    isCommitted: false,
+    ...overrides
   };
+}
+
+/**
+ * The format the segments are built from: the date format, plus the time
+ * fields a granularity asks for. Seconds are out of scope.
+ */
+function withTime(
+  format: Intl.DateTimeFormatOptions,
+  { granularity = 'day', hourCycle }: TimeOptions
+): Intl.DateTimeFormatOptions {
+  if (granularity === 'day') return format;
+
+  return {
+    ...format,
+    hour: '2-digit',
+    ...(granularity === 'minute' ? { minute: '2-digit' } : {}),
+    ...(hourCycle ? { hourCycle: hourCycle === 12 ? 'h12' : 'h23' } : {})
+  };
+}
+
+/** The locale's names for AM and PM, in that order. */
+function dayPeriodLabels(locale: string): string[] {
+  const formatter = new Intl.DateTimeFormat(locale, {
+    hour: 'numeric',
+    hourCycle: 'h12'
+  });
+  return [1, 13].map(
+    (hour) =>
+      formatter
+        .formatToParts(new Date(2026, 0, 20, hour))
+        .find((p) => p.type === 'dayPeriod')?.value ?? (hour < 12 ? 'AM' : 'PM')
+  );
 }
 
 /**
@@ -53,21 +113,35 @@ function emptySegment(type: SegmentType): Segment {
  */
 function buildParts(
   locale: string,
-  formatOptions: Intl.DateTimeFormatOptions = DEFAULT_FORMAT
+  formatOptions: Intl.DateTimeFormatOptions = DEFAULT_FORMAT,
+  time: TimeOptions = {}
 ): Part[] {
-  const formatter = new Intl.DateTimeFormat(locale, formatOptions);
+  const formatter = new Intl.DateTimeFormat(
+    locale,
+    withTime(formatOptions, time)
+  );
   // A reference date, only ever used to make the formatter emit its parts.
   const parts = formatter.formatToParts(new Date(2026, 0, 20));
+  // `Intl` settles the cycle -- the locale's, or the one asked for -- and the
+  // hour's bounds, and whether there is an AM/PM at all, follow from it.
+  const hourCycle = formatter.resolvedOptions().hourCycle ?? 'h23';
 
   const out: Part[] = [];
   for (const part of parts) {
     if (part.type === 'year' || part.type === 'month' || part.type === 'day') {
       out.push(emptySegment(part.type));
+    } else if (part.type === 'hour') {
+      out.push(emptySegment('hour', { ...HOUR_BOUNDS[hourCycle], hourCycle }));
+    } else if (part.type === 'minute') {
+      out.push(emptySegment('minute'));
+    } else if (part.type === 'dayPeriod') {
+      const labels = dayPeriodLabels(locale);
+      out.push(emptySegment('dayPeriod', { labels, placeholder: labels[0] }));
     } else if (part.type === 'literal') {
       out.push({ kind: 'literal', text: part.value });
     }
-    // Everything else -- era, weekday, relatedYear -- is dropped: day
-    // granularity has no segment for it.
+    // Everything else -- era, weekday, relatedYear -- is dropped: there is no
+    // segment for it.
   }
 
   return out;
@@ -117,7 +191,10 @@ function applyDigit(
   segment: Segment,
   digit: string
 ): { segment: Segment; isFull: boolean } {
-  if (!/^\d$/.test(digit)) return { segment, isFull: false };
+  // A textual segment (AM/PM) is typed by letter; see `applyLetter`.
+  if (!/^\d$/.test(digit) || segment.labels) {
+    return { segment, isFull: false };
+  }
 
   let buffer = segment.buffer + digit;
   let value = bufferValue(segment, buffer);
@@ -190,6 +267,24 @@ function withValue(segment: Segment, value: number): Segment {
   };
 }
 
+/**
+ * Types into a textual segment: a letter picks the first label starting with
+ * it, so `a` and `p` set AM and PM in English. A letter that starts no label
+ * is ignored, and the segment is finished either way it is set.
+ */
+function applyLetter(
+  segment: Segment,
+  key: string
+): { segment: Segment; isFull: boolean } {
+  const letter = key.toLocaleLowerCase();
+  const index = (segment.labels ?? []).findIndex((label) =>
+    label.toLocaleLowerCase().startsWith(letter)
+  );
+  if (index === -1) return { segment, isFull: false };
+
+  return { segment: withValue(segment, index), isFull: true };
+}
+
 /** Clears both the value and the digits behind it. */
 function clearSegment(segment: Segment): Segment {
   return { ...segment, value: null, buffer: '', isCommitted: false };
@@ -208,11 +303,36 @@ function deleteDigit(segment: Segment): Segment {
   };
 }
 
-/** The unit of `placeholderValue` this segment seeds from when empty. */
-function seedFrom(type: SegmentType, placeholderValue: Date): number {
-  if (type === 'year') return placeholderValue.getFullYear();
-  if (type === 'month') return placeholderValue.getMonth() + 1;
-  return placeholderValue.getDate();
+/** A 0-23 hour as the given cycle counts it. */
+function hourOnCycle(hours: number, cycle: HourCycle): number {
+  if (cycle === 'h11') return hours % 12;
+  if (cycle === 'h12') return hours % 12 || 12;
+  if (cycle === 'h24') return hours || 24;
+  return hours;
+}
+
+/** The 0-23 hour an hour segment and an AM/PM (0 or 1) stand for. */
+function hourOfDay(hour: number, cycle: HourCycle, dayPeriod: number): number {
+  if (isTwelveHour(cycle)) return (hour % 12) + (dayPeriod === 1 ? 12 : 0);
+  return hour % 24;
+}
+
+/** The unit of `date` this segment holds: what it seeds from, or is set to. */
+function seedFrom(segment: Segment, date: Date): number {
+  switch (segment.type) {
+    case 'year':
+      return date.getFullYear();
+    case 'month':
+      return date.getMonth() + 1;
+    case 'day':
+      return date.getDate();
+    case 'hour':
+      return hourOnCycle(date.getHours(), segment.hourCycle ?? 'h23');
+    case 'minute':
+      return date.getMinutes();
+    case 'dayPeriod':
+      return date.getHours() < 12 ? 0 : 1;
+  }
 }
 
 /**
@@ -226,7 +346,7 @@ function step(
   placeholderValue: Date
 ): Segment {
   if (segment.value === null) {
-    return withValue(segment, seedFrom(segment.type, placeholderValue));
+    return withValue(segment, seedFrom(segment, placeholderValue));
   }
 
   const span = segment.max - segment.min + 1;
@@ -251,6 +371,7 @@ function step(
  */
 function displaySegment(segment: Segment): string {
   if (segment.value === null) return segment.placeholder;
+  if (segment.labels) return segment.labels[segment.value] ?? '';
 
   const digits = segment.buffer;
 
@@ -276,6 +397,30 @@ function isReady(
 }
 
 /**
+ * The time the time segments hold, as a 0-23 hour and a minute; midnight when
+ * there are none, and `null` while any of them is empty or still being typed.
+ */
+function timeOf(parts: Part[]): { hours: number; minutes: number } | null {
+  const hour = findSegment(parts, 'hour');
+  if (!hour) return { hours: 0, minutes: 0 };
+
+  const minute = findSegment(parts, 'minute');
+  const dayPeriod = findSegment(parts, 'dayPeriod');
+  if (!isReady(hour)) return null;
+  if (minute && !isReady(minute)) return null;
+  if (dayPeriod && !isReady(dayPeriod)) return null;
+
+  return {
+    hours: hourOfDay(
+      hour.value,
+      hour.hourCycle ?? 'h23',
+      dayPeriod?.value ?? 0
+    ),
+    minutes: minute?.value ?? 0
+  };
+}
+
+/**
  * The composed value, or `null` while any segment is still empty or still
  * being typed. The day is clamped to the chosen month's real length: a 31 left
  * over from January must resolve to the 28th in February, not roll forward
@@ -289,8 +434,17 @@ function toDate(parts: Part[]): Date | null {
   // Uncommitted counts as empty: half a year is not a date.
   if (!isReady(year) || !isReady(month) || !isReady(day)) return null;
 
+  const time = timeOf(parts);
+  if (!time) return null;
+
   const clamped = Math.min(day.value, daysInMonth(year.value, month.value));
-  return new Date(year.value, month.value - 1, clamped);
+  return new Date(
+    year.value,
+    month.value - 1,
+    clamped,
+    time.hours,
+    time.minutes
+  );
 }
 
 /**
@@ -379,12 +533,17 @@ function fromDate(parts: Part[], date: Date | null): Part[] {
     if (!isSegment(part)) return part;
     if (!date) return clearSegment(part);
 
-    return withValue(part, seedFrom(part.type, date));
+    return withValue(part, seedFrom(part, date));
   });
 }
 
 export {
   buildParts,
+  withTime,
+  applyLetter,
+  timeOf,
+  hourOnCycle,
+  hourOfDay,
   isSegment,
   emptySegment,
   DEFAULT_FORMAT,

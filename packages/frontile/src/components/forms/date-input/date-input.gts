@@ -18,7 +18,12 @@ import {
 import { parseDate, toWire } from '../date-picker/value';
 import { ref } from '../../../utils/ref';
 import { triggerFormInputEvent } from '../../../utils/forms-utils-index';
-import type { Part, DateInputArgs, DateInputClasses } from './types';
+import type {
+  Part,
+  DateInputArgs,
+  DateInputClasses,
+  TimeOptions
+} from './types';
 
 interface DateInputSignature {
   Args: DateInputArgs;
@@ -53,7 +58,7 @@ class DateInput extends Component<DateInputSignature> {
     const seed = args.defaultValue;
     this.setParts(
       fromDate(
-        buildParts(this.locale, this.formatOptions),
+        buildParts(this.locale, this.formatOptions, this.timeOptions),
         seed === undefined ? null : parseDate(seed)
       )
     );
@@ -85,6 +90,15 @@ class DateInput extends Component<DateInputSignature> {
     });
   }
 
+  /** The time segments the field adds to the date, if any. */
+  @cached
+  get timeOptions(): TimeOptions {
+    return {
+      granularity: this.args.granularity,
+      hourCycle: this.args.hourCycle
+    };
+  }
+
   /**
    * The composed value, or null while any segment is empty.
    *
@@ -97,7 +111,7 @@ class DateInput extends Component<DateInputSignature> {
   }
 
   get wireValue(): string {
-    return toWire(this.value);
+    return toWire(this.value, this.args.granularity);
   }
 
   get isEmpty(): boolean {
@@ -158,9 +172,15 @@ class DateInput extends Component<DateInputSignature> {
   syncLocale = modifier(
     (
       _: HTMLElement,
-      [locale, format]: [string, Intl.DateTimeFormatOptions | undefined]
+      [locale, format, time]: [
+        string,
+        Intl.DateTimeFormatOptions | undefined,
+        TimeOptions
+      ]
     ) => {
-      this.setParts(carryOver(buildParts(locale, format), this.#currentParts));
+      this.setParts(
+        carryOver(buildParts(locale, format, time), this.#currentParts)
+      );
     }
   );
 
@@ -227,7 +247,7 @@ class DateInput extends Component<DateInputSignature> {
 
   <template>
     <div
-      {{this.syncLocale this.locale this.formatOptions}}
+      {{this.syncLocale this.locale this.formatOptions this.timeOptions}}
       {{this.syncValue @value}}
       {{this.containerRef.setup}}
       {{on "focusout" this.handleFocusOut}}
