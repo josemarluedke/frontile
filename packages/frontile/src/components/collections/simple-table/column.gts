@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
-import { useStyles } from '@frontile/theme';
+import { useStyles, twMerge } from '@frontile/theme';
+import type { SlotsToClasses, TableSlots } from '../table/types';
 
 interface SimpleTableColumnSignature {
   Args: {
@@ -14,6 +15,11 @@ interface SimpleTableColumnSignature {
      * @ignore
      */
     styleFns?: ReturnType<ReturnType<typeof useStyles>['table']>;
+    /**
+     * @internal Classes object from SimpleTable component
+     * @ignore
+     */
+    classes?: SlotsToClasses<TableSlots>;
   };
   Element: HTMLTableCellElement;
   Blocks: {
@@ -32,7 +38,7 @@ class SimpleTableColumn extends Component<SimpleTableColumnSignature> {
       stickyPosition: this.args.isSticky
         ? (this.args.stickyPosition as 'left' | 'right') || 'left'
         : undefined,
-      class: this.args.class
+      class: twMerge(this.args.class || '', this.args.classes?.th || '')
     };
 
     return this.styles.th(options);
