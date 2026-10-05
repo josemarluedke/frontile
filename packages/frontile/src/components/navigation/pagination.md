@@ -311,6 +311,41 @@ import { Pagination } from 'frontile';
 </template>
 ```
 
+## Labels
+
+Every text the component renders itself is English by default: the
+previous and next buttons, the accessible names of all controls, and the
+screen-reader text of the ellipsis. `@labels` replaces any of them, e.g. to
+translate them; anything you leave out keeps its default. `page` is a
+function of the page number, since some languages put the number
+mid-sentence.
+
+```gts preview
+import { hash } from '@ember/helper';
+import { Pagination } from 'frontile';
+
+const pageLabel = (page: number) => `Přejít na stránku ${page}`;
+
+<template>
+  <Pagination
+    @total={{200}}
+    @defaultPage={{5}}
+    @showEdges={{true}}
+    @label='Stránkování'
+    @labels={{hash
+      previous='Předchozí'
+      next='Další'
+      previousPage='Předchozí stránka'
+      nextPage='Další stránka'
+      firstPage='První stránka'
+      lastPage='Poslední stránka'
+      page=pageLabel
+      morePages='Další stránky'
+    }}
+  />
+</template>
+```
+
 ## Accessibility
 
 `Pagination` renders a `<nav>` landmark, named by `@label` (defaulting to
@@ -319,7 +354,8 @@ control. The active page chip carries `aria-current="page"`; every other
 chip carries none.
 
 The ellipsis marking a gap in the page row is `aria-hidden`, with a visually
-hidden "More pages" label so screen readers still get a name for it.
+hidden "More pages" label (`@labels.morePages`) so screen readers still get
+a name for it.
 
 Every control — previous, next, the edge jumps, and each page chip — stays
 individually reachable by <kbd>Tab</kbd>, with no roving `tabindex`. These
