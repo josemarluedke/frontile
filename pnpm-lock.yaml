@@ -123,8 +123,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.64.5)
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -196,8 +196,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.64.5)
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -269,8 +269,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.64.5)
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -339,8 +339,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -412,8 +412,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.64.5)
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -536,8 +536,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -603,8 +603,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.64.5)
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -667,8 +667,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.64.5)
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -734,8 +734,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.64.5)
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -834,8 +834,8 @@ importers:
         specifier: ^4.6.9
         version: 4.6.9
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -901,8 +901,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3(rollup@4.64.5)
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -1027,8 +1027,8 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9
       babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.0.1
+        version: 4.0.1
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -1058,7 +1058,7 @@ importers:
         version: 9.0.3
       ember-qunit:
         specifier: ^9.2.0
-        version: 9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@2.26.0)
+        version: 9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@3.0.0)
       ember-resolver:
         specifier: ^13.2.0
         version: 13.2.0
@@ -1102,8 +1102,8 @@ importers:
         specifier: ^2.1.8
         version: 2.1.8(prettier@3.9.10)
       qunit:
-        specifier: ^2.26.0
-        version: 2.26.0
+        specifier: ^3.0.0
+        version: 3.0.0
       qunit-dom:
         specifier: ^3.6.0
         version: 3.6.0
@@ -1235,8 +1235,8 @@ importers:
         specifier: ^22.0.0
         version: 22.0.0
       babel-plugin-ember-template-compilation:
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: ^4.0.1
+        version: 4.0.1
       decorator-transforms:
         specifier: ^2.3.1
         version: 2.4.0(@babel/core@7.29.7)
@@ -1266,7 +1266,7 @@ importers:
         version: 9.0.3
       ember-qunit:
         specifier: ^9.2.0
-        version: 9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@2.26.0)
+        version: 9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@3.0.0)
       ember-resolver:
         specifier: ^13.2.0
         version: 13.2.0
@@ -1292,8 +1292,8 @@ importers:
         specifier: ^2.1.8
         version: 2.1.8(prettier@3.9.10)
       qunit:
-        specifier: ^2.26.0
-        version: 2.26.0
+        specifier: ^3.0.0
+        version: 3.0.0
       qunit-dom:
         specifier: ^3.6.0
         version: 3.6.0
@@ -4005,8 +4005,8 @@ packages:
     resolution: {integrity: sha512-kk7cGyblE9n4MB98rqw2wuUW7YLD5FM+Tr97gNSYL4e8DBMQndLuWaWNx1wfd7o00NjFhhoTR+HZs2nj23g2Lw==}
     engines: {node: '>= 18.*'}
 
-  babel-plugin-ember-template-compilation@4.0.0:
-    resolution: {integrity: sha512-J2dR6ZPfPNuIR7vzhneO9xR0aTvOHITszuGif2EOYw3Qg3KlIVEd/hNnEeubyWgjYXn06Sgm6/NdNXEMNSsWYQ==}
+  babel-plugin-ember-template-compilation@4.0.1:
+    resolution: {integrity: sha512-t1o2O+91u4oLtku0sysC2nAuwBoyH9lDWmRoKHdAktt5fFaD8b2slKsWq2dyXrZ+/FW/jFa5rWdN3zK9VB0qvQ==}
     engines: {node: '>= 18.*'}
 
   babel-plugin-htmlbars-inline-precompile@5.3.1:
@@ -4480,16 +4480,16 @@ packages:
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
+  commander@12.1.0:
+    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
+    engines: {node: '>=18'}
+
   commander@14.0.3:
     resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
     engines: {node: '>=20'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
-
-  commander@7.2.0:
-    resolution: {integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==}
-    engines: {node: '>= 10'}
 
   common-ancestor-path@1.0.1:
     resolution: {integrity: sha512-L3sHRo1pXXEqX8VU28kfgUY+YGsk09hPqZiZmLacNib6XNTCM8ubYeT7ryXQw8asB1sKgcU5lkB7ONug08aB8w==}
@@ -7519,8 +7519,8 @@ packages:
     resolution: {integrity: sha512-BdiKAgbfRlvfMq/XzO/AF9NPmaA8a+YpLAyAFTVFBj3gARrAIfWvNq7Q7NE4se3KgFu0KkrvQMxTS0XVnsGzHg==}
     engines: {node: '>=18'}
 
-  node-watch@0.7.3:
-    resolution: {integrity: sha512-3l4E8uMPY1HdMMryPRUAl+oIHtXtyiTlIiESNSVSNxcPfzAFzeTbXFQkZfAwBbo0B1qMSG8nUABx+Gd+YrbKrQ==}
+  node-watch@0.7.4:
+    resolution: {integrity: sha512-RinNxoz4W1cep1b928fuFhvAQ5ag/+1UlMDV7rbyGthBIgsiEouS4kvRayvvboxii4m8eolKOIBo3OjDqbc+uQ==}
     engines: {node: '>=6'}
 
   nopt@10.0.1:
@@ -8088,9 +8088,9 @@ packages:
   qunit-theme-ember@1.0.0:
     resolution: {integrity: sha512-vdMVVo6ecdCkWttMTKeyq1ZTLGHcA6zdze2zhguNuc3ritlJMhOXY5RDseqazOwqZVfCg3rtlmL3fMUyIzUyFQ==}
 
-  qunit@2.26.0:
-    resolution: {integrity: sha512-KSv16YomcYmiK90qTOJl3Bm5IvTf2upqQDdBQWCvSQWe94FWobnUgKOpvpvZdG7VkDt3TJSI8k8g9+GGGEd7Fw==}
-    engines: {node: '>=10'}
+  qunit@3.0.0:
+    resolution: {integrity: sha512-g4Fgw3uhqwdjzhUDa0bYGQyGzs1xRcIY/32c5zUydnnrgzcA8updYF9nIeUis+PfwuqX6UB/4JpCNMnrVBY6iA==}
+    engines: {node: '>=18'}
     hasBin: true
 
   range-parser@1.3.0:
@@ -12839,7 +12839,7 @@ snapshots:
       babel-import-util: 3.0.1
       import-meta-resolve: 4.2.0
 
-  babel-plugin-ember-template-compilation@4.0.0:
+  babel-plugin-ember-template-compilation@4.0.1:
     dependencies:
       '@glimmer/syntax': 0.95.0
       babel-import-util: 3.0.1
@@ -13526,11 +13526,11 @@ snapshots:
 
   comma-separated-tokens@2.0.3: {}
 
+  commander@12.1.0: {}
+
   commander@14.0.3: {}
 
   commander@2.20.3: {}
-
-  commander@7.2.0: {}
 
   common-ancestor-path@1.0.1: {}
 
@@ -14571,11 +14571,11 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  ember-qunit@9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@2.26.0):
+  ember-qunit@9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@3.0.0):
     dependencies:
       '@ember/test-helpers': 5.7.0(@babel/core@7.29.7)
       '@embroider/addon-shim': 1.10.3
-      qunit: 2.26.0
+      qunit: 3.0.0
       qunit-theme-ember: 1.0.0
     transitivePeerDependencies:
       - supports-color
@@ -17370,7 +17370,7 @@ snapshots:
 
   node-releases@2.0.58: {}
 
-  node-watch@0.7.3: {}
+  node-watch@0.7.4: {}
 
   nopt@10.0.1:
     dependencies:
@@ -18057,10 +18057,10 @@ snapshots:
 
   qunit-theme-ember@1.0.0: {}
 
-  qunit@2.26.0:
+  qunit@3.0.0:
     dependencies:
-      commander: 7.2.0
-      node-watch: 0.7.3
+      commander: 12.1.0
+      node-watch: 0.7.4
       tiny-glob: 0.2.9
 
   range-parser@1.3.0: {}

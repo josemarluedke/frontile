@@ -83,7 +83,7 @@
     "@types/culori": "^4.0.1",
     "@types/lodash.kebabcase": "^4.1.9",
     "@types/lodash.mapkeys": "^4.6.9",
-    "babel-plugin-ember-template-compilation": "^4.0.0",
+    "babel-plugin-ember-template-compilation": "^4.0.1",
     "concurrently": "^10.0.6",
     "decorator-transforms": "^2.4.0",
     "ember-source": "^7.3.0",
