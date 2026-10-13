@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import {
@@ -62,27 +61,27 @@ interface TextareaSignature {
 }
 
 class Textarea extends Component<TextareaSignature> {
-  @action handleOnInput(event: Event): void {
+  handleOnInput = (event: Event): void => {
     if (typeof this.args.onInput === 'function') {
       this.args.onInput(
         (event.target as HTMLInputElement).value,
         event as InputEvent
       );
     }
-  }
+  };
 
-  @action handleOnChange(event: Event): void {
+  handleOnChange = (event: Event): void => {
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(
         (event.target as HTMLInputElement).value,
         event as InputEvent
       );
     }
-  }
+  };
 
-  @action handleOnBlur(): void {
+  handleOnBlur = (): void => {
     this.args.onBlur?.();
-  }
+  };
 
   get classes() {
     const { textarea } = useStyles();

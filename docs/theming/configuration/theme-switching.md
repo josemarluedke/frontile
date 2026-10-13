@@ -38,7 +38,6 @@ fight this site's own theme switcher.
 ```gts
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Button } from 'frontile';
 
 export default class ThemeToggle extends Component {
@@ -54,12 +53,11 @@ export default class ThemeToggle extends Component {
     this.applyTheme();
   }
 
-  @action
-  toggleTheme(): void {
+  toggleTheme = (): void => {
     this.isDark = !this.isDark;
     this.applyTheme();
     localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
-  }
+  };
 
   applyTheme(): void {
     const html = document.documentElement;

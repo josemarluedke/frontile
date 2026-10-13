@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { hash } from '@ember/helper';
 import { registerDestructor } from '@ember/destroyable';
 import { SegmentedControl, Tooltip } from 'frontile';
@@ -129,8 +128,7 @@ export default class DocfyThemeSwitcher extends Component<Signature> {
     return this.mode === 'dark';
   }
 
-  @action
-  selectMode(value: Mode): void {
+  selectMode = (value: Mode): void => {
     if (!isMode(value)) {
       return;
     }
@@ -138,7 +136,7 @@ export default class DocfyThemeSwitcher extends Component<Signature> {
     this.mode = value;
     writeStoredMode(value);
     this.applyClasses();
-  }
+  };
 
   applyClasses(): void {
     const root = document.documentElement;

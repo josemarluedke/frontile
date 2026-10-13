@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
 
@@ -25,13 +24,13 @@ export default class FormFieldRadio extends Component<FormFieldRadioSignature> {
     return this.args.checked === this.args.value;
   }
 
-  @action handleChange(event: Event): void {
+  handleChange = (event: Event): void => {
     event.preventDefault();
 
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(this.args.value, event);
     }
-  }
+  };
 
   get classes() {
     const { radio } = useStyles();

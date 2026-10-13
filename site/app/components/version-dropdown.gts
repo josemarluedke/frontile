@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Dropdown, VisuallyHidden } from 'frontile';
 import { currentDomain, stripScheme } from 'site/utils/origin';
 import { ChevronDownIcon } from './icons';
@@ -83,8 +82,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
     return version.note ? `${version.label} (${version.note})` : version.label;
   };
 
-  @action
-  onVersionSelect(key: string): void {
+  onVersionSelect = (key: string): void => {
     const version = this.versions.find((v) => v.key === key);
     if (!version) {
       return;
@@ -96,7 +94,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
     }
 
     window.location.href = version.url;
-  }
+  };
 
   <template>
     <div ...attributes>

@@ -23,7 +23,6 @@ A simple listbox with single selection mode.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Listbox } from 'frontile';
 
 export default class BasicListbox extends Component {
@@ -40,10 +39,9 @@ export default class BasicListbox extends Component {
     'zebra'
   ];
 
-  @action
-  onSelectionChange(keys: string[]) {
+  onSelectionChange = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
   <template>
     <div class='demo-stack items-center'>
@@ -73,7 +71,6 @@ Enable users to select multiple items from the list.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Listbox } from 'frontile';
 
 export default class MultipleSelection extends Component {
@@ -90,10 +87,9 @@ export default class MultipleSelection extends Component {
     'zebra'
   ];
 
-  @action
-  onSelectionChange(keys: string[]) {
+  onSelectionChange = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
   <template>
     <div class='demo-stack items-center'>
@@ -125,7 +121,6 @@ Define items explicitly with icons, descriptions, and shortcuts.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Listbox } from 'frontile';
 import {
   ViewIcon,
@@ -137,11 +132,10 @@ import {
 export default class StaticItems extends Component {
   disabledKeys = ['delete'];
 
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   <template>
     <div class='w-[280px] border px-1 py-2 rounded border-neutral-subtle'>
@@ -195,15 +189,13 @@ Use selection mode "none" for action menus where items trigger actions rather th
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Listbox } from 'frontile';
 
 export default class ActionMenu extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     alert(`Action triggered: ${key}`);
-  }
+  };
 
   <template>
     <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
@@ -234,7 +226,6 @@ Control the visual style with the `@variant` argument.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Listbox, ButtonGroup } from 'frontile';
 
@@ -244,15 +235,13 @@ export default class Variants extends Component {
 
   options = ['option1', 'option2', 'option3', 'option4'];
 
-  @action
-  setVariant(variant: string) {
+  setVariant = (variant: string) => {
     this.variant = variant;
-  }
+  };
 
-  @action
-  onSelectionChange(keys: string[]) {
+  onSelectionChange = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
   isSelected = (type: string) => {
     return this.variant === type;
@@ -329,7 +318,6 @@ Prevent interaction with specific items using `@disabledKeys`.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Listbox } from 'frontile';
 
 export default class DisabledItems extends Component {
@@ -339,10 +327,9 @@ export default class DisabledItems extends Component {
 
   features = ['feature1', 'feature2', 'feature3', 'feature4', 'feature5'];
 
-  @action
-  onSelectionChange(keys: string[]) {
+  onSelectionChange = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
   <template>
     <div class='demo-stack items-center'>
@@ -372,7 +359,6 @@ Render complex objects with custom templates.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Listbox } from 'frontile';
 
 export default class CustomItems extends Component {
@@ -405,10 +391,9 @@ export default class CustomItems extends Component {
     }
   ];
 
-  @action
-  onSelectionChange(keys: string[]) {
+  onSelectionChange = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
   <template>
     <div class='demo-stack items-center'>
@@ -448,15 +433,13 @@ Organize items into logical groups using dividers.
 
 ```gts preview
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { Listbox } from 'frontile';
 
 export default class WithDividers extends Component {
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Action:', key);
-  }
+  };
 
   <template>
     <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
@@ -486,7 +469,6 @@ Control whether users can deselect all items.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Listbox, Button } from 'frontile';
 
 export default class EmptySelection extends Component {
@@ -495,15 +477,13 @@ export default class EmptySelection extends Component {
 
   options = ['option1', 'option2', 'option3'];
 
-  @action
-  toggleAllowEmpty() {
+  toggleAllowEmpty = () => {
     this.allowEmpty = !this.allowEmpty;
-  }
+  };
 
-  @action
-  onSelectionChange(keys: string[]) {
+  onSelectionChange = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
   <template>
     <div class='demo-stack items-center'>

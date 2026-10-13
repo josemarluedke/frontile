@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { cached, tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
 import { cssTransition } from 'ember-css-transitions';
@@ -355,7 +354,7 @@ class Overlay extends Component<OverlaySignature> {
     }
   }
 
-  @action handleContentClick(event: MouseEvent): void {
+  handleContentClick = (event: MouseEvent): void => {
     if (
       this.args.closeOnOutsideClick !== false &&
       this.args.closeOnOverlayElementClick !== false &&
@@ -367,9 +366,9 @@ class Overlay extends Component<OverlaySignature> {
       this.handleClose();
     }
     this.mouseDownContentElement = null;
-  }
+  };
 
-  @action handleOutsideClick(e: Event): void {
+  handleOutsideClick = (e: Event): void => {
     if (
       this.args.closeOnOutsideClick !== false &&
       this.contentElement &&
@@ -379,23 +378,21 @@ class Overlay extends Component<OverlaySignature> {
       this.handleClose();
       e.preventDefault();
     }
-  }
+  };
 
-  @action
-  handleContentMouseDown(event: MouseEvent): void {
+  handleContentMouseDown = (event: MouseEvent): void => {
     if (this.args.closeOnOverlayElementClick !== false) {
       this.mouseDownContentElement = event.target;
     }
-  }
+  };
 
-  @action
-  handleKeyDown(event: KeyboardEvent): void {
+  handleKeyDown = (event: KeyboardEvent): void => {
     if (event.key === 'Escape' && this.args.closeOnEscapeKey !== false) {
       this.handleClose();
       event.preventDefault();
       event.stopImmediatePropagation();
     }
-  }
+  };
 
   setupContent = modifier((el: HTMLDivElement) => {
     let transitionDuration = this.args.transitionDuration || 200;

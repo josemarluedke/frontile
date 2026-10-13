@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { useStyles } from '@frontile/theme';
 import { Dropdown } from '../dropdown';
 import {
@@ -50,8 +49,7 @@ export default class ColumnVisibility<T> extends Component<
     return this.columns.map((column: Column<T>) => column.key);
   }
 
-  @action
-  handleSelectionChange(selectedKeys: string[]) {
+  handleSelectionChange = (selectedKeys: string[]) => {
     this.columns.forEach((column: Column<T>) => {
       if (selectedKeys.includes(column.key)) {
         if (!isVisible(column)) {
@@ -63,7 +61,7 @@ export default class ColumnVisibility<T> extends Component<
         }
       }
     });
-  }
+  };
 
   <template>
     <Dropdown @closeOnItemSelect={{false}} ...attributes>

@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import FormCheckbox from './form-checkbox';
 import { useStyles } from '@frontile/theme';
@@ -64,13 +63,13 @@ export default class FormCheckboxGroup extends Component<FormCheckboxGroupSignat
     }
   }
 
-  @action handleChange(value: unknown, event: Event): void {
+  handleChange = (value: unknown, event: Event): void => {
     this.shouldShowErrorFeedback = true;
 
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
-  }
+  };
 
   get classes() {
     const { formCheckboxGroup } = useStyles();

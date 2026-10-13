@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { assert } from '@ember/debug';
-import { action } from '@ember/object';
 import ChangesetFormFieldsCheckbox from './checkbox';
 import FormCheckboxGroup, {
   type FormCheckboxGroupArgs
@@ -70,19 +69,19 @@ export default class ChangesetFormFieldsCheckboxGroup extends Component<Changese
     }, []);
   }
 
-  @action async validate(): Promise<void> {
+  validate = async (): Promise<void> => {
     if (this.args.groupName) {
       await this.args.changeset.validate(this.args.groupName);
     }
-  }
+  };
 
-  @action handleChange(value: unknown, event: Event): void {
+  handleChange = (value: unknown, event: Event): void => {
     this.validate();
 
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
-  }
+  };
 
   <template>
     <FormCheckboxGroup

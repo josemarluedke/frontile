@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import type Owner from '@ember/owner';
 import { Button } from 'frontile';
@@ -43,7 +42,7 @@ export default class ThemeSwitcher extends Component<ThemeSwitcherSignature> {
     };
   }
 
-  @action toggleMode(): void {
+  toggleMode = (): void => {
     let newMode: string;
     if (this.prefersDark) {
       newMode = 'light';
@@ -54,7 +53,7 @@ export default class ThemeSwitcher extends Component<ThemeSwitcherSignature> {
     }
     localStorage.setItem('prefersMode', newMode);
     this.applyClasses();
-  }
+  };
 
   applyClasses(): void {
     const body = document.body;

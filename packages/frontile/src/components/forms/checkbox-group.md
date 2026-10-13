@@ -40,7 +40,6 @@ You can control individual checkbox states by providing `@checked` and handling 
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { CheckboxGroup } from 'frontile';
 
@@ -59,8 +58,7 @@ export default class ControlledCheckboxGroup extends Component {
   }
 
   // Single reusable handler for checkbox changes
-  @action
-  handleCheckboxChange(value: string, checked: boolean) {
+  handleCheckboxChange = (value: string, checked: boolean) => {
     const current = this.formData.interests || [];
 
     if (checked) {
@@ -68,7 +66,7 @@ export default class ControlledCheckboxGroup extends Component {
     } else {
       this.formData = { ...this.formData, interests: current.filter((v) => v !== value) };
     }
-  }
+  };
 
   get selectedCount() {
     return this.formData.interests?.length ?? 0;
@@ -138,7 +136,6 @@ This example demonstrates the recommended pattern for using CheckboxGroup with t
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Form, CheckboxGroup, type FormResultData } from 'frontile';
 import { Button } from 'frontile';
@@ -166,8 +163,7 @@ export default class ValidatedCheckboxGroup extends Component {
   };
 
   // Single reusable handler for checkbox changes
-  @action
-  handleCheckboxChange(value: string, checked: boolean) {
+  handleCheckboxChange = (value: string, checked: boolean) => {
     const current = this.formData.notificationMethods || [];
 
     if (checked) {
@@ -175,18 +171,16 @@ export default class ValidatedCheckboxGroup extends Component {
     } else {
       this.formData.notificationMethods = current.filter((v) => v !== value);
     }
-  }
+  };
 
-  @action
-  handleFormChange(data: FormResultData<Schema>) {
+  handleFormChange = (data: FormResultData<Schema>) => {
     this.formData = data.data;
-  }
+  };
 
-  @action
-  handleFormSubmit(data: FormResultData<Schema>) {
+  handleFormSubmit = (data: FormResultData<Schema>) => {
     this.submitMessage = 'Preferences saved successfully!';
     console.log('Submitted data:', data.data);
-  }
+  };
 
   <template>
     <div class='demo-stack'>
@@ -258,7 +252,6 @@ This example shows CheckboxGroup with the Form validation system, combining mult
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Form, CheckboxGroup, type FormResultData } from 'frontile';
 import { Button } from 'frontile';
@@ -294,8 +287,7 @@ export default class CompleteFormWithCheckbox extends Component {
   };
 
   // Single reusable handler for any checkbox group
-  @action
-  handleCheckboxChange(field: 'interests' | 'newsletters', value: string, checked: boolean) {
+  handleCheckboxChange = (field: 'interests' | 'newsletters', value: string, checked: boolean) => {
     const current = this.formData[field] || [];
 
     if (checked) {
@@ -303,18 +295,16 @@ export default class CompleteFormWithCheckbox extends Component {
     } else {
       this.formData[field] = current.filter((v) => v !== value);
     }
-  }
+  };
 
-  @action
-  handleFormChange(data: FormResultData<Schema>) {
+  handleFormChange = (data: FormResultData<Schema>) => {
     this.formData = data.data;
-  }
+  };
 
-  @action
-  handleFormSubmit(data: FormResultData<Schema>) {
+  handleFormSubmit = (data: FormResultData<Schema>) => {
     this.submitMessage = 'Registration submitted successfully!';
     console.log('Form submitted:', data.data);
-  }
+  };
 
   <template>
     <div class='demo-stack'>

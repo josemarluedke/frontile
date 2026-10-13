@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { array } from '@ember/helper';
 import { Select } from 'frontile';
 import { Divider } from 'frontile';
@@ -44,26 +43,22 @@ export default class Example extends Component {
   @tracked selectedKey2: string | null = 'elephant'; // Single selection
   @tracked selectedKey3: string | null = null; // Single selection
 
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Click on key', key);
-  }
+  };
 
-  @action
-  onSelectionChange(keys: string[]) {
+  onSelectionChange = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
-  @action
-  onSelectionChange2(key: string | null) {
+  onSelectionChange2 = (key: string | null) => {
     this.selectedKey2 = key;
-  }
+  };
 
-  @action
-  onSelectionChange3(key: string | null) {
+  onSelectionChange3 = (key: string | null) => {
     this.selectedKey3 = key;
-  }
+  };
 
   <template>
     <Select

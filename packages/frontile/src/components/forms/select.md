@@ -118,7 +118,6 @@ interaction later than on a single one.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { array } from '@ember/helper';
 import { Form, type FormResultData } from 'frontile';
 import { Button } from 'frontile';
@@ -164,17 +163,15 @@ export default class SelectFormValidation extends Component {
   };
   @tracked submitMessage = '';
 
-  @action
-  handleFormChange(data: FormResultData<Schema>) {
+  handleFormChange = (data: FormResultData<Schema>) => {
     this.formData = data.data;
     this.submitMessage = '';
-  }
+  };
 
-  @action
-  handleFormSubmit(data: FormResultData<Schema>) {
+  handleFormSubmit = (data: FormResultData<Schema>) => {
     this.submitMessage = 'Form submitted successfully!';
     console.log('Submitted data:', data.data);
-  }
+  };
 
   <template>
     <div class='demo-stack'>

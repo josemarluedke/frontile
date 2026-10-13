@@ -3,7 +3,6 @@ import Modifier, {
   type PositionalArgs,
   type NamedArgs,
 } from 'ember-modifier';
-import { action } from '@ember/object';
 import { registerDestructor } from '@ember/destroyable';
 
 interface Heading {
@@ -39,8 +38,7 @@ export default class IntersectHeadingsModifier extends Modifier<Signature> {
   observer: IntersectionObserver | null = null;
   activeIndex: number = -1;
 
-  @action
-  handleObserver(elements: IntersectionObserverEntry[]): void {
+  handleObserver = (elements: IntersectionObserverEntry[]): void => {
     // Based on https://taylor.callsen.me/modern-navigation-menus-with-css-position-sticky-and-intersectionobservers/
 
     // current index must be memoized or tracked outside of function for comparison
@@ -93,7 +91,7 @@ export default class IntersectHeadingsModifier extends Modifier<Signature> {
         this.handler(this.headings[this.activeIndex] as string);
       }
     }
-  }
+  };
 
   observe(): void {
     if ('IntersectionObserver' in window) {

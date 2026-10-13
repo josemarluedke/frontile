@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { ref } from '../../utils/ref';
@@ -275,8 +274,10 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    * @param name - The name of the field to validate.
    * @returns A promise that resolves to errors for the field, if any.
    */
-  @action
-  async validateField(data: T, name: string): Promise<FormErrors | undefined> {
+  validateField = async (
+    data: T,
+    name: string
+  ): Promise<FormErrors | undefined> => {
     if (!this.args.schema && !this.args.validate) {
       return;
     }
@@ -297,7 +298,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       const { [name]: _, ...rest } = this.errors;
       this.errors = rest;
     }
-  }
+  };
 
   /**
    * Computes which fields have changed from their initial values.
@@ -359,8 +360,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    * Calls the `onChange` callback with the current form data if provided.
    * Automatically unflattens dotted field names to nested structure.
    */
-  @action
-  handleInput(event: Event) {
+  handleInput = (event: Event) => {
     const form = event.currentTarget;
     if (form instanceof HTMLFormElement) {
       let data = dataFrom(event) as T;
@@ -370,7 +370,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       this.uncontrolledData = data;
       this.args.onChange?.(resultData, event);
     }
-  }
+  };
 
   /**
    * Handles the `submit` event on the form element.
@@ -378,8 +378,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    * with the current form data. Manages the `isLoading` state during the
    * submission process. Automatically unflattens dotted field names to nested structure.
    */
-  @action
-  async handleSubmit(event: SubmitEvent) {
+  handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form instanceof HTMLFormElement) {
@@ -408,7 +407,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
         this.isLoading = false;
       }
     }
-  }
+  };
 
   /**
    * Handles the `reset` event on the form element.
@@ -416,8 +415,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    * Restores the form data to its initial state.
    * Calls `onChange` if the form is controlled to let parent update state.
    */
-  @action
-  handleReset(event: Event) {
+  handleReset = (event: Event) => {
     this.errors = {};
     this.dirty = new Set();
 
@@ -434,17 +432,16 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     } else {
       this.uncontrolledData = undefined;
     }
-  }
+  };
 
   /**
    * Resets the form to its initial state.
    * This method calls the native form reset() to clear all form controls,
    * triggering a `reset` event that is handled in `handleReset`.
    */
-  @action
-  reset() {
+  reset = () => {
     this.element?.current?.reset();
-  }
+  };
 
   <template>
     {{! @glint-nocheck component generics (field) trigger:  type instantiation is excessively deep and possibly infinite }}

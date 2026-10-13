@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { concat } from '@ember/helper';
 import { on } from '@ember/modifier';
@@ -85,21 +84,21 @@ export class FormInputBase<
     }
   }
 
-  @action handleFocusIn(event: FocusEvent): void {
+  handleFocusIn = (event: FocusEvent): void => {
     this.shouldShowErrorFeedback = false;
 
     if (typeof this.args.onFocusIn === 'function') {
       this.args.onFocusIn(event);
     }
-  }
+  };
 
-  @action handleFocusOut(event: FocusEvent): void {
+  handleFocusOut = (event: FocusEvent): void => {
     this.shouldShowErrorFeedback = true;
 
     if (typeof this.args.onFocusOut === 'function') {
       this.args.onFocusOut(event);
     }
-  }
+  };
 }
 
 export default class FormInput extends FormInputBase<FormInputSignature> {

@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { Listbox } from 'frontile';
 
@@ -47,8 +46,7 @@ export default class KeyboardProof extends Component {
     return this.selectedKeys[0] ?? 'nothing';
   }
 
-  @action
-  handleKeyDown(event: KeyboardEvent): void {
+  handleKeyDown = (event: KeyboardEvent): void => {
     const described = NAMED_KEYS[event.key];
 
     if (described) {
@@ -56,12 +54,11 @@ export default class KeyboardProof extends Component {
     } else if (event.key.length === 1) {
       this.lastKey = `"${event.key}" → typeahead to a matching option`;
     }
-  }
+  };
 
-  @action
-  handleSelectionChange(keys: string[]): void {
+  handleSelectionChange = (keys: string[]): void => {
     this.selectedKeys = keys;
-  }
+  };
 
   <template>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">

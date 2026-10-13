@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import type { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
-import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import type Owner from '@ember/owner';
 
@@ -66,8 +65,7 @@ export default class ChangesetFormFieldsBase<
     }, []);
   }
 
-  @action
-  async validate(): Promise<void> {
+  validate = async (): Promise<void> => {
     later(
       this,
       () => {
@@ -75,5 +73,5 @@ export default class ChangesetFormFieldsBase<
       },
       1
     );
-  }
+  };
 }

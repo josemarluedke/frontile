@@ -1,5 +1,4 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
-import { action } from '@ember/object';
 import FormCheckbox, {
   type FormCheckboxArgs
 } from '@frontile/forms-legacy/components/form-checkbox';
@@ -56,11 +55,11 @@ export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormField
     }, []);
   }
 
-  @action async validate(): Promise<void> {
+  validate = async (): Promise<void> => {
     await this.args.changeset.validate(this.fullFieldName);
-  }
+  };
 
-  @action async handleChange(value: boolean, event: Event): Promise<void> {
+  handleChange = async (value: boolean, event: Event): Promise<void> => {
     this.args.changeset.set(this.fullFieldName, value);
 
     await this.validate();
@@ -72,7 +71,7 @@ export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormField
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
-  }
+  };
 
   <template>
     <FormCheckbox

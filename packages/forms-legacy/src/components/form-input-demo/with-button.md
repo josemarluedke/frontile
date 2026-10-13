@@ -40,18 +40,17 @@ This is an example of how to implement an input with a button next to it.
 ```js component
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 
 export default class DemoComponent extends Component {
   @tracked value = '';
   @tracked validationErrors = [];
   @tracked isValid = false;
 
-  @action setValue(value) {
+  setValue = (value) => {
     this.value = value;
-  }
+  };
 
-  @action validate() {
+  validate = () => {
     if (/^$/.test(this.value)) {
       this.validationErrors = ['Incorrect Code Applied'];
       this.isValid = false;
@@ -59,6 +58,6 @@ export default class DemoComponent extends Component {
       this.validationErrors = [];
       this.isValid = true;
     }
-  }
+  };
 }
 ```

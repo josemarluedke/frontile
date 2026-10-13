@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { htmlSafe } from '@ember/template';
 import { Button, Collapsible } from 'frontile';
 
@@ -49,10 +48,9 @@ export default class CodePanel extends Component<Signature> {
     return htmlSafe(this.args.html ?? '');
   }
 
-  @action
-  toggle(): void {
+  toggle = (): void => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     {{! Dark in both schemes via the --color-code-* tokens, lifted by a real

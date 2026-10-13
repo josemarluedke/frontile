@@ -24,16 +24,15 @@ A simple drawer that slides in from the right side.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 
 export default class BasicDrawer extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -79,7 +78,6 @@ selected.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
@@ -90,14 +88,14 @@ export default class DrawerVariants extends Component {
 
   variants = ['sectioned', 'flat'];
 
-  @action openDrawer(variant) {
+  openDrawer = (variant) => {
     this.selectedVariant = variant;
     this.isOpen = true;
-  }
+  };
 
-  @action closeDrawer() {
+  closeDrawer = () => {
     this.isOpen = false;
-  }
+  };
 
   <template>
     <div class='flex gap-2'>
@@ -135,7 +133,6 @@ The same switch works with the block form of `<d.Header>`, including an icon:
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
@@ -147,14 +144,14 @@ export default class DrawerVariantsIcon extends Component {
 
   variants = ['sectioned', 'flat'];
 
-  @action openDrawer(variant) {
+  openDrawer = (variant) => {
     this.selectedVariant = variant;
     this.isOpen = true;
-  }
+  };
 
-  @action closeDrawer() {
+  closeDrawer = () => {
     this.isOpen = false;
-  }
+  };
 
   <template>
     <div class='flex gap-2'>
@@ -202,16 +199,15 @@ the title when there isn't.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 
 export default class DrawerHeaderArgs extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     <Button @size='sm' @onPress={{this.toggle}}>
@@ -235,7 +231,6 @@ export default class DrawerHeaderArgs extends Component {
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 import { SettingsIcon } from 'site/components/icons';
@@ -243,9 +238,9 @@ import { SettingsIcon } from 'site/components/icons';
 export default class DrawerHeaderBlock extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     <Button @size='sm' @onPress={{this.toggle}}>
@@ -278,20 +273,19 @@ Use the `:actions` named block to put controls beside the close button.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer, Button } from 'frontile';
 
 export default class DrawerHeaderActions extends Component {
   @tracked isOpen = false;
   @tracked onlyStarred = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
-  @action toggleStarred() {
+  toggleStarred = () => {
     this.onlyStarred = !this.onlyStarred;
-  }
+  };
 
   <template>
     <Button @size='sm' @onPress={{this.toggle}}>Open Drawer</Button>
@@ -345,16 +339,15 @@ padding of its own, so a full-bleed element placed there spans the panel edge to
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer, Button, Alert } from 'frontile';
 import { SettingsIcon } from 'site/components/icons';
 
 export default class DrawerWithBanner extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     <Button @size='sm' @onPress={{this.toggle}}>Open Drawer</Button>
@@ -401,7 +394,6 @@ Drawers can slide in from any edge of the screen.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
@@ -437,14 +429,14 @@ export default class DrawerPlacements extends Component {
     }
   ];
 
-  @action openDrawer(placement) {
+  openDrawer = (placement) => {
     this.selectedPlacement = placement;
     this.isOpen = true;
-  }
+  };
 
-  @action closeDrawer() {
+  closeDrawer = () => {
     this.isOpen = false;
-  }
+  };
 
   get currentPlacement() {
     return this.placements.find(
@@ -485,7 +477,6 @@ Control the drawer size with the `@size` argument.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
@@ -534,14 +525,14 @@ export default class DrawerSizes extends Component {
     }
   ];
 
-  @action openDrawer(size) {
+  openDrawer = (size) => {
     this.selectedSize = size;
     this.isOpen = true;
-  }
+  };
 
-  @action closeDrawer() {
+  closeDrawer = () => {
     this.isOpen = false;
-  }
+  };
 
   get currentSizeOption() {
     return this.sizeOptions.find((option) => option.key === this.selectedSize);
@@ -593,7 +584,6 @@ first touch, so tapping or starting to scroll never has a false start.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
@@ -604,14 +594,14 @@ export default class DrawerDragBottom extends Component {
 
   variants = ['sectioned', 'flat'];
 
-  @action openDrawer(variant) {
+  openDrawer = (variant) => {
     this.selectedVariant = variant;
     this.isOpen = true;
-  }
+  };
 
-  @action closeDrawer() {
+  closeDrawer = () => {
     this.isOpen = false;
-  }
+  };
 
   <template>
     <div class='flex gap-2'>
@@ -643,16 +633,15 @@ export default class DrawerDragBottom extends Component {
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 
 export default class DrawerDragRight extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     <Button @size='sm' @onPress={{this.toggle}}>
@@ -685,7 +674,6 @@ Control the appearance of the backdrop behind the drawer.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
@@ -715,14 +703,14 @@ export default class DrawerBackdrops extends Component {
     }
   ];
 
-  @action openDrawer(backdrop) {
+  openDrawer = (backdrop) => {
     this.selectedBackdrop = backdrop;
     this.isOpen = true;
-  }
+  };
 
-  @action closeDrawer() {
+  closeDrawer = () => {
     this.isOpen = false;
-  }
+  };
 
   get currentBackdropOption() {
     return this.backdropOptions.find(
@@ -774,7 +762,6 @@ carry it forward for anatomy consumers styling or querying by `data-part`.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 
@@ -783,17 +770,17 @@ export default class DrawerCloseButton extends Component {
   @tracked noCloseButtonOpen = false;
   @tracked customCloseOpen = false;
 
-  @action toggleNormal() {
+  toggleNormal = () => {
     this.normalOpen = !this.normalOpen;
-  }
+  };
 
-  @action toggleNoCloseButton() {
+  toggleNoCloseButton = () => {
     this.noCloseButtonOpen = !this.noCloseButtonOpen;
-  }
+  };
 
-  @action toggleCustomClose() {
+  toggleCustomClose = () => {
     this.customCloseOpen = !this.customCloseOpen;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -861,7 +848,6 @@ A drawer that cannot be closed by normal means.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 import { ProgressBar } from 'frontile';
@@ -871,11 +857,11 @@ export default class NonDismissibleDrawer extends Component {
   @tracked progress = 0;
   @tracked isProcessing = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
-  @action startProcess() {
+  startProcess = () => {
     this.isProcessing = true;
     this.progress = 0;
 
@@ -886,13 +872,13 @@ export default class NonDismissibleDrawer extends Component {
         this.isProcessing = false;
       }
     }, 500);
-  }
+  };
 
-  @action forceClose() {
+  forceClose = () => {
     this.isProcessing = false;
     this.progress = 0;
     this.toggle();
-  }
+  };
 
   get allowClosing() {
     return !this.isProcessing;
@@ -983,7 +969,6 @@ A practical example showing a form inside a drawer.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
 import { Input, Textarea } from 'frontile';
@@ -995,11 +980,11 @@ export default class DrawerForm extends Component {
   @tracked email = '';
   @tracked message = '';
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
-  @action handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
     // Handle form submission
     console.log('Form submitted:', {
@@ -1008,19 +993,19 @@ export default class DrawerForm extends Component {
       message: this.message
     });
     this.toggle();
-  }
+  };
 
-  @action updateName(value) {
+  updateName = (value) => {
     this.name = value;
-  }
+  };
 
-  @action updateEmail(value) {
+  updateEmail = (value) => {
     this.email = value;
-  }
+  };
 
-  @action updateMessage(value) {
+  updateMessage = (value) => {
     this.message = value;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
@@ -1082,7 +1067,6 @@ A drawer used for navigation with a list of links.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from 'frontile';
 import { Button } from 'frontile';
@@ -1092,14 +1076,14 @@ import { Divider } from 'frontile';
 export default class NavigationDrawer extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
-  @action navigateTo(page) {
+  navigateTo = (page) => {
     console.log('Navigate to:', page);
     this.toggle();
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide items-center'>

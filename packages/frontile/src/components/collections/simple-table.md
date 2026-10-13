@@ -605,7 +605,6 @@ import Component from '@glimmer/component';
 import { SimpleTable } from 'frontile';
 import { Select } from 'frontile';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { Button } from 'frontile';
 
@@ -639,15 +638,13 @@ export default class DemoComponent extends Component {
     { key: 'danger', name: 'Danger' }
   ];
 
-  @action
-  toggleLoading() {
+  toggleLoading = () => {
     this.isLoading = !this.isLoading;
-  }
+  };
 
-  @action
-  updateLoadingColor(color) {
+  updateLoadingColor = (color) => {
     this.loadingColor = color;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide'>

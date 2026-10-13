@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { DocfyOutput } from '@docfy/ember';
 
@@ -69,14 +68,14 @@ interface Signature {
 }
 
 export default class PageHeadings extends Component<Signature> {
-  @action onClick(evt: MouseEvent): void {
+  onClick = (evt: MouseEvent): void => {
     const href = (evt.target as HTMLElement).getAttribute('href');
     if (href) {
       const toElement = document.querySelector(href) as HTMLElement;
 
       scrollToElement(toElement);
     }
-  }
+  };
   <template>
     <div
       class="overflow-y-auto sticky top-28 max-h-screen-28 pt-12 pb-4 -mt-12 text-sm text-neutral-firm"

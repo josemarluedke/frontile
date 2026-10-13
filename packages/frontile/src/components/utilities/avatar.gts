@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import {
   useStyles,
@@ -111,10 +110,9 @@ class Avatar extends Component<AvatarSignature> {
     return Boolean(src) && src !== this.failedSrc;
   }
 
-  @action
-  handleImageError() {
+  handleImageError = () => {
     this.failedSrc = this.args.src;
-  }
+  };
 
   get initials() {
     const { name, firstName, lastName } = this.args;

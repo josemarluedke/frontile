@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { array } from '@ember/helper';
 import { Listbox } from 'frontile';
 import { Divider } from 'frontile';
@@ -26,21 +25,18 @@ export default class Example extends Component {
   @tracked selectedKeys: string[] = [];
   @tracked selectedKeys2: string[] = [];
 
-  @action
-  onAction(key: string) {
+  onAction = (key: string) => {
     // eslint-disable-next-line
     console.log('Click on key', key);
-  }
+  };
 
-  @action
-  onSelectionChange(keys: string[]) {
+  onSelectionChange = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
-  @action
-  onSelectionChange2(keys: string[]) {
+  onSelectionChange2 = (keys: string[]) => {
     this.selectedKeys2 = keys;
-  }
+  };
 
   <template>
     <div class="w-[260px] border px-1 py-2 rounded border-neutral-subtle mt-4">

@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
 
@@ -24,7 +23,7 @@ export default class FormFieldCheckbox extends Component<FormFieldCheckboxSignat
     return !!this.args.checked;
   }
 
-  @action handleChange(event: Event): void {
+  handleChange = (event: Event): void => {
     event.preventDefault();
 
     const value = !this.args.checked;
@@ -32,7 +31,7 @@ export default class FormFieldCheckbox extends Component<FormFieldCheckboxSignat
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
-  }
+  };
 
   get classes() {
     const { checkbox } = useStyles();

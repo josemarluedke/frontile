@@ -24,7 +24,6 @@ import { ToggleButton } from 'frontile';
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { ToggleButton } from 'frontile';
 import { StarIcon } from 'site/components/icons';
 
@@ -32,10 +31,9 @@ export default class Example extends Component {
   @tracked
   isSelected = false;
 
-  @action
-  onChange(value: boolean): void {
+  onChange = (value: boolean): void => {
     this.isSelected = value;
-  }
+  };
 
   <template>
     <ToggleButton
@@ -54,7 +52,6 @@ export default class Example extends Component {
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { ToggleButton } from 'frontile';
 
@@ -70,11 +67,10 @@ export default class Example extends Component {
     danger: false
   };
 
-  @action
-  onChange(ty: keyof typeof this.isSelected, value: boolean): void {
+  onChange = (ty: keyof typeof this.isSelected, value: boolean): void => {
     this.isSelected[ty] = value;
     this.isSelected = { ...this.isSelected };
-  }
+  };
 
   <template>
     {{#each-in this.isSelected as |key val|}}

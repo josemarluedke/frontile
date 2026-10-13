@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked, cached } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
@@ -143,13 +142,11 @@ class ListboxItem extends Component<ListboxItemSignature> {
     return this.args.key;
   }
 
-  @action
-  onRegister(item: ListItem) {
+  onRegister = (item: ListItem) => {
     this.listItem = item;
-  }
+  };
 
-  @action
-  onClick(): void {
+  onClick = (): void => {
     if (this.listItem?.isDisabled) {
       return;
     }
@@ -165,7 +162,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
     if (typeof this.args.onClick === 'function') {
       this.args.onClick();
     }
-  }
+  };
 
   /**
    * A roving tabindex: the manager nominates one option as the composite's tab

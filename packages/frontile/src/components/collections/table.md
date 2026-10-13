@@ -405,7 +405,6 @@ Show loading indicators while data is being fetched:
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Table, type ColumnConfig } from 'frontile';
 import { products, type Product } from 'site/components/table-demo-data';
 import { Button } from 'frontile';
@@ -429,13 +428,13 @@ export default class DemoComponent extends Component {
     { key: 'danger', name: 'Danger' }
   ];
 
-  @action toggleLoading() {
+  toggleLoading = () => {
     this.isLoading = !this.isLoading;
-  }
+  };
 
-  @action updateLoadingColor(color: string) {
+  updateLoadingColor = (color: string) => {
     this.loadingColor = color;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide'>
@@ -603,7 +602,6 @@ Use the `loading` named block for custom indicators:
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Table, type ColumnConfig } from 'frontile';
 import { products, type Product } from 'site/components/table-demo-data';
 import { Button } from 'frontile';
@@ -618,9 +616,9 @@ export default class DemoComponent extends Component {
     { key: 'category', name: 'Category' }
   ] as const satisfies ColumnConfig<Product>[];
 
-  @action toggleLoading() {
+  toggleLoading = () => {
     this.isLoading = !this.isLoading;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide'>
@@ -1345,7 +1343,6 @@ Customize the selection highlight color with `@selectionColor`. Available colors
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 import { Select } from 'frontile';
@@ -1378,9 +1375,9 @@ export default class DemoComponent extends Component {
     this.selectedKeys = keys;
   };
 
-  @action updateSelectionColor(color: string) {
+  updateSelectionColor = (color: string) => {
     this.selectionColor = color;
-  }
+  };
 
   <template>
     <div class='demo-stack demo-stack--wide'>

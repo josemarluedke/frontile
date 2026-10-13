@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import type { TOC } from '@ember/component/template-only';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { htmlSafe } from '@ember/template';
 import { Button, Chip, Field, ProgressBar, ToggleButton } from 'frontile';
@@ -152,10 +151,9 @@ export default class ThemeLab extends Component {
 
   @tracked activePreset: Preset = PRESETS[0]!;
 
-  @action
-  selectPreset(next: Preset): void {
+  selectPreset = (next: Preset): void => {
     this.activePreset = next;
-  }
+  };
 
   isActive = (key: string): boolean => key === this.activePreset.key;
 

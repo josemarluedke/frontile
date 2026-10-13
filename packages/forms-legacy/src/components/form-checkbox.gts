@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { useStyles } from '@frontile/theme';
 import FormField from './form-field';
 
@@ -44,7 +43,7 @@ export interface FormCheckboxSignature {
 }
 
 export default class FormCheckbox extends Component<FormCheckboxSignature> {
-  @action handleChange(value: boolean, event: Event): void {
+  handleChange = (value: boolean, event: Event): void => {
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
@@ -52,7 +51,7 @@ export default class FormCheckbox extends Component<FormCheckboxSignature> {
     if (typeof this.args._parentOnChange === 'function') {
       this.args._parentOnChange(value, event);
     }
-  }
+  };
 
   get classes() {
     const { formCheckbox } = useStyles();

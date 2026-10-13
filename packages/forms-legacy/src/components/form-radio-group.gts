@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { concat } from '@ember/helper';
 import FormRadio from './form-radio';
@@ -67,13 +66,13 @@ export default class FormRadioGroup extends Component<FormRadioGroupSignature> {
     }
   }
 
-  @action handleChange(value: unknown, event: Event): void {
+  handleChange = (value: unknown, event: Event): void => {
     this.shouldShowErrorFeedback = true;
 
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
-  }
+  };
 
   get classes() {
     const { formRadioGroup } = useStyles();

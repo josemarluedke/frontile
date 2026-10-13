@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
-import { action } from '@ember/object';
 import { VisuallyHidden } from 'frontile';
 import { Drawer } from 'frontile';
 import IconMenu from '~icons/lucide/menu';
@@ -18,11 +17,11 @@ interface Signature {
 export default class SidebarNav extends Component<Signature> {
   @tracked isOpen = false;
 
-  @action toggle(): void {
+  toggle = (): void => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
-  @action handleSidebarClick(event: Event): void {
+  handleSidebarClick = (event: Event): void => {
     if (this.isOpen) {
       const target = event.target as Element;
 
@@ -46,7 +45,7 @@ export default class SidebarNav extends Component<Signature> {
         this.toggle();
       }
     }
-  }
+  };
   <template>
     <button
       type="button"

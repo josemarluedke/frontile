@@ -279,7 +279,6 @@ Key changes: manual binding and Select key-based selection.
 ```typescript
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 
 export default class ChangesetFormComponent extends Component {
   @tracked hasSubmitted = false;
@@ -296,25 +295,22 @@ export default class ChangesetFormComponent extends Component {
     { key: 'ca', label: 'Canada' }
   ];
 
-  @action
-  updateField(changeset, fieldName, value) {
+  updateField = (changeset, fieldName, value) => {
     changeset.set(fieldName, value);
     changeset.validate(fieldName);
-  }
+  };
 
   // Select components use keys, need conversion for changeset
-  @action
-  updateCountry(changeset, selectedKey) {
+  updateCountry = (changeset, selectedKey) => {
     changeset.set('country', selectedKey);
     changeset.validate('country');
-  }
+  };
 
   getSelectedCountry(changeset) {
     return changeset.get('country') || null;
   }
 
-  @action
-  async handleSubmit(changeset, event) {
+  handleSubmit = async (changeset, event) => {
     event.preventDefault();
     await changeset.validate();
     this.hasSubmitted = true;
@@ -322,7 +318,7 @@ export default class ChangesetFormComponent extends Component {
     if (changeset.isValid) {
       await changeset.save({});
     }
-  }
+  };
 
   getFieldErrors(changeset, fieldName) {
     if (!this.hasSubmitted) return [];

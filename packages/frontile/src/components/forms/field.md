@@ -30,7 +30,6 @@ The Field component is yielded from the Form component when validation is config
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
 import { Button } from 'frontile';
@@ -63,11 +62,10 @@ export default class BasicFieldExample extends Component {
     console.log('Form submitted:', result);
   };
 
-  @action
-  changeEmail() {
+  changeEmail = () => {
     this.formData.email = 'test@test.com';
     this.formData = this.formData;
-  }
+  };
 
   <template>
     <div class='demo-stack'>
