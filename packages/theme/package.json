@@ -81,7 +81,6 @@
     "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/culori": "^4.0.1",
-    "@types/flat": "^5.0.5",
     "@types/lodash.kebabcase": "^4.1.9",
     "@types/lodash.mapkeys": "^4.6.9",
     "babel-plugin-ember-template-compilation": "^4.0.0",
