@@ -247,6 +247,58 @@ module(
       assert.dom('[data-test-page="3"]').hasAria('label', 'Go to page 3');
     });
 
+    test('@labels translates every text the component renders', async function (assert) {
+      const pageLabel = (page: number) => `Přejít na stránku ${page}`;
+
+      await render(
+        <template>
+          <Pagination
+            @total={{200}}
+            @defaultPage={{2}}
+            @showEdges={{true}}
+            @labels={{hash
+              previous="Předchozí"
+              next="Další"
+              previousPage="Předchozí stránka"
+              nextPage="Další stránka"
+              firstPage="První stránka"
+              lastPage="Poslední stránka"
+              page=pageLabel
+              morePages="Další stránky"
+            }}
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-prev]').hasText('Předchozí');
+      assert.dom('[data-test-next]').hasText('Další');
+      assert.dom('[data-test-prev]').hasAria('label', 'Předchozí stránka');
+      assert.dom('[data-test-next]').hasAria('label', 'Další stránka');
+      assert.dom('[data-test-first]').hasAria('label', 'První stránka');
+      assert.dom('[data-test-last]').hasAria('label', 'Poslední stránka');
+      assert
+        .dom('[data-test-page="3"]')
+        .hasAria('label', 'Přejít na stránku 3');
+      assert.dom('.sr-only').hasText('Další stránky');
+    });
+
+    test('@labels left out keep their English defaults', async function (assert) {
+      await render(
+        <template>
+          <Pagination
+            @total={{50}}
+            @defaultPage={{2}}
+            @labels={{hash previous="Předchozí"}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-prev]').hasText('Předchozí');
+      assert.dom('[data-test-prev]').hasAria('label', 'Go to previous page');
+      assert.dom('[data-test-next]').hasText('Next');
+      assert.dom('[data-test-page="3"]').hasAria('label', 'Go to page 3');
+    });
+
     test('@showEdges renders first and last controls, disabled at the boundaries', async function (assert) {
       await render(
         <template><Pagination @total={{200}} @showEdges={{true}} /></template>

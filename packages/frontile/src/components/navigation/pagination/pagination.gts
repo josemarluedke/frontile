@@ -56,6 +56,43 @@ interface RenderedItem {
   context: PaginationItemContext;
 }
 
+/**
+ * Every text the component renders itself. Override any of them with
+ * `@labels`, e.g. to translate them; the rest keep these English defaults.
+ */
+interface PaginationLabels {
+  /** Visible text of the previous-page button. */
+  previous: string;
+  /** Visible text of the next-page button. */
+  next: string;
+  /** Accessible name of the previous-page button. */
+  previousPage: string;
+  /** Accessible name of the next-page button. */
+  nextPage: string;
+  /** Accessible name of the jump-to-first button (`@showEdges`). */
+  firstPage: string;
+  /** Accessible name of the jump-to-last button (`@showEdges`). */
+  lastPage: string;
+  /**
+   * Accessible name of a page button. A function, because some languages
+   * put the number mid-sentence.
+   */
+  page: (page: number) => string;
+  /** Screen-reader text for an ellipsis between page buttons. */
+  morePages: string;
+}
+
+const DEFAULT_LABELS: PaginationLabels = {
+  previous: 'Previous',
+  next: 'Next',
+  previousPage: 'Go to previous page',
+  nextPage: 'Go to next page',
+  firstPage: 'Go to first page',
+  lastPage: 'Go to last page',
+  page: (page) => `Go to page ${page}`,
+  morePages: 'More pages'
+};
+
 interface PaginationArgs {
   /**
    * Total number of items across all pages -- an *item* count, not a page
@@ -146,6 +183,12 @@ interface PaginationArgs {
    */
   label?: string;
 
+  /**
+   * Replaces any of the texts the component renders, e.g. to translate them.
+   * Anything left out keeps its English default; see `PaginationLabels`.
+   */
+  labels?: Partial<PaginationLabels>;
+
   /** Class names for each slot of the component, merged with the theme's. */
   classes?: SlotsToClasses<PaginationSlots>;
 }
@@ -209,6 +252,10 @@ class Pagination extends Component<PaginationSignature> {
 
   get label(): string {
     return this.args.label ?? 'pagination';
+  }
+
+  get labels(): PaginationLabels {
+    return { ...DEFAULT_LABELS, ...this.args.labels };
   }
 
   /**
@@ -284,7 +331,7 @@ class Pagination extends Component<PaginationSignature> {
         isEllipsis: false,
         value: item.value,
         isActive,
-        label: `Go to page ${item.value}`,
+        label: this.labels.page(item.value),
         context: { page: item.value, isActive, classNames, setupItem }
       };
     });
@@ -379,7 +426,7 @@ class Pagination extends Component<PaginationSignature> {
               type="button"
               data-part="prev"
               class={{this.styles.prev class=@classes.prev}}
-              aria-label="Go to first page"
+              aria-label={{this.labels.firstPage}}
               disabled={{this.isPrevDisabled}}
               data-test-first
               {{press (fn this.goTo 1)}}
@@ -394,13 +441,13 @@ class Pagination extends Component<PaginationSignature> {
             type="button"
             data-part="prev"
             class={{this.styles.prev class=@classes.prev}}
-            aria-label="Go to previous page"
+            aria-label={{this.labels.previousPage}}
             disabled={{this.isPrevDisabled}}
             data-test-prev
             {{press this.goToPrevious}}
           >
             <ChevronLeftIcon />
-            Previous
+            {{this.labels.previous}}
           </button>
         </li>
 
@@ -414,7 +461,7 @@ class Pagination extends Component<PaginationSignature> {
                   aria-hidden="true"
                   data-test-ellipsis
                 >&hellip;</span>
-                <VisuallyHidden>More pages</VisuallyHidden>
+                <VisuallyHidden>{{this.labels.morePages}}</VisuallyHidden>
               {{else if (has-block "item")}}
                 {{yield item.context to="item"}}
               {{else}}
@@ -439,12 +486,12 @@ class Pagination extends Component<PaginationSignature> {
             type="button"
             data-part="next"
             class={{this.styles.next class=@classes.next}}
-            aria-label="Go to next page"
+            aria-label={{this.labels.nextPage}}
             disabled={{this.isNextDisabled}}
             data-test-next
             {{press this.goToNext}}
           >
-            Next
+            {{this.labels.next}}
             <ChevronRightIcon />
           </button>
         </li>
@@ -455,7 +502,7 @@ class Pagination extends Component<PaginationSignature> {
               type="button"
               data-part="next"
               class={{this.styles.next class=@classes.next}}
-              aria-label="Go to last page"
+              aria-label={{this.labels.lastPage}}
               disabled={{this.isNextDisabled}}
               data-test-last
               {{press (fn this.goTo this.totalPages)}}
@@ -473,6 +520,7 @@ export {
   Pagination,
   type PaginationSignature,
   type PaginationArgs,
+  type PaginationLabels,
   type PaginationSummary,
   type PaginationItemContext
 };
