@@ -63,7 +63,7 @@ interface SimpleTableSignature {
         >;
         Column: WithBoundArgs<
           ComponentLike<SimpleTableColumnSignature>,
-          'styleFns'
+          'styleFns' | 'classes'
         >;
         Row: WithBoundArgs<
           ComponentLike<SimpleTableRowSignature>,
@@ -138,7 +138,9 @@ class SimpleTable extends Component<SimpleTableSignature> {
               Footer=(component
                 SimpleTableFooter styleFns=this.styles classes=this.args.classes
               )
-              Column=(component SimpleTableColumn styleFns=this.styles)
+              Column=(component
+                SimpleTableColumn styleFns=this.styles classes=this.args.classes
+              )
               Row=(component
                 SimpleTableRow styleFns=this.styles classes=this.args.classes
               )
@@ -168,7 +170,9 @@ class SimpleTable extends Component<SimpleTableSignature> {
             Footer=(component
               SimpleTableFooter styleFns=this.styles classes=this.args.classes
             )
-            Column=(component SimpleTableColumn styleFns=this.styles)
+            Column=(component
+              SimpleTableColumn styleFns=this.styles classes=this.args.classes
+            )
             Row=(component
               SimpleTableRow styleFns=this.styles classes=this.args.classes
             )

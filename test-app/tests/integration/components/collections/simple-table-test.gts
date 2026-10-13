@@ -438,5 +438,64 @@ module(
 
       assert.dom('[data-test-id="nested-cell"]').hasClass('custom-td-class');
     });
+
+    test('a Column respects table classes.th', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @classes={{hash th="custom-th-class"}} as |t|>
+            <t.Header>
+              <t.Column data-test-id="column">Name</t.Column>
+            </t.Header>
+          </SimpleTable>
+        </template>
+      );
+
+      assert.dom('[data-test-id="column"]').hasClass('custom-th-class');
+    });
+
+    test('a Column yielded from Header respects table classes.th', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @classes={{hash th="custom-th-class"}} as |t|>
+            <t.Header as |h|>
+              <h.Column data-test-id="nested-column">Name</h.Column>
+            </t.Header>
+          </SimpleTable>
+        </template>
+      );
+
+      assert.dom('[data-test-id="nested-column"]').hasClass('custom-th-class');
+    });
+
+    test('a Column yielded from Footer respects table classes.th', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @classes={{hash th="custom-th-class"}} as |t|>
+            <t.Footer as |f|>
+              <f.Column data-test-id="nested-column">Total</f.Column>
+            </t.Footer>
+          </SimpleTable>
+        </template>
+      );
+
+      assert.dom('[data-test-id="nested-column"]').hasClass('custom-th-class');
+    });
+
+    test('a Column yielded from Header respects the table size', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @size="sm" as |t|>
+            <t.Header as |h|>
+              <h.Column data-test-id="nested-column">Name</h.Column>
+            </t.Header>
+          </SimpleTable>
+        </template>
+      );
+
+      // `sm` sets `h-10 text-label-2xs` on th, the `md` default `h-12
+      // text-label-xs`.
+      assert.dom('[data-test-id="nested-column"]').hasClass('h-10');
+      assert.dom('[data-test-id="nested-column"]').hasClass('text-label-2xs');
+    });
   }
 );

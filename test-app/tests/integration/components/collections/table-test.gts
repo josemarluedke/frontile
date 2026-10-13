@@ -1295,6 +1295,32 @@ module(
         assert.dom('[data-part="tfoot"].table-level-footer').exists();
         assert.dom('[data-part="tfoot"] tr.table-level-tr').exists();
       });
+
+      test('it applies classes.th to header and footer cells', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const footerColumns = [
+          { key: 'total', name: 'Total' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @footerColumns={{footerColumns}}
+              @items={{items}}
+              @classes={{hash th="table-level-th"}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-part="thead"] th.table-level-th').exists();
+        assert.dom('[data-part="tfoot"] th.table-level-th').exists();
+      });
     });
 
     // Column Visibility Tests

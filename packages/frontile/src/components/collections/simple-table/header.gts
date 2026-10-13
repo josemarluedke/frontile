@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
+import type { WithBoundArgs } from '@glint/template';
 import { useStyles, twMerge } from '@frontile/theme';
 import { SimpleTableColumn } from './column';
 import type { SlotsToClasses, TableSlots } from '../table/types';
@@ -25,7 +26,7 @@ interface SimpleTableHeaderSignature {
   Blocks: {
     default: [
       {
-        Column: typeof SimpleTableColumn;
+        Column: WithBoundArgs<typeof SimpleTableColumn, 'styleFns' | 'classes'>;
       }
     ];
   };
@@ -63,7 +64,13 @@ class SimpleTableHeader extends Component<SimpleTableHeaderSignature> {
   <template>
     <thead data-part="thead" class={{this.classNames}} ...attributes>
       <tr data-part="tr" class={{this.rowClassNames}}>
-        {{yield (hash Column=SimpleTableColumn)}}
+        {{yield
+          (hash
+            Column=(component
+              SimpleTableColumn styleFns=this.styles classes=@classes
+            )
+          )
+        }}
       </tr>
       <tr data-part="separator" class={{this.separatorClassNames}} />
     </thead>
