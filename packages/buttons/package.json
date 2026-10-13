@@ -71,7 +71,7 @@
     "concurrently": "^10.0.6",
     "decorator-transforms": "^2.4.0",
     "ember-source": "^7.3.0",
-    "rollup": "^4.63.3",
+    "rollup": "^4.64.5",
     "rollup-plugin-copy": "^3.5.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
