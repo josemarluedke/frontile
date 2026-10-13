@@ -99,8 +99,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -175,8 +175,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -245,8 +245,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -312,8 +312,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@ember/test-helpers':
         specifier: ^5.7.0
         version: 5.7.0(@babel/core@7.29.7)
@@ -391,8 +391,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -509,8 +509,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@ember/test-helpers':
         specifier: ^5.7.0
         version: 5.7.0(@babel/core@7.29.7)
@@ -579,8 +579,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -646,8 +646,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -710,8 +710,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -801,8 +801,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -877,8 +877,8 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(@babel/core@7.29.7)
       '@ember/library-tsconfig':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@embroider/addon-dev':
         specifier: 8.4.2
         version: 8.4.2(@glint/template@1.9.0)(rollup@4.64.5)
@@ -2126,8 +2126,8 @@ packages:
   '@ember/edition-utils@1.2.0':
     resolution: {integrity: sha512-VmVq/8saCaPdesQmftPqbFtxJWrzxNGSQ+e8x8LLe3Hjm36pJ04Q8LeORGZkAeOhldoUX9seLGmSaHeXkIqoog==}
 
-  '@ember/library-tsconfig@2.0.0':
-    resolution: {integrity: sha512-DTGt9TYZ3bhObUviQXx4C0v46oWM7HsRrUTbgONw2QBhJVHlmXA89uXenlvuqVrCQkA0g5kz7wwyOlcjIZ8h0w==}
+  '@ember/library-tsconfig@3.0.0':
+    resolution: {integrity: sha512-2o4D+YB0efPe8HJJlaC303qx8dWH2khcKe5ctp4fMCfqP9EibNnyWScNb2MkaFjEqrdRXqTVK+lGHXOoM70omw==}
 
   '@ember/optional-features@3.0.0':
     resolution: {integrity: sha512-HMQqZoBb16I4NyHfQglIYjopSG6folcEJah2WPa0FuolWRA/8cS5ozQmFK5BQx7cijTQJxj6viLpQK9KrXuYdw==}
@@ -10834,7 +10834,7 @@ snapshots:
 
   '@ember/edition-utils@1.2.0': {}
 
-  '@ember/library-tsconfig@2.0.0': {}
+  '@ember/library-tsconfig@3.0.0': {}
 
   '@ember/optional-features@3.0.0(@types/node@26.6.5)':
     dependencies:
