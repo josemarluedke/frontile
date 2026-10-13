@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import {
   render,
+  clearRender,
   find,
   findAll,
   click,
@@ -1221,6 +1222,13 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
         '8px',
         'bottom placement: sits exactly 8px from the right edge it is inset from'
       );
+
+      // Tear the bottom drawer down before rendering the left one. Under
+      // test, `<Portal>` appends into `#ember-testing` -- the same element
+      // `render()` mounts into -- and since @ember/test-helpers 5.7 renders
+      // via `renderComponent`, swapping the root tree with a second
+      // `render()` also drops the new tree's portalled content.
+      await clearRender();
 
       const isOpenLeft = cell(true);
 
