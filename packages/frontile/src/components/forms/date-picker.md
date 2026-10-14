@@ -41,7 +41,7 @@ typed, and the calendar button at the end of the field opens the popover.
 `<button>` showing the formatted value and clicking anywhere in it opens the calendar.
 `@placeholder`, `@formatOptions` and the `:value` block all describe that button — a
 segmented field has its own per-segment placeholders and takes its format from
-`@formatOptions` differently, as *Formatting* below explains.
+`@formatOptions` differently, as _Formatting_ below explains.
 
 ```gts preview
 import { DatePicker } from 'frontile';
@@ -64,7 +64,7 @@ import { DatePicker } from 'frontile';
 `@value` accepts a `Date` or a `yyyy-MM-dd` string, and `@defaultValue` seeds an uncontrolled
 picker. `@onChange` always hands back `Date`s, regardless of which form `@value` was given in.
 
-The field keeps its own selection and treats `@value` as something to sync *from*: setting it
+The field keeps its own selection and treats `@value` as something to sync _from_: setting it
 replaces what is displayed, and picking a date updates the field immediately without waiting
 for `@value` to come back. Passing `undefined` changes nothing, so a picker whose `@value` has
 no data yet still honours `@defaultValue`. This is how `Select` behaves, and it is what lets
@@ -107,7 +107,7 @@ shows more than one month at a time, which is typical for a range picker.
 
 An editable range renders two groups of segments with a separator between them, one group
 per end. Both are typed into, and pasting text that reads as two dates — `2026-01-20 –
-2026-02-09` — into the *start* group fills both. A range is anchored at its start: segments
+2026-02-09` — into the _start_ group fills both. A range is anchored at its start: segments
 that compose no start compose no range at all, however complete the end group is, and
 clearing the start reports `null`.
 
@@ -148,6 +148,43 @@ export default class RangeDatePicker extends Component {
 
 A range with only its start chosen leaves the calendar open: the field shows the anchor in
 its start group and waits for the second click.
+
+## Time
+
+`@granularity="minute"` (or `"hour"`) adds time segments after the date ones, exactly as
+on [DateInput](./date-input#time), including AM/PM on a 12-hour clock and `@hourCycle`.
+The calendar still picks days: picking one keeps the time the field already shows — typed
+in before or after the day — or starts at midnight when there is none. Each end of a range
+keeps its own time.
+
+The button trigger's default format adds `timeStyle: 'short'`, and the field submits the
+local `yyyy-MM-ddTHH:mm`.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const appointment = new Date(2026, 0, 20, 9, 30);
+const shift = {
+  start: new Date(2026, 0, 20, 8, 0),
+  end: new Date(2026, 0, 20, 16, 30)
+};
+
+<template>
+  <div class='grid gap-4 md:grid-cols-2'>
+    <DatePicker
+      @label='Appointment'
+      @granularity='minute'
+      @defaultValue={{appointment}}
+    />
+    <DatePicker
+      @label='Shift'
+      @mode='range'
+      @granularity='minute'
+      @defaultValue={{shift}}
+    />
+  </div>
+</template>
+```
 
 ## Presets
 
@@ -407,7 +444,7 @@ const defaultValue = new Date(2026, 0, 20);
 ## Forms
 
 Inside a `<Form>`, a `DatePicker` given `@name` submits one field: the wire value is the same
-`yyyy-MM-dd` string `@value` accepts. A range picker submits two dotted names,
+`yyyy-MM-dd` string `@value` accepts, or `yyyy-MM-ddTHH:mm` under a time `@granularity`. A range picker submits two dotted names,
 `{{@name}}.start` and `{{@name}}.end`, which `Form` unflattens into one nested object.
 
 ```gts preview
@@ -462,7 +499,10 @@ export default class DateRangePickerFieldExample extends Component {
       </Form>
       {{#if this.submitted}}
         <p class='text-sm'>
-          Submitted: {{this.submitted.stay.start}} – {{this.submitted.stay.end}}
+          Submitted:
+          {{this.submitted.stay.start}}
+          –
+          {{this.submitted.stay.end}}
         </p>
       {{/if}}
     </div>
@@ -474,32 +514,32 @@ export default class DateRangePickerFieldExample extends Component {
 
 The field's parts carry `data-part` attributes, and state that CSS can select on:
 
-| Element                         | Attributes                                                                                       |
-| ------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `[data-part="base"]`            | `data-component="date-picker"`                                                                   |
+| Element                         | Attributes                                                                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `[data-part="base"]`            | `data-component="date-picker"`                                                                                            |
 | `[data-part="inner-container"]` | `data-invalid`, `data-disabled` — on the segmented path this is the element drawing the border, background and focus ring |
-| `[data-part="group"]`           | `data-invalid`, `data-readonly`; one per end in range mode                                       |
-| `[data-part="segment"]`         | `data-type` (`year`, `month` or `day`), `data-placeholder`, `data-disabled`                      |
-| `[data-part="literal"]`         | the separators inside a group                                                                    |
-| `[data-part="separator"]`       | between the two groups of an editable range                                                      |
-| `[data-part="calendar-button"]` | the button opening the popover, on the segmented path                                            |
-| `[data-part="clear-button"]`    | rendered only while `@isClearable` has something to clear                                        |
-| `[data-part="input"]`           | the button trigger, under `@isEditable={{false}}`                                                |
+| `[data-part="group"]`           | `data-invalid`, `data-readonly`; one per end in range mode                                                                |
+| `[data-part="segment"]`         | `data-type` (`year`, `month`, `day`, `hour`, `minute` or `dayPeriod`), `data-placeholder`, `data-disabled`                |
+| `[data-part="literal"]`         | the separators inside a group                                                                                             |
+| `[data-part="separator"]`       | between the two groups of an editable range                                                                               |
+| `[data-part="calendar-button"]` | the button opening the popover, on the segmented path                                                                     |
+| `[data-part="clear-button"]`    | rendered only while `@isClearable` has something to clear                                                                 |
+| `[data-part="input"]`           | the button trigger, under `@isEditable={{false}}`                                                                         |
 
 `@classes` takes the matching slots, including `group`, `segment`, `literal`, `separator`
 and `calendarButton`.
 
 ## Accessibility
 
-| Element | What it exposes |
-| --- | --- |
-| Segment | `role="spinbutton"` with `aria-label` (`month`, `day`, `year`, overridable through `@segmentLabels`), `aria-valuenow`, `aria-valuemin`, `aria-valuemax` and `aria-valuetext` — which is what makes a month announce as "January" rather than "1". Carries the field's `aria-invalid` and `aria-readonly`. |
-| Segment group | `role="group"`, named by `@label` and described by `@description` and any feedback. In range mode there are two, named `"<label> start"` and `"<label> end"`. |
-| Calendar button | A `<button>` labelled `"Choose date, <label>"`, carrying the `aria-haspopup`, `aria-expanded` and `aria-controls` the popover trigger applies. |
-| Trigger | Under `@isEditable={{false}}`, a `<button>` carrying the same popover trigger attributes. When a `:value` block is supplied, it also carries an explicit `aria-label` composed from `@label` and the formatted value, since the block's content may not be readable text on its own. |
-| Popover content | `role="dialog"`, labeled by `@label`. |
-| Calendar grid | Labeled by the field's own id, so the default calendar is always labelled. A consumer rendering their own calendar from the `:calendar` block must pass `@id` to `DatePicker` for the grid to be labelled — the block's `labelledBy` reflects `@id`, not the id `FormControl` would otherwise generate. |
-| Clear button | Announced as "Clear". |
+| Element         | What it exposes                                                                                                                                                                                                                                                                                           |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Segment         | `role="spinbutton"` with `aria-label` (`month`, `day`, `year`, overridable through `@segmentLabels`), `aria-valuenow`, `aria-valuemin`, `aria-valuemax` and `aria-valuetext` — which is what makes a month announce as "January" rather than "1". Carries the field's `aria-invalid` and `aria-readonly`. |
+| Segment group   | `role="group"`, named by `@label` and described by `@description` and any feedback. In range mode there are two, named `"<label> start"` and `"<label> end"`.                                                                                                                                             |
+| Calendar button | A `<button>` labelled `"Choose date, <label>"`, carrying the `aria-haspopup`, `aria-expanded` and `aria-controls` the popover trigger applies.                                                                                                                                                            |
+| Trigger         | Under `@isEditable={{false}}`, a `<button>` carrying the same popover trigger attributes. When a `:value` block is supplied, it also carries an explicit `aria-label` composed from `@label` and the formatted value, since the block's content may not be readable text on its own.                      |
+| Popover content | `role="dialog"`, labeled by `@label`.                                                                                                                                                                                                                                                                     |
+| Calendar grid   | Labeled by the field's own id, so the default calendar is always labelled. A consumer rendering their own calendar from the `:calendar` block must pass `@id` to `DatePicker` for the grid to be labelled — the block's `labelledBy` reflects `@id`, not the id `FormControl` would otherwise generate.   |
+| Clear button    | Announced as "Clear".                                                                                                                                                                                                                                                                                     |
 
 The segments take the same keys as [DateInput](./date-input#accessibility), and every one
 of them is a tab stop — three for a single field, six for a range.
@@ -529,6 +569,7 @@ import { fillDate, fillDateRange } from 'frontile/test-support';
 
 await fillDate('[data-test-due]', '2026-01-20');
 await fillDateRange('[data-test-trip]', '2026-01-20', '2026-01-25');
+await fillDate('[data-test-starts]', '2026-01-20T09:30'); // @granularity="minute"
 ```
 
 With `@isEditable={{false}}` there is nothing to type into: click the trigger and pick

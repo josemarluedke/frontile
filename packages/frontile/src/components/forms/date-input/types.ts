@@ -30,8 +30,28 @@ interface SegmentGroupClasses {
 /** The consumer overrides for those same three slots. */
 type SegmentGroupUserClasses = SlotsToClasses<'group' | 'segment' | 'literal'>;
 
-/** The editable units. Day granularity only -- see the spec's Out of scope. */
-type SegmentType = 'year' | 'month' | 'day';
+/**
+ * The editable units. The time ones appear only under an `hour` or `minute`
+ * {@link Granularity}; `dayPeriod` (AM/PM) only on a 12-hour cycle.
+ */
+type SegmentType = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'dayPeriod';
+
+/** The smallest unit a field edits. `day` has no time segments at all. */
+type Granularity = 'day' | 'hour' | 'minute';
+
+/**
+ * How the hour segment counts, as `Intl` resolves it: `h11` runs 0-11 and
+ * `h12` 1-12 (both with AM/PM), `h23` runs 0-23 and `h24` 1-24.
+ */
+type HourCycle = 'h11' | 'h12' | 'h23' | 'h24';
+
+/** What {@link buildParts} adds to the date segments. */
+interface TimeOptions {
+  /** @defaultValue 'day' */
+  granularity?: Granularity;
+  /** Forces a 12- or 24-hour clock. @defaultValue the locale's */
+  hourCycle?: 12 | 24;
+}
 
 interface Segment {
   kind: 'segment';
@@ -58,6 +78,14 @@ interface Segment {
   width: number;
   /** Rendered when `value` is null: 'mm', 'dd', 'yyyy'. */
   placeholder: string;
+  /**
+   * A textual segment's names, indexed by `value`: the locale's AM and PM for
+   * `dayPeriod`. A segment with labels is typed by letter, not by digit, and
+   * shows its label rather than its number.
+   */
+  labels?: string[];
+  /** The hour segment's cycle, which its bounds and its value depend on. */
+  hourCycle?: HourCycle;
 }
 
 interface LiteralPart {
@@ -71,7 +99,10 @@ interface DateInputArgs extends FormControlSharedArgs {
   /** The unique identifier for the control. */
   id?: string;
 
-  /** The value submits under this name as `yyyy-MM-dd`. */
+  /**
+   * The value submits under this name as `yyyy-MM-dd`, or as the local
+   * `yyyy-MM-ddTHH:mm` under an `hour` or `minute` granularity.
+   */
   name?: string;
 
   /**
@@ -85,6 +116,21 @@ interface DateInputArgs extends FormControlSharedArgs {
    * before form data exists.
    */
   value?: Date | string | null;
+
+  /**
+   * The smallest unit the field edits. `hour` and `minute` add time segments
+   * after the date ones, in the locale's order.
+   *
+   * @defaultValue 'day'
+   */
+  granularity?: Granularity;
+
+  /**
+   * Forces a 12- or 24-hour clock. A 12-hour one adds an AM/PM segment.
+   *
+   * @defaultValue the locale's
+   */
+  hourCycle?: 12 | 24;
 
   /** Seeds the value before any `@value` is supplied. */
   defaultValue?: Date | string | null;
@@ -151,7 +197,7 @@ interface DateInputArgs extends FormControlSharedArgs {
   /**
    * The accessible names of the segments, for localizing them.
    *
-   * @defaultValue { year: 'year', month: 'month', day: 'day' }
+   * @defaultValue { year: 'year', month: 'month', day: 'day', hour: 'hour', minute: 'minute', dayPeriod: 'AM/PM' }
    */
   segmentLabels?: Partial<Record<SegmentType, string>>;
 
@@ -161,6 +207,9 @@ interface DateInputArgs extends FormControlSharedArgs {
 
 export type {
   SegmentType,
+  Granularity,
+  HourCycle,
+  TimeOptions,
   SegmentSlotFn,
   SegmentGroupClasses,
   SegmentGroupUserClasses,

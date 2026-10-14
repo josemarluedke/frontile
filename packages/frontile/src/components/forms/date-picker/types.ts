@@ -17,7 +17,7 @@ import type {
 } from '../../collections/calendar/types';
 import type { FormControlSharedArgs } from '../form-control';
 import type { DatePickerInput, DatePickerRangeInput } from './value';
-import type { SegmentType } from '../date-input/types';
+import type { Granularity, SegmentType } from '../date-input/types';
 
 interface BaseDatePickerArgs
   extends
@@ -100,9 +100,25 @@ interface BaseDatePickerArgs
   /**
    * How the value is rendered in the trigger. Localized with `@locale`.
    *
-   * @defaultValue { dateStyle: 'medium' }
+   * @defaultValue { dateStyle: 'medium' }, plus `timeStyle: 'short'` under an `hour` or `minute` granularity
    */
   formatOptions?: Intl.DateTimeFormatOptions;
+
+  /**
+   * The smallest unit the field edits. `hour` and `minute` add time segments
+   * after the date ones; picking a day in the calendar keeps the time already
+   * entered, or starts at midnight.
+   *
+   * @defaultValue 'day'
+   */
+  granularity?: Granularity;
+
+  /**
+   * Forces a 12- or 24-hour clock. A 12-hour one adds an AM/PM segment.
+   *
+   * @defaultValue the locale's
+   */
+  hourCycle?: 12 | 24;
 
   /** The size of the field. Matches Select's `@inputSize`. */
   inputSize?: DatePickerVariants['size'];

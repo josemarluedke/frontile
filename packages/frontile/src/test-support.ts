@@ -141,6 +141,27 @@ export async function fillDateRange(
   await fillGroup('fillDateRange', selector, end, 1);
 }
 
+function clockHour(hours: number, segment: HTMLElement): number {
+  const min = Number(segment.getAttribute('aria-valuemin'));
+  const max = Number(segment.getAttribute('aria-valuemax'));
+  if (max === 12) return hours % 12 || 12;
+  if (max === 11) return hours % 12;
+  if (min === 1) return hours || 24;
+  return hours;
+}
+
+/**
+ * AM/PM is typed by a letter that depends on the locale, so it is stepped
+ * instead: ArrowUp fills an empty segment and toggles a filled one.
+ */
+async function setDayPeriod(segment: HTMLElement, value: 0 | 1): Promise<void> {
+  await focus(segment);
+  for (let i = 0; i < 2; i++) {
+    if (segment.getAttribute('aria-valuenow') === String(value)) return;
+    await triggerKeyEvent(segment, 'keydown', 'ArrowUp');
+  }
+}
+
 /**
  * Reuses the component's own parser rather than restating the wire format, so
  * the helper cannot drift from what `@value` actually accepts -- but turns a
@@ -151,7 +172,7 @@ function asDate(functionName: string, value: Date | string): Date {
   const parsed = parseDate(value);
   if (!parsed) {
     throw new Error(
-      `You called "${functionName}" with "${String(value)}", which is neither a Date nor a yyyy-MM-dd string.`
+      `You called "${functionName}" with "${String(value)}", which is neither a Date nor a yyyy-MM-dd or yyyy-MM-ddTHH:mm string.`
     );
   }
 
@@ -185,17 +206,31 @@ async function fillGroup(
   }
 
   const date = asDate(functionName, value);
+  const pad = (n: number, width = 2): string => String(n).padStart(width, '0');
   const digits: Record<string, string> = {
-    year: String(date.getFullYear()).padStart(4, '0'),
-    month: String(date.getMonth() + 1).padStart(2, '0'),
-    day: String(date.getDate()).padStart(2, '0')
+    year: pad(date.getFullYear(), 4),
+    month: pad(date.getMonth() + 1),
+    day: pad(date.getDate()),
+    minute: pad(date.getMinutes())
   };
 
   for (const segment of group.querySelectorAll('[data-part="segment"]')) {
     const element = segment as HTMLElement;
-    const run = element.dataset['type']
-      ? digits[element.dataset['type']]
-      : undefined;
+    const type = element.dataset['type'];
+
+    if (type === 'dayPeriod') {
+      await setDayPeriod(element, date.getHours() < 12 ? 0 : 1);
+      continue;
+    }
+
+    // The hour goes in as the field's own clock counts it, which its
+    // spinbutton bounds give away: 1-12 or 0-11 for AM/PM, 0-23 or 1-24 not.
+    const run =
+      type === 'hour'
+        ? pad(clockHour(date.getHours(), element))
+        : type
+          ? digits[type]
+          : undefined;
     if (!run) continue;
 
     await focus(element);

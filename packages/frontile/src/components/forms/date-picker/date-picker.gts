@@ -14,7 +14,8 @@ import {
   fromDate,
   carryOver,
   resolveSegmentFormat,
-  hasDateChanged
+  hasDateChanged,
+  timeOf
 } from '../date-input/segments';
 import { Popover } from '../../overlays/popover';
 import { Calendar } from '../../collections/calendar/calendar';
@@ -26,14 +27,16 @@ import {
   isEmptyValue,
   parseDate,
   parseRange,
-  toWire
+  toWire,
+  withTimeOf,
+  DEFAULT_TIME_FORMAT
 } from './value';
 import type {
   CalendarMode,
   CalendarValue,
   DateRange
 } from '../../collections/calendar/types';
-import type { Part } from '../date-input/types';
+import type { Part, TimeOptions } from '../date-input/types';
 import type {
   DatePickerArgs,
   DatePickerValueBlockArg,
@@ -112,7 +115,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     }
 
     this.writeParts(this.internalValue, () =>
-      buildParts(this.locale, this.segmentFormat)
+      buildParts(this.locale, this.segmentFormat, this.timeOptions)
     );
   }
 
@@ -183,6 +186,19 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     return this.args.placeholderValue ?? new Date();
   }
 
+  /** The time segments the field adds to the date, if any. */
+  @cached
+  get timeOptions(): TimeOptions {
+    return {
+      granularity: this.args.granularity,
+      hourCycle: this.args.hourCycle
+    };
+  }
+
+  get hasTime(): boolean {
+    return (this.args.granularity ?? 'day') !== 'day';
+  }
+
   get mode(): M {
     return (this.args as { mode?: M }).mode ?? ('single' as M);
   }
@@ -251,14 +267,18 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   syncSegmentFormat = modifier(
     (
       _: HTMLDivElement,
-      [locale, format]: [string, Intl.DateTimeFormatOptions | undefined]
+      [locale, format, time]: [
+        string,
+        Intl.DateTimeFormatOptions | undefined,
+        TimeOptions
+      ]
     ) => {
       if (!this.isSegmented) return;
 
       // One `Intl.DateTimeFormat` for both edges: the arguments are identical,
       // and the constructor is the expensive part. `carryOver` copies rather
       // than mutates, so the two groups cannot share structure by accident.
-      const fresh = buildParts(locale, format);
+      const fresh = buildParts(locale, format, time);
 
       // Segment by segment rather than through the composed value, so a
       // half-typed entry survives the rebuild.
@@ -270,7 +290,12 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   );
 
   get formatted(): string {
-    return formatValue(this.value, this.locale, this.args.formatOptions);
+    return formatValue(
+      this.value,
+      this.locale,
+      this.args.formatOptions ??
+        (this.hasTime ? DEFAULT_TIME_FORMAT : undefined)
+    );
   }
 
   get isEmpty(): boolean {
@@ -430,6 +455,54 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
     if (this.isComplete(value)) this.close();
   };
+
+  /**
+   * A day picked in the calendar. The calendar knows days only, so under an
+   * `hour` or `minute` granularity the pick takes the time the field already
+   * shows -- each end of a range its own -- or midnight when there is none.
+   */
+  handleCalendarChange = (value: CalendarValue<M>): void => {
+    if (!this.hasTime || !value) {
+      this.handleChange(value);
+      return;
+    }
+
+    if (!this.isRangeMode) {
+      this.handleChange(
+        withTimeOf(value as Date, this.timeAt('start')) as never
+      );
+      return;
+    }
+
+    const range = value as DateRange;
+    this.handleChange({
+      start: withTimeOf(range.start, this.timeAt('start')),
+      end: range.end ? withTimeOf(range.end, this.timeAt('end')) : null
+    } as never);
+  };
+
+  /**
+   * The time one end of the field holds: what its segments show -- typed in
+   * even before any day was -- or, on the button trigger, which has no
+   * segments, the current value's. Midnight when there is none.
+   */
+  private timeAt(edge: 'start' | 'end'): { hours: number; minutes: number } {
+    const midnight = { hours: 0, minutes: 0 };
+
+    if (this.isSegmented) {
+      const parts =
+        edge === 'start' ? this.#currentParts : this.#currentEndParts;
+      return timeOf(parts) ?? midnight;
+    }
+
+    const value = this.value;
+    const date = this.isRangeMode
+      ? (value as DateRange | null)?.[edge]
+      : (value as Date | null);
+    return date
+      ? { hours: date.getHours(), minutes: date.getMinutes() }
+      : midnight;
+  }
 
   /**
    * Whether an incoming value differs from what the segments already compose.
@@ -635,15 +708,21 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
    * that branch's mode check.
    */
   get wireValue(): string {
-    return toWire(this.value as Date | null);
+    return toWire(this.value as Date | null, this.args.granularity);
   }
 
   get wireRangeStart(): string {
-    return toWire((this.value as DateRange | null)?.start ?? null);
+    return toWire(
+      (this.value as DateRange | null)?.start ?? null,
+      this.args.granularity
+    );
   }
 
   get wireRangeEnd(): string {
-    return toWire((this.value as DateRange | null)?.end ?? null);
+    return toWire(
+      (this.value as DateRange | null)?.end ?? null,
+      this.args.granularity
+    );
   }
 
   @cached
@@ -652,7 +731,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
       mode: this.mode,
       color: this.args.color,
       value: this.value,
-      onChange: this.handleChange,
+      onChange: this.handleCalendarChange,
       locale: this.locale,
       weekStartsOn: this.args.weekStartsOn,
       minValue: this.args.minValue,
@@ -680,7 +759,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
   <template>
     <div
-      {{this.syncSegmentFormat this.locale this.segmentFormat}}
+      {{this.syncSegmentFormat this.locale this.segmentFormat this.timeOptions}}
       {{this.syncValue @value}}
       {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
@@ -878,7 +957,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
                 @mode={{this.mode}}
                 @color={{@color}}
                 @value={{this.value}}
-                @onChange={{this.handleChange}}
+                @onChange={{this.handleCalendarChange}}
                 @locale={{@locale}}
                 @weekStartsOn={{@weekStartsOn}}
                 @minValue={{@minValue}}
