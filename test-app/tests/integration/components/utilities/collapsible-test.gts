@@ -39,6 +39,46 @@ async function flushAnimationFrames(count = 2): Promise<void> {
   }
 }
 
+// Replaces `requestAnimationFrame` with a manual queue so a test can decide
+// exactly when, and in which order, the component's frame callbacks run.
+function stubAnimationFrames() {
+  const originalRequest = window.requestAnimationFrame;
+  const originalCancel = window.cancelAnimationFrame;
+  const queue = new Map<number, FrameRequestCallback>();
+  let nextId = 1;
+
+  window.requestAnimationFrame = (callback: FrameRequestCallback) => {
+    const id = nextId++;
+    queue.set(id, callback);
+    return id;
+  };
+  window.cancelAnimationFrame = (id: number) => {
+    queue.delete(id);
+  };
+
+  return {
+    // Runs only the callbacks queued so far, like a single browser frame.
+    runFrame(): void {
+      const callbacks = [...queue.values()];
+      queue.clear();
+      callbacks.forEach((callback) => callback(performance.now()));
+    },
+    // Runs every queued callback, including ones scheduled while running,
+    // back to back with no style recalculation in between. That is the shape
+    // of a frame whose transition never got to start, e.g. on a throttled CI
+    // runner.
+    runAllFrames(): void {
+      while (queue.size) {
+        this.runFrame();
+      }
+    },
+    restore(): void {
+      window.requestAnimationFrame = originalRequest;
+      window.cancelAnimationFrame = originalCancel;
+    }
+  };
+}
+
 // Polls instead of `settled()` so a leaked waiter fails the assertion below
 // rather than hanging the test (and the whole suite) until QUnit times out.
 async function waitForCollapsibleWaiter(timeout = 3000): Promise<void> {
@@ -344,6 +384,84 @@ module(
 
       await settled();
       assert.dom('[data-test-id=collapsible]').hasStyle({ height: '0px' });
+    });
+
+    test('does not leak a test waiter when closed before the open frame runs', async function (assert) {
+      const isOpen = cell(false);
+      await render(
+        <template>
+          <Collapsible @isOpen={{isOpen.current}} data-test-id="collapsible">
+            Content
+          </Collapsible>
+        </template>
+      );
+
+      const frames = stubAnimationFrames();
+
+      try {
+        isOpen.current = true;
+        await rerender();
+
+        // Close before `expand`'s frame has had a chance to run.
+        isOpen.current = false;
+        await rerender();
+
+        frames.runAllFrames();
+        frames.restore();
+
+        await waitForCollapsibleWaiter();
+
+        assert.false(
+          isCollapsibleWaiterPending(),
+          'the waiter ends even though opacity never left 0, so no transitionend fires'
+        );
+      } finally {
+        frames.restore();
+        collapsibleWaiter().reset();
+      }
+
+      await settled();
+
+      const collapsible = collapsibleElement();
+      assert.strictEqual(collapsible.style.opacity, '0', 'ends hidden');
+      assert.strictEqual(collapsible.style.height, '0px', 'ends collapsed');
+    });
+
+    test('a stale open frame does not reopen a panel that was closed', async function (assert) {
+      const isOpen = cell(false);
+      await render(
+        <template>
+          <Collapsible @isOpen={{isOpen.current}} data-test-id="collapsible">
+            Content
+          </Collapsible>
+        </template>
+      );
+
+      const frames = stubAnimationFrames();
+
+      try {
+        isOpen.current = true;
+        await rerender();
+
+        isOpen.current = false;
+        await rerender();
+
+        // The frame `expand` queued before `contract` ran.
+        frames.runFrame();
+
+        assert.notStrictEqual(
+          collapsibleElement().style.opacity,
+          '1',
+          'the cancelled open frame does not make the panel visible'
+        );
+
+        frames.runAllFrames();
+      } finally {
+        frames.restore();
+        collapsibleWaiter().reset();
+      }
+
+      await settled();
     });
 
     test('ends the test waiter only once per toggle', async function (assert) {
