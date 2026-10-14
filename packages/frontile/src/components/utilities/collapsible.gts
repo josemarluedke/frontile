@@ -144,8 +144,59 @@ class Collapsible extends Component<CollapsibleSignature> {
 
   willDestroy(): void {
     super.willDestroy();
+    this.cancelFrames();
     // Do not leave a waiter pending if we are torn down mid-transition.
     this.endWaiter();
+  }
+
+  /**
+   * Frames scheduled by the current `expand`/`contract`. A frame left over
+   * from the previous direction would otherwise still apply its styles after
+   * the toggle, e.g. making a panel that was just closed visible again.
+   */
+  pendingFrames = new Set<number>();
+
+  requestFrame(callback: () => void): void {
+    const id = window.requestAnimationFrame(() => {
+      this.pendingFrames.delete(id);
+      callback();
+    });
+    this.pendingFrames.add(id);
+  }
+
+  cancelFrames(): void {
+    this.pendingFrames.forEach((id) => window.cancelAnimationFrame(id));
+    this.pendingFrames.clear();
+  }
+
+  /**
+   * Ends the waiter when none of `properties` is transitioning after the
+   * styles just written. `onTransitionEnd` only hears about transitions that
+   * run: when the start and end values match -- a close that lands before the
+   * open frame ever made the panel visible, or a transition that never got
+   * to start -- no `transitionend` fires and the waiter would leak.
+   */
+  endWaiterUnlessTransitioning(
+    element: HTMLElement,
+    properties: string[]
+  ): void {
+    // Without the Web Animations API there is no way to tell; leave it to
+    // `onTransitionEnd`.
+    if (typeof element.getAnimations !== 'function') {
+      return;
+    }
+
+    const isTransitioning = element
+      .getAnimations()
+      .some(
+        (animation) =>
+          'transitionProperty' in animation &&
+          properties.includes((animation as CSSTransition).transitionProperty)
+      );
+
+    if (!isTransitioning) {
+      this.endWaiter();
+    }
   }
 
   onTransitionEnd = (event: TransitionEvent) => {
@@ -181,6 +232,13 @@ class Collapsible extends Component<CollapsibleSignature> {
           event.propertyName === 'height')
       ) {
         this.endWaiter();
+      } else if (
+        event.propertyName === 'height' ||
+        event.propertyName === 'opacity'
+      ) {
+        // The transition the condition above waits for may never have run
+        // (see `endWaiterUnlessTransitioning`); settle once nothing is left.
+        this.endWaiterUnlessTransitioning(element, ['height', 'opacity']);
       }
     }
   };
@@ -195,6 +253,7 @@ class Collapsible extends Component<CollapsibleSignature> {
 
   expand(element: HTMLElement): void {
     this.isCurrentlyOpen = true;
+    this.cancelFrames();
 
     // The transition is written as an inline style, so a
     // `motion-reduce:transition-none` class could never beat it. The check has
@@ -222,9 +281,10 @@ class Collapsible extends Component<CollapsibleSignature> {
     element.style.overflow = 'hidden';
 
     const height = element.scrollHeight;
-    window.requestAnimationFrame(() => {
+    this.requestFrame(() => {
       element.style.opacity = '1';
       element.style.height = `${height}px`;
+      this.endWaiterUnlessTransitioning(element, ['height', 'opacity']);
     });
   }
 
@@ -247,6 +307,7 @@ class Collapsible extends Component<CollapsibleSignature> {
 
   contract(element: HTMLElement): void {
     this.isCurrentlyOpen = false;
+    this.cancelFrames();
 
     if (prefersReducedMotion()) {
       element.style.transition = '';
@@ -260,15 +321,16 @@ class Collapsible extends Component<CollapsibleSignature> {
     element.style.transition = '';
     element.style.overflow = 'hidden';
 
-    window.requestAnimationFrame(() => {
+    this.requestFrame(() => {
       element.style.height = `${height}px`;
       element.style.transition = [
         this.heightTransition(0.2),
         this.opacityTransition(0.3)
       ].join(', ');
 
-      window.requestAnimationFrame(() => {
+      this.requestFrame(() => {
         this.applyClosedState(element);
+        this.endWaiterUnlessTransitioning(element, ['height', 'opacity']);
       });
     });
   }
