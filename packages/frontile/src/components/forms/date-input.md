@@ -151,7 +151,9 @@ const yearAndMonth = { year: 'numeric', month: '2-digit' } as const;
 
 `@granularity="minute"` adds hour and minute segments after the date ones, and
 `@granularity="hour"` the hour alone. Their order and the literals between them come from
-the locale, as the date segments' do. The default, `day`, has no time segments.
+the locale, as the date segments' do, except that the date and the time are not joined by a
+comma (`01/20/2026 09:05 PM`, not `01/20/2026, 09:05 PM`). The default, `day`, has no time
+segments.
 
 A locale with a 12-hour clock adds an AM/PM segment, typed with its first letter (`a`, `p`
 in English) and stepped with the arrow keys. `@hourCycle` forces one clock or the other.

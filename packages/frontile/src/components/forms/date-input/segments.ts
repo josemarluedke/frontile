@@ -144,7 +144,31 @@ function buildParts(
     // segment for it.
   }
 
-  return out;
+  return withoutDateTimeComma(out);
+}
+
+const DATE_TYPES: SegmentType[] = ['year', 'month', 'day'];
+
+/**
+ * `Intl` joins the date and the time with a comma in many locales
+ * (`01/20/2026, 09:05 PM`), which reads like a sentence rather than a field.
+ * The separator between the last date segment and the first time one keeps
+ * whatever else the locale put there, minus the comma.
+ */
+function withoutDateTimeComma(parts: Part[]): Part[] {
+  return parts.map((part, i) => {
+    if (part.kind !== 'literal') return part;
+    const before = parts[i - 1];
+    const after = parts[i + 1];
+    const joinsDateAndTime =
+      before?.kind === 'segment' &&
+      DATE_TYPES.includes(before.type) &&
+      after?.kind === 'segment' &&
+      !DATE_TYPES.includes(after.type);
+    if (!joinsDateAndTime) return part;
+    const text = part.text.replace(/[,،，]/g, '').replace(/\s+/g, ' ');
+    return { kind: 'literal', text: text.trim() === '' ? ' ' : text };
+  });
 }
 
 /**

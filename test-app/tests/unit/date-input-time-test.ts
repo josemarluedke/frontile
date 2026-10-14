@@ -59,6 +59,28 @@ module('Unit | date-input time | buildParts', function () {
     );
   });
 
+  test('no comma between the date and the time', function (assert) {
+    const text = (parts: Part[]) =>
+      parts.map((p) => (p.kind === 'literal' ? p.text : p.type)).join('');
+    assert.strictEqual(
+      text(buildParts('en-US', undefined, minute)),
+      'month/day/year hour:minute dayPeriod'
+    );
+    assert.strictEqual(
+      text(buildParts('en-GB', undefined, minute)),
+      'day/month/year hour:minute'
+    );
+    assert.strictEqual(
+      text(buildParts('en-US', undefined, { ...minute, hourCycle: 24 })),
+      'month/day/year hour:minute'
+    );
+    assert.strictEqual(
+      text(buildParts('en-US')),
+      'month/day/year',
+      'a date alone keeps its separators'
+    );
+  });
+
   test('a 12-hour locale adds AM/PM and counts hours 1-12', function (assert) {
     const parts = buildParts('en-US', undefined, minute);
     assert.deepEqual(order(parts), [
@@ -253,7 +275,7 @@ module('Unit | date-input time | clipboard', function () {
       buildParts('en-US', undefined, minute),
       new Date(2026, 0, 20, 21, 5)
     );
-    assert.strictEqual(formatForClipboard(parts), '01/20/2026, 09:05 PM');
+    assert.strictEqual(formatForClipboard(parts), '01/20/2026 09:05 PM');
   });
 });
 
