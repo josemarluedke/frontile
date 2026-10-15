@@ -10,6 +10,7 @@ import type {
 } from '../../overlays/popover';
 import type { CalendarArgs } from '../../collections/calendar/calendar';
 import type {
+  CalendarLabels,
   CalendarMode,
   CalendarValue,
   DateRange,
@@ -18,6 +19,24 @@ import type {
 import type { FormControlSharedArgs } from '../form-control';
 import type { DatePickerInput, DatePickerRangeInput } from './value';
 import type { Granularity, SegmentType } from '../date-input/types';
+
+/**
+ * Every text the picker renders itself, its calendar's included. Override any
+ * of them with `@labels`, e.g. to translate them; the rest keep their English
+ * defaults. The segments' names are `@segmentLabels`.
+ */
+interface DatePickerLabels extends CalendarLabels {
+  /** Accessible name of the clear button (`@isClearable`). */
+  clear: string;
+  /**
+   * Accessible name of the calendar button on a segmented field, given the
+   * field's `@label` when it has one. A function, because some languages put
+   * the label elsewhere in the sentence.
+   *
+   * @defaultValue (label) => label ? `Choose date, ${label}` : 'Choose date'
+   */
+  chooseDate: (label: string | undefined) => string;
+}
 
 interface BaseDatePickerArgs
   extends
@@ -160,6 +179,13 @@ interface BaseDatePickerArgs
   /** Fires when focus leaves the trigger *and* the popover. */
   onBlur?: () => void;
 
+  /**
+   * Replaces any of the texts the picker and its calendar render, e.g. to
+   * translate them. Anything left out keeps its English default; see
+   * `DatePickerLabels`.
+   */
+  labels?: Partial<DatePickerLabels>;
+
   classes?: SlotsToClasses<DatePickerSlots>;
 }
 
@@ -254,6 +280,7 @@ interface DatePickerCalendarArgs<M extends CalendarMode = 'single'> {
   isDateUnavailable?: (date: Date) => boolean;
   visibleMonths?: number;
   captionLayout?: 'label' | 'dropdown';
+  labels?: Partial<CalendarLabels>;
   labelledBy?: string;
   autofocus: boolean;
 }
@@ -270,6 +297,7 @@ interface DatePickerFooterArg<M extends CalendarMode = 'single'> {
 
 export type {
   DatePickerArgs,
+  DatePickerLabels,
   SingleDatePickerArgs,
   RangeDatePickerArgs,
   DatePickerValueBlockArg,

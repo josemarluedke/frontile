@@ -405,6 +405,31 @@ import { Calendar } from 'frontile/collections';
 <template><Calendar @locale='nl-NL' @weekStartsOn={{1}} /></template>
 ```
 
+## Labels
+
+`@locale` covers everything `Intl` can format, but the accessible names of the
+previous/next buttons, and of the month `<select>` and year grid under
+`@captionLayout="dropdown"`, are English by default. `@labels` replaces any of
+them, e.g. to translate them; anything you leave out keeps its default.
+
+```gts preview
+import { hash } from '@ember/helper';
+import { Calendar } from 'frontile/collections';
+
+<template>
+  <Calendar
+    @locale='cs-CZ'
+    @captionLayout='dropdown'
+    @labels={{hash
+      previousMonth='Předchozí měsíc'
+      nextMonth='Další měsíc'
+      month='Měsíc'
+      year='Rok'
+    }}
+  />
+</template>
+```
+
 ## Disabled and read-only
 
 `@isDisabled` blocks navigation and selection entirely. `@isReadOnly` still allows paging

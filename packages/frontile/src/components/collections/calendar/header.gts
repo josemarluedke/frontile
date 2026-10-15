@@ -5,6 +5,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon
 } from '../../../-private/icons';
+import type { CalendarLabels } from './types';
 
 export interface CalendarHeaderContext {
   month: Date;
@@ -26,6 +27,7 @@ export interface CalendarHeaderSignature {
     months: { value: number; label: string; isDisabled: boolean }[];
     isYearGridOpen: boolean;
     onToggleYearGrid: () => void;
+    labels: Pick<CalendarLabels, 'previousMonth' | 'nextMonth' | 'month'>;
     classes: {
       header: string;
       title: string;
@@ -81,7 +83,7 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
         class={{@classes.navButton}}
         disabled={{if @context.canGoPrevious false true}}
         data-disabled={{if @context.canGoPrevious "false" "true"}}
-        aria-label="Previous month"
+        aria-label={{@labels.previousMonth}}
         {{on "click" @context.goToPrevious}}
       ><ChevronLeftIcon /></button>
 
@@ -107,7 +109,7 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
 
             <select
               data-part="month-select"
-              aria-label="Month"
+              aria-label={{@labels.month}}
               class={{@classes.monthSelect}}
               {{on "change" this.onMonthSelect}}
             >
@@ -141,7 +143,7 @@ export default class CalendarHeader extends Component<CalendarHeaderSignature> {
         class={{@classes.navButton}}
         disabled={{if @context.canGoNext false true}}
         data-disabled={{if @context.canGoNext "false" "true"}}
-        aria-label="Next month"
+        aria-label={{@labels.nextMonth}}
         {{on "click" @context.goToNext}}
       ><ChevronRightIcon /></button>
     </div>

@@ -11,6 +11,7 @@ import {
   triggerKeyEvent,
   triggerEvent
 } from '@ember/test-helpers';
+import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
 import { Calendar } from 'frontile';
@@ -1596,6 +1597,55 @@ module(
       assert
         .dom('[data-part="title"]')
         .doesNotExist('the plain label is replaced');
+    });
+
+    test('@labels translates the texts the calendar renders', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="cs-CZ"
+            @captionLayout="dropdown"
+            @labels={{hash
+              previousMonth="Předchozí měsíc"
+              nextMonth="Další měsíc"
+              month="Měsíc"
+              year="Rok"
+            }}
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-part="nav-button"]:first-child')
+        .hasAria('label', 'Předchozí měsíc');
+      assert
+        .dom('[data-part="nav-button"]:last-child')
+        .hasAria('label', 'Další měsíc');
+      assert.dom('[data-part="month-select"]').hasAria('label', 'Měsíc');
+
+      await click('[data-part="year-trigger"]');
+      assert.dom('[data-part="year-grid"]').hasAria('label', 'Rok');
+    });
+
+    test('@labels left out keep their English defaults', async function (assert) {
+      await render(
+        <template>
+          <Calendar
+            @defaultMonth={{sep2026}}
+            @locale="en-US"
+            @captionLayout="dropdown"
+            @labels={{hash month="Měsíc"}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="month-select"]').hasAria('label', 'Měsíc');
+      assert.dom('[aria-label="Previous month"]').exists();
+      assert.dom('[aria-label="Next month"]').exists();
+
+      await click('[data-part="year-trigger"]');
+      assert.dom('[data-part="year-grid"]').hasAria('label', 'Year');
     });
 
     test('choosing a month from the dropdown navigates', async function (assert) {

@@ -1,5 +1,4 @@
 import type { TOC } from '@ember/component/template-only';
-import { concat } from '@ember/helper';
 import type { ModifierLike } from '@glint/template';
 import type { SlotsToClasses, DatePickerSlots } from '@frontile/theme';
 import type { DatePickerClasses } from './types';
@@ -29,7 +28,9 @@ interface DatePickerEndContentSignature {
     trigger: ModifierLike<{ Element: HTMLElement }>;
 
     /** Names the calendar button, which has no text of its own. */
-    label?: string;
+    calendarButtonLabel: string;
+    /** Names the clear button. */
+    clearLabel: string;
     isDisabled?: boolean;
 
     /**
@@ -75,7 +76,7 @@ const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
   >
     {{#if @isClearable}}
       <CloseButton
-        @title="Clear"
+        @title={{@clearLabel}}
         @variant="soft"
         @size="xs"
         @class={{@classes.clearButton class=@userClasses.clearButton}}
@@ -89,7 +90,7 @@ const DatePickerEndContent: TOC<DatePickerEndContentSignature> = <template>
         type="button"
         data-part="calendar-button"
         aria-haspopup="dialog"
-        aria-label={{if @label (concat "Choose date, " @label) "Choose date"}}
+        aria-label={{@calendarButtonLabel}}
         disabled={{@isDisabled}}
         class={{@classes.calendarButton class=@userClasses.calendarButton}}
         {{@trigger}}

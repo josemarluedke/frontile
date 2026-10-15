@@ -39,10 +39,20 @@ import type {
 import type { Part, TimeOptions } from '../date-input/types';
 import type {
   DatePickerArgs,
+  DatePickerLabels,
   DatePickerValueBlockArg,
   DatePickerCalendarArgs,
   DatePickerFooterArg
 } from './types';
+
+/**
+ * The picker's own texts. The calendar's are left to `Calendar`, which owns
+ * their defaults: `@labels` is handed to it as it is.
+ */
+const DEFAULT_LABELS: Pick<DatePickerLabels, 'clear' | 'chooseDate'> = {
+  clear: 'Clear',
+  chooseDate: (label) => (label ? `Choose date, ${label}` : 'Choose date')
+};
 
 interface DatePickerSignature<M extends CalendarMode = 'single'> {
   Args: DatePickerArgs<M>;
@@ -201,6 +211,16 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
 
   get mode(): M {
     return (this.args as { mode?: M }).mode ?? ('single' as M);
+  }
+
+  get clearLabel(): string {
+    return this.args.labels?.clear ?? DEFAULT_LABELS.clear;
+  }
+
+  get calendarButtonLabel(): string {
+    return (this.args.labels?.chooseDate ?? DEFAULT_LABELS.chooseDate)(
+      this.args.label
+    );
   }
 
   get locale(): string {
@@ -739,6 +759,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
       isDateUnavailable: this.args.isDateUnavailable,
       visibleMonths: this.args.visibleMonths,
       captionLayout: this.args.captionLayout,
+      labels: this.args.labels,
       labelledBy: this.args.id,
       autofocus: true
     };
@@ -923,7 +944,8 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
               @onClear={{this.clear}}
               @isEditable={{this.isSegmented}}
               @trigger={{p.trigger}}
-              @label={{@label}}
+              @calendarButtonLabel={{this.calendarButtonLabel}}
+              @clearLabel={{this.clearLabel}}
               @isDisabled={{@isDisabled}}
             />
           </div>
@@ -965,6 +987,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
                 @isDateUnavailable={{@isDateUnavailable}}
                 @visibleMonths={{@visibleMonths}}
                 @captionLayout={{@captionLayout}}
+                @labels={{@labels}}
                 @fixedWeeks={{@fixedWeeks}}
                 @showOutsideDays={{@showOutsideDays}}
                 @isReadOnly={{@isReadOnly}}

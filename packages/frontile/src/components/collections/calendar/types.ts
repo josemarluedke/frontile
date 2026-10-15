@@ -104,3 +104,19 @@ export interface DayCellClasses {
   dayContent: string;
   indicator: string;
 }
+
+/**
+ * Every text the calendar renders itself, beyond what `Intl` produces from
+ * `@locale`. Override any of them with `@labels`, e.g. to translate them; the
+ * rest keep these English defaults.
+ */
+export interface CalendarLabels {
+  /** Accessible name of the previous-month button. */
+  previousMonth: string;
+  /** Accessible name of the next-month button. */
+  nextMonth: string;
+  /** Accessible name of the month `<select>` (`@captionLayout="dropdown"`). */
+  month: string;
+  /** Accessible name of the year grid (`@captionLayout="dropdown"`). */
+  year: string;
+}

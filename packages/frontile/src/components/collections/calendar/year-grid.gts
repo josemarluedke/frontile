@@ -9,6 +9,8 @@ export interface YearGridSignature {
     currentYear: number;
     onSelect: (year: number) => void;
     onDismiss: () => void;
+    /** The grid's accessible name. */
+    label: string;
     classes: { yearGrid: string; yearCell: string };
   };
   Element: HTMLDivElement;
@@ -167,7 +169,7 @@ export default class YearGrid extends Component<YearGridSignature> {
          plain, non-focusable listbox role. }}
     <div
       role="listbox"
-      aria-label="Year"
+      aria-label={{@label}}
       data-part="year-grid"
       class={{@classes.yearGrid}}
       {{this.setup}}
