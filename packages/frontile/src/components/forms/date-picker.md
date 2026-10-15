@@ -451,7 +451,7 @@ you render from the `:calendar` block. `chooseDate` is a function of the
 field's `@label`, since some languages put it elsewhere in the sentence. The
 segments' names are `@segmentLabels`.
 
-```gts preview
+```gts preview collapsible
 import { hash } from '@ember/helper';
 import { DatePicker } from 'frontile';
 
