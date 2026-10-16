@@ -153,7 +153,9 @@ const segmentRowSlots = {
     'focus:data-[placeholder=true]:text-on-primary',
     'data-[disabled=true]:pointer-events-none'
   ],
-  literal: 'text-neutral-soft px-px'
+  // The separator before the hour is the one between the date and the time:
+  // wider, so `01/20/2026 09:30` doesn't read as one run of digits.
+  literal: 'text-neutral-soft px-px [&:has(+[data-type=hour])]:px-2'
 };
 
 const input = tv({
