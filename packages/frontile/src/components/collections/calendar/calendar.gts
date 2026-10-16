@@ -37,6 +37,7 @@ import {
 import type { CalendarSlots, CalendarVariants } from '@frontile/theme';
 import type {
   CalendarDay,
+  CalendarLabels,
   CalendarMode,
   CalendarMonthData,
   CalendarValue,
@@ -195,7 +196,20 @@ export interface CalendarArgs<M extends CalendarMode = 'single'> {
    * @defaultValue 'label'
    */
   captionLayout?: 'label' | 'dropdown';
+
+  /**
+   * Replaces any of the texts the calendar renders, e.g. to translate them.
+   * Anything left out keeps its English default; see `CalendarLabels`.
+   */
+  labels?: Partial<CalendarLabels>;
 }
+
+const DEFAULT_LABELS: CalendarLabels = {
+  previousMonth: 'Previous month',
+  nextMonth: 'Next month',
+  month: 'Month',
+  year: 'Year'
+};
 
 export interface CalendarSignature<M extends CalendarMode = 'single'> {
   Args: CalendarArgs<M>;
@@ -232,6 +246,10 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
 
   get captionLayout(): 'label' | 'dropdown' {
     return this.args.captionLayout ?? 'label';
+  }
+
+  get labels(): CalendarLabels {
+    return { ...DEFAULT_LABELS, ...this.args.labels };
   }
 
   // The autofocus below is deferred a frame; `deferredWork` holds the
@@ -1097,6 +1115,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
             @months={{this.monthOptions}}
             @isYearGridOpen={{this.isYearGridOpen}}
             @onToggleYearGrid={{this.toggleYearGrid}}
+            @labels={{this.labels}}
             @classes={{this.headerClasses}}
           />
         {{/if}}
@@ -1113,6 +1132,7 @@ class Calendar<M extends CalendarMode = 'single'> extends Component<
             @currentYear={{this.visibleYear}}
             @onSelect={{this.pickYear}}
             @onDismiss={{this.dismissYearGrid}}
+            @label={{this.labels.year}}
             @classes={{this.yearGridClasses}}
           />
         {{else}}

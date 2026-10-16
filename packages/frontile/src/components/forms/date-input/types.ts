@@ -95,6 +95,16 @@ interface LiteralPart {
 
 type Part = Segment | LiteralPart;
 
+/**
+ * Every text the field renders itself. Override any of them with `@labels`,
+ * e.g. to translate them; the rest keep these English defaults. The
+ * segments' names are `@segmentLabels`.
+ */
+interface DateInputLabels {
+  /** Accessible name of the clear button (`@isClearable`). */
+  clear: string;
+}
+
 interface DateInputArgs extends FormControlSharedArgs {
   /** The unique identifier for the control. */
   id?: string;
@@ -201,11 +211,18 @@ interface DateInputArgs extends FormControlSharedArgs {
    */
   segmentLabels?: Partial<Record<SegmentType, string>>;
 
+  /**
+   * Replaces any of the texts the field renders, e.g. to translate them.
+   * Anything left out keeps its English default; see `DateInputLabels`.
+   */
+  labels?: Partial<DateInputLabels>;
+
   /** Per-slot class overrides. */
   classes?: SlotsToClasses<DateInputSlots>;
 }
 
 export type {
+  DateInputLabels,
   SegmentType,
   Granularity,
   HourCycle,

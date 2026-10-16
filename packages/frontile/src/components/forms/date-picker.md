@@ -441,6 +441,52 @@ const defaultValue = new Date(2026, 0, 20);
 </template>
 ```
 
+## Labels
+
+Every text the picker renders itself is English by default: the clear and
+calendar buttons' accessible names, and those of its calendar's controls.
+`@labels` replaces any of them, e.g. to translate them; anything you leave out
+keeps its default. The calendar's are handed on to it, including to a calendar
+you render from the `:calendar` block. `chooseDate` is a function of the
+field's `@label`, since some languages put it elsewhere in the sentence. The
+segments' names are `@segmentLabels`.
+
+```gts preview collapsible
+import { hash } from '@ember/helper';
+import { DatePicker } from 'frontile';
+
+const defaultValue = new Date(2026, 0, 20, 9, 30);
+const chooseDate = (label?: string) =>
+  label ? `Vybrat datum, ${label}` : 'Vybrat datum';
+
+<template>
+  <DatePicker
+    @label='Začátek'
+    @locale='cs-CZ'
+    @granularity='minute'
+    @hourCycle={{24}}
+    @captionLayout='dropdown'
+    @defaultValue={{defaultValue}}
+    @isClearable={{true}}
+    @segmentLabels={{hash
+      year='rok'
+      month='měsíc'
+      day='den'
+      hour='hodina'
+      minute='minuta'
+    }}
+    @labels={{hash
+      clear='Vymazat'
+      chooseDate=chooseDate
+      previousMonth='Předchozí měsíc'
+      nextMonth='Další měsíc'
+      month='Měsíc'
+      year='Rok'
+    }}
+  />
+</template>
+```
+
 ## Forms
 
 Inside a `<Form>`, a `DatePicker` given `@name` submits one field: the wire value is the same
@@ -535,11 +581,11 @@ and `calendarButton`.
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Segment         | `role="spinbutton"` with `aria-label` (`month`, `day`, `year`, overridable through `@segmentLabels`), `aria-valuenow`, `aria-valuemin`, `aria-valuemax` and `aria-valuetext` — which is what makes a month announce as "January" rather than "1". Carries the field's `aria-invalid` and `aria-readonly`. |
 | Segment group   | `role="group"`, named by `@label` and described by `@description` and any feedback. In range mode there are two, named `"<label> start"` and `"<label> end"`.                                                                                                                                             |
-| Calendar button | A `<button>` labelled `"Choose date, <label>"`, carrying the `aria-haspopup`, `aria-expanded` and `aria-controls` the popover trigger applies.                                                                                                                                                            |
+| Calendar button | A `<button>` labelled `"Choose date, <label>"` (`@labels.chooseDate`), carrying the `aria-haspopup`, `aria-expanded` and `aria-controls` the popover trigger applies.                                                                                                                                     |
 | Trigger         | Under `@isEditable={{false}}`, a `<button>` carrying the same popover trigger attributes. When a `:value` block is supplied, it also carries an explicit `aria-label` composed from `@label` and the formatted value, since the block's content may not be readable text on its own.                      |
 | Popover content | `role="dialog"`, labeled by `@label`.                                                                                                                                                                                                                                                                     |
 | Calendar grid   | Labeled by the field's own id, so the default calendar is always labelled. A consumer rendering their own calendar from the `:calendar` block must pass `@id` to `DatePicker` for the grid to be labelled — the block's `labelledBy` reflects `@id`, not the id `FormControl` would otherwise generate.   |
-| Clear button    | Announced as "Clear".                                                                                                                                                                                                                                                                                     |
+| Clear button    | Announced as "Clear" (`@labels.clear`).                                                                                                                                                                                                                                                                   |
 
 The segments take the same keys as [DateInput](./date-input#accessibility), and every one
 of them is a tab stop — three for a single field, six for a range.

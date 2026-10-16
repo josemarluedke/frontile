@@ -12,7 +12,7 @@ import {
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { trackDeprecations } from '../../../helpers/deprecations';
-import { fn } from '@ember/helper';
+import { fn, hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { DatePicker, Form } from 'frontile';
 import { fillDate, fillDateRange } from 'frontile/test-support';
@@ -652,6 +652,90 @@ module(
       assert
         .dom('[data-component="calendar"]')
         .doesNotExist('the default calendar is replaced, not supplemented');
+    });
+
+    test('@labels translates the picker and its calendar', async function (assert) {
+      const chooseDate = (label?: string) =>
+        label ? `Vybrat datum, ${label}` : 'Vybrat datum';
+
+      await render(
+        <template>
+          <DatePicker
+            @label="Začátek"
+            @defaultValue={{jan20}}
+            @locale="cs-CZ"
+            @isClearable={{true}}
+            @captionLayout="dropdown"
+            @labels={{hash
+              clear="Vymazat"
+              chooseDate=chooseDate
+              previousMonth="Předchozí měsíc"
+              nextMonth="Další měsíc"
+              month="Měsíc"
+              year="Rok"
+            }}
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="clear-button"]').hasText('Vymazat');
+      assert
+        .dom('[data-part="calendar-button"]')
+        .hasAria('label', 'Vybrat datum, Začátek');
+
+      await click('[data-part="calendar-button"]');
+
+      assert
+        .dom('[data-part="nav-button"]:first-child')
+        .hasAria('label', 'Předchozí měsíc');
+      assert
+        .dom('[data-part="nav-button"]:last-child')
+        .hasAria('label', 'Další měsíc');
+      assert.dom('[data-part="month-select"]').hasAria('label', 'Měsíc');
+    });
+
+    test('without @labels the texts keep their English defaults', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @isClearable={{true}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-part="clear-button"]').hasText('Clear');
+      assert
+        .dom('[data-part="calendar-button"]')
+        .hasAria('label', 'Choose date, Start');
+
+      await click('[data-part="calendar-button"]');
+
+      assert.dom('[aria-label="Previous month"]').exists();
+      assert.dom('[aria-label="Next month"]').exists();
+    });
+
+    test('the calendar block receives @labels', async function (assert) {
+      await render(
+        <template>
+          <DatePicker
+            @label="Start"
+            @defaultValue={{jan20}}
+            @locale="en-US"
+            @labels={{hash month="Měsíc"}}
+          >
+            <:calendar as |args|>
+              <div data-test-custom>{{args.labels.month}}</div>
+            </:calendar>
+          </DatePicker>
+        </template>
+      );
+
+      await click('[data-part="calendar-button"]');
+
+      assert.dom('[data-test-custom]').hasText('Měsíc');
     });
 
     test('the value block owns the trigger content and names the button', async function (assert) {

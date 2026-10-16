@@ -10,6 +10,7 @@ import {
   fillIn,
   triggerKeyEvent
 } from '@ember/test-helpers';
+import { hash } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { DateInput, DatePicker, Form } from 'frontile';
 import { fillDate } from 'frontile/test-support';
@@ -898,6 +899,41 @@ module('Integration | Component | DateInput | forms', function (hooks) {
     );
 
     assert.dom('[data-part="clear-button"]').doesNotExist();
+  });
+
+  test('@labels.clear names the clear button', async function (assert) {
+    const value = new Date(2026, 0, 20);
+
+    await render(
+      <template>
+        <DateInput
+          @label="Datum"
+          @locale="cs-CZ"
+          @value={{value}}
+          @isClearable={{true}}
+          @labels={{hash clear="Vymazat"}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-part="clear-button"]').hasText('Vymazat');
+  });
+
+  test('the clear button is named "Clear" by default', async function (assert) {
+    const value = new Date(2026, 0, 20);
+
+    await render(
+      <template>
+        <DateInput
+          @label="Date"
+          @locale="en-US"
+          @value={{value}}
+          @isClearable={{true}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-part="clear-button"]').hasText('Clear');
   });
 
   test('marks itself invalid outside @minValue and @maxValue', async function (assert) {

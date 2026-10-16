@@ -22,8 +22,13 @@ import type {
   Part,
   DateInputArgs,
   DateInputClasses,
+  DateInputLabels,
   TimeOptions
 } from './types';
+
+const DEFAULT_LABELS: DateInputLabels = {
+  clear: 'Clear'
+};
 
 interface DateInputSignature {
   Args: DateInputArgs;
@@ -213,6 +218,10 @@ class DateInput extends Component<DateInputSignature> {
     this.args.onBlur?.();
   };
 
+  get labels(): DateInputLabels {
+    return { ...DEFAULT_LABELS, ...this.args.labels };
+  }
+
   /**
    * A disabled or read-only field never offers it: it carries no disabled
    * state of its own and would be a live button clearing a field the user may
@@ -301,7 +310,7 @@ class DateInput extends Component<DateInputSignature> {
               class={{this.classes.endContent class=@classes.endContent}}
             >
               <CloseButton
-                @title="Clear"
+                @title={{this.labels.clear}}
                 @variant="soft"
                 @size="xs"
                 @class={{this.classes.clearButton class=@classes.clearButton}}

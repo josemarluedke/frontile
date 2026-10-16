@@ -279,6 +279,30 @@ const value = new Date(2026, 0, 20);
 </template>
 ```
 
+## Labels
+
+The segments' accessible names are `@segmentLabels`. The only other text the
+field renders, the clear button's accessible name, is `@labels.clear`; it
+defaults to "Clear".
+
+```gts preview
+import { hash } from '@ember/helper';
+import { DateInput } from 'frontile';
+
+const value = new Date(2026, 0, 20);
+
+<template>
+  <DateInput
+    @label='Začátek'
+    @locale='cs-CZ'
+    @defaultValue={{value}}
+    @isClearable={{true}}
+    @segmentLabels={{hash year='rok' month='měsíc' day='den'}}
+    @labels={{hash clear='Vymazat'}}
+  />
+</template>
+```
+
 ## Sizes
 
 ```gts preview
