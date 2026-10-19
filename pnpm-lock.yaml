@@ -1204,13 +1204,13 @@ importers:
         specifier: ^1.7.15
         version: 1.7.15(@babel/core@7.29.7)(@embroider/core@4.6.9(@glint/template@1.9.0))(@glint/template@1.9.0)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
       '@frontile/changeset-form':
-        specifier: workspace:0.18.2
+        specifier: workspace:0.18.3
         version: link:../packages/changeset-form
       '@frontile/forms-legacy':
-        specifier: workspace:0.18.2
+        specifier: workspace:0.18.3
         version: link:../packages/forms-legacy
       '@frontile/theme':
-        specifier: workspace:0.18.2
+        specifier: workspace:0.18.3
         version: link:../packages/theme
       '@glimmer/component':
         specifier: ^2.1.1
@@ -1279,7 +1279,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       frontile:
-        specifier: workspace:0.18.2
+        specifier: workspace:0.18.3
         version: link:../packages/frontile
       globals:
         specifier: ^17.13.0

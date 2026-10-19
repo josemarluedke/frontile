@@ -1,6 +1,6 @@
 {
   "name": "@frontile/forms-legacy",
-  "version": "0.18.2",
+  "version": "0.18.3",
   "description": "Component Library for Ember Octane apps: Forms",
   "keywords": [
     "ember-addon",
