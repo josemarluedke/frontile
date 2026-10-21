@@ -70,25 +70,25 @@ const chip = tv({
       // chip.
       xs: {
         base: 'text-label-2xs px-0.5 h-5',
-        content: 'px-1',
+        content: 'px-1 leading-4',
         dot: 'size-1.5',
         closeButton: 'text-label-micro'
       },
       sm: {
         base: 'text-label-2xs px-1 h-6',
-        content: 'px-1',
+        content: 'px-1 leading-4',
         dot: 'size-1.5',
         closeButton: 'text-label-2xs'
       },
       md: {
         base: 'text-label-xs px-1 h-7',
-        content: 'px-2',
+        content: 'px-2 leading-5',
         dot: 'size-2',
         closeButton: 'text-label-xs'
       },
       lg: {
         base: 'text-label-md px-2 h-8',
-        content: 'px-2',
+        content: 'px-2 leading-6',
         dot: 'size-2.5',
         closeButton: 'text-label-md'
       }
