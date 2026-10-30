@@ -498,6 +498,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    *   readable anywhere else in that case, so the name carries it: the control
    *   name *and* the selected options' text.
    *
+   * With nothing selected the placeholder is the trigger's visible text, so
+   * it joins the name (`Merchant, All merchants`) rather than being dropped.
+   *
    * The two halves are composed so that the separator only appears when both
    * are there. A selected key with no registered option behind it resolves to
    * no text at all, and `"Owner, "` is announced as "Owner comma"; and with
@@ -507,6 +510,14 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    */
   get triggerAccessibleName(): string {
     const name = this.args.label || this.args.placeholder;
+
+    // Nothing selected: the placeholder is the visible text, so it joins the
+    // name (WCAG 2.5.3 Label in Name).
+    if (!this.hasSelection && this.args.label && this.args.placeholder) {
+      return this.args.label === this.args.placeholder
+        ? this.args.label
+        : `${this.args.label}, ${this.args.placeholder}`;
+    }
 
     // Chips mode names the *control* only -- the chips are read separately --
     // and has no better fallback than the literal.
