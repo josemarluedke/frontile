@@ -24,8 +24,14 @@ import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
 import { IconChevronUpDown } from '../../-private/icons';
 import { keyAndLabelForItem } from '../../utils/listManager';
-import { filterAndRankItems, type FilterFn } from '../../utils/filter';
+import {
+  filterAndRankItems,
+  limitItems,
+  type FilterFn,
+  type DisplayLimitContentArgs
+} from '../../utils/filter';
 import { debounce, cancel } from '@ember/runloop';
+import { assert } from '@ember/debug';
 import { renamedArgValue } from '../../-private/deprecated-args';
 
 import { modifier } from 'ember-modifier';
@@ -183,6 +189,23 @@ interface AutocompleteArgs<T>
   disableFiltering?: boolean;
 
   /**
+   * The most options the dropdown renders at once.
+   *
+   * Every rendered option is DOM to build, and to rebuild on each keystroke as
+   * the matches change, so a list of hundreds of options makes typing lag.
+   * With a limit, only the first `displayLimit` options are rendered, in the
+   * order the filter ranked them, and the `displayLimitContent` block says how
+   * many more there are. The rest are reached by typing a narrower query.
+   *
+   * It caps whatever the dropdown would show: the built-in matches, `@items`
+   * under `disableFiltering`, or the results of `onSearch`. The selected
+   * option is always rendered, even past the limit.
+   *
+   * @defaultValue undefined (every option is rendered)
+   */
+  displayLimit?: number;
+
+  /**
    * Async search function. When provided, the component calls it (debounced)
    * as the user types and renders the resolved items, showing a loading
    * spinner while the returned promise is pending. Stale responses are
@@ -262,6 +285,14 @@ interface AutocompleteArgs<T>
   hideEmptyContent?: boolean;
 
   /**
+   * If true, hides the display limit content when `@displayLimit` leaves
+   * options out.
+   *
+   * @defaultValue false
+   */
+  hideDisplayLimitContent?: boolean;
+
+  /**
    * Message shown in the dropdown of an async autocomplete (`onSearch`)
    * while the query is blank — e.g. "Type to search for an address…".
    * Prompts the user to start typing when they open the dropdown by
@@ -305,6 +336,14 @@ interface AutocompleteSignature<T> {
      * If `hideEmptyContent` argument is true, this content will not be shown.
      */
     emptyContent: [];
+
+    /**
+     * The content to display below the options when `@displayLimit` leaves
+     * some of them out. Yields how many options are shown and how many match
+     * in total. If `hideDisplayLimitContent` argument is true, this content
+     * will not be shown.
+     */
+    displayLimitContent: [DisplayLimitContentArgs];
 
     /**
      * Message shown in the dropdown of an async autocomplete while the
@@ -673,6 +712,38 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   }
 
   /**
+   * The options the listbox renders: `filteredItems`, capped by
+   * `@displayLimit`.
+   */
+  @cached
+  get displayedItems() {
+    const { displayLimit } = this.args;
+    assert(
+      `Autocomplete: @displayLimit must be a positive integer, received ${String(displayLimit)}`,
+      displayLimit === undefined ||
+        (Number.isInteger(displayLimit) && displayLimit > 0)
+    );
+
+    const selectedKeys = this.selectedKeys;
+    return limitItems(this.filteredItems, displayLimit, (item) =>
+      selectedKeys.includes(keyAndLabelForItem(item).key)
+    );
+  }
+
+  /**
+   * What the display limit content reports, or `undefined` when nothing is
+   * left out.
+   */
+  get displayLimitContent(): DisplayLimitContentArgs | undefined {
+    const shown = this.displayedItems?.length ?? 0;
+    const total = this.filteredItems?.length ?? 0;
+    if (shown === total || this.args.hideDisplayLimitContent) {
+      return undefined;
+    }
+    return { shown, total };
+  }
+
+  /**
    * True when an async autocomplete is open with a blank query and nothing
    * to show — the moment to prompt the user to start typing.
    */
@@ -743,8 +814,11 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
           as |p|
         >
           <VisuallyHidden>
+            {{! Limited like the listbox: it holds the options the user can
+              pick, and a hidden list of every match would cost the same
+              rendering @displayLimit saves. The selection is always kept. }}
             <NativeSelect
-              @items={{this.filteredItems}}
+              @items={{this.displayedItems}}
               @allowEmpty={{@allowEmpty}}
               @disabledKeys={{@disabledKeys}}
               @onSelectionChange={{this.onNativeSelectionChange}}
@@ -863,7 +937,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
             @preventAutoFocus={{true}}
           >
             <Listbox
-              @items={{this.filteredItems}}
+              @items={{this.displayedItems}}
               @allowEmpty={{@allowEmpty}}
               @variant={{this.variant}}
               @disabledKeys={{@disabledKeys}}
@@ -922,6 +996,23 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
                   {{yield to="emptyContent"}}
                 {{else}}
                   No results found.
+                {{/if}}
+              </div>
+            {{/if}}
+            {{#if this.displayLimitContent}}
+              <div
+                class={{this.classes.displayLimitContent
+                  class=@classes.displayLimitContent
+                }}
+                data-part="display-limit-content"
+              >
+                {{#if (has-block "displayLimitContent")}}
+                  {{yield this.displayLimitContent to="displayLimitContent"}}
+                {{else}}
+                  Showing
+                  {{this.displayLimitContent.shown}}
+                  of
+                  {{this.displayLimitContent.total}}. Type to narrow down.
                 {{/if}}
               </div>
             {{/if}}

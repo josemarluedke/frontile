@@ -201,3 +201,45 @@ export function filterAndRankItems<T>(
 
   return matched.map((entry) => entry.item);
 }
+
+/**
+ * Cap `items` at the first `limit`, for rendering.
+ *
+ * A long list is cheap to filter but expensive to render: every option is DOM
+ * that has to be built, and rebuilt as the matches change on each keystroke.
+ * Capping what is rendered keeps that cost proportional to `limit` instead of
+ * to `items`. It is meant for lists the user narrows by typing, where the
+ * options past the cap are still reachable through the query.
+ *
+ * Items `isKept` accepts are rendered even past the cap, in their place in
+ * `items`, so a cap never hides the current selection. That is why the result
+ * can be longer than `limit`.
+ *
+ * Without a `limit`, or when `items` already fits, `items` is returned as is.
+ *
+ * @param items - The items to cap, already filtered and ranked.
+ * @param limit - The most items to render.
+ * @param isKept - Items to render whatever their position.
+ */
+export function limitItems<T>(
+  items: T[] | undefined,
+  limit: number | undefined,
+  isKept: (item: T) => boolean = () => false
+): T[] | undefined {
+  if (!items || limit === undefined || items.length <= limit) {
+    return items;
+  }
+
+  return items.filter((item, index) => index < limit || isKept(item));
+}
+
+/**
+ * Yielded to the `displayLimitContent` block of a `Select` or `Autocomplete`
+ * whose `@displayLimit` left options out.
+ */
+export interface DisplayLimitContentArgs {
+  /** How many options are rendered. */
+  shown: number;
+  /** How many options match, rendered or not. */
+  total: number;
+}

@@ -3,6 +3,7 @@ import {
   defaultFilter,
   createFuzzyFilter,
   filterAndRankItems,
+  limitItems,
   DEFAULT_MATCH_THRESHOLD
 } from 'frontile/utils/filter';
 
@@ -378,6 +379,35 @@ module('Unit | @frontile/collections/utils/filter', function () {
         ['b', 'bg'],
         'ranks by the accessed label, not by source order'
       );
+    });
+  });
+
+  module('limitItems', function () {
+    const letters = ['a', 'b', 'c', 'd', 'e'];
+
+    test('it returns the first `limit` items', function (assert) {
+      assert.deepEqual(limitItems(letters, 2), ['a', 'b']);
+    });
+
+    test('it returns the same array when there is no limit or it already fits', function (assert) {
+      assert.strictEqual(limitItems(letters, undefined), letters);
+      assert.strictEqual(limitItems(letters, 5), letters);
+      assert.strictEqual(limitItems(letters, 10), letters);
+      assert.strictEqual(limitItems(undefined, 2), undefined);
+    });
+
+    test('kept items past the limit stay, in their place', function (assert) {
+      assert.deepEqual(
+        limitItems(letters, 2, (item) => item === 'd' || item === 'a'),
+        ['a', 'b', 'd'],
+        'a kept item within the limit is not counted twice'
+      );
+    });
+
+    test('it does not modify the items it is given', function (assert) {
+      const items = [...letters];
+      limitItems(items, 1);
+      assert.deepEqual(items, letters);
     });
   });
 });

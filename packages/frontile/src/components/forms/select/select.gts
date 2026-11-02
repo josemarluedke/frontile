@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked, cached } from '@glimmer/tracking';
 import type Owner from '@ember/owner';
+import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
@@ -15,7 +16,11 @@ import { ref } from '../../../utils/ref';
 import { ControlBlurTracker } from '../../../-private/control-blur';
 import { triggerFormInputEvent } from '../../../utils/forms-utils-index';
 import { canDeselectKey, keyAndLabelForItem } from '../../../utils/listManager';
-import { filterAndRankItems } from '../../../utils/filter';
+import {
+  filterAndRankItems,
+  limitItems,
+  type DisplayLimitContentArgs
+} from '../../../utils/filter';
 
 import { SelectNativeMirror } from './native-mirror';
 import { SelectTrigger } from './trigger';
@@ -603,6 +608,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return this.selectedTextValue;
   }
 
+  // Cached: the listbox, the empty content and the display limit read it, and
+  // filtering a long list on every read would repeat the work per keystroke.
+  @cached
   get filteredItems() {
     if (this.filterValue === undefined) {
       return this.args.items;
@@ -618,6 +626,42 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   get showEmptyContent() {
     return this.filteredItems?.length === 0 && !this.args.hideEmptyContent;
+  }
+
+  /**
+   * The matches the listbox renders: `filteredItems`, capped by
+   * `@displayLimit`.
+   */
+  @cached
+  get displayedItems() {
+    const { displayLimit, isFilterable } = this.args;
+    assert(
+      `Select: @displayLimit must be a positive integer, received ${String(displayLimit)}`,
+      displayLimit === undefined ||
+        (Number.isInteger(displayLimit) && displayLimit > 0)
+    );
+    assert(
+      'Select: @displayLimit requires @isFilterable, otherwise the options past the limit cannot be reached',
+      displayLimit === undefined || isFilterable
+    );
+
+    const selectedKeys = this.selectedKeys;
+    return limitItems(this.filteredItems, displayLimit, (item) =>
+      selectedKeys.includes(keyAndLabelForItem(item).key)
+    );
+  }
+
+  /**
+   * What the display limit content reports, or `undefined` when nothing is
+   * left out.
+   */
+  get displayLimitContent(): DisplayLimitContentArgs | undefined {
+    const shown = this.displayedItems?.length ?? 0;
+    const total = this.filteredItems?.length ?? 0;
+    if (shown === total || this.args.hideDisplayLimitContent) {
+      return undefined;
+    }
+    return { shown, total };
   }
 
   get autoActivateMode(): 'first' | 'selected' {
@@ -825,7 +869,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             @preventAutoFocus={{true}}
           >
             <Listbox
-              @items={{this.filteredItems}}
+              @items={{this.displayedItems}}
               @allowEmpty={{@allowEmpty}}
               @variant={{this.variant}}
               @disabledKeys={{@disabledKeys}}
@@ -870,6 +914,23 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{/if}}
               </div>
             {{/if}}
+            {{#if this.displayLimitContent}}
+              <div
+                class={{this.classes.displayLimitContent
+                  class=@classes.displayLimitContent
+                }}
+                data-part="display-limit-content"
+              >
+                {{#if (has-block "displayLimitContent")}}
+                  {{yield this.displayLimitContent to="displayLimitContent"}}
+                {{else}}
+                  Showing
+                  {{this.displayLimitContent.shown}}
+                  of
+                  {{this.displayLimitContent.total}}. Type to narrow down.
+                {{/if}}
+              </div>
+            {{/if}}
           </p.Content>
         </Popover>
       </FormControl>
@@ -882,6 +943,7 @@ export {
   type SelectSignature,
   type SelectChipOptions,
   type SelectedItem,
-  type SelectedItemBlockArg
+  type SelectedItemBlockArg,
+  type DisplayLimitContentArgs
 };
 export default Select;

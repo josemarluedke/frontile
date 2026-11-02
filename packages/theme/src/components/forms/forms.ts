@@ -457,6 +457,7 @@ const select = tv({
     clearButton: 'pointer-events-auto',
     input: '[button]:cursor-default',
     emptyContent: 'p-2',
+    displayLimitContent: 'p-2 text-body-2xs text-neutral-firm',
     // The wrapper around the trigger. It is rendered in every mode; the
     // `hasChips` variant below decides whether it is the field shell or a
     // transparent passthrough. Authored here rather than as literal classes in
@@ -692,7 +693,8 @@ const autocomplete = tv({
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     input: 'cursor-text',
-    emptyContent: 'p-2'
+    emptyContent: 'p-2',
+    displayLimitContent: 'p-2 text-body-2xs text-neutral-firm'
   },
   variants: {
     size: {
