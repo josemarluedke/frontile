@@ -3981,6 +3981,44 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         .hasText('Showing 50 of 1111. Type to narrow down.');
     });
 
+    test('the limit content stays below the options, not under them', async function (assert) {
+      const many = Array.from({ length: 200 }, (_, i) => `Item ${i + 1}`);
+
+      await render(
+        <template>
+          <Select
+            @items={{many}}
+            @isFilterable={{true}}
+            @displayLimit={{100}}
+          />
+        </template>
+      );
+
+      await click(INPUT);
+
+      const listbox = document.querySelector(
+        '[data-component="listbox"]'
+      ) as HTMLElement;
+      const content = document.querySelector(
+        '[data-part="display-limit-content"]'
+      ) as HTMLElement;
+
+      assert.true(
+        listbox.scrollHeight > listbox.clientHeight,
+        'premise: the options overflow the listbox'
+      );
+      assert.strictEqual(
+        getComputedStyle(listbox).overflowY,
+        'auto',
+        'the listbox scrolls its own options'
+      );
+      assert.true(
+        listbox.getBoundingClientRect().bottom <=
+          content.getBoundingClientRect().top + 0.5,
+        'the options end where the limit content starts, never over it'
+      );
+    });
+
     test('renders data-part="display-limit-content" once', async function (assert) {
       await render(
         <template>

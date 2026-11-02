@@ -452,7 +452,9 @@ const select = tv({
   slots: {
     base: [],
     placeholder: 'text-neutral',
-    listbox: 'scroll-py-6 max-h-64',
+    // The listbox scrolls itself, so the content below it (the display
+    // limit's note) stays in view rather than being scrolled over.
+    listbox: 'scroll-py-6 max-h-64 overflow-y-auto',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     input: '[button]:cursor-default',
@@ -689,7 +691,9 @@ const autocomplete = tv({
   extend: input,
   slots: {
     base: [],
-    listbox: 'scroll-py-6 max-h-64',
+    // The listbox scrolls itself, so the content below it (the display
+    // limit's note) stays in view rather than being scrolled over.
+    listbox: 'scroll-py-6 max-h-64 overflow-y-auto',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     input: 'cursor-text',
