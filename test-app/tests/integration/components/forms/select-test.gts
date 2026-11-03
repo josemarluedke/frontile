@@ -11,7 +11,12 @@ import {
   setupOnerror
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
-import { Select } from 'frontile';
+import {
+  Form,
+  Select,
+  type FormDataCompiled,
+  type FormResultData
+} from 'frontile';
 import { array, hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { selectOptionByKey, ownParts } from 'frontile/test-support';
@@ -4020,7 +4025,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       assert.dom('[data-part="display-limit-content"]').doesNotExist();
     });
 
-    test('the hidden native select keeps every option', async function (assert) {
+    const ignoreSubmit = () => {};
+
+    const nativeKeys = () =>
+      [
+        ...(getNativeSelect() as HTMLSelectElement).querySelectorAll(
+          'option:not([value=""])'
+        )
+      ].map((el) => (el as HTMLOptionElement).value);
+
+    test('the hidden native select holds the first options and the selected ones, unfiltered', async function (assert) {
       await render(
         <template>
           <Select
@@ -4028,21 +4042,113 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
             @isFilterable={{true}}
             @filter={{contains}}
             @displayLimit={{3}}
+            @selectedKey="Item 8"
             @name="item"
           />
         </template>
       );
 
+      assert.deepEqual(
+        nativeKeys(),
+        ['Item 1', 'Item 2', 'Item 3', 'Item 8'],
+        'closed'
+      );
+      assert.strictEqual(
+        (getNativeSelect() as HTMLSelectElement).value,
+        'Item 8',
+        'the form value is the selected option'
+      );
+
       await click(INPUT);
-      await fillIn(INPUT, 'item');
+      await fillIn(INPUT, 'item 9');
+      assert.deepEqual(
+        nativeKeys(),
+        ['Item 1', 'Item 2', 'Item 3', 'Item 8'],
+        'the filter does not change it'
+      );
+    });
+
+    test('closed, a long list builds no more hidden options than the limit', async function (assert) {
+      const many = Array.from({ length: 2000 }, (_, i) => `Product ${i}`);
+
+      await render(
+        <template>
+          {{#each (array 1 2 3)}}
+            <Select
+              @items={{many}}
+              @isFilterable={{true}}
+              @displayLimit={{50}}
+              @selectedKey="Product 1500"
+            />
+          {{/each}}
+        </template>
+      );
 
       assert.strictEqual(
-        (getNativeSelect() as HTMLSelectElement).querySelectorAll(
-          'option:not([value=""])'
-        ).length,
-        10,
-        'the form value can be any item, rendered or not'
+        document.querySelectorAll('[data-test-id="native-select"] option')
+          .length,
+        3 * 51,
+        'each holds the 50 first options and the selected one'
       );
+    });
+
+    test('an option picked past the limit reaches the form', async function (assert) {
+      const data = cell<FormDataCompiled>();
+      const onChange = (result: FormResultData, _event: Event) => {
+        data.current = result['data'];
+      };
+
+      await render(
+        <template>
+          <Form @onChange={{onChange}} @onSubmit={{ignoreSubmit}}>
+            <Select
+              @items={{items}}
+              @isFilterable={{true}}
+              @filter={{contains}}
+              @displayLimit={{3}}
+              @name="item"
+            />
+          </Form>
+        </template>
+      );
+
+      await click(INPUT);
+      await fillIn(INPUT, 'item 9');
+      await click('[data-component="listbox"] [data-key="Item 9"]');
+
+      assert.strictEqual(data.current['item'], 'Item 9');
+      assert.deepEqual(nativeKeys(), ['Item 1', 'Item 2', 'Item 3', 'Item 9']);
+    });
+
+    test('Multiple mode: options picked past the limit reach the form', async function (assert) {
+      const data = cell<FormDataCompiled>();
+      const onChange = (result: FormResultData, _event: Event) => {
+        data.current = result['data'];
+      };
+
+      await render(
+        <template>
+          <Form @onChange={{onChange}} @onSubmit={{ignoreSubmit}}>
+            <Select
+              @items={{items}}
+              @selectionMode="multiple"
+              @isFilterable={{true}}
+              @filter={{contains}}
+              @displayLimit={{2}}
+              @name="items"
+            />
+          </Form>
+        </template>
+      );
+
+      await click(INPUT);
+      await fillIn(INPUT, 'item 7');
+      await click('[data-component="listbox"] [data-key="Item 7"]');
+      // Multiple mode stays open after a pick.
+      await fillIn(INPUT, 'item 4');
+      await click('[data-component="listbox"] [data-key="Item 4"]');
+
+      assert.deepEqual(data.current['items'], ['Item 4', 'Item 7']);
     });
 
     test('a long list renders no more than the limit', async function (assert) {

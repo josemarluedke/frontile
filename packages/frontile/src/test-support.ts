@@ -49,8 +49,11 @@ function changeOption(
   const option = select.querySelector(`[data-key="${key}"]`) as
     HTMLOptionElement | undefined;
   if (!option) {
+    // A Select with `@displayLimit` holds only the first options (and the
+    // selected ones) in its hidden `<select>`, like its listbox.
     throw new Error(
-      `You called "${functionName}('${selectSelector}', '${key}')" but no option with key "${key}" was found`
+      `You called "${functionName}('${selectSelector}', '${key}')" but no option with key "${key}" was found. ` +
+        'With @displayLimit, only the first options and the selected ones are there: type into the filter and click the option instead.'
     );
   }
 

@@ -60,8 +60,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    *
    * The hidden select is deliberately given the *unfiltered* `@items` — it
    * carries the form value, which must not shrink to the filter — so this
-   * covers the whole list even while the listbox is filtered down. Chips and
-   * the joined text value can therefore be resolved straight from it.
+   * covers every selected item even while the listbox is filtered down
+   * (`mirroredItems` keeps them past `@displayLimit` too). Chips and the
+   * joined text value can therefore be resolved straight from it.
    */
   @tracked nodes: ListItem[] = [];
 
@@ -671,6 +672,24 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   /**
+   * The options the hidden native `<select>` holds: the unfiltered `@items`,
+   * capped by `@displayLimit` like the listbox, plus every selected option.
+   *
+   * The form value is the selected options, so it never needs the others.
+   * Holding every item instead costs the same rendering the limit saves in
+   * the listbox, and it is paid while the Select is closed: a page with a
+   * hundred Selects over a thousand items each built a hundred thousand
+   * hidden options. Unfiltered, so a filter can't change what the form sees.
+   */
+  @cached
+  get mirroredItems() {
+    const selectedKeys = this.selectedKeys;
+    return limitItems(this.args.items, this.args.displayLimit, (item) =>
+      selectedKeys.includes(keyAndLabelForItem(item).key)
+    );
+  }
+
+  /**
    * What the display limit content reports, or `undefined` when nothing is
    * left out.
    */
@@ -744,7 +763,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
         >
           <VisuallyHidden>
             <SelectNativeMirror
-              @items={{@items}}
+              @items={{this.mirroredItems}}
               @allowEmpty={{@allowEmpty}}
               @disabledKeys={{@disabledKeys}}
               @selectionMode={{@selectionMode}}

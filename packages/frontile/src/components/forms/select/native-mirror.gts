@@ -10,8 +10,9 @@ const eq = (a: unknown, b: unknown) => a === b;
 interface SelectNativeMirrorSignature<T> {
   Args: {
     /**
-     * The **unfiltered** collection. The mirror carries the form value, which
-     * must not shrink to whatever the listbox filter currently shows, so it is
+     * The **unfiltered** collection, capped by `@displayLimit` (see
+     * `Select#mirroredItems`). The mirror carries the form value, which must
+     * not shrink to whatever the listbox filter currently shows, so it is
      * deliberately never handed `filteredItems`.
      */
     items?: T[];
