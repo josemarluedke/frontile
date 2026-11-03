@@ -26,10 +26,12 @@ type FocusTrapOptions = NonNullable<
   FocusTrapModifierSignature['Args']['Named']['focusTrapOptions']
 >;
 
-type FocusTrapLifecycleMethod = 'activate' | 'deactivate' | 'pause' | 'unpause';
+type FocusTrapLifecycleMethod =
+  'activate' | 'deactivate' | 'pause' | 'unpause' | 'updateContainerElements';
 
 /**
- * Wraps `createFocusTrap` so activate/deactivate/pause/unpause never throw.
+ * Wraps `createFocusTrap` so activate/deactivate/pause/unpause (and
+ * updateContainerElements, which re-validates the same way) never throw.
  *
  * focus-trap keeps a page-global stack of traps; deactivating one can reach
  * into the stack to re-validate (`unpause`) whichever trap is now on top. If
@@ -61,7 +63,8 @@ function createTestResilientFocusTrap(
     activate: guard('activate'),
     deactivate: guard('deactivate'),
     pause: guard('pause'),
-    unpause: guard('unpause')
+    unpause: guard('unpause'),
+    updateContainerElements: guard('updateContainerElements')
   };
 }
 
@@ -94,6 +97,24 @@ function isWithinNestedPortal(
   }
 
   return ownPortal.contains(targetPortal);
+}
+
+/**
+ * The portals nested directly in the one `contentElement` renders into: where
+ * a Select's list, a Popover or a Dropdown opened from inside this overlay
+ * renders. Portals nested deeper sit inside these.
+ */
+function nestedPortalsOf(contentElement: HTMLElement): HTMLElement[] {
+  const ownPortal = findParentPortal(contentElement);
+  if (!ownPortal) {
+    return [];
+  }
+
+  return Array.from(ownPortal.children).filter(
+    (child): child is HTMLElement =>
+      child instanceof HTMLElement &&
+      child.getAttribute('data-portal') === 'true'
+  );
 }
 
 // Blocking the body scroll mutates global state, so it has to be reference
@@ -327,6 +348,9 @@ class Overlay extends Component<OverlaySignature> {
   // asymmetric lock/unlock would leak the reference count.
   didLockBodyScroll = false;
 
+  // Keeps the focus trap's containers in step with the nested portals.
+  nestedPortalObserver: MutationObserver | undefined;
+
   cancelPaintWait: (() => void) | undefined;
 
   constructor(owner: Owner, args: Args) {
@@ -420,6 +444,8 @@ class Overlay extends Component<OverlaySignature> {
     }
     return () => {
       this.contentElement = undefined;
+      this.nestedPortalObserver?.disconnect();
+      this.nestedPortalObserver = undefined;
 
       if (this.args.isOpen !== true) {
         this.hasClosedOnce = true;
@@ -510,12 +536,41 @@ class Overlay extends Component<OverlaySignature> {
     };
   }
 
-  get createFocusTrap(): typeof createFocusTrap | undefined {
+  /**
+   * The trap covers the content and the portals nested in this overlay's
+   * portal, the same ones `handleOutsideClick` doesn't count as outside.
+   *
+   * With the content alone as its container, the trap took a press in a
+   * nested portal for an outside click and deactivated: from then on Tab
+   * walked out of the Drawer. With a Select's list it also sent the focus
+   * back to where it was before the Drawer opened, out of the Select's filter.
+   *
+   * Nested overlays open and close while this one stays open, so a
+   * MutationObserver on the portal keeps the containers current.
+   */
+  createFocusTrap = (
+    ...[element, options]: Parameters<typeof createFocusTrap>
+  ): FocusTrap => {
+    let create = createFocusTrap;
     if (macroCondition(isTesting())) {
-      return createTestResilientFocusTrap;
+      create = createTestResilientFocusTrap;
     }
-    return undefined;
-  }
+
+    const content = element as HTMLElement;
+    const containers = () => [content, ...nestedPortalsOf(content)];
+    const trap = create(containers(), options);
+
+    const ownPortal = findParentPortal(content);
+    if (ownPortal) {
+      this.nestedPortalObserver?.disconnect();
+      this.nestedPortalObserver = new MutationObserver(() => {
+        trap.updateContainerElements(containers());
+      });
+      this.nestedPortalObserver.observe(ownPortal, { childList: true });
+    }
+
+    return trap;
+  };
 
   get classes() {
     const { overlay } = useStyles();
