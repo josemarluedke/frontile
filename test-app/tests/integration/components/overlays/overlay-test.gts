@@ -5,6 +5,8 @@ import {
   settled,
   click,
   triggerKeyEvent,
+  triggerEvent,
+  focus,
   find
 } from '@ember/test-helpers';
 import { Overlay } from 'frontile/overlays';
@@ -732,6 +734,127 @@ module(
         isOpen.current,
         'a click outside closes outer despite the nested portal'
       );
+    });
+    test('a press inside a nested portal keeps the focus trap active', async function (assert) {
+      // A Select inside a Drawer: the list renders in a portal nested in the
+      // Drawer's portal, outside its focus-trap container. Pressing an option
+      // counted as a click outside the trap, which deactivated it and sent the
+      // focus back to where it was before the Drawer opened.
+      const isOpen = cell(false);
+
+      await render(
+        <template>
+          <button type="button" data-test-id="opener">Open</button>
+          <Overlay
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            @backdrop="none"
+          >
+            <input data-test-id="filter" />
+            <Overlay
+              @isOpen={{true}}
+              @disableTransitions={{true}}
+              @disableFocusTrap={{true}}
+              @preventAutoFocus={{true}}
+              @backdrop="none"
+            >
+              <div data-test-id="option">An option</div>
+            </Overlay>
+          </Overlay>
+        </template>
+      );
+
+      await focus('[data-test-id="opener"]');
+      isOpen.current = true;
+      await settled();
+      await focus('[data-test-id="filter"]');
+      await triggerEvent('[data-test-id="option"]', 'mousedown');
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await settled();
+
+      assert
+        .dom('[data-test-id="filter"]')
+        .isFocused('the filter input keeps the focus');
+    });
+    test('a field in a nested portal opened later takes the focus, and the trap holds', async function (assert) {
+      // A Popover with a field, opened from inside a Drawer after the Drawer:
+      // the trap has to learn about the new portal, and then neither give up
+      // nor pull the focus back out of the field.
+      const isOpen = cell(false);
+      const isNestedOpen = cell(false);
+
+      await render(
+        <template>
+          <button type="button" data-test-id="opener">Open</button>
+          <Overlay
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            @backdrop="none"
+          >
+            <button type="button" data-test-id="inside">Inside</button>
+            <Overlay
+              @isOpen={{isNestedOpen.current}}
+              @disableTransitions={{true}}
+              @disableFocusTrap={{true}}
+              @preventAutoFocus={{true}}
+              @backdrop="none"
+            >
+              <input data-test-id="nested-field" />
+            </Overlay>
+          </Overlay>
+        </template>
+      );
+
+      await focus('[data-test-id="opener"]');
+      isOpen.current = true;
+      await settled();
+      isNestedOpen.current = true;
+      await settled();
+
+      await triggerEvent('[data-test-id="nested-field"]', 'mousedown');
+      await focus('[data-test-id="nested-field"]');
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await settled();
+
+      assert
+        .dom('[data-test-id="nested-field"]')
+        .isFocused('the field in the nested portal keeps the focus');
+
+      await focus('[data-test-id="opener"]');
+      assert
+        .dom('[data-test-id="nested-field"]')
+        .isFocused('the trap is still active and holds the focus inside');
+    });
+    test('Tab reaches an open nested overlay after the content', async function (assert) {
+      // The nested portal is part of the trap, so Tab from the last element
+      // of the content moves on to the nested overlay (its content element is
+      // tabbable) instead of wrapping around.
+      await render(
+        <template>
+          <Overlay
+            @isOpen={{true}}
+            @disableTransitions={{true}}
+            @backdrop="none"
+          >
+            <button type="button" data-test-id="inside">Inside</button>
+            <Overlay
+              @isOpen={{true}}
+              @disableTransitions={{true}}
+              @disableFocusTrap={{true}}
+              @preventAutoFocus={{true}}
+              @backdrop="none"
+              data-test-id="nested-overlay"
+            >
+              <button type="button">Nested</button>
+            </Overlay>
+          </Overlay>
+        </template>
+      );
+
+      await focus('[data-test-id="inside"]');
+      await triggerKeyEvent('[data-test-id="inside"]', 'keydown', 'Tab');
+
+      assert.dom('[data-test-id="nested-overlay"]').isFocused();
     });
   }
 );
