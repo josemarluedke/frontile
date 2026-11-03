@@ -1,5 +1,5 @@
 import type { ListboxSignature } from '../../collections/listbox';
-import type { FilterFn } from '../../../utils/filter';
+import type { FilterFn, DisplayLimitContentArgs } from '../../../utils/filter';
 import type {
   SelectSlots,
   SelectVariants,
@@ -390,6 +390,27 @@ type SelectArgs<T> = (
   filter?: FilterFn;
 
   /**
+   * The most options the dropdown renders at once.
+   *
+   * Every rendered option is DOM to build, and to rebuild on each keystroke as
+   * the matches change, so a list of hundreds of options makes typing in the
+   * filter lag. With a limit, only the first `displayLimit` matches are
+   * rendered, in the order the filter ranked them, and the
+   * `displayLimitContent` block says how many more there are. The rest are
+   * reached by typing a narrower query.
+   *
+   * Selected options are always rendered, even past the limit.
+   *
+   * Requires `@isFilterable`: without a filter, the options past the limit
+   * could not be reached at all. Options passed in block form are not
+   * counted or limited. The hidden native `<select>` always holds every
+   * option, so the form value is never affected.
+   *
+   * @defaultValue undefined (every option is rendered)
+   */
+  displayLimit?: number;
+
+  /**
    * If true, the select will show a loading spinner instead of the dropdown icon.
    */
   isLoading?: boolean;
@@ -440,6 +461,14 @@ type SelectArgs<T> = (
   hideEmptyContent?: boolean;
 
   /**
+   * If true, hides the display limit content when `@displayLimit` leaves
+   * options out.
+   *
+   * @defaultValue false
+   */
+  hideDisplayLimitContent?: boolean;
+
+  /**
    * Callback fired when focus leaves the Select.
    *
    * "Leaves the Select" means the whole control: the field *and* its dropdown,
@@ -479,6 +508,14 @@ interface SelectSignature<T> {
      * If `hideEmptyContent` argument is true, this content will not be shown.
      */
     emptyContent: [];
+
+    /**
+     * The content to display below the options when `@displayLimit` leaves
+     * some of them out. Yields how many options are shown and how many match
+     * in total. If `hideDisplayLimitContent` argument is true, this content
+     * will not be shown.
+     */
+    displayLimitContent: [DisplayLimitContentArgs];
 
     /**
      * Custom content for each *selected* option, in place of its plain text.

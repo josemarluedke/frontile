@@ -233,6 +233,36 @@ const startsWith = (itemValue: string, inputValue: string) =>
 </template>
 ```
 
+### Long lists
+
+With hundreds of options, rebuilding the dropdown on every keystroke makes typing lag. Set
+`@displayLimit` to render only the first options, in the order the filter ranked them; the
+rest are reached by typing a narrower query. It caps whatever the dropdown would show: the
+built-in matches, `@items` under `@disableFiltering`, or the results of `@onSearch`.
+
+The `:displayLimitContent` block, shown below the options while some are left out, yields
+`shown` and `total`; `@hideDisplayLimitContent` hides it. The selected option is always
+rendered, even past the limit.
+
+```gts preview
+import { Autocomplete } from 'frontile';
+
+const products = Array.from(
+  { length: 1000 },
+  (_, i) => `Product ${String(i + 1).padStart(4, '0')}`
+);
+
+<template>
+  <div class='demo-stack'>
+    <Autocomplete
+      @placeholder='Search 1,000 products'
+      @items={{products}}
+      @displayLimit={{50}}
+    />
+  </div>
+</template>
+```
+
 ### Custom items
 
 Use the `:item` block to render richer options. Objects with `key` and `label` properties work out of the box.

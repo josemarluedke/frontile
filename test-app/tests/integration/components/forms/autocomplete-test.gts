@@ -6,7 +6,8 @@ import {
   triggerKeyEvent,
   fillIn,
   focus,
-  settled
+  settled,
+  setupOnerror
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Autocomplete } from 'frontile';
@@ -1241,6 +1242,221 @@ module(
         .dom('[data-component="close-button"]')
         .exists('the clear button renders');
       assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
+    });
+
+    module('@displayLimit', function () {
+      const INPUT =
+        '[data-component="autocomplete"] [data-part="input"]:not(select)';
+      const items = Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`);
+      const contains = (itemValue: string, inputValue: string) =>
+        itemValue.toLowerCase().includes(inputValue.toLowerCase());
+
+      const renderedKeys = () =>
+        [
+          ...document.querySelectorAll(
+            '[data-component="listbox"] [data-component="listbox-item"]'
+          )
+        ].map((el) => (el as HTMLElement).dataset['key']);
+
+      test('it renders only the first matches and says how many are left out', async function (assert) {
+        await render(
+          <template>
+            <Autocomplete
+              @items={{items}}
+              @filter={{contains}}
+              @displayLimit={{3}}
+            />
+          </template>
+        );
+
+        await click(INPUT);
+        assert.deepEqual(renderedKeys(), ['Item 1', 'Item 2', 'Item 3']);
+        assert
+          .dom('[data-part="display-limit-content"]')
+          .hasText('Showing 3 of 10. Type to narrow down.');
+
+        await fillIn(INPUT, '1');
+        assert.deepEqual(renderedKeys(), ['Item 1', 'Item 10']);
+        assert.dom('[data-part="display-limit-content"]').doesNotExist();
+      });
+
+      test('the selected option past the limit is still rendered', async function (assert) {
+        await render(
+          <template>
+            <Autocomplete
+              @items={{items}}
+              @filter={{contains}}
+              @displayLimit={{3}}
+              @selectedKey="Item 7"
+            />
+          </template>
+        );
+
+        await click(INPUT);
+
+        assert.deepEqual(renderedKeys(), [
+          'Item 1',
+          'Item 2',
+          'Item 3',
+          'Item 7'
+        ]);
+        assert
+          .dom('[data-component="listbox"] [data-key="Item 7"]')
+          .hasAttribute('data-selected', 'true');
+        assert.dom(INPUT).hasValue('Item 7', 'the input still shows it');
+      });
+
+      test('it caps @items under disableFiltering', async function (assert) {
+        await render(
+          <template>
+            <Autocomplete
+              @items={{items}}
+              @disableFiltering={{true}}
+              @displayLimit={{2}}
+            />
+          </template>
+        );
+
+        await fillIn(INPUT, 'anything');
+
+        assert.deepEqual(renderedKeys(), ['Item 1', 'Item 2']);
+        assert
+          .dom('[data-part="display-limit-content"]')
+          .hasText('Showing 2 of 10. Type to narrow down.');
+      });
+
+      test('it caps the results of onSearch', async function (assert) {
+        const onSearch = () => items;
+
+        await render(
+          <template>
+            <Autocomplete
+              @onSearch={{onSearch}}
+              @searchDebounce={{0}}
+              @displayLimit={{4}}
+            />
+          </template>
+        );
+
+        await fillIn(INPUT, 'item');
+
+        assert.deepEqual(renderedKeys(), [
+          'Item 1',
+          'Item 2',
+          'Item 3',
+          'Item 4'
+        ]);
+        assert
+          .dom('[data-part="display-limit-content"]')
+          .hasText('Showing 4 of 10. Type to narrow down.');
+      });
+
+      test('picking a rendered option selects it', async function (assert) {
+        const selectedKey = cell<string | null>(null);
+        const onSelectionChange = (key: string | null) =>
+          (selectedKey.current = key);
+
+        await render(
+          <template>
+            <Autocomplete
+              @items={{items}}
+              @filter={{contains}}
+              @displayLimit={{3}}
+              @selectedKey={{selectedKey.current}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </template>
+        );
+
+        await fillIn(INPUT, 'item');
+        await triggerKeyEvent(INPUT, 'keydown', 'ArrowDown');
+        await triggerKeyEvent(INPUT, 'keydown', 'Enter');
+
+        assert.strictEqual(selectedKey.current, 'Item 2');
+        assert.dom(INPUT).hasValue('Item 2');
+      });
+
+      test('the displayLimitContent block receives the counts; hideDisplayLimitContent hides it', async function (assert) {
+        const hide = cell(false);
+
+        await render(
+          <template>
+            <Autocomplete
+              @items={{items}}
+              @filter={{contains}}
+              @displayLimit={{4}}
+              @hideDisplayLimitContent={{hide.current}}
+            >
+              <:displayLimitContent as |limit|>
+                <span data-test-limit>{{limit.shown}}/{{limit.total}}</span>
+              </:displayLimitContent>
+            </Autocomplete>
+          </template>
+        );
+
+        await click(INPUT);
+        assert
+          .dom('[data-part="display-limit-content"] [data-test-limit]')
+          .hasText('4/10');
+
+        hide.current = true;
+        await settled();
+        assert.dom('[data-part="display-limit-content"]').doesNotExist();
+      });
+
+      test('the limit content stays below the options, not under them', async function (assert) {
+        const many = Array.from({ length: 200 }, (_, i) => `Item ${i + 1}`);
+
+        await render(
+          <template>
+            <Autocomplete @items={{many}} @displayLimit={{100}} />
+          </template>
+        );
+
+        await click(INPUT);
+
+        const listbox = document.querySelector(
+          '[data-component="listbox"]'
+        ) as HTMLElement;
+        const content = document.querySelector(
+          '[data-part="display-limit-content"]'
+        ) as HTMLElement;
+
+        assert.true(
+          listbox.scrollHeight > listbox.clientHeight,
+          'premise: the options overflow the listbox'
+        );
+        assert.strictEqual(
+          getComputedStyle(listbox).overflowY,
+          'auto',
+          'the listbox scrolls its own options'
+        );
+        assert.true(
+          listbox.getBoundingClientRect().bottom <=
+            content.getBoundingClientRect().top + 0.5,
+          'the options end where the limit content starts, never over it'
+        );
+      });
+
+      test('it asserts on a limit that is not a positive integer', async function (assert) {
+        const errors: string[] = [];
+        setupOnerror((error: unknown) => {
+          errors.push((error as Error).message);
+        });
+
+        await render(
+          <template>
+            <Autocomplete @items={{items}} @displayLimit={{1.5}} />
+          </template>
+        );
+
+        assert.true(
+          errors.some((m) =>
+            m.includes('@displayLimit must be a positive integer, received 1.5')
+          ),
+          `got: ${errors.join(' | ')}`
+        );
+      });
     });
   }
 );

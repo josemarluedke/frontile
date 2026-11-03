@@ -452,11 +452,14 @@ const select = tv({
   slots: {
     base: [],
     placeholder: 'text-neutral',
-    listbox: 'scroll-py-6 max-h-64',
+    // The listbox scrolls itself, so the content below it (the display
+    // limit's note) stays in view rather than being scrolled over.
+    listbox: 'scroll-py-6 max-h-64 overflow-y-auto',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     input: '[button]:cursor-default',
     emptyContent: 'p-2',
+    displayLimitContent: 'p-2 text-body-2xs text-neutral-firm',
     // The wrapper around the trigger. It is rendered in every mode; the
     // `hasChips` variant below decides whether it is the field shell or a
     // transparent passthrough. Authored here rather than as literal classes in
@@ -688,11 +691,14 @@ const autocomplete = tv({
   extend: input,
   slots: {
     base: [],
-    listbox: 'scroll-py-6 max-h-64',
+    // The listbox scrolls itself, so the content below it (the display
+    // limit's note) stays in view rather than being scrolled over.
+    listbox: 'scroll-py-6 max-h-64 overflow-y-auto',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     input: 'cursor-text',
-    emptyContent: 'p-2'
+    emptyContent: 'p-2',
+    displayLimitContent: 'p-2 text-body-2xs text-neutral-firm'
   },
   variants: {
     size: {

@@ -279,6 +279,56 @@ export default class FilterableSelect extends Component {
 }
 ```
 
+### Long Lists
+
+Every option in the dropdown is DOM the browser has to build, and to rebuild as the
+matches change with each keystroke. With hundreds of options, typing in the filter starts
+to lag, and on slower machines it can freeze for seconds. Set `@displayLimit` to render only
+the first matches, in the order the filter ranked them. Nobody scrolls through a thousand
+options; they type until the list is short, and the options past the limit are reached the
+same way.
+
+- The `:displayLimitContent` block, shown below the options while some are left out, says
+  how many. It yields `shown` and `total`; `@hideDisplayLimitContent` hides it.
+- Selected options are always rendered, even past the limit, so opening the Select still
+  highlights the current value.
+- The hidden native `<select>` keeps every option, so the form value is never affected.
+- `@displayLimit` requires `@isFilterable`: without a filter, the options past the limit could
+  not be reached at all.
+
+```gts preview
+import { Select } from 'frontile';
+
+const products = Array.from(
+  { length: 1000 },
+  (_, i) => `Product ${String(i + 1).padStart(4, '0')}`
+);
+
+<template>
+  <div class='demo-stack'>
+    <Select
+      @isFilterable={{true}}
+      @displayLimit={{50}}
+      @placeholder='Search 1,000 products'
+      @items={{products}}
+    />
+    <Select
+      @isFilterable={{true}}
+      @displayLimit={{50}}
+      @placeholder='With custom limit content'
+      @items={{products}}
+    >
+      <:displayLimitContent as |limit|>
+        {{limit.shown}}
+        of
+        {{limit.total}}
+        products. Keep typing to find the rest.
+      </:displayLimitContent>
+    </Select>
+  </div>
+</template>
+```
+
 ### Item Object Format
 
 When using the `@items` argument, you can pass items as either primitives (strings or numbers) or objects. The `Select` component automatically extracts a key and label for each item using a flexible approach:
