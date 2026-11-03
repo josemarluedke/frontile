@@ -160,48 +160,6 @@ keeps its own time.
 The button trigger's default format adds `timeStyle: 'short'`, and the field submits the
 local `yyyy-MM-ddTHH:mm`.
 
-### Time columns
-
-Beside the calendar, the popover lists the hours and the minutes, plus AM/PM on a 12-hour
-clock, in the order the locale writes them. A click on an hour and one on a minute is the
-whole time; typing it into the segments stays just as good, and both edit the same value.
-
-- **Picking a day leaves the popover open** for the time. It closes when you click an option
-  in the last column, press `Enter` on any option, press `Escape`, or click outside.
-- **Minutes step by `@minuteStep`** (5 by default). A minute off the step, typed into the
-  segments, is listed too and shows as picked.
-- **One pick is a time.** An hour picked while the minutes are empty reads as on the hour;
-  a minute picked first takes `@placeholderValue`'s hour. Before any day is picked, the
-  time waits for one, as a typed time does.
-- **On a narrow screen** the columns go below the calendar.
-
-They show on a single segmented field. `@mode="range"` and `@isEditable={{false}}` keep the
-calendar alone, and `@showTimeColumns={{false}}` turns them off.
-
-```gts preview
-import { DatePicker } from 'frontile';
-
-const start = new Date(2026, 0, 20, 14, 30);
-
-<template>
-  <div class='grid gap-4 md:grid-cols-2'>
-    <DatePicker
-      @label='Appointment'
-      @locale='en-GB'
-      @granularity='minute'
-      @minuteStep={{15}}
-      @defaultValue={{start}}
-    />
-    <DatePicker
-      @label='Appointment (12-hour)'
-      @locale='en-US'
-      @granularity='minute'
-      @defaultValue={{start}}
-    />
-  </div>
-</template>
-```
-
 ```gts preview
 import { DatePicker } from 'frontile';
 
@@ -225,6 +183,179 @@ const shift = {
       @defaultValue={{shift}}
     />
   </div>
+</template>
+```
+
+### Time columns
+
+Beside the calendar, the popover lists the hours and the minutes, plus AM/PM on a 12-hour
+clock, in the order the locale writes them. Clicking an hour and then a minute sets the time;
+typing it into the segments works too, and the two always show the same value.
+
+Picking a day leaves the popover open for the time. It closes when you click an option in
+the last column, press `Enter` on any option, press `Escape`, or click outside.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+
+<template>
+  <div class='grid gap-4 md:grid-cols-2'>
+    <DatePicker
+      @label='Appointment'
+      @locale='en-GB'
+      @granularity='minute'
+      @defaultValue={{start}}
+    />
+    <DatePicker
+      @label='Appointment (12-hour)'
+      @locale='en-US'
+      @granularity='minute'
+      @defaultValue={{start}}
+    />
+  </div>
+</template>
+```
+
+On a screen narrower than the `sm` breakpoint, the columns go below the calendar.
+
+#### Minute step
+
+`@minuteStep` sets the minutes the column offers, counted from :00. It defaults to 5;
+`{{1}}` lists every minute. A minute off the step, typed into the segments, is listed too
+and shows as picked, like 10:07 in the last picker below.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+const offStep = new Date(2026, 0, 20, 10, 7);
+
+<template>
+  <div class='grid gap-4 md:grid-cols-3'>
+    <DatePicker
+      @label='Every 15 minutes'
+      @locale='en-GB'
+      @granularity='minute'
+      @minuteStep={{15}}
+      @defaultValue={{start}}
+    />
+    <DatePicker
+      @label='Every minute'
+      @locale='en-GB'
+      @granularity='minute'
+      @minuteStep={{1}}
+      @defaultValue={{start}}
+    />
+    <DatePicker
+      @label='Off the step'
+      @locale='en-GB'
+      @granularity='minute'
+      @minuteStep={{15}}
+      @defaultValue={{offStep}}
+    />
+  </div>
+</template>
+```
+
+#### Starting from an empty field
+
+The columns of an empty field start at `@placeholderValue` (today, by default): that is
+where `Tab` lands and what they are scrolled to. A single pick fills in the rest of the time:
+an hour reads as on the hour, and a minute picked first takes `@placeholderValue`'s hour.
+Until a day is picked, the field reports no value.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { DatePicker } from 'frontile';
+
+export default class EmptyTimeExample extends Component {
+  @tracked value: Date | null = null;
+
+  placeholder = new Date(2026, 0, 20, 9, 0);
+
+  onChange = (value: Date | null) => {
+    this.value = value;
+  };
+
+  get shown() {
+    return this.value ? this.value.toLocaleString('en-GB') : 'nothing yet';
+  }
+
+  <template>
+    <DatePicker
+      @label='Starts'
+      @locale='en-GB'
+      @granularity='minute'
+      @placeholderValue={{this.placeholder}}
+      @onChange={{this.onChange}}
+    />
+    <p class='mt-2 text-body-sm text-neutral-firm'>Value: {{this.shown}}</p>
+  </template>
+}
+```
+
+#### Hours only
+
+`@granularity="hour"` lists the hours alone.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 0);
+
+<template>
+  <DatePicker
+    @label='Hour'
+    @locale='en-GB'
+    @granularity='hour'
+    @defaultValue={{start}}
+  />
+</template>
+```
+
+#### Read-only
+
+On a read-only field the columns show the time and the arrow keys move through them, but
+nothing can be picked.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+
+<template>
+  <DatePicker
+    @label='Starts'
+    @locale='en-GB'
+    @granularity='minute'
+    @isReadOnly={{true}}
+    @defaultValue={{start}}
+  />
+</template>
+```
+
+#### Without the columns
+
+The columns show on a single, editable field. A `@mode="range"` field and one with
+`@isEditable={{false}}` show the calendar alone. `@showTimeColumns={{false}}` turns them off
+anywhere; picking a day then closes the popover, and the time is typed.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+
+<template>
+  <DatePicker
+    @label='Starts'
+    @locale='en-GB'
+    @granularity='minute'
+    @showTimeColumns={{false}}
+    @defaultValue={{start}}
+  />
 </template>
 ```
 
@@ -421,6 +552,24 @@ const jan20 = new Date(2026, 0, 20);
       />
     {{/each}}
   </div>
+</template>
+```
+
+With a time, the picked hour and minute take the same color as the day.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+
+<template>
+  <DatePicker
+    @label='Appointment'
+    @color='success'
+    @locale='en-GB'
+    @granularity='minute'
+    @defaultValue={{start}}
+  />
 </template>
 ```
 
