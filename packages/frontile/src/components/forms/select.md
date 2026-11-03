@@ -1139,6 +1139,9 @@ options' own text — `Assignee, John Doe` for the example above. Either half on
 alone when the other is missing, so the name is never `Assignee, ` and never prefixes the
 selection with the untranslatable `Select options`.
 
+With nothing selected the name includes the placeholder — `Assignee, Choose an assignee`.
+When `@label` and `@placeholder` are identical, the name is not repeated.
+
 **This name replaces whatever your block renders, so keep the two in agreement.** If your
 block's visible text is the option's `label`, they already agree and there is nothing to do —
 hiding decorative images from assistive technology (`alt=''`) is enough. If your block shows

@@ -3032,6 +3032,53 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       );
   });
 
+  test('with nothing selected the name contains the visible placeholder', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Merchant"
+          @placeholder="All merchants"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>{{selected.label}}</:selectedItem>
+        </Select>
+        <Select
+          @items={{demoUsers}}
+          @label="Reviewers"
+          @placeholder="All reviewers"
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @onSelectionChange={{noopKeys}}
+        />
+        <Select
+          @items={{demoUsers}}
+          @label="Same"
+          @placeholder="Same"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>{{selected.label}}</:selectedItem>
+        </Select>
+      </template>
+    );
+
+    const triggers = document.querySelectorAll(
+      '[data-component="select"] [data-part="input"]:not(select)'
+    );
+
+    // WCAG 2.5.3 Label in Name: the visible text (the placeholder) must be
+    // part of the accessible name, or speech-input users cannot say it.
+    assert
+      .dom(triggers[0])
+      .hasAttribute('aria-label', 'Merchant, All merchants');
+    assert
+      .dom(triggers[1])
+      .hasAttribute('aria-label', 'Reviewers, All reviewers');
+    assert
+      .dom(triggers[2])
+      .hasAttribute('aria-label', 'Same', 'an identical label is not repeated');
+  });
+
   test('with no label or placeholder the name is the selected text alone', async function (assert) {
     await render(
       <template>
