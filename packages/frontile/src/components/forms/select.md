@@ -338,7 +338,7 @@ Pass `@backdrop='none'` so the drag reaches the Drawer or Modal. A press outside
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Button, Drawer, Select } from 'frontile';
+import { Button, Drawer, Input, Select, Textarea } from 'frontile';
 
 const countries = [
   'Argentina',
@@ -363,23 +363,34 @@ export default class SelectInDrawer extends Component {
   <template>
     <div class='demo-stack demo-stack--wide items-center'>
       <Button @size='sm' @onPress={{this.toggle}}>
-        Open Drawer
+        Open Shipping Address
       </Button>
 
       <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
-        <d.Header>Shipping</d.Header>
+        <d.Header>Shipping address</d.Header>
         <d.Body>
           <div class='space-y-4'>
-            <p>Open the list, then scroll this drawer.</p>
+            <Input @label='Full name' />
+            <Input @label='Street' />
+            <Input @label='City' />
+            <Input @label='Postal code' />
+            <Input @label='Phone' @type='tel' />
+            <Textarea @label='Delivery notes' @rows={{4}} />
             <Select
               @label='Country'
               @isFilterable={{true}}
               @backdrop='none'
               @items={{countries}}
             />
-            <div style='height: 150vh'></div>
+            <Textarea @label='Gift message' @rows={{4}} />
           </div>
         </d.Body>
+        <d.Footer @class='flex gap-2'>
+          <Button @size='sm' @onPress={{this.toggle}}>Cancel</Button>
+          <Button @size='sm' @color='primary' @onPress={{this.toggle}}>
+            Save
+          </Button>
+        </d.Footer>
       </Drawer>
     </div>
   </template>
