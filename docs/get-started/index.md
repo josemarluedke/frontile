@@ -33,22 +33,26 @@ pnpm install frontile @frontile/theme
 
 ### Basic Setup
 
-Add Frontile's theme configuration to your `app/styles/app.css` for Tailwind CSS v4:
+Frontile's theme requires Tailwind CSS v4. If your app doesn't use Tailwind yet
+(a new `@ember/app-blueprint` app doesn't), follow
+[Set up Tailwind CSS](./installation.md#set-up-tailwind-css) first.
 
-```css title="app/styles/app.css"
-@import 'tailwindcss' source('../../');
+Then add Frontile's theme configuration to `app/app.css`, imported from
+`app/app.js`:
+
+```css title="app/app.css"
+@import 'tailwindcss' source('../');
 @plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";
 
 /* Tailwind skips node_modules when scanning for classes, so Frontile's own
    templates have to be pointed at or their classes get purged. */
-@source '../../node_modules/frontile';
-@source '../../node_modules/@frontile';
+@source '../node_modules/frontile';
+@source '../node_modules/@frontile';
 ```
 
-Paths are relative to the CSS file. Under Vite the entry stylesheet is usually
-`app/app.css`, one level shallower, so the sources become
-`'../node_modules/...'`.
+Paths are relative to the CSS file; add one `../` per extra level if your
+stylesheet lives deeper, such as `app/styles/app.css`.
 
 The `dark` variant comes from `@import "@frontile/theme"` — you do not need to
 declare `@custom-variant dark` yourself, and the version the theme ships also
