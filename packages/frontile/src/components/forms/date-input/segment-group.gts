@@ -439,5 +439,9 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
   </template>
 }
 
-export { SegmentGroup, type SegmentGroupSignature };
+export {
+  SegmentGroup,
+  DEFAULT_LABELS as DEFAULT_SEGMENT_LABELS,
+  type SegmentGroupSignature
+};
 export default SegmentGroup;

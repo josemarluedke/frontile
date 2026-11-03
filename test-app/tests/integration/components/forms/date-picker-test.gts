@@ -1023,7 +1023,9 @@ module(
 
       await click('[data-part="calendar-button"]');
 
-      const content = find('[data-component="calendar"]')!.parentElement!;
+      const content = find('[data-component="calendar"]')!.closest(
+        '[role="dialog"]'
+      )!;
 
       // Popover.Content defaults to `md` (w-64, 256px), which is narrower
       // than the calendar grid and clips the Saturday column. `auto` sizes to
@@ -1050,7 +1052,7 @@ module(
       await click('[data-part="calendar-button"]');
 
       assert
-        .dom(find('[data-component="calendar"]')!.parentElement)
+        .dom(find('[data-component="calendar"]')!.closest('[role="dialog"]'))
         .hasClass('w-96', '@popoverSize is forwarded to the popover content');
     });
     test('a Field-bound range keeps working after a submit', async function (assert) {

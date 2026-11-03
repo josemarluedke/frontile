@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 import { modifier } from 'ember-modifier';
+import { revealWithin } from '../../../-private/reveal-within';
 
 export interface YearGridSignature {
   Args: {
@@ -18,43 +19,6 @@ export interface YearGridSignature {
 
 /** The grid is three columns wide, so vertical movement is by three. */
 const COLUMNS = 3;
-
-/**
- * Scroll `target` into view inside `panel` and nowhere else.
- *
- * `scrollIntoView` and a plain `focus()` both scroll *every* scrollable
- * ancestor up to the document, so either one makes the host page jump when the
- * panel opens or when arrow keys walk past its edge. Adjusting `scrollTop`
- * directly keeps the movement inside the panel.
- *
- * The measurements come from `offsetTop`, not `getBoundingClientRect()`:
- * client rects are in transformed pixels, so under any ancestor `scale()` they
- * would not agree with `scrollTop`. This relies on the panel being the
- * `offsetParent` -- the `yearGrid` slot is positioned for exactly that reason.
- *
- * `center` places the target mid-panel, for the opening jump to a year that is
- * usually a long way down the list; otherwise the target is brought just far
- * enough into view, which is what stepping key by key wants.
- */
-function revealWithin(
-  panel: HTMLElement,
-  target: HTMLElement,
-  center: boolean
-): void {
-  const top = target.offsetTop;
-  const bottom = top + target.offsetHeight;
-
-  if (center) {
-    panel.scrollTop = top - (panel.clientHeight - target.offsetHeight) / 2;
-    return;
-  }
-
-  if (top < panel.scrollTop) {
-    panel.scrollTop = top;
-  } else if (bottom > panel.scrollTop + panel.clientHeight) {
-    panel.scrollTop = bottom - panel.clientHeight;
-  }
-}
 
 export default class YearGrid extends Component<YearGridSignature> {
   #element: HTMLElement | undefined;
