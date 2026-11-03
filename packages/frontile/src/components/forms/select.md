@@ -329,6 +329,63 @@ const products = Array.from(
 </template>
 ```
 
+### Select in a scrolling Drawer or Modal
+
+While its list is open, the Select lays a transparent backdrop over the screen (`@backdrop` defaults to `'transparent'`). On a page that is the usual dropdown behavior. Inside a Drawer or Modal whose body scrolls, a drag on the body lands on the backdrop instead, and nothing scrolls. On a phone this is easy to hit with `@isFilterable`: the keyboard takes half the screen and can cover the field, and scrolling back to it is the gesture the backdrop takes.
+
+Pass `@backdrop='none'` so the drag reaches the Drawer or Modal. A press outside the list still closes it, because the popover listens for outside clicks itself, not through the backdrop. The list follows its field while the container scrolls. For a Select on the page itself, `@blockScroll={{false}}` does the same for the page, which the Select locks while its list is open.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Button, Drawer, Select } from 'frontile';
+
+const countries = [
+  'Argentina',
+  'Brazil',
+  'Canada',
+  'Denmark',
+  'Egypt',
+  'France',
+  'Germany',
+  'Italy',
+  'Japan',
+  'Mexico'
+];
+
+export default class SelectInDrawer extends Component {
+  @tracked isOpen = false;
+
+  toggle = () => {
+    this.isOpen = !this.isOpen;
+  };
+
+  <template>
+    <div class='demo-stack demo-stack--wide items-center'>
+      <Button @size='sm' @onPress={{this.toggle}}>
+        Open Drawer
+      </Button>
+
+      <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+        <d.Header>Shipping</d.Header>
+        <d.Body>
+          <div class='space-y-4'>
+            <p>Open the list, then scroll this drawer.</p>
+            <Select
+              @label='Country'
+              @isFilterable={{true}}
+              @backdrop='none'
+              @items={{countries}}
+            />
+            <div style='height: 150vh'></div>
+          </div>
+        </d.Body>
+      </Drawer>
+    </div>
+  </template>
+}
+```
+
 ### Item Object Format
 
 When using the `@items` argument, you can pass items as either primitives (strings or numbers) or objects. The `Select` component automatically extracts a key and label for each item using a flexible approach:
