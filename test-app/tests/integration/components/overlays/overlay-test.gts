@@ -825,5 +825,36 @@ module(
         .dom('[data-test-id="nested-field"]')
         .isFocused('the trap is still active and holds the focus inside');
     });
+    test('Tab reaches an open nested overlay after the content', async function (assert) {
+      // The nested portal is part of the trap, so Tab from the last element
+      // of the content moves on to the nested overlay (its content element is
+      // tabbable) instead of wrapping around.
+      await render(
+        <template>
+          <Overlay
+            @isOpen={{true}}
+            @disableTransitions={{true}}
+            @backdrop="none"
+          >
+            <button type="button" data-test-id="inside">Inside</button>
+            <Overlay
+              @isOpen={{true}}
+              @disableTransitions={{true}}
+              @disableFocusTrap={{true}}
+              @preventAutoFocus={{true}}
+              @backdrop="none"
+              data-test-id="nested-overlay"
+            >
+              <button type="button">Nested</button>
+            </Overlay>
+          </Overlay>
+        </template>
+      );
+
+      await focus('[data-test-id="inside"]');
+      await triggerKeyEvent('[data-test-id="inside"]', 'keydown', 'Tab');
+
+      assert.dom('[data-test-id="nested-overlay"]').isFocused();
+    });
   }
 );

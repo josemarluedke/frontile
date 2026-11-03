@@ -672,10 +672,11 @@ focus leaves the keyboard stranded, and nothing warns you at runtime.
 
 Overlays opened from inside this one (a Select's list, an Autocomplete, a Popover, a
 Dropdown) render into this overlay's portal, and the focus trap counts them as inside. A
-press on a Select's option in a Drawer keeps the Drawer's trap, and a field in a Popover
-opened from a Modal can take the focus. This matches outside clicks: a click in a nested
-overlay doesn't close this one. An overlay given its own `@target` isn't nested, so it is
-outside for both.
+press on a Select's list in a Drawer keeps the Drawer's trap, and a field in a Popover
+opened from a Modal can take the focus. Tab from the last element of the content moves on
+into an open nested overlay. This matches outside clicks: a click in a nested overlay
+doesn't close this one. An overlay given its own `@target` isn't nested, so it is outside
+for both.
 
 `@focusTrapOptions` is merged over the defaults (`clickOutsideDeactivates: true`,
 `allowOutsideClick: true`), so naming one option does not cost you the rest. Setting either

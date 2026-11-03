@@ -26,7 +26,7 @@ type FocusTrapOptions = NonNullable<
   FocusTrapModifierSignature['Args']['Named']['focusTrapOptions']
 >;
 
-type FocusTrapLifecycleMethod =
+type GuardedFocusTrapMethod =
   'activate' | 'deactivate' | 'pause' | 'unpause' | 'updateContainerElements';
 
 /**
@@ -49,7 +49,7 @@ function createTestResilientFocusTrap(
   const trap = createFocusTrap(...args);
 
   const guard =
-    (method: FocusTrapLifecycleMethod) =>
+    (method: GuardedFocusTrapMethod) =>
     (...methodArgs: unknown[]): FocusTrap => {
       try {
         return (trap[method] as (...a: unknown[]) => FocusTrap)(...methodArgs);
@@ -542,8 +542,10 @@ class Overlay extends Component<OverlaySignature> {
    *
    * With the content alone as its container, the trap took a press in a
    * nested portal for an outside click and deactivated: from then on Tab
-   * walked out of the Drawer. With a Select's list it also sent the focus
-   * back to where it was before the Drawer opened, out of the Select's filter.
+   * walked out of the Drawer. A touch on a Select's list also sent the focus
+   * back to where it was when the trap activated, out of the Select's
+   * filter. As containers, nested overlays are also part of the Tab cycle,
+   * after the content.
    *
    * Nested overlays open and close while this one stays open, so a
    * MutationObserver on the portal keeps the containers current.
@@ -556,6 +558,8 @@ class Overlay extends Component<OverlaySignature> {
       create = createTestResilientFocusTrap;
     }
 
+    // The element the `focusTrap` modifier is on: the content. We pass it no
+    // `additionalElements`, so it's never a list.
     const content = element as HTMLElement;
     const containers = () => [content, ...nestedPortalsOf(content)];
     const trap = create(containers(), options);
