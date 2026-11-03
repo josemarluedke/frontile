@@ -13,6 +13,7 @@ import {
 import { cell } from 'ember-resources';
 import { Select } from 'frontile';
 import { array, hash } from '@ember/helper';
+import { on } from '@ember/modifier';
 import { selectOptionByKey, ownParts } from 'frontile/test-support';
 import { trackDeprecations } from '../../../helpers/deprecations';
 
@@ -531,6 +532,46 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       ).dataset['key'],
       'Apple',
       'the exact match is first even though Apricot comes first in @items'
+    );
+  });
+
+  test('Enter in the open filter does not submit a wrapping form', async function (assert) {
+    const items = ['Apple', 'Banana'];
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
+
+    // A synthetic keydown never submits a form the way a real one does, so
+    // check whether the Enter that reaches the form was canceled.
+    let enter: KeyboardEvent | undefined;
+    const onKeydown = (event: KeyboardEvent) => (enter = event);
+
+    await render(
+      <template>
+        <form {{on "keydown" onKeydown}}>
+          <Select
+            @items={{items}}
+            @isFilterable={{true}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSelectionChange}}
+          />
+        </form>
+      </template>
+    );
+
+    const filter = '[data-component="select"] [data-part="input"]:not(select)';
+    await click(filter);
+    await fillIn(filter, 'Ban');
+    await triggerKeyEvent(filter, 'keydown', 'Enter');
+
+    assert.true(enter?.defaultPrevented, 'Enter is canceled while open');
+    assert.strictEqual(selectedKey.current, 'Banana', 'and picks the option');
+
+    await triggerKeyEvent(filter, 'keydown', 'Enter');
+
+    assert.false(
+      enter?.defaultPrevented,
+      'once closed, Enter is left to the form'
     );
   });
 

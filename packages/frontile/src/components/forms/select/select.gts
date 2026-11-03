@@ -165,10 +165,18 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   /**
+   * Enter in the open filter picks the active option (the Listbox handles
+   * that), so it must not also submit a wrapping form, the same guard
+   * Autocomplete has. Closed, Enter is left to the form.
+   *
    * Backspace on an empty filter removes the last chip — the familiar tag-input
    * gesture. With text in the filter, Backspace edits the text as usual.
    */
   handleFilterKeydown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter' && this.isOpen) {
+      event.preventDefault();
+      return;
+    }
     if (event.key !== 'Backspace' || !this.showChips) {
       return;
     }
