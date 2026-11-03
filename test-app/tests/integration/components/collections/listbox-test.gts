@@ -1,7 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
+import {
+  click,
+  find,
+  render,
+  triggerKeyEvent,
+  fillIn
+} from '@ember/test-helpers';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { modifier } from 'ember-modifier';
 import {
@@ -14,6 +20,7 @@ import { array, get } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { realStyles } from '../../../helpers/real-theme-styles';
 
 /**
  * Press a key the way a browser does.
@@ -2116,6 +2123,56 @@ module(
       assert
         .dom('[data-key="parent"]')
         .hasAttribute('data-submenu-open', 'true');
+    });
+
+    test('the chevron takes the colour of an open sub-trigger row', async function (assert) {
+      // Compares computed colours, so it fails when the browser drops the
+      // group-data-is-active rule, which no class assertion would notice.
+      // That needs the real, shipped theme rather than this file's
+      // `registerCustomStyles` markers, so it swaps in `realStyles` (see
+      // `tests/helpers/real-theme-styles.ts`) and restores them after.
+      const previousListboxStyles = useStyles().listbox;
+      const previousListboxItemStyles = useStyles().listboxItem;
+      registerCustomStyles({
+        listbox: realStyles.listbox,
+        listboxItem: realStyles.listboxItem
+      });
+
+      try {
+        await render(
+          <template>
+            <Listbox @type="menu" @color="primary" as |l|>
+              <l.Item
+                @key="open"
+                @hasSubmenu={{true}}
+                @isSubmenuOpen={{true}}
+              >Open</l.Item>
+              <l.Item @key="closed" @hasSubmenu={{true}}>Closed</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        const color = (selector: string) =>
+          getComputedStyle(find(selector)!).color;
+        const chevron = (key: string) =>
+          color(`[data-key="${key}"] [data-part="submenu-indicator"]`);
+
+        assert.strictEqual(
+          chevron('open'),
+          color('[data-key="open"]'),
+          'the open row recolours its chevron'
+        );
+        assert.notStrictEqual(
+          chevron('open'),
+          chevron('closed'),
+          'a closed row keeps the dimmer chevron'
+        );
+      } finally {
+        registerCustomStyles({
+          listbox: previousListboxStyles,
+          listboxItem: previousListboxItemStyles
+        });
+      }
     });
 
     test('an explicit :end block wins over the submenu chevron', async function (assert) {

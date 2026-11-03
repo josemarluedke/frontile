@@ -25,6 +25,8 @@ jobs:
         run: pnpm install
       - name: Lint JS
         run: pnpm lint:js
+      - name: Lint CSS
+        run: pnpm lint:css
       - name: Build V2 Addons
         run: pnpm build
       - name: Test

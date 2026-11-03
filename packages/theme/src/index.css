@@ -13,7 +13,9 @@
    the same variant, and every intent/appearance compound variant that already
    targets `data-is-active:` covers it with no further work. */
 @custom-variant data-is-active (&:is([data-active=true], [data-submenu-open=true]));
-@custom-variant group-data-is-active (:merge(.group)[data-active="true"] &, :merge(.group)[data-submenu-open="true"] &);
+/* The same states on the nearest `.group` ancestor, written the way Tailwind v4
+   writes its own `group-*` variants. */
+@custom-variant group-data-is-active (&:is(:where(.group):is([data-active="true"], [data-submenu-open="true"]) *));
 
 /* ARIA variants */
 @custom-variant aria-invalid (&[aria-invalid="true"]);
