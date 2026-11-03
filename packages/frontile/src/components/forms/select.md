@@ -292,7 +292,10 @@ same way.
   how many. It yields `shown` and `total`; `@hideDisplayLimitContent` hides it.
 - Selected options are always rendered, even past the limit, so opening the Select still
   highlights the current value.
-- The hidden native `<select>` keeps every option, so the form value is never affected.
+- The hidden native `<select>` that submits the value is limited the same way, from the
+  unfiltered list, and keeps every selected option, so the form value is never affected. A
+  page with many Selects over a long list then stays fast too: closed, each one used to
+  build a hidden option for every item.
 - `@displayLimit` requires `@isFilterable`: without a filter, the options past the limit could
   not be reached at all.
 

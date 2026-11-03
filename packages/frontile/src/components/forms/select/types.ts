@@ -403,8 +403,9 @@ type SelectArgs<T> = (
    *
    * Requires `@isFilterable`: without a filter, the options past the limit
    * could not be reached at all. Options passed in block form are not
-   * counted or limited. The hidden native `<select>` always holds every
-   * option, so the form value is never affected.
+   * counted or limited. The hidden native `<select>` that carries the form
+   * value holds the same number of options, from the unfiltered list, plus
+   * every selected one, so the form value is never affected.
    *
    * @defaultValue undefined (every option is rendered)
    */
