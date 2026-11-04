@@ -174,12 +174,15 @@ const stepper = tv({
       }
     },
 
+    // `step` is the padding that brings indicator plus padding to 44px, so the
+    // hit area is 44px whatever the circle size and the circle sits 22px in
+    // from the button's edge in every layout. `item` carries how far a
+    // bottom-label connector sits from the item's center: the circle's radius
+    // plus a 4px gap.
     size: {
       sm: {
-        // Padding that brings indicator plus padding to 44px, so the hit
-        // area is 44px whatever the circle size and the circle sits 22px
-        // in from the button's edge in every layout.
         step: 'p-2.5',
+        item: '[--stepper-offset:1rem]',
         // `[&_svg]` outranks an icon's own size class, so the circle, not the
         // icon, decides the glyph size (about half the circle, 4-6px padding).
         indicator: 'size-6 text-label-sm [&_svg]:size-3',
@@ -189,10 +192,8 @@ const stepper = tv({
         panel: 'py-2'
       },
       md: {
-        // Padding that brings indicator plus padding to 44px, so the hit
-        // area is 44px whatever the circle size and the circle sits 22px
-        // in from the button's edge in every layout.
         step: 'p-2',
+        item: '[--stepper-offset:1.125rem]',
         indicator: 'size-7 text-label-md [&_svg]:size-4',
         title: 'text-label-md',
         description: 'text-caption-md',
@@ -200,10 +201,8 @@ const stepper = tv({
         panel: 'py-3'
       },
       lg: {
-        // Padding that brings indicator plus padding to 44px, so the hit
-        // area is 44px whatever the circle size and the circle sits 22px
-        // in from the button's edge in every layout.
         step: 'p-1',
+        item: '[--stepper-offset:1.375rem]',
         indicator: 'size-9 text-label-lg [&_svg]:size-5',
         title: 'text-label-lg',
         description: 'text-body-sm',
@@ -268,8 +267,7 @@ const stepper = tv({
         ],
         item: 'items-stretch',
         step: 'w-full justify-start'
-      },
-      false: {}
+      }
     }
   },
 
@@ -286,32 +284,12 @@ const stepper = tv({
         item: 'relative flex-1 flex-col items-center last:flex-1',
         step: 'flex-col',
         label: 'items-center text-center',
-        connector: 'absolute top-[21px] mx-0 min-w-0 flex-none'
+        connector: [
+          'absolute top-[21px] mx-0 min-w-0 flex-none',
+          'start-[calc(50%+var(--stepper-offset))] end-[calc(-50%+var(--stepper-offset))]'
+        ]
       }
     },
-    {
-      orientation: 'horizontal',
-      labelPosition: 'bottom',
-      size: 'sm',
-      class: { connector: 'start-[calc(50%+1rem)] end-[calc(-50%+1rem)]' }
-    },
-    {
-      orientation: 'horizontal',
-      labelPosition: 'bottom',
-      size: 'md',
-      class: {
-        connector: 'start-[calc(50%+1.125rem)] end-[calc(-50%+1.125rem)]'
-      }
-    },
-    {
-      orientation: 'horizontal',
-      labelPosition: 'bottom',
-      size: 'lg',
-      class: {
-        connector: 'start-[calc(50%+1.375rem)] end-[calc(-50%+1.375rem)]'
-      }
-    },
-
     // -- responsive label collapse (horizontal only) --
     // Narrow: the label is visually hidden (`sr-only` keeps it in the
     // accessibility tree) and the summary shows. Wider than the threshold the
@@ -362,8 +340,7 @@ const stepper = tv({
     size: 'md',
     orientation: 'horizontal',
     labelPosition: 'end',
-    collapse: 'menu',
-    collapsed: false
+    collapse: 'menu'
   }
 });
 

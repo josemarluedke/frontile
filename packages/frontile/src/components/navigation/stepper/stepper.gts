@@ -118,7 +118,6 @@ interface StepperSummary {
 }
 
 interface StepperContext<T> {
-  orientation: 'horizontal' | 'vertical';
   listClass: string;
   itemClass: string;
   stepClass: string;
@@ -160,7 +159,6 @@ interface StepperContext<T> {
   readonly steps: readonly StepRecord<T>[];
   isSelected: (value: T) => boolean;
   stateOf: (value: T) => StepState;
-  select: (value: T) => void;
   register: (record: StepRecord<T>) => void;
   unregister: (record: StepRecord<T>) => void;
   stepIdFor: (value: T) => string | undefined;
@@ -268,7 +266,7 @@ class Stepper<T> extends Component<StepperSignature<T>> {
   /**
    * The layout the steps are drawn in. Collapsed into the menu, the list uses
    * the vertical layout inside the panel, whatever was configured; everything
-   * that depends on the layout (styles, arrow keys, `context.orientation`)
+   * that depends on the layout (styles and arrow keys)
    * reads it from here.
    */
   get layout(): {
@@ -458,10 +456,6 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     }
   };
 
-  goTo = (value: T): void => {
-    this.select(value);
-  };
-
   select = (value: T): void => {
     this._value = value;
     this._hasSelection = true;
@@ -571,9 +565,6 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     const stepper = this;
 
     return {
-      get orientation() {
-        return stepper.layout.orientation;
-      },
       get listClass() {
         return stepper.styles.list({ class: stepper.args.classes?.list });
       },
@@ -666,7 +657,6 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       pick: this.pick,
       isSelected: this.isSelected,
       stateOf: this.stateOf,
-      select: this.select,
       register: this.register,
       unregister: this.unregister,
       stepIdFor: this.stepIdFor,
@@ -706,7 +696,7 @@ class Stepper<T> extends Component<StepperSignature<T>> {
             Panel=Panel
             next=this.next
             prev=this.prev
-            goTo=this.goTo
+            goTo=this.select
             hasNext=this.hasNext
             hasPrev=this.hasPrev
           )

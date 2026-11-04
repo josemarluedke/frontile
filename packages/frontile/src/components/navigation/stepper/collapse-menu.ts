@@ -14,6 +14,11 @@ import {
  * `popover` (top layer, so no ancestor's `overflow` can clip it; Escape and
  * click-away come with it), positioned under a trigger button.
  *
+ * Positioning uses `@floating-ui/dom` directly rather than the `Velcro`
+ * modifier `Popover` uses: this list is already a native top-layer popover
+ * whose open state comes from the browser's `toggle` event, and the position
+ * only needs computing while it is open.
+ *
  * It owns the two elements and the open state, and nothing about steps. The
  * list stays mounted whether or not the menu is active, which is why the steps
  * stay registered while it is closed.
@@ -57,6 +62,9 @@ class CollapseMenu {
     list.setAttribute('popover', 'auto');
 
     let stopPositioning: (() => void) | undefined;
+    // `computePosition` resolves later; it must not write to a list that has
+    // since been torn down.
+    let isLive = true;
 
     const place = (): void => {
       const trigger = this.#trigger;
@@ -68,6 +76,9 @@ class CollapseMenu {
         placement: 'bottom-start',
         middleware: [offset(8), flip(), shift({ padding: 8 })]
       }).then(({ x, y }) => {
+        if (!isLive) {
+          return;
+        }
         list.style.left = `${x}px`;
         list.style.top = `${y}px`;
         list.style.minWidth = `${trigger.offsetWidth}px`;
@@ -111,6 +122,7 @@ class CollapseMenu {
     list.addEventListener('toggle', onToggle);
 
     return (): void => {
+      isLive = false;
       stopPositioning?.();
       list.removeEventListener('beforetoggle', onBeforeToggle);
       list.removeEventListener('toggle', onToggle);
