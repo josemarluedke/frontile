@@ -5,9 +5,12 @@ import {
   find,
   click,
   settled,
+  triggerEvent,
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { AppLayout, MenuToggle, AppLayoutState } from 'frontile';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
+import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 import {
   mockMatchMedia,
   removeMatchMedia,
@@ -372,6 +375,235 @@ module(
         assert.dom('[role="dialog"]').doesNotExist();
       } finally {
         restore();
+      }
+    });
+
+    test('below the breakpoint SidebarToggle opens the drawer', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Navbar><layout.SidebarToggle /></layout.Navbar>
+            <layout.Sidebar />
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = '[data-component="app-layout"]';
+      const toggle = '[data-part="sidebar-toggle"]';
+      assert.dom(toggle).hasAria('expanded', 'false', 'reports the drawer');
+      await click(toggle);
+
+      assert.dom('[role="dialog"]').exists('the drawer opens');
+      assert.dom(root).hasAttribute('data-mobile-sidebar-open', 'true');
+      assert
+        .dom(root)
+        .hasAttribute('data-sidebar-collapsed', 'false', 'collapse untouched');
+      assert.dom(toggle).hasAria('expanded', 'true');
+      assert
+        .dom(toggle)
+        .hasAria('controls', find('[role="dialog"] nav')!.id, 'the drawer nav');
+
+      await triggerKeyEvent('[role="dialog"]', 'keydown', 'Escape');
+      assert.dom(toggle).hasAria('expanded', 'false');
+
+      media.setWidth(DESKTOP);
+      await settled();
+      await click(toggle);
+      assert
+        .dom(root)
+        .hasAttribute('data-sidebar-collapsed', 'true', 'collapses when wide');
+      assert.dom('[role="dialog"]').doesNotExist();
+    });
+
+    test('activating an Item in the drawer closes it; a disabled one does not', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <AppLayout @defaultMobileSidebarOpen={{true}} as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>
+                <sidebar.Item @href="#item-a" id="item-a">A</sidebar.Item>
+                <sidebar.Item @isDisabled={{true}} id="item-b">B</sidebar.Item>
+              </sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = '[data-component="app-layout"]';
+      assert.dom('[role="dialog"]').exists();
+
+      await click('#item-b');
+      assert
+        .dom(root)
+        .hasAttribute('data-mobile-sidebar-open', 'true', 'disabled: open');
+
+      await click('#item-a');
+      assert.dom(root).hasAttribute('data-mobile-sidebar-open', 'false');
+      assert.dom('[role="dialog"]').doesNotExist();
+    });
+
+    test('activating an inline Item does not touch the drawer state', async function (assert) {
+      media = mockMatchMedia(DESKTOP);
+      const state = new AppLayoutState({ mobileSidebarOpen: true });
+      await render(
+        <template>
+          <AppLayout @state={{state}} as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>
+                <sidebar.Item @href="#item-a" id="item-a">A</sidebar.Item>
+              </sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      await click('#item-a');
+      assert.true(state.mobileSidebarOpen);
+    });
+
+    test('mod+b ignores key repeat', async function (assert) {
+      media = mockMatchMedia(DESKTOP);
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Navbar>
+              <button type="button" id="inside">Inside</button>
+            </layout.Navbar>
+            <layout.Sidebar />
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = '[data-component="app-layout"]';
+      await pressModB('#inside');
+      assert.dom(root).hasAttribute('data-sidebar-collapsed', 'true');
+      await triggerEvent('#inside', 'keydown', {
+        key: 'b',
+        repeat: true,
+        ...modKeys()
+      });
+      assert
+        .dom(root)
+        .hasAttribute('data-sidebar-collapsed', 'true', 'a held key repeats');
+    });
+
+    test('mod+b is left to a contenteditable element', async function (assert) {
+      media = mockMatchMedia(DESKTOP);
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Main>
+              <div id="editor" contenteditable="true">Text</div>
+            </layout.Main>
+            <layout.Sidebar />
+          </AppLayout>
+        </template>
+      );
+
+      // `window` hears the event after the layout's `document` listener.
+      let prevented: boolean | undefined;
+      const record = (event: Event): void => {
+        prevented = event.defaultPrevented;
+      };
+      window.addEventListener('keydown', record);
+      try {
+        await triggerEvent('#editor', 'keydown', {
+          key: 'b',
+          ...modKeys()
+        });
+      } finally {
+        window.removeEventListener('keydown', record);
+      }
+      assert
+        .dom('[data-component="app-layout"]')
+        .hasAttribute('data-sidebar-collapsed', 'false');
+      assert.false(prevented, 'the browser keeps its own bold');
+    });
+
+    test('an alt shortcut matches by key code (Option changes the key on macOS)', async function (assert) {
+      media = mockMatchMedia(DESKTOP);
+      await render(
+        <template>
+          <AppLayout @toggleShortcut="alt+b" as |layout|>
+            <layout.Navbar>
+              <button type="button" id="inside">Inside</button>
+            </layout.Navbar>
+            <layout.Sidebar />
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      await triggerEvent('#inside', 'keydown', {
+        key: '∫',
+        code: 'KeyB',
+        altKey: true
+      });
+      assert
+        .dom('[data-component="app-layout"]')
+        .hasAttribute('data-sidebar-collapsed', 'true');
+    });
+
+    test('data-sidebar-collapsed is false for a sidebar with collapsible=none', async function (assert) {
+      media = mockMatchMedia(DESKTOP);
+      await render(
+        <template>
+          <AppLayout @defaultSidebarCollapsed={{true}} as |layout|>
+            <layout.Sidebar @collapsible="none" />
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="app-layout"]')
+        .hasAttribute('data-sidebar-collapsed', 'false');
+    });
+
+    test('in the drawer the header clears the close button', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      // Other test files replace the drawer's theme with class markers; this
+      // geometry needs the shipped classes (see real-theme-styles).
+      const previous = {
+        drawer: useStyles().drawer,
+        overlay: useStyles().overlay,
+        backdrop: useStyles().backdrop
+      };
+      registerCustomStyles({
+        drawer: realStyles.drawer,
+        overlay: realStyles.overlay,
+        backdrop: realStyles.backdrop
+      });
+      try {
+        await render(
+          <template>
+            <AppLayout @defaultMobileSidebarOpen={{true}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Header>
+                  <span id="header-end" class="ms-auto">End</span>
+                </sidebar.Header>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const end = find('#header-end')!.getBoundingClientRect();
+        const close = find(
+          '[role="dialog"] [data-part="close-button"]'
+        )!.getBoundingClientRect();
+        assert.true(
+          end.right <= close.left + 0.5,
+          `header content (right ${end.right}) ends before the close button (left ${close.left})`
+        );
+      } finally {
+        registerCustomStyles(previous);
       }
     });
 

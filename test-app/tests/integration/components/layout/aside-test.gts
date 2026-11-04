@@ -89,24 +89,46 @@ module('Integration | Component | Aside | frontile/layout', function (hooks) {
     assert.dom('[role="dialog"] aside').exists({ count: 1 });
   });
 
-  test('crossing lg swaps between inline and drawer', async function (assert) {
+  test('narrowing below lg closes an open aside instead of popping a drawer', async function (assert) {
     media = mockMatchMedia(DESKTOP);
-    const state = new AppLayoutState({ asideOpen: true });
+    const changes: boolean[] = [];
+    const onChange = (value: boolean) => changes.push(value);
     await render(
       <template>
-        <AppLayout @state={{state}} as |layout|>
+        <AppLayout
+          @defaultAsideOpen={{true}}
+          @onAsideOpenChange={{onChange}}
+          as |layout|
+        >
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
           <layout.Main>Content</layout.Main>
           <layout.Aside><span class="payload">Details</span></layout.Aside>
         </AppLayout>
       </template>
     );
     assert.dom('[data-part="aside"]').exists();
+
     media.setWidth(MOBILE);
     await settled();
     assert.dom('[data-part="aside"]').doesNotExist();
-    assert.dom('[role="dialog"] .payload').exists({ count: 1 });
+    assert.dom('[role="dialog"]').doesNotExist('no drawer opens by itself');
+    assert
+      .dom('[data-component="app-layout"]')
+      .hasAttribute('data-aside-open', 'false');
+    assert.deepEqual(changes, [false]);
+
+    await click('[data-part="aside-toggle"]');
+    assert
+      .dom('[role="dialog"] .payload')
+      .exists({ count: 1 }, 'the toggle still opens the drawer below lg');
+
+    await triggerKeyEvent('[role="dialog"]', 'keydown', 'Escape');
     media.setWidth(DESKTOP);
     await settled();
+    assert
+      .dom('[data-part="aside"]')
+      .doesNotExist('stays closed when widening');
+    await click('[data-part="aside-toggle"]');
     assert.dom('[data-part="aside"] .payload').exists({ count: 1 });
     assert.dom('[role="dialog"]').doesNotExist();
   });

@@ -101,7 +101,7 @@ const appLayout = tv({
     skipLink: [
       ...focusVisibleRing,
       'sr-only focus:not-sr-only',
-      'focus:absolute focus:left-2 focus:top-2 focus:z-50',
+      'focus:absolute focus:start-2 focus:top-2 focus:z-50',
       'focus:rounded-md focus:bg-surface-app focus:px-3 focus:py-2',
       'focus:text-on-surface-app focus:shadow-md'
     ]
@@ -173,6 +173,13 @@ const appLayout = tv({
       }
     },
 
+    // The sidebar rendered in the mobile drawer. The drawer's close button
+    // sits over the header's end edge, so the header leaves room for it.
+    inDrawer: {
+      true: { sidebarHeader: 'pe-14' },
+      false: {}
+    },
+
     // Outside an `AppLayout` there is no grid and no drawer breakpoint, so the
     // sidebar is always shown and as tall as its container.
     standalone: {
@@ -231,6 +238,16 @@ const appLayout = tv({
       class: { aside: 'border-s-0 border-e' }
     },
 
+    // Page mode with the inset frame: the sticky sidebar sits inside the
+    // root's `p-3` gutter, so it sticks below the top gutter and is shorter
+    // by both gutters. With `top-0 h-dvh` the grid grew by the gutters and
+    // the page always scrolled by 1.5rem.
+    {
+      variant: 'inset',
+      scrollMode: 'page',
+      class: { sidebar: 'top-3 h-[calc(100dvh-1.5rem)]' }
+    },
+
     // Offcanvas: collapsed means gone, at every width. These come after
     // `standalone` and the breakpoint display classes so they win.
     {
@@ -282,6 +299,7 @@ const appLayout = tv({
     collapsible: 'icon',
     sidebarSide: 'start',
     standalone: false,
+    inDrawer: false,
     scrollMode: 'content'
   }
 });

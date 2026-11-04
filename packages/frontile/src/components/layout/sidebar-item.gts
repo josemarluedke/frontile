@@ -1,7 +1,9 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { service } from '@ember/service';
+import { on } from '@ember/modifier';
 import { LinkTo } from '@ember/routing';
+import { useStyles } from '@frontile/theme';
 import Tooltip from '../overlays/tooltip';
 import { isRouteActive, normalizeRouteArgs } from '../../utils/route-active';
 import type RouterService from '@ember/routing/router-service';
@@ -64,11 +66,12 @@ interface SidebarItemArgs {
   class?: string;
 
   /**
-   * Supplied by `Sidebar`. Not part of the public API.
+   * Supplied by `Sidebar`. Not part of the public API. Without it (an item
+   * rendered on its own) the standalone sidebar's classes are used.
    *
    * @internal
    */
-  classes: SidebarItemClasses;
+  classes?: SidebarItemClasses;
 
   /**
    * Supplied by `Sidebar`: whether the sidebar is drawn as the icon rail.
@@ -76,7 +79,7 @@ interface SidebarItemArgs {
    *
    * @internal
    */
-  rail: boolean;
+  rail?: boolean;
 
   /**
    * Supplied by `Sidebar`: the side of the item its rail tooltip opens on.
@@ -84,7 +87,16 @@ interface SidebarItemArgs {
    *
    * @internal
    */
-  tooltipPlacement: 'left' | 'right';
+  tooltipPlacement?: 'left' | 'right';
+
+  /**
+   * Supplied by `Sidebar` while it renders in the mobile drawer: called when
+   * the item's link is clicked, so the drawer closes. Not called for a
+   * disabled item. Not part of the public API.
+   *
+   * @internal
+   */
+  onActivate?: () => void;
 }
 
 interface SidebarItemSignature {
@@ -146,17 +158,28 @@ class SidebarItem extends Component<SidebarItemSignature> {
     return Boolean(this.args.route) && !this.isDisabled;
   }
 
+  @cached
+  get classes(): SidebarItemClasses {
+    return this.args.classes ?? standaloneItemClasses();
+  }
+
   get className(): string {
     return this.args.class
-      ? `${this.args.classes.sidebarItem} ${this.args.class}`
-      : this.args.classes.sidebarItem;
+      ? `${this.classes.sidebarItem} ${this.args.class}`
+      : this.classes.sidebarItem;
   }
+
+  activate = (): void => {
+    if (!this.isDisabled) {
+      this.args.onActivate?.();
+    }
+  };
 
   <template>
     {{#unless @isHidden}}
       <Tooltip
         @isDisabled={{if @rail false true}}
-        @placement={{@tooltipPlacement}}
+        @placement={{if @tooltipPlacement @tooltipPlacement "right"}}
         as |t|
       >
         {{#if this.rendersLink}}
@@ -171,19 +194,20 @@ class SidebarItem extends Component<SidebarItemSignature> {
             data-active="{{this.isActive}}"
             data-disabled="false"
             {{t.trigger}}
+            {{on "click" this.activate}}
             ...attributes
           >
             {{#if @icon}}
               <span
                 data-part="sidebar-item-icon"
-                class={{@classes.sidebarItemIcon}}
+                class={{this.classes.sidebarItemIcon}}
                 aria-hidden="true"
               ><@icon /></span>
             {{/if}}
             <span
               data-part="sidebar-label"
               data-sidebar-label
-              class={{@classes.sidebarLabel}}
+              class={{this.classes.sidebarLabel}}
             >{{yield}}</span>
           </LinkTo>
         {{else}}
@@ -199,19 +223,20 @@ class SidebarItem extends Component<SidebarItemSignature> {
             data-active="{{this.isActive}}"
             data-disabled="{{this.isDisabled}}"
             {{t.trigger}}
+            {{on "click" this.activate}}
             ...attributes
           >
             {{#if @icon}}
               <span
                 data-part="sidebar-item-icon"
-                class={{@classes.sidebarItemIcon}}
+                class={{this.classes.sidebarItemIcon}}
                 aria-hidden="true"
               ><@icon /></span>
             {{/if}}
             <span
               data-part="sidebar-label"
               data-sidebar-label
-              class={{@classes.sidebarLabel}}
+              class={{this.classes.sidebarLabel}}
             >{{yield}}</span>
           </a>
         {{/if}}
@@ -219,6 +244,19 @@ class SidebarItem extends Component<SidebarItemSignature> {
       </Tooltip>
     {{/unless}}
   </template>
+}
+
+/** An item's classes outside a `Sidebar`: the standalone sidebar's. */
+function standaloneItemClasses(): SidebarItemClasses {
+  const styles = useStyles().appLayout({
+    variant: 'attached',
+    standalone: true
+  });
+  return {
+    sidebarItem: styles.sidebarItem(),
+    sidebarItemIcon: styles.sidebarItemIcon(),
+    sidebarLabel: styles.sidebarLabel()
+  };
 }
 
 export { SidebarItem, type SidebarItemSignature, type SidebarItemArgs };

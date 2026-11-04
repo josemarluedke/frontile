@@ -13,7 +13,8 @@ interface SidebarToggleArgs {
 
   /**
    * The id of the sidebar this button controls, for `aria-controls`. Inside
-   * an `AppLayout` it defaults to the layout's sidebar.
+   * an `AppLayout` it defaults to the layout's sidebar, which below the
+   * breakpoint is the `nav` inside the drawer.
    */
   controls?: string;
 
@@ -42,7 +43,9 @@ interface SidebarToggleSignature {
 
 /**
  * A button that collapses and expands the sidebar. `aria-expanded` is true
- * while the sidebar is expanded.
+ * while the sidebar is expanded. Inside an `AppLayout`, below its
+ * `@breakpoint` (where the sidebar is a drawer) it opens the drawer instead,
+ * like `MenuToggle`, and `aria-expanded` follows the drawer.
  */
 class SidebarToggle extends Component<SidebarToggleSignature> {
   fallbackState = new AppLayoutState();
@@ -55,11 +58,20 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
     return this.args.label ?? 'Toggle sidebar';
   }
 
+  /** Below the layout's breakpoint the sidebar is a drawer. */
+  get controlsDrawer(): boolean {
+    return this.args.layout?.belowBreakpoint ?? false;
+  }
+
   /**
    * Inside a layout, the sidebar's collapse as drawn, so a sidebar with
-   * `@collapsible="none"` always reports expanded.
+   * `@collapsible="none"` always reports expanded. Below the breakpoint,
+   * whether the drawer is open.
    */
   get expanded(): 'true' | 'false' {
+    if (this.controlsDrawer) {
+      return this.state.mobileSidebarOpen ? 'true' : 'false';
+    }
     const collapsed =
       this.args.layout?.sidebarCollapsed ?? this.state.sidebarCollapsed;
     return collapsed ? 'false' : 'true';
@@ -77,7 +89,11 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
   }
 
   toggle = (): void => {
-    this.state.toggleSidebar();
+    if (this.controlsDrawer) {
+      this.state.openMobileSidebar();
+    } else {
+      this.state.toggleSidebar();
+    }
   };
 
   <template>

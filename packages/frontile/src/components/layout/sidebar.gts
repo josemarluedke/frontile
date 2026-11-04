@@ -123,6 +123,10 @@ class Sidebar extends Component<SidebarSignature> {
     return atEnd !== rtl ? 'right' : 'left';
   }
 
+  /**
+   * Closes the drawer. Also handed to each `Item` while the sidebar is in the
+   * drawer, so picking a destination closes it.
+   */
   closeDrawer = (): void => {
     this.state.closeMobileSidebar();
   };
@@ -176,6 +180,7 @@ class Sidebar extends Component<SidebarSignature> {
       scrollMode: layout?.config.scrollMode,
       sidebarSide: layout?.config.sidebarSide,
       standalone: !layout,
+      inDrawer: this.inDrawer,
       collapsible: this.collapsible,
       collapsed: this.collapsed
     });
@@ -260,6 +265,7 @@ class Sidebar extends Component<SidebarSignature> {
                 classes=this.slotClasses.item
                 rail=this.rail
                 tooltipPlacement=this.tooltipPlacement
+                onActivate=this.closeDrawer
               )
               Group=(component SidebarGroup classes=this.slotClasses.group)
             )
