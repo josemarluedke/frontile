@@ -7,6 +7,7 @@ import { schedule } from '@ember/runloop';
 import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import StepperList from './list';
+import StepperPanel from './panel';
 import StepperStep from './step';
 import type { StepperSlots, StepperVariants } from '@frontile/theme';
 import type Owner from '@ember/owner';
@@ -123,6 +124,7 @@ interface StepperContext<T> {
 interface StepperApi<T> {
   List: WithBoundArgs<typeof StepperList<T>, 'context'>;
   Step: WithBoundArgs<typeof StepperStep<T>, 'context'>;
+  Panel: WithBoundArgs<typeof StepperPanel<T>, 'context'>;
 
   /** Moves to the next step that is not disabled. A no-op on the last one. */
   next: () => void;
@@ -397,13 +399,15 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       {{#let
         (component StepperList context=this.context)
         (component StepperStep context=this.context)
-        as |List Step|
+        (component StepperPanel context=this.context)
+        as |List Step Panel|
       }}
         {{! @glint-ignore: WithBoundArgs vs. a generic component }}
         {{yield
           (hash
             List=List
             Step=Step
+            Panel=Panel
             next=this.next
             prev=this.prev
             goTo=this.goTo

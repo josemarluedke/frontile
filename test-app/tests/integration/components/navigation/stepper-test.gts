@@ -7,7 +7,8 @@ import {
   findAll,
   settled,
   focus,
-  triggerKeyEvent
+  triggerKeyEvent,
+  fillIn
 } from '@ember/test-helpers';
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
@@ -750,5 +751,79 @@ module('Integration | Component | Stepper | keyboard', function (hooks) {
     assert.dom('[data-part="step"][tabindex="0"]').exists({ count: 1 });
     assert.dom('[data-test-step="b"]').hasAttribute('tabindex', '0');
     assert.dom('[data-test-step="a"]').hasAttribute('tabindex', '-1');
+  });
+});
+
+module('Integration | Component | Stepper | panel', function (hooks) {
+  setupRenderingTest(hooks);
+
+  test('only the active panel renders', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+          </S.List>
+          <S.Panel @value="a">First</S.Panel>
+          <S.Panel @value="b">Second</S.Panel>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-part="panel"]').exists({ count: 1 });
+    assert.dom('[data-part="panel"]').hasText('First');
+
+    await click('[data-test-step="b"]');
+
+    assert.dom('[data-part="panel"]').exists({ count: 1 });
+    assert.dom('[data-part="panel"]').hasText('Second');
+  });
+
+  test('keepMounted keeps an inactive panel in the DOM with hidden, preserving its state', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+          </S.List>
+          <S.Panel @value="a" @keepMounted={{true}} data-test-panel="a">
+            <input data-test-input />
+          </S.Panel>
+          <S.Panel @value="b" data-test-panel="b">Second</S.Panel>
+        </Stepper>
+      </template>
+    );
+
+    await fillIn('[data-test-input]', 'typed');
+    await click('[data-test-step="b"]');
+
+    assert.dom('[data-test-panel="a"]').exists();
+    assert.dom('[data-test-panel="a"]').hasAttribute('hidden');
+    assert.dom('[data-test-panel="b"]').doesNotHaveAttribute('hidden');
+
+    await click('[data-test-step="a"]');
+
+    assert.dom('[data-test-panel="a"]').doesNotHaveAttribute('hidden');
+    assert.dom('[data-test-input]').hasValue('typed');
+    assert.dom('[data-test-panel="b"]').doesNotExist('unmounted by default');
+  });
+
+  test('the panel is labelled by its step', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+          </S.List>
+          <S.Panel @value="a">First</S.Panel>
+        </Stepper>
+      </template>
+    );
+
+    const step = find('[data-test-step="a"]') as HTMLElement;
+    assert.dom('[data-part="panel"]').hasAttribute('role', 'region');
+    assert.dom('[data-part="panel"]').hasAttribute('aria-labelledby', step.id);
   });
 });
