@@ -4,6 +4,7 @@ import { hash } from '@ember/helper';
 import { guidFor } from '@ember/object/internals';
 import { isDestroyed, isDestroying } from '@ember/destroyable';
 import { schedule } from '@ember/runloop';
+import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import StepperList from './list';
 import StepperStep from './step';
@@ -112,6 +113,7 @@ interface StepperContext<T> {
   unregister: (record: StepRecord<T>) => void;
   stepIdFor: (value: T) => string | undefined;
   panelIdFor: (value: T) => string;
+  roving: RovingFocus;
 }
 
 /**
@@ -150,6 +152,15 @@ interface StepperSignature<T> {
 }
 
 class Stepper<T> extends Component<StepperSignature<T>> {
+  // Selection is manual -- Enter or Space -- unlike `Tabs`' automatic default:
+  // selecting a step can trigger validation or navigation, which arrowing
+  // past one must not.
+  roving = rovingFocus(() => ({
+    orientation: this.orientation,
+    activationMode: 'manual',
+    onActivate: this.activateElement
+  }));
+
   // Uncontrolled mode's own selection, seeded from `@defaultValue`. Written on
   // every `select` regardless of mode -- the getter ignores it when controlled
   // -- so both modes share one code path, as `Tabs` does.
@@ -322,6 +333,14 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     });
   }
 
+  activateElement = (element: HTMLElement): void => {
+    const record = this.#records.find((item) => item.element === element);
+    if (!record || record.isDisabled) {
+      return;
+    }
+    this.select(record.value);
+  };
+
   stepIdFor = (value: T): string | undefined =>
     this.steps.find((step) => step.value === value)?.id;
 
@@ -362,7 +381,8 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       register: this.register,
       unregister: this.unregister,
       stepIdFor: this.stepIdFor,
-      panelIdFor: this.panelIdFor
+      panelIdFor: this.panelIdFor,
+      roving: this.roving
     };
   }
 

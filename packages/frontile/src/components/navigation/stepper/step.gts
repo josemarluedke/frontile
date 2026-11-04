@@ -184,8 +184,10 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
         aria-current={{if this.isSelected "step"}}
         aria-disabled="{{this.isDisabled}}"
         aria-busy={{if this.isLoading "true"}}
+        data-selected="{{this.isSelected}}"
         class="{{@context.stepClass}} {{@class}}"
         {{this.registerStep}}
+        {{@context.roving.setupItem}}
         {{on "click" this.handleClick}}
         ...attributes
       >

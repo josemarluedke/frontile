@@ -1,6 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, findAll, settled } from '@ember/test-helpers';
+import {
+  render,
+  find,
+  click,
+  findAll,
+  settled,
+  focus,
+  triggerKeyEvent
+} from '@ember/test-helpers';
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 import { cell } from 'ember-resources';
@@ -627,5 +635,120 @@ module('Integration | Component | Stepper | helpers', function (hooks) {
 
     assert.dom('[aria-current]').doesNotExist();
     assert.dom('[data-part="step"]').exists({ count: 1 });
+  });
+});
+
+module('Integration | Component | Stepper | keyboard', function (hooks) {
+  setupRenderingTest(hooks);
+
+  test('arrow keys move focus without selecting', async function (assert) {
+    const calls: string[] = [];
+    const onChange = (value: string) => calls.push(value);
+
+    await render(
+      <template>
+        <Stepper @defaultValue="a" @onChange={{onChange}} as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    await focus('[data-test-step="a"]');
+    await triggerKeyEvent('[data-test-step="a"]', 'keydown', 'ArrowRight');
+
+    assert.strictEqual(document.activeElement, find('[data-test-step="b"]'));
+    assert.dom('[data-test-step="a"]').hasAria('current', 'step');
+    assert.deepEqual(calls, []);
+  });
+
+  test('Enter and Space select the focused step', async function (assert) {
+    const calls: string[] = [];
+    const onChange = (value: string) => calls.push(value);
+
+    await render(
+      <template>
+        <Stepper @defaultValue="a" @onChange={{onChange}} as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+            <S.Step @value="c" data-test-step="c" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    await focus('[data-test-step="a"]');
+    await triggerKeyEvent('[data-test-step="a"]', 'keydown', 'ArrowRight');
+    await triggerKeyEvent('[data-test-step="b"]', 'keydown', 'Enter');
+    assert.dom('[data-test-step="b"]').hasAria('current', 'step');
+
+    await triggerKeyEvent('[data-test-step="b"]', 'keydown', 'ArrowRight');
+    await triggerKeyEvent('[data-test-step="c"]', 'keydown', ' ');
+    assert.dom('[data-test-step="c"]').hasAria('current', 'step');
+    assert.deepEqual(calls, ['b', 'c']);
+  });
+
+  test('vertical orientation uses up and down arrows', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="a" @orientation="vertical" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    await focus('[data-test-step="a"]');
+    await triggerKeyEvent('[data-test-step="a"]', 'keydown', 'ArrowRight');
+    assert.strictEqual(
+      document.activeElement,
+      find('[data-test-step="a"]'),
+      'right arrow does nothing when vertical'
+    );
+
+    await triggerKeyEvent('[data-test-step="a"]', 'keydown', 'ArrowDown');
+    assert.strictEqual(document.activeElement, find('[data-test-step="b"]'));
+  });
+
+  test('disabled steps are skipped by arrow keys', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" @isDisabled={{true}} data-test-step="b" />
+            <S.Step @value="c" data-test-step="c" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    await focus('[data-test-step="a"]');
+    await triggerKeyEvent('[data-test-step="a"]', 'keydown', 'ArrowRight');
+
+    assert.strictEqual(document.activeElement, find('[data-test-step="c"]'));
+  });
+
+  test('exactly one step is tabbable', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="b" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+            <S.Step @value="c" data-test-step="c" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-part="step"][tabindex="0"]').exists({ count: 1 });
+    assert.dom('[data-test-step="b"]').hasAttribute('tabindex', '0');
+    assert.dom('[data-test-step="a"]').hasAttribute('tabindex', '-1');
   });
 });
