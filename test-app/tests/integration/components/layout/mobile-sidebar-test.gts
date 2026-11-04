@@ -219,6 +219,31 @@ module(
       assert.dom('[data-part="menu-toggle"]').isFocused();
     });
 
+    test('closing returns focus to the element that had focus when the shortcut opened it', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <AppLayout @classes={{shownToggle}} as |layout|>
+            <layout.Navbar>
+              <layout.MenuToggle />
+              <button type="button" id="inside">Inside</button>
+            </layout.Navbar>
+            <layout.Sidebar />
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const inside = find('#inside') as HTMLElement;
+      inside.focus();
+      await pressModB(inside);
+      assert.dom('[role="dialog"]').exists();
+      await triggerKeyEvent('[role="dialog"]', 'keydown', 'Escape');
+
+      assert.dom('[role="dialog"]').doesNotExist();
+      assert.dom('#inside').isFocused();
+    });
+
     test('Esc closes', async function (assert) {
       media = mockMatchMedia(MOBILE);
       await render(

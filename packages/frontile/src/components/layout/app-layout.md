@@ -240,7 +240,9 @@ on wider screens.
 The drawer shows the same `Sidebar` block, so you write the sidebar once. It
 slides in from the sidebar's side (`@sidebarSide`, following the document's
 direction), always expanded. It closes on Escape, on a click outside it, from
-its close button, or when the window grows past the breakpoint.
+its close button, or when the window grows past the breakpoint. The `Sidebar`
+block remounts whenever the window crosses the breakpoint, so any state held
+by the components inside it starts over.
 
 Narrow the window to below 48rem to open this one.
 
@@ -283,10 +285,11 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
 
 <kbd>Cmd</kbd>+<kbd>B</kbd> (<kbd>Ctrl</kbd>+<kbd>B</kbd> outside Apple
 platforms) toggles the sidebar: it collapses or expands it on wide screens and
-opens or closes the drawer below the breakpoint. It responds only while focus
-is inside the layout or on the page itself, so a second layout on the page is
-left alone. Pick another combination with `@toggleShortcut`, such as
-`'mod+shift+s'`, or turn it off with `@toggleShortcut={{false}}`.
+opens or closes the drawer below the breakpoint. With focus inside a layout,
+only that layout toggles. With focus on the page body, the shortcut toggles
+every `AppLayout` on the page; turn it off on the others with
+`@toggleShortcut={{false}}`. Pick another combination with `@toggleShortcut`,
+such as `'mod+shift+s'`.
 
 ### Using the sidebar on its own
 
@@ -476,7 +479,10 @@ export default class SharedStateExample extends Component {
   `aria-expanded` to `true` while the drawer is open and `aria-controls` to the
   sidebar.
 - The drawer is a modal dialog named by the sidebar's `@label`. Focus stays
-  inside it while it is open, and closing it returns focus to `MenuToggle`.
+  inside it while it is open. Closing it returns focus to the element that
+  opened it: `MenuToggle` when that opened it, otherwise the element that had
+  focus when the shortcut was pressed (`MenuToggle` if focus was on the page
+  body).
 - In the icon rail, text inside `[data-sidebar-label]` is visually hidden but
   remains in the accessibility tree, so each link keeps its name.
 - `PageHeader` renders `@title` as an `h1`.

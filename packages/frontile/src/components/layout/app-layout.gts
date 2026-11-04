@@ -11,6 +11,7 @@ import {
   watchBreakpoint,
   type Breakpoint
 } from '../../utils/breakpoint';
+import { globalDocument, listen } from '../../utils/document-listener';
 import { AppLayoutState } from './app-layout-state';
 import {
   ControlledAppLayoutState,
@@ -188,12 +189,20 @@ class AppLayout extends Component<AppLayoutSignature> {
       asideOpen: args.defaultAsideOpen
     });
     this.#controlled = new ControlledAppLayoutState(own, () => this.args);
-    document.addEventListener('keydown', this.handleShortcut);
+    // `listen` is a no-op without a global `document` (FastBoot/SSR), so
+    // constructing the layout on the server does not throw.
+    this.#stopShortcut = listen(
+      globalDocument(),
+      'keydown',
+      this.handleShortcut
+    );
   }
+
+  #stopShortcut: () => void;
 
   willDestroy(): void {
     super.willDestroy();
-    document.removeEventListener('keydown', this.handleShortcut);
+    this.#stopShortcut();
     stopWatcher(this);
   }
 
@@ -251,8 +260,8 @@ class AppLayout extends Component<AppLayoutSignature> {
   }
 
   isRtl = (): boolean => {
-    const element = this.#root ?? document.documentElement;
-    return getComputedStyle(element).direction === 'rtl';
+    const element = this.#root ?? globalDocument()?.documentElement;
+    return element ? getComputedStyle(element).direction === 'rtl' : false;
   };
 
   get shortcut(): string | false {
