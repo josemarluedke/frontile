@@ -4,6 +4,12 @@ export {
   type AppLayoutSignature,
   type AppLayoutArgs
 } from './app-layout';
+export { Aside, type AsideSignature, type AsideArgs } from './aside';
+export {
+  AsideToggle,
+  type AsideToggleSignature,
+  type AsideToggleArgs
+} from './aside-toggle';
 export { Main, type MainSignature, type MainArgs } from './main';
 export {
   MenuToggle,

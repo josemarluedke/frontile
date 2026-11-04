@@ -9,10 +9,6 @@ imports:
 The application shell: a sidebar, a navbar and a main content area. Reach for
 it to give every page of an app the same frame.
 
-> Note: `Aside` and `AsideToggle` arrive with the next phase of `AppLayout`.
-> The demos below use the parts available today: `Sidebar`, `SidebarToggle`,
-> `MenuToggle`, `Navbar`, `Main` and `PageHeader`.
-
 ## Import
 
 ```js
@@ -325,6 +321,45 @@ export default class StandaloneSidebarExample extends Component {
 }
 ```
 
+## Aside
+
+`Aside` is an optional panel beside `Main`, for details, filters or help. It
+renders only while `asideOpen` is true. Put an `AsideToggle` at the end of the
+navbar to open and close it.
+
+From `lg` (64rem) up the aside is a column inside the card, and `Main` narrows
+to make room. Below `lg` the same block renders in a right-side drawer
+instead, so you write it once. The drawer closes on Escape, on a click outside
+it, or from its close button, and `asideOpen` follows. The aside's breakpoint
+is always `lg`: it does not follow the layout's `@breakpoint`, which only
+moves the sidebar. With `@sidebarSide="end"` the aside moves to the start
+side, so the two panels stay on opposite sides of the page.
+
+Name the landmark with `@label` (default `Details`). The drawer uses the same
+name.
+
+```gts preview
+import { AppLayout } from 'frontile';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout class='demo-app-layout' @defaultAsideOpen={{true}} as |layout|>
+      <layout.Navbar>
+        <span class='text-sm font-medium'>Access management</span>
+        <layout.AsideToggle class='ms-auto' />
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Roles' />
+      </layout.Main>
+      <layout.Aside @label='Role details'>
+        <h2 class='font-semibold'>Administrator</h2>
+        <p class='mt-1 text-neutral-firm'>Full access to every workspace.</p>
+      </layout.Aside>
+    </AppLayout>
+  </div>
+</template>
+```
+
 ## Page header
 
 `PageHeader` is the title row at the top of a page. Place it inside `Main`.
@@ -485,6 +520,11 @@ export default class SharedStateExample extends Component {
   body).
 - In the icon rail, text inside `[data-sidebar-label]` is visually hidden but
   remains in the accessibility tree, so each link keeps its name.
+- `Aside` renders an `aside` landmark named by `@label` (default `Details`);
+  in the drawer the dialog and the landmark inside it share that name.
+- `AsideToggle` is a button named by `@label` (default "Toggle details"). It
+  sets `aria-expanded` to `true` while the aside is open and `aria-controls` to
+  the aside. Closing the drawer returns focus to the toggle.
 - `PageHeader` renders `@title` as an `h1`.
 - The inset card is decorative and hidden from assistive technology.
 
@@ -493,7 +533,7 @@ export default class SharedStateExample extends Component {
 | `Tab`            | From the top of the page, reveals and focuses the skip link         |
 | `Enter`          | On the skip link, moves focus to the main content                   |
 | `Cmd/Ctrl` + `B` | Collapses or expands the sidebar; below the breakpoint, opens or closes the drawer |
-| `Escape`         | Closes the drawer                                                   |
+| `Escape`         | Closes the drawer (sidebar or aside)                                                 |
 
 ## API
 
@@ -501,6 +541,8 @@ export default class SharedStateExample extends Component {
 <Signature @component="Sidebar" />
 <Signature @component="SidebarToggle" />
 <Signature @component="MenuToggle" />
+<Signature @component="Aside" />
+<Signature @component="AsideToggle" />
 <Signature @component="Navbar" />
 <Signature @component="Main" />
 <Signature @component="PageHeader" />

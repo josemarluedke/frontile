@@ -67,8 +67,16 @@ const appLayout = tv({
 
     // Literal `lg:block` here, not tied to `breakpoint`: the aside is a
     // wide-viewport affordance regardless of where the sidebar collapses.
+    // Below `lg` the same block renders in a Drawer instead (`mobileAside`).
     aside:
       'col-start-3 row-start-2 hidden w-72 shrink-0 overflow-y-auto p-4 text-sm lg:block',
+    // The aside's `aside` element inside the drawer: as tall as the drawer.
+    mobileAside: 'min-h-0 flex-1 overflow-y-auto p-4 text-sm',
+    asideToggle: [
+      ...focusVisibleRing,
+      'inline-flex size-9 shrink-0 items-center justify-center rounded-md',
+      'text-neutral-firm hover:bg-neutral-subtle hover:text-neutral-strong'
+    ],
 
     skipLink: [
       ...focusVisibleRing,
@@ -88,7 +96,7 @@ const appLayout = tv({
         sidebar: 'bg-transparent',
         mainCard:
           'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted',
-        aside: 'border-l border-neutral-subtle'
+        aside: 'border-s border-neutral-subtle'
       },
       attached: {
         base: 'bg-surface-app',
@@ -96,7 +104,7 @@ const appLayout = tv({
         // Edge-to-edge content: no card chrome. The element is not rendered.
         mainCard: 'hidden',
         navbar: 'border-b border-neutral-muted bg-surface-app',
-        aside: 'border-l border-neutral-muted'
+        aside: 'border-s border-neutral-muted'
       }
     },
 
@@ -129,18 +137,19 @@ const appLayout = tv({
       none: {}
     },
 
-    // `end` moves the sidebar to the last column. The grid is reordered, not
-    // the DOM: main and navbar take columns 1 to 2, the aside column 2.
-    // Logical utilities flip all of this in a right-to-left document.
+    // `end` moves the sidebar to the last column and the aside to the first,
+    // so the two stay on opposite sides of the page. The grid is reordered,
+    // not the DOM: aside and main take columns 1 and 2, with the navbar and
+    // card spanning both. Logical utilities flip all of this in a
+    // right-to-left document.
     sidebarSide: {
       start: {},
       end: {
-        base: 'grid-cols-[minmax(0,1fr)_auto_auto]',
         sidebar: 'col-start-3',
         navbar: 'col-[1/-2]',
-        main: 'col-start-1',
+        main: 'col-start-2',
         mainCard: 'col-[1/-2]',
-        aside: 'col-start-2'
+        aside: 'col-start-1'
       }
     },
 
@@ -188,6 +197,18 @@ const appLayout = tv({
       variant: 'attached',
       sidebarSide: 'end',
       class: { sidebar: 'border-e-0 border-s' }
+    },
+    // The aside sits at the start with `sidebarSide="end"`; its border
+    // faces the content, on its end side.
+    {
+      variant: 'inset',
+      sidebarSide: 'end',
+      class: { aside: 'border-s-0 border-e' }
+    },
+    {
+      variant: 'attached',
+      sidebarSide: 'end',
+      class: { aside: 'border-s-0 border-e' }
     },
 
     // Offcanvas: collapsed means gone, at every width. These come after

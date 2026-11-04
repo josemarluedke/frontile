@@ -18,6 +18,8 @@ import {
   type AppLayoutContext,
   type RegisteredSidebar
 } from './context';
+import Aside from './aside';
+import AsideToggle from './aside-toggle';
 import Main from './main';
 import MenuToggle from './menu-toggle';
 import Navbar from './navbar';
@@ -162,6 +164,8 @@ interface AppLayoutSignature {
     default: [
       {
         state: AppLayoutState;
+        Aside: WithBoundArgs<typeof Aside, 'layout'>;
+        AsideToggle: WithBoundArgs<typeof AsideToggle, 'layout'>;
         Main: WithBoundArgs<typeof Main, 'layout'>;
         MenuToggle: WithBoundArgs<typeof MenuToggle, 'layout'>;
         Navbar: WithBoundArgs<typeof Navbar, 'layout'>;
@@ -203,7 +207,8 @@ class AppLayout extends Component<AppLayoutSignature> {
   willDestroy(): void {
     super.willDestroy();
     this.#stopShortcut();
-    stopWatcher(this);
+    stopWatcher(watchers, this);
+    stopWatcher(asideWatchers, this);
   }
 
   #root?: HTMLElement;
@@ -220,7 +225,12 @@ class AppLayout extends Component<AppLayoutSignature> {
    */
   @cached
   get breakpointWatcher(): BreakpointWatcher {
-    return replaceWatcher(this, this.breakpoint, this.closeDrawerWhenWide);
+    return replaceWatcher(
+      watchers,
+      this,
+      this.breakpoint,
+      this.closeDrawerWhenWide
+    );
   }
 
   closeDrawerWhenWide = (below: boolean): void => {
@@ -231,6 +241,16 @@ class AppLayout extends Component<AppLayoutSignature> {
 
   get belowBreakpoint(): boolean {
     return this.breakpointWatcher.below;
+  }
+
+  /** The aside is a drawer below `lg`, whatever `@breakpoint` is. */
+  @cached
+  get asideWatcher(): BreakpointWatcher {
+    return replaceWatcher(asideWatchers, this, 'lg', () => {});
+  }
+
+  get belowAsideBreakpoint(): boolean {
+    return this.asideWatcher.below;
   }
 
   // The Sidebar registers after render: the toggles that read it may already
@@ -320,6 +340,14 @@ class AppLayout extends Component<AppLayoutSignature> {
     return `${guidFor(this)}-drawer`;
   }
 
+  get asideId(): string {
+    return `${guidFor(this)}-aside`;
+  }
+
+  get asideDrawerId(): string {
+    return `${guidFor(this)}-aside-drawer`;
+  }
+
   get variant(): 'inset' | 'attached' {
     return this.args.variant ?? 'inset';
   }
@@ -372,6 +400,8 @@ class AppLayout extends Component<AppLayoutSignature> {
       sidebarId: this.sidebarId,
       menuToggleId: this.menuToggleId,
       drawerId: this.drawerId,
+      asideId: this.asideId,
+      asideDrawerId: this.asideDrawerId,
       styles: this.styles,
       config: {
         variant: this.variant,
@@ -383,6 +413,9 @@ class AppLayout extends Component<AppLayoutSignature> {
       classes: this.args.classes,
       get belowBreakpoint() {
         return layout.belowBreakpoint;
+      },
+      get belowAsideBreakpoint() {
+        return layout.belowAsideBreakpoint;
       },
       get sidebarCollapsed() {
         return layout.effectiveSidebarCollapsed;
@@ -445,6 +478,8 @@ class AppLayout extends Component<AppLayoutSignature> {
       {{yield
         (hash
           state=this.state
+          Aside=(component Aside layout=this.context)
+          AsideToggle=(component AsideToggle layout=this.context)
           Main=(component Main layout=this.context)
           MenuToggle=(component MenuToggle layout=this.context)
           Navbar=(component Navbar layout=this.context)
@@ -480,22 +515,27 @@ class BreakpointWatcher {
 }
 
 const watchers = new WeakMap<object, BreakpointWatcher>();
+const asideWatchers = new WeakMap<object, BreakpointWatcher>();
 
 /** Stops `owner`'s current watcher, if any, and starts one for `breakpoint`. */
 function replaceWatcher(
+  registry: WeakMap<object, BreakpointWatcher>,
   owner: object,
   breakpoint: Breakpoint,
   onChange: (below: boolean) => void
 ): BreakpointWatcher {
-  stopWatcher(owner);
+  stopWatcher(registry, owner);
   const watcher = new BreakpointWatcher(breakpoint, onChange);
-  watchers.set(owner, watcher);
+  registry.set(owner, watcher);
   return watcher;
 }
 
-function stopWatcher(owner: object): void {
-  watchers.get(owner)?.stop();
-  watchers.delete(owner);
+function stopWatcher(
+  registry: WeakMap<object, BreakpointWatcher>,
+  owner: object
+): void {
+  registry.get(owner)?.stop();
+  registry.delete(owner);
 }
 
 function isApplePlatform(): boolean {
