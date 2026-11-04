@@ -259,7 +259,10 @@ class Stepper<T> extends Component<StepperSignature<T>> {
 
   /** Backs the narrow-width "Step N of M" line. */
   get summary(): StepperSummary | undefined {
-    if (this.orientation !== 'horizontal' || this.args.collapseLabels === false) {
+    if (
+      this.orientation !== 'horizontal' ||
+      this.args.collapseLabels === false
+    ) {
       return undefined;
     }
     const steps = this.steps;
@@ -300,7 +303,11 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     const selected = this.selectedValue;
     const current = steps.findIndex((step) => step.value === selected);
 
-    for (let i = current + direction; i >= 0 && i < steps.length; i += direction) {
+    for (
+      let i = current + direction;
+      i >= 0 && i < steps.length;
+      i += direction
+    ) {
       const step = steps[i];
       if (step && !step.isDisabled) {
         return step;

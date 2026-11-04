@@ -14,291 +14,296 @@ import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { Stepper } from 'frontile';
+import type { TOC } from '@ember/component/template-only';
 
-module('Integration | Component | Stepper | container tokens', function (hooks) {
-  setupRenderingTest(hooks);
+module(
+  'Integration | Component | Stepper | container tokens',
+  function (hooks) {
+    setupRenderingTest(hooks);
 
-  function display(selector: string): string {
-    return getComputedStyle(find(selector) as Element).display;
+    function display(selector: string): string {
+      return getComputedStyle(find(selector) as Element).display;
+    }
+
+    test('the stepper tokens reach a consumer build: narrow container stays hidden', async function (assert) {
+      await render(
+        <template>
+          <div class="@container/stepper w-[20rem]">
+            <div
+              data-test-probe
+              class="hidden @fr-stepper-bottom/stepper:block"
+            ></div>
+          </div>
+        </template>
+      );
+
+      assert.strictEqual(display('[data-test-probe]'), 'none');
+    });
+
+    test('the stepper tokens reach a consumer build: bottom threshold reveals at 30rem', async function (assert) {
+      await render(
+        <template>
+          <div class="@container/stepper w-[30rem]">
+            <div
+              data-test-probe
+              class="hidden @fr-stepper-bottom/stepper:block"
+            ></div>
+          </div>
+        </template>
+      );
+
+      assert.strictEqual(display('[data-test-probe]'), 'block');
+    });
+
+    test('the stepper tokens reach a consumer build: end threshold waits for 42rem', async function (assert) {
+      await render(
+        <template>
+          <div class="@container/stepper w-[30rem]">
+            <div
+              data-test-probe
+              class="hidden @fr-stepper-end/stepper:block"
+            ></div>
+          </div>
+          <div class="@container/stepper w-[44rem]">
+            <div
+              data-test-probe-wide
+              class="hidden @fr-stepper-end/stepper:block"
+            ></div>
+          </div>
+        </template>
+      );
+
+      assert.strictEqual(display('[data-test-probe]'), 'none');
+      assert.strictEqual(display('[data-test-probe-wide]'), 'block');
+    });
+
+    test('a var() container condition does not match', async function (assert) {
+      await render(
+        <template>
+          <div class="@container/stepper w-[30rem] [--x:10rem]">
+            <div
+              data-test-probe
+              class="hidden @min-[var(--x)]/stepper:block"
+            ></div>
+          </div>
+        </template>
+      );
+
+      assert.strictEqual(display('[data-test-probe]'), 'none');
+    });
   }
+);
 
-  test('the stepper tokens reach a consumer build: narrow container stays hidden', async function (assert) {
-    await render(
-      <template>
-        <div class="@container/stepper w-[20rem]">
-          <div
-            data-test-probe
-            class="hidden @fr-stepper-bottom/stepper:block"
-          ></div>
-        </div>
-      </template>
-    );
+module(
+  'Integration | Component | Stepper | frontile/navigation',
+  function (hooks) {
+    setupRenderingTest(hooks);
 
-    assert.strictEqual(display('[data-test-probe]'), 'none');
-  });
+    test('it renders a labelled ordered list', async function (assert) {
+      await render(
+        <template>
+          <Stepper as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" />
+              <S.Step @value="b" />
+              <S.Step @value="c" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-  test('the stepper tokens reach a consumer build: bottom threshold reveals at 30rem', async function (assert) {
-    await render(
-      <template>
-        <div class="@container/stepper w-[30rem]">
-          <div
-            data-test-probe
-            class="hidden @fr-stepper-bottom/stepper:block"
-          ></div>
-        </div>
-      </template>
-    );
+      assert.dom('ol').hasAria('label', 'Checkout');
+      assert.dom('ol > li > button[data-part="step"]').exists({ count: 3 });
+    });
 
-    assert.strictEqual(display('[data-test-probe]'), 'block');
-  });
+    test('aria-current is on the active step only', async function (assert) {
+      await render(
+        <template>
+          <Stepper @value="b" as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" data-test-step="a" />
+              <S.Step @value="b" data-test-step="b" />
+              <S.Step @value="c" data-test-step="c" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-  test('the stepper tokens reach a consumer build: end threshold waits for 42rem', async function (assert) {
-    await render(
-      <template>
-        <div class="@container/stepper w-[30rem]">
-          <div
-            data-test-probe
-            class="hidden @fr-stepper-end/stepper:block"
-          ></div>
-        </div>
-        <div class="@container/stepper w-[44rem]">
-          <div
-            data-test-probe-wide
-            class="hidden @fr-stepper-end/stepper:block"
-          ></div>
-        </div>
-      </template>
-    );
+      assert.dom('[aria-current="step"]').exists({ count: 1 });
+      assert.dom('[data-test-step="b"]').hasAria('current', 'step');
+    });
 
-    assert.strictEqual(display('[data-test-probe]'), 'none');
-    assert.strictEqual(display('[data-test-probe-wide]'), 'block');
-  });
+    test('uncontrolled: @defaultValue seeds and clicks select', async function (assert) {
+      const calls: string[] = [];
+      const onChange = (value: string) => calls.push(value);
 
-  test('a var() container condition does not match', async function (assert) {
-    await render(
-      <template>
-        <div
-          class="@container/stepper w-[30rem]"
-          style="--x: 10rem"
-        >
-          <div
-            data-test-probe
-            class="hidden @min-[var(--x)]/stepper:block"
-          ></div>
-        </div>
-      </template>
-    );
+      await render(
+        <template>
+          <Stepper @defaultValue="a" @onChange={{onChange}} as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" data-test-step="a" />
+              <S.Step @value="b" data-test-step="b" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-    assert.strictEqual(display('[data-test-probe]'), 'none');
-  });
-});
+      assert.dom('[data-test-step="a"]').hasAria('current', 'step');
 
-module('Integration | Component | Stepper | frontile/navigation', function (hooks) {
-  setupRenderingTest(hooks);
+      await click('[data-test-step="b"]');
 
-  test('it renders a labelled ordered list', async function (assert) {
-    await render(
-      <template>
-        <Stepper as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" />
-            <S.Step @value="b" />
-            <S.Step @value="c" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
+      assert.dom('[data-test-step="b"]').hasAria('current', 'step');
+      assert.dom('[data-test-step="a"]').doesNotHaveAttribute('aria-current');
+      assert.deepEqual(calls, ['b']);
+    });
 
-    assert.dom('ol').hasAria('label', 'Checkout');
-    assert.dom('ol > li > button[data-part="step"]').exists({ count: 3 });
-  });
+    test('uncontrolled: starts on the first enabled step without @defaultValue', async function (assert) {
+      await render(
+        <template>
+          <Stepper as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" @isDisabled={{true}} data-test-step="a" />
+              <S.Step @value="b" data-test-step="b" />
+              <S.Step @value="c" data-test-step="c" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-  test('aria-current is on the active step only', async function (assert) {
-    await render(
-      <template>
-        <Stepper @value="b" as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" data-test-step="a" />
-            <S.Step @value="b" data-test-step="b" />
-            <S.Step @value="c" data-test-step="c" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
+      assert.dom('[data-test-step="b"]').hasAria('current', 'step');
+    });
 
-    assert.dom('[aria-current="step"]').exists({ count: 1 });
-    assert.dom('[data-test-step="b"]').hasAria('current', 'step');
-  });
+    test('controlled: @value={{undefined}} counts as controlled', async function (assert) {
+      const calls: string[] = [];
+      const onChange = (value: string) => calls.push(value);
 
-  test('uncontrolled: @defaultValue seeds and clicks select', async function (assert) {
-    const calls: string[] = [];
-    const onChange = (value: string) => calls.push(value);
+      await render(
+        <template>
+          <Stepper @value={{undefined}} @onChange={{onChange}} as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" data-test-step="a" />
+              <S.Step @value="b" data-test-step="b" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-    await render(
-      <template>
-        <Stepper @defaultValue="a" @onChange={{onChange}} as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" data-test-step="a" />
-            <S.Step @value="b" data-test-step="b" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
+      assert.dom('[aria-current]').doesNotExist();
 
-    assert.dom('[data-test-step="a"]').hasAria('current', 'step');
+      await click('[data-test-step="b"]');
 
-    await click('[data-test-step="b"]');
+      assert.deepEqual(calls, ['b'], 'onChange still fires');
+      assert.dom('[aria-current]').doesNotExist('selection did not move');
+    });
 
-    assert.dom('[data-test-step="b"]').hasAria('current', 'step');
-    assert.dom('[data-test-step="a"]').doesNotHaveAttribute('aria-current');
-    assert.deepEqual(calls, ['b']);
-  });
+    test('controlled: an onChange that does not update @value leaves selection unchanged', async function (assert) {
+      const value = cell('a');
+      const calls: string[] = [];
+      const onChange = (next: string) => calls.push(next);
 
-  test('uncontrolled: starts on the first enabled step without @defaultValue', async function (assert) {
-    await render(
-      <template>
-        <Stepper as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" @isDisabled={{true}} data-test-step="a" />
-            <S.Step @value="b" data-test-step="b" />
-            <S.Step @value="c" data-test-step="c" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
+      await render(
+        <template>
+          <Stepper @value={{value.current}} @onChange={{onChange}} as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" data-test-step="a" />
+              <S.Step @value="b" data-test-step="b" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-    assert.dom('[data-test-step="b"]').hasAria('current', 'step');
-  });
+      await click('[data-test-step="b"]');
 
-  test('controlled: @value={{undefined}} counts as controlled', async function (assert) {
-    const calls: string[] = [];
-    const onChange = (value: string) => calls.push(value);
+      assert.deepEqual(calls, ['b']);
+      assert.dom('[data-test-step="a"]').hasAria('current', 'step');
+    });
 
-    await render(
-      <template>
-        <Stepper @value={{undefined}} @onChange={{onChange}} as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" data-test-step="a" />
-            <S.Step @value="b" data-test-step="b" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
+    test('controlled: an onChange that updates @value moves selection', async function (assert) {
+      const value = cell('a');
+      const onChange = (next: string) => (value.current = next);
 
-    assert.dom('[aria-current]').doesNotExist();
+      await render(
+        <template>
+          <Stepper @value={{value.current}} @onChange={{onChange}} as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" data-test-step="a" />
+              <S.Step @value="b" data-test-step="b" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-    await click('[data-test-step="b"]');
+      await click('[data-test-step="b"]');
 
-    assert.deepEqual(calls, ['b'], 'onChange still fires');
-    assert.dom('[aria-current]').doesNotExist('selection did not move');
-  });
+      assert.dom('[data-test-step="b"]').hasAria('current', 'step');
+    });
 
-  test('controlled: an onChange that does not update @value leaves selection unchanged', async function (assert) {
-    const value = cell('a');
-    const calls: string[] = [];
-    const onChange = (next: string) => calls.push(next);
+    test('a disabled step ignores clicks and carries aria-disabled', async function (assert) {
+      const calls: string[] = [];
+      const onChange = (value: string) => calls.push(value);
 
-    await render(
-      <template>
-        <Stepper @value={{value.current}} @onChange={{onChange}} as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" data-test-step="a" />
-            <S.Step @value="b" data-test-step="b" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
+      await render(
+        <template>
+          <Stepper @defaultValue="a" @onChange={{onChange}} as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" data-test-step="a" />
+              <S.Step @value="b" @isDisabled={{true}} data-test-step="b" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-    await click('[data-test-step="b"]');
+      assert.dom('[data-test-step="b"]').hasAria('disabled', 'true');
 
-    assert.deepEqual(calls, ['b']);
-    assert.dom('[data-test-step="a"]').hasAria('current', 'step');
-  });
+      await click('[data-test-step="b"]');
 
-  test('controlled: an onChange that updates @value moves selection', async function (assert) {
-    const value = cell('a');
-    const onChange = (next: string) => (value.current = next);
+      assert.deepEqual(calls, []);
+      assert.dom('[data-test-step="a"]').hasAria('current', 'step');
+    });
 
-    await render(
-      <template>
-        <Stepper @value={{value.current}} @onChange={{onChange}} as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" data-test-step="a" />
-            <S.Step @value="b" data-test-step="b" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
+    test('no step is active when @value matches nothing', async function (assert) {
+      await render(
+        <template>
+          <Stepper @value="nope" as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" />
+              <S.Step @value="b" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-    await click('[data-test-step="b"]');
+      assert.dom('[aria-current]').doesNotExist();
+      assert.dom('[data-part="step"]').exists({ count: 2 });
+    });
 
-    assert.dom('[data-test-step="b"]').hasAria('current', 'step');
-  });
+    test('duplicate values render distinct ids', async function (assert) {
+      await render(
+        <template>
+          <Stepper @value="a" as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" />
+              <S.Step @value="a" />
+            </S.List>
+          </Stepper>
+        </template>
+      );
 
-  test('a disabled step ignores clicks and carries aria-disabled', async function (assert) {
-    const calls: string[] = [];
-    const onChange = (value: string) => calls.push(value);
-
-    await render(
-      <template>
-        <Stepper @defaultValue="a" @onChange={{onChange}} as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" data-test-step="a" />
-            <S.Step @value="b" @isDisabled={{true}} data-test-step="b" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
-
-    assert.dom('[data-test-step="b"]').hasAria('disabled', 'true');
-
-    await click('[data-test-step="b"]');
-
-    assert.deepEqual(calls, []);
-    assert.dom('[data-test-step="a"]').hasAria('current', 'step');
-  });
-
-  test('no step is active when @value matches nothing', async function (assert) {
-    await render(
-      <template>
-        <Stepper @value="nope" as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" />
-            <S.Step @value="b" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
-
-    assert.dom('[aria-current]').doesNotExist();
-    assert.dom('[data-part="step"]').exists({ count: 2 });
-  });
-
-  test('duplicate values render distinct ids', async function (assert) {
-    await render(
-      <template>
-        <Stepper @value="a" as |S|>
-          <S.List @label="Checkout">
-            <S.Step @value="a" />
-            <S.Step @value="a" />
-          </S.List>
-        </Stepper>
-      </template>
-    );
-
-    const ids = findAll('[data-part="step"]').map((el) => el.id);
-    assert.strictEqual(ids.length, 2);
-    assert.strictEqual(new Set(ids).size, 2, 'ids are unique');
-    assert.notStrictEqual(ids[0], '');
-  });
-
-});
+      const ids = findAll('[data-part="step"]').map((el) => el.id);
+      assert.strictEqual(ids.length, 2);
+      assert.strictEqual(new Set(ids).size, 2, 'ids are unique');
+      assert.notStrictEqual(ids[0], '');
+    });
+  }
+);
 
 module('Integration | Component | Stepper | step content', function (hooks) {
   setupRenderingTest(hooks);
 
   const states = () =>
-    findAll('[data-part="item"]').map((el) => (el as HTMLElement).dataset['state']);
+    findAll('[data-part="item"]').map(
+      (el) => (el as HTMLElement).dataset['state']
+    );
 
   test('it renders title and description', async function (assert) {
     await render(
@@ -370,7 +375,9 @@ module('Integration | Component | Stepper | step content', function (hooks) {
     assert.dom('[data-test-step="a"]').hasAttribute('aria-busy', 'true');
     assert.dom('[data-test-step="a"] [data-component="spinner"]').exists();
     assert.dom('[data-test-step="b"]').doesNotHaveAttribute('aria-busy');
-    assert.dom('[data-test-step="b"] [data-component="spinner"]').doesNotExist();
+    assert
+      .dom('[data-test-step="b"] [data-component="spinner"]')
+      .doesNotExist();
   });
 
   test('@isInvalid sets data-invalid and adds screen-reader text', async function (assert) {
@@ -393,7 +400,9 @@ module('Integration | Component | Stepper | step content', function (hooks) {
   });
 
   test('@icon renders in the indicator of an upcoming step', async function (assert) {
-    const Icon = <template><svg data-test-icon ...attributes></svg></template>;
+    const Icon: TOC<{ Element: SVGElement }> = <template>
+      <svg data-test-icon ...attributes></svg>
+    </template>;
 
     await render(
       <template>
@@ -424,6 +433,37 @@ module('Integration | Component | Stepper | step content', function (hooks) {
 
     assert.dom('[data-test-step="a"] [data-part="indicator"]').hasText('X');
   });
+
+  test('an invalid step is danger-colored even when it is also complete', async function (assert) {
+    await render(
+      <template>
+        <Stepper @value="c" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" @isInvalid={{true}} data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+            <S.Step @value="c" data-test-step="c" />
+            <S.Step @value="d" @isInvalid={{true}} data-test-step="d" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    const background = (value: string): string =>
+      getComputedStyle(
+        find(`[data-test-step="${value}"] [data-part="indicator"]`) as Element
+      ).backgroundColor;
+
+    assert.strictEqual(
+      background('a'),
+      background('d'),
+      'complete and invalid looks like upcoming and invalid'
+    );
+    assert.notStrictEqual(
+      background('a'),
+      background('b'),
+      'and not like a valid complete step'
+    );
+  });
 });
 
 module('Integration | Component | Stepper | helpers', function (hooks) {
@@ -440,7 +480,11 @@ module('Integration | Component | Stepper | helpers', function (hooks) {
             <S.Step @value="a" data-test-step="a" />
             <S.Step @value="b" data-test-step="b" />
           </S.List>
-          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+          <button
+            type="button"
+            data-test-next
+            {{on "click" S.next}}
+          >Next</button>
         </Stepper>
       </template>
     );
@@ -460,8 +504,16 @@ module('Integration | Component | Stepper | helpers', function (hooks) {
             <S.Step @value="b" @isDisabled={{true}} data-test-step="b" />
             <S.Step @value="c" data-test-step="c" />
           </S.List>
-          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
-          <button type="button" data-test-prev {{on "click" S.prev}}>Prev</button>
+          <button
+            type="button"
+            data-test-next
+            {{on "click" S.next}}
+          >Next</button>
+          <button
+            type="button"
+            data-test-prev
+            {{on "click" S.prev}}
+          >Prev</button>
         </Stepper>
       </template>
     );
@@ -481,7 +533,11 @@ module('Integration | Component | Stepper | helpers', function (hooks) {
             <S.Step @value="a" data-test-step="a" />
             <S.Step @value="b" @isDisabled={{true}} data-test-step="b" />
           </S.List>
-          <button type="button" data-test-go {{on "click" (fn S.goTo "b")}}>Go</button>
+          <button
+            type="button"
+            data-test-go
+            {{on "click" (fn S.goTo "b")}}
+          >Go</button>
         </Stepper>
       </template>
     );
@@ -501,7 +557,11 @@ module('Integration | Component | Stepper | helpers', function (hooks) {
           </S.List>
           <span data-test-has-next>{{S.hasNext}}</span>
           <span data-test-has-prev>{{S.hasPrev}}</span>
-          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+          <button
+            type="button"
+            data-test-next
+            {{on "click" S.next}}
+          >Next</button>
         </Stepper>
       </template>
     );
@@ -526,7 +586,11 @@ module('Integration | Component | Stepper | helpers', function (hooks) {
             <S.Step @value="a" data-test-step="a" />
             <S.Step @value="b" data-test-step="b" />
           </S.List>
-          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+          <button
+            type="button"
+            data-test-next
+            {{on "click" S.next}}
+          >Next</button>
         </Stepper>
       </template>
     );
@@ -548,8 +612,16 @@ module('Integration | Component | Stepper | helpers', function (hooks) {
             <S.Step @value="a" />
             <S.Step @value="b" />
           </S.List>
-          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
-          <button type="button" data-test-prev {{on "click" S.prev}}>Prev</button>
+          <button
+            type="button"
+            data-test-next
+            {{on "click" S.next}}
+          >Next</button>
+          <button
+            type="button"
+            data-test-prev
+            {{on "click" S.prev}}
+          >Prev</button>
         </Stepper>
       </template>
     );
@@ -574,7 +646,11 @@ module('Integration | Component | Stepper | helpers', function (hooks) {
             <S.Step @value="b" @isDisabled={{true}} />
           </S.List>
           <span data-test-has-next>{{S.hasNext}}</span>
-          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+          <button
+            type="button"
+            data-test-next
+            {{on "click" S.next}}
+          >Next</button>
         </Stepper>
       </template>
     );
@@ -831,7 +907,15 @@ module('Integration | Component | Stepper | panel', function (hooks) {
 module('Integration | Component | Stepper | responsive', function (hooks) {
   setupRenderingTest(hooks);
 
-  const Fixture = <template>
+  const Fixture: TOC<{
+    Args: {
+      style?: string;
+      labelPosition?: 'end' | 'bottom';
+      orientation?: 'horizontal' | 'vertical';
+      collapseLabels?: boolean;
+      size?: 'sm' | 'md' | 'lg';
+    };
+  }> = <template>
     <div style={{@style}}>
       <Stepper
         @value="b"
@@ -859,8 +943,11 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
   // label to 1px, but a title that is not stretched (`items-center`) still has
   // its natural width inside the clipped box.
   const labelWidth = (root: ParentNode, step = 'a'): number =>
-    (root.querySelector(`[data-test-step="${step}"] [data-part="label"]`) as HTMLElement)
-      .offsetWidth;
+    (
+      root.querySelector(
+        `[data-test-step="${step}"] [data-part="label"]`
+      ) as HTMLElement
+    ).offsetWidth;
 
   const titleVisible = (): boolean => labelWidth(document) > 10;
 
@@ -882,7 +969,9 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
   test('collapsed titles stay in the accessibility tree', async function (assert) {
     await render(<template><Fixture @style="width: 20rem" /></template>);
 
-    const title = find('[data-test-step="a"] [data-part="title"]') as HTMLElement;
+    const title = find(
+      '[data-test-step="a"] [data-part="title"]'
+    ) as HTMLElement;
     assert.notStrictEqual(getComputedStyle(title).display, 'none');
     assert.notStrictEqual(getComputedStyle(title).visibility, 'hidden');
     assert.dom(title).hasText('Account');
@@ -898,10 +987,14 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
 
     const [narrow, wide] = findAll('[data-part="base"]') as HTMLElement[];
 
-    assert.true(labelWidth(narrow as HTMLElement) <= 1, 'collapsed below 28rem');
+    assert.true(
+      labelWidth(narrow as HTMLElement) <= 1,
+      'collapsed below 28rem'
+    );
     assert.true(labelWidth(wide as HTMLElement) > 10, 'visible from 28rem');
     assert.strictEqual(
-      getComputedStyle(wide?.querySelector('[data-part="summary"]') as Element).display,
+      getComputedStyle(wide?.querySelector('[data-part="summary"]') as Element)
+        .display,
       'none',
       'summary hides once titles show'
     );
@@ -917,7 +1010,10 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
 
     const [between, wide] = findAll('[data-part="base"]') as HTMLElement[];
 
-    assert.true(labelWidth(between as HTMLElement) <= 1, 'collapsed between the thresholds');
+    assert.true(
+      labelWidth(between as HTMLElement) <= 1,
+      'collapsed between the thresholds'
+    );
     assert.true(labelWidth(wide as HTMLElement) > 10, 'visible from 42rem');
   });
 

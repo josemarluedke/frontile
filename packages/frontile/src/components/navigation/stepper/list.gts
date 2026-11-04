@@ -36,7 +36,9 @@ class StepperList<T> extends Component<StepperListSignature<T>> {
       {{! Decorative: the active step is already announced through
       aria-current, so this must not be read a second time. }}
       <p data-part="summary" aria-hidden="true" class={{@context.summaryClass}}>
-        <span class="block">Step {{@context.summary.position}} of
+        <span class="block">Step
+          {{@context.summary.position}}
+          of
           {{@context.summary.total}}</span>
         {{#if @context.summary.title}}
           <span class="block font-medium text-neutral-strong">

@@ -41,10 +41,13 @@ const stepper = tv({
       // Upcoming is the resting state; the other states override it.
       'border-neutral-mild text-neutral-firm',
       // Invalid is always danger, whatever `color` is, and outranks the
-      // active and complete treatments.
-      'group-data-[invalid=true]/item:border-danger',
-      'group-data-[invalid=true]/item:bg-danger-subtle',
-      'group-data-[invalid=true]/item:text-danger'
+      // active and complete treatments. Those are `group-data-[state=...]`
+      // classes of equal specificity emitted later, so only `!` guarantees
+      // the win -- without it a step that is both complete and invalid shows
+      // the accent color.
+      'group-data-[invalid=true]/item:border-danger!',
+      'group-data-[invalid=true]/item:bg-danger-subtle!',
+      'group-data-[invalid=true]/item:text-danger!'
     ],
 
     connector: [

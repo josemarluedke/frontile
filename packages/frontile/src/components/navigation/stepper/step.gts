@@ -128,9 +128,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
 
   /** One-based position, or 0 before the step has registered. */
   get number(): number {
-    return (
-      this.args.context.steps.findIndex((step) => step.id === this.id) + 1
-    );
+    return this.args.context.steps.findIndex((step) => step.id === this.id) + 1;
   }
 
   get isDisabled(): boolean {
@@ -238,10 +236,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
               </span>
             {{/if}}
             {{#if @description}}
-              <span
-                data-part="description"
-                class={{@context.descriptionClass}}
-              >
+              <span data-part="description" class={{@context.descriptionClass}}>
                 {{@description}}
               </span>
             {{/if}}
