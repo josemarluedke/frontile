@@ -4,6 +4,7 @@ import { service } from '@ember/service';
 import { LinkTo } from '@ember/routing';
 import type RouterService from '@ember/routing/router-service';
 import type { ModifierLike } from '@glint/template';
+import { isRouteActive, normalizeRouteArgs } from '../../../utils/route-active';
 
 interface TabNavItemArgs {
   /**
@@ -75,49 +76,16 @@ class TabNavItem extends Component<TabNavItemSignature> {
 
   @cached
   get models(): unknown[] {
-    // `!= null` (not truthiness) so a legitimate falsy dynamic segment --
-    // `@model={{0}}` or `@model=""` -- is not silently dropped.
-    return (
-      this.args.models ?? (this.args.model != null ? [this.args.model] : [])
-    );
+    return normalizeRouteArgs(this.args).models;
   }
 
-  // `LinkTo`'s `@query` throws when given `undefined` rather than treating it
-  // as "no query params" -- so this must default to an empty object, the same
-  // way `models` defaults to an empty array.
   @cached
   get query(): Record<string, unknown> {
-    return this.args.query ?? {};
+    return normalizeRouteArgs(this.args).query;
   }
 
   get isActive(): boolean {
-    if (this.args.isActive !== undefined) {
-      return this.args.isActive;
-    }
-    if (!this.args.route) {
-      return false;
-    }
-
-    // Redundant belt-and-braces: `RouterService#isActive` already entangles
-    // itself with `currentURL`'s tag internally (see
-    // `consumeTag(tagFor(this._router, 'currentURL'))` in ember-source's
-    // `router-service.js`), so this getter recomputes on every transition even
-    // without the read below. Kept anyway as a documented, version-independent
-    // guarantee -- and covered by the transition test in
-    // `tab-nav-routing-test.gts` -- in case that internal entanglement is ever
-    // dropped.
-    void this.router.currentURL;
-
-    try {
-      return this.router.isActive(this.args.route, ...this.models, {
-        queryParams: this.query
-      } as never);
-    } catch {
-      // `isActive` throws for a route that is not currently reachable -- an
-      // unentered engine, or a dynamic segment whose model is not loaded. Not
-      // being reachable is not being active.
-      return false;
-    }
+    return isRouteActive(this.router, this.args);
   }
 
   get isDisabled(): boolean {
