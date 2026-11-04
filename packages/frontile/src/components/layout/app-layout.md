@@ -111,8 +111,9 @@ import { array } from '@ember/helper';
 `Sidebar` is a full-height `nav` landmark that takes the first column. It
 yields `Header`, `Body` and `Footer` sections, `Item` links and `Group`. Give
 it a name with `@label` (default `Main`); if the page has more than one
-navigation, each needs its own. `SidebarToggle` is a button that collapses and
-expands it.
+navigation, each needs its own. Render one `Sidebar` per layout: the layout
+gives its sidebar a fixed id, so a second one would repeat it.
+`SidebarToggle` is a button that collapses and expands it.
 
 By default the sidebar collapses to an icon rail. Each `Item`'s label is then
 visually hidden but still names the link for screen readers, and it shows as
@@ -324,27 +325,38 @@ import { AppLayout } from 'frontile';
 ### Mobile
 
 Below `@breakpoint` (`sm` 40rem, `md` 48rem by default, `lg` 64rem) the sidebar
-leaves the grid and opens as a drawer instead. Put a `MenuToggle` in the
-navbar, top-left by convention, to open it. `MenuToggle` shows only below the
-breakpoint, so it can sit beside a `SidebarToggle`, which collapses the sidebar
-on wider screens.
+leaves the grid and opens as a drawer instead. These are Tailwind's default
+breakpoints, and the layout measures them in JavaScript: an app that changes
+`--breakpoint-sm`, `--breakpoint-md` or `--breakpoint-lg` in its theme moves
+the CSS but not the layout's switch, so the two can disagree.
+
+Below the breakpoint `SidebarToggle` opens the drawer, so on its own it covers
+every width. For a separate menu button on narrow screens, put a `MenuToggle`
+in the navbar, top-left by convention. `MenuToggle` shows only below the
+breakpoint; to show only one button at each width, hide `SidebarToggle` below
+it with `@classes`, as this demo does.
 
 The drawer shows the same `Sidebar` block, so you write the sidebar once. It
 slides in from the sidebar's side (`@sidebarSide`, following the document's
 direction), always expanded. It closes on Escape, on a click outside it, from
-its close button, or when the window grows past the breakpoint. The `Sidebar`
-block remounts whenever the window crosses the breakpoint, so any state held
-by the components inside it starts over.
+its close button, when an `Item` in it is clicked, or when the window grows
+past the breakpoint. The `Sidebar` block remounts whenever the window crosses
+the breakpoint, so any state held by the components inside it starts over.
 
 Narrow the window to below 48rem to open this one.
 
 ```gts preview
+import { hash } from '@ember/helper';
 import { AppLayout } from 'frontile';
 import { ViewIcon, SettingsIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
-    <AppLayout class='demo-app-layout' as |layout|>
+    <AppLayout
+      class='demo-app-layout'
+      @classes={{hash sidebarToggle='hidden md:inline-flex'}}
+      as |layout|
+    >
       <layout.Sidebar @label='Workspace' as |sidebar|>
         <sidebar.Header>
           <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
@@ -380,6 +392,10 @@ only that layout toggles. With focus on the page body, the shortcut toggles
 every `AppLayout` on the page; turn it off on the others with
 `@toggleShortcut={{false}}`. Pick another combination with `@toggleShortcut`,
 such as `'mod+shift+s'`.
+
+The shortcut does nothing while focus is in editable content
+(`contenteditable`), where the browser's own <kbd>Cmd</kbd>+<kbd>B</kbd>
+makes text bold, and it does not repeat while the keys are held down.
 
 ### Using the sidebar on its own
 
@@ -427,6 +443,12 @@ is always `lg`: it does not follow the layout's `@breakpoint`, which only
 moves the sidebar. With `@sidebarSide="end"` the aside moves to the start
 side, so the two panels stay on opposite sides of the page.
 
+When the window narrows below `lg` while the aside is open, the aside closes
+(and `asideOpen` becomes `false`) instead of reopening as a drawer. Below
+`lg`, `AsideToggle` still opens it as a drawer. A layout that starts with
+`asideOpen` true on a narrow screen opens the drawer, so set
+`@defaultAsideOpen` only where you know the window is wide.
+
 Name the landmark with `@label` (default `Details`). The drawer uses the same
 name.
 
@@ -435,7 +457,7 @@ import { AppLayout } from 'frontile';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
-    <AppLayout class='demo-app-layout' @defaultAsideOpen={{true}} as |layout|>
+    <AppLayout class='demo-app-layout' as |layout|>
       <layout.Navbar>
         <span class='text-sm font-medium'>Access management</span>
         <layout.AsideToggle class='ms-auto' />
@@ -490,7 +512,8 @@ import { AppLayout, Button } from 'frontile';
 
 With `@scrollMode='content'`, the default, the layout is exactly the height
 of the viewport and `Main` scrolls. With `@scrollMode='page'` the layout grows
-with its content and the document scrolls instead.
+with its content and the document scrolls instead, while the sidebar sticks
+to the top of the viewport (inside the frame's gutter with `inset`).
 
 ## State
 
@@ -590,6 +613,83 @@ export default class SharedStateExample extends Component {
 }
 ```
 
+## Putting it together
+
+Every part in one layout, driven by one `AppLayoutState`: a sidebar with
+items and a group, both toggles, a navbar, a page header, the main content,
+and an aside with its toggle. Narrow the window to see the drawers.
+
+```gts preview
+import Component from '@glimmer/component';
+import { hash } from '@ember/helper';
+import { AppLayout, AppLayoutState, Button } from 'frontile';
+import {
+  ViewIcon,
+  StarIcon,
+  SettingsIcon
+} from 'site/components/icons';
+
+export default class FullAppLayoutExample extends Component {
+  state = new AppLayoutState();
+
+  <template>
+    <div class='demo-stack demo-stack--wide not-prose'>
+      <AppLayout
+        @state={{this.state}}
+        @classes={{hash sidebarToggle='hidden md:inline-flex'}}
+        class='demo-app-layout'
+        as |layout|
+      >
+        <layout.Sidebar @label='Workspace' as |sidebar|>
+          <sidebar.Header>
+            <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+          </sidebar.Header>
+          <sidebar.Body>
+            <sidebar.Item @href='#all' @icon={{ViewIcon}} @isActive={{true}}>
+              All projects
+            </sidebar.Item>
+            <sidebar.Group @label='Saved'>
+              <sidebar.Item @href='#starred' @icon={{StarIcon}}>
+                Starred
+              </sidebar.Item>
+            </sidebar.Group>
+          </sidebar.Body>
+          <sidebar.Footer>
+            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+              Settings
+            </sidebar.Item>
+          </sidebar.Footer>
+        </layout.Sidebar>
+        <layout.Navbar>
+          <layout.MenuToggle />
+          <layout.SidebarToggle />
+          <span class='text-sm font-medium'>Projects</span>
+          <layout.AsideToggle class='ms-auto' />
+        </layout.Navbar>
+        <layout.Main>
+          <layout.PageHeader
+            @title='All projects'
+            @description='Everything in this workspace.'
+          >
+            <:actions>
+              <Button @size='sm' @color='primary'>New project</Button>
+            </:actions>
+          </layout.PageHeader>
+          <p class='px-4 text-sm text-neutral-firm'>
+            Sidebar collapsed: {{if this.state.sidebarCollapsed 'yes' 'no'}}.
+            Details open: {{if this.state.asideOpen 'yes' 'no'}}.
+          </p>
+        </layout.Main>
+        <layout.Aside @label='Project details'>
+          <h2 class='font-semibold'>All projects</h2>
+          <p class='mt-1 text-neutral-firm'>12 projects, 3 starred.</p>
+        </layout.Aside>
+      </AppLayout>
+    </div>
+  </template>
+}
+```
+
 ## Accessibility
 
 - `Navbar` renders a `header` landmark and `Main` renders the `main` landmark.
@@ -601,15 +701,15 @@ export default class SharedStateExample extends Component {
 - `Sidebar` renders a `nav` landmark named by `@label` (default `Main`).
 - `SidebarToggle` is a button named by `@label` (default "Toggle sidebar"). It
   sets `aria-expanded` to `true` while the sidebar is expanded (always, with
-  `@collapsible="none"`) and `aria-controls` to the sidebar.
+  `@collapsible="none"`) and `aria-controls` to the sidebar. Below the
+  breakpoint it opens the drawer, and `aria-expanded` follows the drawer.
 - `MenuToggle` is a button named by `@label` (default "Open menu"). It sets
   `aria-expanded` to `true` while the drawer is open and `aria-controls` to the
   sidebar.
 - The drawer is a modal dialog named by the sidebar's `@label`. Focus stays
   inside it while it is open. Closing it returns focus to the element that
-  opened it: `MenuToggle` when that opened it, otherwise the element that had
-  focus when the shortcut was pressed (`MenuToggle` if focus was on the page
-  body).
+  opened it: the toggle that opened it, otherwise the element that had focus
+  when the shortcut was pressed (`MenuToggle` if focus was on the page body).
 - `Item` is a link. The active item has `aria-current="page"`. A disabled
   item has no href and has `aria-disabled="true"`. Its `@icon` is hidden from
   assistive technology, so the label is the link's name.

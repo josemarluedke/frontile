@@ -36,8 +36,8 @@ An argument whose JSDoc starts with `@deprecated` must not be used in new code.
 
 **2. `https://frontile.dev/docs/components/<category>/<name>.md`** — prose, usage examples,
 and yielded blocks, which the declarations cannot give. Categories are `buttons`,
-`collections`, `disclosure`, `forms`, `navigation`, `notifications`, `overlays`, `status`,
-`utilities`. Fetch the `.md`, not the HTML page.
+`collections`, `disclosure`, `forms`, `layout`, `navigation`, `notifications`, `overlays`,
+`status`, `utilities`. Fetch the `.md`, not the HTML page.
 
 **3. `https://frontile.dev/llms.txt`** — the index, when the component's name is not yet
 known. Component entries carry a one-line description, so the right one can usually be
