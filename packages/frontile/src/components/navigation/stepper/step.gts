@@ -113,6 +113,11 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
     return this.args.isComplete ? 'complete' : 'upcoming';
   }
 
+  /** The state, once the step has registered; before that, `undefined`. */
+  get settledState(): StepState | undefined {
+    return this.number > 0 ? this.state : undefined;
+  }
+
   get isLoading(): boolean {
     return this.args.isLoading ?? false;
   }
@@ -182,33 +187,42 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
    * the element: the animation is a one-shot visual, and routing it through
    * tracked state would re-render the step for nothing.
    */
-  trackCompletion = modifier((element: HTMLElement, [state]: [StepState]) => {
-    const previous = this.#previousState;
-    this.#previousState = state;
+  trackCompletion = modifier(
+    (element: HTMLElement, [state]: [StepState | undefined]) => {
+      // `undefined`: the step has not registered yet, so its state is still the
+      // provisional one every step starts with. It is not a real transition.
+      if (state === undefined) {
+        return;
+      }
 
-    if (
-      previous === undefined ||
-      previous === 'complete' ||
-      state !== 'complete'
-    ) {
-      return;
+      const previous = this.#previousState;
+      this.#previousState = state;
+
+      if (
+        previous === undefined ||
+        previous === 'complete' ||
+        state !== 'complete'
+      ) {
+        return;
+      }
+
+      element.dataset['justCompleted'] = 'true';
+      const timer = setTimeout(() => {
+        delete element.dataset['justCompleted'];
+      }, COMPLETION_ANIMATION_MS);
+
+      return (): void => {
+        clearTimeout(timer);
+        delete element.dataset['justCompleted'];
+      };
     }
-
-    element.dataset['justCompleted'] = 'true';
-    const timer = setTimeout(() => {
-      delete element.dataset['justCompleted'];
-    }, COMPLETION_ANIMATION_MS);
-
-    return (): void => {
-      clearTimeout(timer);
-    };
-  });
+  );
 
   handleClick = (): void => {
     if (this.isDisabled) {
       return;
     }
-    this.args.context.select(this.args.value);
+    this.args.context.pick(this.args.value);
   };
 
   <template>
@@ -219,7 +233,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
       data-loading="{{this.isLoading}}"
       data-disabled="{{this.isDisabled}}"
       class={{@context.itemClass}}
-      {{this.trackCompletion this.state}}
+      {{this.trackCompletion this.settledState}}
     >
       <button
         type="button"

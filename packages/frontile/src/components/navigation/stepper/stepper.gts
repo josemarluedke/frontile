@@ -4,6 +4,14 @@ import { hash } from '@ember/helper';
 import { guidFor } from '@ember/object/internals';
 import { isDestroyed, isDestroying } from '@ember/destroyable';
 import { schedule } from '@ember/runloop';
+import { modifier } from 'ember-modifier';
+import {
+  autoUpdate,
+  computePosition,
+  flip,
+  offset,
+  shift
+} from '@floating-ui/dom';
 import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import StepperList from './list';
@@ -69,16 +77,23 @@ interface StepperArgs<T> {
   labelPosition?: StepperVariants['labelPosition'];
 
   /**
-   * Collapses titles to the active one at narrow container widths. Set to
-   * `false` to always show every title.
+   * What a horizontal Stepper does when its container is too narrow for the
+   * full row:
    *
-   * @defaultValue true
+   * - `'menu'` swaps the row for a button showing the current step. It opens
+   *   the steps as a floating list.
+   * - `'summary'` hides the titles and shows a "Step N of M" line instead.
+   * - `false` leaves the layout alone at every width.
+   *
+   * Vertical Steppers never collapse.
+   *
+   * @defaultValue 'menu'
    */
-  collapseLabels?: boolean;
+  collapse?: 'menu' | 'summary' | false;
 
   /**
-   * Formats the "Step N of M" line shown when titles are collapsed. Use it to
-   * localize the text.
+   * Formats the "Step N of M" text shown in the menu trigger or the summary
+   * line. Use it to localize the text.
    *
    * @defaultValue (position, total) => `Step ${position} of ${total}`
    */
@@ -122,10 +137,24 @@ interface StepperContext<T> {
   summaryClass: string;
   panelClass: string;
   /**
-   * The "Step N of M" line, present only for a horizontal Stepper with
-   * collapsing labels and a matched selection.
+   * The current step's "Step N of M" text and title, present for a horizontal
+   * Stepper that collapses and has a matched selection.
    */
   readonly summary: StepperSummary | undefined;
+  /** Whether the standalone summary line (`@collapse='summary'`) shows. */
+  readonly showSummaryLine: boolean;
+  /** Whether the menu is active: `@collapse='menu'` and too narrow to fit. */
+  readonly collapsed: boolean;
+  readonly isMenuOpen: boolean;
+  /** Id of the list, which the menu trigger points at. */
+  readonly listId: string;
+  triggerClass: string;
+  /** Installed on the menu trigger. */
+  registerTrigger: typeof Stepper.prototype.registerTrigger;
+  /** Installed on the list; turns it into the floating panel when collapsed. */
+  menuList: typeof Stepper.prototype.menuList;
+  /** A step chosen by the user: selects it and closes the menu. */
+  pick: (value: T) => void;
   /** Registered steps in document order. */
   readonly steps: readonly StepRecord<T>[];
   isSelected: (value: T) => boolean;
@@ -179,7 +208,8 @@ class Stepper<T> extends Component<StepperSignature<T>> {
   // selecting a step can trigger validation or navigation, which arrowing
   // past one must not.
   roving = rovingFocus(() => ({
-    orientation: this.orientation,
+    // The collapsed menu lists the steps vertically, so the arrow keys follow.
+    orientation: this.collapsed ? 'vertical' : this.orientation,
     activationMode: 'manual',
     onActivate: this.activateElement
   }));
@@ -189,6 +219,16 @@ class Stepper<T> extends Component<StepperSignature<T>> {
   // -- so both modes share one code path, as `Tabs` does.
   @tracked _value: T | undefined;
   @tracked _hasSelection = false;
+
+  // Whether the root is narrower than the full row needs. Measured, not
+  // derived: the answer lives in a container query, which JS can only read
+  // back from the rendered page.
+  @tracked _isNarrow = false;
+  @tracked isMenuOpen = false;
+
+  readonly listId = `${guidFor(this)}-list`;
+  #triggerEl: HTMLElement | undefined;
+  #listEl: HTMLElement | undefined;
 
   // Registered steps live in an untracked list, with a tracked version that
   // consumers read. A step registers from its modifier, which installs inside
@@ -212,10 +252,32 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       this._value = this.args.defaultValue;
       this._hasSelection = true;
     }
+    this.context = this.#buildContext();
   }
 
+  get collapseMode(): 'menu' | 'summary' | 'none' {
+    return this.args.collapse === false
+      ? 'none'
+      : (this.args.collapse ?? 'menu');
+  }
+
+  /** Whether a menu is configured and applicable (horizontal only). */
+  get usesMenu(): boolean {
+    return this.collapseMode === 'menu' && this.orientation === 'horizontal';
+  }
+
+  /** Whether the menu is active right now. */
+  get collapsed(): boolean {
+    return this.usesMenu && this._isNarrow;
+  }
+
+  /**
+   * Styles for the root and the probe, which keep the *configured* layout:
+   * the probe's threshold depends on `labelPosition`, and it must not change
+   * when the list switches to its vertical, in-menu layout.
+   */
   @cached
-  get styles() {
+  get rootStyles() {
     const { stepper } = useStyles();
 
     return stepper({
@@ -223,7 +285,27 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       size: this.args.size,
       orientation: this.args.orientation,
       labelPosition: this.args.labelPosition,
-      collapseLabels: this.args.collapseLabels
+      collapse: this.collapseMode
+    });
+  }
+
+  get probeClass(): string {
+    return this.rootStyles.probe();
+  }
+
+  // Everything below the root. Collapsed, the list lays out vertically, like
+  // `@orientation='vertical'`, inside the floating panel.
+  @cached
+  get styles() {
+    const { stepper } = useStyles();
+
+    return stepper({
+      color: this.args.color,
+      size: this.args.size,
+      orientation: this.collapsed ? 'vertical' : this.args.orientation,
+      labelPosition: this.collapsed ? 'end' : this.args.labelPosition,
+      collapse: this.collapseMode,
+      collapsed: this.collapsed
     });
   }
 
@@ -278,12 +360,9 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     return this.steps.find((step) => !step.isDisabled)?.value;
   }
 
-  /** Backs the narrow-width "Step N of M" line. */
+  /** Backs the menu trigger and the narrow-width "Step N of M" line. */
   get summary(): StepperSummary | undefined {
-    if (
-      this.orientation !== 'horizontal' ||
-      this.args.collapseLabels === false
-    ) {
+    if (this.orientation !== 'horizontal' || this.collapseMode === 'none') {
       return undefined;
     }
     const steps = this.steps;
@@ -372,6 +451,161 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     this.args.onChange?.(value);
   };
 
+  // A step chosen by the user, as opposed to `next`/`prev`/`goTo`. Picking one
+  // from the menu also closes it.
+  pick = (value: T): void => {
+    this.select(value);
+    this.#closeMenu();
+  };
+
+  #closeMenu(): void {
+    const list = this.#listEl;
+    if (list && list.matches(':popover-open')) {
+      list.hidePopover();
+    }
+  }
+
+  #setNarrow(narrow: boolean): void {
+    if (narrow === this._isNarrow) {
+      return;
+    }
+    // From a modifier or a ResizeObserver: the first runs inside the render
+    // transaction that already read `collapsed`, so the write waits for
+    // `afterRender`, like the step registry's version bump.
+    schedule('afterRender', () => {
+      if (isDestroying(this) || isDestroyed(this)) {
+        return;
+      }
+      this._isNarrow = narrow;
+    });
+  }
+
+  /**
+   * Reads which side of the threshold the root is on from the probe element,
+   * whose `display` the container query flips. Re-reads when the root
+   * resizes.
+   */
+  observeWidth = modifier((root: HTMLElement, [enabled]: [boolean]) => {
+    const probe = root.querySelector<HTMLElement>('[data-part="probe"]');
+    if (!enabled || !probe) {
+      this.#setNarrow(false);
+      return;
+    }
+
+    const measure = (): void => {
+      this.#setNarrow(getComputedStyle(probe).display === 'none');
+    };
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(root);
+
+    return (): void => {
+      observer.disconnect();
+    };
+  });
+
+  registerTrigger = modifier((element: HTMLElement) => {
+    this.#triggerEl = element;
+
+    return (): void => {
+      if (this.#triggerEl === element) {
+        this.#triggerEl = undefined;
+      }
+    };
+  });
+
+  /**
+   * Turns the list into the menu's floating panel while collapsed: a native
+   * `popover` (top layer, so no ancestor's `overflow` can clip it; Escape and
+   * click-away come with it), positioned under the trigger. The list stays
+   * mounted either way, which is why the steps stay registered while the menu
+   * is closed.
+   */
+  menuList = modifier((list: HTMLElement, [collapsed]: [boolean]) => {
+    if (!collapsed || typeof list.showPopover !== 'function') {
+      return;
+    }
+
+    this.#listEl = list;
+    list.setAttribute('popover', 'auto');
+
+    let stopPositioning: (() => void) | undefined;
+
+    const place = (): void => {
+      const trigger = this.#triggerEl;
+      if (!trigger) {
+        return;
+      }
+      void computePosition(trigger, list, {
+        strategy: 'fixed',
+        placement: 'bottom-start',
+        middleware: [offset(8), flip(), shift({ padding: 8 })]
+      }).then(({ x, y }) => {
+        list.style.left = `${x}px`;
+        list.style.top = `${y}px`;
+        list.style.minWidth = `${trigger.offsetWidth}px`;
+      });
+    };
+
+    const focusCurrent = (): void => {
+      const target =
+        list.querySelector<HTMLElement>('[aria-current="step"]') ??
+        list.querySelector<HTMLElement>(
+          '[data-part="step"]:not([aria-disabled="true"])'
+        );
+      target?.focus();
+    };
+
+    const onBeforeToggle = (event: Event): void => {
+      const { newState } = event as Event & { newState?: string };
+      // Focus inside the panel is about to vanish with it; hand it back to the
+      // trigger, as a menu button does.
+      if (newState === 'closed' && list.contains(document.activeElement)) {
+        const trigger = this.#triggerEl;
+        queueMicrotask(() => trigger?.focus());
+      }
+    };
+
+    const onToggle = (event: Event): void => {
+      const { newState } = event as Event & { newState?: string };
+      this.isMenuOpen = newState === 'open';
+
+      stopPositioning?.();
+      stopPositioning = undefined;
+
+      if (newState === 'open' && this.#triggerEl) {
+        place();
+        stopPositioning = autoUpdate(this.#triggerEl, list, place);
+        focusCurrent();
+      }
+    };
+
+    list.addEventListener('beforetoggle', onBeforeToggle);
+    list.addEventListener('toggle', onToggle);
+
+    return (): void => {
+      stopPositioning?.();
+      list.removeEventListener('beforetoggle', onBeforeToggle);
+      list.removeEventListener('toggle', onToggle);
+      if (list.matches(':popover-open')) {
+        list.hidePopover();
+      }
+      list.removeAttribute('popover');
+      list.style.removeProperty('left');
+      list.style.removeProperty('top');
+      list.style.removeProperty('min-width');
+      if (this.#listEl === list) {
+        this.#listEl = undefined;
+      }
+      schedule('afterRender', () => {
+        if (!isDestroying(this) && !isDestroyed(this)) {
+          this.isMenuOpen = false;
+        }
+      });
+    };
+  });
+
   register = (record: StepRecord<T>): void => {
     this.#records.push(record);
     this.#bump();
@@ -401,7 +635,7 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     if (!record || record.isDisabled) {
       return;
     }
-    this.select(record.value);
+    this.pick(record.value);
   };
 
   stepIdFor = (value: T): string | undefined =>
@@ -416,33 +650,82 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     return `${guidFor(this)}-panel-${index}`;
   };
 
-  @cached
-  get context(): StepperContext<T> {
+  // One object for the life of the component, with the class strings as
+  // getters. A context rebuilt whenever the styles change (they do when the
+  // menu collapses) is a new `@context` for every step, which re-runs each
+  // `{{@context.…}}` modifier -- tearing down and reinstalling the roving
+  // focus listeners on every step mid-update.
+  readonly context: StepperContext<T>;
+
+  #buildContext(): StepperContext<T> {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const stepper = this;
-    const classes = this.args.classes;
 
     return {
-      orientation: this.orientation,
-      listClass: this.styles.list({ class: classes?.list }),
-      itemClass: this.styles.item({ class: classes?.item }),
-      stepClass: this.styles.step({ class: classes?.step }),
-      indicatorClass: this.styles.indicator({ class: classes?.indicator }),
-      checkClass: this.styles.check({ class: classes?.check }),
-      connectorClass: this.styles.connector({ class: classes?.connector }),
-      labelClass: this.styles.label({ class: classes?.label }),
-      titleClass: this.styles.title({ class: classes?.title }),
-      descriptionClass: this.styles.description({
-        class: classes?.description
-      }),
-      summaryClass: this.styles.summary({ class: classes?.summary }),
-      panelClass: this.styles.panel({ class: classes?.panel }),
+      get orientation() {
+        return stepper.collapsed ? 'vertical' : stepper.orientation;
+      },
+      get listClass() {
+        return stepper.styles.list({ class: stepper.args.classes?.list });
+      },
+      get itemClass() {
+        return stepper.styles.item({ class: stepper.args.classes?.item });
+      },
+      get stepClass() {
+        return stepper.styles.step({ class: stepper.args.classes?.step });
+      },
+      get indicatorClass() {
+        return stepper.styles.indicator({
+          class: stepper.args.classes?.indicator
+        });
+      },
+      get checkClass() {
+        return stepper.styles.check({ class: stepper.args.classes?.check });
+      },
+      get connectorClass() {
+        return stepper.styles.connector({
+          class: stepper.args.classes?.connector
+        });
+      },
+      get labelClass() {
+        return stepper.styles.label({ class: stepper.args.classes?.label });
+      },
+      get titleClass() {
+        return stepper.styles.title({ class: stepper.args.classes?.title });
+      },
+      get descriptionClass() {
+        return stepper.styles.description({
+          class: stepper.args.classes?.description
+        });
+      },
+      get summaryClass() {
+        return stepper.styles.summary({ class: stepper.args.classes?.summary });
+      },
+      get triggerClass() {
+        return stepper.styles.trigger({ class: stepper.args.classes?.trigger });
+      },
+      get panelClass() {
+        return stepper.styles.panel({ class: stepper.args.classes?.panel });
+      },
       get summary() {
         return stepper.summary;
+      },
+      get showSummaryLine() {
+        return stepper.collapseMode === 'summary' && !!stepper.summary;
+      },
+      get collapsed() {
+        return stepper.collapsed;
+      },
+      get isMenuOpen() {
+        return stepper.isMenuOpen;
       },
       get steps() {
         return stepper.steps;
       },
+      listId: this.listId,
+      registerTrigger: this.registerTrigger,
+      menuList: this.menuList,
+      pick: this.pick,
       isSelected: this.isSelected,
       stateOf: this.stateOf,
       select: this.select,
@@ -459,9 +742,18 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       data-component="stepper"
       data-part="base"
       data-orientation={{this.orientation}}
-      class={{this.styles.base class=@classes.base}}
+      data-collapsed="{{this.collapsed}}"
+      class={{this.rootStyles.base class=@classes.base}}
+      {{this.observeWidth this.usesMenu}}
       ...attributes
     >
+      {{#if this.usesMenu}}
+        <span
+          data-part="probe"
+          aria-hidden="true"
+          class={{this.probeClass}}
+        ></span>
+      {{/if}}
       {{#let
         (component StepperList context=this.context)
         (component StepperStep context=this.context)

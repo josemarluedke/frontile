@@ -70,6 +70,22 @@ const stepper = tv({
       'group-last/item:hidden'
     ],
 
+    // Collapsed (menu) mode only. The trigger shows the current step and opens
+    // the list, which becomes a floating panel; see `collapsed` below.
+    trigger: [
+      ...focusVisibleRing,
+      'flex min-h-11 w-full cursor-pointer items-center justify-between gap-3',
+      'rounded-xl border border-neutral-subtle bg-surface-input px-3 py-2 text-start',
+      'transition-colors duration-200 motion-reduce:transition-none',
+      '[&_svg]:transition-transform motion-reduce:[&_svg]:transition-none',
+      '[&[aria-expanded=true]_svg]:rotate-180'
+    ],
+
+    // A zero-size sentinel the root reads to learn which side of the
+    // threshold it is on. The threshold stays in CSS, where the label rules
+    // already read it, so the two can never disagree.
+    probe: 'hidden',
+
     label: 'flex min-w-0 flex-col',
 
     title: [
@@ -198,11 +214,32 @@ const stepper = tv({
       bottom: {}
     },
 
-    // When true (the default), horizontal labels collapse at narrow container
-    // widths and a summary line takes over. The rules are compound variants
-    // below, since they depend on orientation and labelPosition.
-    collapseLabels: {
-      true: {},
+    // What a horizontal Stepper does when it is too narrow for its titles.
+    // `menu` swaps the row for a trigger and a floating list; `summary` hides
+    // the titles and shows a "Step N of M" line; `none` leaves it alone. The
+    // label rules depend on orientation and labelPosition, so they are
+    // compound variants below.
+    collapse: {
+      menu: {},
+      summary: {},
+      none: {}
+    },
+
+    // True while a `menu` Stepper is actually collapsed. The component sets it
+    // (it measures the root), and passes `orientation: 'vertical'` alongside,
+    // so the list reuses the vertical layout inside the panel.
+    collapsed: {
+      true: {
+        list: [
+          'inset-auto m-0 w-auto min-w-64 max-w-[calc(100vw-1rem)] overflow-auto p-2 text-inherit',
+          'max-h-[min(24rem,70vh)] rounded-xl border border-neutral-muted bg-surface-input shadow-elevation-3',
+          // `display` on the list would beat the UA rule that hides a closed
+          // popover, so the closed state is restated here.
+          '[&:not(:popover-open)]:hidden'
+        ],
+        item: 'items-stretch',
+        step: 'w-full justify-start'
+      },
       false: {}
     }
   },
@@ -258,7 +295,7 @@ const stepper = tv({
     // condition, so a theme token is the only way to make them tunable.
     {
       orientation: 'horizontal',
-      collapseLabels: true,
+      collapse: 'summary',
       labelPosition: 'bottom',
       class: {
         label: 'sr-only @fr-stepper-bottom/stepper:not-sr-only',
@@ -267,12 +304,27 @@ const stepper = tv({
     },
     {
       orientation: 'horizontal',
-      collapseLabels: true,
+      collapse: 'summary',
       labelPosition: 'end',
       class: {
         label: 'sr-only @fr-stepper-end/stepper:not-sr-only',
         summary: '@fr-stepper-end/stepper:hidden'
       }
+    },
+
+    // The probe is `display: block` from the same threshold at which titles
+    // would appear, i.e. when the full row fits.
+    {
+      orientation: 'horizontal',
+      collapse: 'menu',
+      labelPosition: 'bottom',
+      class: { probe: '@fr-stepper-bottom/stepper:block' }
+    },
+    {
+      orientation: 'horizontal',
+      collapse: 'menu',
+      labelPosition: 'end',
+      class: { probe: '@fr-stepper-end/stepper:block' }
     }
   ],
 
@@ -281,7 +333,8 @@ const stepper = tv({
     size: 'md',
     orientation: 'horizontal',
     labelPosition: 'end',
-    collapseLabels: true
+    collapse: 'menu',
+    collapsed: false
   }
 });
 

@@ -474,15 +474,16 @@ inside modals and sidebars as well as pages. Give it a parent with a definite
 width, such as a block element or a full-width flex item: a parent that
 shrinks to fit its content leaves it no width to measure.
 
-When narrow, only the indicators and connectors show, with a "Step 2 of 4"
-line and the active step's title beneath them. Every title stays available to
-screen readers. Wider than a threshold, the titles appear and the summary
-goes.
+When the row does not fit, `@collapse` decides what happens. It defaults to
+`'menu'`: the row is replaced by a button showing the current step ("Step 2 of
+4" and its title). Pressing it opens the steps as a floating list, laid out
+like a vertical Stepper, over the content below. Choosing a step selects it
+and closes the list.
 
-| `@labelPosition` | Titles appear from |
-| ---------------- | ------------------ |
-| `bottom`         | 28rem (448px)      |
-| `end`            | 42rem (672px)      |
+| `@labelPosition` | Full row shows from |
+| ---------------- | ------------------- |
+| `bottom`         | 28rem (448px)       |
+| `end`            | 42rem (672px)       |
 
 Drag the handle at the right edge of the box to resize it.
 
@@ -506,9 +507,46 @@ import { Stepper } from 'frontile';
 </template>
 ```
 
-Set `@collapseLabels={{false}}` to always show every title. Narrow screens
-fit roughly six or seven steps as indicators alone; beyond that, use a
-vertical Stepper.
+The list is a native popover, so it renders in the top layer: an ancestor's
+`overflow: hidden`, like the box above, does not clip it. Escape and clicking
+away close it, and focus returns to the button. The steps stay in the DOM while
+the list is closed, so `next` and `prev` work throughout.
+
+### Summary line instead of a menu
+
+Set `@collapse='summary'` to keep the row at narrow widths instead. Only the
+indicators and connectors show, with the "Step 2 of 4" line and the active
+step's title beneath them. Every title stays available to screen readers.
+Wider than the threshold, the titles appear and the line goes.
+
+```gts preview
+import { Stepper } from 'frontile';
+
+<template>
+  <div
+    class='w-full overflow-hidden rounded border border-neutral-soft p-4'
+    style='resize: horizontal; width: 100%; min-width: 14rem; max-width: 100%'
+  >
+    <Stepper
+      @defaultValue='billing'
+      @labelPosition='bottom'
+      @collapse='summary'
+      as |S|
+    >
+      <S.List @label='Checkout progress'>
+        <S.Step @value='account' @title='Account' />
+        <S.Step @value='billing' @title='Billing' />
+        <S.Step @value='review' @title='Review' />
+        <S.Step @value='confirm' @title='Confirm' />
+      </S.List>
+    </Stepper>
+  </div>
+</template>
+```
+
+Narrow screens fit roughly six or seven steps as indicators alone; beyond
+that, prefer the menu or a vertical Stepper. Set `@collapse={{false}}` to
+never collapse. Vertical Steppers never collapse.
 
 ### Changing the thresholds
 
@@ -523,9 +561,8 @@ redefining Tailwind's own `--container-*` sizes does not affect them.
 }
 ```
 
-For a single Stepper, pass an earlier condition through `@classes` to show
-titles sooner, or set `@collapseLabels={{false}}` and write your own rules on
-the `label` and `summary` slots.
+For a single Stepper, set `@collapse={{false}}` and write your own rules on
+the slots.
 
 ## Accessibility
 
@@ -536,9 +573,14 @@ not need a panel, and moving between them does not have to change content.
 `Stepper.List` needs an accessible name from `@label`, or pass
 `aria-labelledby` on it directly. Each `Panel` is a `role="region"` labelled by
 its step. Loading steps set `aria-busy`, and invalid steps are announced as
-"Invalid" in addition to being colored. Titles collapsed at narrow widths are
-visually hidden but still read aloud, and the "Step N of M" summary is hidden
-from assistive technology so the current step is not announced twice.
+"Invalid" in addition to being colored.
+
+When collapsed to a menu, the button is a disclosure (`aria-expanded`,
+`aria-controls`) whose text names the current step; the list inside is the same
+list of buttons, so `aria-current` and the keys below apply unchanged, with the
+up and down arrows. With `@collapse='summary'`, titles are visually hidden but
+still read aloud, and the "Step N of M" line is hidden from assistive
+technology so the current step is not announced twice.
 
 | Key                        | Behaviour                                                         |
 | -------------------------- | ----------------------------------------------------------------- |

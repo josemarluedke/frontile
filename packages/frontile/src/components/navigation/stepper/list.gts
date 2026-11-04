@@ -24,15 +24,54 @@ interface StepperListSignature<T> {
 // `TabsList` is.
 class StepperList<T> extends Component<StepperListSignature<T>> {
   <template>
+    {{#if @context.collapsed}}
+      {{! The current step, as a button. The native popover on the list does
+      the toggling, Escape and click-away; this only has to point at it. }}
+      <button
+        type="button"
+        data-part="trigger"
+        class={{@context.triggerClass}}
+        popovertarget={{@context.listId}}
+        popovertargetaction="toggle"
+        aria-controls={{@context.listId}}
+        aria-expanded="{{@context.isMenuOpen}}"
+        {{@context.registerTrigger}}
+      >
+        <span class="flex min-w-0 flex-col">
+          <span class={{@context.summaryClass}}>{{if
+              @context.summary
+              @context.summary.label
+              @label
+            }}</span>
+          {{#if @context.summary.title}}
+            <span class="block font-medium text-neutral-strong">
+              {{@context.summary.title}}
+            </span>
+          {{/if}}
+        </span>
+        <svg
+          viewBox="0 0 16 16"
+          class="size-4 shrink-0 text-neutral-firm"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        ><path d="M4 6l4 4 4-4" /></svg>
+      </button>
+    {{/if}}
     <ol
+      id={{@context.listId}}
       data-part="list"
       aria-label={{@label}}
       class={{@context.listClass}}
+      {{@context.menuList @context.collapsed}}
       ...attributes
     >
       {{yield}}
     </ol>
-    {{#if @context.summary}}
+    {{#if @context.showSummaryLine}}
       {{! Decorative: the active step is already announced through
       aria-current, so this must not be read a second time. }}
       <p data-part="summary" aria-hidden="true" class={{@context.summaryClass}}>

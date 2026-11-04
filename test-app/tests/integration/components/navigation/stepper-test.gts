@@ -6,6 +6,7 @@ import {
   click,
   findAll,
   settled,
+  waitUntil,
   focus,
   triggerKeyEvent,
   fillIn
@@ -912,7 +913,7 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
       style?: string;
       labelPosition?: 'end' | 'bottom';
       orientation?: 'horizontal' | 'vertical';
-      collapseLabels?: boolean;
+      collapse?: 'menu' | 'summary' | false;
       size?: 'sm' | 'md' | 'lg';
     };
   }> = <template>
@@ -921,7 +922,7 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
         @value="b"
         @labelPosition={{@labelPosition}}
         @orientation={{@orientation}}
-        @collapseLabels={{@collapseLabels}}
+        @collapse={{@collapse}}
         @size={{@size}}
         as |S|
       >
@@ -957,7 +958,9 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
   };
 
   test('narrow: titles are visually hidden and the summary is visible', async function (assert) {
-    await render(<template><Fixture @style="width: 20rem" /></template>);
+    await render(
+      <template><Fixture @style="width: 20rem" @collapse="summary" /></template>
+    );
 
     assert.false(titleVisible(), 'title is visually hidden');
     assert.notStrictEqual(summaryDisplay(), 'none');
@@ -967,7 +970,9 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
   });
 
   test('collapsed titles stay in the accessibility tree', async function (assert) {
-    await render(<template><Fixture @style="width: 20rem" /></template>);
+    await render(
+      <template><Fixture @style="width: 20rem" @collapse="summary" /></template>
+    );
 
     const title = find(
       '[data-test-step="a"] [data-part="title"]'
@@ -980,8 +985,16 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
   test('labelPosition bottom shows titles from the bottom threshold', async function (assert) {
     await render(
       <template>
-        <Fixture @style="width: 24rem" @labelPosition="bottom" />
-        <Fixture @style="width: 30rem" @labelPosition="bottom" />
+        <Fixture
+          @style="width: 24rem"
+          @labelPosition="bottom"
+          @collapse="summary"
+        />
+        <Fixture
+          @style="width: 30rem"
+          @labelPosition="bottom"
+          @collapse="summary"
+        />
       </template>
     );
 
@@ -1003,8 +1016,8 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
   test('labelPosition end shows titles from the end threshold, and stays collapsed between', async function (assert) {
     await render(
       <template>
-        <Fixture @style="width: 30rem" />
-        <Fixture @style="width: 44rem" />
+        <Fixture @style="width: 30rem" @collapse="summary" />
+        <Fixture @style="width: 44rem" @collapse="summary" />
       </template>
     );
 
@@ -1017,15 +1030,14 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
     assert.true(labelWidth(wide as HTMLElement) > 10, 'visible from 42rem');
   });
 
-  test('@collapseLabels={{false}} always shows titles and omits the summary', async function (assert) {
+  test('@collapse={{false}} always shows titles and omits the summary and menu', async function (assert) {
     await render(
-      <template>
-        <Fixture @style="width: 20rem" @collapseLabels={{false}} />
-      </template>
+      <template><Fixture @style="width: 20rem" @collapse={{false}} /></template>
     );
 
     assert.true(titleVisible());
     assert.dom('[data-part="summary"]').doesNotExist();
+    assert.dom('[data-part="trigger"]').doesNotExist();
   });
 
   test('vertical always shows titles and has no summary', async function (assert) {
@@ -1037,14 +1049,15 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
 
     assert.true(titleVisible());
     assert.dom('[data-part="summary"]').doesNotExist();
+    assert.dom('[data-part="trigger"]').doesNotExist();
   });
 
   test('the step hit area is at least 44px at every size', async function (assert) {
     await render(
       <template>
-        <Fixture @style="width: 20rem" @size="sm" />
-        <Fixture @style="width: 20rem" @size="md" />
-        <Fixture @style="width: 20rem" @size="lg" />
+        <Fixture @style="width: 20rem" @size="sm" @collapse={{false}} />
+        <Fixture @style="width: 20rem" @size="md" @collapse={{false}} />
+        <Fixture @style="width: 20rem" @size="lg" @collapse={{false}} />
       </template>
     );
 
@@ -1151,7 +1164,12 @@ module('Integration | Component | Stepper | review fixes', function (hooks) {
     await render(
       <template>
         <div class="w-[20rem]">
-          <Stepper @value="b" @summaryLabel={{summaryLabel}} as |S|>
+          <Stepper
+            @value="b"
+            @collapse="summary"
+            @summaryLabel={{summaryLabel}}
+            as |S|
+          >
             <S.List @label="Checkout">
               <S.Step @value="a" @title="Konto" />
               <S.Step @value="b" @title="Zahlung" />
@@ -1188,5 +1206,152 @@ module('Integration | Component | Stepper | review fixes', function (hooks) {
     await settled();
 
     assert.dom('[data-test-step="a"]').hasAria('current', 'step');
+  });
+});
+
+module('Integration | Component | Stepper | collapse menu', function (hooks) {
+  setupRenderingTest(hooks);
+
+  const Fixture: TOC<{
+    Args: {
+      style?: string;
+      orientation?: 'horizontal' | 'vertical';
+      summaryLabel?: (position: number, total: number) => string;
+      onChange?: (value: string) => void;
+    };
+  }> = <template>
+    <div style={{@style}}>
+      <Stepper
+        @defaultValue="b"
+        @orientation={{@orientation}}
+        @summaryLabel={{@summaryLabel}}
+        @onChange={{@onChange}}
+        as |S|
+      >
+        <S.List @label="Checkout">
+          <S.Step @value="a" @title="Account" data-test-step="a" />
+          <S.Step @value="b" @title="Billing" data-test-step="b" />
+          <S.Step @value="c" @title="Review" data-test-step="c" />
+          <S.Step @value="d" @title="Confirm" data-test-step="d" />
+        </S.List>
+      </Stepper>
+    </div>
+  </template>;
+
+  const list = (): HTMLElement => find('[data-part="list"]') as HTMLElement;
+  const trigger = (): HTMLElement =>
+    find('[data-part="trigger"]') as HTMLElement;
+  const isOpen = (): boolean => list().matches(':popover-open');
+
+  const openMenu = async (): Promise<void> => {
+    await click(trigger());
+    await waitUntil(isOpen);
+    // Focus moves in on the popover's (async) toggle event, after it is open.
+    await waitUntil(() => list().contains(document.activeElement));
+  };
+
+  test('narrow: the row becomes a trigger showing the current step', async function (assert) {
+    await render(<template><Fixture @style="width: 20rem" /></template>);
+
+    assert
+      .dom('[data-component="stepper"]')
+      .hasAttribute('data-collapsed', 'true');
+    assert.dom('[data-part="trigger"]').includesText('Step 2 of 4');
+    assert.dom('[data-part="trigger"]').includesText('Billing');
+    assert.dom('[data-part="trigger"]').hasAttribute('aria-expanded', 'false');
+    assert.dom('[data-part="list"]').hasAttribute('popover', 'auto');
+    assert.strictEqual(
+      getComputedStyle(list()).display,
+      'none',
+      'closed list is hidden'
+    );
+  });
+
+  test('wide: the full row shows and there is no trigger', async function (assert) {
+    await render(<template><Fixture @style="width: 44rem" /></template>);
+
+    assert
+      .dom('[data-component="stepper"]')
+      .hasAttribute('data-collapsed', 'false');
+    assert.dom('[data-part="trigger"]').doesNotExist();
+    assert.dom('[data-part="list"]').doesNotHaveAttribute('popover');
+    assert.notStrictEqual(getComputedStyle(list()).display, 'none');
+  });
+
+  test('vertical never collapses', async function (assert) {
+    await render(
+      <template>
+        <Fixture @style="width: 10rem" @orientation="vertical" />
+      </template>
+    );
+
+    assert.dom('[data-part="trigger"]').doesNotExist();
+    assert.dom('[data-part="list"]').doesNotHaveAttribute('popover');
+  });
+
+  test('the trigger opens the list and focus moves to the current step', async function (assert) {
+    await render(<template><Fixture @style="width: 20rem" /></template>);
+
+    await openMenu();
+
+    assert.dom('[data-part="trigger"]').hasAttribute('aria-expanded', 'true');
+    assert.strictEqual(
+      document.activeElement,
+      find('[data-test-step="b"]'),
+      'the current step has focus'
+    );
+    assert.dom('[data-test-step="c"]').isVisible();
+  });
+
+  test('arrow keys move through the open list vertically', async function (assert) {
+    await render(<template><Fixture @style="width: 20rem" /></template>);
+
+    await openMenu();
+    await triggerKeyEvent('[data-test-step="b"]', 'keydown', 'ArrowDown');
+
+    assert.strictEqual(document.activeElement, find('[data-test-step="c"]'));
+  });
+
+  test('picking a step selects it and closes the menu', async function (assert) {
+    const changes: string[] = [];
+    const onChange = (value: string): void => {
+      changes.push(value);
+    };
+
+    await render(
+      <template>
+        <Fixture @style="width: 20rem" @onChange={{onChange}} />
+      </template>
+    );
+
+    await openMenu();
+    await click('[data-test-step="c"]');
+    await waitUntil(() => !isOpen());
+
+    assert.deepEqual(changes, ['c']);
+    assert.dom('[data-part="trigger"]').includesText('Step 3 of 4');
+    assert.dom('[data-part="trigger"]').includesText('Review');
+    assert.dom('[data-part="trigger"]').hasAttribute('aria-expanded', 'false');
+  });
+
+  test('steps stay registered while the menu is closed', async function (assert) {
+    await render(<template><Fixture @style="width: 20rem" /></template>);
+
+    // "of 4" can only come from the registry, and the list is display: none.
+    assert.dom('[data-part="trigger"]').includesText('of 4');
+    assert.strictEqual(findAll('[data-part="step"]').length, 4);
+  });
+
+  test('@summaryLabel formats the trigger text', async function (assert) {
+    const summaryLabel = (position: number, total: number): string =>
+      `Schritt ${position} von ${total}`;
+
+    await render(
+      <template>
+        <Fixture @style="width: 20rem" @summaryLabel={{summaryLabel}} />
+      </template>
+    );
+
+    assert.dom('[data-part="trigger"]').includesText('Schritt 2 von 4');
   });
 });
