@@ -65,4 +65,14 @@ module('Unit | Utils | route-active', function () {
 
     assert.false(isRouteActive(router, { route: 'engine.home' }));
   });
+
+  test('queryParams is forwarded to router.isActive', function (assert) {
+    const { router, calls } = fakeRouter();
+
+    isRouteActive(router, { route: 'a' });
+    isRouteActive(router, { route: 'a', model: 1, query: { q: '1' } });
+
+    assert.deepEqual(calls[0]?.rest, [{ queryParams: {} }]);
+    assert.deepEqual(calls[1]?.rest, [1, { queryParams: { q: '1' } }]);
+  });
 });
