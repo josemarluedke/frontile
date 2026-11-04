@@ -114,6 +114,7 @@ interface StepperContext<T> {
   itemClass: string;
   stepClass: string;
   indicatorClass: string;
+  checkClass: string;
   connectorClass: string;
   labelClass: string;
   titleClass: string;
@@ -427,6 +428,7 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       itemClass: this.styles.item({ class: classes?.item }),
       stepClass: this.styles.step({ class: classes?.step }),
       indicatorClass: this.styles.indicator({ class: classes?.indicator }),
+      checkClass: this.styles.check({ class: classes?.check }),
       connectorClass: this.styles.connector({ class: classes?.connector }),
       labelClass: this.styles.label({ class: classes?.label }),
       titleClass: this.styles.title({ class: classes?.title }),

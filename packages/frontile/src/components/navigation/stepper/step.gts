@@ -93,6 +93,9 @@ interface StepperStepSignature<T> {
   Element: HTMLButtonElement;
 }
 
+// Long enough for the check's draw (60ms delay + 320ms) to finish.
+const COMPLETION_ANIMATION_MS = 450;
+
 class StepperStep<T> extends Component<StepperStepSignature<T>> {
   id = guidFor(this);
 
@@ -167,6 +170,40 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
     };
   });
 
+  // The state this step was in the last time the modifier ran. Not tracked:
+  // it is bookkeeping for the modifier, never read by a template.
+  #previousState: StepState | undefined;
+
+  /**
+   * Flags the `<li>` with `data-just-completed` for the length of the check's
+   * animation, but only when the step *becomes* complete -- not when it first
+   * renders complete, which would replay the animation on every step of a
+   * Stepper that opens partway through. The attribute is written straight to
+   * the element: the animation is a one-shot visual, and routing it through
+   * tracked state would re-render the step for nothing.
+   */
+  trackCompletion = modifier((element: HTMLElement, [state]: [StepState]) => {
+    const previous = this.#previousState;
+    this.#previousState = state;
+
+    if (
+      previous === undefined ||
+      previous === 'complete' ||
+      state !== 'complete'
+    ) {
+      return;
+    }
+
+    element.dataset['justCompleted'] = 'true';
+    const timer = setTimeout(() => {
+      delete element.dataset['justCompleted'];
+    }, COMPLETION_ANIMATION_MS);
+
+    return (): void => {
+      clearTimeout(timer);
+    };
+  });
+
   handleClick = (): void => {
     if (this.isDisabled) {
       return;
@@ -182,6 +219,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
       data-loading="{{this.isLoading}}"
       data-disabled="{{this.isDisabled}}"
       class={{@context.itemClass}}
+      {{this.trackCompletion this.state}}
     >
       <button
         type="button"
@@ -219,13 +257,13 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
           {{else if this.isCompleteMark}}
             <svg
               viewBox="0 0 16 16"
-              class="shrink-0"
+              class={{@context.checkClass}}
               fill="none"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-            ><path d="M3.5 8.5l3 3 6-6.5" /></svg>
+            ><path d="M3.5 8.5l3 3 6-6.5" pathLength="1" /></svg>
           {{else if @icon}}
             <@icon />
           {{else if this.number}}

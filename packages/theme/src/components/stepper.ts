@@ -50,6 +50,19 @@ const stepper = tv({
       'group-data-[invalid=true]/item:text-danger!'
     ],
 
+    // The check mark inside a complete indicator. It animates only while the
+    // Step has `data-just-completed` -- set for the moment after a step
+    // *becomes* complete -- so steps that load already complete stay still.
+    check: [
+      'shrink-0',
+      'group-data-[just-completed=true]/item:animate-stepper-check-pop',
+      'group-data-[just-completed=true]/item:[&_path]:animate-stepper-check-draw',
+      // `1 2`: a dash as long as the path (normalized to 1) and a gap longer
+      // than it, so the undrawn state shows nothing, not even a round cap.
+      'group-data-[just-completed=true]/item:[&_path]:[stroke-dasharray:1_2]',
+      'motion-reduce:animate-none motion-reduce:[&_path]:animate-none'
+    ],
+
     connector: [
       'shrink-0 bg-neutral-mild',
       'transition-colors duration-200 motion-reduce:transition-none',
