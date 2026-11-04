@@ -119,11 +119,18 @@ class Sidebar extends Component<SidebarSignature> {
     this.state.closeMobileSidebar();
   };
 
-  /** Return focus to the layout's `MenuToggle` when it is on screen. */
+  /**
+   * Return focus to whatever opened the drawer: `MenuToggle`, or the element
+   * focused when the shortcut was pressed. With nothing focused (the body),
+   * fall back to the layout's `MenuToggle` when it is on screen.
+   */
   get focusTrapOptions() {
     const toggleId = this.args.layout?.menuToggleId;
     return {
       setReturnFocus: (previous: HTMLElement | SVGElement) => {
+        if (previous && previous !== document.body && previous.isConnected) {
+          return previous;
+        }
         const toggle = toggleId ? document.getElementById(toggleId) : null;
         return toggle && toggle.getClientRects().length > 0 ? toggle : previous;
       }
