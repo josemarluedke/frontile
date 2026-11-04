@@ -37,21 +37,21 @@ class StepperList<T> extends Component<StepperListSignature<T>> {
         aria-expanded="{{@context.isMenuOpen}}"
         {{@context.registerTrigger}}
       >
-        <span class="flex min-w-0 flex-col">
+        <span class={{@context.triggerLabelClass}}>
           <span class={{@context.summaryClass}}>{{if
               @context.summary
               @context.summary.label
               @label
             }}</span>
           {{#if @context.summary.title}}
-            <span class="block font-medium text-neutral-strong">
+            <span class={{@context.summaryTitleClass}}>
               {{@context.summary.title}}
             </span>
           {{/if}}
         </span>
         <svg
           viewBox="0 0 16 16"
-          class="size-4 shrink-0 text-neutral-firm"
+          class={{@context.chevronClass}}
           fill="none"
           stroke="currentColor"
           stroke-width="2"
@@ -75,9 +75,11 @@ class StepperList<T> extends Component<StepperListSignature<T>> {
       {{! Decorative: the active step is already announced through
       aria-current, so this must not be read a second time. }}
       <p data-part="summary" aria-hidden="true" class={{@context.summaryClass}}>
-        <span class="block">{{@context.summary.label}}</span>
+        <span
+          class={{@context.summaryTextClass}}
+        >{{@context.summary.label}}</span>
         {{#if @context.summary.title}}
-          <span class="block font-medium text-neutral-strong">
+          <span class={{@context.summaryTitleClass}}>
             {{@context.summary.title}}
           </span>
         {{/if}}

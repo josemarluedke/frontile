@@ -91,6 +91,21 @@ const stepper = tv({
     // already read it, so the two can never disagree.
     probe: 'hidden',
 
+    // The trigger's two lines of text, and its chevron.
+    triggerLabel: 'flex min-w-0 flex-col',
+    chevron: 'size-4 shrink-0 text-neutral-firm',
+
+    // "Step N of M" and the active step's title, in the trigger and in the
+    // standalone summary line.
+    summaryText: 'block',
+    summaryTitle: 'block font-medium text-neutral-strong',
+
+    // The invalid step's exclamation mark, the loading spinner, and the text
+    // only screen readers get for an invalid step.
+    mark: 'shrink-0',
+    spinner: 'fill-current text-neutral-mild',
+    invalidText: 'sr-only',
+
     label: 'flex min-w-0 flex-col',
 
     title: [

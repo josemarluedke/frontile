@@ -63,11 +63,6 @@
   }
 }
 
-/*
-  A text caret blinks hard on and off -- it does not fade. Adjacent stops at the
-  midpoint give an instant switch under linear timing, and 1.06s is roughly the
-  native caret rate.
-*/
 /* Stepper: the check draws itself when a step completes. `stroke-dashoffset`
    runs against `pathLength="1"`, so the keyframe is independent of the path's
    real length. */
@@ -92,6 +87,11 @@
   }
 }
 
+/*
+  A text caret blinks hard on and off -- it does not fade. Adjacent stops at the
+  midpoint give an instant switch under linear timing, and 1.06s is roughly the
+  native caret rate.
+*/
 @keyframes caret-blink {
   0%,
   49.9% {

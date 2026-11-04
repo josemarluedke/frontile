@@ -118,6 +118,11 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
     return this.number > 0 ? this.state : undefined;
   }
 
+  /** What a screen reader announces for an invalid step. */
+  get invalidText(): string {
+    return this.args.invalidLabel ?? 'Invalid';
+  }
+
   get isLoading(): boolean {
     return this.args.isLoading ?? false;
   }
@@ -257,11 +262,11 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
           {{#if (has-block "indicator")}}
             {{yield this.slotState to="indicator"}}
           {{else if this.isLoading}}
-            <Spinner @size="sm" class="fill-current text-neutral-mild" />
+            <Spinner @size="sm" class={{@context.spinnerClass}} />
           {{else if this.isInvalid}}
             <svg
               viewBox="0 0 16 16"
-              class="shrink-0"
+              class={{@context.markClass}}
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -303,11 +308,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
           </span>
         {{/if}}
         {{#if this.isInvalid}}
-          <span class="sr-only">{{if
-              @invalidLabel
-              @invalidLabel
-              "Invalid"
-            }}</span>
+          <span class={{@context.invalidTextClass}}>{{this.invalidText}}</span>
         {{/if}}
       </button>
       <span

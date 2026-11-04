@@ -578,7 +578,9 @@ its step. Loading steps set `aria-busy`, and invalid steps are announced as
 When collapsed to a menu, the button is a disclosure (`aria-expanded`,
 `aria-controls`) whose text names the current step; the list inside is the same
 list of buttons, so `aria-current` and the keys below apply unchanged, with the
-up and down arrows. With `@collapse='summary'`, titles are visually hidden but
+up and down arrows. While the menu is closed the list is hidden from assistive
+technology entirely, so the button's text is how the current step is
+announced, and `Tab` reaches the button rather than the steps. With `@collapse='summary'`, titles are visually hidden but
 still read aloud, and the "Step N of M" line is hidden from assistive
 technology so the current step is not announced twice.
 

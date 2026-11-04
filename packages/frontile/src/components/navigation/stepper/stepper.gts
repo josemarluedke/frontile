@@ -5,15 +5,9 @@ import { guidFor } from '@ember/object/internals';
 import { isDestroyed, isDestroying } from '@ember/destroyable';
 import { schedule } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
-import {
-  autoUpdate,
-  computePosition,
-  flip,
-  offset,
-  shift
-} from '@floating-ui/dom';
 import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
+import { CollapseMenu } from './collapse-menu';
 import StepperList from './list';
 import StepperPanel from './panel';
 import StepperStep from './step';
@@ -149,10 +143,17 @@ interface StepperContext<T> {
   /** Id of the list, which the menu trigger points at. */
   readonly listId: string;
   triggerClass: string;
+  triggerLabelClass: string;
+  chevronClass: string;
+  summaryTextClass: string;
+  summaryTitleClass: string;
+  markClass: string;
+  spinnerClass: string;
+  invalidTextClass: string;
   /** Installed on the menu trigger. */
-  registerTrigger: typeof Stepper.prototype.registerTrigger;
+  registerTrigger: CollapseMenu['registerTrigger'];
   /** Installed on the list; turns it into the floating panel when collapsed. */
-  menuList: typeof Stepper.prototype.menuList;
+  menuList: CollapseMenu['list'];
   /** A step chosen by the user: selects it and closes the menu. */
   pick: (value: T) => void;
   /** Registered steps in document order. */
@@ -209,7 +210,7 @@ class Stepper<T> extends Component<StepperSignature<T>> {
   // past one must not.
   roving = rovingFocus(() => ({
     // The collapsed menu lists the steps vertically, so the arrow keys follow.
-    orientation: this.collapsed ? 'vertical' : this.orientation,
+    orientation: this.layout.orientation,
     activationMode: 'manual',
     onActivate: this.activateElement
   }));
@@ -224,11 +225,9 @@ class Stepper<T> extends Component<StepperSignature<T>> {
   // derived: the answer lives in a container query, which JS can only read
   // back from the rendered page.
   @tracked _isNarrow = false;
-  @tracked isMenuOpen = false;
 
   readonly listId = `${guidFor(this)}-list`;
-  #triggerEl: HTMLElement | undefined;
-  #listEl: HTMLElement | undefined;
+  readonly menu = new CollapseMenu();
 
   // Registered steps live in an untracked list, with a tracked version that
   // consumers read. A step registers from its modifier, which installs inside
@@ -264,6 +263,24 @@ class Stepper<T> extends Component<StepperSignature<T>> {
   /** Whether a menu is configured and applicable (horizontal only). */
   get usesMenu(): boolean {
     return this.collapseMode === 'menu' && this.orientation === 'horizontal';
+  }
+
+  /**
+   * The layout the steps are drawn in. Collapsed into the menu, the list uses
+   * the vertical layout inside the panel, whatever was configured; everything
+   * that depends on the layout (styles, arrow keys, `context.orientation`)
+   * reads it from here.
+   */
+  get layout(): {
+    orientation: 'horizontal' | 'vertical';
+    labelPosition: 'end' | 'bottom';
+  } {
+    return this.collapsed
+      ? { orientation: 'vertical', labelPosition: 'end' }
+      : {
+          orientation: this.orientation,
+          labelPosition: this.args.labelPosition ?? 'end'
+        };
   }
 
   /** Whether the menu is active right now. */
@@ -302,8 +319,8 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     return stepper({
       color: this.args.color,
       size: this.args.size,
-      orientation: this.collapsed ? 'vertical' : this.args.orientation,
-      labelPosition: this.collapsed ? 'end' : this.args.labelPosition,
+      orientation: this.layout.orientation,
+      labelPosition: this.layout.labelPosition,
       collapse: this.collapseMode,
       collapsed: this.collapsed
     });
@@ -455,15 +472,8 @@ class Stepper<T> extends Component<StepperSignature<T>> {
   // from the menu also closes it.
   pick = (value: T): void => {
     this.select(value);
-    this.#closeMenu();
+    this.menu.close();
   };
-
-  #closeMenu(): void {
-    const list = this.#listEl;
-    if (list && list.matches(':popover-open')) {
-      list.hidePopover();
-    }
-  }
 
   #setNarrow(narrow: boolean): void {
     if (narrow === this._isNarrow) {
@@ -502,107 +512,6 @@ class Stepper<T> extends Component<StepperSignature<T>> {
 
     return (): void => {
       observer.disconnect();
-    };
-  });
-
-  registerTrigger = modifier((element: HTMLElement) => {
-    this.#triggerEl = element;
-
-    return (): void => {
-      if (this.#triggerEl === element) {
-        this.#triggerEl = undefined;
-      }
-    };
-  });
-
-  /**
-   * Turns the list into the menu's floating panel while collapsed: a native
-   * `popover` (top layer, so no ancestor's `overflow` can clip it; Escape and
-   * click-away come with it), positioned under the trigger. The list stays
-   * mounted either way, which is why the steps stay registered while the menu
-   * is closed.
-   */
-  menuList = modifier((list: HTMLElement, [collapsed]: [boolean]) => {
-    if (!collapsed || typeof list.showPopover !== 'function') {
-      return;
-    }
-
-    this.#listEl = list;
-    list.setAttribute('popover', 'auto');
-
-    let stopPositioning: (() => void) | undefined;
-
-    const place = (): void => {
-      const trigger = this.#triggerEl;
-      if (!trigger) {
-        return;
-      }
-      void computePosition(trigger, list, {
-        strategy: 'fixed',
-        placement: 'bottom-start',
-        middleware: [offset(8), flip(), shift({ padding: 8 })]
-      }).then(({ x, y }) => {
-        list.style.left = `${x}px`;
-        list.style.top = `${y}px`;
-        list.style.minWidth = `${trigger.offsetWidth}px`;
-      });
-    };
-
-    const focusCurrent = (): void => {
-      const target =
-        list.querySelector<HTMLElement>('[aria-current="step"]') ??
-        list.querySelector<HTMLElement>(
-          '[data-part="step"]:not([aria-disabled="true"])'
-        );
-      target?.focus();
-    };
-
-    const onBeforeToggle = (event: Event): void => {
-      const { newState } = event as Event & { newState?: string };
-      // Focus inside the panel is about to vanish with it; hand it back to the
-      // trigger, as a menu button does.
-      if (newState === 'closed' && list.contains(document.activeElement)) {
-        const trigger = this.#triggerEl;
-        queueMicrotask(() => trigger?.focus());
-      }
-    };
-
-    const onToggle = (event: Event): void => {
-      const { newState } = event as Event & { newState?: string };
-      this.isMenuOpen = newState === 'open';
-
-      stopPositioning?.();
-      stopPositioning = undefined;
-
-      if (newState === 'open' && this.#triggerEl) {
-        place();
-        stopPositioning = autoUpdate(this.#triggerEl, list, place);
-        focusCurrent();
-      }
-    };
-
-    list.addEventListener('beforetoggle', onBeforeToggle);
-    list.addEventListener('toggle', onToggle);
-
-    return (): void => {
-      stopPositioning?.();
-      list.removeEventListener('beforetoggle', onBeforeToggle);
-      list.removeEventListener('toggle', onToggle);
-      if (list.matches(':popover-open')) {
-        list.hidePopover();
-      }
-      list.removeAttribute('popover');
-      list.style.removeProperty('left');
-      list.style.removeProperty('top');
-      list.style.removeProperty('min-width');
-      if (this.#listEl === list) {
-        this.#listEl = undefined;
-      }
-      schedule('afterRender', () => {
-        if (!isDestroying(this) && !isDestroyed(this)) {
-          this.isMenuOpen = false;
-        }
-      });
     };
   });
 
@@ -663,7 +572,7 @@ class Stepper<T> extends Component<StepperSignature<T>> {
 
     return {
       get orientation() {
-        return stepper.collapsed ? 'vertical' : stepper.orientation;
+        return stepper.layout.orientation;
       },
       get listClass() {
         return stepper.styles.list({ class: stepper.args.classes?.list });
@@ -701,6 +610,35 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       get summaryClass() {
         return stepper.styles.summary({ class: stepper.args.classes?.summary });
       },
+      get triggerLabelClass() {
+        return stepper.styles.triggerLabel({
+          class: stepper.args.classes?.triggerLabel
+        });
+      },
+      get chevronClass() {
+        return stepper.styles.chevron({ class: stepper.args.classes?.chevron });
+      },
+      get summaryTextClass() {
+        return stepper.styles.summaryText({
+          class: stepper.args.classes?.summaryText
+        });
+      },
+      get summaryTitleClass() {
+        return stepper.styles.summaryTitle({
+          class: stepper.args.classes?.summaryTitle
+        });
+      },
+      get markClass() {
+        return stepper.styles.mark({ class: stepper.args.classes?.mark });
+      },
+      get spinnerClass() {
+        return stepper.styles.spinner({ class: stepper.args.classes?.spinner });
+      },
+      get invalidTextClass() {
+        return stepper.styles.invalidText({
+          class: stepper.args.classes?.invalidText
+        });
+      },
       get triggerClass() {
         return stepper.styles.trigger({ class: stepper.args.classes?.trigger });
       },
@@ -717,14 +655,14 @@ class Stepper<T> extends Component<StepperSignature<T>> {
         return stepper.collapsed;
       },
       get isMenuOpen() {
-        return stepper.isMenuOpen;
+        return stepper.menu.isOpen;
       },
       get steps() {
         return stepper.steps;
       },
       listId: this.listId,
-      registerTrigger: this.registerTrigger,
-      menuList: this.menuList,
+      registerTrigger: this.menu.registerTrigger,
+      menuList: this.menu.list,
       pick: this.pick,
       isSelected: this.isSelected,
       stateOf: this.stateOf,
