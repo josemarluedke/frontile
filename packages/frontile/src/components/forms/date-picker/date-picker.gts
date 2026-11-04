@@ -7,7 +7,11 @@ import { useStyles } from '@frontile/theme';
 import { FormControl } from '../form-control';
 import { DatePickerTrigger } from './trigger';
 import { DatePickerEndContent } from './end-content';
-import { SegmentGroup } from '../date-input/segment-group';
+import {
+  SegmentGroup,
+  DEFAULT_SEGMENT_LABELS
+} from '../date-input/segment-group';
+import { DatePickerTimeColumns } from './time-columns';
 import {
   buildParts,
   toDate,
@@ -15,7 +19,11 @@ import {
   carryOver,
   resolveSegmentFormat,
   hasDateChanged,
-  timeOf
+  timeOf,
+  isSegment,
+  withValue,
+  commitSegment,
+  seedFrom
 } from '../date-input/segments';
 import { Popover } from '../../overlays/popover';
 import { Calendar } from '../../collections/calendar/calendar';
@@ -36,7 +44,7 @@ import type {
   CalendarValue,
   DateRange
 } from '../../collections/calendar/types';
-import type { Part, TimeOptions } from '../date-input/types';
+import type { Part, SegmentType, TimeOptions } from '../date-input/types';
 import type {
   DatePickerArgs,
   DatePickerLabels,
@@ -49,10 +57,14 @@ import type {
  * The picker's own texts. The calendar's are left to `Calendar`, which owns
  * their defaults: `@labels` is handed to it as it is.
  */
-const DEFAULT_LABELS: Pick<DatePickerLabels, 'clear' | 'chooseDate'> = {
-  clear: 'Clear',
-  chooseDate: (label) => (label ? `Choose date, ${label}` : 'Choose date')
-};
+const DEFAULT_LABELS: Pick<DatePickerLabels, 'clear' | 'chooseDate' | 'time'> =
+  {
+    clear: 'Clear',
+    chooseDate: (label) => (label ? `Choose date, ${label}` : 'Choose date'),
+    time: 'Time'
+  };
+
+const TIME_TYPES: SegmentType[] = ['hour', 'minute', 'dayPeriod'];
 
 interface DatePickerSignature<M extends CalendarMode = 'single'> {
   Args: DatePickerArgs<M>;
@@ -208,6 +220,33 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
   get hasTime(): boolean {
     return (this.args.granularity ?? 'day') !== 'day';
   }
+
+  /**
+   * Whether the popover lists the time beside the calendar. The columns edit
+   * the segments, so there have to be segments, and only one group of them:
+   * a range would need two sets of columns, and which end they edit would be
+   * one more thing to get across.
+   */
+  get showsTimeColumns(): boolean {
+    return (
+      this.hasTime &&
+      this.isSegmented &&
+      !this.isRangeMode &&
+      (this.args.showTimeColumns ?? true)
+    );
+  }
+
+  get minuteStep(): number {
+    const step = this.args.minuteStep ?? 5;
+    return Number.isInteger(step) && step >= 1 && step <= 60 ? step : 5;
+  }
+
+  get timeLabel(): string {
+    return this.args.labels?.time ?? DEFAULT_LABELS.time;
+  }
+
+  columnLabel = (type: SegmentType): string =>
+    this.args.segmentLabels?.[type] ?? DEFAULT_SEGMENT_LABELS[type];
 
   get mode(): M {
     return (this.args as { mode?: M }).mode ?? ('single' as M);
@@ -488,9 +527,14 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     }
 
     if (!this.isRangeMode) {
-      this.handleChange(
-        withTimeOf(value as Date, this.timeAt('start')) as never
-      );
+      const picked = withTimeOf(value as Date, this.timeAt('start')) as never;
+      // With the time columns beside it, a day is half the answer: the
+      // popover stays open for the time.
+      if (this.showsTimeColumns) {
+        this.commitValue(picked, { writeParts: true });
+      } else {
+        this.handleChange(picked);
+      }
       return;
     }
 
@@ -562,6 +606,36 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     if (!hasDateChanged(before, after)) return;
 
     this.commitValue(after as CalendarValue<M> | null, { writeParts: false });
+  };
+
+  /**
+   * An option picked in the time columns. It is written into the segments,
+   * the one place the time lives, and reported the way typing is -- so a
+   * time picked before any day waits for one, exactly as a typed time does.
+   *
+   * The other time segments are filled in if they are empty, so that one
+   * pick is a time: minutes start on the hour (10 reads as 10:00), the hour
+   * and AM/PM at `@placeholderValue`'s, as ArrowUp on an empty segment does.
+   * A segment still being typed is committed as it reads.
+   */
+  handleTimeSelect = (
+    type: SegmentType,
+    value: number,
+    commit: boolean
+  ): void => {
+    const parts = this.#currentParts.map((part) => {
+      if (!isSegment(part) || !TIME_TYPES.includes(part.type)) return part;
+      if (part.type === type) return withValue(part, value);
+      if (part.value !== null) return commitSegment(part);
+
+      return withValue(
+        part,
+        part.type === 'minute' ? 0 : seedFrom(part, this.placeholderValue)
+      );
+    });
+
+    this.handlePartsChange(parts);
+    if (commit) this.close();
   };
 
   /**
@@ -702,6 +776,7 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
     const { datePicker } = useStyles();
     return datePicker({
       size: this.args.inputSize,
+      color: this.args.color,
       isSegmented: this.isSegmented,
       isRange: this.isSegmented && this.isRangeMode
     });
@@ -972,34 +1047,53 @@ class DatePicker<M extends CalendarMode = 'single'> extends Component<
             role="dialog"
             aria-label={{@label}}
           >
-            {{#if (has-block "calendar")}}
-              {{yield this.calendarBlockArg to="calendar"}}
-            {{else}}
-              <Calendar
-                @mode={{this.mode}}
-                @color={{@color}}
-                @value={{this.value}}
-                @onChange={{this.handleCalendarChange}}
-                @locale={{@locale}}
-                @weekStartsOn={{@weekStartsOn}}
-                @minValue={{@minValue}}
-                @maxValue={{@maxValue}}
-                @isDateUnavailable={{@isDateUnavailable}}
-                @visibleMonths={{@visibleMonths}}
-                @captionLayout={{@captionLayout}}
-                @labels={{@labels}}
-                @fixedWeeks={{@fixedWeeks}}
-                @showOutsideDays={{@showOutsideDays}}
-                @isReadOnly={{@isReadOnly}}
-                @isDisabled={{@isDisabled}}
-                @labelledBy={{c.id}}
-                @autofocus={{true}}
-                @classes={{hash
-                  base=(this.classes.calendar class=@classes.calendar)
-                }}
-                data-part="calendar"
-              />
-            {{/if}}
+            <div
+              data-part="panels"
+              class={{this.classes.panels class=@classes.panels}}
+            >
+              {{#if (has-block "calendar")}}
+                {{yield this.calendarBlockArg to="calendar"}}
+              {{else}}
+                <Calendar
+                  @mode={{this.mode}}
+                  @color={{@color}}
+                  @value={{this.value}}
+                  @onChange={{this.handleCalendarChange}}
+                  @locale={{@locale}}
+                  @weekStartsOn={{@weekStartsOn}}
+                  @minValue={{@minValue}}
+                  @maxValue={{@maxValue}}
+                  @isDateUnavailable={{@isDateUnavailable}}
+                  @visibleMonths={{@visibleMonths}}
+                  @captionLayout={{@captionLayout}}
+                  @labels={{@labels}}
+                  @fixedWeeks={{@fixedWeeks}}
+                  @showOutsideDays={{@showOutsideDays}}
+                  @isReadOnly={{@isReadOnly}}
+                  @isDisabled={{@isDisabled}}
+                  @labelledBy={{c.id}}
+                  @autofocus={{true}}
+                  @classes={{hash
+                    base=(this.classes.calendar class=@classes.calendar)
+                  }}
+                  data-part="calendar"
+                />
+              {{/if}}
+              {{#if this.showsTimeColumns}}
+                <DatePickerTimeColumns
+                  @parts={{this.parts}}
+                  @minuteStep={{this.minuteStep}}
+                  @placeholderValue={{this.placeholderValue}}
+                  @label={{this.timeLabel}}
+                  @columnLabel={{this.columnLabel}}
+                  @idPrefix={{concat c.id "-time"}}
+                  @isReadOnly={{@isReadOnly}}
+                  @onSelect={{this.handleTimeSelect}}
+                  @classes={{this.classes}}
+                  @userClasses={{@classes}}
+                />
+              {{/if}}
+            </div>
 
             {{#if (has-block "footer")}}
               <div

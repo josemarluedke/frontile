@@ -36,6 +36,14 @@ interface DatePickerLabels extends CalendarLabels {
    * @defaultValue (label) => label ? `Choose date, ${label}` : 'Choose date'
    */
   chooseDate: (label: string | undefined) => string;
+  /**
+   * Accessible name of the group of time columns beside the calendar, under
+   * an `hour` or `minute` granularity. Each column is named by its visible
+   * heading, which is `@segmentLabels`.
+   *
+   * @defaultValue 'Time'
+   */
+  time: string;
 }
 
 interface BaseDatePickerArgs
@@ -138,6 +146,28 @@ interface BaseDatePickerArgs
    * @defaultValue the locale's
    */
   hourCycle?: 12 | 24;
+
+  /**
+   * Whether the popover lists hours and minutes beside the calendar, under
+   * an `hour` or `minute` granularity. With them, picking a day leaves the
+   * popover open for the time; it closes when an option in the last column
+   * is clicked, on Enter in any column, on Escape, or on a click outside.
+   * The segments stay editable either way, and both edit the same value.
+   *
+   * Only on a single, segmented field: `@mode="range"` and
+   * `@isEditable={{false}}` show the calendar alone.
+   *
+   * @defaultValue true
+   */
+  showTimeColumns?: boolean;
+
+  /**
+   * The minutes the minute column offers, as a step from :00. A minute off
+   * the step can still be typed into the segments, and then shows as picked.
+   *
+   * @defaultValue 5
+   */
+  minuteStep?: number;
 
   /** The size of the field. Matches Select's `@inputSize`. */
   inputSize?: DatePickerVariants['size'];

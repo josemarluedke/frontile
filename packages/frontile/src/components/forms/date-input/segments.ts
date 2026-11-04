@@ -568,6 +568,7 @@ export {
   timeOf,
   hourOnCycle,
   hourOfDay,
+  seedFrom,
   isSegment,
   emptySegment,
   DEFAULT_FORMAT,

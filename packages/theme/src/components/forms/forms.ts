@@ -599,9 +599,83 @@ const datePicker = tv({
     // renders it, not `SegmentGroup` -- it separates groups rather than
     // living inside one.
     separator: 'text-neutral px-1',
-    calendarButton: 'pointer-events-auto'
+    calendarButton: 'pointer-events-auto',
+    // The popover's body: the calendar, and beside it the time columns of an
+    // `hour` or `minute` granularity. Stacked on narrow screens, where a
+    // calendar and two columns side by side no longer fit.
+    panels: 'flex flex-col sm:flex-row',
+    // The columns must not make the popover taller than the calendar: they
+    // scroll within its height instead. That height is only known once the
+    // calendar is laid out, so the columns are taken out of flow
+    // (`timeColumns` is absolute) and this box, which stretches to the row,
+    // reserves their width: `--time-columns` (set by the component) of them,
+    // 3.5rem each, with the gaps and padding between.
+    time: [
+      'relative shrink-0',
+      'border-t border-neutral-soft sm:border-t-0 sm:border-s',
+      'sm:w-[calc(var(--time-columns)*3.75rem+0.75rem)]'
+    ],
+    timeColumns:
+      'flex justify-center gap-1 p-2 h-56 sm:absolute sm:inset-0 sm:h-auto',
+    timeColumn: 'flex flex-col w-14 min-h-0',
+    // The column's accessible name as well as its heading, so it takes
+    // `neutral-firm` (AA) rather than the weekday row's lighter `neutral`.
+    timeColumnLabel:
+      'h-8 shrink-0 text-caption-sm text-neutral-firm text-center leading-8 truncate',
+    // Positioned so the options measure their `offsetTop` against the list:
+    // the component scrolls the selected option into view itself (see
+    // `revealWithin`). The padding keeps the focus ring inside the clip.
+    timeList: [
+      'relative flex flex-col gap-0.5 flex-1 min-h-0 p-1',
+      'overflow-y-auto overscroll-contain',
+      '[scrollbar-width:thin]'
+    ],
+    timeOption: [
+      ...focusVisibleRing,
+      'shrink-0 h-9 rounded-md',
+      'text-body-sm text-neutral-strong tabular-nums',
+      'cursor-pointer select-none',
+      'transition-colors duration-200 motion-reduce:transition-none',
+      // Excluded from the selected option, which gets its own hover per
+      // color -- see the calendar's `day` slot for why.
+      'not-data-[selected=true]:hover:bg-surface-overlay-soft',
+      // A read-only column moves focus but picks nothing.
+      'in-aria-readonly:cursor-default in-aria-readonly:hover:bg-transparent'
+    ]
   },
   variants: {
+    // The selected time option takes the calendar's selected-day fill, so
+    // the day and the time picked read as one choice.
+    color: {
+      neutral: {
+        timeOption:
+          'data-[selected=true]:bg-neutral-strong data-[selected=true]:text-on-neutral-strong data-[selected=true]:hover:bg-neutral-bolder'
+      },
+      primary: {
+        timeOption:
+          'data-[selected=true]:bg-primary data-[selected=true]:text-on-primary data-[selected=true]:hover:bg-primary-firm'
+      },
+      secondary: {
+        timeOption:
+          'data-[selected=true]:bg-secondary data-[selected=true]:text-on-secondary data-[selected=true]:hover:bg-secondary-firm'
+      },
+      tertiary: {
+        timeOption:
+          'data-[selected=true]:bg-tertiary data-[selected=true]:text-on-tertiary data-[selected=true]:hover:bg-tertiary-firm'
+      },
+      success: {
+        timeOption:
+          'data-[selected=true]:bg-success data-[selected=true]:text-on-success data-[selected=true]:hover:bg-success-firm'
+      },
+      warning: {
+        timeOption:
+          'data-[selected=true]:bg-warning data-[selected=true]:text-on-warning data-[selected=true]:hover:bg-warning-firm'
+      },
+      danger: {
+        timeOption:
+          'data-[selected=true]:bg-danger data-[selected=true]:text-on-danger data-[selected=true]:hover:bg-danger-firm'
+      }
+    },
     // The trigger is a `<button>` whose text *is* the value, so with neither a
     // value nor a `@placeholder` it has no content at all and collapses to its
     // padding -- noticeably shorter than every other field on the form.
@@ -653,7 +727,8 @@ const datePicker = tv({
     { isSegmented: true, size: 'lg', class: { innerContainer: 'p-4' } }
   ],
   defaultVariants: {
-    size: 'md'
+    size: 'md',
+    color: 'primary'
   }
 });
 

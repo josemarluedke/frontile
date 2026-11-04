@@ -186,6 +186,179 @@ const shift = {
 </template>
 ```
 
+### Time columns
+
+Beside the calendar, the popover lists the hours and the minutes, plus AM/PM on a 12-hour
+clock, in the order the locale writes them. Clicking an hour and then a minute sets the time;
+typing it into the segments works too, and the two always show the same value.
+
+Picking a day leaves the popover open for the time. It closes when you click an option in
+the last column, press `Enter` on any option, press `Escape`, or click outside.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+
+<template>
+  <div class='grid gap-4 md:grid-cols-2'>
+    <DatePicker
+      @label='Appointment'
+      @locale='en-GB'
+      @granularity='minute'
+      @defaultValue={{start}}
+    />
+    <DatePicker
+      @label='Appointment (12-hour)'
+      @locale='en-US'
+      @granularity='minute'
+      @defaultValue={{start}}
+    />
+  </div>
+</template>
+```
+
+On a screen narrower than the `sm` breakpoint, the columns go below the calendar.
+
+#### Minute step
+
+`@minuteStep` sets the minutes the column offers, counted from :00. It defaults to 5;
+`{{1}}` lists every minute. A minute off the step, typed into the segments, is listed too
+and shows as picked, like 10:07 in the last picker below.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+const offStep = new Date(2026, 0, 20, 10, 7);
+
+<template>
+  <div class='grid gap-4 md:grid-cols-3'>
+    <DatePicker
+      @label='Every 15 minutes'
+      @locale='en-GB'
+      @granularity='minute'
+      @minuteStep={{15}}
+      @defaultValue={{start}}
+    />
+    <DatePicker
+      @label='Every minute'
+      @locale='en-GB'
+      @granularity='minute'
+      @minuteStep={{1}}
+      @defaultValue={{start}}
+    />
+    <DatePicker
+      @label='Off the step'
+      @locale='en-GB'
+      @granularity='minute'
+      @minuteStep={{15}}
+      @defaultValue={{offStep}}
+    />
+  </div>
+</template>
+```
+
+#### Starting from an empty field
+
+The columns of an empty field start at `@placeholderValue` (today, by default): that is
+where `Tab` lands and what they are scrolled to. A single pick fills in the rest of the time:
+an hour reads as on the hour, and a minute picked first takes `@placeholderValue`'s hour.
+Until a day is picked, the field reports no value.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { DatePicker } from 'frontile';
+
+export default class EmptyTimeExample extends Component {
+  @tracked value: Date | null = null;
+
+  placeholder = new Date(2026, 0, 20, 9, 0);
+
+  onChange = (value: Date | null) => {
+    this.value = value;
+  };
+
+  get shown() {
+    return this.value ? this.value.toLocaleString('en-GB') : 'nothing yet';
+  }
+
+  <template>
+    <DatePicker
+      @label='Starts'
+      @locale='en-GB'
+      @granularity='minute'
+      @placeholderValue={{this.placeholder}}
+      @onChange={{this.onChange}}
+    />
+    <p class='mt-2 text-body-sm text-neutral-firm'>Value: {{this.shown}}</p>
+  </template>
+}
+```
+
+#### Hours only
+
+`@granularity="hour"` lists the hours alone.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 0);
+
+<template>
+  <DatePicker
+    @label='Hour'
+    @locale='en-GB'
+    @granularity='hour'
+    @defaultValue={{start}}
+  />
+</template>
+```
+
+#### Read-only
+
+On a read-only field the columns show the time and the arrow keys move through them, but
+nothing can be picked.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+
+<template>
+  <DatePicker
+    @label='Starts'
+    @locale='en-GB'
+    @granularity='minute'
+    @isReadOnly={{true}}
+    @defaultValue={{start}}
+  />
+</template>
+```
+
+#### Without the columns
+
+The columns show on a single, editable field. A `@mode="range"` field and one with
+`@isEditable={{false}}` show the calendar alone. `@showTimeColumns={{false}}` turns them off
+anywhere; picking a day then closes the popover, and the time is typed.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+
+<template>
+  <DatePicker
+    @label='Starts'
+    @locale='en-GB'
+    @granularity='minute'
+    @showTimeColumns={{false}}
+    @defaultValue={{start}}
+  />
+</template>
+```
+
 ## Presets
 
 There is no `@presets` argument. Presets are ordinary buttons composed into the `:footer`
@@ -382,6 +555,24 @@ const jan20 = new Date(2026, 0, 20);
 </template>
 ```
 
+With a time, the picked hour and minute take the same color as the day.
+
+```gts preview
+import { DatePicker } from 'frontile';
+
+const start = new Date(2026, 0, 20, 14, 30);
+
+<template>
+  <DatePicker
+    @label='Appointment'
+    @color='success'
+    @locale='en-GB'
+    @granularity='minute'
+    @defaultValue={{start}}
+  />
+</template>
+```
+
 ## Restricting Selectable Dates
 
 `@minValue` and `@maxValue` bound the range of selectable days; `@isDateUnavailable` marks
@@ -449,7 +640,8 @@ calendar buttons' accessible names, and those of its calendar's controls.
 keeps its default. The calendar's are handed on to it, including to a calendar
 you render from the `:calendar` block. `chooseDate` is a function of the
 field's `@label`, since some languages put it elsewhere in the sentence. The
-segments' names are `@segmentLabels`.
+segments' names are `@segmentLabels`, which also head the time columns; `time`
+names the group of columns.
 
 ```gts preview collapsible
 import { hash } from '@ember/helper';
@@ -478,6 +670,7 @@ const chooseDate = (label?: string) =>
     @labels={{hash
       clear='Vymazat'
       chooseDate=chooseDate
+      time='Čas'
       previousMonth='Předchozí měsíc'
       nextMonth='Další měsíc'
       month='Měsíc'
@@ -560,20 +753,28 @@ export default class DateRangePickerFieldExample extends Component {
 
 The field's parts carry `data-part` attributes, and state that CSS can select on:
 
-| Element                         | Attributes                                                                                                                |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `[data-part="base"]`            | `data-component="date-picker"`                                                                                            |
-| `[data-part="inner-container"]` | `data-invalid`, `data-disabled` — on the segmented path this is the element drawing the border, background and focus ring |
-| `[data-part="group"]`           | `data-invalid`, `data-readonly`; one per end in range mode                                                                |
-| `[data-part="segment"]`         | `data-type` (`year`, `month`, `day`, `hour`, `minute` or `dayPeriod`), `data-placeholder`, `data-disabled`                |
-| `[data-part="literal"]`         | the separators inside a group                                                                                             |
-| `[data-part="separator"]`       | between the two groups of an editable range                                                                               |
-| `[data-part="calendar-button"]` | the button opening the popover, on the segmented path                                                                     |
-| `[data-part="clear-button"]`    | rendered only while `@isClearable` has something to clear                                                                 |
-| `[data-part="input"]`           | the button trigger, under `@isEditable={{false}}`                                                                         |
+| Element                           | Attributes                                                                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `[data-part="base"]`              | `data-component="date-picker"`                                                                                            |
+| `[data-part="inner-container"]`   | `data-invalid`, `data-disabled` — on the segmented path this is the element drawing the border, background and focus ring |
+| `[data-part="group"]`             | `data-invalid`, `data-readonly`; one per end in range mode                                                                |
+| `[data-part="segment"]`           | `data-type` (`year`, `month`, `day`, `hour`, `minute` or `dayPeriod`), `data-placeholder`, `data-disabled`                |
+| `[data-part="literal"]`           | the separators inside a group                                                                                             |
+| `[data-part="separator"]`         | between the two groups of an editable range                                                                               |
+| `[data-part="calendar-button"]`   | the button opening the popover, on the segmented path                                                                     |
+| `[data-part="clear-button"]`      | rendered only while `@isClearable` has something to clear                                                                 |
+| `[data-part="input"]`             | the button trigger, under `@isEditable={{false}}`                                                                         |
+| `[data-part="panels"]`            | the popover's body: the calendar, and the time columns beside it                                                          |
+| `[data-part="time"]`              | the time columns' box; sets `--time-columns` to their count                                                               |
+| `[data-part="time-columns"]`      | the `role="group"` holding the columns                                                                                    |
+| `[data-part="time-column"]`       | one column, with `data-type` (`hour`, `minute` or `dayPeriod`)                                                            |
+| `[data-part="time-column-label"]` | the column's heading                                                                                                      |
+| `[data-part="time-list"]`         | the column's `listbox`, with `data-type`                                                                                  |
+| `[data-part="time-option"]`       | one option, with `data-value` and `data-selected`                                                                         |
 
-`@classes` takes the matching slots, including `group`, `segment`, `literal`, `separator`
-and `calendarButton`.
+`@classes` takes the matching slots, including `group`, `segment`, `literal`, `separator`,
+`calendarButton`, `panels`, `time`, `timeColumns`, `timeColumn`, `timeColumnLabel`,
+`timeList` and `timeOption`.
 
 ## Accessibility
 
@@ -586,6 +787,7 @@ and `calendarButton`.
 | Popover content | `role="dialog"`, labeled by `@label`.                                                                                                                                                                                                                                                                     |
 | Calendar grid   | Labeled by the field's own id, so the default calendar is always labelled. A consumer rendering their own calendar from the `:calendar` block must pass `@id` to `DatePicker` for the grid to be labelled — the block's `labelledBy` reflects `@id`, not the id `FormControl` would otherwise generate.   |
 | Clear button    | Announced as "Clear" (`@labels.clear`).                                                                                                                                                                                                                                                                   |
+| Time columns    | A `role="group"` named "Time" (`@labels.time`), holding one single-select `role="listbox"` per column, each named by its visible heading (`@segmentLabels`) through `aria-labelledby`. Options are `<button role="option">` with `aria-selected`. A read-only field's lists carry `aria-readonly`.        |
 
 The segments take the same keys as [DateInput](./date-input#accessibility), and every one
 of them is a tab stop — three for a single field, six for a range.
@@ -597,6 +799,23 @@ the segments.
 A `role="group"` is not a labelable element, so the visible `<label>` does not associate
 with the segments through `for`. Each group is named by `aria-label` instead, derived from
 `@label`.
+
+Each time column is one tab stop, the picked option (or, with none, the one nearest
+`@placeholderValue`), following the [listbox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/):
+
+| Key                        | In a time column                                                       |
+| -------------------------- | ---------------------------------------------------------------------- |
+| `ArrowDown` / `ArrowUp`    | The next or previous option, picked as focus moves, as in a `<select>` |
+| `PageDown` / `PageUp`      | Five options on                                                        |
+| `Home` / `End`             | The first or last option                                               |
+| `ArrowLeft` / `ArrowRight` | The neighbouring column's tab stop                                     |
+| Digits, letters            | The matching option: `1` `7` is 17, `4` is :40, `p` is PM              |
+| `Enter`                    | Picks the option and closes, from any column                           |
+| `Space`                    | Picks the option and stays open                                        |
+| `Escape`                   | Closes, keeping what was picked                                        |
+
+A column scrolls itself, never the page, and the heading above it is its accessible name,
+so what is seen is what is announced.
 
 Opening the picker moves focus onto the selected (or today's) day inside the grid. `Escape`
 closes the calendar and returns focus to the segment that had it — or to the button trigger
