@@ -1056,3 +1056,137 @@ module('Integration | Component | Stepper | responsive', function (hooks) {
     }
   });
 });
+
+module('Integration | Component | Stepper | review fixes', function (hooks) {
+  setupRenderingTest(hooks);
+
+  test('rtl: the bottom-label connector runs toward the next step', async function (assert) {
+    await render(
+      <template>
+        <div dir="rtl" class="w-[30rem]">
+          <Stepper @value="a" @labelPosition="bottom" as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" @title="A" data-test-step="a" />
+              <S.Step @value="b" @title="B" data-test-step="b" />
+              <S.Step @value="c" @title="C" data-test-step="c" />
+            </S.List>
+          </Stepper>
+        </div>
+      </template>
+    );
+
+    const rect = (selector: string): DOMRect =>
+      (find(selector) as Element).getBoundingClientRect();
+    const connector = rect(
+      '[data-part="item"]:first-child [data-part="connector"]'
+    );
+    const first = rect('[data-test-step="a"] [data-part="indicator"]');
+    const second = rect('[data-test-step="b"] [data-part="indicator"]');
+
+    assert.true(
+      second.right < first.left,
+      'in RTL the next step is to the left'
+    );
+    assert.true(
+      connector.left >= second.right - 1,
+      'connector starts after the next circle'
+    );
+    assert.true(
+      connector.right <= first.left + 1,
+      'connector ends before this circle'
+    );
+  });
+
+  test('rtl: the vertical rail sits under the indicator', async function (assert) {
+    await render(
+      <template>
+        <div dir="rtl" class="w-[20rem]">
+          <Stepper @value="a" @orientation="vertical" as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" @title="A" data-test-step="a" />
+              <S.Step @value="b" @title="B" data-test-step="b" />
+            </S.List>
+          </Stepper>
+        </div>
+      </template>
+    );
+
+    const center = (selector: string): number => {
+      const r = (find(selector) as Element).getBoundingClientRect();
+      return r.left + r.width / 2;
+    };
+
+    assert.true(
+      Math.abs(
+        center('[data-part="item"]:first-child [data-part="connector"]') -
+          center('[data-test-step="a"] [data-part="indicator"]')
+      ) < 2,
+      'rail is centered under the circle'
+    );
+  });
+
+  test('@invalidLabel replaces the screen-reader text', async function (assert) {
+    await render(
+      <template>
+        <Stepper @value="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step
+              @value="a"
+              @isInvalid={{true}}
+              @invalidLabel="Ungültig"
+              data-test-step="a"
+            />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-test-step="a"] .sr-only').hasText('Ungültig');
+  });
+
+  test('@summaryLabel formats the narrow-width summary', async function (assert) {
+    const summaryLabel = (position: number, total: number) =>
+      `Schritt ${position} von ${total}`;
+
+    await render(
+      <template>
+        <div class="w-[20rem]">
+          <Stepper @value="b" @summaryLabel={{summaryLabel}} as |S|>
+            <S.List @label="Checkout">
+              <S.Step @value="a" @title="Konto" />
+              <S.Step @value="b" @title="Zahlung" />
+            </S.List>
+          </Stepper>
+        </div>
+      </template>
+    );
+
+    assert.dom('[data-part="summary"]').includesText('Schritt 2 von 2');
+    assert.dom('[data-part="summary"]').includesText('Zahlung');
+  });
+
+  test('uncontrolled: removing the selected step falls back to the first enabled step', async function (assert) {
+    const showB = cell(true);
+
+    await render(
+      <template>
+        <Stepper @defaultValue="b" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            {{#if showB.current}}
+              <S.Step @value="b" data-test-step="b" />
+            {{/if}}
+            <S.Step @value="c" data-test-step="c" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-test-step="b"]').hasAria('current', 'step');
+
+    showB.current = false;
+    await settled();
+
+    assert.dom('[data-test-step="a"]').hasAria('current', 'step');
+  });
+});

@@ -50,6 +50,14 @@ interface StepperStepArgs<T> {
   isInvalid?: boolean;
 
   /**
+   * The text announced to screen readers for an invalid step. Use it to
+   * localize the announcement.
+   *
+   * @defaultValue 'Invalid'
+   */
+  invalidLabel?: string;
+
+  /**
    * Overrides whether the step counts as complete. Omit it and a step is
    * complete when it comes before the selected step. Pass it when completion
    * is business logic rather than position.
@@ -243,7 +251,11 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
           </span>
         {{/if}}
         {{#if this.isInvalid}}
-          <span class="sr-only">Invalid</span>
+          <span class="sr-only">{{if
+              @invalidLabel
+              @invalidLabel
+              "Invalid"
+            }}</span>
         {{/if}}
       </button>
       <span

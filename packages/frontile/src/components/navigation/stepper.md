@@ -226,31 +226,37 @@ import { Stepper } from 'frontile';
 
 `@isDisabled` on a step stops people selecting it: clicks are ignored, arrow
 keys skip it, and it is announced as disabled. Each step's rule is yours, so
-any flow can be expressed. This one only lets people go back to steps they have
-already reached.
+any flow can be expressed. This one lets people go back to any step they have
+already reached, but not skip ahead.
 
-`next` and `prev` skip disabled steps. `goTo` can still reach one, because
-`@isDisabled` governs what people do, not what your code does.
+`next` and `prev` skip disabled steps, so a button that moves to a step that is
+still disabled calls `goTo`, or sets `@value` itself as below. `goTo` can reach
+a disabled step because `@isDisabled` governs what people do, not what your
+code does.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { fn } from '@ember/helper';
 import { Stepper, Button } from 'frontile';
 
 const STEPS = ['account', 'billing', 'review'];
 
 export default class StepperBackOnlyExample extends Component {
   @tracked step = 'account';
+  @tracked furthest = 0;
 
-  get reached() {
-    return STEPS.indexOf(this.step);
-  }
-
-  isAhead = (value: string): boolean => STEPS.indexOf(value) > this.reached;
+  isAhead = (value: string): boolean => STEPS.indexOf(value) > this.furthest;
 
   setStep = (value: string): void => {
     this.step = value;
+    this.furthest = Math.max(this.furthest, STEPS.indexOf(value));
+  };
+
+  continue = (): void => {
+    const next = STEPS[STEPS.indexOf(this.step) + 1];
+    if (next) {
+      this.setStep(next);
+    }
   };
 
   <template>
@@ -279,7 +285,7 @@ export default class StepperBackOnlyExample extends Component {
           />
         </S.List>
 
-        <Button @color='primary' @onPress={{fn S.goTo 'billing'}}>Skip to billing</Button>
+        <Button @color='primary' @onPress={{this.continue}}>Continue</Button>
       </Stepper>
     </div>
   </template>
@@ -537,6 +543,11 @@ validation or navigation. Horizontal orientation uses left and right, vertical
 uses up and down. Disabled steps are skipped.
 
 Each step's clickable area is at least 44px square at every size.
+
+The text the Stepper adds is English by default. Pass `@invalidLabel` on a step
+to change what screen readers announce for an invalid step, and
+`@summaryLabel` on the Stepper, a function taking the position and total, to
+change the "Step 2 of 4" line.
 
 ## API
 

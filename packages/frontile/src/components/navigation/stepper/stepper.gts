@@ -76,6 +76,14 @@ interface StepperArgs<T> {
    */
   collapseLabels?: boolean;
 
+  /**
+   * Formats the "Step N of M" line shown when titles are collapsed. Use it to
+   * localize the text.
+   *
+   * @defaultValue (position, total) => `Step ${position} of ${total}`
+   */
+  summaryLabel?: (position: number, total: number) => string;
+
   /** Class names for each slot of the component, merged with the theme's. */
   classes?: SlotsToClasses<StepperSlots>;
 }
@@ -95,8 +103,8 @@ interface StepRecord<T> {
 type StepState = 'complete' | 'active' | 'upcoming';
 
 interface StepperSummary {
-  position: number;
-  total: number;
+  /** The formatted "Step N of M" text. */
+  label: string;
   title: string | undefined;
 }
 
@@ -251,9 +259,21 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     if (this.isControlled) {
       return this.args.value;
     }
+
+    // A Stepper always has a current step. Uncontrolled, a stored value that no
+    // registered step matches -- its step was removed -- falls back to the
+    // first enabled step. Before any step has registered there is nothing to
+    // compare against, so the stored value stands.
     if (this._hasSelection) {
-      return this._value;
+      const steps = this.steps;
+      if (
+        steps.length === 0 ||
+        steps.some((step) => step.value === this._value)
+      ) {
+        return this._value;
+      }
     }
+
     return this.steps.find((step) => !step.isDisabled)?.value;
   }
 
@@ -271,9 +291,12 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     if (index === -1) {
       return undefined;
     }
+    const position = index + 1;
+    const total = steps.length;
     return {
-      position: index + 1,
-      total: steps.length,
+      label: this.args.summaryLabel
+        ? this.args.summaryLabel(position, total)
+        : `Step ${position} of ${total}`,
       title: steps[index]?.title
     };
   }

@@ -28,7 +28,7 @@ const stepper = tv({
       // Hit area: at least 44px whatever the circle size, so the visual
       // size and the touch target are independent.
       'min-h-11 min-w-11 justify-center rounded-md',
-      'cursor-pointer text-left',
+      'cursor-pointer text-start',
       'transition-colors duration-200 motion-reduce:transition-none',
       'group-data-[disabled=true]/item:cursor-not-allowed',
       'group-data-[disabled=true]/item:opacity-disabled'
@@ -172,7 +172,7 @@ const stepper = tv({
         base: 'flex-col gap-3',
         list: 'flex-col',
         item: 'flex-col items-start',
-        connector: 'ml-[21px] h-4 w-0.5'
+        connector: 'ms-[21px] h-4 w-0.5'
       }
     },
 
@@ -197,6 +197,7 @@ const stepper = tv({
     // Items are equal-width columns, and the connector is drawn from this
     // item's circle to the next one's, so it needs `relative` on the item and
     // an offset that clears the circle (radius plus a 4px gap, per size).
+    // Logical properties (`start`/`end`, `ms`) so the layout mirrors in RTL.
     {
       orientation: 'horizontal',
       labelPosition: 'bottom',
@@ -211,14 +212,14 @@ const stepper = tv({
       orientation: 'horizontal',
       labelPosition: 'bottom',
       size: 'sm',
-      class: { connector: 'left-[calc(50%+1rem)] right-[calc(-50%+1rem)]' }
+      class: { connector: 'start-[calc(50%+1rem)] end-[calc(-50%+1rem)]' }
     },
     {
       orientation: 'horizontal',
       labelPosition: 'bottom',
       size: 'md',
       class: {
-        connector: 'left-[calc(50%+1.125rem)] right-[calc(-50%+1.125rem)]'
+        connector: 'start-[calc(50%+1.125rem)] end-[calc(-50%+1.125rem)]'
       }
     },
     {
@@ -226,7 +227,7 @@ const stepper = tv({
       labelPosition: 'bottom',
       size: 'lg',
       class: {
-        connector: 'left-[calc(50%+1.375rem)] right-[calc(-50%+1.375rem)]'
+        connector: 'start-[calc(50%+1.375rem)] end-[calc(-50%+1.375rem)]'
       }
     },
 

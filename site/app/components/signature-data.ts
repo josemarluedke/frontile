@@ -42821,23 +42821,13 @@ const data: ComponentDoc[] = [
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
                 items: [
                   {
-                    identifier: 'position',
+                    identifier: 'label',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
-                    description: '',
-                    tags: {},
-                  },
-                  {
-                    identifier: 'total',
-                    type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
+                    description: 'The formatted "Step N of M" text.',
                     tags: {},
                   },
                   {
@@ -43129,23 +43119,13 @@ const data: ComponentDoc[] = [
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
                 items: [
                   {
-                    identifier: 'position',
+                    identifier: 'label',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
-                    description: '',
-                    tags: {},
-                  },
-                  {
-                    identifier: 'total',
-                    type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
+                    description: 'The formatted "Step N of M" text.',
                     tags: {},
                   },
                   {
@@ -43461,23 +43441,13 @@ const data: ComponentDoc[] = [
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
                 items: [
                   {
-                    identifier: 'position',
+                    identifier: 'label',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
-                    description: '',
-                    tags: {},
-                  },
-                  {
-                    identifier: 'total',
-                    type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
+                    description: 'The formatted "Step N of M" text.',
                     tags: {},
                   },
                   {
@@ -43644,6 +43614,19 @@ const data: ComponentDoc[] = [
         description:
           'An icon component shown in the indicator while the step is active or\nupcoming. Complete, invalid and loading steps show their own marks.',
         tags: {},
+      },
+      {
+        identifier: 'invalidLabel',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The text announced to screen readers for an invalid step. Use it to\nlocalize the announcement.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'Invalid'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'Invalid\'</span></span>',
       },
       {
         identifier: 'isComplete',
@@ -43953,6 +43936,25 @@ const data: ComponentDoc[] = [
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+      },
+      {
+        identifier: 'summaryLabel',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">position</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">total</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Formats the "Step N of M" line shown when titles are collapsed. Use it to\nlocalize the text.',
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value: '(position, total) => `Step ${position} of ${total}`',
+          },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">position</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">total</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> `Step ${</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">position</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">} of ${</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">total</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">}`</span></span>',
       },
       {
         identifier: 'value',
