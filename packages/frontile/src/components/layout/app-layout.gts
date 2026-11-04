@@ -1,12 +1,24 @@
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { guidFor } from '@ember/object/internals';
+import { schedule } from '@ember/runloop';
+import { modifier } from 'ember-modifier';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
+import {
+  isBelowBreakpoint,
+  watchBreakpoint,
+  type Breakpoint
+} from '../../utils/breakpoint';
 import { AppLayoutState } from './app-layout-state';
-import { ControlledAppLayoutState, type AppLayoutContext } from './context';
+import {
+  ControlledAppLayoutState,
+  type AppLayoutContext,
+  type RegisteredSidebar
+} from './context';
 import Main from './main';
+import MenuToggle from './menu-toggle';
 import Navbar from './navbar';
 import PageHeader from './page-header';
 import Sidebar from './sidebar';
@@ -34,7 +46,8 @@ interface AppLayoutArgs {
 
   /**
    * The viewport width (`sm` 40rem, `md` 48rem, `lg` 64rem) below which the
-   * sidebar becomes a drawer.
+   * sidebar becomes a drawer opened by `MenuToggle`. Growing past it closes
+   * an open drawer. Without `window.matchMedia` the layout stays desktop.
    *
    * @defaultValue 'md'
    */
@@ -57,7 +70,12 @@ interface AppLayoutArgs {
   scrollMode?: AppLayoutVariants['scrollMode'];
 
   /**
-   * The keyboard shortcut that toggles the sidebar, or `false` for none.
+   * The keyboard shortcut that toggles the sidebar, or `false` for none. It
+   * collapses or expands the sidebar on desktop and opens or closes the
+   * drawer below `@breakpoint`. `mod` is Cmd on Apple platforms and Ctrl
+   * elsewhere; `ctrl`, `meta`, `alt` and `shift` can be combined with a key,
+   * joined by `+`. It only fires when focus is inside this layout (or on
+   * the page body), so two layouts on a page do not both toggle.
    *
    * @defaultValue 'mod+b'
    */
@@ -144,6 +162,7 @@ interface AppLayoutSignature {
       {
         state: AppLayoutState;
         Main: WithBoundArgs<typeof Main, 'layout'>;
+        MenuToggle: WithBoundArgs<typeof MenuToggle, 'layout'>;
         Navbar: WithBoundArgs<typeof Navbar, 'layout'>;
         PageHeader: WithBoundArgs<typeof PageHeader, 'layout'>;
         Sidebar: WithBoundArgs<typeof Sidebar, 'layout'>;
@@ -169,7 +188,108 @@ class AppLayout extends Component<AppLayoutSignature> {
       asideOpen: args.defaultAsideOpen
     });
     this.#controlled = new ControlledAppLayoutState(own, () => this.args);
+    document.addEventListener('keydown', this.handleShortcut);
   }
+
+  willDestroy(): void {
+    super.willDestroy();
+    document.removeEventListener('keydown', this.handleShortcut);
+    stopWatcher(this);
+  }
+
+  #root?: HTMLElement;
+
+  captureRoot = modifier((element: HTMLElement) => {
+    this.#root = element;
+    return () => {
+      this.#root = undefined;
+    };
+  });
+
+  /**
+   * Rebuilt only when `@breakpoint` changes; the previous watcher stops.
+   */
+  @cached
+  get breakpointWatcher(): BreakpointWatcher {
+    return replaceWatcher(this, this.breakpoint, this.closeDrawerWhenWide);
+  }
+
+  closeDrawerWhenWide = (below: boolean): void => {
+    if (!below && this.state.mobileSidebarOpen) {
+      this.state.mobileSidebarOpen = false;
+    }
+  };
+
+  get belowBreakpoint(): boolean {
+    return this.breakpointWatcher.below;
+  }
+
+  // The Sidebar registers after render: the toggles that read it may already
+  // have rendered in this pass, and writing it synchronously would trip
+  // Glimmer's backtracking assertion.
+  @tracked registeredSidebar?: RegisteredSidebar;
+
+  registerSidebar = (sidebar: RegisteredSidebar): (() => void) => {
+    schedule('afterRender', () => {
+      if (!this.isDestroying) {
+        this.registeredSidebar = sidebar;
+      }
+    });
+    return () => {
+      schedule('afterRender', () => {
+        if (!this.isDestroying && this.registeredSidebar === sidebar) {
+          this.registeredSidebar = undefined;
+        }
+      });
+    };
+  };
+
+  get effectiveSidebarCollapsed(): boolean {
+    return this.registeredSidebar
+      ? this.registeredSidebar.collapsed
+      : this.state.sidebarCollapsed;
+  }
+
+  isRtl = (): boolean => {
+    const element = this.#root ?? document.documentElement;
+    return getComputedStyle(element).direction === 'rtl';
+  };
+
+  get shortcut(): string | false {
+    return this.args.toggleShortcut ?? 'mod+b';
+  }
+
+  /** Focus inside this layout, its drawer, or on the page body. */
+  ownsTarget(target: EventTarget | null): boolean {
+    if (target === document.body) {
+      return true;
+    }
+    if (!(target instanceof Node)) {
+      return false;
+    }
+    if (this.#root?.contains(target)) {
+      return true;
+    }
+    return document.getElementById(this.drawerId)?.contains(target) ?? false;
+  }
+
+  handleShortcut = (event: KeyboardEvent): void => {
+    const shortcut = this.shortcut;
+    if (
+      shortcut === false ||
+      event.defaultPrevented ||
+      !matchesShortcut(event, shortcut) ||
+      !this.ownsTarget(event.target)
+    ) {
+      return;
+    }
+    event.preventDefault();
+    if (this.belowBreakpoint) {
+      this.state.mobileSidebarOpen = !this.state.mobileSidebarOpen;
+    } else {
+      this.state.toggleSidebar();
+    }
+  };
 
   get state(): AppLayoutState {
     return this.args.state ?? this.#controlled;
@@ -181,6 +301,14 @@ class AppLayout extends Component<AppLayoutSignature> {
 
   get sidebarId(): string {
     return `${guidFor(this)}-sidebar`;
+  }
+
+  get menuToggleId(): string {
+    return `${guidFor(this)}-menu-toggle`;
+  }
+
+  get drawerId(): string {
+    return `${guidFor(this)}-drawer`;
   }
 
   get variant(): 'inset' | 'attached' {
@@ -227,10 +355,14 @@ class AppLayout extends Component<AppLayoutSignature> {
 
   @cached
   get context(): AppLayoutContext {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const layout = this;
     return {
       state: this.state,
       mainId: this.mainId,
       sidebarId: this.sidebarId,
+      menuToggleId: this.menuToggleId,
+      drawerId: this.drawerId,
       styles: this.styles,
       config: {
         variant: this.variant,
@@ -239,7 +371,15 @@ class AppLayout extends Component<AppLayoutSignature> {
         scrollMode: this.scrollMode,
         sidebarSide: this.sidebarSide
       },
-      classes: this.args.classes
+      classes: this.args.classes,
+      get belowBreakpoint() {
+        return layout.belowBreakpoint;
+      },
+      get sidebarCollapsed() {
+        return layout.effectiveSidebarCollapsed;
+      },
+      isRtl: this.isRtl,
+      registerSidebar: this.registerSidebar
     };
   }
 
@@ -248,6 +388,14 @@ class AppLayout extends Component<AppLayoutSignature> {
     if (main) {
       event.preventDefault();
       main.focus();
+    }
+  };
+
+  // Browsers activate a link on Enter with a click, but a synthetic key
+  // event does not; handling Enter directly makes both paths the same.
+  focusMainOnEnter = (event: KeyboardEvent): void => {
+    if (event.key === 'Enter') {
+      this.focusMain(event);
     }
   };
 
@@ -264,6 +412,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       data-mobile-sidebar-open={{boolString this.state.mobileSidebarOpen}}
       data-aside-open={{boolString this.state.asideOpen}}
       class={{this.styles.base class=@classes.base}}
+      {{this.captureRoot}}
       ...attributes
     >
       {{#if this.showSkipLink}}
@@ -272,6 +421,7 @@ class AppLayout extends Component<AppLayoutSignature> {
           data-part="skip-link"
           class={{this.styles.skipLink class=@classes.skipLink}}
           {{on "click" this.focusMain}}
+          {{on "keydown" this.focusMainOnEnter}}
         >
           {{if @skipLinkLabel @skipLinkLabel "Skip to main content"}}
         </a>
@@ -287,6 +437,7 @@ class AppLayout extends Component<AppLayoutSignature> {
         (hash
           state=this.state
           Main=(component Main layout=this.context)
+          MenuToggle=(component MenuToggle layout=this.context)
           Navbar=(component Navbar layout=this.context)
           PageHeader=(component PageHeader layout=this.context)
           Sidebar=(component Sidebar layout=this.context)
@@ -299,6 +450,80 @@ class AppLayout extends Component<AppLayoutSignature> {
 
 function boolString(value: boolean): 'true' | 'false' {
   return value ? 'true' : 'false';
+}
+
+/** Tracks whether the viewport is below one breakpoint. */
+class BreakpointWatcher {
+  @tracked below: boolean;
+  #stop: () => void;
+
+  constructor(breakpoint: Breakpoint, onChange: (below: boolean) => void) {
+    this.below = isBelowBreakpoint(breakpoint);
+    this.#stop = watchBreakpoint(breakpoint, (below) => {
+      onChange(below);
+      this.below = below;
+    });
+  }
+
+  stop(): void {
+    this.#stop();
+  }
+}
+
+const watchers = new WeakMap<object, BreakpointWatcher>();
+
+/** Stops `owner`'s current watcher, if any, and starts one for `breakpoint`. */
+function replaceWatcher(
+  owner: object,
+  breakpoint: Breakpoint,
+  onChange: (below: boolean) => void
+): BreakpointWatcher {
+  stopWatcher(owner);
+  const watcher = new BreakpointWatcher(breakpoint, onChange);
+  watchers.set(owner, watcher);
+  return watcher;
+}
+
+function stopWatcher(owner: object): void {
+  watchers.get(owner)?.stop();
+  watchers.delete(owner);
+}
+
+function isApplePlatform(): boolean {
+  const nav = navigator as Navigator & {
+    userAgentData?: { platform?: string };
+  };
+  const platform = nav.userAgentData?.platform || nav.platform || '';
+  return /mac|iphone|ipad|ipod/i.test(platform);
+}
+
+/**
+ * Whether `event` is exactly `shortcut`, e.g. `mod+b` or `ctrl+shift+k`:
+ * the named modifiers held, no others, and the key (case-insensitive).
+ */
+function matchesShortcut(event: KeyboardEvent, shortcut: string): boolean {
+  const parts = shortcut.toLowerCase().split('+');
+  const key = parts.pop();
+  if (!key || event.key?.toLowerCase() !== key) {
+    return false;
+  }
+  const apple = isApplePlatform();
+  const wanted = { ctrl: false, meta: false, alt: false, shift: false };
+  for (const part of parts) {
+    if (part === 'mod') {
+      wanted[apple ? 'meta' : 'ctrl'] = true;
+    } else if (part in wanted) {
+      wanted[part as keyof typeof wanted] = true;
+    } else {
+      return false;
+    }
+  }
+  return (
+    event.ctrlKey === wanted.ctrl &&
+    event.metaKey === wanted.meta &&
+    event.altKey === wanted.alt &&
+    event.shiftKey === wanted.shift
+  );
 }
 
 export { AppLayout, type AppLayoutSignature, type AppLayoutArgs };

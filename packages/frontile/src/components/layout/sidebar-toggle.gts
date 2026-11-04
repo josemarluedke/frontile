@@ -55,8 +55,14 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
     return this.args.label ?? 'Toggle sidebar';
   }
 
+  /**
+   * Inside a layout, the sidebar's collapse as drawn, so a sidebar with
+   * `@collapsible="none"` always reports expanded.
+   */
   get expanded(): 'true' | 'false' {
-    return this.state.sidebarCollapsed ? 'false' : 'true';
+    const collapsed =
+      this.args.layout?.sidebarCollapsed ?? this.state.sidebarCollapsed;
+    return collapsed ? 'false' : 'true';
   }
 
   get controls(): string | undefined {

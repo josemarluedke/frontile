@@ -215,6 +215,44 @@ module('Integration | Component | Sidebar | frontile/layout', function (hooks) {
     assert.dom(toggle).hasAria('expanded', 'true');
   });
 
+  test('SidebarToggle reports expanded when the sidebar ignores collapse', async function (assert) {
+    await render(
+      <template>
+        <AppLayout @defaultSidebarCollapsed={{true}} as |layout|>
+          <layout.Navbar><layout.SidebarToggle /></layout.Navbar>
+          <layout.Sidebar @collapsible="none" />
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+
+    assert
+      .dom('[data-part="sidebar-toggle"]')
+      .hasAria('expanded', 'true', 'collapsible=none is never collapsed');
+  });
+
+  test('icon rail hides labels in the header and footer too', async function (assert) {
+    await render(
+      <template>
+        <AppLayout @defaultSidebarCollapsed={{true}} as |layout|>
+          <layout.Sidebar as |sidebar|>
+            <sidebar.Header><span
+                data-sidebar-label
+              >Acme</span></sidebar.Header>
+            <sidebar.Footer><span
+                data-sidebar-label
+              >Settings</span></sidebar.Footer>
+          </layout.Sidebar>
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+
+    for (const label of document.querySelectorAll('[data-sidebar-label]')) {
+      assert.true(isVisiblyHidden(label), `${label.textContent} is hidden`);
+    }
+  });
+
   test('SidebarToggle @label sets its name', async function (assert) {
     await render(
       <template>
