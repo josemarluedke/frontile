@@ -2,7 +2,9 @@ import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
 import { guidFor } from '@ember/object/internals';
 import { modifier } from 'ember-modifier';
-import type { StepperContext, StepRecord } from './stepper';
+import Spinner from '../../utilities/spinner';
+import type { StepperContext, StepRecord, StepState } from './stepper';
+import type { ComponentLike } from '@glint/template';
 
 interface StepperStepArgs<T> {
   /**
@@ -19,6 +21,41 @@ interface StepperStepArgs<T> {
    */
   isDisabled?: boolean;
 
+  /** The step's title. */
+  title?: string;
+
+  /** Supporting text shown beneath or beside the title. */
+  description?: string;
+
+  /**
+   * An icon component shown in the indicator while the step is active or
+   * upcoming. Complete, invalid and loading steps show their own marks.
+   */
+  icon?: ComponentLike<{ Element: SVGElement }>;
+
+  /**
+   * Shows a spinner in place of the indicator content and sets `aria-busy`.
+   *
+   * @defaultValue false
+   */
+  isLoading?: boolean;
+
+  /**
+   * Marks the step as having a problem: a danger-colored indicator with a
+   * screen-reader-only "Invalid" announcement. Always danger, whatever the
+   * Stepper's `@color`.
+   *
+   * @defaultValue false
+   */
+  isInvalid?: boolean;
+
+  /**
+   * Overrides whether the step counts as complete. Omit it and a step is
+   * complete when it comes before the selected step. Pass it when completion
+   * is business logic rather than position.
+   */
+  isComplete?: boolean;
+
   /** Class names appended to this step's theme classes. */
   class?: string;
 
@@ -30,9 +67,21 @@ interface StepperStepArgs<T> {
   context: StepperContext<T>;
 }
 
+/** What the `indicator` and `label` blocks receive. */
+interface StepperStepSlotState {
+  state: StepState;
+  isInvalid: boolean;
+  isLoading: boolean;
+}
+
 interface StepperStepSignature<T> {
   Args: StepperStepArgs<T>;
-  Blocks: { default: [] };
+  Blocks: {
+    /** Replaces the content of the indicator circle. */
+    indicator: [StepperStepSlotState];
+    /** Replaces the default title and description. */
+    label: [StepperStepSlotState];
+  };
   Element: HTMLButtonElement;
 }
 
@@ -43,8 +92,45 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
     return this.args.context.isSelected(this.args.value);
   }
 
-  get state() {
-    return this.args.context.stateOf(this.args.value);
+  get state(): StepState {
+    const derived = this.args.context.stateOf(this.args.value);
+    // The active step is always active; `@isComplete` only decides between
+    // complete and upcoming for the rest.
+    if (derived === 'active' || this.args.isComplete === undefined) {
+      return derived;
+    }
+    return this.args.isComplete ? 'complete' : 'upcoming';
+  }
+
+  get isLoading(): boolean {
+    return this.args.isLoading ?? false;
+  }
+
+  get isInvalid(): boolean {
+    return this.args.isInvalid ?? false;
+  }
+
+  get isCompleteMark(): boolean {
+    return this.state === 'complete';
+  }
+
+  get hasText(): boolean {
+    return Boolean(this.args.title || this.args.description);
+  }
+
+  get slotState(): StepperStepSlotState {
+    return {
+      state: this.state,
+      isInvalid: this.isInvalid,
+      isLoading: this.isLoading
+    };
+  }
+
+  /** One-based position, or 0 before the step has registered. */
+  get number(): number {
+    return (
+      this.args.context.steps.findIndex((step) => step.id === this.id) + 1
+    );
   }
 
   get isDisabled(): boolean {
@@ -61,7 +147,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
         return step.args.value;
       },
       get title() {
-        return undefined;
+        return step.args.title;
       },
       get isDisabled() {
         return step.isDisabled;
@@ -86,6 +172,8 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
     <li
       data-part="item"
       data-state={{this.state}}
+      data-invalid="{{this.isInvalid}}"
+      data-loading="{{this.isLoading}}"
       data-disabled="{{this.isDisabled}}"
       class={{@context.itemClass}}
     >
@@ -95,12 +183,71 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
         id={{this.id}}
         aria-current={{if this.isSelected "step"}}
         aria-disabled="{{this.isDisabled}}"
+        aria-busy={{if this.isLoading "true"}}
         class="{{@context.stepClass}} {{@class}}"
         {{this.registerStep}}
         {{on "click" this.handleClick}}
         ...attributes
       >
-        {{yield}}
+        <span
+          data-part="indicator"
+          aria-hidden="true"
+          class={{@context.indicatorClass}}
+        >
+          {{#if (has-block "indicator")}}
+            {{yield this.slotState to="indicator"}}
+          {{else if this.isLoading}}
+            <Spinner @size="sm" class="fill-current text-neutral-mild" />
+          {{else if this.isInvalid}}
+            <svg
+              viewBox="0 0 16 16"
+              class="size-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ><path d="M8 4v5M8 12h.01" /></svg>
+          {{else if this.isCompleteMark}}
+            <svg
+              viewBox="0 0 16 16"
+              class="size-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ><path d="M3.5 8.5l3 3 6-6.5" /></svg>
+          {{else if @icon}}
+            <@icon class="size-4" />
+          {{else if this.number}}
+            {{this.number}}
+          {{/if}}
+        </span>
+        {{#if (has-block "label")}}
+          <span data-part="label" class={{@context.labelClass}}>
+            {{yield this.slotState to="label"}}
+          </span>
+        {{else if this.hasText}}
+          <span data-part="label" class={{@context.labelClass}}>
+            {{#if @title}}
+              <span data-part="title" class={{@context.titleClass}}>
+                {{@title}}
+              </span>
+            {{/if}}
+            {{#if @description}}
+              <span
+                data-part="description"
+                class={{@context.descriptionClass}}
+              >
+                {{@description}}
+              </span>
+            {{/if}}
+          </span>
+        {{/if}}
+        {{#if this.isInvalid}}
+          <span class="sr-only">Invalid</span>
+        {{/if}}
       </button>
       <span
         data-part="connector"
@@ -111,5 +258,10 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
   </template>
 }
 
-export { StepperStep, type StepperStepSignature, type StepperStepArgs };
+export {
+  StepperStep,
+  type StepperStepSignature,
+  type StepperStepArgs,
+  type StepperStepSlotState
+};
 export default StepperStep;

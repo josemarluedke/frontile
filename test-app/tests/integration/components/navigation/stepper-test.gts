@@ -280,4 +280,137 @@ module('Integration | Component | Stepper | frontile/navigation', function (hook
     assert.strictEqual(new Set(ids).size, 2, 'ids are unique');
     assert.notStrictEqual(ids[0], '');
   });
+
+});
+
+module('Integration | Component | Stepper | step content', function (hooks) {
+  setupRenderingTest(hooks);
+
+  const states = () =>
+    findAll('[data-part="item"]').map((el) => (el as HTMLElement).dataset['state']);
+
+  test('it renders title and description', async function (assert) {
+    await render(
+      <template>
+        <Stepper @value="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step
+              @value="a"
+              @title="Account"
+              @description="Your details"
+              data-test-step="a"
+            />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-test-step="a"] [data-part="title"]').hasText('Account');
+    assert
+      .dom('[data-test-step="a"] [data-part="description"]')
+      .hasText('Your details');
+  });
+
+  test('completion is derived from order', async function (assert) {
+    await render(
+      <template>
+        <Stepper @value="c" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" />
+            <S.Step @value="b" />
+            <S.Step @value="c" />
+            <S.Step @value="d" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.deepEqual(states(), ['complete', 'complete', 'active', 'upcoming']);
+  });
+
+  test('@isComplete overrides the derived state', async function (assert) {
+    await render(
+      <template>
+        <Stepper @value="b" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" @isComplete={{false}} />
+            <S.Step @value="b" />
+            <S.Step @value="c" @isComplete={{true}} />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.deepEqual(states(), ['upcoming', 'active', 'complete']);
+  });
+
+  test('@isLoading renders a spinner and sets aria-busy', async function (assert) {
+    await render(
+      <template>
+        <Stepper @value="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" @isLoading={{true}} data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-test-step="a"]').hasAttribute('aria-busy', 'true');
+    assert.dom('[data-test-step="a"] [data-component="spinner"]').exists();
+    assert.dom('[data-test-step="b"]').doesNotHaveAttribute('aria-busy');
+    assert.dom('[data-test-step="b"] [data-component="spinner"]').doesNotExist();
+  });
+
+  test('@isInvalid sets data-invalid and adds screen-reader text', async function (assert) {
+    await render(
+      <template>
+        <Stepper @value="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" @isInvalid={{true}} data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    const [first, second] = findAll('[data-part="item"]') as HTMLElement[];
+    assert.strictEqual(first?.dataset['invalid'], 'true');
+    assert.strictEqual(second?.dataset['invalid'], 'false');
+    assert.dom('[data-test-step="a"] .sr-only').hasText(/invalid/i);
+    assert.dom('[data-test-step="b"] .sr-only').doesNotExist();
+  });
+
+  test('@icon renders in the indicator of an upcoming step', async function (assert) {
+    const Icon = <template><svg data-test-icon ...attributes></svg></template>;
+
+    await render(
+      <template>
+        <Stepper @value="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" />
+            <S.Step @value="b" @icon={{Icon}} data-test-step="b" />
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-test-step="b"] [data-test-icon]').exists();
+  });
+
+  test('a custom indicator block replaces the default indicator content', async function (assert) {
+    await render(
+      <template>
+        <Stepper @value="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a">
+              <:indicator>X</:indicator>
+            </S.Step>
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-test-step="a"] [data-part="indicator"]').hasText('X');
+  });
 });
