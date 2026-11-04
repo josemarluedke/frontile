@@ -85,6 +85,15 @@ class TabNavItem extends Component<TabNavItemSignature> {
   }
 
   get isActive(): boolean {
+    // The early returns come first on purpose: `this.router` is read only
+    // once `@route` is given and `@isActive` is not.
+    if (this.args.isActive !== undefined) {
+      return this.args.isActive;
+    }
+    if (!this.args.route) {
+      return false;
+    }
+
     return isRouteActive(this.router, this.args);
   }
 
