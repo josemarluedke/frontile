@@ -41,6 +41,26 @@ const appLayout = tv({
     // For `Sidebar.Item`'s own label element: the same rail behavior as the
     // `data-sidebar-label` pattern, as a slot class.
     sidebarLabel: 'truncate group-data-[collapsed=true]/sidebar:sr-only',
+    // `Sidebar.Item`: a link row. In the rail only the icon shows, centered.
+    sidebarItem: [
+      ...focusVisibleRing,
+      'flex min-h-9 w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm',
+      'text-neutral-firm',
+      'not-data-[disabled=true]:hover:bg-neutral-subtle',
+      'not-data-[disabled=true]:hover:text-neutral-strong',
+      'data-[active=true]:bg-neutral-soft data-[active=true]:font-medium',
+      'data-[active=true]:text-neutral-strong',
+      'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled',
+      'group-data-[collapsed=true]/sidebar:justify-center'
+    ],
+    sidebarItemIcon: 'inline-flex size-5 shrink-0 items-center justify-center',
+    // `Sidebar.Group`: a labelled set of items. The label is visually hidden
+    // in the rail like any other sidebar label.
+    sidebarGroup: 'flex flex-col gap-0.5 py-2',
+    sidebarGroupLabel: [
+      'truncate px-2 pb-1 text-xs font-medium text-neutral-firm',
+      'group-data-[collapsed=true]/sidebar:sr-only'
+    ],
     sidebarToggle: [
       ...focusVisibleRing,
       'inline-flex size-9 shrink-0 items-center justify-center rounded-md',

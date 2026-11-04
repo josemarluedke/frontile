@@ -109,14 +109,16 @@ import { array } from '@ember/helper';
 ## Sidebar
 
 `Sidebar` is a full-height `nav` landmark that takes the first column. It
-yields `Header`, `Body` and `Footer`. Give it a name with `@label` (default
-`Main`); if the page has more than one navigation, each needs its own.
-`SidebarToggle` is a button that collapses and expands it.
+yields `Header`, `Body` and `Footer` sections, `Item` links and `Group`. Give
+it a name with `@label` (default `Main`); if the page has more than one
+navigation, each needs its own. `SidebarToggle` is a button that collapses and
+expands it.
 
-By default the sidebar collapses to an icon rail. Wrap each item's text in
-`<span data-sidebar-label>`, in the header, body or footer, and it is visually
-hidden in the rail while staying available to screen readers, so every link
-keeps its name.
+By default the sidebar collapses to an icon rail. Each `Item`'s label is then
+visually hidden but still names the link for screen readers, and it shows as
+a tooltip on hover or focus. For your own markup in the header, body or
+footer, wrap the text in `<span data-sidebar-label>` to hide it in the rail
+the same way.
 
 ```gts preview
 import { AppLayout } from 'frontile';
@@ -130,14 +132,12 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
           <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
         </sidebar.Header>
         <sidebar.Body>
-          <a href='#overview' class='flex items-center gap-2 px-2 py-2 text-sm'>
-            <ViewIcon />
-            <span data-sidebar-label>Overview</span>
-          </a>
-          <a href='#settings' class='flex items-center gap-2 px-2 py-2 text-sm'>
-            <SettingsIcon />
-            <span data-sidebar-label>Settings</span>
-          </a>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
@@ -151,6 +151,107 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
   </div>
 </template>
 ```
+
+### Items and groups
+
+`Item` is a link with an optional `@icon` and its label as the block. It takes
+the same routing arguments as `TabNav.Item`. With `@href` it is a plain anchor
+and needs no router; set `@isActive` to mark the current page. The active item
+has `aria-current="page"`.
+
+`@isDisabled` drops the href so the link cannot be followed. `@isHidden`
+renders nothing, for items the current user should not see.
+
+`Group` puts a heading over a set of items and names the group after it with
+`@label`. In the rail the heading is visually hidden.
+
+```gts preview
+import { AppLayout } from 'frontile';
+import {
+  ViewIcon,
+  StarIcon,
+  ArchiveIcon,
+  SettingsIcon,
+  DeleteIcon
+} from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout class='demo-app-layout' as |layout|>
+      <layout.Sidebar @label='Projects' as |sidebar|>
+        <sidebar.Body>
+          <sidebar.Group @label='Projects'>
+            <sidebar.Item @href='#all' @icon={{ViewIcon}} @isActive={{true}}>
+              All projects
+            </sidebar.Item>
+            <sidebar.Item @href='#starred' @icon={{StarIcon}}>
+              Starred
+            </sidebar.Item>
+            <sidebar.Item
+              @href='#archived'
+              @icon={{ArchiveIcon}}
+              @isDisabled={{true}}
+            >
+              Archived
+            </sidebar.Item>
+          </sidebar.Group>
+          <sidebar.Group @label='Admin'>
+            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+              Settings
+            </sidebar.Item>
+            <sidebar.Item
+              @href='#purge'
+              @icon={{DeleteIcon}}
+              @isHidden={{true}}
+            >
+              Purge data
+            </sidebar.Item>
+          </sidebar.Group>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.SidebarToggle />
+        <span class='text-sm font-medium'>Projects</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='All projects' />
+      </layout.Main>
+    </AppLayout>
+  </div>
+</template>
+```
+
+### Linking to routes
+
+Pass `@route` (with `@model`, `@models` or `@query` as needed) and `Item`
+renders an Ember `LinkTo` and asks the router whether it is active, so no
+`@isActive` is needed. It is not rendered on this page, since the docs site has
+no matching routes.
+
+```gts
+import { AppLayout } from 'frontile';
+import { ViewIcon, UserIcon } from 'my-app/components/icons';
+
+<template>
+  <AppLayout as |layout|>
+    <layout.Sidebar as |sidebar|>
+      <sidebar.Body>
+        <sidebar.Item @route='dashboard' @icon={{ViewIcon}}>
+          Dashboard
+        </sidebar.Item>
+        <sidebar.Item @route='users.show' @model={{@currentUser.id}} @icon={{UserIcon}}>
+          My profile
+        </sidebar.Item>
+      </sidebar.Body>
+    </layout.Sidebar>
+    <layout.Main>{{outlet}}</layout.Main>
+  </AppLayout>
+</template>
+```
+
+`@isActive` always wins over the router. The router counts a route as active
+while any of its child routes is, so `@route='users'` stays active on
+`users.show`; pass `@isActive` if only the exact route should light up.
 
 ### Collapse modes
 
@@ -173,10 +274,7 @@ import { ViewIcon } from 'site/components/icons';
       >
         <layout.Sidebar @collapsible={{mode}} as |sidebar|>
           <sidebar.Body>
-            <a href='#home' class='flex items-center gap-2 px-2 py-2 text-sm'>
-              <ViewIcon />
-              <span data-sidebar-label>Home</span>
-            </a>
+            <sidebar.Item @href='#home' @icon={{ViewIcon}}>Home</sidebar.Item>
           </sidebar.Body>
         </layout.Sidebar>
         <layout.Navbar>
@@ -210,9 +308,7 @@ import { AppLayout } from 'frontile';
     >
       <layout.Sidebar as |sidebar|>
         <sidebar.Body>
-          <a href='#home' class='block px-2 py-2 text-sm'>
-            <span data-sidebar-label>Home</span>
-          </a>
+          <sidebar.Item @href='#home'>Home</sidebar.Item>
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
@@ -254,14 +350,12 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
           <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
         </sidebar.Header>
         <sidebar.Body>
-          <a href='#overview' class='flex items-center gap-2 px-2 py-2 text-sm'>
-            <ViewIcon />
-            <span data-sidebar-label>Overview</span>
-          </a>
-          <a href='#settings' class='flex items-center gap-2 px-2 py-2 text-sm'>
-            <SettingsIcon />
-            <span data-sidebar-label>Settings</span>
-          </a>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
@@ -310,9 +404,7 @@ export default class StandaloneSidebarExample extends Component {
         as |sidebar|
       >
         <sidebar.Body>
-          <a href='#daily' class='block px-2 py-2 text-sm'>
-            <span data-sidebar-label>Daily</span>
-          </a>
+          <sidebar.Item @href='#daily'>Daily</sidebar.Item>
         </sidebar.Body>
       </Sidebar>
       <SidebarToggle @state={{this.state}} @controls='standalone-sidebar' />
@@ -518,8 +610,14 @@ export default class SharedStateExample extends Component {
   opened it: `MenuToggle` when that opened it, otherwise the element that had
   focus when the shortcut was pressed (`MenuToggle` if focus was on the page
   body).
-- In the icon rail, text inside `[data-sidebar-label]` is visually hidden but
-  remains in the accessibility tree, so each link keeps its name.
+- `Item` is a link. The active item has `aria-current="page"`. A disabled
+  item has no href and has `aria-disabled="true"`. Its `@icon` is hidden from
+  assistive technology, so the label is the link's name.
+- In the icon rail, `Item` labels, `Group` headings and text inside
+  `[data-sidebar-label]` are visually hidden but remain in the accessibility
+  tree, so each link keeps its name. Hovering or focusing an `Item` in the
+  rail shows its label as a tooltip.
+- `Group` renders a `group` named by its `@label`.
 - `Aside` renders an `aside` landmark named by `@label` (default `Details`);
   in the drawer the dialog and the landmark inside it share that name.
 - `AsideToggle` is a button named by `@label` (default "Toggle details"). It
@@ -539,6 +637,8 @@ export default class SharedStateExample extends Component {
 
 <Signature @component="AppLayout" />
 <Signature @component="Sidebar" />
+<Signature @component="SidebarItem" />
+<Signature @component="SidebarGroup" />
 <Signature @component="SidebarToggle" />
 <Signature @component="MenuToggle" />
 <Signature @component="Aside" />
