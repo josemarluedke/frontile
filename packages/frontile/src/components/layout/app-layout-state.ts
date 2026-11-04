@@ -9,6 +9,9 @@ export interface AppLayoutStateInitial {
 /**
  * Shared state for an app shell: desktop sidebar collapse, the mobile
  * sidebar drawer, and the secondary aside.
+ *
+ * The methods are arrow functions so they can be handed to templates
+ * directly, e.g. `{{on "click" state.toggleAside}}`.
  */
 export class AppLayoutState {
   /** Whether the desktop sidebar is collapsed to its narrow rail. */
@@ -24,33 +27,33 @@ export class AppLayoutState {
     this.asideOpen = initial.asideOpen ?? false;
   }
 
-  toggleSidebar(): void {
+  toggleSidebar = (): void => {
     this.sidebarCollapsed = !this.sidebarCollapsed;
-  }
+  };
 
-  collapseSidebar(): void {
+  collapseSidebar = (): void => {
     this.sidebarCollapsed = true;
-  }
+  };
 
-  expandSidebar(): void {
+  expandSidebar = (): void => {
     this.sidebarCollapsed = false;
-  }
+  };
 
-  openMobileSidebar(): void {
+  openMobileSidebar = (): void => {
     this.mobileSidebarOpen = true;
-  }
+  };
 
-  closeMobileSidebar(): void {
+  closeMobileSidebar = (): void => {
     this.mobileSidebarOpen = false;
-  }
+  };
 
-  toggleAside(): void {
+  toggleAside = (): void => {
     this.asideOpen = !this.asideOpen;
-  }
+  };
 
-  closeAside(): void {
+  closeAside = (): void => {
     this.asideOpen = false;
-  }
+  };
 }
 
 export default AppLayoutState;
