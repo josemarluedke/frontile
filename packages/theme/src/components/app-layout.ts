@@ -176,7 +176,7 @@ const appLayout = tv({
     // The sidebar rendered in the mobile drawer. The drawer's close button
     // sits over the header's end edge, so the header leaves room for it.
     inDrawer: {
-      true: { sidebarHeader: 'pe-14' },
+      true: { sidebarHeader: 'pe-16' },
       false: {}
     },
 
