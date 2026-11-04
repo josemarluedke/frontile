@@ -24,6 +24,16 @@ export {
 } from './page-header';
 export { Sidebar, type SidebarSignature, type SidebarArgs } from './sidebar';
 export {
+  SidebarGroup,
+  type SidebarGroupSignature,
+  type SidebarGroupArgs
+} from './sidebar-group';
+export {
+  SidebarItem,
+  type SidebarItemSignature,
+  type SidebarItemArgs
+} from './sidebar-item';
+export {
   SidebarToggle,
   type SidebarToggleSignature,
   type SidebarToggleArgs

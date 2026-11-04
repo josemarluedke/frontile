@@ -22,6 +22,9 @@ Router.map(function () {
     this.route('second');
     this.route('item', { path: '/item/:item_id' });
   });
+  this.route('sidebar-demo', function () {
+    this.route('second');
+  });
   this.route('breadcrumbs-demo', function () {
     this.route('second');
     this.route('item', { path: '/item/:item_id' });

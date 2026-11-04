@@ -5,6 +5,8 @@ import { registerDestructor } from '@ember/destroyable';
 import { guidFor } from '@ember/object/internals';
 import { useStyles } from '@frontile/theme';
 import Drawer from '../overlays/drawer';
+import SidebarItem from './sidebar-item';
+import SidebarGroup from './sidebar-group';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
 import type Owner from '@ember/owner';
@@ -62,15 +64,21 @@ interface SidebarSignature {
   Args: SidebarArgs;
   Blocks: {
     /**
-     * Yields `Header`, `Body` and `Footer`. In the icon rail, wrap each
-     * item's text in `<span data-sidebar-label>` so it is visually hidden
-     * while collapsed but still read by screen readers.
+     * Yields `Header`, `Body` and `Footer` sections, `Item` links and `Group`
+     * to label a set of items. In the icon rail, `Item` labels are visually
+     * hidden but still read by screen readers; for your own markup, wrap the
+     * text in `<span data-sidebar-label>` to get the same behavior.
      */
     default: [
       {
         Header: WithBoundArgs<typeof SidebarHeader, 'class'>;
         Body: WithBoundArgs<typeof SidebarBody, 'class'>;
         Footer: WithBoundArgs<typeof SidebarFooter, 'class'>;
+        Item: WithBoundArgs<
+          typeof SidebarItem,
+          'classes' | 'rail' | 'tooltipPlacement'
+        >;
+        Group: WithBoundArgs<typeof SidebarGroup, 'classes'>;
       }
     ];
   };
@@ -185,13 +193,40 @@ class Sidebar extends Component<SidebarSignature> {
     });
   }
 
+  @cached
   get slotClasses() {
     const custom = this.args.layout?.classes;
     return {
       header: this.styles.sidebarHeader({ class: custom?.sidebarHeader }),
       body: this.styles.sidebarBody({ class: custom?.sidebarBody }),
-      footer: this.styles.sidebarFooter({ class: custom?.sidebarFooter })
+      footer: this.styles.sidebarFooter({ class: custom?.sidebarFooter }),
+      item: {
+        sidebarItem: this.styles.sidebarItem({ class: custom?.sidebarItem }),
+        sidebarItemIcon: this.styles.sidebarItemIcon({
+          class: custom?.sidebarItemIcon
+        }),
+        sidebarLabel: this.styles.sidebarLabel({ class: custom?.sidebarLabel })
+      },
+      group: {
+        sidebarGroup: this.styles.sidebarGroup({ class: custom?.sidebarGroup }),
+        sidebarGroupLabel: this.styles.sidebarGroupLabel({
+          class: custom?.sidebarGroupLabel
+        })
+      }
     };
+  }
+
+  /**
+   * Whether the block is drawn as the icon rail, where item labels become
+   * tooltips. Never in the drawer, which is always expanded.
+   */
+  get rail(): boolean {
+    return !this.inDrawer && this.collapsible === 'icon' && this.collapsed;
+  }
+
+  /** Rail tooltips open toward the content, away from the sidebar's edge. */
+  get tooltipPlacement(): 'left' | 'right' {
+    return this.placement === 'left' ? 'right' : 'left';
   }
 
   <template>
@@ -220,6 +255,13 @@ class Sidebar extends Component<SidebarSignature> {
               Header=(component SidebarHeader class=this.slotClasses.header)
               Body=(component SidebarBody class=this.slotClasses.body)
               Footer=(component SidebarFooter class=this.slotClasses.footer)
+              Item=(component
+                SidebarItem
+                classes=this.slotClasses.item
+                rail=this.rail
+                tooltipPlacement=this.tooltipPlacement
+              )
+              Group=(component SidebarGroup classes=this.slotClasses.group)
             )
           }}
         </nav>
@@ -239,6 +281,13 @@ class Sidebar extends Component<SidebarSignature> {
             Header=(component SidebarHeader class=this.slotClasses.header)
             Body=(component SidebarBody class=this.slotClasses.body)
             Footer=(component SidebarFooter class=this.slotClasses.footer)
+            Item=(component
+              SidebarItem
+              classes=this.slotClasses.item
+              rail=this.rail
+              tooltipPlacement=this.tooltipPlacement
+            )
+            Group=(component SidebarGroup classes=this.slotClasses.group)
           )
         }}
       </nav>
