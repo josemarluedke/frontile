@@ -63,9 +63,14 @@ const stepper = tv({
       'motion-reduce:animate-none motion-reduce:[&_path]:animate-none'
     ],
 
+    // The track is neutral; an `::after` fill in the step's color grows along
+    // it when the step completes, and shrinks back if the user returns. The
+    // fill's axis and origin come from `orientation`, below.
     connector: [
-      'shrink-0 bg-neutral-mild',
-      'transition-colors duration-200 motion-reduce:transition-none',
+      'relative shrink-0 overflow-hidden bg-neutral-mild',
+      'after:absolute after:inset-0 after:content-[""]',
+      'after:transition-transform after:duration-300 after:ease-out',
+      'motion-reduce:after:transition-none',
       // The last step has nothing to connect to.
       'group-last/item:hidden'
     ],
@@ -108,49 +113,49 @@ const stepper = tv({
           'group-data-[state=complete]/item:border-neutral-strong group-data-[state=complete]/item:bg-neutral-strong group-data-[state=complete]/item:text-background',
           'group-data-[state=active]/item:border-neutral-strong group-data-[state=active]/item:text-neutral-strong'
         ],
-        connector: 'group-data-[state=complete]/item:bg-neutral-strong'
+        connector: 'group-data-[state=complete]/item:after:bg-neutral-strong'
       },
       primary: {
         indicator: [
           'group-data-[state=complete]/item:border-primary group-data-[state=complete]/item:bg-primary group-data-[state=complete]/item:text-on-primary',
           'group-data-[state=active]/item:border-primary group-data-[state=active]/item:text-primary'
         ],
-        connector: 'group-data-[state=complete]/item:bg-primary'
+        connector: 'group-data-[state=complete]/item:after:bg-primary'
       },
       secondary: {
         indicator: [
           'group-data-[state=complete]/item:border-secondary group-data-[state=complete]/item:bg-secondary group-data-[state=complete]/item:text-on-secondary',
           'group-data-[state=active]/item:border-secondary group-data-[state=active]/item:text-secondary'
         ],
-        connector: 'group-data-[state=complete]/item:bg-secondary'
+        connector: 'group-data-[state=complete]/item:after:bg-secondary'
       },
       tertiary: {
         indicator: [
           'group-data-[state=complete]/item:border-tertiary group-data-[state=complete]/item:bg-tertiary group-data-[state=complete]/item:text-on-tertiary',
           'group-data-[state=active]/item:border-tertiary group-data-[state=active]/item:text-tertiary'
         ],
-        connector: 'group-data-[state=complete]/item:bg-tertiary'
+        connector: 'group-data-[state=complete]/item:after:bg-tertiary'
       },
       success: {
         indicator: [
           'group-data-[state=complete]/item:border-success group-data-[state=complete]/item:bg-success group-data-[state=complete]/item:text-on-success',
           'group-data-[state=active]/item:border-success group-data-[state=active]/item:text-success'
         ],
-        connector: 'group-data-[state=complete]/item:bg-success'
+        connector: 'group-data-[state=complete]/item:after:bg-success'
       },
       warning: {
         indicator: [
           'group-data-[state=complete]/item:border-warning group-data-[state=complete]/item:bg-warning group-data-[state=complete]/item:text-on-warning',
           'group-data-[state=active]/item:border-warning group-data-[state=active]/item:text-warning'
         ],
-        connector: 'group-data-[state=complete]/item:bg-warning'
+        connector: 'group-data-[state=complete]/item:after:bg-warning'
       },
       danger: {
         indicator: [
           'group-data-[state=complete]/item:border-danger group-data-[state=complete]/item:bg-danger group-data-[state=complete]/item:text-on-danger',
           'group-data-[state=active]/item:border-danger group-data-[state=active]/item:text-danger'
         ],
-        connector: 'group-data-[state=complete]/item:bg-danger'
+        connector: 'group-data-[state=complete]/item:after:bg-danger'
       }
     },
 
@@ -197,13 +202,22 @@ const stepper = tv({
         base: 'flex-col gap-3',
         list: 'flex-row items-start',
         item: 'flex-1 items-center last:flex-none',
-        connector: 'mx-1 h-0.5 min-w-4 flex-1'
+        connector: [
+          'mx-1 h-0.5 min-w-4 flex-1',
+          // Grows from the start edge, which is the right in RTL.
+          'after:origin-left after:scale-x-0 rtl:after:origin-right',
+          'group-data-[state=complete]/item:after:scale-x-100'
+        ]
       },
       vertical: {
         base: 'flex-col gap-3',
         list: 'flex-col',
         item: 'flex-col items-start',
-        connector: 'ms-[21px] h-4 w-0.5'
+        connector: [
+          'ms-[21px] h-4 w-0.5',
+          'after:origin-top after:scale-y-0',
+          'group-data-[state=complete]/item:after:scale-y-100'
+        ]
       }
     },
 
