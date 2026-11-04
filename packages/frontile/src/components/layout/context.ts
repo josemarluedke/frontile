@@ -13,8 +13,19 @@ export type AppLayoutStyles = ReturnType<
 export interface AppLayoutContext {
   state: AppLayoutState;
   mainId: string;
+  sidebarId: string;
   styles: AppLayoutStyles;
+  /** The variant props the layout's `styles` were built from. */
+  config: AppLayoutConfig;
   classes?: SlotsToClasses<AppLayoutSlots>;
+}
+
+export interface AppLayoutConfig {
+  variant: 'inset' | 'attached';
+  navbarPlacement: 'frame' | 'content';
+  breakpoint: 'sm' | 'md' | 'lg';
+  scrollMode: 'content' | 'page';
+  sidebarSide: 'start' | 'end';
 }
 
 /** Styles for a part rendered outside an `AppLayout`: no card chrome. */
