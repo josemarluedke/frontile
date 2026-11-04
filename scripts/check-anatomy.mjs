@@ -312,7 +312,10 @@ const DIRECTORY_OWNER_ALIASES = {
   // sub-template) carries only `data-part="tab"` with no data-component in
   // its own file, so it needs the same directory-name fallback
   // `simple-table` gets.
-  'tab-nav': 'tabs'
+  'tab-nav': 'tabs',
+  // layout/ holds the AppLayout parts (Main, Navbar, PageHeader, ...), each
+  // its own file with no data-component, all rendering `app-layout` slots.
+  layout: 'app-layout'
 };
 
 /**

@@ -520,7 +520,9 @@
   max-width: 100%;
   overflow-x: auto;
 }
-.prose h1 {
+/* `:not(.not-prose h1)`: a live demo that renders its own page title (the
+   AppLayout `PageHeader`) opts out with `not-prose` and keeps its theme size. */
+.prose h1:not(.not-prose h1) {
   @apply font-header text-header-3xl;
   overflow-wrap: anywhere;
 }
