@@ -124,6 +124,10 @@ const stepper = tv({
 
     size: {
       sm: {
+        // Padding that brings indicator plus padding to 44px, so the hit
+        // area is 44px whatever the circle size and the circle sits 22px
+        // in from the button's edge in every layout.
+        step: 'p-2.5',
         indicator: 'size-6 text-label-sm',
         title: 'text-label-sm',
         description: 'text-caption-sm',
@@ -131,6 +135,10 @@ const stepper = tv({
         panel: 'py-2'
       },
       md: {
+        // Padding that brings indicator plus padding to 44px, so the hit
+        // area is 44px whatever the circle size and the circle sits 22px
+        // in from the button's edge in every layout.
+        step: 'p-2',
         indicator: 'size-7 text-label-md',
         title: 'text-label-md',
         description: 'text-caption-md',
@@ -138,6 +146,10 @@ const stepper = tv({
         panel: 'py-3'
       },
       lg: {
+        // Padding that brings indicator plus padding to 44px, so the hit
+        // area is 44px whatever the circle size and the circle sits 22px
+        // in from the button's edge in every layout.
+        step: 'p-1',
         indicator: 'size-9 text-label-lg',
         title: 'text-label-lg',
         description: 'text-body-sm',
@@ -151,13 +163,13 @@ const stepper = tv({
         base: 'flex-col gap-3',
         list: 'flex-row items-start',
         item: 'flex-1 items-center last:flex-none',
-        connector: 'mx-2 h-0.5 flex-1'
+        connector: 'mx-1 h-0.5 min-w-4 flex-1'
       },
       vertical: {
-        base: 'flex-row gap-4',
+        base: 'flex-col gap-3',
         list: 'flex-col',
         item: 'flex-col items-start',
-        connector: 'my-1 ml-[1.375rem] min-h-6 w-0.5 flex-1'
+        connector: 'ml-[21px] h-4 w-0.5'
       }
     },
 
@@ -168,14 +180,82 @@ const stepper = tv({
       bottom: {}
     },
 
-    // When true (the default), labels collapse at narrow container widths.
-    // The responsive rules themselves are compound variants added with the
-    // layout work, since they depend on orientation and labelPosition.
+    // When true (the default), horizontal labels collapse at narrow container
+    // widths and a summary line takes over. The rules are compound variants
+    // below, since they depend on orientation and labelPosition.
     collapseLabels: {
       true: {},
       false: {}
     }
   },
+
+  compoundVariants: [
+    // -- label below the circle (horizontal only; vertical ignores it) --
+    // Items are equal-width columns, and the connector is drawn from this
+    // item's circle to the next one's, so it needs `relative` on the item and
+    // an offset that clears the circle (radius plus a 4px gap, per size).
+    {
+      orientation: 'horizontal',
+      labelPosition: 'bottom',
+      class: {
+        item: 'relative flex-1 flex-col items-center last:flex-1',
+        step: 'flex-col',
+        label: 'items-center text-center',
+        connector: 'absolute top-[21px] mx-0 min-w-0 flex-none'
+      }
+    },
+    {
+      orientation: 'horizontal',
+      labelPosition: 'bottom',
+      size: 'sm',
+      class: { connector: 'left-[calc(50%+1rem)] right-[calc(-50%+1rem)]' }
+    },
+    {
+      orientation: 'horizontal',
+      labelPosition: 'bottom',
+      size: 'md',
+      class: {
+        connector: 'left-[calc(50%+1.125rem)] right-[calc(-50%+1.125rem)]'
+      }
+    },
+    {
+      orientation: 'horizontal',
+      labelPosition: 'bottom',
+      size: 'lg',
+      class: {
+        connector: 'left-[calc(50%+1.375rem)] right-[calc(-50%+1.375rem)]'
+      }
+    },
+
+    // -- responsive label collapse (horizontal only) --
+    // Narrow: the label is visually hidden (`sr-only` keeps it in the
+    // accessibility tree) and the summary shows. Wider than the threshold the
+    // label returns and the summary goes.
+    //
+    // The thresholds are Frontile-namespaced container tokens, not `@md` /
+    // `@2xl`: those read `--container-*`, which apps commonly redefine (and
+    // which `max-w-*` shares), so they would move the breakpoints -- possibly
+    // inverting the two modes. `var()` is not allowed in a container query
+    // condition, so a theme token is the only way to make them tunable.
+    {
+      orientation: 'horizontal',
+      collapseLabels: true,
+      labelPosition: 'bottom',
+      class: {
+        label: 'sr-only @fr-stepper-bottom/stepper:not-sr-only',
+        summary: '@fr-stepper-bottom/stepper:hidden'
+      }
+    },
+    {
+      orientation: 'horizontal',
+      collapseLabels: true,
+      labelPosition: 'end',
+      class: {
+        label: 'sr-only @fr-stepper-end/stepper:not-sr-only',
+        summary: '@fr-stepper-end/stepper:hidden'
+      }
+    }
+  ],
 
   defaultVariants: {
     color: 'primary',

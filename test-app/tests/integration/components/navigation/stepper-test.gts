@@ -827,3 +827,136 @@ module('Integration | Component | Stepper | panel', function (hooks) {
     assert.dom('[data-part="panel"]').hasAttribute('aria-labelledby', step.id);
   });
 });
+
+module('Integration | Component | Stepper | responsive', function (hooks) {
+  setupRenderingTest(hooks);
+
+  const Fixture = <template>
+    <div style={{@style}}>
+      <Stepper
+        @value="b"
+        @labelPosition={{@labelPosition}}
+        @orientation={{@orientation}}
+        @collapseLabels={{@collapseLabels}}
+        @size={{@size}}
+        as |S|
+      >
+        <S.List @label="Checkout">
+          <S.Step @value="a" @title="Account" data-test-step="a" />
+          <S.Step @value="b" @title="Billing" data-test-step="b" />
+          <S.Step @value="c" @title="Review" data-test-step="c" />
+          <S.Step @value="d" @title="Confirm" data-test-step="d" />
+        </S.List>
+      </Stepper>
+    </div>
+  </template>;
+
+  // Layout sizes, not `getBoundingClientRect`: Ember's test container is
+  // rendered at `transform: scale(0.5)`, which halves every rect but leaves
+  // layout -- and so container queries -- untouched.
+  //
+  // The *label* is measured, not the title inside it: `sr-only` clips the
+  // label to 1px, but a title that is not stretched (`items-center`) still has
+  // its natural width inside the clipped box.
+  const labelWidth = (root: ParentNode, step = 'a'): number =>
+    (root.querySelector(`[data-test-step="${step}"] [data-part="label"]`) as HTMLElement)
+      .offsetWidth;
+
+  const titleVisible = (): boolean => labelWidth(document) > 10;
+
+  const summaryDisplay = (): string | undefined => {
+    const summary = find('[data-part="summary"]');
+    return summary ? getComputedStyle(summary).display : undefined;
+  };
+
+  test('narrow: titles are visually hidden and the summary is visible', async function (assert) {
+    await render(<template><Fixture @style="width: 20rem" /></template>);
+
+    assert.false(titleVisible(), 'title is visually hidden');
+    assert.notStrictEqual(summaryDisplay(), 'none');
+    assert.dom('[data-part="summary"]').includesText('Step 2 of 4');
+    assert.dom('[data-part="summary"]').includesText('Billing');
+    assert.dom('[data-part="summary"]').hasAttribute('aria-hidden', 'true');
+  });
+
+  test('collapsed titles stay in the accessibility tree', async function (assert) {
+    await render(<template><Fixture @style="width: 20rem" /></template>);
+
+    const title = find('[data-test-step="a"] [data-part="title"]') as HTMLElement;
+    assert.notStrictEqual(getComputedStyle(title).display, 'none');
+    assert.notStrictEqual(getComputedStyle(title).visibility, 'hidden');
+    assert.dom(title).hasText('Account');
+  });
+
+  test('labelPosition bottom shows titles from the bottom threshold', async function (assert) {
+    await render(
+      <template>
+        <Fixture @style="width: 24rem" @labelPosition="bottom" />
+        <Fixture @style="width: 30rem" @labelPosition="bottom" />
+      </template>
+    );
+
+    const [narrow, wide] = findAll('[data-part="base"]') as HTMLElement[];
+
+    assert.true(labelWidth(narrow as HTMLElement) <= 1, 'collapsed below 28rem');
+    assert.true(labelWidth(wide as HTMLElement) > 10, 'visible from 28rem');
+    assert.strictEqual(
+      getComputedStyle(wide?.querySelector('[data-part="summary"]') as Element).display,
+      'none',
+      'summary hides once titles show'
+    );
+  });
+
+  test('labelPosition end shows titles from the end threshold, and stays collapsed between', async function (assert) {
+    await render(
+      <template>
+        <Fixture @style="width: 30rem" />
+        <Fixture @style="width: 44rem" />
+      </template>
+    );
+
+    const [between, wide] = findAll('[data-part="base"]') as HTMLElement[];
+
+    assert.true(labelWidth(between as HTMLElement) <= 1, 'collapsed between the thresholds');
+    assert.true(labelWidth(wide as HTMLElement) > 10, 'visible from 42rem');
+  });
+
+  test('@collapseLabels={{false}} always shows titles and omits the summary', async function (assert) {
+    await render(
+      <template>
+        <Fixture @style="width: 20rem" @collapseLabels={{false}} />
+      </template>
+    );
+
+    assert.true(titleVisible());
+    assert.dom('[data-part="summary"]').doesNotExist();
+  });
+
+  test('vertical always shows titles and has no summary', async function (assert) {
+    await render(
+      <template>
+        <Fixture @style="width: 20rem" @orientation="vertical" />
+      </template>
+    );
+
+    assert.true(titleVisible());
+    assert.dom('[data-part="summary"]').doesNotExist();
+  });
+
+  test('the step hit area is at least 44px at every size', async function (assert) {
+    await render(
+      <template>
+        <Fixture @style="width: 20rem" @size="sm" />
+        <Fixture @style="width: 20rem" @size="md" />
+        <Fixture @style="width: 20rem" @size="lg" />
+      </template>
+    );
+
+    const steps = findAll('[data-test-step="a"]') as HTMLElement[];
+    assert.strictEqual(steps.length, 3);
+    for (const step of steps) {
+      assert.true(step.offsetWidth >= 44, `width ${step.offsetWidth}`);
+      assert.true(step.offsetHeight >= 44, `height ${step.offsetHeight}`);
+    }
+  });
+});

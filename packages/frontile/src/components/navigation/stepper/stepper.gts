@@ -94,6 +94,12 @@ interface StepRecord<T> {
 
 type StepState = 'complete' | 'active' | 'upcoming';
 
+interface StepperSummary {
+  position: number;
+  total: number;
+  title: string | undefined;
+}
+
 interface StepperContext<T> {
   orientation: 'horizontal' | 'vertical';
   listClass: string;
@@ -104,7 +110,13 @@ interface StepperContext<T> {
   labelClass: string;
   titleClass: string;
   descriptionClass: string;
+  summaryClass: string;
   panelClass: string;
+  /**
+   * The "Step N of M" line, present only for a horizontal Stepper with
+   * collapsing labels and a matched selection.
+   */
+  readonly summary: StepperSummary | undefined;
   /** Registered steps in document order. */
   readonly steps: readonly StepRecord<T>[];
   isSelected: (value: T) => boolean;
@@ -245,6 +257,24 @@ class Stepper<T> extends Component<StepperSignature<T>> {
     return this.steps.find((step) => !step.isDisabled)?.value;
   }
 
+  /** Backs the narrow-width "Step N of M" line. */
+  get summary(): StepperSummary | undefined {
+    if (this.orientation !== 'horizontal' || this.args.collapseLabels === false) {
+      return undefined;
+    }
+    const steps = this.steps;
+    const selected = this.selectedValue;
+    const index = steps.findIndex((step) => step.value === selected);
+    if (index === -1) {
+      return undefined;
+    }
+    return {
+      position: index + 1,
+      total: steps.length,
+      title: steps[index]?.title
+    };
+  }
+
   isSelected = (value: T): boolean => this.selectedValue === value;
 
   stateOf = (value: T): StepState => {
@@ -373,7 +403,11 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       descriptionClass: this.styles.description({
         class: classes?.description
       }),
+      summaryClass: this.styles.summary({ class: classes?.summary }),
       panelClass: this.styles.panel({ class: classes?.panel }),
+      get summary() {
+        return stepper.summary;
+      },
       get steps() {
         return stepper.steps;
       },
@@ -427,6 +461,7 @@ export {
   type StepperArgs,
   type StepperContext,
   type StepRecord,
-  type StepState
+  type StepState,
+  type StepperSummary
 };
 export default Stepper;
