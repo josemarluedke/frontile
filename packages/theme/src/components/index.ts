@@ -18,6 +18,7 @@ export * from './table';
 export * from './segmented-control';
 export * from './stepper';
 export * from './tabs';
+export * from './app-layout';
 export * from './accordion';
 export * from './calendar';
 export * from './pagination';
