@@ -131,7 +131,9 @@ const stepper = tv({
         // area is 44px whatever the circle size and the circle sits 22px
         // in from the button's edge in every layout.
         step: 'p-2.5',
-        indicator: 'size-6 text-label-sm',
+        // `[&_svg]` outranks an icon's own size class, so the circle, not the
+        // icon, decides the glyph size (about half the circle, 4-6px padding).
+        indicator: 'size-6 text-label-sm [&_svg]:size-3',
         title: 'text-label-sm',
         description: 'text-caption-sm',
         summary: 'text-label-sm',
@@ -142,7 +144,7 @@ const stepper = tv({
         // area is 44px whatever the circle size and the circle sits 22px
         // in from the button's edge in every layout.
         step: 'p-2',
-        indicator: 'size-7 text-label-md',
+        indicator: 'size-7 text-label-md [&_svg]:size-4',
         title: 'text-label-md',
         description: 'text-caption-md',
         summary: 'text-label-md',
@@ -153,7 +155,7 @@ const stepper = tv({
         // area is 44px whatever the circle size and the circle sits 22px
         // in from the button's edge in every layout.
         step: 'p-1',
-        indicator: 'size-9 text-label-lg',
+        indicator: 'size-9 text-label-lg [&_svg]:size-5',
         title: 'text-label-lg',
         description: 'text-body-sm',
         summary: 'text-label-lg',

@@ -209,7 +209,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
           {{else if this.isInvalid}}
             <svg
               viewBox="0 0 16 16"
-              class="size-4"
+              class="shrink-0"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -219,7 +219,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
           {{else if this.isCompleteMark}}
             <svg
               viewBox="0 0 16 16"
-              class="size-4"
+              class="shrink-0"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -227,7 +227,7 @@ class StepperStep<T> extends Component<StepperStepSignature<T>> {
               stroke-linejoin="round"
             ><path d="M3.5 8.5l3 3 6-6.5" /></svg>
           {{else if @icon}}
-            <@icon class="size-4" />
+            <@icon />
           {{else if this.number}}
             {{this.number}}
           {{/if}}

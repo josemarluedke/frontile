@@ -302,6 +302,12 @@ whether the step actually changes.
 
 That makes a controlled Stepper the place to validate before moving on.
 
+Whether a step is available is always your call: the Stepper cannot know what
+"terms accepted" means. Pass the condition to `@isDisabled` so the step looks
+and behaves unavailable (styled, skipped by arrow keys, ignored on click), and
+keep the `@onChange` check as the guard for anything that moves the step
+without going through the step itself.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
@@ -311,6 +317,10 @@ import { Stepper } from 'frontile';
 export default class StepperValidatedExample extends Component {
   @tracked step = 'account';
   @tracked accepted = false;
+
+  get planLocked(): boolean {
+    return !this.accepted;
+  }
 
   setStep = (value: string): void => {
     if (this.step === 'account' && value !== 'account' && !this.accepted) {
@@ -333,7 +343,7 @@ export default class StepperValidatedExample extends Component {
       >
         <S.List @label='Sign up'>
           <S.Step @value='account' @title='Account' />
-          <S.Step @value='plan' @title='Plan' />
+          <S.Step @value='plan' @title='Plan' @isDisabled={{this.planLocked}} />
         </S.List>
 
         <S.Panel @value='account'>
