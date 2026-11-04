@@ -21,14 +21,30 @@ const appLayout = tv({
       'grid-cols-[auto_minmax(0,1fr)_auto]'
     ],
 
+    // `group/sidebar` plus `data-collapsed` on the element lets any descendant
+    // react to the icon rail with `group-data-[collapsed=true]/sidebar:`.
     sidebar: [
-      'col-start-1 row-[1/-1] shrink-0 flex-col',
+      'group/sidebar col-start-1 row-[1/-1] shrink-0 flex-col',
       'transition-[width] duration-200',
       'motion-reduce:transition-none'
     ],
     sidebarHeader: 'flex h-12 shrink-0 items-center gap-2 px-3',
-    sidebarBody: 'min-h-0 flex-1 overflow-y-auto px-2',
+    // Labels written as `<span data-sidebar-label>` are visually hidden in the
+    // icon rail but stay in the accessibility tree (`sr-only`, never
+    // `display: none`).
+    sidebarBody: [
+      'min-h-0 flex-1 overflow-y-auto px-2',
+      'group-data-[collapsed=true]/sidebar:[&_[data-sidebar-label]]:sr-only'
+    ],
     sidebarFooter: 'shrink-0 px-2 py-2',
+    // For `Sidebar.Item`'s own label element: the same rail behavior as the
+    // `data-sidebar-label` pattern, as a slot class.
+    sidebarLabel: 'truncate group-data-[collapsed=true]/sidebar:sr-only',
+    sidebarToggle: [
+      ...focusVisibleRing,
+      'inline-flex size-9 shrink-0 items-center justify-center rounded-md',
+      'text-neutral-firm hover:bg-neutral-subtle hover:text-neutral-strong'
+    ],
 
     navbar: 'col-[2/-1] row-start-1 flex h-12 min-w-0 items-center gap-2 px-3',
 
@@ -68,7 +84,7 @@ const appLayout = tv({
       },
       attached: {
         base: 'bg-surface-app',
-        sidebar: 'border-r border-neutral-muted bg-surface-card',
+        sidebar: 'border-e border-neutral-muted bg-surface-card',
         // Edge-to-edge content: no card chrome. The element is not rendered.
         mainCard: 'hidden',
         navbar: 'border-b border-neutral-muted bg-surface-app',
@@ -97,6 +113,36 @@ const appLayout = tv({
       false: {}
     },
 
+    // `icon` shrinks to a rail, `offcanvas` hides entirely, `none` ignores
+    // `collapsed` (the Sidebar passes `collapsed: false` for it).
+    collapsible: {
+      icon: {},
+      offcanvas: {},
+      none: {}
+    },
+
+    // `end` moves the sidebar to the last column. The grid is reordered, not
+    // the DOM: main and navbar take columns 1 to 2, the aside column 2.
+    // Logical utilities flip all of this in a right-to-left document.
+    sidebarSide: {
+      start: {},
+      end: {
+        base: 'grid-cols-[minmax(0,1fr)_auto_auto]',
+        sidebar: 'col-start-3',
+        navbar: 'col-[1/-2]',
+        main: 'col-start-1',
+        mainCard: 'col-[1/-2]',
+        aside: 'col-start-2'
+      }
+    },
+
+    // Outside an `AppLayout` there is no grid and no drawer breakpoint, so the
+    // sidebar is always shown and as tall as its container.
+    standalone: {
+      true: { sidebar: 'flex h-full' },
+      false: {}
+    },
+
     // `content`: the shell fills the viewport and `main` scrolls itself.
     // `page`: the document scrolls and the sidebar sticks.
     scrollMode: {
@@ -116,6 +162,51 @@ const appLayout = tv({
     { variant: 'attached', collapsed: false, class: { sidebar: 'w-64' } },
     { variant: 'inset', collapsed: true, class: { sidebar: 'w-[4.5rem]' } },
     { variant: 'inset', collapsed: false, class: { sidebar: 'w-60' } },
+
+    // The inset sidebar floats on the frame, so it supplies its own spacing
+    // to the card (the grid has no gap).
+    {
+      variant: 'inset',
+      sidebarSide: 'start',
+      class: { sidebar: 'pe-3' }
+    },
+    {
+      variant: 'inset',
+      sidebarSide: 'end',
+      class: { sidebar: 'ps-3' }
+    },
+    // Attached: the border sits on the side facing the content.
+    {
+      variant: 'attached',
+      sidebarSide: 'end',
+      class: { sidebar: 'border-e-0 border-s' }
+    },
+
+    // Offcanvas: collapsed means gone, at every width. These come after
+    // `standalone` and the breakpoint display classes so they win.
+    {
+      collapsible: 'offcanvas',
+      collapsed: true,
+      class: { sidebar: 'hidden' }
+    },
+    {
+      collapsible: 'offcanvas',
+      collapsed: true,
+      breakpoint: 'sm',
+      class: { sidebar: 'sm:hidden' }
+    },
+    {
+      collapsible: 'offcanvas',
+      collapsed: true,
+      breakpoint: 'md',
+      class: { sidebar: 'md:hidden' }
+    },
+    {
+      collapsible: 'offcanvas',
+      collapsed: true,
+      breakpoint: 'lg',
+      class: { sidebar: 'lg:hidden' }
+    },
 
     // Main and navbar round their own corners to the card's, so content
     // scrolled inside `main` is clipped to the card's shape.
@@ -139,6 +230,9 @@ const appLayout = tv({
     navbarPlacement: 'frame',
     breakpoint: 'md',
     collapsed: false,
+    collapsible: 'icon',
+    sidebarSide: 'start',
+    standalone: false,
     scrollMode: 'content'
   }
 });

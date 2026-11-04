@@ -11,3 +11,9 @@ export {
   type PageHeaderSignature,
   type PageHeaderArgs
 } from './page-header';
+export { Sidebar, type SidebarSignature, type SidebarArgs } from './sidebar';
+export {
+  SidebarToggle,
+  type SidebarToggleSignature,
+  type SidebarToggleArgs
+} from './sidebar-toggle';

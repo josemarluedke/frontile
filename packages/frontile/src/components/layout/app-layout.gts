@@ -9,6 +9,8 @@ import { ControlledAppLayoutState, type AppLayoutContext } from './context';
 import Main from './main';
 import Navbar from './navbar';
 import PageHeader from './page-header';
+import Sidebar from './sidebar';
+import SidebarToggle from './sidebar-toggle';
 import type { AppLayoutSlots, AppLayoutVariants } from '@frontile/theme';
 import type Owner from '@ember/owner';
 import type { WithBoundArgs } from '@glint/template';
@@ -144,6 +146,8 @@ interface AppLayoutSignature {
         Main: WithBoundArgs<typeof Main, 'layout'>;
         Navbar: WithBoundArgs<typeof Navbar, 'layout'>;
         PageHeader: WithBoundArgs<typeof PageHeader, 'layout'>;
+        Sidebar: WithBoundArgs<typeof Sidebar, 'layout'>;
+        SidebarToggle: WithBoundArgs<typeof SidebarToggle, 'layout'>;
       }
     ];
   };
@@ -173,6 +177,10 @@ class AppLayout extends Component<AppLayoutSignature> {
 
   get mainId(): string {
     return `${guidFor(this)}-main`;
+  }
+
+  get sidebarId(): string {
+    return `${guidFor(this)}-sidebar`;
   }
 
   get variant(): 'inset' | 'attached' {
@@ -212,6 +220,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       navbarPlacement: this.navbarPlacement,
       breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
+      sidebarSide: this.sidebarSide,
       collapsed: this.state.sidebarCollapsed
     });
   }
@@ -221,7 +230,15 @@ class AppLayout extends Component<AppLayoutSignature> {
     return {
       state: this.state,
       mainId: this.mainId,
+      sidebarId: this.sidebarId,
       styles: this.styles,
+      config: {
+        variant: this.variant,
+        navbarPlacement: this.navbarPlacement,
+        breakpoint: this.breakpoint,
+        scrollMode: this.scrollMode,
+        sidebarSide: this.sidebarSide
+      },
       classes: this.args.classes
     };
   }
@@ -272,6 +289,8 @@ class AppLayout extends Component<AppLayoutSignature> {
           Main=(component Main layout=this.context)
           Navbar=(component Navbar layout=this.context)
           PageHeader=(component PageHeader layout=this.context)
+          Sidebar=(component Sidebar layout=this.context)
+          SidebarToggle=(component SidebarToggle layout=this.context)
         )
       }}
     </div>

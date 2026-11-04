@@ -6,13 +6,12 @@ imports:
 
 # AppLayout
 
-The application shell: a navbar and a main content area, with a sidebar and
-an aside joining them in the next release. Reach for it to give every page of
-an app the same frame.
+The application shell: a sidebar, a navbar and a main content area. Reach for
+it to give every page of an app the same frame.
 
-> Note: `Sidebar`, `SidebarToggle`, `MenuToggle`, `Aside` and `AsideToggle`
-> arrive with the next phase of `AppLayout`. The demos below use the parts
-> available today: `Navbar`, `Main` and `PageHeader`.
+> Note: `MenuToggle`, `Aside` and `AsideToggle` arrive with the next phase of
+> `AppLayout`. The demos below use the parts available today: `Sidebar`,
+> `SidebarToggle`, `Navbar`, `Main` and `PageHeader`.
 
 ## Import
 
@@ -109,6 +108,158 @@ import { array } from '@ember/helper';
     {{/each}}
   </div>
 </template>
+```
+
+## Sidebar
+
+`Sidebar` is a full-height `nav` landmark that takes the first column. It
+yields `Header`, `Body` and `Footer`. Give it a name with `@label` (default
+`Main`); if the page has more than one navigation, each needs its own.
+`SidebarToggle` is a button that collapses and expands it.
+
+By default the sidebar collapses to an icon rail. Wrap each item's text in
+`<span data-sidebar-label>` and it is visually hidden in the rail while staying
+available to screen readers, so every link keeps its name.
+
+```gts preview
+import { AppLayout } from 'frontile';
+import { ViewIcon, SettingsIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout class='demo-app-layout' as |layout|>
+      <layout.Sidebar @label='Workspace' as |sidebar|>
+        <sidebar.Header>
+          <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+        </sidebar.Header>
+        <sidebar.Body>
+          <a href='#overview' class='flex items-center gap-2 px-2 py-2 text-sm'>
+            <ViewIcon />
+            <span data-sidebar-label>Overview</span>
+          </a>
+          <a href='#settings' class='flex items-center gap-2 px-2 py-2 text-sm'>
+            <SettingsIcon />
+            <span data-sidebar-label>Settings</span>
+          </a>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.SidebarToggle />
+        <span class='text-sm font-medium'>Access management</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Overview' />
+      </layout.Main>
+    </AppLayout>
+  </div>
+</template>
+```
+
+### Collapse modes
+
+`@collapsible` sets what collapsing does. `icon`, the default, shrinks the
+sidebar to a rail. `offcanvas` hides it entirely while collapsed. `none` keeps
+it expanded and ignores collapse.
+
+```gts preview
+import { AppLayout } from 'frontile';
+import { array } from '@ember/helper';
+import { ViewIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    {{#each (array 'icon' 'offcanvas' 'none') as |mode|}}
+      <AppLayout
+        @defaultSidebarCollapsed={{true}}
+        class='demo-app-layout'
+        as |layout|
+      >
+        <layout.Sidebar @collapsible={{mode}} as |sidebar|>
+          <sidebar.Body>
+            <a href='#home' class='flex items-center gap-2 px-2 py-2 text-sm'>
+              <ViewIcon />
+              <span data-sidebar-label>Home</span>
+            </a>
+          </sidebar.Body>
+        </layout.Sidebar>
+        <layout.Navbar>
+          <layout.SidebarToggle />
+          <span class='text-sm font-medium'>collapsible: {{mode}}</span>
+        </layout.Navbar>
+        <layout.Main />
+      </AppLayout>
+    {{/each}}
+  </div>
+</template>
+```
+
+### Sidebar side
+
+`@sidebarSide="end"` on `AppLayout` moves the sidebar to the last column. The
+side is logical, so `start` is the right side in a right-to-left document. In
+the `attached` variant the sidebar's border moves to the side facing the
+content.
+
+```gts preview
+import { AppLayout } from 'frontile';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout
+      @variant='attached'
+      @sidebarSide='end'
+      class='demo-app-layout'
+      as |layout|
+    >
+      <layout.Sidebar as |sidebar|>
+        <sidebar.Body>
+          <a href='#home' class='block px-2 py-2 text-sm'>
+            <span data-sidebar-label>Home</span>
+          </a>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <span class='flex-1 text-sm font-medium'>Sidebar on the end</span>
+        <layout.SidebarToggle />
+      </layout.Navbar>
+      <layout.Main />
+    </AppLayout>
+  </div>
+</template>
+```
+
+### Using the sidebar on its own
+
+Outside an `AppLayout`, pass `@state` (and, if you want the `inset` look,
+`@variant`). The sidebar is as tall as its container. Give `SidebarToggle` the
+same `@state`, and `@controls` with the sidebar's id so `aria-controls` points
+at it.
+
+```gts preview
+import Component from '@glimmer/component';
+import { Sidebar, SidebarToggle, AppLayoutState } from 'frontile';
+
+export default class StandaloneSidebarExample extends Component {
+  state = new AppLayoutState();
+
+  <template>
+    <div class='not-prose flex h-48 gap-3'>
+      <Sidebar
+        @state={{this.state}}
+        @label='Reports'
+        id='standalone-sidebar'
+        as |sidebar|
+      >
+        <sidebar.Body>
+          <a href='#daily' class='block px-2 py-2 text-sm'>
+            <span data-sidebar-label>Daily</span>
+          </a>
+        </sidebar.Body>
+      </Sidebar>
+      <SidebarToggle @state={{this.state}} @controls='standalone-sidebar' />
+    </div>
+  </template>
+}
 ```
 
 ## Page header
@@ -257,6 +408,12 @@ export default class SharedStateExample extends Component {
   only while focused, and activating it moves focus to `Main`. Change its text
   with `@skipLinkLabel`, or remove it with `@skipLink={{false}}` if the app
   already provides one.
+- `Sidebar` renders a `nav` landmark named by `@label` (default `Main`).
+- `SidebarToggle` is a button named by `@label` (default "Toggle sidebar"). It
+  sets `aria-expanded` to `true` while the sidebar is expanded and
+  `aria-controls` to the sidebar.
+- In the icon rail, text inside `[data-sidebar-label]` is visually hidden but
+  remains in the accessibility tree, so each link keeps its name.
 - `PageHeader` renders `@title` as an `h1`.
 - The inset card is decorative and hidden from assistive technology.
 
@@ -268,6 +425,8 @@ export default class SharedStateExample extends Component {
 ## API
 
 <Signature @component="AppLayout" />
+<Signature @component="Sidebar" />
+<Signature @component="SidebarToggle" />
 <Signature @component="Navbar" />
 <Signature @component="Main" />
 <Signature @component="PageHeader" />
