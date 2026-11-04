@@ -114,15 +114,37 @@ interface StepperContext<T> {
   panelIdFor: (value: T) => string;
 }
 
+/**
+ * What `Stepper` yields. Exported so a component that receives the yielded
+ * object (`<BillingStep @stepper={{S}} />`) can type its argument.
+ */
+interface StepperApi<T> {
+  List: WithBoundArgs<typeof StepperList<T>, 'context'>;
+  Step: WithBoundArgs<typeof StepperStep<T>, 'context'>;
+
+  /** Moves to the next step that is not disabled. A no-op on the last one. */
+  next: () => void;
+
+  /** Moves to the previous step that is not disabled. A no-op on the first. */
+  prev: () => void;
+
+  /**
+   * Moves to a specific step. Unlike `next` and `prev`, it can reach a
+   * disabled step: `isDisabled` governs the user, not your code.
+   */
+  goTo: (value: T) => void;
+
+  /** Whether `next` has a step to move to. */
+  hasNext: boolean;
+
+  /** Whether `prev` has a step to move to. */
+  hasPrev: boolean;
+}
+
 interface StepperSignature<T> {
   Args: StepperArgs<T>;
   Blocks: {
-    default: [
-      {
-        List: WithBoundArgs<typeof StepperList<T>, 'context'>;
-        Step: WithBoundArgs<typeof StepperStep<T>, 'context'>;
-      }
-    ];
+    default: [StepperApi<T>];
   };
   Element: HTMLDivElement;
 }
@@ -225,6 +247,51 @@ class Stepper<T> extends Component<StepperSignature<T>> {
       : 'upcoming';
   };
 
+  /**
+   * The nearest step in `direction` that is not disabled. With no current
+   * step (nothing selected, or the selected value matches no step) `next`
+   * finds the first enabled step and `prev` finds none.
+   */
+  #neighbor(direction: 1 | -1): StepRecord<T> | undefined {
+    const steps = this.steps;
+    const selected = this.selectedValue;
+    const current = steps.findIndex((step) => step.value === selected);
+
+    for (let i = current + direction; i >= 0 && i < steps.length; i += direction) {
+      const step = steps[i];
+      if (step && !step.isDisabled) {
+        return step;
+      }
+    }
+    return undefined;
+  }
+
+  get hasNext(): boolean {
+    return this.#neighbor(1) !== undefined;
+  }
+
+  get hasPrev(): boolean {
+    return this.#neighbor(-1) !== undefined;
+  }
+
+  next = (): void => {
+    const target = this.#neighbor(1);
+    if (target) {
+      this.select(target.value);
+    }
+  };
+
+  prev = (): void => {
+    const target = this.#neighbor(-1);
+    if (target) {
+      this.select(target.value);
+    }
+  };
+
+  goTo = (value: T): void => {
+    this.select(value);
+  };
+
   select = (value: T): void => {
     this._value = value;
     this._hasSelection = true;
@@ -313,7 +380,17 @@ class Stepper<T> extends Component<StepperSignature<T>> {
         as |List Step|
       }}
         {{! @glint-ignore: WithBoundArgs vs. a generic component }}
-        {{yield (hash List=List Step=Step)}}
+        {{yield
+          (hash
+            List=List
+            Step=Step
+            next=this.next
+            prev=this.prev
+            goTo=this.goTo
+            hasNext=this.hasNext
+            hasPrev=this.hasPrev
+          )
+        }}
       {{/let}}
     </div>
   </template>
@@ -322,6 +399,7 @@ class Stepper<T> extends Component<StepperSignature<T>> {
 export {
   Stepper,
   type StepperSignature,
+  type StepperApi,
   type StepperArgs,
   type StepperContext,
   type StepRecord,

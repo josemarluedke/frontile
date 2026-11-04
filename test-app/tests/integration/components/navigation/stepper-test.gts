@@ -1,6 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, findAll } from '@ember/test-helpers';
+import { render, find, click, findAll, settled } from '@ember/test-helpers';
+import { on } from '@ember/modifier';
+import { fn } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { Stepper } from 'frontile';
 
@@ -412,5 +414,218 @@ module('Integration | Component | Stepper | step content', function (hooks) {
     );
 
     assert.dom('[data-test-step="a"] [data-part="indicator"]').hasText('X');
+  });
+});
+
+module('Integration | Component | Stepper | helpers', function (hooks) {
+  setupRenderingTest(hooks);
+
+  test('next moves to the next enabled step and fires onChange', async function (assert) {
+    const calls: string[] = [];
+    const onChange = (value: string) => calls.push(value);
+
+    await render(
+      <template>
+        <Stepper @defaultValue="a" @onChange={{onChange}} as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+          </S.List>
+          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+        </Stepper>
+      </template>
+    );
+
+    await click('[data-test-next]');
+
+    assert.dom('[data-test-step="b"]').hasAria('current', 'step');
+    assert.deepEqual(calls, ['b']);
+  });
+
+  test('prev moves back, and next and prev skip disabled steps', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" @isDisabled={{true}} data-test-step="b" />
+            <S.Step @value="c" data-test-step="c" />
+          </S.List>
+          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+          <button type="button" data-test-prev {{on "click" S.prev}}>Prev</button>
+        </Stepper>
+      </template>
+    );
+
+    await click('[data-test-next]');
+    assert.dom('[data-test-step="c"]').hasAria('current', 'step');
+
+    await click('[data-test-prev]');
+    assert.dom('[data-test-step="a"]').hasAria('current', 'step');
+  });
+
+  test('goTo can reach a disabled step', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" @isDisabled={{true}} data-test-step="b" />
+          </S.List>
+          <button type="button" data-test-go {{on "click" (fn S.goTo "b")}}>Go</button>
+        </Stepper>
+      </template>
+    );
+
+    await click('[data-test-go]');
+
+    assert.dom('[data-test-step="b"]').hasAria('current', 'step');
+  });
+
+  test('hasNext and hasPrev reflect position', async function (assert) {
+    await render(
+      <template>
+        <Stepper @defaultValue="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" />
+            <S.Step @value="b" />
+          </S.List>
+          <span data-test-has-next>{{S.hasNext}}</span>
+          <span data-test-has-prev>{{S.hasPrev}}</span>
+          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-test-has-next]').hasText('true');
+    assert.dom('[data-test-has-prev]').hasText('false');
+
+    await click('[data-test-next]');
+
+    assert.dom('[data-test-has-next]').hasText('false');
+    assert.dom('[data-test-has-prev]').hasText('true');
+  });
+
+  test('controlled: helpers only call onChange', async function (assert) {
+    const calls: string[] = [];
+    const onChange = (value: string) => calls.push(value);
+
+    await render(
+      <template>
+        <Stepper @value="a" @onChange={{onChange}} as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" data-test-step="a" />
+            <S.Step @value="b" data-test-step="b" />
+          </S.List>
+          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+        </Stepper>
+      </template>
+    );
+
+    await click('[data-test-next]');
+
+    assert.deepEqual(calls, ['b']);
+    assert.dom('[data-test-step="a"]').hasAria('current', 'step');
+  });
+
+  test('next on the last step and prev on the first do not fire onChange', async function (assert) {
+    const calls: string[] = [];
+    const onChange = (value: string) => calls.push(value);
+
+    await render(
+      <template>
+        <Stepper @defaultValue="a" @onChange={{onChange}} as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" />
+            <S.Step @value="b" />
+          </S.List>
+          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+          <button type="button" data-test-prev {{on "click" S.prev}}>Prev</button>
+        </Stepper>
+      </template>
+    );
+
+    await click('[data-test-prev]');
+    assert.deepEqual(calls, [], 'prev on the first step does nothing');
+
+    await click('[data-test-next]');
+    await click('[data-test-next]');
+    assert.deepEqual(calls, ['b'], 'next on the last step does nothing');
+  });
+
+  test('all steps disabled: no selection and next is a no-op', async function (assert) {
+    const calls: string[] = [];
+    const onChange = (value: string) => calls.push(value);
+
+    await render(
+      <template>
+        <Stepper @onChange={{onChange}} as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" @isDisabled={{true}} />
+            <S.Step @value="b" @isDisabled={{true}} />
+          </S.List>
+          <span data-test-has-next>{{S.hasNext}}</span>
+          <button type="button" data-test-next {{on "click" S.next}}>Next</button>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[aria-current]').doesNotExist();
+    assert.dom('[data-test-has-next]').hasText('false');
+
+    await click('[data-test-next]');
+
+    assert.deepEqual(calls, []);
+  });
+
+  test('adding and removing steps updates hasNext', async function (assert) {
+    const showB = cell(true);
+
+    await render(
+      <template>
+        <Stepper @defaultValue="a" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" />
+            {{#if showB.current}}
+              <S.Step @value="b" />
+            {{/if}}
+          </S.List>
+          <span data-test-has-next>{{S.hasNext}}</span>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[data-test-has-next]').hasText('true');
+
+    showB.current = false;
+    await settled();
+
+    assert.dom('[data-test-has-next]').hasText('false');
+    assert.dom('[data-part="step"]').exists({ count: 1 });
+  });
+
+  test('removing the selected step does not throw', async function (assert) {
+    const showB = cell(true);
+
+    await render(
+      <template>
+        <Stepper @value="b" as |S|>
+          <S.List @label="Checkout">
+            <S.Step @value="a" />
+            {{#if showB.current}}
+              <S.Step @value="b" />
+            {{/if}}
+          </S.List>
+        </Stepper>
+      </template>
+    );
+
+    assert.dom('[aria-current="step"]').exists();
+
+    showB.current = false;
+    await settled();
+
+    assert.dom('[aria-current]').doesNotExist();
+    assert.dom('[data-part="step"]').exists({ count: 1 });
   });
 });
