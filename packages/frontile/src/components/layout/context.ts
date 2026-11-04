@@ -29,6 +29,15 @@ export interface AppLayoutContext {
    * except that a sidebar with `@collapsible="none"` never is (tracked).
    */
   readonly sidebarCollapsed: boolean;
+  /** The aside's id, for `AsideToggle`'s `aria-controls`. */
+  asideId: string;
+  /** The aside drawer's id. */
+  asideDrawerId: string;
+  /**
+   * Whether the viewport is below `lg`, where the aside is a drawer. Fixed at
+   * `lg`, independent of `config.breakpoint` (tracked).
+   */
+  readonly belowAsideBreakpoint: boolean;
   /** Whether the layout's root is laid out right to left. */
   isRtl(): boolean;
   /**
