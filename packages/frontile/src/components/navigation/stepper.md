@@ -234,7 +234,7 @@ still disabled calls `goTo`, or sets `@value` itself as below. `goTo` can reach
 a disabled step because `@isDisabled` governs what people do, not what your
 code does.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Stepper, Button } from 'frontile';
@@ -308,7 +308,7 @@ and behaves unavailable (styled, skipped by arrow keys, ignored on click), and
 keep the `@onChange` check as the guard for anything that moves the step
 without going through the step itself.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
