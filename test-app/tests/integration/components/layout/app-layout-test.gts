@@ -10,6 +10,7 @@ import {
 import { cell } from 'ember-resources';
 import { on } from '@ember/modifier';
 import { AppLayout, AppLayoutState } from 'frontile';
+import { mockMatchMedia } from 'test-app/tests/helpers/match-media';
 
 // The navbar sits inside the card when its box lies within the card's box.
 function isWithin(inner: Element, outer: Element): boolean {
@@ -254,6 +255,57 @@ module(
       assert
         .dom('[data-component="app-layout"]')
         .hasAttribute('data-scroll-mode', 'page');
+    });
+
+    test('inset scrollMode=page does not overflow the viewport by the gutter', async function (assert) {
+      const media = mockMatchMedia(1200);
+      try {
+        await render(
+          <template>
+            <AppLayout @scrollMode="page" as |layout|>
+              <layout.Sidebar />
+              <layout.Main>Short</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const root = find('[data-component="app-layout"]') as HTMLElement;
+        const sidebar = find('[data-part="sidebar"]') as HTMLElement;
+        const viewport = window.innerHeight;
+        assert.true(
+          root.offsetHeight <= viewport + 1,
+          `the layout (${root.offsetHeight}px) is no taller than the viewport (${viewport}px)`
+        );
+        assert.true(
+          Math.abs(root.offsetHeight - sidebar.offsetHeight - 24) <= 1,
+          'the sticky sidebar fills the frame inside the gutter'
+        );
+      } finally {
+        media.restore();
+      }
+    });
+
+    test('the skip link sits at the start edge, also right to left', async function (assert) {
+      await render(
+        <template>
+          <div dir="rtl">
+            <AppLayout as |layout|>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </div>
+        </template>
+      );
+
+      const link = find('[data-part="skip-link"]') as HTMLElement;
+      link.focus();
+      const root = find(
+        '[data-component="app-layout"]'
+      )!.getBoundingClientRect();
+      const rect = link.getBoundingClientRect();
+      assert.true(
+        root.right - rect.right < rect.left - root.left,
+        'the focused link is nearer the right (start) edge'
+      );
     });
 
     test('uncontrolled: seeds from @defaultAsideOpen and toggles itself', async function (assert) {

@@ -77,8 +77,10 @@ interface AppLayoutArgs {
    * collapses or expands the sidebar on desktop and opens or closes the
    * drawer below `@breakpoint`. `mod` is Cmd on Apple platforms and Ctrl
    * elsewhere; `ctrl`, `meta`, `alt` and `shift` can be combined with a key,
-   * joined by `+`. It only fires when focus is inside this layout (or on
-   * the page body), so two layouts on a page do not both toggle.
+   * joined by `+`. It fires when focus is inside this layout or its drawer,
+   * or on the page body; with focus on the body every layout on the page
+   * toggles. It is left alone in editable content (`contenteditable`) and
+   * ignored while the keys are held down.
    *
    * @defaultValue 'mod+b'
    */
@@ -246,8 +248,18 @@ class AppLayout extends Component<AppLayoutSignature> {
   /** The aside is a drawer below `lg`, whatever `@breakpoint` is. */
   @cached
   get asideWatcher(): BreakpointWatcher {
-    return replaceWatcher(asideWatchers, this, 'lg', () => {});
+    return replaceWatcher(asideWatchers, this, 'lg', this.closeAsideWhenNarrow);
   }
+
+  /**
+   * An aside open beside `Main` closes when the viewport narrows below `lg`,
+   * rather than reappearing as a modal drawer the user did not ask for.
+   */
+  closeAsideWhenNarrow = (below: boolean): void => {
+    if (below && this.state.asideOpen) {
+      this.state.asideOpen = false;
+    }
+  };
 
   get belowAsideBreakpoint(): boolean {
     return this.asideWatcher.below;
@@ -303,6 +315,14 @@ class AppLayout extends Component<AppLayoutSignature> {
   }
 
   handleShortcut = (event: KeyboardEvent): void => {
+    // A held key repeats keydown; toggling on each would flicker. In
+    // editable content the browser's own mod+b (bold) wins.
+    if (
+      event.repeat ||
+      (event.target as HTMLElement | null)?.isContentEditable
+    ) {
+      return;
+    }
     const shortcut = this.shortcut;
     if (
       shortcut === false ||
@@ -450,7 +470,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       data-scroll-mode={{this.scrollMode}}
       data-breakpoint={{this.breakpoint}}
       data-sidebar-side={{this.sidebarSide}}
-      data-sidebar-collapsed={{boolString this.state.sidebarCollapsed}}
+      data-sidebar-collapsed={{boolString this.effectiveSidebarCollapsed}}
       data-mobile-sidebar-open={{boolString this.state.mobileSidebarOpen}}
       data-aside-open={{boolString this.state.asideOpen}}
       class={{this.styles.base class=@classes.base}}
@@ -517,15 +537,23 @@ class BreakpointWatcher {
 const watchers = new WeakMap<object, BreakpointWatcher>();
 const asideWatchers = new WeakMap<object, BreakpointWatcher>();
 
-/** Stops `owner`'s current watcher, if any, and starts one for `breakpoint`. */
+/**
+ * Stops `owner`'s current watcher, if any, and starts one for `breakpoint`.
+ * Once `owner` is being torn down it returns a watcher that is not listening
+ * and not registered, so a late read cannot leak a listener.
+ */
 function replaceWatcher(
   registry: WeakMap<object, BreakpointWatcher>,
-  owner: object,
+  owner: Component<AppLayoutSignature>,
   breakpoint: Breakpoint,
   onChange: (below: boolean) => void
 ): BreakpointWatcher {
   stopWatcher(registry, owner);
   const watcher = new BreakpointWatcher(breakpoint, onChange);
+  if (owner.isDestroying) {
+    watcher.stop();
+    return watcher;
+  }
   registry.set(owner, watcher);
   return watcher;
 }
@@ -549,11 +577,21 @@ function isApplePlatform(): boolean {
 /**
  * Whether `event` is exactly `shortcut`, e.g. `mod+b` or `ctrl+shift+k`:
  * the named modifiers held, no others, and the key (case-insensitive).
+ * Option on macOS turns a letter into another character (`alt+b` types
+ * `∫`), so with `alt` held a letter also matches by its physical key.
  */
 function matchesShortcut(event: KeyboardEvent, shortcut: string): boolean {
   const parts = shortcut.toLowerCase().split('+');
   const key = parts.pop();
-  if (!key || event.key?.toLowerCase() !== key) {
+  if (!key) {
+    return false;
+  }
+  const byKey = event.key?.toLowerCase() === key;
+  const byCode =
+    event.altKey &&
+    /^[a-z]$/.test(key) &&
+    event.code === `Key${key.toUpperCase()}`;
+  if (!byKey && !byCode) {
     return false;
   }
   const apple = isApplePlatform();

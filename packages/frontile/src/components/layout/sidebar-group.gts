@@ -1,5 +1,7 @@
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
+import { useStyles } from '@frontile/theme';
 
 /** Class names `Sidebar` hands each group. */
 export interface SidebarGroupClasses {
@@ -18,11 +20,12 @@ interface SidebarGroupArgs {
   class?: string;
 
   /**
-   * Supplied by `Sidebar`. Not part of the public API.
+   * Supplied by `Sidebar`. Not part of the public API. Without it (a group
+   * rendered on its own) the standalone sidebar's classes are used.
    *
    * @internal
    */
-  classes: SidebarGroupClasses;
+  classes?: SidebarGroupClasses;
 }
 
 interface SidebarGroupSignature {
@@ -40,10 +43,25 @@ interface SidebarGroupSignature {
 class SidebarGroup extends Component<SidebarGroupSignature> {
   labelId = `${guidFor(this)}-label`;
 
+  @cached
+  get classes(): SidebarGroupClasses {
+    if (this.args.classes) {
+      return this.args.classes;
+    }
+    const styles = useStyles().appLayout({
+      variant: 'attached',
+      standalone: true
+    });
+    return {
+      sidebarGroup: styles.sidebarGroup(),
+      sidebarGroupLabel: styles.sidebarGroupLabel()
+    };
+  }
+
   get className(): string {
     return this.args.class
-      ? `${this.args.classes.sidebarGroup} ${this.args.class}`
-      : this.args.classes.sidebarGroup;
+      ? `${this.classes.sidebarGroup} ${this.args.class}`
+      : this.classes.sidebarGroup;
   }
 
   <template>
@@ -58,7 +76,7 @@ class SidebarGroup extends Component<SidebarGroupSignature> {
         id={{this.labelId}}
         data-part="sidebar-group-label"
         data-sidebar-label
-        class={{@classes.sidebarGroupLabel}}
+        class={{this.classes.sidebarGroupLabel}}
       >{{@label}}</div>
       {{yield}}
     </div>

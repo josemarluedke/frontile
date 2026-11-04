@@ -11,7 +11,9 @@ export interface AppLayoutStateInitial {
  * sidebar drawer, and the secondary aside.
  *
  * The methods are arrow functions so they can be handed to templates
- * directly, e.g. `{{on "click" state.toggleAside}}`.
+ * directly, e.g. `{{on "click" state.toggleAside}}`. Being bound arrow
+ * fields, not prototype methods, a subclass must override one with an arrow
+ * field too (a method of the same name is shadowed by the field).
  */
 export class AppLayoutState {
   /** Whether the desktop sidebar is collapsed to its narrow rail. */

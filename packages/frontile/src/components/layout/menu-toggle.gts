@@ -42,9 +42,10 @@ interface MenuToggleSignature {
 
 /**
  * The mobile menu button: opens the sidebar drawer. It is shown only below
- * the layout's `@breakpoint`, so it can sit in the navbar (top-left, by
- * convention) next to a `SidebarToggle` without the two ever showing at once.
- * Closing the drawer returns focus to it.
+ * the layout's `@breakpoint`, typically at the top-left of the navbar. A
+ * `SidebarToggle` also opens the drawer below the breakpoint, so a layout can
+ * use either one there; with both in the navbar, both show on narrow
+ * screens. Closing the drawer returns focus to the button that opened it.
  */
 class MenuToggle extends Component<MenuToggleSignature> {
   fallbackState = new AppLayoutState();

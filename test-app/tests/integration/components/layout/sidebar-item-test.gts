@@ -1,7 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, triggerEvent, click } from '@ember/test-helpers';
-import { AppLayout, Sidebar, AppLayoutState } from 'frontile';
+import {
+  AppLayout,
+  Sidebar,
+  SidebarGroup,
+  SidebarItem,
+  AppLayoutState
+} from 'frontile';
 import type { TOC } from '@ember/component/template-only';
 
 const TestIcon: TOC<{ Element: SVGSVGElement }> = <template>
@@ -268,6 +274,23 @@ module(
       assert
         .dom('[role="tooltip"]')
         .doesNotExist('no tooltip while the sidebar is expanded');
+    });
+
+    test('SidebarItem and SidebarGroup render on their own, outside a Sidebar', async function (assert) {
+      await render(
+        <template>
+          <SidebarGroup @label="Reports">
+            <SidebarItem @href="/daily" @isActive={{true}}>Daily</SidebarItem>
+          </SidebarGroup>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="sidebar-group"] a[href="/daily"]')
+        .hasAttribute('aria-current', 'page');
+      assert.dom('[data-part="sidebar-group"]').hasAttribute('class');
+      assert.dom('[data-part="sidebar-item"]').hasAttribute('class');
+      assert.dom('[data-part="sidebar-group-label"]').hasText('Reports');
     });
 
     test('Item and Group work in a standalone Sidebar', async function (assert) {
