@@ -1,6 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, settled } from '@ember/test-helpers';
+import {
+  render,
+  find,
+  click,
+  settled,
+  triggerKeyEvent
+} from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { on } from '@ember/modifier';
 import { AppLayout, AppLayoutState } from 'frontile';
@@ -164,6 +170,54 @@ module(
 
       await click(focusable!);
       assert.dom(main).isFocused('activating the skip link focuses main');
+    });
+
+    test('Enter on the skip link focuses main', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const link = find('[data-part="skip-link"]') as HTMLElement;
+      link.focus();
+      await triggerKeyEvent(link, 'keydown', 'Enter');
+      assert.dom('main').isFocused();
+    });
+
+    test('two layouts on one page are independent', async function (assert) {
+      await render(
+        <template>
+          <AppLayout id="one" as |layout|>
+            <layout.Sidebar />
+            <layout.Navbar><layout.SidebarToggle /></layout.Navbar>
+            <layout.Main>One</layout.Main>
+          </AppLayout>
+          <AppLayout id="two" as |layout|>
+            <layout.Sidebar />
+            <layout.Navbar><layout.SidebarToggle /></layout.Navbar>
+            <layout.Main>Two</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const mainOne = find('#one main')!;
+      const mainTwo = find('#two main')!;
+      assert.notStrictEqual(mainOne.id, mainTwo.id, 'main ids differ');
+      assert.notStrictEqual(
+        find('#one nav')!.id,
+        find('#two nav')!.id,
+        'sidebar ids differ'
+      );
+
+      await click('#one [data-part="sidebar-toggle"]');
+      assert.dom('#one').hasAttribute('data-sidebar-collapsed', 'true');
+      assert.dom('#two').hasAttribute('data-sidebar-collapsed', 'false');
+      assert
+        .dom('#two [data-part="sidebar-toggle"]')
+        .hasAria('expanded', 'true');
     });
 
     test('@skipLink={{false}} removes the skip link', async function (assert) {

@@ -14,10 +14,32 @@ export interface AppLayoutContext {
   state: AppLayoutState;
   mainId: string;
   sidebarId: string;
+  /** The `MenuToggle`'s id, so the drawer can return focus to it. */
+  menuToggleId: string;
+  /** The mobile drawer's id, so the shortcut can tell it belongs here. */
+  drawerId: string;
   styles: AppLayoutStyles;
   /** The variant props the layout's `styles` were built from. */
   config: AppLayoutConfig;
   classes?: SlotsToClasses<AppLayoutSlots>;
+  /** Whether the viewport is below `config.breakpoint` (tracked). */
+  readonly belowBreakpoint: boolean;
+  /**
+   * Whether the sidebar is collapsed as drawn: `state.sidebarCollapsed`,
+   * except that a sidebar with `@collapsible="none"` never is (tracked).
+   */
+  readonly sidebarCollapsed: boolean;
+  /** Whether the layout's root is laid out right to left. */
+  isRtl(): boolean;
+  /**
+   * Called by `Sidebar` so the layout can report its effective collapse.
+   * Returns the matching unregister function.
+   */
+  registerSidebar(sidebar: RegisteredSidebar): () => void;
+}
+
+export interface RegisteredSidebar {
+  readonly collapsed: boolean;
 }
 
 export interface AppLayoutConfig {

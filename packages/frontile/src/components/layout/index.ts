@@ -5,6 +5,11 @@ export {
   type AppLayoutArgs
 } from './app-layout';
 export { Main, type MainSignature, type MainArgs } from './main';
+export {
+  MenuToggle,
+  type MenuToggleSignature,
+  type MenuToggleArgs
+} from './menu-toggle';
 export { Navbar, type NavbarSignature, type NavbarArgs } from './navbar';
 export {
   PageHeader,

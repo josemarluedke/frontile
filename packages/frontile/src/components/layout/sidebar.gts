@@ -1,10 +1,13 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
+import { registerDestructor } from '@ember/destroyable';
 import { guidFor } from '@ember/object/internals';
 import { useStyles } from '@frontile/theme';
+import Drawer from '../overlays/drawer';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
+import type Owner from '@ember/owner';
 import type { AppLayoutVariants } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 import type { TOC } from '@ember/component/template-only';
@@ -77,11 +80,55 @@ interface SidebarSignature {
 /**
  * The sidebar navigation: a full-height `nav` landmark that can collapse to
  * an icon rail. Inside `AppLayout` it takes the first (or, with
- * `@sidebarSide="end"`, the last) column. It also works on its own when given
- * `@state`.
+ * `@sidebarSide="end"`, the last) column. Below the layout's `@breakpoint`
+ * the same block renders inside a `Drawer` instead, opened by `MenuToggle`,
+ * so the sidebar is written once. It also works on its own when given
+ * `@state` (always inline; no drawer).
  */
 class Sidebar extends Component<SidebarSignature> {
   fallbackState = new AppLayoutState();
+
+  constructor(owner: Owner, args: SidebarArgs) {
+    super(owner, args);
+    const unregister = args.layout?.registerSidebar(this);
+    if (unregister) {
+      registerDestructor(this, unregister);
+    }
+  }
+
+  /**
+   * Below the breakpoint the content moves into the drawer. Only one of the
+   * two is rendered, so the block (and any ids in it) exists once.
+   */
+  get inDrawer(): boolean {
+    return this.args.layout?.belowBreakpoint ?? false;
+  }
+
+  /**
+   * `Drawer` placements are physical, so `start` is resolved against the
+   * layout's direction: left in a left-to-right document, right in RTL.
+   */
+  get placement(): 'left' | 'right' {
+    const layout = this.args.layout;
+    const atEnd = layout?.config.sidebarSide === 'end';
+    const rtl = layout?.isRtl() ?? false;
+    return atEnd !== rtl ? 'right' : 'left';
+  }
+
+  closeDrawer = (): void => {
+    this.state.closeMobileSidebar();
+  };
+
+  /** Return focus to the layout's `MenuToggle` when it is on screen. */
+  get focusTrapOptions() {
+    const toggleId = this.args.layout?.menuToggleId;
+    return {
+      setReturnFocus: (previous: HTMLElement | SVGElement) => {
+        const toggle = toggleId ? document.getElementById(toggleId) : null;
+        return toggle && toggle.getClientRects().length > 0 ? toggle : previous;
+      }
+    };
+  }
 
   get state(): AppLayoutState {
     return this.args.layout?.state ?? this.args.state ?? this.fallbackState;
@@ -124,6 +171,13 @@ class Sidebar extends Component<SidebarSignature> {
     return this.styles.sidebar({ class: this.args.layout?.classes?.sidebar });
   }
 
+  @cached
+  get mobileClassNames(): string {
+    return this.styles.mobileSidebar({
+      class: this.args.layout?.classes?.mobileSidebar
+    });
+  }
+
   get slotClasses() {
     const custom = this.args.layout?.classes;
     return {
@@ -134,23 +188,54 @@ class Sidebar extends Component<SidebarSignature> {
   }
 
   <template>
-    <nav
-      id={{this.id}}
-      aria-label={{this.label}}
-      data-part="sidebar"
-      data-collapsible={{this.collapsible}}
-      data-collapsed={{if this.collapsed "true" "false"}}
-      class={{this.classNames}}
-      ...attributes
-    >
-      {{yield
-        (hash
-          Header=(component SidebarHeader class=this.slotClasses.header)
-          Body=(component SidebarBody class=this.slotClasses.body)
-          Footer=(component SidebarFooter class=this.slotClasses.footer)
-        )
-      }}
-    </nav>
+    {{#if this.inDrawer}}
+      <Drawer
+        @isOpen={{this.state.mobileSidebarOpen}}
+        @onClose={{this.closeDrawer}}
+        @placement={{this.placement}}
+        @size="xs"
+        @variant="flat"
+        @focusTrapOptions={{this.focusTrapOptions}}
+        id={{@layout.drawerId}}
+        aria-label={{this.label}}
+      >
+        <nav
+          id={{this.id}}
+          aria-label={{this.label}}
+          data-part="mobile-sidebar"
+          data-collapsible={{this.collapsible}}
+          data-collapsed="false"
+          class={{this.mobileClassNames}}
+          ...attributes
+        >
+          {{yield
+            (hash
+              Header=(component SidebarHeader class=this.slotClasses.header)
+              Body=(component SidebarBody class=this.slotClasses.body)
+              Footer=(component SidebarFooter class=this.slotClasses.footer)
+            )
+          }}
+        </nav>
+      </Drawer>
+    {{else}}
+      <nav
+        id={{this.id}}
+        aria-label={{this.label}}
+        data-part="sidebar"
+        data-collapsible={{this.collapsible}}
+        data-collapsed={{if this.collapsed "true" "false"}}
+        class={{this.classNames}}
+        ...attributes
+      >
+        {{yield
+          (hash
+            Header=(component SidebarHeader class=this.slotClasses.header)
+            Body=(component SidebarBody class=this.slotClasses.body)
+            Footer=(component SidebarFooter class=this.slotClasses.footer)
+          )
+        }}
+      </nav>
+    {{/if}}
   </template>
 }
 

@@ -9,9 +9,9 @@ imports:
 The application shell: a sidebar, a navbar and a main content area. Reach for
 it to give every page of an app the same frame.
 
-> Note: `MenuToggle`, `Aside` and `AsideToggle` arrive with the next phase of
-> `AppLayout`. The demos below use the parts available today: `Sidebar`,
-> `SidebarToggle`, `Navbar`, `Main` and `PageHeader`.
+> Note: `Aside` and `AsideToggle` arrive with the next phase of `AppLayout`.
+> The demos below use the parts available today: `Sidebar`, `SidebarToggle`,
+> `MenuToggle`, `Navbar`, `Main` and `PageHeader`.
 
 ## Import
 
@@ -118,8 +118,9 @@ yields `Header`, `Body` and `Footer`. Give it a name with `@label` (default
 `SidebarToggle` is a button that collapses and expands it.
 
 By default the sidebar collapses to an icon rail. Wrap each item's text in
-`<span data-sidebar-label>` and it is visually hidden in the rail while staying
-available to screen readers, so every link keeps its name.
+`<span data-sidebar-label>`, in the header, body or footer, and it is visually
+hidden in the rail while staying available to screen readers, so every link
+keeps its name.
 
 ```gts preview
 import { AppLayout } from 'frontile';
@@ -227,6 +228,65 @@ import { AppLayout } from 'frontile';
   </div>
 </template>
 ```
+
+### Mobile
+
+Below `@breakpoint` (`sm` 40rem, `md` 48rem by default, `lg` 64rem) the sidebar
+leaves the grid and opens as a drawer instead. Put a `MenuToggle` in the
+navbar, top-left by convention, to open it. `MenuToggle` shows only below the
+breakpoint, so it can sit beside a `SidebarToggle`, which collapses the sidebar
+on wider screens.
+
+The drawer shows the same `Sidebar` block, so you write the sidebar once. It
+slides in from the sidebar's side (`@sidebarSide`, following the document's
+direction), always expanded. It closes on Escape, on a click outside it, from
+its close button, or when the window grows past the breakpoint.
+
+Narrow the window to below 48rem to open this one.
+
+```gts preview
+import { AppLayout } from 'frontile';
+import { ViewIcon, SettingsIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout class='demo-app-layout' as |layout|>
+      <layout.Sidebar @label='Workspace' as |sidebar|>
+        <sidebar.Header>
+          <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+        </sidebar.Header>
+        <sidebar.Body>
+          <a href='#overview' class='flex items-center gap-2 px-2 py-2 text-sm'>
+            <ViewIcon />
+            <span data-sidebar-label>Overview</span>
+          </a>
+          <a href='#settings' class='flex items-center gap-2 px-2 py-2 text-sm'>
+            <SettingsIcon />
+            <span data-sidebar-label>Settings</span>
+          </a>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.MenuToggle />
+        <layout.SidebarToggle />
+        <span class='text-sm font-medium'>Access management</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Overview' />
+      </layout.Main>
+    </AppLayout>
+  </div>
+</template>
+```
+
+### Keyboard shortcut
+
+<kbd>Cmd</kbd>+<kbd>B</kbd> (<kbd>Ctrl</kbd>+<kbd>B</kbd> outside Apple
+platforms) toggles the sidebar: it collapses or expands it on wide screens and
+opens or closes the drawer below the breakpoint. It responds only while focus
+is inside the layout or on the page itself, so a second layout on the page is
+left alone. Pick another combination with `@toggleShortcut`, such as
+`'mod+shift+s'`, or turn it off with `@toggleShortcut={{false}}`.
 
 ### Using the sidebar on its own
 
@@ -410,23 +470,31 @@ export default class SharedStateExample extends Component {
   already provides one.
 - `Sidebar` renders a `nav` landmark named by `@label` (default `Main`).
 - `SidebarToggle` is a button named by `@label` (default "Toggle sidebar"). It
-  sets `aria-expanded` to `true` while the sidebar is expanded and
-  `aria-controls` to the sidebar.
+  sets `aria-expanded` to `true` while the sidebar is expanded (always, with
+  `@collapsible="none"`) and `aria-controls` to the sidebar.
+- `MenuToggle` is a button named by `@label` (default "Open menu"). It sets
+  `aria-expanded` to `true` while the drawer is open and `aria-controls` to the
+  sidebar.
+- The drawer is a modal dialog named by the sidebar's `@label`. Focus stays
+  inside it while it is open, and closing it returns focus to `MenuToggle`.
 - In the icon rail, text inside `[data-sidebar-label]` is visually hidden but
   remains in the accessibility tree, so each link keeps its name.
 - `PageHeader` renders `@title` as an `h1`.
 - The inset card is decorative and hidden from assistive technology.
 
-| Key     | Action                                                    |
-| ------- | --------------------------------------------------------- |
-| `Tab`   | From the top of the page, reveals and focuses the skip link |
-| `Enter` | On the skip link, moves focus to the main content          |
+| Key              | Action                                                              |
+| ---------------- | ------------------------------------------------------------------- |
+| `Tab`            | From the top of the page, reveals and focuses the skip link         |
+| `Enter`          | On the skip link, moves focus to the main content                   |
+| `Cmd/Ctrl` + `B` | Collapses or expands the sidebar; below the breakpoint, opens or closes the drawer |
+| `Escape`         | Closes the drawer                                                   |
 
 ## API
 
 <Signature @component="AppLayout" />
 <Signature @component="Sidebar" />
 <Signature @component="SidebarToggle" />
+<Signature @component="MenuToggle" />
 <Signature @component="Navbar" />
 <Signature @component="Main" />
 <Signature @component="PageHeader" />

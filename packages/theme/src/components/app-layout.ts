@@ -23,24 +23,32 @@ const appLayout = tv({
 
     // `group/sidebar` plus `data-collapsed` on the element lets any descendant
     // react to the icon rail with `group-data-[collapsed=true]/sidebar:`.
+    // Labels written as `<span data-sidebar-label>`, anywhere in the sidebar
+    // (header, body or footer), are visually hidden in the icon rail but stay
+    // in the accessibility tree (`sr-only`, never `display: none`).
     sidebar: [
       'group/sidebar col-start-1 row-[1/-1] shrink-0 flex-col',
+      'data-[collapsed=true]:[&_[data-sidebar-label]]:sr-only',
       'transition-[width] duration-200',
       'motion-reduce:transition-none'
     ],
+    // The sidebar's `nav` inside the mobile drawer: always expanded, as tall
+    // as the drawer.
+    mobileSidebar: 'group/sidebar flex min-h-0 flex-1 flex-col',
     sidebarHeader: 'flex h-12 shrink-0 items-center gap-2 px-3',
-    // Labels written as `<span data-sidebar-label>` are visually hidden in the
-    // icon rail but stay in the accessibility tree (`sr-only`, never
-    // `display: none`).
-    sidebarBody: [
-      'min-h-0 flex-1 overflow-y-auto px-2',
-      'group-data-[collapsed=true]/sidebar:[&_[data-sidebar-label]]:sr-only'
-    ],
+    sidebarBody: 'min-h-0 flex-1 overflow-y-auto px-2',
     sidebarFooter: 'shrink-0 px-2 py-2',
     // For `Sidebar.Item`'s own label element: the same rail behavior as the
     // `data-sidebar-label` pattern, as a slot class.
     sidebarLabel: 'truncate group-data-[collapsed=true]/sidebar:sr-only',
     sidebarToggle: [
+      ...focusVisibleRing,
+      'inline-flex size-9 shrink-0 items-center justify-center rounded-md',
+      'text-neutral-firm hover:bg-neutral-subtle hover:text-neutral-strong'
+    ],
+
+    // Opens the mobile drawer. Hidden from `breakpoint` up (see below).
+    menuToggle: [
       ...focusVisibleRing,
       'inline-flex size-9 shrink-0 items-center justify-center rounded-md',
       'text-neutral-firm hover:bg-neutral-subtle hover:text-neutral-strong'
@@ -103,9 +111,9 @@ const appLayout = tv({
     // Literal strings per breakpoint: Tailwind generates nothing from an
     // interpolated class.
     breakpoint: {
-      sm: { sidebar: 'hidden sm:flex' },
-      md: { sidebar: 'hidden md:flex' },
-      lg: { sidebar: 'hidden lg:flex' }
+      sm: { sidebar: 'hidden sm:flex', menuToggle: 'sm:hidden' },
+      md: { sidebar: 'hidden md:flex', menuToggle: 'md:hidden' },
+      lg: { sidebar: 'hidden lg:flex', menuToggle: 'lg:hidden' }
     },
 
     collapsed: {
