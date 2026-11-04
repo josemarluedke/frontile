@@ -33,6 +33,7 @@ export default {
       'status.js',
       'utilities.js',
       'navigation.js',
+      'layout.js',
       'disclosure.js',
       'test-support.js'
     ]),

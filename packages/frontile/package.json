@@ -46,6 +46,10 @@
       "types": "./declarations/navigation.d.ts",
       "default": "./dist/navigation.js"
     },
+    "./layout": {
+      "types": "./declarations/layout.d.ts",
+      "default": "./dist/layout.js"
+    },
     "./disclosure": {
       "types": "./declarations/disclosure.d.ts",
       "default": "./dist/disclosure.js"
