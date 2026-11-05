@@ -35,6 +35,10 @@ const navItem = tv({
     navFolderTrigger: navItemRow,
     navFolderChevron: [
       'ms-auto size-4 shrink-0 transition-transform data-[open=true]:rotate-90 motion-reduce:transition-none',
+      // Mirrored right to left, so it points toward the inline end. CSS
+      // applies `scale` before `rotate`, so the open state turns the other
+      // way there to still point down.
+      'rtl:-scale-x-100 rtl:data-[open=true]:-rotate-90',
       'group-data-[collapsed=true]/sidebar:hidden'
     ],
     navFolderPanel:
@@ -44,7 +48,8 @@ const navItem = tv({
     // `--sidebar-rail` is reset so the rows' rail-centering start padding
     // (see `navItemRow`) works out to the same 0.5rem as their end padding.
     navFolderFlyout: [
-      'z-50 flex min-w-48 flex-col gap-0.5 p-1 [--sidebar-rail:3.25rem]',
+      // Bounded, so long labels truncate instead of widening it.
+      'z-50 flex min-w-48 max-w-xs flex-col gap-0.5 p-1 [--sidebar-rail:3.25rem]',
       'rounded-xl border border-neutral-subtle bg-surface-input shadow-elevation-3'
     ],
     // The folder's name at the top of its flyout, where the rail trigger

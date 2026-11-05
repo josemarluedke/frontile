@@ -447,8 +447,59 @@ module(
       assert.dom(ROOT).hasClass('flex', 'other theme classes stay');
       assert.strictEqual(getComputedStyle(find(ROOT)!).flexDirection, 'row');
     });
+
+    test('the chevron points along the reading direction, and down when open', async function (assert) {
+      class Dir {
+        @tracked dir: 'ltr' | 'rtl' = 'ltr';
+      }
+      const state = new Dir();
+      await render(
+        <template>
+          <div dir={{state.dir}}>
+            <NavFolder @label="Reports" as |folder|>
+              <folder.Item @href="/a">A</folder.Item>
+            </NavFolder>
+          </div>
+        </template>
+      );
+
+      const chevron = `${TRIGGER} [data-part="nav-folder-chevron"]`;
+      assert.strictEqual(await pointing(chevron), 'right', 'ltr closed');
+      await click(TRIGGER);
+      assert.strictEqual(await pointing(chevron), 'down', 'ltr open');
+
+      state.dir = 'rtl';
+      await settled();
+      assert.strictEqual(await pointing(chevron), 'down', 'rtl open');
+      await click(TRIGGER);
+      assert.strictEqual(await pointing(chevron), 'left', 'rtl closed');
+    });
   }
 );
+
+/**
+ * Where a right-pointing chevron icon points once its computed `scale` and
+ * `rotate` apply (CSS applies scale first, then rotate). Waits for any
+ * transition to finish first.
+ */
+async function pointing(
+  selector: string
+): Promise<'right' | 'down' | 'left' | 'up'> {
+  const el = find(selector) as SVGElement;
+  await Promise.all(el.getAnimations().map((a) => a.finished));
+  const style = getComputedStyle(el);
+  const [sx = 1, sy = sx] =
+    style.scale === 'none' ? [] : style.scale.split(' ').map(Number);
+  const angle = style.rotate === 'none' ? 0 : parseFloat(style.rotate);
+  const tip = new DOMMatrix()
+    .rotate(angle)
+    .scale(sx, sy)
+    .transformPoint(new DOMPoint(1, 0));
+  if (Math.abs(tip.x) > Math.abs(tip.y)) {
+    return tip.x > 0 ? 'right' : 'left';
+  }
+  return tip.y > 0 ? 'down' : 'up';
+}
 
 /** The panel shows no sign of having animated: as if it had started open. */
 function assertStartedOpen(assert: Assert, panel: HTMLElement): void {
@@ -1079,6 +1130,47 @@ module(
       await triggerEvent(item, 'mouseenter');
       await focus(item);
       assert.dom('[role="tooltip"]').doesNotExist('no rail tooltip');
+    });
+
+    test('long labels truncate in a flyout of bounded width', async function (assert) {
+      const long =
+        'A remarkably long report name that would otherwise stretch '.repeat(4);
+      await render(
+        <template>
+          <AppLayout @defaultSidebarCollapsed={{true}} as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>
+                <sidebar.Folder @label={{long}} @icon={{TestIcon}} as |folder|>
+                  <folder.Item @href="#a" id="child-a">{{long}}</folder.Item>
+                </sidebar.Folder>
+              </sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      await click(TRIGGER);
+      const flyout = find(FLYOUT)!;
+      assert.true(
+        flyout.getBoundingClientRect().width <= 320,
+        `the flyout is at most 20rem wide (${flyout.getBoundingClientRect().width}px)`
+      );
+      for (const selector of [
+        '#child-a [data-part="nav-item-label"]',
+        `${FLYOUT} [data-part="nav-folder-flyout-label"]`
+      ]) {
+        const label = find(selector)!;
+        assert.true(
+          label.scrollWidth > label.clientWidth,
+          `${selector} is cut off with an ellipsis`
+        );
+        assert.true(
+          label.getBoundingClientRect().right <=
+            flyout.getBoundingClientRect().right,
+          `${selector} stays inside the flyout`
+        );
+      }
     });
 
     test('the collapsed trigger shows only its icon, centered like other rail items', async function (assert) {
