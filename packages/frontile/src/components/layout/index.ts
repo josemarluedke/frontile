@@ -16,6 +16,7 @@ export {
   type MenuToggleSignature,
   type MenuToggleArgs
 } from './menu-toggle';
+export { NavLink, type NavLinkSignature, type NavLinkArgs } from './nav-link';
 export { Navbar, type NavbarSignature, type NavbarArgs } from './navbar';
 export {
   PageHeader,
