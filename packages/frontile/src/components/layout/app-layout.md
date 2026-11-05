@@ -101,6 +101,7 @@ background above the card. `content` makes it the card's first row.
 ```gts preview
 import { AppLayout } from 'frontile';
 import { array } from '@ember/helper';
+import { ViewIcon, SettingsIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
@@ -110,8 +111,21 @@ import { array } from '@ember/helper';
         class='demo-app-layout'
         as |layout|
       >
+        <layout.Sidebar @label={{placement}} as |sidebar|>
+          <sidebar.Header>
+            <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+          </sidebar.Header>
+          <sidebar.Body>
+            <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+              Overview
+            </sidebar.Item>
+            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+              Settings
+            </sidebar.Item>
+          </sidebar.Body>
+        </layout.Sidebar>
         <layout.Navbar>
-          <span class='text-sm font-medium'>navbarPlacement: {{placement}}</span>
+          <span class='text-sm font-medium'>{{placement}}</span>
         </layout.Navbar>
         <layout.Main>
           <layout.PageHeader @title='Settings' />
