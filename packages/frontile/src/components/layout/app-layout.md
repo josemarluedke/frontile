@@ -57,7 +57,7 @@ and the navbar gets a border underneath instead of a card.
 ```gts preview
 import { AppLayout } from 'frontile';
 import { array } from '@ember/helper';
-import { ViewIcon, SettingsIcon } from 'site/components/icons';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
@@ -65,7 +65,9 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
       <AppLayout @variant={{variant}} class='demo-app-layout' as |layout|>
         <layout.Sidebar @label={{variant}} as |sidebar|>
           <sidebar.Header>
-            <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+            <sidebar.Brand @title='Acme' @href='#'>
+              <:logo><SparklesIcon /></:logo>
+            </sidebar.Brand>
           </sidebar.Header>
           <sidebar.Body>
             <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
@@ -101,7 +103,7 @@ background above the card. `content` makes it the card's first row.
 ```gts preview
 import { AppLayout } from 'frontile';
 import { array } from '@ember/helper';
-import { ViewIcon, SettingsIcon } from 'site/components/icons';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
@@ -113,7 +115,9 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
       >
         <layout.Sidebar @label={{placement}} as |sidebar|>
           <sidebar.Header>
-            <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+            <sidebar.Brand @title='Acme' @href='#'>
+              <:logo><SparklesIcon /></:logo>
+            </sidebar.Brand>
           </sidebar.Header>
           <sidebar.Body>
             <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
@@ -139,7 +143,8 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
 ## Sidebar
 
 `Sidebar` is a full-height `nav` landmark that takes the first column. It
-yields `Header`, `Body` and `Footer` sections, `Item` links and `Group`. Give
+yields `Header`, `Body` and `Footer` sections, `Item` links, `Group` and
+`Brand`. Give
 it a name with `@label` (default `Main`); if the page has more than one
 navigation, each needs its own. Render one `Sidebar` per layout: the layout
 gives its sidebar a fixed id, so a second one would repeat it.
@@ -153,14 +158,16 @@ the same way.
 
 ```gts preview
 import { AppLayout } from 'frontile';
-import { ViewIcon, SettingsIcon } from 'site/components/icons';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
     <AppLayout class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Workspace' as |sidebar|>
         <sidebar.Header>
-          <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+          <sidebar.Brand @title='Acme' @href='#'>
+            <:logo><SparklesIcon /></:logo>
+          </sidebar.Brand>
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
@@ -178,6 +185,105 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
       <layout.Main>
         <layout.PageHeader @title='Overview' />
       </layout.Main>
+    </AppLayout>
+  </div>
+</template>
+```
+
+### Brand
+
+`Brand` shows the product's logo and name, and goes in the `Header`. Pass
+the name as `@title`, an optional second line as `@subtitle`, and the logo in
+the `<:logo>` block. With `@href` the logo and text are one link, named by the
+title. Brand is optional: the header takes any markup.
+
+The logo sits in a 2rem square on a `primary` tile. In the icon rail only the
+logo shows, centered over the item icons; the title and subtitle are visually
+hidden but still name the link. Collapse this one with the toggle to see it.
+
+```gts preview
+import { AppLayout } from 'frontile';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout class='demo-app-layout' as |layout|>
+      <layout.Sidebar @label='Workspace' as |sidebar|>
+        <sidebar.Header>
+          <sidebar.Brand @title='Acme' @subtitle='Workspace' @href='#'>
+            <:logo><SparklesIcon /></:logo>
+          </sidebar.Brand>
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.SidebarToggle />
+        <span class='text-sm font-medium'>Overview</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Overview' />
+      </layout.Main>
+    </AppLayout>
+  </div>
+</template>
+```
+
+When your logo has its own colors, set `@tile={{false}}` to show it as is, in
+the same square. For a header `Brand` does not fit, write your own markup and
+wrap its text in `<span data-sidebar-label>` so the rail hides it, as the
+second layout here does.
+
+```gts preview
+import { AppLayout } from 'frontile';
+import { ViewIcon, RocketIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout @variant='attached' class='demo-app-layout' as |layout|>
+      <layout.Sidebar @label='Own logo' as |sidebar|>
+        <sidebar.Header>
+          <sidebar.Brand @title='Rocketry' @tile={{false}}>
+            <:logo><RocketIcon class='text-primary' /></:logo>
+          </sidebar.Brand>
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#launches' @icon={{ViewIcon}} @isActive={{true}}>
+            Launches
+          </sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.SidebarToggle />
+        <span class='text-sm font-medium'>@tile=false</span>
+      </layout.Navbar>
+      <layout.Main />
+    </AppLayout>
+    <AppLayout @variant='attached' class='demo-app-layout' as |layout|>
+      <layout.Sidebar @label='Custom header' as |sidebar|>
+        <sidebar.Header>
+          <RocketIcon class='shrink-0 text-primary' />
+          <span class='truncate text-sm font-semibold' data-sidebar-label>
+            Rocketry
+          </span>
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#launches' @icon={{ViewIcon}} @isActive={{true}}>
+            Launches
+          </sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.SidebarToggle />
+        <span class='text-sm font-medium'>Custom header</span>
+      </layout.Navbar>
+      <layout.Main />
     </AppLayout>
   </div>
 </template>
@@ -378,7 +484,7 @@ Narrow the window to below 48rem to open this one.
 ```gts preview
 import { hash } from '@ember/helper';
 import { AppLayout } from 'frontile';
-import { ViewIcon, SettingsIcon } from 'site/components/icons';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
@@ -389,7 +495,9 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
     >
       <layout.Sidebar @label='Workspace' as |sidebar|>
         <sidebar.Header>
-          <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+          <sidebar.Brand @title='Acme' @href='#'>
+            <:logo><SparklesIcon /></:logo>
+          </sidebar.Brand>
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
@@ -656,7 +764,8 @@ import { AppLayout, AppLayoutState, Button } from 'frontile';
 import {
   ViewIcon,
   StarIcon,
-  SettingsIcon
+  SettingsIcon,
+  SparklesIcon
 } from 'site/components/icons';
 
 export default class FullAppLayoutExample extends Component {
@@ -672,7 +781,9 @@ export default class FullAppLayoutExample extends Component {
       >
         <layout.Sidebar @label='Workspace' as |sidebar|>
           <sidebar.Header>
-            <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+            <sidebar.Brand @title='Acme' @subtitle='Projects' @href='#'>
+              <:logo><SparklesIcon /></:logo>
+            </sidebar.Brand>
           </sidebar.Header>
           <sidebar.Body>
             <sidebar.Item @href='#all' @icon={{ViewIcon}} @isActive={{true}}>
@@ -748,6 +859,8 @@ export default class FullAppLayoutExample extends Component {
   tree, so each link keeps its name. Hovering or focusing an `Item` in the
   rail shows its label as a tooltip.
 - `Group` renders a `group` named by its `@label`.
+- `Brand` with `@href` is a link named by its `@title` (and `@subtitle`).
+  In the rail its text is visually hidden but keeps naming the link.
 - `Aside` renders an `aside` landmark named by `@label` (default `Details`);
   in the drawer the dialog and the landmark inside it share that name.
 - `AsideToggle` is a button named by `@label` (default "Toggle details"). It
@@ -769,6 +882,7 @@ export default class FullAppLayoutExample extends Component {
 <Signature @component="Sidebar" />
 <Signature @component="SidebarItem" />
 <Signature @component="SidebarGroup" />
+<Signature @component="SidebarBrand" />
 <Signature @component="SidebarToggle" />
 <Signature @component="MenuToggle" />
 <Signature @component="Aside" />
