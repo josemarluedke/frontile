@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, find, settled } from '@ember/test-helpers';
 import Service from '@ember/service';
 import { on } from '@ember/modifier';
+import { array, hash } from '@ember/helper';
 import { NavLink } from 'frontile';
 
 class ThrowingRouter extends Service {
@@ -122,6 +123,68 @@ module('Integration | Component | NavLink | frontile/layout', function (hooks) {
 
     assert.dom('a').doesNotExist();
     assert.dom('button').doesNotExist();
+  });
+
+  test('@route renders a LinkTo anchor with the resolved href', async function (assert) {
+    await render(
+      <template>
+        <NavLink @route="tab-nav-demo.index">Home</NavLink>
+        <NavLink @route="tab-nav-demo.item" @model={{7}} id="with-model">
+          Model
+        </NavLink>
+        <NavLink
+          @route="tab-nav-demo.item"
+          @models={{array 8}}
+          id="with-models"
+        >
+          Models
+        </NavLink>
+        <NavLink
+          @route="tab-nav-demo.second"
+          @query={{hash page="2"}}
+          id="with-query"
+        >Query</NavLink>
+      </template>
+    );
+
+    assert.dom('a').exists({ count: 4 });
+    assert.dom('a').hasText('Home');
+    assert.ok(
+      find('a')!.getAttribute('href')?.endsWith('/tab-nav-demo'),
+      'plain route href'
+    );
+    assert.dom('#with-model').hasAttribute('href', /\/tab-nav-demo\/item\/7$/);
+    assert.dom('#with-models').hasAttribute('href', /\/tab-nav-demo\/item\/8$/);
+    assert
+      .dom('#with-query')
+      .hasAttribute('href', /\/tab-nav-demo\/second\?page=2$/);
+    assert.dom('#with-model').hasAttribute('aria-disabled', 'false');
+    assert.dom('#with-model').hasAttribute('data-disabled', 'false');
+  });
+
+  test('a disabled @route renders a plain anchor with no href', async function (assert) {
+    await render(
+      <template>
+        <NavLink @route="tab-nav-demo.index" @isDisabled={{true}}>One</NavLink>
+      </template>
+    );
+
+    assert.dom('a').exists({ count: 1 });
+    assert.dom('a').doesNotHaveAttribute('href');
+    assert.dom('a').hasAttribute('aria-disabled', 'true');
+    assert.dom('a').hasAttribute('data-disabled', 'true');
+    assert.dom('a').doesNotHaveClass('disabled');
+  });
+
+  test('a button with @isActive gets aria-current', async function (assert) {
+    await render(
+      <template>
+        <NavLink @isActive={{true}}>Go</NavLink>
+      </template>
+    );
+
+    assert.dom('button').hasAttribute('aria-current', 'page');
+    assert.dom('button').hasAttribute('data-active', 'true');
   });
 
   module('router-free', function (hooks) {
