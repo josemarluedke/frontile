@@ -36,6 +36,33 @@ const appLayout = tv({
     // as the drawer.
     mobileSidebar: 'group/sidebar flex min-h-0 flex-1 flex-col',
     sidebarHeader: 'flex h-12 shrink-0 items-center gap-2 px-3',
+    // `Sidebar.Brand`: logo and name, meant for the header. In the rail only
+    // the logo shows, centered like an item's icon; the text block is taken
+    // out of the flow (`sr-only`) so it neither pushes the logo aside nor
+    // leaves the accessibility tree.
+    sidebarBrand: [
+      ...focusVisibleRing,
+      'flex min-w-0 flex-1 items-center gap-2 rounded-md',
+      'group-data-[collapsed=true]/sidebar:justify-center'
+    ],
+    // A fixed 2rem square. `data-tile="true"` tints it; without the tile the
+    // consumer's logo is shown as is.
+    sidebarBrandLogo: [
+      'inline-flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg',
+      'data-[tile=true]:bg-primary data-[tile=true]:text-on-primary'
+    ],
+    sidebarBrandText: [
+      'flex min-w-0 flex-1 flex-col leading-tight',
+      'group-data-[collapsed=true]/sidebar:sr-only'
+    ],
+    sidebarBrandTitle: [
+      'truncate text-sm font-semibold text-neutral-strong',
+      'group-data-[collapsed=true]/sidebar:sr-only'
+    ],
+    sidebarBrandSubtitle: [
+      'truncate text-xs text-neutral-firm',
+      'group-data-[collapsed=true]/sidebar:sr-only'
+    ],
     sidebarBody: 'min-h-0 flex-1 overflow-y-auto px-2',
     sidebarFooter: 'shrink-0 px-2 py-2',
     // For `Sidebar.Item`'s own label element: the same rail behavior as the
