@@ -16,6 +16,7 @@ import {
 } from '@floating-ui/dom';
 import { useStyles } from '@frontile/theme';
 import Collapsible from '../utilities/collapsible';
+import Tooltip from '../overlays/tooltip';
 import { ChevronRightIcon } from '../../-private/icons';
 import NavItem from './nav-item';
 import NavLink from './nav-link';
@@ -30,6 +31,7 @@ export interface NavFolderClasses {
   navFolderChevron: string;
   navFolderPanel: string;
   navFolderFlyout: string;
+  navFolderFlyoutLabel: string;
 }
 
 interface NavFolderArgs {
@@ -260,6 +262,15 @@ class NavFolder extends Component<NavFolderSignature> {
     return this.isFlyoutOpen ? undefined : true;
   }
 
+  /**
+   * The rail trigger is only an icon, so it shows its label as a tooltip,
+   * like the rail items beside it; not over its own open flyout, which
+   * shows the label itself.
+   */
+  get tooltipDisabled(): boolean {
+    return !this.isFlyoutMode || this.isFlyoutOpen;
+  }
+
   get flyoutPlacement(): Placement {
     return this.args.tooltipPlacement === 'left' ? 'left-start' : 'right-start';
   }
@@ -471,7 +482,8 @@ class NavFolder extends Component<NavFolderSignature> {
       navFolderTrigger: styles.navFolderTrigger(),
       navFolderChevron: styles.navFolderChevron(),
       navFolderPanel: styles.navFolderPanel(),
-      navFolderFlyout: styles.navFolderFlyout()
+      navFolderFlyout: styles.navFolderFlyout(),
+      navFolderFlyoutLabel: styles.navFolderFlyoutLabel()
     };
   }
 
@@ -510,35 +522,43 @@ class NavFolder extends Component<NavFolderSignature> {
           NavLink's) shows an active item for styling only. No
           aria-haspopup in the rail either: the flyout is a disclosed group
           of links, not a menu or a dialog. }}
-      <NavLink
-        id={{this.triggerId}}
-        data-part="nav-folder-trigger"
-        aria-expanded="{{this.isExpanded}}"
-        aria-controls={{this.controlsId}}
-        data-open="{{this.isExpanded}}"
-        data-active="{{this.hasActiveDescendant}}"
-        class={{this.classes.navFolderTrigger}}
-        {{this.registerTrigger}}
-        {{on "click" this.toggle}}
+      <Tooltip
+        @isDisabled={{this.tooltipDisabled}}
+        @placement={{if @tooltipPlacement @tooltipPlacement "right"}}
+        as |t|
       >
-        {{#if @icon}}
-          <span
-            data-part="nav-item-icon"
-            class={{this.itemClasses.navItemIcon}}
-            aria-hidden="true"
-          ><@icon /></span>
-        {{/if}}
-        <span
-          data-part="nav-item-label"
-          data-sidebar-label
-          class={{this.itemClasses.navItemLabel}}
-        >{{@label}}</span>
-        <ChevronRightIcon
-          data-part="nav-folder-chevron"
+        <NavLink
+          id={{this.triggerId}}
+          data-part="nav-folder-trigger"
+          aria-expanded="{{this.isExpanded}}"
+          aria-controls={{this.controlsId}}
           data-open="{{this.isExpanded}}"
-          class={{this.classes.navFolderChevron}}
-        />
-      </NavLink>
+          data-active="{{this.hasActiveDescendant}}"
+          class={{this.classes.navFolderTrigger}}
+          {{this.registerTrigger}}
+          {{t.trigger}}
+          {{on "click" this.toggle}}
+        >
+          {{#if @icon}}
+            <span
+              data-part="nav-item-icon"
+              class={{this.itemClasses.navItemIcon}}
+              aria-hidden="true"
+            ><@icon /></span>
+          {{/if}}
+          <span
+            data-part="nav-item-label"
+            data-sidebar-label
+            class={{this.itemClasses.navItemLabel}}
+          >{{@label}}</span>
+          <ChevronRightIcon
+            data-part="nav-folder-chevron"
+            data-open="{{this.isExpanded}}"
+            class={{this.classes.navFolderChevron}}
+          />
+        </NavLink>
+        <t.Content>{{@label}}</t.Content>
+      </Tooltip>
       {{#if this.isFlyoutMode}}
         {{! Rendered (and its items registered) while closed, so the folder
             still shows active in the rail; `hidden` keeps it out of
@@ -554,6 +574,14 @@ class NavFolder extends Component<NavFolderSignature> {
           {{this.registerFlyout}}
           {{this.positionFlyout this.flyoutPlacement this.isFlyoutOpen}}
         >
+          {{! The trigger shows only its icon here, so the folder's name
+              heads the flyout. Hidden from assistive technology: the
+              group is already named by the trigger. }}
+          <div
+            data-part="nav-folder-flyout-label"
+            aria-hidden="true"
+            class={{this.classes.navFolderFlyoutLabel}}
+          >{{@label}}</div>
           {{yield
             (hash
               Item=(component

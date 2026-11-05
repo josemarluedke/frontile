@@ -46,7 +46,11 @@ const navItem = tv({
     navFolderFlyout: [
       'z-50 flex min-w-48 flex-col gap-0.5 p-1 [--sidebar-rail:3.25rem]',
       'rounded-xl border border-neutral-subtle bg-surface-input shadow-elevation-3'
-    ]
+    ],
+    // The folder's name at the top of its flyout, where the rail trigger
+    // shows only an icon. Text only: the group is named by the trigger.
+    navFolderFlyoutLabel:
+      'truncate px-2 pt-1 pb-0.5 text-xs font-medium text-neutral-firm'
   },
   variants: {
     layout: {

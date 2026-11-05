@@ -844,6 +844,64 @@ module(
         .hasAria('expanded', 'true', 'moving into the flyout keeps it');
     });
 
+    test('the closed rail trigger shows the folder label as a tooltip', async function (assert) {
+      await renderRail(new RailState());
+
+      await triggerEvent(TRIGGER, 'mouseenter');
+      assert.dom('[role="tooltip"]').exists('hovering the icon names it');
+      assert.dom('[role="tooltip"]').hasText('Reports');
+      await triggerEvent(TRIGGER, 'mouseleave');
+      assert.dom('[role="tooltip"]').doesNotExist();
+
+      await focus(TRIGGER);
+      assert.dom('[role="tooltip"]').hasText('Reports', 'on focus too');
+      await triggerEvent(TRIGGER, 'blur');
+
+      await click(TRIGGER);
+      assert.dom(TRIGGER).hasAria('expanded', 'true');
+      await triggerEvent(TRIGGER, 'mouseenter');
+      assert
+        .dom('[role="tooltip"]')
+        .doesNotExist('no tooltip over the open flyout');
+    });
+
+    test('the expanded sidebar shows no folder tooltip', async function (assert) {
+      await renderRail(new RailState(), { collapsed: false });
+
+      await triggerEvent(TRIGGER, 'mouseenter');
+      assert.dom('[role="tooltip"]').doesNotExist();
+    });
+
+    test('the flyout shows the folder label as a header that is not a control', async function (assert) {
+      await renderRail(new RailState());
+
+      const header = `${FLYOUT} [data-part="nav-folder-flyout-label"]`;
+      await click(TRIGGER);
+      assert.dom(header).isVisible();
+      assert.dom(header).hasText('Reports');
+      assert.dom(header).hasAttribute('class');
+      assert
+        .dom(header)
+        .hasAttribute(
+          'aria-hidden',
+          'true',
+          'the group is named by the trigger'
+        );
+      assert.strictEqual(
+        find(FLYOUT)!.firstElementChild,
+        find(header),
+        'it heads the flyout'
+      );
+      assert.strictEqual(find(header)!.tagName, 'DIV', 'not a link or button');
+      assert.dom(header).doesNotHaveAttribute('tabindex');
+      assert
+        .dom(FLYOUT)
+        .hasAttribute('aria-labelledby', find(TRIGGER)!.id, 'still named');
+      assert
+        .dom(`${FLYOUT} a, ${FLYOUT} button`)
+        .exists({ count: 2 }, 'only the items are controls');
+    });
+
     test('the trigger is a disclosure, not a menu button', async function (assert) {
       await renderRail(new RailState());
 

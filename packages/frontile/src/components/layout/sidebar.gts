@@ -235,7 +235,8 @@ class Sidebar extends Component<SidebarSignature> {
       navFolderTrigger: styles.navFolderTrigger(),
       navFolderChevron: styles.navFolderChevron(),
       navFolderPanel: styles.navFolderPanel(),
-      navFolderFlyout: styles.navFolderFlyout()
+      navFolderFlyout: styles.navFolderFlyout(),
+      navFolderFlyoutLabel: styles.navFolderFlyoutLabel()
     };
   }
 
