@@ -40,6 +40,10 @@ const stepper = tv({
       'transition-colors duration-200 motion-reduce:transition-none',
       // Upcoming is the resting state; the other states override it.
       'border-neutral-mild text-neutral-firm',
+      // Hovering an enabled upcoming step firms its ring, the one hint that
+      // it can be picked. Active and complete steps already carry color, so
+      // the selector is scoped to upcoming, not overridden by them.
+      '[li[data-state=upcoming][data-disabled=false]>button:hover_&]:border-neutral',
       // Invalid is always danger, whatever `color` is, and outranks the
       // active and complete treatments. Those are `group-data-[state=...]`
       // classes of equal specificity emitted later, so only `!` guarantees
@@ -80,7 +84,9 @@ const stepper = tv({
     trigger: [
       ...focusVisibleRing,
       'flex min-h-11 w-full cursor-pointer items-center justify-between gap-3',
-      'rounded-xl border border-neutral-subtle bg-surface-input px-3 py-2 text-start',
+      // Same border as a form field: it reads as a control, like a Select.
+      'rounded-xl border border-neutral-soft bg-surface-input px-3 py-2 text-start',
+      'hover:bg-surface-overlay-soft',
       'transition-colors duration-200 motion-reduce:transition-none',
       '[&_svg]:transition-transform motion-reduce:[&_svg]:transition-none',
       '[&[aria-expanded=true]_svg]:rotate-180'
@@ -92,12 +98,13 @@ const stepper = tv({
     probe: 'hidden',
 
     // The trigger's two lines of text, and its chevron.
-    triggerLabel: 'flex min-w-0 flex-col',
+    triggerLabel: 'flex min-w-0 flex-col gap-1',
     chevron: 'size-4 shrink-0 text-neutral-firm',
 
     // "Step N of M" and the active step's title, in the trigger and in the
-    // standalone summary line.
-    summaryText: 'block',
+    // standalone summary line. The count is the quiet eyebrow; the title is
+    // what the reader is looking for, so it carries the weight.
+    summaryText: 'block text-neutral-firm',
     summaryTitle: 'block font-medium text-neutral-strong',
 
     // The invalid step's exclamation mark, the loading spinner, and the text
@@ -106,7 +113,9 @@ const stepper = tv({
     spinner: 'fill-current text-neutral-mild',
     invalidText: 'sr-only',
 
-    label: 'flex min-w-0 flex-col',
+    // Titles use the tight-leading label scale, so the gap is what separates
+    // a title from its description.
+    label: 'flex min-w-0 flex-col gap-1',
 
     title: [
       'font-medium text-neutral-strong',
@@ -114,9 +123,11 @@ const stepper = tv({
       'group-data-[invalid=true]/item:text-danger'
     ],
 
+    // Body, not caption: the caption scale's 1px tracking suits small
+    // standalone text, but beside a title it reads as a different typeface.
     description: 'text-neutral-firm',
 
-    summary: 'text-neutral-firm',
+    summary: 'flex flex-col gap-1',
 
     panel: [...focusVisibleRing, 'outline-none']
   },
@@ -126,49 +137,49 @@ const stepper = tv({
       neutral: {
         indicator: [
           'group-data-[state=complete]/item:border-neutral-strong group-data-[state=complete]/item:bg-neutral-strong group-data-[state=complete]/item:text-background',
-          'group-data-[state=active]/item:border-neutral-strong group-data-[state=active]/item:text-neutral-strong'
+          'group-data-[state=active]/item:border-neutral-strong group-data-[state=active]/item:text-neutral-strong group-data-[state=active]/item:bg-neutral-subtle'
         ],
         connector: 'group-data-[state=complete]/item:after:bg-neutral-strong'
       },
       primary: {
         indicator: [
           'group-data-[state=complete]/item:border-primary group-data-[state=complete]/item:bg-primary group-data-[state=complete]/item:text-on-primary',
-          'group-data-[state=active]/item:border-primary group-data-[state=active]/item:text-primary'
+          'group-data-[state=active]/item:border-primary group-data-[state=active]/item:text-primary group-data-[state=active]/item:bg-primary-subtle'
         ],
         connector: 'group-data-[state=complete]/item:after:bg-primary'
       },
       secondary: {
         indicator: [
           'group-data-[state=complete]/item:border-secondary group-data-[state=complete]/item:bg-secondary group-data-[state=complete]/item:text-on-secondary',
-          'group-data-[state=active]/item:border-secondary group-data-[state=active]/item:text-secondary'
+          'group-data-[state=active]/item:border-secondary group-data-[state=active]/item:text-secondary group-data-[state=active]/item:bg-secondary-subtle'
         ],
         connector: 'group-data-[state=complete]/item:after:bg-secondary'
       },
       tertiary: {
         indicator: [
           'group-data-[state=complete]/item:border-tertiary group-data-[state=complete]/item:bg-tertiary group-data-[state=complete]/item:text-on-tertiary',
-          'group-data-[state=active]/item:border-tertiary group-data-[state=active]/item:text-tertiary'
+          'group-data-[state=active]/item:border-tertiary group-data-[state=active]/item:text-tertiary group-data-[state=active]/item:bg-tertiary-subtle'
         ],
         connector: 'group-data-[state=complete]/item:after:bg-tertiary'
       },
       success: {
         indicator: [
           'group-data-[state=complete]/item:border-success group-data-[state=complete]/item:bg-success group-data-[state=complete]/item:text-on-success',
-          'group-data-[state=active]/item:border-success group-data-[state=active]/item:text-success'
+          'group-data-[state=active]/item:border-success group-data-[state=active]/item:text-success group-data-[state=active]/item:bg-success-subtle'
         ],
         connector: 'group-data-[state=complete]/item:after:bg-success'
       },
       warning: {
         indicator: [
           'group-data-[state=complete]/item:border-warning group-data-[state=complete]/item:bg-warning group-data-[state=complete]/item:text-on-warning',
-          'group-data-[state=active]/item:border-warning group-data-[state=active]/item:text-warning'
+          'group-data-[state=active]/item:border-warning group-data-[state=active]/item:text-warning group-data-[state=active]/item:bg-warning-subtle'
         ],
         connector: 'group-data-[state=complete]/item:after:bg-warning'
       },
       danger: {
         indicator: [
           'group-data-[state=complete]/item:border-danger group-data-[state=complete]/item:bg-danger group-data-[state=complete]/item:text-on-danger',
-          'group-data-[state=active]/item:border-danger group-data-[state=active]/item:text-danger'
+          'group-data-[state=active]/item:border-danger group-data-[state=active]/item:text-danger group-data-[state=active]/item:bg-danger-subtle'
         ],
         connector: 'group-data-[state=complete]/item:after:bg-danger'
       }
@@ -179,41 +190,48 @@ const stepper = tv({
     // from the button's edge in every layout. `item` carries how far a
     // bottom-label connector sits from the item's center: the circle's radius
     // plus a 4px gap.
+    //
+    // Type steps down one level per size: the number sits at about half the
+    // circle's height, the title one step above the number, and the
+    // description one step below the title.
     size: {
       sm: {
         step: 'p-2.5',
         item: '[--stepper-offset:1rem]',
         // `[&_svg]` outranks an icon's own size class, so the circle, not the
         // icon, decides the glyph size (about half the circle, 4-6px padding).
-        indicator: 'size-6 text-label-sm [&_svg]:size-3',
-        title: 'text-label-sm',
-        description: 'text-caption-sm',
-        summary: 'text-label-sm',
+        indicator: 'size-6 text-label-2xs [&_svg]:size-3',
+        title: 'text-label-xs',
+        description: 'text-body-2xs',
+        summaryText: 'text-body-2xs',
+        summaryTitle: 'text-label-xs',
         panel: 'py-2'
       },
       md: {
         step: 'p-2',
         item: '[--stepper-offset:1.125rem]',
-        indicator: 'size-7 text-label-md [&_svg]:size-4',
-        title: 'text-label-md',
-        description: 'text-caption-md',
-        summary: 'text-label-md',
+        indicator: 'size-7 text-label-xs [&_svg]:size-3.5',
+        title: 'text-label-sm',
+        description: 'text-body-xs',
+        summaryText: 'text-body-xs',
+        summaryTitle: 'text-label-sm',
         panel: 'py-3'
       },
       lg: {
         step: 'p-1',
         item: '[--stepper-offset:1.375rem]',
-        indicator: 'size-9 text-label-lg [&_svg]:size-5',
-        title: 'text-label-lg',
+        indicator: 'size-9 text-label-sm [&_svg]:size-4.5',
+        title: 'text-label-md',
         description: 'text-body-sm',
-        summary: 'text-label-lg',
+        summaryText: 'text-body-sm',
+        summaryTitle: 'text-label-md',
         panel: 'py-4'
       }
     },
 
     orientation: {
       horizontal: {
-        base: 'flex-col gap-3',
+        base: 'flex-col gap-4',
         list: 'flex-row items-start',
         item: 'flex-1 items-center last:flex-none',
         connector: [
@@ -224,11 +242,20 @@ const stepper = tv({
         ]
       },
       vertical: {
-        base: 'flex-col gap-3',
+        base: 'flex-col gap-4',
         list: 'flex-col',
-        item: 'flex-col items-start',
+        // `pb-4` is the space between steps; the connector spans it.
+        item: 'relative flex-col items-start pb-4 last:pb-0',
+        // Circle at the top, beside the title's first line, so a step with a
+        // description does not push its circle (and its connector) down.
+        step: 'items-start',
+        // Drawn absolutely from this circle to the next one, so it bridges the
+        // step's 44px hit-area padding and any description height alike. The
+        // circle's center is 22px down; `--stepper-offset` is its radius plus
+        // the 4px clearance a horizontal connector also keeps.
         connector: [
-          'ms-[21px] h-4 w-0.5',
+          'absolute start-[21px] w-0.5',
+          'top-[calc(22px+var(--stepper-offset))] bottom-[calc(var(--stepper-offset)-22px)]',
           'after:origin-top after:scale-y-0',
           'group-data-[state=complete]/item:after:scale-y-100'
         ]
@@ -265,8 +292,10 @@ const stepper = tv({
           // popover, so the closed state is restated here.
           '[&:not(:popover-open)]:hidden'
         ],
-        item: 'items-stretch',
-        step: 'w-full justify-start'
+        // Rows sit closer in the menu than in a vertical Stepper: it is a
+        // list to pick from, not a page-level layout.
+        item: 'items-stretch pb-1',
+        step: 'w-full justify-start hover:bg-surface-overlay-soft'
       }
     }
   },
@@ -290,6 +319,25 @@ const stepper = tv({
         ]
       }
     },
+    // -- vertical: the title's first line is centered on the circle --
+    // Half of (circle height - one title line) of top padding, so a title
+    // lines up with the circle's middle whether or not a description follows.
+    {
+      orientation: 'vertical',
+      size: 'sm',
+      class: { title: 'pt-[calc((1.5rem-1lh)/2)]' }
+    },
+    {
+      orientation: 'vertical',
+      size: 'md',
+      class: { title: 'pt-[calc((1.75rem-1lh)/2)]' }
+    },
+    {
+      orientation: 'vertical',
+      size: 'lg',
+      class: { title: 'pt-[calc((2.25rem-1lh)/2)]' }
+    },
+
     // -- responsive label collapse (horizontal only) --
     // Narrow: the label is visually hidden (`sr-only` keeps it in the
     // accessibility tree) and the summary shows. Wider than the threshold the
@@ -306,7 +354,12 @@ const stepper = tv({
       labelPosition: 'bottom',
       class: {
         label: 'sr-only @fr-stepper-bottom/stepper:not-sr-only',
-        summary: '@fr-stepper-bottom/stepper:hidden'
+        // The bottom-label row is symmetric (equal columns, centered
+        // circles), so the line beneath it is centered too.
+        summary: 'items-center text-center @fr-stepper-bottom/stepper:hidden',
+        // With the title hidden the step is just its circle, so the focus
+        // ring follows the circle instead of boxing it.
+        step: '@max-fr-stepper-bottom/stepper:rounded-full'
       }
     },
     {
@@ -315,7 +368,8 @@ const stepper = tv({
       labelPosition: 'end',
       class: {
         label: 'sr-only @fr-stepper-end/stepper:not-sr-only',
-        summary: '@fr-stepper-end/stepper:hidden'
+        summary: '@fr-stepper-end/stepper:hidden',
+        step: '@max-fr-stepper-end/stepper:rounded-full'
       }
     },
 

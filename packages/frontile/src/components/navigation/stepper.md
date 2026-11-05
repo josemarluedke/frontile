@@ -29,7 +29,7 @@ anywhere inside the Stepper, such as a button in a panel.
 import { Stepper, Button } from 'frontile';
 
 <template>
-  <div class='demo-stack' style='width: 44rem; max-width: none'>
+  <div class='demo-stack demo-stack--wide'>
     <Stepper @defaultValue='account' as |S|>
       <S.List @label='Checkout progress'>
         <S.Step @value='account' @title='Account' @description='Your details' />
@@ -285,7 +285,9 @@ export default class StepperBackOnlyExample extends Component {
           />
         </S.List>
 
-        <Button @color='primary' @onPress={{this.continue}}>Continue</Button>
+        <div class='flex gap-2'>
+          <Button @color='primary' @onPress={{this.continue}}>Continue</Button>
+        </div>
       </Stepper>
     </div>
   </template>
@@ -311,8 +313,7 @@ without going through the step itself.
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import { Stepper } from 'frontile';
+import { Stepper, Checkbox } from 'frontile';
 
 export default class StepperValidatedExample extends Component {
   @tracked step = 'account';
@@ -329,8 +330,8 @@ export default class StepperValidatedExample extends Component {
     this.step = value;
   };
 
-  toggleAccepted = (): void => {
-    this.accepted = !this.accepted;
+  setAccepted = (value: boolean): void => {
+    this.accepted = value;
   };
 
   <template>
@@ -347,10 +348,11 @@ export default class StepperValidatedExample extends Component {
         </S.List>
 
         <S.Panel @value='account'>
-          <label class='flex items-center gap-2'>
-            <input type='checkbox' checked={{this.accepted}} {{on 'change' this.toggleAccepted}} />
-            Accept the terms to continue
-          </label>
+          <Checkbox
+            @label='Accept the terms to continue'
+            @checked={{this.accepted}}
+            @onChange={{this.setAccepted}}
+          />
         </S.Panel>
         <S.Panel @value='plan'>Pick a plan.</S.Panel>
       </Stepper>
@@ -378,7 +380,9 @@ import { Stepper, Button } from 'frontile';
         <S.Step @value='review' @title='Review' />
       </S.List>
 
-      <Button @variant='outline' @onPress={{fn S.goTo 'account'}}>Start over</Button>
+      <div class='flex gap-2'>
+        <Button @variant='outline' @onPress={{fn S.goTo 'account'}}>Start over</Button>
+      </div>
     </Stepper>
   </div>
 </template>
@@ -395,7 +399,7 @@ A kept-mounted panel keeps running its own effects while hidden, and an
 autofocus inside it fires when it first renders, not when its step is selected.
 
 ```gts preview
-import { Stepper } from 'frontile';
+import { Stepper, Input } from 'frontile';
 
 <template>
   <div class='demo-stack'>
@@ -406,10 +410,7 @@ import { Stepper } from 'frontile';
       </S.List>
 
       <S.Panel @value='account' @keepMounted={{true}}>
-        <label class='flex flex-col gap-1'>
-          Name
-          <input class='rounded border border-neutral-soft p-2' />
-        </label>
+        <Input @label='Name' />
       </S.Panel>
       <S.Panel @value='plan'>Pick a plan.</S.Panel>
     </Stepper>
@@ -485,24 +486,27 @@ and closes the list.
 | `bottom`         | 28rem (448px)       |
 | `end`            | 42rem (672px)       |
 
-Drag the handle at the right edge of the box to resize it.
+The box below starts narrow enough to collapse. Drag the handle at its
+right edge to widen it and watch the full row return.
 
 ```gts preview
 import { Stepper } from 'frontile';
 
 <template>
-  <div
-    class='w-full overflow-hidden rounded border border-neutral-soft p-4'
-    style='resize: horizontal; width: 100%; min-width: 14rem; max-width: 100%'
-  >
-    <Stepper @defaultValue='billing' @labelPosition='bottom' as |S|>
-      <S.List @label='Checkout progress'>
-        <S.Step @value='account' @title='Account' />
-        <S.Step @value='billing' @title='Billing' />
-        <S.Step @value='review' @title='Review' />
-        <S.Step @value='confirm' @title='Confirm' />
-      </S.List>
-    </Stepper>
+  <div class='demo-stack demo-stack--wide'>
+    <div
+      class='overflow-hidden rounded-lg border border-neutral-soft p-4'
+      style='resize: horizontal; width: 20rem; min-width: 14rem; max-width: 100%'
+    >
+      <Stepper @defaultValue='billing' @labelPosition='bottom' as |S|>
+        <S.List @label='Checkout progress'>
+          <S.Step @value='account' @title='Account' />
+          <S.Step @value='billing' @title='Billing' />
+          <S.Step @value='review' @title='Review' />
+          <S.Step @value='confirm' @title='Confirm' />
+        </S.List>
+      </Stepper>
+    </div>
   </div>
 </template>
 ```
@@ -523,30 +527,66 @@ Wider than the threshold, the titles appear and the line goes.
 import { Stepper } from 'frontile';
 
 <template>
-  <div
-    class='w-full overflow-hidden rounded border border-neutral-soft p-4'
-    style='resize: horizontal; width: 100%; min-width: 14rem; max-width: 100%'
-  >
-    <Stepper
-      @defaultValue='billing'
-      @labelPosition='bottom'
-      @collapse='summary'
-      as |S|
+  <div class='demo-stack demo-stack--wide'>
+    <div
+      class='overflow-hidden rounded-lg border border-neutral-soft p-4'
+      style='resize: horizontal; width: 20rem; min-width: 14rem; max-width: 100%'
     >
-      <S.List @label='Checkout progress'>
-        <S.Step @value='account' @title='Account' />
-        <S.Step @value='billing' @title='Billing' />
-        <S.Step @value='review' @title='Review' />
-        <S.Step @value='confirm' @title='Confirm' />
-      </S.List>
-    </Stepper>
+      <Stepper
+        @defaultValue='billing'
+        @labelPosition='bottom'
+        @collapse='summary'
+        as |S|
+      >
+        <S.List @label='Checkout progress'>
+          <S.Step @value='account' @title='Account' />
+          <S.Step @value='billing' @title='Billing' />
+          <S.Step @value='review' @title='Review' />
+          <S.Step @value='confirm' @title='Confirm' />
+        </S.List>
+      </Stepper>
+    </div>
   </div>
 </template>
 ```
 
 Narrow screens fit roughly six or seven steps as indicators alone; beyond
-that, prefer the menu or a vertical Stepper. Set `@collapse={{false}}` to
-never collapse. Vertical Steppers never collapse.
+that, prefer the menu or a vertical Stepper. Vertical Steppers never collapse.
+
+### Never collapsing
+
+Set `@collapse={{false}}` to keep the full row, titles included, at every
+width: no menu and no summary line. The row does not shrink below the width
+its titles need, and narrower than that it overflows its container, so it
+suits short titles and few steps. Drag the box below narrower to see where
+that happens.
+
+```gts preview
+import { Stepper } from 'frontile';
+
+<template>
+  <div class='demo-stack demo-stack--wide'>
+    <div
+      class='overflow-hidden rounded-lg border border-neutral-soft p-4'
+      style='resize: horizontal; width: 20rem; min-width: 14rem; max-width: 100%'
+    >
+      <Stepper
+        @defaultValue='billing'
+        @labelPosition='bottom'
+        @collapse={{false}}
+        as |S|
+      >
+        <S.List @label='Checkout progress'>
+          <S.Step @value='account' @title='Account' />
+          <S.Step @value='billing' @title='Billing' />
+          <S.Step @value='review' @title='Review' />
+          <S.Step @value='confirm' @title='Confirm' />
+        </S.List>
+      </Stepper>
+    </div>
+  </div>
+</template>
+```
 
 ### Changing the thresholds
 
@@ -563,6 +603,79 @@ redefining Tailwind's own `--container-*` sizes does not affect them.
 
 For a single Stepper, set `@collapse={{false}}` and write your own rules on
 the slots.
+
+## Custom styling
+
+The look is not fixed. `@classes` adds classes to any slot (`list`, `item`,
+`step`, `indicator`, `title`, `connector` and the rest), merged with the
+theme's, and the `indicator` block replaces what the circle shows. Every slot
+is inside the step's `<li>`, which carries `data-state` (`complete`, `active`
+or `upcoming`), so `group-data-[state=active]/item:` styles a slot for one
+state.
+
+This one drops the circles for plain icons, makes the active step a filled
+pill, and shortens the connectors to fixed dashes. The `!` on the indicator
+classes is needed because the theme colors it per state.
+
+```gts preview collapsible
+import { Stepper } from 'frontile';
+import {
+  SearchIcon,
+  PackageIcon,
+  StarIcon,
+  UserIcon,
+  CheckIcon
+} from 'site/components/icons';
+
+const classes = {
+  item: 'flex-none',
+  step: [
+    'min-h-9 gap-2 rounded-full px-3 py-0',
+    'group-data-[state=active]/item:bg-primary',
+    // The icon follows the step's color through `text-current` below.
+    'group-data-[state=active]/item:text-on-primary',
+    'group-data-[state=complete]/item:hover:bg-surface-overlay-soft',
+    'group-data-[state=upcoming]/item:hover:bg-surface-overlay-soft'
+  ].join(' '),
+  indicator: 'size-auto border-0 bg-transparent! text-current! [&_svg]:size-4',
+  title: 'group-data-[state=active]/item:text-on-primary',
+  connector: 'mx-2 h-px w-4 min-w-0 flex-none bg-neutral-mild after:hidden'
+};
+
+<template>
+  <div class='demo-stack demo-stack--wide'>
+    <Stepper
+      @defaultValue='plan'
+      @collapse={{false}}
+      @classes={{classes}}
+      as |S|
+    >
+      <S.List @label='Order progress' class='justify-center'>
+        <S.Step @value='providers' @title='Providers'>
+          <:indicator><SearchIcon /></:indicator>
+        </S.Step>
+        <S.Step @value='plan' @title='Plan'>
+          <:indicator><PackageIcon /></:indicator>
+        </S.Step>
+        <S.Step @value='add-ons' @title='Add-ons'>
+          <:indicator><StarIcon /></:indicator>
+        </S.Step>
+        <S.Step @value='account' @title='Account'>
+          <:indicator><UserIcon /></:indicator>
+        </S.Step>
+        <S.Step @value='checkout' @title='Checkout'>
+          <:indicator><CheckIcon /></:indicator>
+        </S.Step>
+      </S.List>
+    </Stepper>
+  </div>
+</template>
+```
+
+`min-h-9` makes the pill 36px tall, under the theme's 44px hit area. That
+still clears the 24px WCAG 2.2 AA minimum, but keep it in mind on touch
+screens. For changes to every Stepper in an app, edit the `stepper` theme
+instead of passing `@classes` each time.
 
 ## Accessibility
 

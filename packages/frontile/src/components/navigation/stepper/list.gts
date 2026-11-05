@@ -38,7 +38,7 @@ class StepperList<T> extends Component<StepperListSignature<T>> {
         {{@context.registerTrigger}}
       >
         <span class={{@context.triggerLabelClass}}>
-          <span class={{@context.summaryClass}}>{{if
+          <span class={{@context.summaryTextClass}}>{{if
               @context.summary
               @context.summary.label
               @label
