@@ -25,10 +25,12 @@ const appLayout = tv({
     // react to the icon rail with `group-data-[collapsed=true]/sidebar:`.
     // Labels written as `<span data-sidebar-label>`, anywhere in the sidebar
     // (header, body or footer), are visually hidden in the icon rail but stay
-    // in the accessibility tree (`sr-only`, never `display: none`).
+    // in the accessibility tree (`sr-only`, never `display: none`). A
+    // `NavFolder` flyout (`data-part="nav-folder-flyout"`) is exempt: it
+    // floats beside the rail and lists its items with their labels.
     sidebar: [
       'group/sidebar col-start-1 row-[1/-1] shrink-0 flex-col',
-      'data-[collapsed=true]:[&_[data-sidebar-label]]:sr-only',
+      'data-[collapsed=true]:[&_[data-sidebar-label]:not([data-part=nav-folder-flyout]_*)]:sr-only',
       'transition-[width] duration-200',
       'motion-reduce:transition-none'
     ],

@@ -6,7 +6,9 @@ import {
   find,
   click,
   focus,
-  settled
+  settled,
+  triggerEvent,
+  triggerKeyEvent
 } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { AppLayout, NavFolder } from 'frontile';
@@ -624,6 +626,374 @@ module(
       await click('#child-a');
       assert.dom(root).hasAttribute('data-mobile-sidebar-open', 'false');
       assert.dom('[role="dialog"]').doesNotExist();
+    });
+  }
+);
+
+const FLYOUT = '[data-part="nav-folder-flyout"]';
+
+/** True for a box shrunk to (at most) a pixel: the sr-only technique. */
+function isVisiblyHidden(el: Element): boolean {
+  const rect = el.getBoundingClientRect();
+  return rect.width <= 1 && rect.height <= 1;
+}
+
+// Matches the platform check in AppLayout: Cmd on Apple platforms, else Ctrl.
+function modKeys(): { metaKey: boolean; ctrlKey: boolean } {
+  const nav = navigator as Navigator & {
+    userAgentData?: { platform?: string };
+  };
+  const platform = nav.userAgentData?.platform || nav.platform || '';
+  const apple = /mac|iphone|ipad|ipod/i.test(platform);
+  return { metaKey: apple, ctrlKey: !apple };
+}
+
+class RailState {
+  @tracked active = false;
+  @tracked side: 'start' | 'end' = 'start';
+}
+
+module(
+  'Integration | Component | NavFolder flyout in the icon rail | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    let media: MatchMediaMock | undefined;
+
+    hooks.beforeEach(function () {
+      media = mockMatchMedia(1200);
+    });
+
+    hooks.afterEach(function () {
+      media?.restore();
+      media = undefined;
+    });
+
+    async function renderRail(
+      state: RailState,
+      options: { collapsed?: boolean; defaultOpen?: boolean } = {}
+    ): Promise<void> {
+      const collapsed = options.collapsed ?? true;
+      const defaultOpen = options.defaultOpen ?? false;
+      await render(
+        <template>
+          <AppLayout
+            @defaultSidebarCollapsed={{collapsed}}
+            @sidebarSide={{state.side}}
+            as |layout|
+          >
+            <layout.Navbar><layout.SidebarToggle /></layout.Navbar>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>
+                <sidebar.Item @href="#plain" @icon={{TestIcon}} id="plain">
+                  Plain
+                </sidebar.Item>
+                <sidebar.Folder
+                  @label="Reports"
+                  @icon={{TestIcon}}
+                  @defaultOpen={{defaultOpen}}
+                  as |folder|
+                >
+                  <folder.Item @href="#a" id="child-a">A</folder.Item>
+                  <folder.Item
+                    @href="#b"
+                    @isActive={{state.active}}
+                    id="child-b"
+                  >B</folder.Item>
+                </sidebar.Folder>
+                <a href="#after" id="after">After</a>
+              </sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main><button type="button" id="outside">Outside</button>
+            </layout.Main>
+          </AppLayout>
+        </template>
+      );
+    }
+
+    test('in a collapsed sidebar the folder opens a flyout instead of an inline panel', async function (assert) {
+      await renderRail(new RailState());
+
+      assert.dom(PANEL).doesNotExist('no inline panel in the rail');
+      const trigger = find(TRIGGER)!;
+      const flyout = find(FLYOUT)!;
+      assert.ok(flyout, 'the flyout is rendered');
+      assert.ok(flyout.id, 'the flyout has an id');
+      assert.dom(flyout).hasAttribute('role', 'group');
+      assert.dom(flyout).hasAttribute('aria-labelledby', trigger.id);
+      assert.dom(flyout).hasAttribute('class');
+      assert.dom(flyout).isNotVisible('closed until opened');
+      assert.dom(trigger).hasAria('expanded', 'false');
+      assert.dom(trigger).hasAria('controls', flyout.id);
+      assert.dom(ROOT).hasAttribute('data-component', 'nav-folder');
+
+      await click(trigger);
+      assert.dom(trigger).hasAria('expanded', 'true');
+      assert.dom(trigger).hasAttribute('data-open', 'true');
+      assert.dom(trigger).hasAria('controls', flyout.id);
+      assert.dom(flyout).isVisible();
+      assert.dom(`${FLYOUT} #child-a`).isVisible();
+      assert.dom(`${FLYOUT} #child-b`).isVisible();
+      assert.dom(PANEL).doesNotExist();
+
+      await click(trigger);
+      assert.dom(trigger).hasAria('expanded', 'false', 'the trigger toggles');
+      assert.dom(flyout).isNotVisible();
+    });
+
+    test('in the rail a folder holding the current page is active while its flyout is closed', async function (assert) {
+      const state = new RailState();
+      state.active = true;
+      await renderRail(state);
+
+      assert.dom(TRIGGER).hasAttribute('data-active', 'true');
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'no flyout on load');
+      assert.dom(TRIGGER).doesNotHaveAttribute('aria-current');
+      assert.dom(FLYOUT).isNotVisible();
+      assert.dom('#child-b').isNotVisible('not reachable until opened');
+      assert.strictEqual(
+        document.querySelectorAll('#child-b').length,
+        1,
+        'each child is rendered once'
+      );
+      assert.strictEqual(
+        document.querySelectorAll('[aria-current="page"]').length,
+        1,
+        'one current-page link'
+      );
+
+      state.active = false;
+      await settled();
+      assert.dom(TRIGGER).hasAttribute('data-active', 'false');
+
+      await click(TRIGGER);
+      assert.dom('#child-b').isVisible('reachable once opened');
+    });
+
+    test('in the rail a newly active child does not pop the flyout open, but opens the inline state', async function (assert) {
+      const state = new RailState();
+      await renderRail(state);
+
+      state.active = true;
+      await settled();
+      assert.dom(TRIGGER).hasAttribute('data-active', 'true');
+      assert.dom(TRIGGER).hasAria('expanded', 'false');
+      assert.dom(FLYOUT).isNotVisible();
+
+      await click('[data-part="sidebar-toggle"]');
+      assert.dom(PANEL).exists('expanded: inline again');
+      assert
+        .dom(TRIGGER)
+        .hasAria(
+          'expanded',
+          'true',
+          'the auto-open landed on the inline state'
+        );
+    });
+
+    test('Escape closes the flyout and focuses the trigger', async function (assert) {
+      await renderRail(new RailState());
+
+      await click(TRIGGER);
+      await focus('#child-a');
+      await triggerKeyEvent('#child-a', 'keydown', 'Escape');
+      assert.dom(TRIGGER).hasAria('expanded', 'false');
+      assert.dom(FLYOUT).isNotVisible();
+      assert.dom(TRIGGER).isFocused();
+
+      await click(TRIGGER);
+      await triggerKeyEvent(TRIGGER, 'keydown', 'Escape');
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'from the trigger too');
+      assert.dom(TRIGGER).isFocused();
+    });
+
+    test('clicking a flyout item closes the flyout', async function (assert) {
+      await renderRail(new RailState());
+
+      await click(TRIGGER);
+      await click('#child-a');
+      assert.dom(TRIGGER).hasAria('expanded', 'false');
+      assert.dom(FLYOUT).isNotVisible();
+    });
+
+    test('clicking outside or tabbing out closes the flyout', async function (assert) {
+      await renderRail(new RailState());
+
+      await click(TRIGGER);
+      await click('#outside');
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'outside click');
+
+      await click(TRIGGER);
+      await click(FLYOUT);
+      assert
+        .dom(TRIGGER)
+        .hasAria('expanded', 'true', 'a click inside keeps it');
+
+      await triggerEvent('#child-b', 'focusout', {
+        relatedTarget: find('#after')
+      });
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'focus left the folder');
+
+      await click(TRIGGER);
+      await triggerEvent(TRIGGER, 'focusout', {
+        relatedTarget: find('#child-a')
+      });
+      assert
+        .dom(TRIGGER)
+        .hasAria('expanded', 'true', 'moving into the flyout keeps it');
+    });
+
+    test('the trigger is a disclosure, not a menu button', async function (assert) {
+      await renderRail(new RailState());
+
+      assert.dom(TRIGGER).doesNotHaveAttribute('aria-haspopup');
+      assert.dom(FLYOUT).hasAttribute('role', 'group', 'not a menu');
+      assert.dom(`${FLYOUT} [role="menuitem"]`).doesNotExist();
+    });
+
+    test('expanding the sidebar while the flyout is open closes it and keeps the inline state', async function (assert) {
+      await renderRail(new RailState());
+
+      await click(TRIGGER);
+      assert.dom(TRIGGER).hasAria('expanded', 'true');
+
+      // The keyboard shortcut collapses without a click outside the folder.
+      await triggerKeyEvent(TRIGGER, 'keydown', 'B', modKeys());
+      assert.dom(FLYOUT).doesNotExist('no flyout outside the rail');
+      assert.dom(PANEL).exists();
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'inline state: closed');
+      assert.dom(TRIGGER).hasAria('controls', find(PANEL)!.id);
+
+      await click('[data-part="sidebar-toggle"]');
+      assert.dom(FLYOUT).isNotVisible('the flyout starts closed again');
+      assert.dom(TRIGGER).hasAria('expanded', 'false');
+    });
+
+    test('the inline open state survives the flyout and collapse cycles', async function (assert) {
+      await renderRail(new RailState(), {
+        collapsed: false,
+        defaultOpen: true
+      });
+
+      assert.dom(TRIGGER).hasAria('expanded', 'true', 'inline: open');
+
+      await click('[data-part="sidebar-toggle"]');
+      assert.dom(PANEL).doesNotExist('collapsing hides the inline panel');
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'the flyout is closed');
+
+      await click(TRIGGER);
+      await click(TRIGGER);
+      await click('[data-part="sidebar-toggle"]');
+      assert.dom(TRIGGER).hasAria('expanded', 'true', 'inline: still open');
+      assert.dom(`${PANEL} #child-a`).isVisible();
+
+      await click(TRIGGER);
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'inline: closed');
+      await click('[data-part="sidebar-toggle"]');
+      await click(TRIGGER);
+      assert.dom(TRIGGER).hasAria('expanded', 'true', 'flyout open');
+      await click('[data-part="sidebar-toggle"]');
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'inline: still closed');
+    });
+
+    test('in the mobile drawer the folder is inline even when collapsed', async function (assert) {
+      media!.setWidth(500);
+      await render(
+        <template>
+          <AppLayout
+            @defaultSidebarCollapsed={{true}}
+            @defaultMobileSidebarOpen={{true}}
+            as |layout|
+          >
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>
+                <sidebar.Folder @label="Reports" as |folder|>
+                  <folder.Item @href="#a" id="child-a">A</folder.Item>
+                </sidebar.Folder>
+              </sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.dom(`[role="dialog"] ${ROOT}`).exists();
+      assert.dom(FLYOUT).doesNotExist();
+      assert.dom(PANEL).exists();
+
+      await click(TRIGGER);
+      assert.dom(TRIGGER).hasAria('expanded', 'true');
+      assert.dom(`${PANEL} #child-a`).isVisible();
+      assert.dom(FLYOUT).doesNotExist();
+    });
+
+    test('flyout items show their labels, sensibly padded, with no tooltip', async function (assert) {
+      await renderRail(new RailState());
+
+      await click(TRIGGER);
+      const item = find('#child-a')!;
+      const label = item.querySelector('[data-part="nav-item-label"]')!;
+      assert.false(isVisiblyHidden(label), 'the label is visible');
+      assert.notStrictEqual(getComputedStyle(label).position, 'absolute');
+      const style = getComputedStyle(item);
+      assert.strictEqual(
+        style.paddingInlineStart,
+        style.paddingInlineEnd,
+        'no rail-centering inset'
+      );
+
+      await triggerEvent(item, 'mouseenter');
+      await focus(item);
+      assert.dom('[role="tooltip"]').doesNotExist('no rail tooltip');
+    });
+
+    test('the collapsed trigger shows only its icon, centered like other rail items', async function (assert) {
+      await renderRail(new RailState());
+
+      const label = find(`${TRIGGER} [data-part="nav-item-label"]`)!;
+      assert.true(isVisiblyHidden(label), 'label is sr-only');
+      assert.dom(TRIGGER).hasText('Reports', 'still names the trigger');
+      assert.strictEqual(
+        getComputedStyle(find(`${TRIGGER} [data-part="nav-folder-chevron"]`)!)
+          .display,
+        'none',
+        'no chevron'
+      );
+      const folderIcon = find(`${TRIGGER} [data-part="nav-item-icon"]`)!;
+      const plainIcon = find('#plain [data-part="nav-item-icon"]')!;
+      assert.true(
+        Math.abs(
+          folderIcon.getBoundingClientRect().left -
+            plainIcon.getBoundingClientRect().left
+        ) < 1,
+        'same column as a plain rail item'
+      );
+    });
+
+    test('the flyout opens toward the content: right of a start sidebar, left of an end one', async function (assert) {
+      const state = new RailState();
+      await renderRail(state);
+
+      await click(TRIGGER);
+
+      let trigger = find(TRIGGER)!.getBoundingClientRect();
+      let flyout = find(FLYOUT)!.getBoundingClientRect();
+      assert.true(
+        flyout.left >= trigger.right - 1,
+        `start: flyout ${flyout.left} is right of trigger ${trigger.right}`
+      );
+
+      await click(TRIGGER);
+      state.side = 'end';
+      await settled();
+      await click(TRIGGER);
+
+      trigger = find(TRIGGER)!.getBoundingClientRect();
+      flyout = find(FLYOUT)!.getBoundingClientRect();
+      assert.true(
+        flyout.right <= trigger.left + 1,
+        `end: flyout ${flyout.right} is left of trigger ${trigger.left}`
+      );
     });
   }
 );

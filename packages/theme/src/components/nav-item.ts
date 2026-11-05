@@ -27,7 +27,10 @@ const navItem = tv({
   slots: {
     navItem: navItemRow,
     navItemIcon: 'inline-flex size-5 shrink-0 items-center justify-center',
-    navItemLabel: 'truncate group-data-[collapsed=true]/sidebar:sr-only',
+    // Hidden in the icon rail, except inside a folder's flyout: the flyout
+    // sits inside the sidebar's DOM but lists items with their labels.
+    navItemLabel:
+      'truncate group-data-[collapsed=true]/sidebar:[&:not([data-part=nav-folder-flyout]_*)]:sr-only',
     navFolder: 'flex flex-col',
     navFolderTrigger: navItemRow,
     navFolderChevron: [
@@ -36,7 +39,14 @@ const navItem = tv({
     ],
     navFolderPanel:
       'ms-4 flex flex-col gap-0.5 border-s border-neutral-muted ps-2',
-    navFolderFlyout: 'min-w-48 flex flex-col gap-0.5 p-1'
+    // A folder's items, floating beside the icon rail. Positioned `fixed`
+    // by the component, so it escapes the sidebar body's scroll clipping.
+    // `--sidebar-rail` is reset so the rows' rail-centering start padding
+    // (see `navItemRow`) works out to the same 0.5rem as their end padding.
+    navFolderFlyout: [
+      'z-50 flex min-w-48 flex-col gap-0.5 p-1 [--sidebar-rail:3.25rem]',
+      'rounded-xl border border-neutral-subtle bg-surface-input shadow-elevation-3'
+    ]
   },
   variants: {
     layout: {
