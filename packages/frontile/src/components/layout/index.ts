@@ -16,6 +16,13 @@ export {
   type MenuToggleSignature,
   type MenuToggleArgs
 } from './menu-toggle';
+export {
+  NavItem,
+  type NavItemSignature,
+  type NavItemArgs,
+  type NavItemLayout,
+  type NavItemClasses
+} from './nav-item';
 export { NavLink, type NavLinkSignature, type NavLinkArgs } from './nav-link';
 export { Navbar, type NavbarSignature, type NavbarArgs } from './navbar';
 export {
