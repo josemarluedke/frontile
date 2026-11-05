@@ -876,6 +876,21 @@ export default class FullAppLayoutExample extends Component {
 | `Cmd/Ctrl` + `B` | Collapses or expands the sidebar; below the breakpoint, opens or closes the drawer |
 | `Escape`         | Closes the drawer (sidebar or aside)                                                 |
 
+## Roadmap
+
+These are not part of `AppLayout` yet. Each one would be added without breaking the current API.
+
+| Not available yet | What you get today |
+| --- | --- |
+| Resizable sidebar and aside | Fixed widths |
+| Persisted layout state | Pass `@state` and save it wherever you keep preferences, such as a cookie or `localStorage` |
+| Sticky toolbar row under the navbar | One navbar row |
+| Top navigation above the sidebar | The sidebar spans the full height, with nothing above it |
+| Floating sidebar variant | The `inset` variant, which floats the sidebar on the frame |
+| Bottom-sheet mobile navigation | Below the breakpoint, the sidebar opens in a drawer |
+| Collapsible sidebar sections | Static `Sidebar.Group` labels |
+| Stacked rail style, with a short label under each icon | The collapsed sidebar shows only the icons, with the label as a tooltip |
+
 ## API
 
 <Signature @component="AppLayout" />
