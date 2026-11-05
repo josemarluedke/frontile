@@ -617,7 +617,7 @@ This one drops the circles for plain icons, makes the active step a filled
 pill, and shortens the connectors to fixed dashes. The `!` on the indicator
 classes is needed because the theme colors it per state.
 
-```gts preview
+```gts preview collapsible
 import { Stepper } from 'frontile';
 import {
   SearchIcon,
