@@ -1,8 +1,16 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, focus, settled } from '@ember/test-helpers';
+import {
+  render,
+  rerender,
+  find,
+  click,
+  focus,
+  settled
+} from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { AppLayout, NavFolder } from 'frontile';
+import { setPrefersReducedMotion } from 'frontile/test-support';
 import {
   mockMatchMedia,
   type MatchMediaMock
@@ -420,6 +428,126 @@ module(
       );
 
       assert.dom(ROOT).hasClass('custom-folder');
+    });
+  }
+);
+
+/** The panel shows no sign of having animated: as if it had started open. */
+function assertStartedOpen(assert: Assert, panel: HTMLElement): void {
+  assert.dom(TRIGGER).hasAttribute('aria-expanded', 'true');
+  assert.strictEqual(panel.style.height, '', 'no inline height');
+  assert.strictEqual(panel.style.overflow, '', 'no inline overflow');
+  assert.strictEqual(panel.style.transition, '', 'no transition');
+  assert.strictEqual(panel.getAnimations().length, 0, 'nothing animates');
+}
+
+async function nextFrame(): Promise<void> {
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+}
+
+module(
+  'Integration | Component | NavFolder opening animation | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    // The default path animates; reduced motion would hide the difference.
+    hooks.beforeEach(function () {
+      setPrefersReducedMotion(false);
+    });
+
+    hooks.afterEach(function () {
+      setPrefersReducedMotion(undefined);
+    });
+
+    test('a folder holding the active item starts open, without animating', async function (assert) {
+      await render(
+        <template>
+          <NavFolder @label="Reports" as |folder|>
+            <folder.Item @href="/a" @isActive={{true}}>A</folder.Item>
+          </NavFolder>
+        </template>
+      );
+
+      assertStartedOpen(assert, find(PANEL) as HTMLElement);
+    });
+
+    test('a child that becomes active after mount still animates the open', async function (assert) {
+      const state = new State();
+      await render(
+        <template>
+          <NavFolder @label="Reports" as |folder|>
+            <folder.Item @href="/a" @isActive={{state.active}}>A</folder.Item>
+          </NavFolder>
+        </template>
+      );
+      await nextFrame();
+
+      const panel = find(PANEL) as HTMLElement;
+      state.active = true;
+      await rerender();
+      assert.dom(TRIGGER).hasAttribute('aria-expanded', 'true');
+      assert.ok(
+        panel.style.transition.includes('height'),
+        'a height transition was written'
+      );
+      await settled();
+    });
+
+    test('a user click after mount still animates the open', async function (assert) {
+      await render(
+        <template>
+          <NavFolder @label="Reports" as |folder|>
+            <folder.Item @href="/a">A</folder.Item>
+          </NavFolder>
+        </template>
+      );
+      await nextFrame();
+
+      const panel = find(PANEL) as HTMLElement;
+      (find(TRIGGER) as HTMLButtonElement).click();
+      await rerender();
+      assert.ok(
+        panel.style.transition.includes('height'),
+        'a height transition was written'
+      );
+      await settled();
+    });
+
+    test('controlled @open mounted true starts open', async function (assert) {
+      await render(
+        <template>
+          <NavFolder @label="Reports" @open={{true}} as |folder|>
+            <folder.Item @href="/a" @isActive={{true}}>A</folder.Item>
+          </NavFolder>
+        </template>
+      );
+
+      assertStartedOpen(assert, find(PANEL) as HTMLElement);
+    });
+
+    test('controlled: an owner granting the mount-time open starts open', async function (assert) {
+      class Owner {
+        @tracked open = false;
+        onOpenChange = (open: boolean) => {
+          this.open = open;
+        };
+      }
+      const owner = new Owner();
+      await render(
+        <template>
+          <NavFolder
+            @label="Reports"
+            @open={{owner.open}}
+            @onOpenChange={{owner.onOpenChange}}
+            as |folder|
+          >
+            <folder.Item @href="/a" @isActive={{true}}>A</folder.Item>
+          </NavFolder>
+        </template>
+      );
+
+      assert.true(owner.open);
+      assertStartedOpen(assert, find(PANEL) as HTMLElement);
     });
   }
 );

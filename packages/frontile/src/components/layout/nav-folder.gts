@@ -316,8 +316,12 @@ class NavFolder extends Component<NavFolderSignature> {
           class={{this.classes.navFolderChevron}}
         />
       </NavLink>
+      {{! The mount-time auto-open lands in the same runloop as the first
+          render, before any frame, so the panel starts open instead of
+          sliding open on every load. Later opens animate. }}
       <Collapsible
         @isOpen={{this.isOpen}}
+        @instantUntilPainted={{true}}
         id={{this.panelId}}
         data-part="nav-folder-panel"
         role="group"

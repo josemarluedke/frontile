@@ -4,6 +4,7 @@ import { render, rerender, settled, find } from '@ember/test-helpers';
 import { getPendingWaiterState, getWaiters } from '@ember/test-waiters';
 import { Collapsible } from 'frontile';
 import { cell } from 'ember-resources';
+import { schedule } from '@ember/runloop';
 import { setPrefersReducedMotion } from 'frontile/test-support';
 
 const WAITER_NAME = 'frontile:collapsible';
@@ -575,6 +576,134 @@ module(
         'a height transition was written'
       );
       await settled();
+    });
+  }
+);
+
+/**
+ * Sets the cell once, after the render that first calls it: the same
+ * runloop as the insert, before any animation frame. This is when a caller
+ * that waits for its children to register learns its open state.
+ */
+function setAfterFirstRender(
+  target: { current: boolean },
+  value: boolean
+): string {
+  // Its arguments never change, so the helper runs once.
+  schedule('afterRender', () => {
+    target.current = value;
+  });
+  return '';
+}
+
+module(
+  'Integration | Component | Collapsible | instantUntilPainted',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    hooks.beforeEach(function () {
+      setPrefersReducedMotion(false);
+    });
+
+    hooks.afterEach(function () {
+      setPrefersReducedMotion(undefined);
+    });
+
+    test('an open that lands before the first frame is applied with no transition', async function (assert) {
+      const isOpen = cell(false);
+      await render(
+        <template>
+          <Collapsible
+            @isOpen={{isOpen.current}}
+            @instantUntilPainted={{true}}
+            data-test-panel
+          >
+            {{! template-lint-disable no-inline-styles }}
+            <p style="height: 40px">Body</p>
+          </Collapsible>
+          {{setAfterFirstRender isOpen true}}
+        </template>
+      );
+
+      const panel = find('[data-test-panel]') as HTMLElement;
+      assert.true(isOpen.current, 'opened after the first render');
+      assert.strictEqual(panel.style.transition, '', 'no transition');
+      assert.strictEqual(panel.style.height, '', 'no inline height');
+      assert.strictEqual(panel.style.overflow, '', 'no inline overflow');
+      assert.strictEqual(panel.style.opacity, '', 'no inline opacity');
+      assert.strictEqual(panel.getAnimations().length, 0, 'nothing animates');
+      assert.true(panel.offsetHeight >= 40, 'full height');
+      assert.false(isCollapsibleWaiterPending(), 'no waiter is left pending');
+    });
+
+    test('a close that lands before the first frame is applied with no transition', async function (assert) {
+      const isOpen = cell(true);
+      await render(
+        <template>
+          <Collapsible
+            @isOpen={{isOpen.current}}
+            @instantUntilPainted={{true}}
+            data-test-panel
+          >
+            {{! template-lint-disable no-inline-styles }}
+            <p style="height: 40px">Body</p>
+          </Collapsible>
+          {{setAfterFirstRender isOpen false}}
+        </template>
+      );
+
+      const panel = find('[data-test-panel]') as HTMLElement;
+      assert.strictEqual(panel.style.transition, '', 'no transition');
+      assert.strictEqual(panel.style.height, '0px');
+      assert.strictEqual(panel.style.opacity, '0');
+      assert.strictEqual(panel.style.overflow, 'hidden');
+      assert.false(isCollapsibleWaiterPending(), 'no waiter is left pending');
+    });
+
+    test('changes after the first frame still animate', async function (assert) {
+      const isOpen = cell(false);
+      await render(
+        <template>
+          <Collapsible
+            @isOpen={{isOpen.current}}
+            @instantUntilPainted={{true}}
+            data-test-panel
+          >
+            {{! template-lint-disable no-inline-styles }}
+            <p style="height: 40px">Body</p>
+          </Collapsible>
+        </template>
+      );
+      await flushAnimationFrames(1);
+
+      const panel = find('[data-test-panel]') as HTMLElement;
+      isOpen.current = true;
+      await rerender();
+      assert.ok(
+        panel.style.transition.includes('height'),
+        'a height transition was written'
+      );
+      await settled();
+    });
+
+    test('without it, an open before the first frame still animates', async function (assert) {
+      const isOpen = cell(false);
+      await render(
+        <template>
+          <Collapsible @isOpen={{isOpen.current}} data-test-panel>
+            {{! template-lint-disable no-inline-styles }}
+            <p style="height: 40px">Body</p>
+          </Collapsible>
+          {{setAfterFirstRender isOpen true}}
+        </template>
+      );
+
+      const panel = find('[data-test-panel]') as HTMLElement;
+      assert.true(isOpen.current);
+      assert.ok(
+        panel.style.transition.includes('height'),
+        'the default is unchanged: a height transition was written'
+      );
     });
   }
 );

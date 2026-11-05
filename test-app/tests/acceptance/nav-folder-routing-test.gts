@@ -33,6 +33,16 @@ module('Acceptance | NavFolder routing', function (hooks) {
     assert.dom(TRIGGER).hasAttribute('aria-expanded', 'true');
     assert.dom(TRIGGER).hasAttribute('data-active', 'true');
     assert.dom(TRIGGER).doesNotHaveAttribute('aria-current');
+
+    const panel = document.querySelector(
+      '[data-part="nav-folder-panel"]'
+    ) as HTMLElement;
+    assert.strictEqual(
+      panel.style.height,
+      '',
+      'started open: no inline height'
+    );
+    assert.strictEqual(panel.style.transition, '', 'no transition');
   });
 
   test('stays closed elsewhere and opens after a transition into a child', async function (assert) {
