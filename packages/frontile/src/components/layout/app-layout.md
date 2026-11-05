@@ -54,7 +54,7 @@ the sidebar sits directly on that frame with no border of its own. `attached`
 runs the content edge to edge: the sidebar becomes its own bordered surface
 and the navbar gets a border underneath instead of a card.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { array } from '@ember/helper';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
@@ -100,7 +100,7 @@ In the `inset` variant, `@navbarPlacement` decides whether the navbar is part
 of the frame or part of the card. `frame`, the default, puts it on the tinted
 background above the card. `content` makes it the card's first row.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { array } from '@ember/helper';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
@@ -156,7 +156,7 @@ a tooltip on hover or focus. For your own markup in the header, body or
 footer, wrap the text in `<span data-sidebar-label>` to hide it in the rail
 the same way.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
@@ -201,7 +201,7 @@ The logo sits in a 2rem square on a `primary` tile. In the icon rail only the
 logo shows, centered over the item icons; the title and subtitle are visually
 hidden but still name the link. Collapse this one with the toggle to see it.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
@@ -240,7 +240,7 @@ the same square. For a header `Brand` does not fit, write your own markup and
 wrap its text in `<span data-sidebar-label>` so the rail hides it, as the
 second layout here does.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { ViewIcon, RocketIcon } from 'site/components/icons';
 
@@ -302,7 +302,7 @@ renders nothing, for items the current user should not see.
 `Group` puts a heading over a set of items and names the group after it with
 `@label`. In the rail the heading is visually hidden.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import {
   ViewIcon,
@@ -481,7 +481,7 @@ the breakpoint, so any state held by the components inside it starts over.
 
 Narrow the window to below 48rem to open this one.
 
-```gts preview
+```gts preview collapsible
 import { hash } from '@ember/helper';
 import { AppLayout } from 'frontile';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
@@ -672,7 +672,7 @@ Each value can be set three ways:
   writes to it, and so can anything else that holds it. When `@state` is
   passed, the individual arguments and their callbacks are ignored.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { AppLayout, Button } from 'frontile';
@@ -717,7 +717,7 @@ To open or close parts of the layout from a component that is not inside the
 wherever suits the app, such as a service or a controller property. Each
 `AppLayout` has its own state, so two layouts on one page stay independent.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import type { TOC } from '@ember/component/template-only';
 import { AppLayout, AppLayoutState, Button } from 'frontile';
@@ -757,7 +757,7 @@ Every part in one layout, driven by one `AppLayoutState`: a sidebar with
 items and a group, both toggles, a navbar, a page header, the main content,
 and an aside with its toggle. Narrow the window to see the drawers.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { AppLayout, AppLayoutState, Button } from 'frontile';
