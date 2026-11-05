@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { LinkTo } from '@ember/routing';
-import { isRouteActive, normalizeRouteArgs } from '../../utils/route-active';
+import { isLinkActive, normalizeRouteArgs } from '../../utils/route-active';
 import type RouterService from '@ember/routing/router-service';
 
 interface NavLinkArgs {
@@ -79,14 +79,7 @@ class NavLink extends Component<NavLinkSignature> {
   }
 
   get isActive(): boolean {
-    if (this.args.isActive !== undefined) {
-      return this.args.isActive;
-    }
-    if (!this.args.route) {
-      return false;
-    }
-
-    return isRouteActive(this.router, this.args);
+    return isLinkActive(this.args, () => this.router);
   }
 
   get isDisabled(): boolean {

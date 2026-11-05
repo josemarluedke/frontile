@@ -67,3 +67,24 @@ export function isRouteActive(
     return false;
   }
 }
+
+/**
+ * `isRouteActive` for a router that is resolved lazily. `getRouter` runs only
+ * when the router is actually needed -- `route` given and `isActive` not -- so
+ * a link that never routes never touches `service:router`. Shared by
+ * `NavLink` and the handle `NavItem` registers with a folder, so both always
+ * agree on what is active.
+ */
+export function isLinkActive(
+  args: RouteActiveArgs,
+  getRouter: () => RouterService
+): boolean {
+  if (args.isActive !== undefined) {
+    return args.isActive;
+  }
+  if (!args.route) {
+    return false;
+  }
+
+  return isRouteActive(getRouter(), args);
+}

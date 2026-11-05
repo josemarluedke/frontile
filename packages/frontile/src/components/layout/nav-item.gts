@@ -1,10 +1,13 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
+import { service } from '@ember/service';
 import { on } from '@ember/modifier';
 import { registerDestructor } from '@ember/destroyable';
 import { useStyles } from '@frontile/theme';
 import Tooltip from '../overlays/tooltip';
 import NavLink from './nav-link';
+import { isLinkActive } from '../../utils/route-active';
+import type RouterService from '@ember/routing/router-service';
 import type { ComponentLike } from '@glint/template';
 
 /** How the item lays out its icon and label. */
@@ -147,16 +150,22 @@ interface NavItemSignature {
  * hidden but keeps naming the link, and shows as a tooltip on hover or focus.
  */
 class NavItem extends Component<NavItemSignature> {
+  // Resolved only when the handle's `isActive` needs the router (`@route`
+  // given, `@isActive` not), same as in `NavLink`.
+  @service declare router: RouterService;
+
   constructor(owner: unknown, args: NavItemSignature['Args']) {
     super(owner as never, args);
 
+    const getRouter = (): RouterService => this.router;
     const folder = this.args.folder;
     if (folder) {
       // The handle reads the args lazily, so the folder always sees the
       // item's current state.
       const unregister = folder.registerItem({
+        // What the link renders as active, router included.
         get isActive() {
-          return args.isActive ?? false;
+          return isLinkActive(args, getRouter);
         },
         get isHidden() {
           return args.isHidden ?? false;
