@@ -11,6 +11,7 @@ import {
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
+import { htmlSafe } from '@ember/template';
 import { AppLayout, NavFolder } from 'frontile';
 import { setPrefersReducedMotion } from 'frontile/test-support';
 import {
@@ -969,6 +970,87 @@ module(
         'same column as a plain rail item'
       );
     });
+
+    /** Whether the flyout is what a pointer at its centre would hit. */
+    function flyoutIsOnTop(): boolean {
+      const flyout = find(FLYOUT)!;
+      const rect = flyout.getBoundingClientRect();
+      const hit = document.elementFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2
+      );
+      return Boolean(hit && flyout.contains(hit));
+    }
+
+    // A positioned block in Main covering where the flyout opens: in page
+    // scroll mode the sticky sidebar is a stacking context, so a later
+    // positioned sibling paints over the flyout unless the sidebar is lifted.
+    for (const [scrollMode, variant, side, cover] of [
+      ['content', 'attached', 'start', 'relative'],
+      ['page', 'attached', 'start', 'relative'],
+      ['page', 'attached', 'start', 'sticky'],
+      ['page', 'inset', 'start', 'relative'],
+      ['page', 'attached', 'end', 'relative']
+    ] as const) {
+      const coverStyle = htmlSafe(
+        `position: ${cover}; top: 0; height: 2000px; background: white`
+      );
+      test(`the open flyout is on top of ${cover} content in Main (${scrollMode} scroll, ${variant}, ${side})`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout
+              @defaultSidebarCollapsed={{true}}
+              @scrollMode={{scrollMode}}
+              @variant={{variant}}
+              @sidebarSide={{side}}
+              as |layout|
+            >
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Body>
+                  <sidebar.Folder
+                    @label="Reports"
+                    @icon={{TestIcon}}
+                    as |folder|
+                  >
+                    <folder.Item @href="#a" id="child-a">A</folder.Item>
+                    <folder.Item @href="#b" id="child-b">B</folder.Item>
+                  </sidebar.Folder>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>
+                {{! template-lint-disable no-inline-styles }}
+                <div id="cover" style={{coverStyle}}>Cover</div>
+              </layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        await click(TRIGGER);
+
+        assert.dom(FLYOUT).isVisible();
+        const flyout = find(FLYOUT)!.getBoundingClientRect();
+        const cover = find('#cover')!.getBoundingClientRect();
+        assert.true(
+          side === 'start'
+            ? flyout.right > cover.left && flyout.left < cover.right
+            : flyout.left < cover.right && flyout.right > cover.left,
+          'the cover overlaps the flyout'
+        );
+        assert.true(flyoutIsOnTop(), 'the flyout, not Main, takes the pointer');
+        await click('#child-a');
+        assert
+          .dom(TRIGGER)
+          .hasAria('expanded', 'false', 'its items are clickable');
+        // Lifted only while the flyout is open: overlays (Modal, Drawer,
+        // Popover, Tooltip) have no z-index of their own and rely on coming
+        // later in the DOM, so a sidebar lifted for good would cover them.
+        assert.strictEqual(
+          getComputedStyle(find('[data-part="sidebar"]')!).zIndex,
+          'auto',
+          'the sidebar is not lifted while the flyout is closed'
+        );
+      });
+    }
 
     test('the flyout opens toward the content: right of a start sidebar, left of an end one', async function (assert) {
       const state = new RailState();

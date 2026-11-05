@@ -211,7 +211,18 @@ const appLayout = tv({
       },
       page: {
         base: 'min-h-dvh grid-rows-[auto_1fr]',
-        sidebar: 'sticky top-0 h-dvh self-start'
+        // `sticky` makes the sidebar a stacking context, so a `NavFolder`
+        // flyout's z-index only counts inside it and positioned content in
+        // `main` (later in the DOM) would paint over it. While a flyout is
+        // open the sidebar is lifted above in-page layers (z-10 is the
+        // highest used inside content: table headers, tabs, calendar).
+        // Only then: overlays (Modal, Drawer, Popover, Tooltip) have no
+        // z-index and stack by coming later in the DOM, so a sidebar lifted
+        // for good would cover them.
+        sidebar: [
+          'sticky top-0 h-dvh self-start',
+          'has-[[data-part=nav-folder-flyout]:not([hidden])]:z-20'
+        ]
       }
     }
   },
