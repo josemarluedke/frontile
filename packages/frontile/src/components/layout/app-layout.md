@@ -297,12 +297,11 @@ rail and the drawer. It takes the same routing arguments as `TabNav.Item`. With
 current page. The active item has `aria-current="page"`.
 
 `@isDisabled` drops the href so the link cannot be followed. `@isHidden`
-renders nothing, for items the current user should not see. Style one item with
-`@class`.
+renders nothing, for items the current user should not see.
 
-> **Migrating:** `AppLayout`'s `@classes` no longer reach items, so the
-> `sidebarItem`, `sidebarItemIcon` and `sidebarLabel` keys have no effect. Pass
-> `@class` to the item instead.
+Item styling lives on the item: style one with its own `@class`, which wins
+over a conflicting theme class. `AppLayout`'s `@classes` style the layout's own
+parts and do not reach items.
 
 `Group` puts a heading over a set of items and names the group after it with
 `@label`. In the rail the heading is visually hidden.

@@ -9584,7 +9584,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: "Class names appended to the folder's root element.",
+        description:
+          "Class names added to the folder's root element. Merged with Tailwind\nMerge, so a class that conflicts with a theme class wins.",
         tags: {},
       },
       {
@@ -9634,6 +9635,16 @@ const data: ComponentDoc[] = [
             },
             {
               identifier: 'navFolderFlyout',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'navFolderFlyoutLabel',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
               },
@@ -9869,7 +9880,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: "Class names appended to this item's theme classes.",
+        description:
+          "Class names added to this item's theme classes. Merged with Tailwind\nMerge, so a class that conflicts with a theme class wins.",
         tags: {},
       },
       {

@@ -98,7 +98,8 @@ import { ArchiveIcon, DeleteIcon, StarIcon } from 'site/components/icons';
 ## Styling
 
 An item's look comes from the theme. Add classes to one item with `@class`;
-they are appended to the item's own. `AppLayout`'s `@classes` does not reach
+they are merged with the item's own, so a class that conflicts with a theme
+class wins, like the text color here. `AppLayout`'s `@classes` does not reach
 items.
 
 ```gts preview

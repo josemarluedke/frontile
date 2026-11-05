@@ -136,10 +136,14 @@ is not visible, not focusable and not read by screen readers.
 Inside a `Sidebar` the folder is an inline disclosure: its items appear
 beneath the trigger.
 
-In the collapsed icon rail the trigger shows only its icon, and the folder
-opens as a flyout beside the rail instead. The flyout lists the items with
-their labels, appears without animation, and closes when you follow an item,
-click outside, press <kbd>Escape</kbd> or tab out of it. Opening it never
+In the collapsed icon rail the trigger shows only its icon, with the folder's
+label as a tooltip on hover or focus, like the rail items beside it. The
+folder opens as a flyout beside the rail instead. The flyout starts with the
+folder's label, lists the items with their labels (long ones are cut short
+with an ellipsis), appears without animation, and closes when you follow an
+item, click outside, press <kbd>Escape</kbd> or tab out of it. Expanding the
+sidebar closes it too; if focus was inside it, focus moves to the trigger.
+Opening it never
 changes the inline state, so expanding the sidebar again shows the folder as
 you left it. A folder holding the current page still shows as active in the
 rail, and a newly active item does not pop the flyout open.
@@ -204,7 +208,9 @@ import {
 - The trigger is a native `button` named by `@label`, with `aria-expanded` and
   `aria-controls` pointing at the items. In the icon rail `aria-expanded`
   follows the flyout.
-- The items sit in a `group` named by the trigger.
+- The items sit in a `group` named by the trigger. The label at the top of
+  the flyout repeats that name for sighted users only, so it is hidden from
+  assistive technology and is not a control.
 - The trigger never has `aria-current`; the active item inside it does.
 - The folder's `@icon` is hidden from assistive technology.
 - A closed folder keeps its items out of the tab order and the accessibility
@@ -222,7 +228,9 @@ import {
 | <kbd>Tab</kbd>                       | Moves through the trigger and, while open, its items. Leaving the flyout closes it |
 | <kbd>Escape</kbd>                    | Closes the flyout and returns focus to the trigger                                 |
 
-Clicking outside an open flyout closes it.
+Clicking outside an open flyout closes it. Expanding the sidebar with its
+keyboard shortcut while focus is in the flyout moves focus to the trigger,
+which stays in place as the folder turns inline.
 
 ## API
 
