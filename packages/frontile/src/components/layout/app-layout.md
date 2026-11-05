@@ -143,9 +143,8 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 ## Sidebar
 
 `Sidebar` is a full-height `nav` landmark that takes the first column. It
-yields `Header`, `Body` and `Footer` sections, `Item` links, `Group` and
-`Brand`. Give
-it a name with `@label` (default `Main`); if the page has more than one
+yields `Header`, `Body` and `Footer` sections, `Item` links, `Folder` for a
+collapsible set of items, `Group` and `Brand`. Give it a name with `@label` (default `Main`); if the page has more than one
 navigation, each needs its own. Render one `Sidebar` per layout: the layout
 gives its sidebar a fixed id, so a second one would repeat it.
 `SidebarToggle` is a button that collapses and expands it.
@@ -292,14 +291,18 @@ import { ViewIcon, RocketIcon } from 'site/components/icons';
 ### Items and groups
 
 `Item` is a link with an optional `@icon` and its label as the block. It is
-`NavItem` pre-bound to the sidebar, so it also knows about the icon rail and the
-drawer. It takes the same routing arguments as `TabNav.Item`. With `@href` it is a plain anchor
-and needs no router; set `@isActive` to mark the current page. The active item
-has `aria-current="page"`.
+[NavItem](./nav-item) pre-bound to the sidebar, so it also knows about the icon
+rail and the drawer. It takes the same routing arguments as `TabNav.Item`. With
+`@href` it is a plain anchor and needs no router; set `@isActive` to mark the
+current page. The active item has `aria-current="page"`.
 
 `@isDisabled` drops the href so the link cannot be followed. `@isHidden`
 renders nothing, for items the current user should not see. Style one item with
-`@class`; `AppLayout`'s `@classes` no longer reach items.
+`@class`.
+
+> **Migrating:** `AppLayout`'s `@classes` no longer reach items, so the
+> `sidebarItem`, `sidebarItemIcon` and `sidebarLabel` keys have no effect. Pass
+> `@class` to the item instead.
 
 `Group` puts a heading over a set of items and names the group after it with
 `@label`. In the rail the heading is visually hidden.
@@ -354,6 +357,51 @@ import {
       </layout.Navbar>
       <layout.Main>
         <layout.PageHeader @title='All projects' />
+      </layout.Main>
+    </AppLayout>
+  </div>
+</template>
+```
+
+### Folders
+
+`Folder` is [NavFolder](./nav-folder) pre-bound to the sidebar: a labelled
+trigger that opens and closes a set of items, one level deep. Give it a
+`@label` and an optional `@icon`, and write its items as `folder.Item`. It
+opens by itself when it holds the current page. In the icon rail it opens as a
+flyout beside the rail, and in the drawer it is always inline.
+
+```gts preview
+import { AppLayout } from 'frontile';
+import { ViewIcon, PackageIcon, SparklesIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout class='demo-app-layout' as |layout|>
+      <layout.Sidebar @label='Catalog' as |sidebar|>
+        <sidebar.Header>
+          <sidebar.Brand @title='Acme' @href='#'>
+            <:logo><SparklesIcon /></:logo>
+          </sidebar.Brand>
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Folder @label='Products' @icon={{PackageIcon}} as |folder|>
+            <folder.Item @href='#all-products' @isActive={{true}}>
+              All products
+            </folder.Item>
+            <folder.Item @href='#categories'>Categories</folder.Item>
+          </sidebar.Folder>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.SidebarToggle />
+        <span class='text-sm font-medium'>Catalog</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='All products' />
       </layout.Main>
     </AppLayout>
   </div>
@@ -648,6 +696,39 @@ import { AppLayout, Button } from 'frontile';
 </template>
 ```
 
+## Sizing tokens
+
+The layout publishes its two main sizes as CSS custom properties on its root
+element, so your own parts can line up with the shell:
+
+| Property              | Value                                                             |
+| --------------------- | ----------------------------------------------------------------- |
+| `--app-navbar-height` | `3rem`: the height of the navbar and of the sidebar header        |
+| `--app-sidebar-width` | The sidebar's drawn width, including the `inset` variant's gutter |
+
+`--app-sidebar-width` is `16rem` expanded and `4rem` collapsed in the
+`attached` variant, and `15rem` and `4.5rem` in `inset`. It is `0px` when there
+is no sidebar column: the layout has no `Sidebar`, the viewport is below the
+breakpoint and the sidebar is a drawer, or the sidebar is collapsed with
+`@collapsible="offcanvas"`.
+
+The sidebar sizes itself and does not read the token, so it is for your own
+styles. It is set after the first render, and is `0px` until a `Sidebar`
+registers with the layout. Where a flash matters, give it a fallback, such as
+`var(--app-sidebar-width, 0px)`.
+
+This bar is fixed under the navbar and starts beside the sidebar, whatever
+state the sidebar is in:
+
+```gts
+<div
+  class='fixed end-0 z-10'
+  style='top: var(--app-navbar-height, 3rem); inset-inline-start: var(--app-sidebar-width, 0px);'
+>
+  Filters
+</div>
+```
+
 ## Scrolling
 
 With `@scrollMode='content'`, the default, the layout is exactly the height
@@ -854,8 +935,13 @@ export default class FullAppLayoutExample extends Component {
   opened it: the toggle that opened it, otherwise the element that had focus
   when the shortcut was pressed (`MenuToggle` if focus was on the page body).
 - `Item` is a link. The active item has `aria-current="page"`. A disabled
-  item has no href and has `aria-disabled="true"`. Its `@icon` is hidden from
+  item has no href and has `aria-disabled="true"`; with neither `@href` nor
+  `@route` it is a disabled `<button>` instead. Its `@icon` is hidden from
   assistive technology, so the label is the link's name.
+- `Folder` has a button trigger with `aria-expanded` and `aria-controls`, and
+  its items sit in a `group` named by the trigger. In the icon rail it opens a
+  flyout that follows the trigger in the DOM. <kbd>Escape</kbd> closes the
+  flyout and returns focus to the trigger. See [NavFolder](./nav-folder).
 - In the icon rail, `Item` labels, `Group` headings and text inside
   `[data-sidebar-label]` are visually hidden but remain in the accessibility
   tree, so each link keeps its name. Hovering or focusing an `Item` in the
@@ -890,7 +976,6 @@ These are not part of `AppLayout` yet. Each one would be added without breaking 
 | Top navigation above the sidebar | The sidebar spans the full height, with nothing above it |
 | Floating sidebar variant | The `inset` variant, which floats the sidebar on the frame |
 | Bottom-sheet mobile navigation | Below the breakpoint, the sidebar opens in a drawer |
-| Collapsible sidebar sections | Static `Sidebar.Group` labels |
 | Stacked rail style, with a short label under each icon | The collapsed sidebar shows only the icons, with the label as a tooltip |
 
 ## API
@@ -898,6 +983,8 @@ These are not part of `AppLayout` yet. Each one would be added without breaking 
 <Signature @component="AppLayout" />
 <Signature @component="Sidebar" />
 <Signature @component="NavItem" />
+<Signature @component="NavFolder" />
+<Signature @component="NavLink" />
 <Signature @component="SidebarGroup" />
 <Signature @component="SidebarBrand" />
 <Signature @component="SidebarToggle" />

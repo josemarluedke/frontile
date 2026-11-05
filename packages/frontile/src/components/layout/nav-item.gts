@@ -48,7 +48,8 @@ interface NavItemArgs {
 
   /**
    * Marks the link as disabled. The href is dropped as well, so the link
-   * cannot be followed.
+   * cannot be followed; an item with neither `@href` nor `@route` is a
+   * button, which gets the native `disabled` attribute.
    *
    * @defaultValue false
    */
