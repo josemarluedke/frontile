@@ -274,6 +274,7 @@ class NavFolder extends Component<NavFolderSignature> {
   toggle = (): void => {
     if (this.isFlyoutMode) {
       this.flyoutOpen = !this.flyoutOpen;
+      this.#focusInFlyout = false;
     } else {
       this.setOpen(!this.isOpen);
     }
@@ -281,6 +282,13 @@ class NavFolder extends Component<NavFolderSignature> {
 
   #flyoutElement?: HTMLElement;
   #triggerElement?: HTMLElement;
+
+  /**
+   * Whether focus is inside the open flyout. Kept from focus events because
+   * expanding the sidebar removes the flyout in the same render that would
+   * have to look: by then focus has already fallen to `<body>`.
+   */
+  #focusInFlyout = false;
 
   /**
    * Closes the flyout. Focus inside it would be left on a hidden element,
@@ -291,6 +299,7 @@ class NavFolder extends Component<NavFolderSignature> {
       return;
     }
     this.flyoutOpen = false;
+    this.#focusInFlyout = false;
     const active = document.activeElement;
     if (active && this.#flyoutElement?.contains(active)) {
       this.#triggerElement?.focus();
@@ -299,7 +308,22 @@ class NavFolder extends Component<NavFolderSignature> {
 
   registerFlyout = modifier((element: HTMLElement) => {
     this.#flyoutElement = element;
+    const onFocusin = (): void => {
+      this.#focusInFlyout = true;
+    };
+    // A focusout with no destination (the window losing focus, or the
+    // flyout being removed) is not focus leaving for somewhere else.
+    const onFocusout = (event: FocusEvent): void => {
+      const next = event.relatedTarget;
+      if (next instanceof Node) {
+        this.#focusInFlyout = element.contains(next);
+      }
+    };
+    element.addEventListener('focusin', onFocusin);
+    element.addEventListener('focusout', onFocusout);
     return () => {
+      element.removeEventListener('focusin', onFocusin);
+      element.removeEventListener('focusout', onFocusout);
       if (this.#flyoutElement === element) {
         this.#flyoutElement = undefined;
       }
@@ -345,15 +369,24 @@ class NavFolder extends Component<NavFolderSignature> {
    *
    * Outside the rail it resets the flyout, so expanding the sidebar closes
    * it and the next collapse starts closed. Deferred: this runs during
-   * render, which has already read the state.
+   * render, which has already read the state. The flyout is gone by then,
+   * so focus that was inside it has fallen to `<body>`; it goes to the
+   * trigger, which is still there. Focus anywhere else is left alone.
    */
   dismissFlyout = modifier(
     (root: HTMLElement, [mode, open]: [boolean, boolean]) => {
       if (!mode) {
         if (this.flyoutOpen) {
+          const refocus = this.#focusInFlyout;
+          this.#focusInFlyout = false;
           schedule('afterRender', () => {
-            if (!this.isDestroying && !this.isDestroyed) {
-              this.flyoutOpen = false;
+            if (this.isDestroying || this.isDestroyed) {
+              return;
+            }
+            this.flyoutOpen = false;
+            const active = document.activeElement;
+            if (refocus && (!active || active === document.body)) {
+              this.#triggerElement?.focus();
             }
           });
         }

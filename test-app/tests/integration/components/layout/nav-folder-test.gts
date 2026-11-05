@@ -870,6 +870,66 @@ module(
       assert.dom(TRIGGER).hasAria('expanded', 'false');
     });
 
+    test('expanding the sidebar with focus in the flyout moves focus to the trigger', async function (assert) {
+      await renderRail(new RailState());
+
+      await click(TRIGGER);
+      await focus('#child-a');
+      assert.dom('#child-a').isFocused();
+
+      // The documented shortcut, pressed from inside the flyout.
+      await triggerKeyEvent('#child-a', 'keydown', 'B', modKeys());
+      assert.dom(FLYOUT).doesNotExist('the rail expanded');
+      assert.dom(TRIGGER).isFocused('focus did not fall to <body>');
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'inline: still closed');
+    });
+
+    test('expanding the sidebar with focus outside the flyout leaves focus alone', async function (assert) {
+      await renderRail(new RailState());
+
+      await click(TRIGGER);
+      await focus('#plain');
+      await triggerKeyEvent('#plain', 'keydown', 'B', modKeys());
+      assert.dom(FLYOUT).doesNotExist('the rail expanded');
+      assert.dom('#plain').isFocused('focus stays where it was');
+
+      // Focus once in the flyout, then moved out, is not "in the flyout".
+      await click('[data-part="sidebar-toggle"]');
+      await click(TRIGGER);
+      await focus('#child-a');
+      await focus('#outside');
+      await triggerKeyEvent('#outside', 'keydown', 'B', modKeys());
+      assert.dom('#outside').isFocused('not pulled back to the trigger');
+    });
+
+    test('data-active and a user-closed inline state survive collapse/expand cycles', async function (assert) {
+      const state = new RailState();
+      state.active = true;
+      await renderRail(state, { collapsed: false });
+
+      assert.dom(TRIGGER).hasAttribute('data-active', 'true', 'inline');
+      assert.dom(TRIGGER).hasAria('expanded', 'true', 'auto-opened');
+
+      await click(TRIGGER);
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'the user closed it');
+
+      await click('[data-part="sidebar-toggle"]');
+      assert.dom(FLYOUT).exists('rail');
+      assert.dom(TRIGGER).hasAttribute('data-active', 'true', 'rail');
+
+      await click('[data-part="sidebar-toggle"]');
+      assert.dom(PANEL).exists('inline again');
+      assert.dom(TRIGGER).hasAttribute('data-active', 'true', 'inline again');
+      assert
+        .dom(TRIGGER)
+        .hasAria('expanded', 'false', 'the user-closed folder stays closed');
+
+      await click('[data-part="sidebar-toggle"]');
+      await click('[data-part="sidebar-toggle"]');
+      assert.dom(TRIGGER).hasAttribute('data-active', 'true', 'second cycle');
+      assert.dom(TRIGGER).hasAria('expanded', 'false', 'still closed');
+    });
+
     test('the inline open state survives the flyout and collapse cycles', async function (assert) {
       await renderRail(new RailState(), {
         collapsed: false,
