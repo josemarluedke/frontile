@@ -49,19 +49,35 @@ import { AppLayout, Button } from 'frontile';
 
 ## Variants
 
-`inset`, the default, sets the content in a rounded card on a tinted frame.
-`attached` runs the content edge to edge, with a border under the navbar
-instead of a card.
+`inset`, the default, sets the content in a rounded card on a tinted frame, and
+the sidebar sits directly on that frame with no border of its own. `attached`
+runs the content edge to edge: the sidebar becomes its own bordered surface
+and the navbar gets a border underneath instead of a card.
 
 ```gts preview
 import { AppLayout } from 'frontile';
 import { array } from '@ember/helper';
+import { ViewIcon, SettingsIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
     {{#each (array 'inset' 'attached') as |variant|}}
       <AppLayout @variant={{variant}} class='demo-app-layout' as |layout|>
+        <layout.Sidebar @label={{variant}} as |sidebar|>
+          <sidebar.Header>
+            <span class='text-sm font-semibold' data-sidebar-label>Acme</span>
+          </sidebar.Header>
+          <sidebar.Body>
+            <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+              Overview
+            </sidebar.Item>
+            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+              Settings
+            </sidebar.Item>
+          </sidebar.Body>
+        </layout.Sidebar>
         <layout.Navbar>
+          <layout.SidebarToggle />
           <span class='text-sm font-medium'>{{variant}}</span>
         </layout.Navbar>
         <layout.Main>
