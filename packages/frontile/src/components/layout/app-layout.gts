@@ -429,7 +429,9 @@ class AppLayout extends Component<AppLayoutSignature> {
    * What the root publishes as `--app-sidebar-width` (see the `base` slot in
    * the theme): the width of the sidebar column, or none when there is no
    * column: no Sidebar registered, the sidebar is a drawer below the
-   * breakpoint, or it is collapsed off-canvas.
+   * breakpoint, or it is collapsed off-canvas. A published token only: it
+   * settles after the first render (`none` until a Sidebar registers), and
+   * the sidebar's own width does not read it.
    */
   get sidebarColumn(): 'shown' | 'collapsed' | 'none' {
     const sidebar = this.registeredSidebar;

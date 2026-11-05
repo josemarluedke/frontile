@@ -493,6 +493,8 @@ const hashClasses = {
   mainCard: 'custom-card'
 };
 
+const collapsedState = new AppLayoutState({ sidebarCollapsed: true });
+
 function readVar(name: string): string {
   const root = find('[data-component="app-layout"]')!;
   return getComputedStyle(root).getPropertyValue(name).trim();
@@ -691,6 +693,42 @@ module(
       assert.strictEqual(sidebar.offsetWidth, 240);
     });
 
+    test('the sidebar width does not transition on first render', async function (assert) {
+      const widthTransitions: string[] = [];
+      const record = (event: Event): void => {
+        const { propertyName, target } = event as TransitionEvent;
+        if (
+          propertyName === 'width' &&
+          (target as HTMLElement).dataset['part'] === 'sidebar'
+        ) {
+          widthTransitions.push(event.type);
+        }
+      };
+      document.addEventListener('transitionrun', record, true);
+      document.addEventListener('transitionstart', record, true);
+      try {
+        await render(
+          <template>
+            <AppLayout @variant="attached" as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Body>Items</sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+              <layout.Aside>Aside</layout.Aside>
+            </AppLayout>
+          </template>
+        );
+        const sidebar = find('[data-part="sidebar"]') as HTMLElement;
+        // Right after render, before any settling or transition.
+        assert.strictEqual(sidebar.offsetWidth, 256, 'drawn at 16rem at once');
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        assert.deepEqual(widthTransitions, [], 'the width never transitioned');
+      } finally {
+        document.removeEventListener('transitionrun', record, true);
+        document.removeEventListener('transitionstart', record, true);
+      }
+    });
+
     test('a standalone Sidebar keeps its width without a layout root', async function (assert) {
       await render(
         <template>
@@ -743,5 +781,3 @@ module(
     });
   }
 );
-
-const collapsedState = new AppLayoutState({ sidebarCollapsed: true });

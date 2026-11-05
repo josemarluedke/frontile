@@ -14,6 +14,55 @@ import type { VariantProps } from '../tw';
 // no sidebar or aside needs no special casing. The inset card is a single
 // decorative element (`mainCard`) drawn behind the parts in the same grid
 // area; the parts round their own corners to match it.
+// The sidebar's drawn width per variant and collapse state, written once.
+// `sidebar` is the sidebar's own width class; `token` sets the root's
+// published `--app-sidebar-width` to the same length. The sidebar does NOT
+// read the token: the token is `0px` until a `Sidebar` registers with the
+// layout (after the first render), and the sidebar's width must not depend
+// on that. Class names are literal strings so Tailwind can see them.
+// The inset widths include the `pe-3`/`ps-3` gutter (border box).
+const sidebarWidths = {
+  attached: {
+    expanded: { sidebar: 'w-64', token: '[--app-sidebar-width:16rem]' },
+    collapsed: { sidebar: 'w-16', token: '[--app-sidebar-width:4rem]' }
+  },
+  inset: {
+    expanded: {
+      sidebar: 'w-60 [--sidebar-rail:3.75rem]',
+      token: '[--app-sidebar-width:15rem]'
+    },
+    collapsed: {
+      sidebar: 'w-[4.5rem] [--sidebar-rail:3.75rem]',
+      token: '[--app-sidebar-width:4.5rem]'
+    }
+  }
+} as const;
+
+const sidebarWidthVariants = (['attached', 'inset'] as const).flatMap(
+  (variant) => [
+    {
+      variant,
+      collapsed: true,
+      class: { sidebar: sidebarWidths[variant].collapsed.sidebar }
+    },
+    {
+      variant,
+      collapsed: false,
+      class: { sidebar: sidebarWidths[variant].expanded.sidebar }
+    },
+    {
+      variant,
+      sidebarColumn: 'shown' as const,
+      class: { base: sidebarWidths[variant].expanded.token }
+    },
+    {
+      variant,
+      sidebarColumn: 'collapsed' as const,
+      class: { base: sidebarWidths[variant].collapsed.token }
+    }
+  ]
+);
+
 const appLayout = tv({
   slots: {
     // Publishes the shell's sizes as custom properties, for the parts below
@@ -23,12 +72,15 @@ const appLayout = tv({
     //   header, so the two stay on one row.
     // - `--app-sidebar-width`: the sidebar's drawn width, border box (it
     //   includes the inset variant's `pe-3`/`ps-3` gutter), set by the
-    //   `sidebarColumn` variant below. `0px` when there is no sidebar column:
+    //   `sidebarColumn` variant below. Published for consumers only (the
+    //   sidebar sizes itself): it settles after the first render, `0px` until
+    //   a Sidebar registers, so use a fallback where a flash matters. `0px`
+    //   when there is no sidebar column:
     //   no Sidebar in the layout, below the breakpoint, or collapsed with
     //   `collapsible="offcanvas"`.
     //
-    // Parts rendered outside an `AppLayout` have no root to read them from
-    // and fall back to the literal sizes.
+    // The navbar and sidebar header read `--app-navbar-height` (always set)
+    // with a literal fallback for parts rendered outside an `AppLayout`.
     base: [
       'relative grid w-full text-on-surface-app',
       'grid-cols-[auto_minmax(0,1fr)_auto]',
@@ -253,54 +305,9 @@ const appLayout = tv({
   },
 
   compoundVariants: [
-    // The sidebar reads its width from the root's `--app-sidebar-width`;
-    // the fallback is the same width, for a standalone sidebar.
-    {
-      variant: 'attached',
-      collapsed: true,
-      class: { sidebar: 'w-(--app-sidebar-width,4rem)' }
-    },
-    {
-      variant: 'attached',
-      collapsed: false,
-      class: { sidebar: 'w-(--app-sidebar-width,16rem)' }
-    },
-    {
-      variant: 'inset',
-      collapsed: true,
-      class: {
-        sidebar: 'w-(--app-sidebar-width,4.5rem) [--sidebar-rail:3.75rem]'
-      }
-    },
-    {
-      variant: 'inset',
-      collapsed: false,
-      class: {
-        sidebar: 'w-(--app-sidebar-width,15rem) [--sidebar-rail:3.75rem]'
-      }
-    },
-
-    // The root's `--app-sidebar-width` per variant and collapse state.
-    {
-      variant: 'attached',
-      sidebarColumn: 'shown',
-      class: { base: '[--app-sidebar-width:16rem]' }
-    },
-    {
-      variant: 'attached',
-      sidebarColumn: 'collapsed',
-      class: { base: '[--app-sidebar-width:4rem]' }
-    },
-    {
-      variant: 'inset',
-      sidebarColumn: 'shown',
-      class: { base: '[--app-sidebar-width:15rem]' }
-    },
-    {
-      variant: 'inset',
-      sidebarColumn: 'collapsed',
-      class: { base: '[--app-sidebar-width:4.5rem]' }
-    },
+    // The sidebar's own width and the root's `--app-sidebar-width` both come
+    // from `sidebarWidths`, so they cannot drift.
+    ...sidebarWidthVariants,
 
     // The inset sidebar floats on the frame, so it supplies its own spacing
     // to the card (the grid has no gap).
