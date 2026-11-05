@@ -67,6 +67,27 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
     );
   });
 
+  test('@class wins over a conflicting theme class', async function (assert) {
+    await render(
+      <template>
+        <NavItem @href="/a" @class="text-primary" id="custom">A</NavItem>
+        <span class="text-primary" id="reference">R</span>
+      </template>
+    );
+
+    const item = find('#custom') as HTMLElement;
+    assert.dom(item).hasClass('text-primary');
+    assert
+      .dom(item)
+      .doesNotHaveClass('text-neutral-firm', 'the theme color is merged away');
+    assert.true(item.classList.length > 1, 'keeps the other theme classes');
+    assert.strictEqual(
+      getComputedStyle(item).color,
+      getComputedStyle(find('#reference')!).color,
+      'the item renders in the consumer color'
+    );
+  });
+
   test('active item has aria-current="page"', async function (assert) {
     await render(
       <template>

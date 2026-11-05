@@ -14,7 +14,7 @@ import {
   shift,
   type Placement
 } from '@floating-ui/dom';
-import { useStyles } from '@frontile/theme';
+import { twMerge, useStyles } from '@frontile/theme';
 import Collapsible from '../utilities/collapsible';
 import Tooltip from '../overlays/tooltip';
 import { ChevronRightIcon } from '../../-private/icons';
@@ -76,7 +76,10 @@ interface NavFolderArgs {
    */
   isHidden?: boolean;
 
-  /** Class names appended to the folder's root element. */
+  /**
+   * Class names added to the folder's root element. Merged with Tailwind
+   * Merge, so a class that conflicts with a theme class wins.
+   */
   class?: string;
 
   /**
@@ -500,10 +503,9 @@ class NavFolder extends Component<NavFolderSignature> {
     };
   }
 
+  /** Merged, so a consumer class wins over a conflicting theme class. */
   get className(): string {
-    return this.args.class
-      ? `${this.classes.navFolder} ${this.args.class}`
-      : this.classes.navFolder;
+    return twMerge(this.classes.navFolder, this.args.class) ?? '';
   }
 
   <template>

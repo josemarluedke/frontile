@@ -432,6 +432,21 @@ module(
 
       assert.dom(ROOT).hasClass('custom-folder');
     });
+
+    test('@class wins over a conflicting theme class', async function (assert) {
+      await render(
+        <template>
+          <NavFolder @label="Reports" @class="flex-row" as |folder|>
+            <folder.Item @href="/a">A</folder.Item>
+          </NavFolder>
+        </template>
+      );
+
+      assert.dom(ROOT).hasClass('flex-row');
+      assert.dom(ROOT).doesNotHaveClass('flex-col', 'merged away');
+      assert.dom(ROOT).hasClass('flex', 'other theme classes stay');
+      assert.strictEqual(getComputedStyle(find(ROOT)!).flexDirection, 'row');
+    });
   }
 );
 

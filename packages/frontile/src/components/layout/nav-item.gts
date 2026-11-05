@@ -3,7 +3,7 @@ import { cached } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { on } from '@ember/modifier';
 import { registerDestructor } from '@ember/destroyable';
-import { useStyles } from '@frontile/theme';
+import { twMerge, useStyles } from '@frontile/theme';
 import Tooltip from '../overlays/tooltip';
 import NavLink from './nav-link';
 import { isLinkActive } from '../../utils/route-active';
@@ -75,7 +75,10 @@ interface NavItemArgs {
    */
   layout?: NavItemLayout;
 
-  /** Class names appended to this item's theme classes. */
+  /**
+   * Class names added to this item's theme classes. Merged with Tailwind
+   * Merge, so a class that conflicts with a theme class wins.
+   */
   class?: string;
 
   /**
@@ -171,10 +174,9 @@ class NavItem extends Component<NavItemSignature> {
     return this.args.classes ?? themeClasses();
   }
 
+  /** Merged, so a consumer class wins over a conflicting theme class. */
   get className(): string {
-    return this.args.class
-      ? `${this.classes.navItem} ${this.args.class}`
-      : this.classes.navItem;
+    return twMerge(this.classes.navItem, this.args.class) ?? '';
   }
 
   get layout(): NavItemLayout {
