@@ -291,13 +291,15 @@ import { ViewIcon, RocketIcon } from 'site/components/icons';
 
 ### Items and groups
 
-`Item` is a link with an optional `@icon` and its label as the block. It takes
-the same routing arguments as `TabNav.Item`. With `@href` it is a plain anchor
+`Item` is a link with an optional `@icon` and its label as the block. It is
+`NavItem` pre-bound to the sidebar, so it also knows about the icon rail and the
+drawer. It takes the same routing arguments as `TabNav.Item`. With `@href` it is a plain anchor
 and needs no router; set `@isActive` to mark the current page. The active item
 has `aria-current="page"`.
 
 `@isDisabled` drops the href so the link cannot be followed. `@isHidden`
-renders nothing, for items the current user should not see.
+renders nothing, for items the current user should not see. Style one item with
+`@class`; `AppLayout`'s `@classes` no longer reach items.
 
 `Group` puts a heading over a set of items and names the group after it with
 `@label`. In the rail the heading is visually hidden.
@@ -895,7 +897,7 @@ These are not part of `AppLayout` yet. Each one would be added without breaking 
 
 <Signature @component="AppLayout" />
 <Signature @component="Sidebar" />
-<Signature @component="SidebarItem" />
+<Signature @component="NavItem" />
 <Signature @component="SidebarGroup" />
 <Signature @component="SidebarBrand" />
 <Signature @component="SidebarToggle" />

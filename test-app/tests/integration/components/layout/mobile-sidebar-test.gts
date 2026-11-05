@@ -425,7 +425,9 @@ module(
             <layout.Sidebar as |sidebar|>
               <sidebar.Body>
                 <sidebar.Item @href="#item-a" id="item-a">A</sidebar.Item>
-                <sidebar.Item @isDisabled={{true}} id="item-b">B</sidebar.Item>
+                <sidebar.Item @href="#item-b" @isDisabled={{true}} id="item-b">
+                  B
+                </sidebar.Item>
               </sidebar.Body>
             </layout.Sidebar>
             <layout.Main>Content</layout.Main>

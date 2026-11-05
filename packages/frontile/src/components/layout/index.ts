@@ -42,11 +42,6 @@ export {
   type SidebarGroupArgs
 } from './sidebar-group';
 export {
-  SidebarItem,
-  type SidebarItemSignature,
-  type SidebarItemArgs
-} from './sidebar-item';
-export {
   SidebarToggle,
   type SidebarToggleSignature,
   type SidebarToggleArgs

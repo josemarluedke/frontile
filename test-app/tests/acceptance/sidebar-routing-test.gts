@@ -8,7 +8,7 @@ module('Acceptance | Sidebar.Item routing', function (hooks) {
   test('route item renders a LinkTo and is active on its route', async function (assert) {
     await visit('/sidebar-demo/second');
 
-    let links = document.querySelectorAll('[data-part="sidebar-item"]');
+    let links = document.querySelectorAll('[data-part="nav-item"]');
     assert.strictEqual(links.length, 2);
     const first = links[0] as HTMLAnchorElement;
     const second = links[1] as HTMLAnchorElement;
@@ -22,7 +22,7 @@ module('Acceptance | Sidebar.Item routing', function (hooks) {
 
     await click(first);
 
-    links = document.querySelectorAll('[data-part="sidebar-item"]');
+    links = document.querySelectorAll('[data-part="nav-item"]');
     assert.dom(links[0] as HTMLElement).hasAttribute('aria-current', 'page');
     assert
       .dom(links[1] as HTMLElement)

@@ -5,7 +5,7 @@ import {
   AppLayout,
   Sidebar,
   SidebarGroup,
-  SidebarItem,
+  NavItem,
   AppLayoutState
 } from 'frontile';
 import type { TOC } from '@ember/component/template-only';
@@ -22,7 +22,7 @@ function isVisiblyHidden(el: Element): boolean {
 }
 
 module(
-  'Integration | Component | Sidebar.Item | frontile/layout',
+  'Integration | Component | Sidebar.Item (bound NavItem) | frontile/layout',
   function (hooks) {
     setupRenderingTest(hooks);
 
@@ -39,16 +39,14 @@ module(
         </template>
       );
 
-      assert.dom('a[data-part="sidebar-item"]').exists({ count: 1 });
+      assert.dom('a[data-part="nav-item"]').exists({ count: 1 });
+      assert.dom('a[data-part="nav-item"]').hasAttribute('href', '/reports');
+      assert.dom('a[data-part="nav-item"]').hasText('Reports');
       assert
-        .dom('a[data-part="sidebar-item"]')
-        .hasAttribute('href', '/reports');
-      assert.dom('a[data-part="sidebar-item"]').hasText('Reports');
-      assert
-        .dom('a[data-part="sidebar-item"]')
+        .dom('a[data-part="nav-item"]')
         .doesNotHaveAttribute('aria-current');
       assert
-        .dom('a[data-part="sidebar-item"]')
+        .dom('a[data-part="nav-item"]')
         .hasAttribute('aria-disabled', 'false');
     });
 
@@ -121,8 +119,8 @@ module(
         </template>
       );
 
-      assert.dom('[data-part="sidebar-item"]').exists({ count: 1 });
-      assert.dom('[data-part="sidebar-item"]').hasText('Shown');
+      assert.dom('[data-part="nav-item"]').exists({ count: 1 });
+      assert.dom('[data-part="nav-item"]').hasText('Shown');
       assert.dom('[data-test-icon]').doesNotExist();
       assert
         .dom('[data-part="sidebar-body"]')
@@ -145,13 +143,13 @@ module(
       );
 
       assert
-        .dom('[data-part="sidebar-item"] [data-part="sidebar-item-icon"]')
+        .dom('[data-part="nav-item"] [data-part="nav-item-icon"]')
         .hasAttribute('aria-hidden', 'true');
       assert
-        .dom('[data-part="sidebar-item-icon"] [data-test-icon]')
+        .dom('[data-part="nav-item-icon"] [data-test-icon]')
         .exists('the icon component renders inside the icon slot');
       assert
-        .dom('[data-part="sidebar-item"] [data-part="sidebar-label"]')
+        .dom('[data-part="nav-item"] [data-part="nav-item-label"]')
         .hasText('Reports');
     });
 
@@ -180,7 +178,7 @@ module(
         .hasAttribute('role', 'group')
         .hasAttribute('aria-labelledby', label.id);
       assert
-        .dom('[data-part="sidebar-group"] [data-part="sidebar-item"]')
+        .dom('[data-part="sidebar-group"] [data-part="nav-item"]')
         .exists({ count: 2 }, 'the items are inside the labelled group');
     });
 
@@ -228,7 +226,7 @@ module(
       );
 
       for (const selector of [
-        '#item [data-part="sidebar-label"]',
+        '#item [data-part="nav-item-label"]',
         '[data-part="sidebar-group-label"]'
       ]) {
         const label = find(selector)!;
@@ -276,11 +274,11 @@ module(
         .doesNotExist('no tooltip while the sidebar is expanded');
     });
 
-    test('SidebarItem and SidebarGroup render on their own, outside a Sidebar', async function (assert) {
+    test('NavItem and SidebarGroup render on their own, outside a Sidebar', async function (assert) {
       await render(
         <template>
           <SidebarGroup @label="Reports">
-            <SidebarItem @href="/daily" @isActive={{true}}>Daily</SidebarItem>
+            <NavItem @href="/daily" @isActive={{true}}>Daily</NavItem>
           </SidebarGroup>
         </template>
       );
@@ -289,7 +287,7 @@ module(
         .dom('[data-part="sidebar-group"] a[href="/daily"]')
         .hasAttribute('aria-current', 'page');
       assert.dom('[data-part="sidebar-group"]').hasAttribute('class');
-      assert.dom('[data-part="sidebar-item"]').hasAttribute('class');
+      assert.dom('[data-part="nav-item"]').hasAttribute('class');
       assert.dom('[data-part="sidebar-group-label"]').hasText('Reports');
     });
 

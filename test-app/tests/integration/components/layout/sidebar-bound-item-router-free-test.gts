@@ -12,7 +12,7 @@ class ThrowingRouter extends Service {
 }
 
 module(
-  'Integration | Component | Sidebar.Item | router-free items',
+  'Integration | Component | Sidebar.Item (bound NavItem) | router-free items',
   function (hooks) {
     setupRenderingTest(hooks);
 

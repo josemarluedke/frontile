@@ -5,11 +5,12 @@ import { registerDestructor } from '@ember/destroyable';
 import { guidFor } from '@ember/object/internals';
 import { useStyles } from '@frontile/theme';
 import Drawer from '../overlays/drawer';
-import SidebarItem from './sidebar-item';
+import NavItem from './nav-item';
 import SidebarGroup from './sidebar-group';
 import SidebarBrand from './sidebar-brand';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
+import type { NavItemClasses } from './nav-item';
 import type Owner from '@ember/owner';
 import type { AppLayoutVariants } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
@@ -76,7 +77,7 @@ interface SidebarSignature {
         Body: WithBoundArgs<typeof SidebarBody, 'class'>;
         Footer: WithBoundArgs<typeof SidebarFooter, 'class'>;
         Item: WithBoundArgs<
-          typeof SidebarItem,
+          typeof NavItem,
           'classes' | 'rail' | 'tooltipPlacement'
         >;
         Group: WithBoundArgs<typeof SidebarGroup, 'classes'>;
@@ -200,6 +201,20 @@ class Sidebar extends Component<SidebarSignature> {
     });
   }
 
+  /**
+   * Item styling comes from the `navItem` theme, not from `AppLayout`'s
+   * `@classes`: consumers style an item with `@class` / `@classes` on it.
+   */
+  @cached
+  get itemClasses(): NavItemClasses {
+    const styles = useStyles().navItem();
+    return {
+      navItem: styles.navItem(),
+      navItemIcon: styles.navItemIcon(),
+      navItemLabel: styles.navItemLabel()
+    };
+  }
+
   @cached
   get slotClasses() {
     const custom = this.args.layout?.classes;
@@ -207,13 +222,7 @@ class Sidebar extends Component<SidebarSignature> {
       header: this.styles.sidebarHeader({ class: custom?.sidebarHeader }),
       body: this.styles.sidebarBody({ class: custom?.sidebarBody }),
       footer: this.styles.sidebarFooter({ class: custom?.sidebarFooter }),
-      item: {
-        sidebarItem: this.styles.sidebarItem({ class: custom?.sidebarItem }),
-        sidebarItemIcon: this.styles.sidebarItemIcon({
-          class: custom?.sidebarItemIcon
-        }),
-        sidebarLabel: this.styles.sidebarLabel({ class: custom?.sidebarLabel })
-      },
+      item: this.itemClasses,
       group: {
         sidebarGroup: this.styles.sidebarGroup({ class: custom?.sidebarGroup }),
         sidebarGroupLabel: this.styles.sidebarGroupLabel({
@@ -278,7 +287,7 @@ class Sidebar extends Component<SidebarSignature> {
               Body=(component SidebarBody class=this.slotClasses.body)
               Footer=(component SidebarFooter class=this.slotClasses.footer)
               Item=(component
-                SidebarItem
+                NavItem
                 classes=this.slotClasses.item
                 rail=this.rail
                 tooltipPlacement=this.tooltipPlacement
@@ -306,7 +315,7 @@ class Sidebar extends Component<SidebarSignature> {
             Body=(component SidebarBody class=this.slotClasses.body)
             Footer=(component SidebarFooter class=this.slotClasses.footer)
             Item=(component
-              SidebarItem
+              NavItem
               classes=this.slotClasses.item
               rail=this.rail
               tooltipPlacement=this.tooltipPlacement
