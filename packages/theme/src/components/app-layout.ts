@@ -43,7 +43,9 @@ const appLayout = tv({
     sidebarBrand: [
       ...focusVisibleRing,
       'flex min-w-0 flex-1 items-center gap-2 rounded-md',
-      'group-data-[collapsed=true]/sidebar:justify-center'
+      // Offset so the logo sits at the rail's center in both states (see
+      // `sidebarItem`): header padding is 0.75rem, the logo is 2rem wide.
+      'ms-[calc((var(--sidebar-rail,4rem)_-_3.5rem)/2)]'
     ],
     // A fixed 2rem square. `data-tile="true"` tints it; without the tile the
     // consumer's logo is shown as is.
@@ -72,13 +74,18 @@ const appLayout = tv({
     sidebarItem: [
       ...focusVisibleRing,
       'flex min-h-9 w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm',
+      // The icon's position never depends on the collapsed state, so the rail
+      // closes over it instead of the icon sliding as the width animates.
+      // Start padding puts it at the center of the rail's content box:
+      // (rail - body padding 1rem - icon 1.25rem) / 2. `--sidebar-rail` is
+      // the content width, so the inset variant excludes its 0.75rem gap.
+      'ps-[calc((var(--sidebar-rail,4rem)_-_2.25rem)/2)]',
       'text-neutral-firm',
       'not-data-[disabled=true]:hover:bg-neutral-subtle',
       'not-data-[disabled=true]:hover:text-neutral-strong',
       'data-[active=true]:bg-neutral-soft data-[active=true]:font-medium',
       'data-[active=true]:text-neutral-strong',
-      'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled',
-      'group-data-[collapsed=true]/sidebar:justify-center'
+      'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
     ],
     sidebarItemIcon: 'inline-flex size-5 shrink-0 items-center justify-center',
     // `Sidebar.Group`: a labelled set of items. The label is visually hidden
@@ -231,8 +238,16 @@ const appLayout = tv({
   compoundVariants: [
     { variant: 'attached', collapsed: true, class: { sidebar: 'w-16' } },
     { variant: 'attached', collapsed: false, class: { sidebar: 'w-64' } },
-    { variant: 'inset', collapsed: true, class: { sidebar: 'w-[4.5rem]' } },
-    { variant: 'inset', collapsed: false, class: { sidebar: 'w-60' } },
+    {
+      variant: 'inset',
+      collapsed: true,
+      class: { sidebar: 'w-[4.5rem] [--sidebar-rail:3.75rem]' }
+    },
+    {
+      variant: 'inset',
+      collapsed: false,
+      class: { sidebar: 'w-60 [--sidebar-rail:3.75rem]' }
+    },
 
     // The inset sidebar floats on the frame, so it supplies its own spacing
     // to the card (the grid has no gap).
