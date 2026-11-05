@@ -32,6 +32,7 @@ const componentScopes = [
   'overlays',
   'navigation',
   'disclosure',
+  'layout',
 ];
 
 const expectedSourceInventory = [
