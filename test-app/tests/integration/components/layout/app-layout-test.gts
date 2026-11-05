@@ -5,11 +5,12 @@ import {
   find,
   click,
   settled,
-  triggerKeyEvent
+  triggerKeyEvent,
+  waitUntil
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { on } from '@ember/modifier';
-import { AppLayout, AppLayoutState } from 'frontile';
+import { AppLayout, AppLayoutState, Sidebar } from 'frontile';
 import { mockMatchMedia } from 'test-app/tests/helpers/match-media';
 
 // The navbar sits inside the card when its box lies within the card's box.
@@ -491,3 +492,256 @@ const hashClasses = {
   main: 'custom-main',
   mainCard: 'custom-card'
 };
+
+function readVar(name: string): string {
+  const root = find('[data-component="app-layout"]')!;
+  return getComputedStyle(root).getPropertyValue(name).trim();
+}
+
+// The #ember-testing container is scaled, so `offsetWidth` (layout pixels)
+// is compared against the variable resolved through a probe in the root.
+function resolveLength(value: string): number {
+  const probe = document.createElement('div');
+  probe.style.width = value;
+  probe.style.height = '0';
+  probe.style.position = 'absolute';
+  find('[data-component="app-layout"]')!.appendChild(probe);
+  const width = probe.offsetWidth;
+  probe.remove();
+  return width;
+}
+
+module(
+  'Integration | Component | AppLayout sizing tokens | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    test('root exposes --app-navbar-height as 3rem', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Navbar>Navbar</layout.Navbar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(readVar('--app-navbar-height'), '3rem');
+    });
+
+    test('--app-sidebar-width follows the collapsed state (16rem then 4rem)', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>
+              <button
+                type="button"
+                data-test-toggle
+                {{on "click" layout.state.toggleSidebar}}
+              >Toggle</button>
+            </layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(readVar('--app-sidebar-width'), '16rem');
+      await click('[data-test-toggle]');
+      assert.strictEqual(readVar('--app-sidebar-width'), '4rem');
+      await click('[data-test-toggle]');
+      assert.strictEqual(readVar('--app-sidebar-width'), '16rem');
+    });
+
+    test('inset values: 15rem expanded, 4.5rem collapsed', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>
+              <button
+                type="button"
+                data-test-toggle
+                {{on "click" layout.state.toggleSidebar}}
+              >Toggle</button>
+            </layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(readVar('--app-sidebar-width'), '15rem');
+      await click('[data-test-toggle]');
+      assert.strictEqual(readVar('--app-sidebar-width'), '4.5rem');
+    });
+
+    test('--app-sidebar-width is 0px for an offcanvas sidebar while collapsed', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @defaultSidebarCollapsed={{true}} as |layout|>
+            <layout.Sidebar @collapsible="offcanvas" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>
+              <button
+                type="button"
+                data-test-toggle
+                {{on "click" layout.state.toggleSidebar}}
+              >Toggle</button>
+            </layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(readVar('--app-sidebar-width'), '0px');
+      await click('[data-test-toggle]');
+      assert.strictEqual(readVar('--app-sidebar-width'), '15rem');
+    });
+
+    test('--app-sidebar-width is 0px with no Sidebar', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(readVar('--app-sidebar-width'), '0px');
+    });
+
+    test('--app-sidebar-width is 0px below the breakpoint', async function (assert) {
+      const media = mockMatchMedia(500);
+      try {
+        await render(
+          <template>
+            <AppLayout as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Body>Items</sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+        assert.strictEqual(readVar('--app-sidebar-width'), '0px');
+
+        media.setWidth(1200);
+        await settled();
+        assert.strictEqual(readVar('--app-sidebar-width'), '15rem');
+      } finally {
+        media.restore();
+      }
+    });
+
+    test('the variable equals the attached sidebar width, expanded and collapsed', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>
+              <button
+                type="button"
+                data-test-toggle
+                {{on "click" layout.state.toggleSidebar}}
+              >Toggle</button>
+            </layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const sidebar = find('[data-part="sidebar"]') as HTMLElement;
+      assert.strictEqual(
+        sidebar.offsetWidth,
+        resolveLength(readVar('--app-sidebar-width')),
+        'expanded'
+      );
+      assert.strictEqual(sidebar.offsetWidth, 256);
+
+      await click('[data-test-toggle]');
+      // The width transitions; wait for it to finish.
+      await waitUntil(() => sidebar.offsetWidth === 64, { timeout: 2000 });
+      assert.strictEqual(
+        sidebar.offsetWidth,
+        resolveLength(readVar('--app-sidebar-width')),
+        'collapsed'
+      );
+    });
+
+    test('the variable equals the inset sidebar width', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const sidebar = find('[data-part="sidebar"]') as HTMLElement;
+      assert.strictEqual(
+        sidebar.offsetWidth,
+        resolveLength(readVar('--app-sidebar-width'))
+      );
+      assert.strictEqual(sidebar.offsetWidth, 240);
+    });
+
+    test('a standalone Sidebar keeps its width without a layout root', async function (assert) {
+      await render(
+        <template>
+          <div data-test-host>
+            <Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </Sidebar>
+          </div>
+          <div data-test-host-collapsed>
+            <Sidebar @state={{collapsedState}} as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </Sidebar>
+          </div>
+        </template>
+      );
+
+      const expanded = find(
+        '[data-test-host] [data-part="sidebar"]'
+      ) as HTMLElement;
+      const collapsed = find(
+        '[data-test-host-collapsed] [data-part="sidebar"]'
+      ) as HTMLElement;
+      assert.strictEqual(expanded.offsetWidth, 256, '16rem expanded');
+      assert.strictEqual(collapsed.offsetWidth, 64, '4rem collapsed');
+    });
+
+    test('the navbar and sidebar header are 3rem tall and aligned', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Header>Brand</sidebar.Header>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Navbar>Navbar</layout.Navbar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const navbar = find('[data-part="navbar"]') as HTMLElement;
+      const header = find('[data-part="sidebar-header"]') as HTMLElement;
+      assert.strictEqual(navbar.offsetHeight, 48);
+      assert.strictEqual(header.offsetHeight, 48);
+      assert.strictEqual(
+        header.getBoundingClientRect().top,
+        navbar.getBoundingClientRect().top,
+        'same row'
+      );
+    });
+  }
+);
+
+const collapsedState = new AppLayoutState({ sidebarCollapsed: true });

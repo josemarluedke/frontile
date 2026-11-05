@@ -16,9 +16,23 @@ import type { VariantProps } from '../tw';
 // area; the parts round their own corners to match it.
 const appLayout = tv({
   slots: {
+    // Publishes the shell's sizes as custom properties, for the parts below
+    // and for consumers (sticky offsets, custom parts):
+    //
+    // - `--app-navbar-height`: the height of the navbar and of the sidebar
+    //   header, so the two stay on one row.
+    // - `--app-sidebar-width`: the sidebar's drawn width, border box (it
+    //   includes the inset variant's `pe-3`/`ps-3` gutter), set by the
+    //   `sidebarColumn` variant below. `0px` when there is no sidebar column:
+    //   no Sidebar in the layout, below the breakpoint, or collapsed with
+    //   `collapsible="offcanvas"`.
+    //
+    // Parts rendered outside an `AppLayout` have no root to read them from
+    // and fall back to the literal sizes.
     base: [
       'relative grid w-full text-on-surface-app',
-      'grid-cols-[auto_minmax(0,1fr)_auto]'
+      'grid-cols-[auto_minmax(0,1fr)_auto]',
+      '[--app-navbar-height:3rem]'
     ],
 
     // `group/sidebar` plus `data-collapsed` on the element lets any descendant
@@ -37,7 +51,8 @@ const appLayout = tv({
     // The sidebar's `nav` inside the mobile drawer: always expanded, as tall
     // as the drawer.
     mobileSidebar: 'group/sidebar flex min-h-0 flex-1 flex-col',
-    sidebarHeader: 'flex h-12 shrink-0 items-center gap-2 px-3',
+    sidebarHeader:
+      'flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 px-3',
     // `Sidebar.Brand`: logo and name, meant for the header. In the rail only
     // the logo shows, centered like an item's icon; the text block is taken
     // out of the flow (`sr-only`) so it neither pushes the logo aside nor
@@ -89,7 +104,8 @@ const appLayout = tv({
       'text-neutral-firm hover:bg-neutral-subtle hover:text-neutral-strong'
     ],
 
-    navbar: 'col-[2/-1] row-start-1 flex h-12 min-w-0 items-center gap-2 px-3',
+    navbar:
+      'col-[2/-1] row-start-1 flex h-(--app-navbar-height,3rem) min-w-0 items-center gap-2 px-3',
 
     main: 'col-start-2 row-start-2 min-h-0 min-w-0 outline-none',
     mainCard: 'pointer-events-none col-[2/-1]',
@@ -164,6 +180,15 @@ const appLayout = tv({
       false: {}
     },
 
+    // What the layout's root reports for `--app-sidebar-width`: `shown` and
+    // `collapsed` take the width from `variant` (compound variants below);
+    // `none` is no sidebar column. Set by `AppLayout` only.
+    sidebarColumn: {
+      shown: {},
+      collapsed: {},
+      none: { base: '[--app-sidebar-width:0px]' }
+    },
+
     // `icon` shrinks to a rail, `offcanvas` hides entirely, `none` ignores
     // `collapsed` (the Sidebar passes `collapsed: false` for it).
     collapsible: {
@@ -228,17 +253,53 @@ const appLayout = tv({
   },
 
   compoundVariants: [
-    { variant: 'attached', collapsed: true, class: { sidebar: 'w-16' } },
-    { variant: 'attached', collapsed: false, class: { sidebar: 'w-64' } },
+    // The sidebar reads its width from the root's `--app-sidebar-width`;
+    // the fallback is the same width, for a standalone sidebar.
+    {
+      variant: 'attached',
+      collapsed: true,
+      class: { sidebar: 'w-(--app-sidebar-width,4rem)' }
+    },
+    {
+      variant: 'attached',
+      collapsed: false,
+      class: { sidebar: 'w-(--app-sidebar-width,16rem)' }
+    },
     {
       variant: 'inset',
       collapsed: true,
-      class: { sidebar: 'w-[4.5rem] [--sidebar-rail:3.75rem]' }
+      class: {
+        sidebar: 'w-(--app-sidebar-width,4.5rem) [--sidebar-rail:3.75rem]'
+      }
     },
     {
       variant: 'inset',
       collapsed: false,
-      class: { sidebar: 'w-60 [--sidebar-rail:3.75rem]' }
+      class: {
+        sidebar: 'w-(--app-sidebar-width,15rem) [--sidebar-rail:3.75rem]'
+      }
+    },
+
+    // The root's `--app-sidebar-width` per variant and collapse state.
+    {
+      variant: 'attached',
+      sidebarColumn: 'shown',
+      class: { base: '[--app-sidebar-width:16rem]' }
+    },
+    {
+      variant: 'attached',
+      sidebarColumn: 'collapsed',
+      class: { base: '[--app-sidebar-width:4rem]' }
+    },
+    {
+      variant: 'inset',
+      sidebarColumn: 'shown',
+      class: { base: '[--app-sidebar-width:15rem]' }
+    },
+    {
+      variant: 'inset',
+      sidebarColumn: 'collapsed',
+      class: { base: '[--app-sidebar-width:4.5rem]' }
     },
 
     // The inset sidebar floats on the frame, so it supplies its own spacing
@@ -331,6 +392,7 @@ const appLayout = tv({
     breakpoint: 'md',
     collapsed: false,
     collapsible: 'icon',
+    sidebarColumn: 'shown',
     sidebarSide: 'start',
     standalone: false,
     inDrawer: false,

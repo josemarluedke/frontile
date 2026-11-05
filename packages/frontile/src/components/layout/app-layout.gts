@@ -410,6 +410,38 @@ class AppLayout extends Component<AppLayoutSignature> {
     });
   }
 
+  /**
+   * The root's classes. Kept out of `styles`, which the context shares with
+   * the parts: `sidebarColumn` reads the registered `Sidebar`, whose own
+   * state comes from that context, so putting it there would be a cycle.
+   */
+  get rootClass(): string {
+    const { appLayout } = useStyles();
+
+    return appLayout({
+      variant: this.variant,
+      scrollMode: this.scrollMode,
+      sidebarColumn: this.sidebarColumn
+    }).base({ class: this.args.classes?.base });
+  }
+
+  /**
+   * What the root publishes as `--app-sidebar-width` (see the `base` slot in
+   * the theme): the width of the sidebar column, or none when there is no
+   * column: no Sidebar registered, the sidebar is a drawer below the
+   * breakpoint, or it is collapsed off-canvas.
+   */
+  get sidebarColumn(): 'shown' | 'collapsed' | 'none' {
+    const sidebar = this.registeredSidebar;
+    if (!sidebar || this.belowBreakpoint) {
+      return 'none';
+    }
+    if (sidebar.collapsed) {
+      return sidebar.collapsible === 'offcanvas' ? 'none' : 'collapsed';
+    }
+    return 'shown';
+  }
+
   @cached
   get context(): AppLayoutContext {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -473,7 +505,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       data-sidebar-collapsed={{boolString this.effectiveSidebarCollapsed}}
       data-mobile-sidebar-open={{boolString this.state.mobileSidebarOpen}}
       data-aside-open={{boolString this.state.asideOpen}}
-      class={{this.styles.base class=@classes.base}}
+      class={{this.rootClass}}
       {{this.captureRoot}}
       ...attributes
     >
