@@ -2,52 +2,11 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerKeyEvent } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
-import { tv } from 'tailwind-variants';
 import { Chip } from 'frontile';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { chipStubStyles } from '../../../helpers/chip-stub-styles';
 
-registerCustomStyles({
-  chip: tv({
-    slots: {
-      base: ['chip'],
-      content: ['chip-content'],
-      dot: ['chip-dot'],
-      closeButton: ['chip-close-button']
-    },
-    variants: {
-      variant: {
-        solid: 'chip-solid',
-        outline: 'chip-outline',
-        soft: 'chip-soft'
-      },
-      color: {
-        neutral: 'chip-neutral',
-        primary: 'chip-primary',
-        secondary: 'chip-secondary',
-        tertiary: 'chip-tertiary',
-        success: 'chip-success',
-        warning: 'chip-warning',
-        danger: 'chip-danger'
-      },
-      size: {
-        xs: 'chip-xs',
-        sm: 'chip-sm',
-        md: 'chip-md',
-        lg: 'chip-lg'
-      },
-      radius: {
-        none: 'radius-none',
-        sm: 'radius-sm',
-        lg: 'radius-lg',
-        full: 'radius-full'
-      }
-    },
-    defaultVariants: {
-      size: 'md',
-      color: 'primary'
-    }
-  }) as never
-});
+registerCustomStyles({ chip: chipStubStyles });
 
 module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
   setupRenderingTest(hooks);

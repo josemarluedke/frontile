@@ -2,39 +2,14 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerEvent } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
-import { tv } from 'tailwind-variants';
 import { CloseButton } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import Component from '@glimmer/component';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { closeButtonStubStyles } from '../../../helpers/close-button-stub-styles';
 
-registerCustomStyles({
-  closeButton: tv({
-    slots: {
-      base: 'close-button',
-      icon: 'close-button__icon'
-    },
-
-    variants: {
-      size: {
-        xs: 'close-button--xs',
-        sm: 'close-button--sm',
-        md: 'close-button--md',
-        lg: 'close-button--lg',
-        xl: 'close-button--xl'
-      },
-      variant: {
-        ghost: 'close-button-ghost',
-        soft: 'close-button-soft'
-      }
-    },
-    defaultVariants: {
-      size: 'md',
-      variant: 'ghost'
-    }
-  } as never)
-});
+registerCustomStyles({ closeButton: closeButtonStubStyles });
 
 module(
   'Integration | Component | @frontile/utilities/CloseButton',
