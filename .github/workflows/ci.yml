@@ -11,10 +11,10 @@ env:
   CI: 'true'
 
 jobs:
-  test:
-    name: Tests
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
       VOLTA_FEATURE_PNPM: true
 
@@ -29,10 +29,82 @@ jobs:
         run: pnpm lint:css
       - name: Build V2 Addons
         run: pnpm build
-      - name: Test
-        run: pnpm test
       - name: Test site (node:test)
         run: pnpm --filter site test:node
+
+  # The ember suite runs as parallel ember-exam partitions. Each job builds the
+  # packages and test-app itself, then runs only its slice of the test modules.
+  test-shard:
+    name: Ember tests (${{ matrix.partition }}/${{ matrix.shards }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      VOLTA_FEATURE_PNPM: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # `shards` must equal the number of `partition` entries.
+        shards: [4]
+        partition: [1, 2, 3, 4]
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: volta-cli/action@v4
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build V2 Addons
+        run: pnpm build
+      - name: Build test app
+        run: pnpm --filter test-app exec vite build --mode development
+      - name: Test
+        run: >-
+          pnpm --filter test-app exec ember exam --path dist --reporter dot
+          --split ${{ matrix.shards }} --partition ${{ matrix.partition }}
+
+  # Single stable check for branch protection. Named `Tests` so it keeps the
+  # "CI / Tests" check name that this workflow has always reported.
+  test:
+    name: Tests
+    needs: [lint, test-shard]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Require lint and every shard to pass
+        run: |
+          if [ "${{ needs.lint.result }}" != "success" ] || [ "${{ needs.test-shard.result }}" != "success" ]; then
+            echo "lint: ${{ needs.lint.result }}, test-shard: ${{ needs.test-shard.result }}"
+            exit 1
+          fi
+
+      # `needs.test-shard.result` is an aggregate over the matrix. Also check
+      # each shard's latest attempt, so re-running one shard cannot hide
+      # another that is still red.
+      - name: Require each shard's latest attempt to pass
+        run: |
+          shards=$(gh api --paginate \
+            "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs?filter=latest" \
+            --jq '.jobs[] | select(.name | startswith("Ember tests (")) | "\(.name)=\(.conclusion)"')
+          echo "$shards"
+          [ -n "$shards" ] || { echo "no shard jobs found"; exit 1; }
+
+          # The shard count N comes from the job names, "Ember tests (i/N)".
+          # Every i in 1..N must be present and green, so a missing shard fails.
+          total=$(echo "$shards" | head -n1 | sed -E 's/^Ember tests \([0-9]+\/([0-9]+)\)=.*/\1/')
+          rc=0
+          for i in $(seq 1 "$total"); do
+            echo "$shards" | grep -qxF "Ember tests ($i/$total)=success" || {
+              echo "shard $i/$total is missing or did not pass"
+              rc=1
+            }
+          done
+          exit $rc
 
   # try-scenarios:
   #   name: Compat ${{ matrix.ember-try-scenario }}

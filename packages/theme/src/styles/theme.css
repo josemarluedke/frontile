@@ -21,6 +21,16 @@
   --size-icon-kilo: var(--font-size-29); /* Icon size for kilo scale. */
   --size-icon-mega: var(--font-size-31); /* Icon size for mega scale. */
 
+  /* ==================== Stepper Container Thresholds ====================
+   * Container widths at which a collapsed Stepper reveals its titles. These
+   * are Frontile-namespaced on purpose: the generic `--container-*` sizes
+   * (`@md`, `@2xl`) are shared with `max-w-*` and apps commonly redefine them.
+   * `var()` cannot be used inside a container query condition, so apps retune
+   * these here, in their own `@theme` block, at build time.
+   */
+  --container-fr-stepper-bottom: 28rem; /* labelPosition="bottom" shows titles from here. */
+  --container-fr-stepper-end: 42rem; /* labelPosition="end" shows titles from here. */
+
   /* ==================== Border Thickness ==================== */
   --border-width-thin: 0.5px; /* Thin, subtle border style. */
   --border-width-default: 1px; /* Default border width. */

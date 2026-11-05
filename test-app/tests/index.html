@@ -34,8 +34,10 @@
     <script type="module">import "ember-testing";</script>
     <script type="module">
       import { start } from './test-helper';
-      import.meta.glob("./**/*.{js,ts,gjs,gts}", { eager: true });
-      start();
+      // ember-exam needs the test modules lazily so it can split and filter
+      // them; helpers they import still load on demand.
+      const availableModules = import.meta.glob("./**/*-test.{js,ts,gjs,gts}");
+      start({ availableModules });
     </script>
 
     {{content-for "body-footer"}}

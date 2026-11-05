@@ -49,6 +49,7 @@ Use CSS variables to customize:
 - **Opacity** - `--opacity-hover`, `--opacity-disabled`
 - **Typography** - Font families, sizes, and text styles
 - **Component sizes** - Modal and drawer sizes
+- **Stepper label thresholds** - `--container-fr-stepper-bottom` (default `28rem`) and `--container-fr-stepper-end` (default `42rem`) set the container width at which a collapsed Stepper shows its titles. They are namespaced on purpose, so redefining `--container-md` and friends in your app does not move them
 
 ### Benefits of CSS Variables
 

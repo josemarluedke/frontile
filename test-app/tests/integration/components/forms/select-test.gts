@@ -20,12 +20,38 @@ import {
 import { array, hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { selectOptionByKey, ownParts } from 'frontile/test-support';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { chipStubStyles } from '../../../helpers/chip-stub-styles';
+import { closeButtonStubStyles } from '../../../helpers/close-button-stub-styles';
 
 // Simple equality helper
 const eq = (a: unknown, b: unknown) => a === b;
 
 module('Integration | Component | Select | @frontile/forms', function (hooks) {
+  // The Multiple-mode tests assert against the stub chip theme's class names
+  // and its padding-free geometry; a chip's close button is stubbed the same
+  // way (it is part of the chip's width). Register both for this module rather
+  // than relying on chip-test.gts / close-button-test.gts having been loaded in
+  // the same run, and restore whatever was there afterwards.
+  let chipStyles: ReturnType<typeof useStyles>['chip'];
+  let closeButtonStyles: ReturnType<typeof useStyles>['closeButton'];
+
+  hooks.before(function () {
+    ({ chip: chipStyles, closeButton: closeButtonStyles } = useStyles());
+    registerCustomStyles({
+      chip: chipStubStyles,
+      closeButton: closeButtonStubStyles
+    });
+  });
+
+  hooks.after(function () {
+    registerCustomStyles({
+      chip: chipStyles,
+      closeButton: closeButtonStyles
+    });
+  });
+
   setupRenderingTest(hooks);
 
   const getNativeSelect = () => {
@@ -2354,9 +2380,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
    *
    * The fixture has to leave less room beside the chips than that 64px floor,
    * or it does not reproduce the case at all. How much room it actually leaves
-   * cannot be reasoned about from the production chip theme: `chip-test.gts`
-   * calls `registerCustomStyles` at module scope, which replaces the `chip`
-   * theme for the whole suite with padding-free stub classnames, so the chips
+   * cannot be reasoned about from the production chip theme: this module
+   * registers the stub `chip` theme (helpers/chip-stub-styles.ts) with
+   * padding-free stub classnames in place of it, so the chips
    * here are narrower than production chips by their entire horizontal
    * padding. The tightness is therefore measured at runtime and asserted below
    * ("premise"), rather than assumed — if the chip theme (real or stubbed) ever
@@ -2496,9 +2522,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     // The chip theme's real 'soft' + 'primary' compound variant resolves to
     // `bg-primary-subtle` (see packages/theme/src/components/chip.ts), but the
-    // test suite globally overrides the `chip` theme via `registerCustomStyles`
-    // in chip-test.gts with stub classnames per variant (no compound
-    // resolution), so `hasClass('bg-primary-subtle')` can never pass here.
+    // module registers the stub `chip` theme (helpers/chip-stub-styles.ts)
+    // with stub classnames per variant (no compound resolution), so
+    // `hasClass('bg-primary-subtle')` can never pass here.
     // Assert against the variant stubs instead, matching the convention used
     // by chip-test.gts / buttons-test.gts elsewhere in this suite.
     const chip = '[data-part="chip"][data-key="apple"]';
@@ -2648,8 +2674,8 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .doesNotHaveClass('chip-sm', '@chip.size overrides the sm default');
     // `span:first-child` would pass regardless of @withDot, because
     // chip.gts renders the content span as the first child when there is no
-    // dot. Target the dot's own stub class instead (chip-test.gts registers
-    // `dot: ['chip-dot']` on the mocked chip theme).
+    // dot. Target the dot's own stub class instead (the stub chip theme
+    // in helpers/chip-stub-styles.ts defines `dot: ['chip-dot']`).
     assert.dom(`${chip} .chip-dot`).exists('@chip.withDot renders the dot');
   });
 

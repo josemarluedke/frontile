@@ -1257,6 +1257,9 @@ importers:
       ember-cli-htmlbars:
         specifier: ^7.0.1
         version: 7.0.1(@babel/core@7.29.7)(ember-source@7.3.0(@glimmer/component@2.1.1))
+      ember-exam:
+        specifier: ^10.2.1
+        version: 10.2.1(@glint/template@1.9.0)(ember-qunit@9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@3.0.0))(ember-source@7.3.0(@glimmer/component@2.1.1))(qunit@3.0.0)(webpack@5.110.3)
       ember-focus-trap:
         specifier: ^2.0.0
         version: 2.0.0(@babel/core@7.29.7)
@@ -7674,6 +7677,17 @@ packages:
         integrity: sha512-8gOi6SvtEGJ7njzSfVbzTOB46ryIYNQi9a56QBr0ZvXW676eJslnIet5n3oS6zAiaae0TkxbYForfDekzDUd2A==
       }
 
+  ember-exam@10.2.1:
+    resolution:
+      {
+        integrity: sha512-LyvR5V2xosvUhthH2RJRwtBL/QM7YVtDPPI3JbTLjpNBWMNAAMx7w2SPKJDxVHqwHo2vhCi3pX8bScZQoWwGxw==
+      }
+    engines: { node: '>= 18' }
+    peerDependencies:
+      ember-qunit: '*'
+      ember-source: '>= 4.0.0'
+      qunit: '*'
+
   ember-focus-trap@2.0.0:
     resolution:
       {
@@ -8326,6 +8340,13 @@ packages:
       }
     engines: { node: '>=10' }
 
+  execa@8.0.1:
+    resolution:
+      {
+        integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==
+      }
+    engines: { node: '>=16.17' }
+
   execa@9.6.1:
     resolution:
       {
@@ -8964,6 +8985,13 @@ packages:
       }
     engines: { node: '>=10' }
 
+  get-stream@8.0.1:
+    resolution:
+      {
+        integrity: sha512-VaUJspBffn/LMCJVoMvSAdmscJyS1auj5Zulnn5UoYcY531UWmdwhRWkcGKnGU93m5HSXP9LP2usOryrBtQowA==
+      }
+    engines: { node: '>=16' }
+
   get-stream@9.0.1:
     resolution:
       {
@@ -9047,7 +9075,6 @@ packages:
       {
         integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==
       }
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@13.0.6:
@@ -9062,7 +9089,7 @@ packages:
       {
         integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==
       }
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@9.3.5:
     resolution:
@@ -9484,6 +9511,13 @@ packages:
         integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
       }
     engines: { node: '>=10.17.0' }
+
+  human-signals@5.0.0:
+    resolution:
+      {
+        integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==
+      }
+    engines: { node: '>=16.17.0' }
 
   human-signals@8.0.1:
     resolution:
@@ -9997,6 +10031,13 @@ packages:
         integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==
       }
     engines: { node: '>=8' }
+
+  is-stream@3.0.0:
+    resolution:
+      {
+        integrity: sha512-LnQR4bZ9IADDRSkvpqMGvt/tEJWclzklNgSw48V5EAaAeDd6qGvN8ei6k5p0tvxSR171VmGyHuTiAOfxAbr8kA==
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
 
   is-stream@4.0.1:
     resolution:
@@ -11347,6 +11388,13 @@ packages:
       }
     engines: { node: '>=8' }
 
+  mimic-fn@4.0.0:
+    resolution:
+      {
+        integrity: sha512-vqiC06CuhBTUdZH+RYl8sFrL096vA45Ok5ISO6sE/Mr1jRbGH4Csnhi8f3wKVl7x8mO4Au7Ir9D3Oyv1VYMFJw==
+      }
+    engines: { node: '>=12' }
+
   mimic-response@1.0.1:
     resolution:
       {
@@ -11798,6 +11846,13 @@ packages:
       }
     engines: { node: '>=8' }
 
+  npm-run-path@5.3.0:
+    resolution:
+      {
+        integrity: sha512-ppwTtiJZq0O/ai0z7yfudtBpWIoxM8yE6nHi1X47eFR2EWORqfbu6CnPlNsjeN683eT0qG6H/Pyf9fCcvjnnnQ==
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+
   npm-run-path@6.0.0:
     resolution:
       {
@@ -11922,6 +11977,13 @@ packages:
         integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==
       }
     engines: { node: '>=6' }
+
+  onetime@6.0.0:
+    resolution:
+      {
+        integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==
+      }
+    engines: { node: '>=12' }
 
   oniguruma-parser@0.12.2:
     resolution:
@@ -13904,6 +13966,13 @@ packages:
         integrity: sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==
       }
     engines: { node: '>=6' }
+
+  strip-final-newline@3.0.0:
+    resolution:
+      {
+        integrity: sha512-dOESqjYr96iWYylGObzd39EuNTa5VJxyvVAEm5Jnh7KGo75V43Hk1odPQkNDyXNmUR6k+gEiDVXnjB8HJ3crXw==
+      }
+    engines: { node: '>=12' }
 
   strip-final-newline@4.0.0:
     resolution:
@@ -20341,6 +20410,28 @@ snapshots:
       content-tag: 4.2.1
       oxc-parser: 0.130.0
 
+  ember-exam@10.2.1(@glint/template@1.9.0)(ember-qunit@9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@3.0.0))(ember-source@7.3.0(@glimmer/component@2.1.1))(qunit@3.0.0)(webpack@5.110.3):
+    dependencies:
+      '@babel/core': 7.29.7
+      chalk: 5.6.2
+      cli-table3: 0.6.5
+      debug: 4.4.3
+      ember-auto-import: 2.13.1(@glint/template@1.9.0)(webpack@5.110.3)
+      ember-cli-babel: 8.3.2(@babel/core@7.29.7)
+      ember-qunit: 9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@3.0.0)
+      ember-source: 7.3.0(@glimmer/component@2.1.1)
+      execa: 8.0.1
+      fs-extra: 11.4.1
+      js-yaml: 4.3.2
+      qunit: 3.0.0
+      rimraf: 5.0.10
+      semver: 7.8.5
+      silent-error: 1.1.1
+    transitivePeerDependencies:
+      - '@glint/template'
+      - supports-color
+      - webpack
+
   ember-focus-trap@2.0.0(@babel/core@7.29.7):
     dependencies:
       '@embroider/addon-shim': 1.10.3
@@ -20896,6 +20987,18 @@ snapshots:
       signal-exit: 3.0.7
       strip-final-newline: 2.0.0
 
+  execa@8.0.1:
+    dependencies:
+      cross-spawn: 7.0.6
+      get-stream: 8.0.1
+      human-signals: 5.0.0
+      is-stream: 3.0.0
+      merge-stream: 2.0.0
+      npm-run-path: 5.3.0
+      onetime: 6.0.0
+      signal-exit: 4.1.0
+      strip-final-newline: 3.0.0
+
   execa@9.6.1:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
@@ -21358,6 +21461,8 @@ snapshots:
 
   get-stream@6.0.1: {}
 
+  get-stream@8.0.1: {}
+
   get-stream@9.0.1:
     dependencies:
       '@sec-ant/readable-stream': 0.4.1
@@ -21733,6 +21838,8 @@ snapshots:
 
   human-signals@2.1.0: {}
 
+  human-signals@5.0.0: {}
+
   human-signals@8.0.1: {}
 
   iconv-lite@0.4.24:
@@ -21996,6 +22103,8 @@ snapshots:
       protocols: 2.0.2
 
   is-stream@2.0.1: {}
+
+  is-stream@3.0.0: {}
 
   is-stream@4.0.1: {}
 
@@ -23001,6 +23110,8 @@ snapshots:
 
   mimic-fn@3.1.0: {}
 
+  mimic-fn@4.0.0: {}
+
   mimic-response@1.0.1: {}
 
   mini-css-extract-plugin@2.10.2(webpack@5.110.3(postcss@8.5.28)):
@@ -23261,6 +23372,10 @@ snapshots:
     dependencies:
       path-key: 3.1.1
 
+  npm-run-path@5.3.0:
+    dependencies:
+      path-key: 4.0.0
+
   npm-run-path@6.0.0:
     dependencies:
       path-key: 4.0.0
@@ -23425,6 +23540,10 @@ snapshots:
   onetime@5.1.2:
     dependencies:
       mimic-fn: 2.1.0
+
+  onetime@6.0.0:
+    dependencies:
+      mimic-fn: 4.0.0
 
   oniguruma-parser@0.12.2: {}
 
@@ -24766,6 +24885,8 @@ snapshots:
   strip-bom@3.0.0: {}
 
   strip-final-newline@2.0.0: {}
+
+  strip-final-newline@3.0.0: {}
 
   strip-final-newline@4.0.0: {}
 

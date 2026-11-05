@@ -65,6 +65,30 @@
   }
 }
 
+/* Stepper: the check draws itself when a step completes. `stroke-dashoffset`
+   runs against `pathLength="1"`, so the keyframe is independent of the path's
+   real length. */
+@keyframes stepper-check-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes stepper-check-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /*
   A text caret blinks hard on and off -- it does not fade. Adjacent stops at the
   midpoint give an instant switch under linear timing, and 1.06s is roughly the
@@ -111,4 +135,6 @@
   --animate-skeleton-enter: skeleton-enter 320ms cubic-bezier(0.16, 1, 0.3, 1)
     both;
   --animate-caret-blink: caret-blink 1.06s linear infinite;
+  --animate-stepper-check-draw: stepper-check-draw 320ms 60ms ease-out both;
+  --animate-stepper-check-pop: stepper-check-pop 320ms ease-out both;
 }

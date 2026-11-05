@@ -16,6 +16,7 @@ export * from './skeleton';
 export * from './spinner';
 export * from './table';
 export * from './segmented-control';
+export * from './stepper';
 export * from './tabs';
 export * from './accordion';
 export * from './calendar';

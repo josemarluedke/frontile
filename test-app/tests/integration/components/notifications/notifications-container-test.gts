@@ -17,6 +17,7 @@ import {
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
+import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 
 /** A plain real-time wait, deliberately bypassing Ember's test waiters —
  * unlike `settled()`, it does not block on other pending runloop timers
@@ -30,7 +31,6 @@ const sleep = (ms: number): Promise<void> =>
 // assert against the real, shipped classes (e.g. the pointer-events
 // gap-bridging fix) rather than the class names this file mocks in below.
 const realNotificationsContainerStyles = useStyles().notificationsContainer;
-const realNotificationCardStyles = useStyles().notificationCard;
 
 // `notification-card.gts`'s `enter` modifier flips `hasEntered` on the frame
 // after insertion (via `requestAnimationFrame`), and only once that happens
@@ -883,28 +883,44 @@ module(
 
       service.add('Message 1', { ...options, status: 'success' });
 
-      for (const variant of ['surface', 'soft', 'solid'] as const) {
-        await render(
-          <template>
-            <NotificationsContainer
-              @variant={{variant}}
-              data-test-notifications
-            />
-          </template>
-        );
+      // Render against the real card theme: this asserts the classes the
+      // shipped theme generates, which the file-wide mock of `notificationCard`
+      // (from notification-card-test.gts, when it is loaded) would not. Scoped
+      // to the test so it holds whatever else shares the run.
+      const mocked = useStyles().notificationCard;
+      registerCustomStyles({ notificationCard: realStyles.notificationCard });
 
-        const card = find('[data-test-notification-card]') as HTMLElement;
-        const expectedBase = realNotificationCardStyles({
-          status: 'success',
-          variant,
-          hasDescription: false
-        }).base();
+      try {
+        for (const variant of ['surface', 'soft', 'solid'] as const) {
+          await render(
+            <template>
+              <NotificationsContainer
+                @variant={{variant}}
+                data-test-notifications
+              />
+            </template>
+          );
 
-        assert.strictEqual(
-          card.className,
-          expectedBase,
-          `@variant="${variant}" applies the classes the theme generates for it`
-        );
+          const card = find('[data-test-notification-card]') as HTMLElement;
+          // The container pins cards to the placement edge (default
+          // `bottom-right`), so the card is rendered with `stackPlacement`.
+          const expectedBase = realStyles
+            .notificationCard({
+              status: 'success',
+              variant,
+              hasDescription: false,
+              stackPlacement: 'bottom'
+            })
+            .base();
+
+          assert.strictEqual(
+            card.className,
+            expectedBase,
+            `@variant="${variant}" applies the classes the theme generates for it`
+          );
+        }
+      } finally {
+        registerCustomStyles({ notificationCard: mocked });
       }
     });
 
@@ -915,18 +931,31 @@ module(
 
       service.add('Message 1', { ...options, status: 'primary' });
 
-      await render(
-        <template><NotificationsContainer data-test-notifications /></template>
-      );
+      // Real card theme, scoped to this test -- see the @variant test above.
+      const mocked = useStyles().notificationCard;
+      registerCustomStyles({ notificationCard: realStyles.notificationCard });
 
-      const card = find('[data-test-notification-card]') as HTMLElement;
-      const expectedBase = realNotificationCardStyles({
-        status: 'primary',
-        variant: 'surface',
-        hasDescription: false
-      }).base();
+      try {
+        await render(
+          <template>
+            <NotificationsContainer data-test-notifications />
+          </template>
+        );
 
-      assert.strictEqual(card.className, expectedBase);
+        const card = find('[data-test-notification-card]') as HTMLElement;
+        const expectedBase = realStyles
+          .notificationCard({
+            status: 'primary',
+            variant: 'surface',
+            hasDescription: false,
+            stackPlacement: 'bottom'
+          })
+          .base();
+
+        assert.strictEqual(card.className, expectedBase);
+      } finally {
+        registerCustomStyles({ notificationCard: mocked });
+      }
     });
 
     test('it forwards @spacing to the stack geometry', async function (assert) {
