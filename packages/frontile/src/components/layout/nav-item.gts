@@ -7,6 +7,7 @@ import { useStyles } from '@frontile/theme';
 import Tooltip from '../overlays/tooltip';
 import NavLink from './nav-link';
 import { isLinkActive } from '../../utils/route-active';
+import type { NavFolderContext } from './nav-context';
 import type RouterService from '@ember/routing/router-service';
 import type { ComponentLike } from '@glint/template';
 
@@ -18,17 +19,6 @@ export interface NavItemClasses {
   navItem: string;
   navItemIcon: string;
   navItemLabel: string;
-}
-
-/** What a `NavFolder` reads from each of its items. */
-interface NavItemHandle {
-  readonly isActive: boolean;
-  readonly isHidden: boolean;
-}
-
-/** The part of a `NavFolder` an item talks to. */
-interface NavItemFolder {
-  registerItem(item: NavItemHandle): () => void;
 }
 
 interface NavItemArgs {
@@ -127,7 +117,7 @@ interface NavItemArgs {
    *
    * @internal
    */
-  folder?: NavItemFolder;
+  folder?: NavFolderContext;
 }
 
 interface NavItemSignature {

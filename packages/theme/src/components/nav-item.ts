@@ -29,9 +29,9 @@ const navItem = tv({
     navItemIcon: 'inline-flex size-5 shrink-0 items-center justify-center',
     navItemLabel: 'truncate group-data-[collapsed=true]/sidebar:sr-only',
     navFolder: 'flex flex-col',
-    navFolderTrigger: [...navItemRow, 'justify-between'],
+    navFolderTrigger: navItemRow,
     navFolderChevron: [
-      'size-4 transition-transform data-[open=true]:rotate-90 motion-reduce:transition-none',
+      'ms-auto size-4 shrink-0 transition-transform data-[open=true]:rotate-90 motion-reduce:transition-none',
       'group-data-[collapsed=true]/sidebar:hidden'
     ],
     navFolderPanel:

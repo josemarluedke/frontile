@@ -16,6 +16,13 @@ export {
   type MenuToggleSignature,
   type MenuToggleArgs
 } from './menu-toggle';
+export type { NavFolderContext, NavItemHandle } from './nav-context';
+export {
+  NavFolder,
+  type NavFolderSignature,
+  type NavFolderArgs,
+  type NavFolderClasses
+} from './nav-folder';
 export {
   NavItem,
   type NavItemSignature,

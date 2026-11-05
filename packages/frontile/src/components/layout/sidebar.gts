@@ -6,11 +6,13 @@ import { guidFor } from '@ember/object/internals';
 import { useStyles } from '@frontile/theme';
 import Drawer from '../overlays/drawer';
 import NavItem from './nav-item';
+import NavFolder from './nav-folder';
 import SidebarGroup from './sidebar-group';
 import SidebarBrand from './sidebar-brand';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
 import type { NavItemClasses } from './nav-item';
+import type { NavFolderClasses } from './nav-folder';
 import type Owner from '@ember/owner';
 import type { AppLayoutVariants } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
@@ -66,7 +68,8 @@ interface SidebarSignature {
   Args: SidebarArgs;
   Blocks: {
     /**
-     * Yields `Header`, `Body` and `Footer` sections, `Item` links, `Group`
+     * Yields `Header`, `Body` and `Footer` sections, `Item` links, `Folder`
+     * for a collapsible set of items, `Group`
      * to label a set of items, and `Brand` for a logo and name in the header. In the icon rail, `Item` labels are visually
      * hidden but still read by screen readers; for your own markup, wrap the
      * text in `<span data-sidebar-label>` to get the same behavior.
@@ -79,6 +82,15 @@ interface SidebarSignature {
         Item: WithBoundArgs<
           typeof NavItem,
           'classes' | 'rail' | 'tooltipPlacement'
+        >;
+        Folder: WithBoundArgs<
+          typeof NavFolder,
+          | 'classes'
+          | 'itemClasses'
+          | 'rail'
+          | 'tooltipPlacement'
+          | 'inDrawer'
+          | 'onActivate'
         >;
         Group: WithBoundArgs<typeof SidebarGroup, 'classes'>;
         Brand: WithBoundArgs<typeof SidebarBrand, 'classes'>;
@@ -216,6 +228,17 @@ class Sidebar extends Component<SidebarSignature> {
   }
 
   @cached
+  get folderClasses(): NavFolderClasses {
+    const styles = useStyles().navItem();
+    return {
+      navFolder: styles.navFolder(),
+      navFolderTrigger: styles.navFolderTrigger(),
+      navFolderChevron: styles.navFolderChevron(),
+      navFolderPanel: styles.navFolderPanel()
+    };
+  }
+
+  @cached
   get slotClasses() {
     const custom = this.args.layout?.classes;
     return {
@@ -223,6 +246,7 @@ class Sidebar extends Component<SidebarSignature> {
       body: this.styles.sidebarBody({ class: custom?.sidebarBody }),
       footer: this.styles.sidebarFooter({ class: custom?.sidebarFooter }),
       item: this.itemClasses,
+      folder: this.folderClasses,
       group: {
         sidebarGroup: this.styles.sidebarGroup({ class: custom?.sidebarGroup }),
         sidebarGroupLabel: this.styles.sidebarGroupLabel({
@@ -293,6 +317,15 @@ class Sidebar extends Component<SidebarSignature> {
                 tooltipPlacement=this.tooltipPlacement
                 onActivate=this.closeDrawer
               )
+              Folder=(component
+                NavFolder
+                classes=this.slotClasses.folder
+                itemClasses=this.slotClasses.item
+                rail=this.rail
+                tooltipPlacement=this.tooltipPlacement
+                inDrawer=true
+                onActivate=this.closeDrawer
+              )
               Group=(component SidebarGroup classes=this.slotClasses.group)
               Brand=(component SidebarBrand classes=this.slotClasses.brand)
             )
@@ -319,6 +352,14 @@ class Sidebar extends Component<SidebarSignature> {
               classes=this.slotClasses.item
               rail=this.rail
               tooltipPlacement=this.tooltipPlacement
+            )
+            Folder=(component
+              NavFolder
+              classes=this.slotClasses.folder
+              itemClasses=this.slotClasses.item
+              rail=this.rail
+              tooltipPlacement=this.tooltipPlacement
+              inDrawer=false
             )
             Group=(component SidebarGroup classes=this.slotClasses.group)
             Brand=(component SidebarBrand classes=this.slotClasses.brand)

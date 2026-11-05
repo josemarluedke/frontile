@@ -319,6 +319,17 @@ const DIRECTORY_OWNER_ALIASES = {
 };
 
 /**
+ * Components whose own `data-component` identity differs from the theme
+ * config whose slots they render. `NavFolder` renders the `navItem` config's
+ * `navFolder*` slots (shared with `NavItem`, which is why they live in one
+ * config) but keeps `data-component="nav-folder"`, so consumers can tell a
+ * folder from an item. Its parts are counted toward `nav-item`.
+ */
+const COMPONENT_CONFIG_ALIASES = {
+  'nav-folder': 'nav-item'
+};
+
+/**
  * Known, deliberate `(config, slot)` pairs that never render a `data-part`
  * and are therefore excluded from the `missing` report rather than treated
  * as an oversight. This is a narrow, named carve-out — it does not touch
@@ -442,14 +453,15 @@ export function readRenderedParts(componentsDir, knownConfigNames) {
     const parts = extractAttrOccurrences(src, 'data-part');
 
     if (components.length > 0) {
-      for (const c of components) ensure(c.value).files.add(file);
+      const configOf = (name) => COMPONENT_CONFIG_ALIASES[name] ?? name;
+      for (const c of components) ensure(configOf(c.value)).files.add(file);
       for (const part of parts) {
         let owner = components[0].value;
         for (const c of components) {
           if (c.index <= part.index) owner = c.value;
           else break;
         }
-        const entry = ensure(owner);
+        const entry = ensure(configOf(owner));
         recordPart(entry, part.value, file);
         entry.files.add(file);
       }
