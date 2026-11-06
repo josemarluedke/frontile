@@ -10,6 +10,11 @@ export {
   type AsideToggleSignature,
   type AsideToggleArgs
 } from './aside-toggle';
+export {
+  BottomNav,
+  type BottomNavSignature,
+  type BottomNavArgs
+} from './bottom-nav';
 export { Main, type MainSignature, type MainArgs } from './main';
 export {
   MenuToggle,

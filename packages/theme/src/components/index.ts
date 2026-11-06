@@ -20,6 +20,7 @@ export * from './stepper';
 export * from './tabs';
 export * from './app-layout';
 export * from './nav-item';
+export * from './bottom-nav';
 export * from './accordion';
 export * from './calendar';
 export * from './pagination';

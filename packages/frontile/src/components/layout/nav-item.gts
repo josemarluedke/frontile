@@ -104,12 +104,13 @@ interface NavItemArgs {
   rail?: boolean;
 
   /**
-   * Supplied by `Sidebar`: the side of the item its rail tooltip opens on.
+   * Supplied by `Sidebar` (or `BottomNav`): the side of the item its
+   * tooltip opens on.
    * Not part of the public API.
    *
    * @internal
    */
-  tooltipPlacement?: 'left' | 'right';
+  tooltipPlacement?: 'left' | 'right' | 'top';
 
   /**
    * Supplied by `Sidebar` while it renders in the mobile drawer: called when
