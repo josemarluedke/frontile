@@ -56,7 +56,7 @@ needs to write its own modifier can call them directly:
 | Method             | Effect                                               |
 | ------------------ | ---------------------------------------------------- |
 | `claim(element)`   | Makes `element` the measured target and measures it. |
-| `release(element)` | Gives up the target, if `element` still holds it.    |
+| `release(element)` | Releases one claim, if `element` still holds it.     |
 
 Reach for these only when one modifier has to do more than track geometry.
 `TabNav` is the case that motivated them: its item modifier also writes
@@ -81,6 +81,13 @@ it returns without doing anything — so teardown never needs to check first.
 Order matters more than it looks: when the selection moves backwards the
 incoming element's setup runs _before_ the outgoing element's teardown, and the
 guard inside `release` is what stops that teardown from wiping the new target.
+
+Claims on one element are counted, so pair every `claim` with one `release`.
+A modifier can be reinstalled on the same element (Glimmer does this when the
+modifier itself is a different value, for example when it comes from a
+rebuilt context object), and then the new instance claims the element before
+the old instance releases it. The target is given up only when its last claim
+is released.
 
 These are physical offsets (`offsetLeft` / `offsetTop`), not logical ones,
 and that is deliberate: the browser has already laid the items out for the

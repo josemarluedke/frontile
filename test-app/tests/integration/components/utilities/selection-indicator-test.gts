@@ -196,5 +196,51 @@ module(
         'geometry is recomputed after the container resizes'
       );
     });
+
+    test('a second claim on the target survives the first claim being released', async function (assert) {
+      // A reinstalled modifier claims the element again before its old
+      // instance releases it. That release must leave the live claim alone.
+      const indicator = selectionIndicator();
+
+      await render(
+        <template>
+          <div
+            data-test-container
+            style="position: relative; width: 300px;"
+            {{indicator.setupContainer}}
+          >
+            <div
+              data-test-item
+              style="display: inline-block; width: 100px; height: 40px;"
+              {{indicator.setupTarget true}}
+            >A</div>
+          </div>
+        </template>
+      );
+
+      const container = find('[data-test-container]') as HTMLElement;
+      const item = find('[data-test-item]') as HTMLElement;
+
+      await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
+
+      indicator.claim(item);
+      indicator.release(item);
+      await settled();
+
+      assert.true(
+        container.hasAttribute('data-fr-si-ready'),
+        'still ready after one of two claims is released'
+      );
+
+      // The modifier's own claim is the last one, so its release gives the
+      // target up.
+      indicator.release(item);
+      await settled();
+
+      assert.false(
+        container.hasAttribute('data-fr-si-ready'),
+        'not ready once the last claim is released'
+      );
+    });
   }
 );

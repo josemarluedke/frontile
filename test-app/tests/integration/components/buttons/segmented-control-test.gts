@@ -430,6 +430,53 @@ module(
       );
     });
 
+    for (const name of [undefined, 'range']) {
+      test(`the indicator stays drawn when @isDisabled re-evaluates to the same value${name ? ' (form mode)' : ''}`, async function (assert) {
+        // A consumer that derives @isDisabled from refetched data hands the
+        // control a new revision of an unchanged value. That must not lose
+        // the indicator's measurement.
+        const value = cell('day');
+        const isDisabled = cell(false);
+        const onChange = (next: string): void => {
+          value.current = next;
+        };
+
+        await render(
+          <template>
+            <SegmentedControl
+              @value={{value.current}}
+              @onChange={{onChange}}
+              @isDisabled={{isDisabled.current}}
+              @name={{name}}
+              as |Ctl|
+            >
+              <Ctl.Item @value="day">Day</Ctl.Item>
+              <Ctl.Item @value="week">A much longer label</Ctl.Item>
+            </SegmentedControl>
+          </template>
+        );
+
+        const container = find('[role="radiogroup"]') as HTMLElement;
+        const items = findAll('[data-part="item"]') as HTMLElement[];
+
+        await waitUntil(() => container.hasAttribute('data-fr-si-ready'));
+
+        // A cell dirties on every set, even of an equal value.
+        isDisabled.current = false;
+        await settled();
+
+        assert.true(
+          container.hasAttribute('data-fr-si-ready'),
+          'the indicator is still ready'
+        );
+        assert.strictEqual(
+          container.style.getPropertyValue('--fr-si-width'),
+          `${items[0]!.offsetWidth}px`,
+          'the indicator is still sized to the selected item'
+        );
+      });
+    }
+
     test('the indicator transitions the property that actually moves it', async function (assert) {
       // Regression: the theme declared the ready-state transition as
       // `transition-[transform,width,height]`, but Tailwind v4 compiles
