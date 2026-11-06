@@ -3,6 +3,7 @@ import { cached } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import NavItem from './nav-item';
+import BottomNavMore from './bottom-nav-more';
 import type { AppLayoutContext } from './context';
 import type { WithBoundArgs } from '@glint/template';
 
@@ -29,6 +30,11 @@ interface BottomNavSignature {
       {
         /** A tab: `NavItem` as an icon with its label as a tooltip. */
         Item: WithBoundArgs<typeof NavItem, 'layout' | 'tooltipPlacement'>;
+        /**
+         * The last tab: opens a bottom sheet with more items and folders.
+         * It shows active, or a dot, when an item inside is active or badged.
+         */
+        More: typeof BottomNavMore;
       }
     ];
   };
@@ -39,7 +45,8 @@ interface BottomNavSignature {
  * A bar of icon tabs along the bottom of the screen, for the primary
  * navigation on small viewports. Rendered as a `nav` landmark. Each tab is a
  * `NavItem` in its `icon` layout, so the label is its accessible name and
- * shows as a tooltip.
+ * shows as a tooltip. `More` adds a last tab that opens a bottom sheet of
+ * further navigation.
  */
 class BottomNav extends Component<BottomNavSignature> {
   get label(): string {
@@ -60,7 +67,10 @@ class BottomNav extends Component<BottomNavSignature> {
       ...attributes
     >
       {{yield
-        (hash Item=(component NavItem layout="icon" tooltipPlacement="top"))
+        (hash
+          Item=(component NavItem layout="icon" tooltipPlacement="top")
+          More=BottomNavMore
+        )
       }}
     </nav>
   </template>

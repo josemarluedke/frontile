@@ -51,6 +51,67 @@ import { ViewIcon, UserIcon, SettingsIcon } from 'site/components/icons';
 </template>
 ```
 
+## More sheet
+
+`BottomNav` also yields `More`, a last tab that opens a sheet from the bottom
+of the screen with further navigation. `More` yields `Item` and `Folder`:
+[NavItem](./nav-item) and [NavFolder](./nav-folder) as full-width rows, with
+folders opening inline. Following an item closes the sheet.
+
+The tab follows what is inside it, even while the sheet is closed:
+
+- It shows active when an item inside is active, including one in a folder.
+  It is never `aria-current`; the item is the current page.
+- It shows a dot when an item inside has a `@badge`.
+- Hidden items count for neither, and the tab is not rendered when every item
+  inside is hidden. `@isHidden` hides the tab outright.
+
+The sheet holds exactly what you put in the block. Tabs never move into it on
+their own when the bar runs out of room, so choose which destinations are tabs
+and which go in the sheet.
+
+`@label` names the tab (default `More`), `@icon` replaces its ellipsis icon,
+and `@sheetLabel` names the sheet (default the label). In the demo, Billing is
+the current page and Messages has unread items (made-up data).
+
+```gts preview
+import { BottomNav } from 'frontile';
+import {
+  ViewIcon,
+  UserIcon,
+  SettingsIcon,
+  BookIcon,
+  PackageIcon
+} from 'site/components/icons';
+
+<template>
+  <div
+    class='not-prose relative h-48 w-full max-w-sm overflow-hidden rounded-lg border border-neutral-subtle'
+    style='transform: translateZ(0)'
+  >
+    <BottomNav @label='Workspace' as |bar|>
+      <bar.Item @href='#overview' @icon={{ViewIcon}}>Overview</bar.Item>
+      <bar.Item @href='#members' @icon={{UserIcon}}>Members</bar.Item>
+      <bar.More @sheetLabel='More pages' as |more|>
+        <more.Item @href='#messages' @icon={{BookIcon}} @badge={{2}}>
+          Messages
+        </more.Item>
+        <more.Item @href='#settings' @icon={{SettingsIcon}}>
+          Settings
+        </more.Item>
+        <more.Folder @label='Account' @icon={{PackageIcon}} as |folder|>
+          <folder.Item @href='#billing' @isActive={{true}}>Billing</folder.Item>
+          <folder.Item @href='#invoices'>Invoices</folder.Item>
+        </more.Folder>
+      </bar.More>
+    </BottomNav>
+  </div>
+</template>
+```
+
+The sheet is as tall as its items, up to 80% of the viewport, and scrolls past
+that. Its bottom padding is the same safe-area inset as the bar's.
+
 ## Safe area
 
 The bar pads its bottom edge by the device's safe-area inset, so tabs stay
@@ -89,7 +150,19 @@ scale is the proper fix and is a follow-up task.
   accessible name and is also the tooltip shown on hover or focus.
 - A `@badge` is hidden from assistive technology; its text is read after the
   label. Pass `@badgeLabel` when the bare value is unclear.
+- The `More` tab is a button with `aria-haspopup="dialog"` and
+  `aria-expanded`. Its label is its accessible name; it shows no tooltip.
+  When it carries a dot, "has updates" is read after the label.
+- The sheet is a modal dialog named by `@sheetLabel`, holding a `nav`
+  landmark of the same name. Focus moves into it when it opens and is trapped
+  there. Escape, the drag handle (a button) or a click on the backdrop closes
+  it, and following an item closes it too. Focus then returns to the `More`
+  tab.
 
 ## API
 
 <Signature @component="BottomNav" />
+
+### BottomNav.More
+
+<Signature @component="BottomNavMore" />

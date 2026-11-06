@@ -138,6 +138,14 @@ interface NavItemArgs {
    * @internal
    */
   badgeDot?: boolean;
+
+  /**
+   * Supplied by `BottomNav.More`: never shows the label as a tooltip, even
+   * in the `icon` layout. Not part of the public API.
+   *
+   * @internal
+   */
+  noTooltip?: boolean;
 }
 
 interface NavItemSignature {
@@ -237,6 +245,9 @@ class NavItem extends Component<NavItemSignature> {
 
   /** The label is not otherwise visible, so a tooltip names the item. */
   get showTooltip(): boolean {
+    if (this.args.noTooltip) {
+      return false;
+    }
     return (
       (Boolean(this.args.rail) && this.layout === 'inline') ||
       this.layout === 'icon'

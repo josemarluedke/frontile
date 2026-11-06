@@ -15,6 +15,11 @@ export {
   type BottomNavSignature,
   type BottomNavArgs
 } from './bottom-nav';
+export {
+  BottomNavMore,
+  type BottomNavMoreSignature,
+  type BottomNavMoreArgs
+} from './bottom-nav-more';
 export { Main, type MainSignature, type MainArgs } from './main';
 export {
   MenuToggle,

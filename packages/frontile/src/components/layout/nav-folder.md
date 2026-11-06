@@ -27,6 +27,9 @@ is `NavFolder` pre-bound to the sidebar, so it also follows the icon rail and
 the mobile drawer. The arguments are the same. `NavFolder` imported directly is
 the standalone form, for navigation outside a sidebar.
 
+Folders also work inside a [BottomNav](./bottom-nav#more-sheet) `More` sheet,
+as `more.Folder`. There they are always inline.
+
 ```gts preview
 import { NavFolder } from 'frontile';
 import { PackageIcon } from 'site/components/icons';

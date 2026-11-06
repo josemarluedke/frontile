@@ -324,9 +324,14 @@ const DIRECTORY_OWNER_ALIASES = {
  * `navFolder*` slots (shared with `NavItem`, which is why they live in one
  * config) but keeps `data-component="nav-folder"`, so consumers can tell a
  * folder from an item. Its parts are counted toward `nav-item`.
+ *
+ * `BottomNav.More` renders the `bottomNav` config's `bottomNavMore*` slots
+ * but marks its sheet `data-component="bottom-nav-more"`, so the sheet is
+ * not mistaken for the bar. Its parts are counted toward `bottom-nav`.
  */
 const COMPONENT_CONFIG_ALIASES = {
-  'nav-folder': 'nav-item'
+  'nav-folder': 'nav-item',
+  'bottom-nav-more': 'bottom-nav'
 };
 
 /**

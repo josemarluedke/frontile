@@ -445,6 +445,23 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
       assert.dom('[role="tooltip"]').hasText('Reports');
     });
 
+    test('noTooltip suppresses the icon layout tooltip', async function (assert) {
+      await render(
+        <template>
+          <NavItem
+            @layout="icon"
+            @icon={{TestIcon}}
+            @noTooltip={{true}}
+            id="item"
+          >Reports</NavItem>
+        </template>
+      );
+
+      await focus('#item');
+      assert.dom('[role="tooltip"]').doesNotExist();
+      assert.dom('#item [data-part="nav-item-label"]').hasText('Reports');
+    });
+
     test('stacked has no tooltip', async function (assert) {
       await render(
         <template>

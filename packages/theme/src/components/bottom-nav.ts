@@ -30,7 +30,22 @@ const bottomNav = tv({
       'border-t border-neutral-subtle bg-surface-app',
       'min-h-[calc(3.75rem+var(--bottomnav-safe-area,env(safe-area-inset-bottom,0px)))]',
       'pb-[var(--bottomnav-safe-area,env(safe-area-inset-bottom,0px))]'
-    ]
+    ],
+    // `BottomNav.More`: the copy of its block that is always rendered, out
+    // of sight, so its items can report active and badge state while the
+    // sheet is closed. `hidden` backs up the `hidden` attribute.
+    bottomNavMoreRegistry: 'hidden',
+    // The More sheet, merged into the bottom `Drawer`'s base: as tall as its
+    // items, up to 80% of the viewport.
+    bottomNavMoreSheet: 'h-auto max-h-[80dvh]',
+    // The sheet's scrolling body, merged into the `Drawer`'s. The bottom
+    // padding is the safe-area inset alone, like the bar's.
+    bottomNavMoreBody: [
+      'px-2 pt-6',
+      'pb-[var(--bottomnav-safe-area,env(safe-area-inset-bottom,0px))]'
+    ],
+    // The `nav` inside the sheet that holds its items.
+    bottomNavMoreNav: 'flex flex-col gap-0.5 pb-2'
   }
 });
 
