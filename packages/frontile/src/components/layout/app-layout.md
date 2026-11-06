@@ -645,6 +645,165 @@ import {
 </template>
 ```
 
+### Platform-style navigation
+
+A rail with stacked icon-over-label items on desktop and a top bar, tab bar and
+More sheet on a phone, built from the parts above: `@size="rail"` on the
+sidebar, `@layout="stacked"` with `@shortLabel` on its items, a `Navbar` as
+the phone top bar, and a `BottomNav` with a `More` tab. The full label is the
+accessible name; `@shortLabel` is the visible text. `class="theme-inverse"`
+on the sidebar flips it to the opposite color scheme.
+
+The brandmark, account tile and avatar are plain markup: Frontile has no
+account switcher or profile menu, so put your own in the sidebar's header and
+footer and in the `Navbar`. Which item is active is a tracked value passed to
+`@isActive`, so the demo needs no router; in an app, pass `@route` and the
+router decides. Narrow the window to below 48rem to see the phone layout. All
+names and the badge count are made-up placeholder data.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
+import { AppLayout } from 'frontile';
+import {
+  ViewIcon,
+  PackageIcon,
+  BookIcon,
+  StarIcon,
+  UserIcon,
+  SearchIcon,
+  SparklesIcon
+} from 'site/components/icons';
+
+const PAGES = [
+  {
+    id: 'overview',
+    label: 'Overview',
+    short: 'Overview',
+    icon: ViewIcon,
+    badge: 2
+  },
+  { id: 'services', label: 'Services', short: 'Services', icon: PackageIcon },
+  { id: 'billing', label: 'Billing', short: 'Billing', icon: BookIcon },
+  { id: 'offers', label: 'Offers', short: 'Offers', icon: StarIcon },
+  {
+    id: 'referrals',
+    label: 'Referral program',
+    short: 'Referrals',
+    icon: UserIcon
+  },
+  { id: 'support', label: 'Support', short: 'Support', icon: SparklesIcon }
+];
+
+export default class PlatformNavExample extends Component {
+  @tracked page = 'overview';
+
+  go = (id: string): void => {
+    this.page = id;
+  };
+
+  // The first five items are tabs; the rest go in the More sheet.
+  get items() {
+    return PAGES.map((p) => ({ ...p, isActive: p.id === this.page }));
+  }
+
+  get tabs() {
+    return this.items.slice(0, 5);
+  }
+
+  get more() {
+    return this.items.slice(5);
+  }
+
+  get title(): string {
+    return PAGES.find((p) => p.id === this.page)?.label ?? '';
+  }
+
+  <template>
+    <div class='demo-stack demo-stack--wide not-prose'>
+      <AppLayout
+        @variant='attached'
+        @mobileNav='bottom'
+        class='demo-app-layout'
+        as |layout|
+      >
+        <layout.Sidebar
+          @size='rail'
+          @collapsible='none'
+          @label='Main navigation'
+          class='theme-inverse'
+          as |sidebar|
+        >
+          <sidebar.Header>
+            <div class='flex flex-col items-center gap-2 py-2'>
+              <SparklesIcon class='text-primary' />
+              <button type='button' class='text-xs' aria-label='Switch account'>
+                Sample account
+              </button>
+            </div>
+          </sidebar.Header>
+          <sidebar.Body>
+            {{#each this.items as |item|}}
+              <sidebar.Item
+                @layout='stacked'
+                @icon={{item.icon}}
+                @shortLabel={{item.short}}
+                @isActive={{item.isActive}}
+                @badge={{item.badge}}
+                @badgeLabel={{if item.badge '2 open orders'}}
+                {{on 'click' (fn this.go item.id)}}
+              >{{item.label}}</sidebar.Item>
+            {{/each}}
+          </sidebar.Body>
+          <sidebar.Footer>
+            <button
+              type='button'
+              aria-label='Your account'
+              class='mx-auto block size-8 rounded-full bg-primary'
+            ></button>
+          </sidebar.Footer>
+        </layout.Sidebar>
+        <layout.Navbar class='md:hidden'>
+          <SparklesIcon class='shrink-0 text-primary' />
+          <span class='flex min-w-0 flex-col'>
+            <span class='text-xs'>{{this.title}}</span>
+            <span class='truncate text-sm font-medium'>Sample account</span>
+          </span>
+          <button type='button' aria-label='Search' class='ms-auto'>
+            <SearchIcon />
+          </button>
+        </layout.Navbar>
+        <layout.Main>
+          <layout.PageHeader @title={{this.title}} />
+        </layout.Main>
+        <layout.BottomNav as |bar|>
+          {{#each this.tabs as |item|}}
+            <bar.Item
+              @icon={{item.icon}}
+              @badge={{item.badge}}
+              @badgeLabel={{if item.badge '2 open orders'}}
+              @isActive={{item.isActive}}
+              {{on 'click' (fn this.go item.id)}}
+            >{{item.label}}</bar.Item>
+          {{/each}}
+          <bar.More as |more|>
+            {{#each this.more as |item|}}
+              <more.Item
+                @icon={{item.icon}}
+                @isActive={{item.isActive}}
+                {{on 'click' (fn this.go item.id)}}
+              >{{item.label}}</more.Item>
+            {{/each}}
+          </bar.More>
+        </layout.BottomNav>
+      </AppLayout>
+    </div>
+  </template>
+}
+```
+
 ### Keyboard shortcut
 
 <kbd>Cmd</kbd>+<kbd>B</kbd> (<kbd>Ctrl</kbd>+<kbd>B</kbd> outside Apple

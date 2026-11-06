@@ -25,6 +25,7 @@ Router.map(function () {
   this.route('sidebar-demo', function () {
     this.route('second');
   });
+  this.route('platform-demo');
   this.route('breadcrumbs-demo', function () {
     this.route('second');
     this.route('item', { path: '/item/:item_id' });
