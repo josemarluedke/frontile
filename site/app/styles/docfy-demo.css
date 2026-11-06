@@ -50,6 +50,14 @@
   @apply max-w-none;
 }
 
+/* `AppLayout` fills the viewport by default. Its demos opt into a fixed
+   height so the shell fits on the docs page; unlayered, so it wins over the
+   theme's `h-dvh` utility. */
+.demo-app-layout {
+  height: 22rem;
+  @apply overflow-hidden rounded-lg border border-neutral-soft;
+}
+
 .docfy-demo__description {
   @apply pb-5;
 }
