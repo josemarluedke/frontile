@@ -744,7 +744,11 @@ export default class PlatformNavExample extends Component {
           <sidebar.Header>
             <div class='flex flex-col items-center gap-2 py-2'>
               <SparklesIcon class='text-primary' />
-              <button type='button' class='text-xs' aria-label='Switch account'>
+              <button
+                type='button'
+                class='text-xs'
+                aria-label='Switch account · Sample account'
+              >
                 Sample account
               </button>
             </div>

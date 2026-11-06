@@ -72,7 +72,10 @@ and which go in the sheet.
 
 The block is rendered twice: once hidden, all the time, to track which item is
 active or badged, and once in the open sheet. Avoid `id`s and side effects,
-such as modifiers, analytics or data loading, inside it.
+such as modifiers, analytics or data loading, inside it. That includes
+`@onOpenChange` on a folder in the block: the hidden copy's active-item logic
+can call it on load, and the sheet's copy can call it again when the sheet
+opens.
 
 `@label` names the tab (default `More`), `@icon` replaces its ellipsis icon,
 and `@sheetLabel` names the sheet (default the label). In the demo, Billing is
