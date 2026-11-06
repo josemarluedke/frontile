@@ -54,6 +54,10 @@ the sidebar sits directly on that frame with no border of its own. `attached`
 runs the content edge to edge: the sidebar becomes its own bordered surface
 and the navbar gets a border underneath instead of a card.
 
+Below the `@breakpoint`, where the sidebar becomes a drawer, `inset` also goes
+edge to edge: the frame's gutter and the card's rounded corners are dropped so
+a phone gets the full width.
+
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { array } from '@ember/helper';

@@ -89,6 +89,56 @@ const sidebarWidthVariants = (['attached', 'inset'] as const).flatMap(
   ]
 );
 
+// Below the breakpoint the inset frame goes edge to edge: no gutter, no card
+// chrome, and the bottom bar needs no negative margins to escape the gutter.
+// Literal strings per breakpoint: Tailwind generates nothing from an
+// interpolated class. `max-sm` etc. are the exact complement of `sm:` etc.
+const edgeToEdge = {
+  sm: {
+    base: 'max-sm:p-0',
+    card: 'max-sm:rounded-none max-sm:shadow-none max-sm:ring-0',
+    radius: 'max-sm:rounded-none',
+    bar: 'max-sm:mx-0 max-sm:mb-0'
+  },
+  md: {
+    base: 'max-md:p-0',
+    card: 'max-md:rounded-none max-md:shadow-none max-md:ring-0',
+    radius: 'max-md:rounded-none',
+    bar: 'max-md:mx-0 max-md:mb-0'
+  },
+  lg: {
+    base: 'max-lg:p-0',
+    card: 'max-lg:rounded-none max-lg:shadow-none max-lg:ring-0',
+    radius: 'max-lg:rounded-none',
+    bar: 'max-lg:mx-0 max-lg:mb-0'
+  }
+} as const;
+
+const edgeToEdgeVariants = (['sm', 'md', 'lg'] as const).flatMap(
+  (breakpoint) => {
+    const e = edgeToEdge[breakpoint];
+    return [
+      {
+        variant: 'inset' as const,
+        breakpoint,
+        class: { base: e.base, mainCard: e.card, bottomNav: e.bar }
+      },
+      {
+        variant: 'inset' as const,
+        breakpoint,
+        navbarPlacement: 'frame' as const,
+        class: { main: e.radius }
+      },
+      {
+        variant: 'inset' as const,
+        breakpoint,
+        navbarPlacement: 'content' as const,
+        class: { navbar: e.radius, main: e.radius }
+      }
+    ];
+  }
+);
+
 const appLayout = tv({
   slots: {
     // Publishes the shell's sizes as custom properties, for the parts below
@@ -205,7 +255,9 @@ const appLayout = tv({
       inset: {
         base: 'bg-neutral-subtle p-3',
         // Transparent, borderless: the sidebar floats on the tinted frame.
-        sidebar: 'bg-transparent [--sidebar-body-px:0px]',
+        // 0.375rem clears the 5px focus ring, which the scrolling body would
+        // otherwise clip at its edge.
+        sidebar: 'bg-transparent [--sidebar-body-px:0.375rem]',
         mainCard:
           'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted',
         aside: 'border-s border-neutral-subtle',
@@ -444,7 +496,8 @@ const appLayout = tv({
         navbar: 'rounded-t-xl border-b border-neutral-subtle',
         main: 'rounded-b-xl'
       }
-    }
+    },
+    ...edgeToEdgeVariants
   ],
 
   defaultVariants: {

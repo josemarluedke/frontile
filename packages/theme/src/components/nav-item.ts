@@ -14,7 +14,8 @@ const railStart =
 
 const navRow = [
   ...focusVisibleRing,
-  'flex min-h-9 w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm',
+  // 36px with a mouse; 44px where the pointer is coarse (touch).
+  'flex min-h-9 w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm pointer-coarse:min-h-11',
   'text-neutral-firm',
   'not-data-[disabled=true]:hover:bg-neutral-muted',
   'not-data-[disabled=true]:hover:text-neutral-strong',
@@ -41,9 +42,9 @@ const navItem = tv({
     navItemIcon: 'relative inline-flex shrink-0 items-center justify-center',
     navItemLabel: 'truncate',
     // The short text shown under the icon in the stacked layout.
-    navItemShortLabel: 'max-w-full truncate text-[10px] leading-tight',
+    navItemShortLabel: 'max-w-full truncate text-xs leading-tight',
     navItemBadge:
-      'inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] leading-none font-medium text-on-danger',
+      'inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] leading-none font-medium text-on-danger',
     // Screen-reader text appended to the label for a badge.
     navItemBadgeLabel: 'sr-only',
     navFolder: 'flex flex-col',
@@ -88,13 +89,13 @@ const navItem = tv({
       // Small icon over text. Ignores the sidebar's collapsed state.
       stacked: {
         navItem: [
-          'group/nav-item mx-auto min-h-14 w-full max-w-[72px] flex-col justify-center gap-0.5 px-1 py-1.5 text-[10px]',
+          'group/nav-item mx-auto min-h-14 w-full max-w-[72px] flex-col justify-center gap-0.5 px-1 py-1 text-xs',
           // The active fill sits behind the icon, not the whole item.
           'data-[active=true]:bg-transparent not-data-[disabled=true]:hover:bg-transparent',
           'not-data-[disabled=true]:data-[active=true]:hover:bg-transparent'
         ],
         navItemIcon: [
-          'h-8 w-11 rounded-full [&>svg]:size-5',
+          'h-8 w-11 rounded-lg [&>svg]:size-5',
           'group-data-[active=true]/nav-item:bg-neutral-soft',
           'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-neutral-muted',
           'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-neutral-soft'
@@ -102,7 +103,7 @@ const navItem = tv({
       },
       // Icon only; the label is screen-reader text and a tooltip.
       icon: {
-        navItem: 'size-11 min-h-11 justify-center rounded-full px-0 py-0',
+        navItem: 'size-11 min-h-11 justify-center rounded-lg px-0 py-0',
         navItemIcon: 'size-5',
         navItemLabel: 'sr-only'
       }
