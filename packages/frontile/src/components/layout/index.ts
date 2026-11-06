@@ -20,15 +20,13 @@ export type { NavFolderContext, NavItemHandle } from './nav-context';
 export {
   NavFolder,
   type NavFolderSignature,
-  type NavFolderArgs,
-  type NavFolderClasses
+  type NavFolderArgs
 } from './nav-folder';
 export {
   NavItem,
   type NavItemSignature,
   type NavItemArgs,
-  type NavItemLayout,
-  type NavItemClasses
+  type NavItemLayout
 } from './nav-item';
 export { NavLink, type NavLinkSignature, type NavLinkArgs } from './nav-link';
 export { Navbar, type NavbarSignature, type NavbarArgs } from './navbar';

@@ -20,19 +20,8 @@ import Tooltip from '../overlays/tooltip';
 import { ChevronRightIcon } from '../../-private/icons';
 import NavItem from './nav-item';
 import NavLink from './nav-link';
-import type { NavItemClasses } from './nav-item';
 import type { NavFolderContext, NavItemHandle } from './nav-context';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
-
-/** Class names `Sidebar` hands each folder, one per theme slot. */
-export interface NavFolderClasses {
-  navFolder: string;
-  navFolderTrigger: string;
-  navFolderChevron: string;
-  navFolderPanel: string;
-  navFolderFlyout: string;
-  navFolderFlyoutLabel: string;
-}
 
 interface NavFolderArgs {
   /** The folder's label, shown in its trigger. */
@@ -83,22 +72,6 @@ interface NavFolderArgs {
   class?: string;
 
   /**
-   * Supplied by `Sidebar`. Not part of the public API. Without it (a folder
-   * rendered on its own) the theme's classes are used.
-   *
-   * @internal
-   */
-  classes?: NavFolderClasses;
-
-  /**
-   * Supplied by `Sidebar`: the classes for the folder's items, and for the
-   * icon and label in its trigger. Not part of the public API.
-   *
-   * @internal
-   */
-  itemClasses?: NavItemClasses;
-
-  /**
    * Supplied by `Sidebar`: whether the sidebar is drawn as the icon rail,
    * where the folder opens as a flyout. Not part of the public API.
    *
@@ -141,7 +114,7 @@ interface NavFolderSignature {
       {
         Item: WithBoundArgs<
           typeof NavItem,
-          'classes' | 'rail' | 'tooltipPlacement' | 'onActivate' | 'folder'
+          'rail' | 'tooltipPlacement' | 'onActivate' | 'folder'
         >;
       }
     ];
@@ -475,10 +448,7 @@ class NavFolder extends Component<NavFolderSignature> {
   }
 
   @cached
-  get classes(): NavFolderClasses {
-    if (this.args.classes) {
-      return this.args.classes;
-    }
+  get classes() {
     const styles = useStyles().navItem();
     return {
       navFolder: styles.navFolder(),
@@ -490,12 +460,10 @@ class NavFolder extends Component<NavFolderSignature> {
     };
   }
 
+  /** The icon and label slots of the folder's trigger. */
   @cached
-  get itemClasses(): NavItemClasses {
-    if (this.args.itemClasses) {
-      return this.args.itemClasses;
-    }
-    const styles = useStyles().navItem();
+  get itemClasses() {
+    const styles = useStyles().navItem({ layout: 'inline' });
     return {
       navItem: styles.navItem(),
       navItemIcon: styles.navItemIcon(),
@@ -588,7 +556,6 @@ class NavFolder extends Component<NavFolderSignature> {
             (hash
               Item=(component
                 NavItem
-                classes=this.itemClasses
                 rail=false
                 tooltipPlacement=@tooltipPlacement
                 onActivate=this.closeFlyout
@@ -615,7 +582,6 @@ class NavFolder extends Component<NavFolderSignature> {
             (hash
               Item=(component
                 NavItem
-                classes=this.itemClasses
                 rail=@rail
                 tooltipPlacement=@tooltipPlacement
                 onActivate=@onActivate

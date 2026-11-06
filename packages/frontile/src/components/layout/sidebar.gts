@@ -10,8 +10,6 @@ import NavFolder from './nav-folder';
 import SidebarGroup from './sidebar-group';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
-import type { NavItemClasses } from './nav-item';
-import type { NavFolderClasses } from './nav-folder';
 import type Owner from '@ember/owner';
 import type { AppLayoutVariants } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
@@ -78,18 +76,10 @@ interface SidebarSignature {
         Header: WithBoundArgs<typeof SidebarHeader, 'class'>;
         Body: WithBoundArgs<typeof SidebarBody, 'class'>;
         Footer: WithBoundArgs<typeof SidebarFooter, 'class'>;
-        Item: WithBoundArgs<
-          typeof NavItem,
-          'classes' | 'rail' | 'tooltipPlacement'
-        >;
+        Item: WithBoundArgs<typeof NavItem, 'rail' | 'tooltipPlacement'>;
         Folder: WithBoundArgs<
           typeof NavFolder,
-          | 'classes'
-          | 'itemClasses'
-          | 'rail'
-          | 'tooltipPlacement'
-          | 'inDrawer'
-          | 'onActivate'
+          'rail' | 'tooltipPlacement' | 'inDrawer' | 'onActivate'
         >;
         Group: WithBoundArgs<typeof SidebarGroup, 'classes'>;
       }
@@ -211,33 +201,6 @@ class Sidebar extends Component<SidebarSignature> {
     });
   }
 
-  /**
-   * Item styling comes from the `navItem` theme, not from `AppLayout`'s
-   * `@classes`: consumers style an item with `@class` / `@classes` on it.
-   */
-  @cached
-  get itemClasses(): NavItemClasses {
-    const styles = useStyles().navItem();
-    return {
-      navItem: styles.navItem(),
-      navItemIcon: styles.navItemIcon(),
-      navItemLabel: styles.navItemLabel()
-    };
-  }
-
-  @cached
-  get folderClasses(): NavFolderClasses {
-    const styles = useStyles().navItem();
-    return {
-      navFolder: styles.navFolder(),
-      navFolderTrigger: styles.navFolderTrigger(),
-      navFolderChevron: styles.navFolderChevron(),
-      navFolderPanel: styles.navFolderPanel(),
-      navFolderFlyout: styles.navFolderFlyout(),
-      navFolderFlyoutLabel: styles.navFolderFlyoutLabel()
-    };
-  }
-
   @cached
   get slotClasses() {
     const custom = this.args.layout?.classes;
@@ -245,8 +208,6 @@ class Sidebar extends Component<SidebarSignature> {
       header: this.styles.sidebarHeader({ class: custom?.sidebarHeader }),
       body: this.styles.sidebarBody({ class: custom?.sidebarBody }),
       footer: this.styles.sidebarFooter({ class: custom?.sidebarFooter }),
-      item: this.itemClasses,
-      folder: this.folderClasses,
       group: {
         sidebarGroup: this.styles.sidebarGroup({ class: custom?.sidebarGroup }),
         sidebarGroupLabel: this.styles.sidebarGroupLabel({
@@ -297,15 +258,12 @@ class Sidebar extends Component<SidebarSignature> {
               Footer=(component SidebarFooter class=this.slotClasses.footer)
               Item=(component
                 NavItem
-                classes=this.slotClasses.item
                 rail=this.rail
                 tooltipPlacement=this.tooltipPlacement
                 onActivate=this.closeDrawer
               )
               Folder=(component
                 NavFolder
-                classes=this.slotClasses.folder
-                itemClasses=this.slotClasses.item
                 rail=this.rail
                 tooltipPlacement=this.tooltipPlacement
                 inDrawer=true
@@ -332,15 +290,10 @@ class Sidebar extends Component<SidebarSignature> {
             Body=(component SidebarBody class=this.slotClasses.body)
             Footer=(component SidebarFooter class=this.slotClasses.footer)
             Item=(component
-              NavItem
-              classes=this.slotClasses.item
-              rail=this.rail
-              tooltipPlacement=this.tooltipPlacement
+              NavItem rail=this.rail tooltipPlacement=this.tooltipPlacement
             )
             Folder=(component
               NavFolder
-              classes=this.slotClasses.folder
-              itemClasses=this.slotClasses.item
               rail=this.rail
               tooltipPlacement=this.tooltipPlacement
               inDrawer=false

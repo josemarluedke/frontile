@@ -14,13 +14,6 @@ import type { ComponentLike } from '@glint/template';
 /** How the item lays out its icon and label. */
 type NavItemLayout = 'inline';
 
-/** Class names `Sidebar` hands each item, one per theme slot. */
-export interface NavItemClasses {
-  navItem: string;
-  navItemIcon: string;
-  navItemLabel: string;
-}
-
 interface NavItemArgs {
   /**
    * Renders a `LinkTo` for this route and derives the active state from the
@@ -80,14 +73,6 @@ interface NavItemArgs {
    * Merge, so a class that conflicts with a theme class wins.
    */
   class?: string;
-
-  /**
-   * Supplied by `Sidebar`. Not part of the public API. Without it (an item
-   * rendered on its own) the theme's classes are used.
-   *
-   * @internal
-   */
-  classes?: NavItemClasses;
 
   /**
    * Supplied by `Sidebar`: whether the sidebar is drawn as the icon rail.
@@ -169,18 +154,24 @@ class NavItem extends Component<NavItemSignature> {
     }
   }
 
+  get layout(): NavItemLayout {
+    return this.args.layout ?? 'inline';
+  }
+
+  /** The item's theme slots for its layout. */
   @cached
-  get classes(): NavItemClasses {
-    return this.args.classes ?? themeClasses();
+  get classes() {
+    const styles = useStyles().navItem({ layout: this.layout });
+    return {
+      navItem: styles.navItem(),
+      navItemIcon: styles.navItemIcon(),
+      navItemLabel: styles.navItemLabel()
+    };
   }
 
   /** Merged, so a consumer class wins over a conflicting theme class. */
   get className(): string {
     return twMerge(this.classes.navItem, this.args.class) ?? '';
-  }
-
-  get layout(): NavItemLayout {
-    return this.args.layout ?? 'inline';
   }
 
   activate = (): void => {
@@ -229,16 +220,6 @@ class NavItem extends Component<NavItemSignature> {
       </Tooltip>
     {{/unless}}
   </template>
-}
-
-/** An item's classes outside a `Sidebar`: the theme's own. */
-function themeClasses(): NavItemClasses {
-  const styles = useStyles().navItem();
-  return {
-    navItem: styles.navItem(),
-    navItemIcon: styles.navItemIcon(),
-    navItemLabel: styles.navItemLabel()
-  };
 }
 
 export { NavItem, type NavItemSignature, type NavItemArgs, type NavItemLayout };
