@@ -2504,6 +2504,88 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
   });
 
+  /**
+   * An empty chips field shows its placeholder where a single select of the
+   * same @inputSize does. The chips field pads itself tightly so chips fit
+   * (`p-1` at `sm`), and the bare trigger inside it has no padding of its own,
+   * so without an offset the placeholder sat noticeably closer to the border
+   * than the placeholder of the plain field next to it.
+   */
+  (['sm', 'md', 'lg'] as const).forEach((size) => {
+    [false, true].forEach((isFilterable) => {
+      test(`Multiple mode: an empty field lines its placeholder up with a single select (${size}${isFilterable ? ', filterable' : ''})`, async function (assert) {
+        await render(
+          <template>
+            <div style="width: 320px">
+              <Select
+                @items={{array "apple" "banana"}}
+                @selectionMode="multiple"
+                @placeholder="Pick some"
+                @inputSize={{size}}
+                @isFilterable={{isFilterable}}
+              />
+            </div>
+            <div style="width: 320px">
+              <Select
+                @items={{array "apple" "banana"}}
+                @placeholder="Pick one"
+                @inputSize={{size}}
+                @isFilterable={{isFilterable}}
+              />
+            </div>
+          </template>
+        );
+
+        const triggers = [
+          ...document.querySelectorAll(
+            '[data-component="select"] [data-part="input"]:not(select)'
+          )
+        ] as HTMLElement[];
+        const chipsField = document.querySelector(
+          '[data-test-id="chips-field"]'
+        ) as HTMLElement;
+        const [multipleTrigger, singleTrigger] = triggers as [
+          HTMLElement,
+          HTMLElement
+        ];
+
+        // The QUnit container is `transform: scale(.5)`, so rects are scaled
+        // while computed styles are not. Work in CSS pixels throughout.
+        const scale =
+          singleTrigger.getBoundingClientRect().width /
+          singleTrigger.offsetWidth;
+
+        // Where the placeholder text starts, measured from the outer edge of
+        // the element drawing the field's border.
+        const textStart = (trigger: HTMLElement, shell: HTMLElement) => {
+          const shellLeft = shell.getBoundingClientRect().left / scale;
+          if (trigger instanceof HTMLInputElement) {
+            const style = getComputedStyle(trigger);
+            return (
+              trigger.getBoundingClientRect().left / scale +
+              parseFloat(style.borderLeftWidth) +
+              parseFloat(style.paddingLeft) -
+              shellLeft
+            );
+          }
+          const placeholder = trigger.querySelector(
+            '[data-part="placeholder"]'
+          ) as HTMLElement;
+          return placeholder.getBoundingClientRect().left / scale - shellLeft;
+        };
+
+        const multiple = textStart(multipleTrigger, chipsField);
+        const single = textStart(singleTrigger, singleTrigger);
+
+        assert.ok(
+          Math.abs(multiple - single) <= 0.5,
+          `the empty chips field's placeholder starts ${multiple}px from its ` +
+            `border, the single select's ${single}px`
+        );
+      });
+    });
+  });
+
   test('Multiple mode: chips default to the faded appearance and inherit @intent', async function (assert) {
     const selectedKeys = cell<string[]>(['apple', 'banana']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
