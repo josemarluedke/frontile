@@ -8,11 +8,13 @@ const navRow = [
   // The icon's position never depends on the collapsed state, so the rail
   // closes over it instead of the icon sliding as the width animates.
   // Start padding puts it at the center of the rail's content box:
-  // (rail - body padding 1rem - icon 1.25rem) / 2. `--sidebar-rail` is
+  // (rail - body padding on both sides - icon 1.25rem) / 2. The body's
+  // side padding is `--sidebar-body-px` (0.5rem unless the variant sets it).
+  // `--sidebar-rail` is
   // the content width, so the inset variant excludes its 0.75rem gap.
-  'ps-[calc((var(--sidebar-rail,4rem)_-_2.25rem)/2)]',
+  'ps-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-body-px,0.5rem)_-_1.25rem)/2)]',
   'text-neutral-firm',
-  'not-data-[disabled=true]:hover:bg-neutral-subtle',
+  'not-data-[disabled=true]:hover:bg-neutral-muted',
   'not-data-[disabled=true]:hover:text-neutral-strong',
   'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
 ];
@@ -22,6 +24,8 @@ const navRow = [
 const navItemRow = [
   ...navRow,
   'data-[active=true]:bg-neutral-soft data-[active=true]:font-medium',
+  // Hovering the current page keeps its fill rather than lightening it.
+  'not-data-[disabled=true]:data-[active=true]:hover:bg-neutral-soft',
   'data-[active=true]:text-neutral-strong'
 ];
 
@@ -38,7 +42,8 @@ const navItem = tv({
     navItemLabel:
       'truncate group-data-[collapsed=true]/sidebar:[&:not([data-part=nav-folder-flyout]_*)]:sr-only',
     navFolder: 'flex flex-col',
-    navFolderTrigger: navRow,
+    // A button, which browsers do not give a pointer cursor on their own.
+    navFolderTrigger: [...navRow, 'not-data-[disabled=true]:cursor-pointer'],
     navFolderChevron: [
       'ms-auto size-4 shrink-0 transition-transform data-[open=true]:rotate-90 motion-reduce:transition-none',
       // Mirrored right to left, so it points toward the inline end. CSS
@@ -55,7 +60,7 @@ const navItem = tv({
     // (see `navItemRow`) works out to the same 0.5rem as their end padding.
     navFolderFlyout: [
       // Bounded, so long labels truncate instead of widening it.
-      'z-50 flex min-w-48 max-w-xs flex-col gap-0.5 p-1 [--sidebar-rail:3.25rem]',
+      'z-50 flex min-w-48 max-w-xs flex-col gap-0.5 p-1 [--sidebar-body-px:0.5rem] [--sidebar-rail:3.25rem]',
       'rounded-xl border border-neutral-subtle bg-surface-input shadow-elevation-3'
     ],
     // The folder's name at the top of its flyout, where the rail trigger

@@ -105,7 +105,10 @@ const appLayout = tv({
     mobileSidebar: 'group/sidebar flex min-h-0 flex-1 flex-col',
     sidebarHeader:
       'flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 px-3',
-    sidebarBody: 'min-h-0 flex-1 overflow-y-auto px-2',
+    // Side padding comes from `--sidebar-body-px` (0.5rem by default; the
+    // inset variant sets it to 0), which the items' rail-centering uses too.
+    sidebarBody:
+      'min-h-0 flex-1 overflow-y-auto px-[var(--sidebar-body-px,0.5rem)]',
     sidebarFooter: 'shrink-0 px-2 py-2',
     // `Sidebar.Group`: a labelled set of items. The label is visually hidden
     // in the rail like any other sidebar label.
@@ -167,7 +170,7 @@ const appLayout = tv({
       inset: {
         base: 'bg-neutral-subtle p-3',
         // Transparent, borderless: the sidebar floats on the tinted frame.
-        sidebar: 'bg-transparent',
+        sidebar: 'bg-transparent [--sidebar-body-px:0px]',
         mainCard:
           'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted',
         aside: 'border-s border-neutral-subtle'
