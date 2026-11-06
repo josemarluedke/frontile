@@ -654,13 +654,12 @@ import {
 A rail with stacked icon-over-label items on desktop that becomes a top bar, a
 bottom tab bar and a More sheet on a phone, built from the parts above:
 `@size="rail"` on the sidebar, `@layout="stacked"` with `@shortLabel` on its
-items, a `Navbar` as the phone top bar, and a `BottomNav` with a `More` tab. The full label is the
-accessible name; `@shortLabel` is the visible text. `class="theme-inverse"`
-on the sidebar flips it to the opposite color scheme.
+items, a `Navbar` as the phone top bar, and a `BottomNav` with a `More` tab.
+The full label is the accessible name; `@shortLabel` is the visible text.
 
-The brandmark, account tile and avatar are plain markup: Frontile has no
-account switcher or profile menu, so put your own in the sidebar's header and
-footer and in the `Navbar`. Which item is active is a tracked value passed to
+The account tile and avatar are plain markup: Frontile has no account switcher
+or profile menu, so put your own in the sidebar's header and footer and in the
+`Navbar`. Which item is active is a tracked value passed to
 `@isActive`, so the demo needs no router; in an app, pass `@route` and the
 router decides. Narrow the window to below 48rem to see the phone layout. All
 names and the badge count are made-up placeholder data.
@@ -694,7 +693,7 @@ const PAGES = [
   {
     id: 'marketplace',
     label: 'Marketplace',
-    short: 'Marketplace',
+    short: 'Market',
     icon: StarIcon
   },
   {
@@ -742,20 +741,16 @@ export default class RailNavExample extends Component {
           @size='rail'
           @collapsible='none'
           @label='Main navigation'
-          class='theme-inverse'
           as |sidebar|
         >
           <sidebar.Header>
-            <div class='flex flex-col items-center gap-2 py-2'>
-              <SparklesIcon class='text-primary' />
-              <button
-                type='button'
-                class='text-xs'
-                aria-label='Switch account · Sample account'
-              >
-                Sample account
-              </button>
-            </div>
+            <button
+              type='button'
+              aria-label='Switch account · Sample account'
+              class='mx-auto flex size-9 items-center justify-center rounded-lg bg-neutral-soft text-xs font-medium'
+            >
+              SA
+            </button>
           </sidebar.Header>
           <sidebar.Body>
             {{#each this.items as |item|}}

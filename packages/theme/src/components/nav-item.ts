@@ -42,7 +42,7 @@ const navItem = tv({
     navItemIcon: 'relative inline-flex shrink-0 items-center justify-center',
     navItemLabel: 'truncate',
     // The short text shown under the icon in the stacked layout.
-    navItemShortLabel: 'max-w-full truncate text-xs leading-tight',
+    navItemShortLabel: 'max-w-full truncate text-[11px] leading-tight',
     navItemBadge:
       'inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] leading-none font-medium text-on-danger',
     // Screen-reader text appended to the label for a badge.
@@ -89,7 +89,7 @@ const navItem = tv({
       // Small icon over text. Ignores the sidebar's collapsed state.
       stacked: {
         navItem: [
-          'group/nav-item mx-auto min-h-14 w-full max-w-[72px] flex-col justify-center gap-0.5 px-1 py-1 text-xs',
+          'group/nav-item mx-auto min-h-14 w-full max-w-[72px] flex-col justify-center gap-0.5 px-0.5 py-1 text-[11px]',
           // The active fill sits behind the icon, not the whole item.
           'data-[active=true]:bg-transparent not-data-[disabled=true]:hover:bg-transparent',
           'not-data-[disabled=true]:data-[active=true]:hover:bg-transparent'

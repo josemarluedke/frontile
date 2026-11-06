@@ -403,6 +403,13 @@ const appLayout = tv({
     // from `sidebarWidths`, so they cannot drift.
     ...sidebarWidthVariants,
 
+    // The rail is 5rem wide, so its body gives up some side padding to the
+    // stacked labels. 0.3125rem still clears the 5px focus ring.
+    {
+      sidebarSize: 'rail',
+      class: { sidebar: '[--sidebar-body-px:0.3125rem]' }
+    },
+
     // The inset sidebar floats on the frame, so it supplies its own spacing
     // to the card (the grid has no gap).
     {
