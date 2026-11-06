@@ -78,7 +78,7 @@ such as modifiers, analytics or data loading, inside it.
 and `@sheetLabel` names the sheet (default the label). In the demo, Billing is
 the current page and Messages has unread items (made-up data).
 
-```gts preview
+```gts preview collapsible
 import { BottomNav } from 'frontile';
 import {
   ViewIcon,

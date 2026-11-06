@@ -128,7 +128,7 @@ import { StarIcon } from 'site/components/icons';
 - `icon` shows the icon alone in a round hit target. The label shows as a
   tooltip on hover or focus. An icon item also ignores the collapsed state.
 
-```gts preview
+```gts preview collapsible
 import { NavItem } from 'frontile';
 import { ViewIcon, SettingsIcon, UserIcon } from 'site/components/icons';
 

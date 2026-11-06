@@ -88,7 +88,7 @@ on every change, including an automatic open for the current page. A clicked
 trigger then only calls `@onOpenChange`; the folder changes once you update
 `@open`. `@onOpenChange` is also called for a folder you do not control.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Button, NavFolder } from 'frontile';
@@ -156,7 +156,7 @@ In the mobile drawer a folder is always inline.
 
 Collapse this sidebar with the toggle, then click the Products icon.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import {
   PackageIcon,
