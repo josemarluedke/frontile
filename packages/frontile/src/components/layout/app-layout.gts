@@ -421,7 +421,8 @@ class AppLayout extends Component<AppLayoutSignature> {
     return appLayout({
       variant: this.variant,
       scrollMode: this.scrollMode,
-      sidebarColumn: this.sidebarColumn
+      sidebarColumn: this.sidebarColumn,
+      sidebarSize: this.registeredSidebar?.size
     }).base({ class: this.args.classes?.base });
   }
 

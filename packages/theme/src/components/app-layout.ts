@@ -21,10 +21,14 @@ import type { VariantProps } from '../tw';
 // layout (after the first render), and the sidebar's width must not depend
 // on that. Class names are literal strings so Tailwind can see them.
 // The inset widths include the `pe-3`/`ps-3` gutter (border box).
+// `rail` is the narrow preset for a stacked-label rail (icon over a short
+// label). It is meant for `collapsible="none"`, so it has no collapsed row:
+// collapsed widths are the default size's.
 const sidebarWidths = {
   attached: {
     expanded: { sidebar: 'w-64', token: '[--app-sidebar-width:16rem]' },
-    collapsed: { sidebar: 'w-16', token: '[--app-sidebar-width:4rem]' }
+    collapsed: { sidebar: 'w-16', token: '[--app-sidebar-width:4rem]' },
+    rail: { sidebar: 'w-20', token: '[--app-sidebar-width:5rem]' }
   },
   inset: {
     expanded: {
@@ -34,12 +38,18 @@ const sidebarWidths = {
     collapsed: {
       sidebar: 'w-[4.5rem] [--sidebar-rail:3.75rem]',
       token: '[--app-sidebar-width:4.5rem]'
+    },
+    // 80px plus the 12px `pe-3`/`ps-3` gutter.
+    rail: {
+      sidebar: 'w-[5.75rem]',
+      token: '[--app-sidebar-width:5.75rem]'
     }
   }
 } as const;
 
 const sidebarWidthVariants = (['attached', 'inset'] as const).flatMap(
   (variant) => [
+    // Collapsed widths are the same for every size.
     {
       variant,
       collapsed: true,
@@ -48,12 +58,26 @@ const sidebarWidthVariants = (['attached', 'inset'] as const).flatMap(
     {
       variant,
       collapsed: false,
+      sidebarSize: 'default' as const,
       class: { sidebar: sidebarWidths[variant].expanded.sidebar }
     },
     {
       variant,
+      collapsed: false,
+      sidebarSize: 'rail' as const,
+      class: { sidebar: sidebarWidths[variant].rail.sidebar }
+    },
+    {
+      variant,
       sidebarColumn: 'shown' as const,
+      sidebarSize: 'default' as const,
       class: { base: sidebarWidths[variant].expanded.token }
+    },
+    {
+      variant,
+      sidebarColumn: 'shown' as const,
+      sidebarSize: 'rail' as const,
+      class: { base: sidebarWidths[variant].rail.token }
     },
     {
       variant,
@@ -213,6 +237,14 @@ const appLayout = tv({
       shown: {},
       collapsed: {},
       none: { base: '[--app-sidebar-width:0px]' }
+    },
+
+    // The sidebar's width preset: `default`, or `rail` for a narrow
+    // icon-over-label rail. Set by `Sidebar`, and by `AppLayout` for the root's
+    // token. Defaults to `default` so existing callers are unchanged.
+    sidebarSize: {
+      default: {},
+      rail: {}
     },
 
     // `icon` shrinks to a rail, `offcanvas` hides entirely, `none` ignores
@@ -375,6 +407,7 @@ const appLayout = tv({
     collapsible: 'icon',
     sidebarColumn: 'shown',
     sidebarSide: 'start',
+    sidebarSize: 'default',
     standalone: false,
     inDrawer: false,
     scrollMode: 'content'

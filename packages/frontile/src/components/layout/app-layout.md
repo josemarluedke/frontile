@@ -415,6 +415,52 @@ import { ViewIcon } from 'site/components/icons';
 </template>
 ```
 
+### Sidebar size
+
+`@size` picks the sidebar's width from a named preset: `default`, or `rail`, a
+narrow column (80px) for a stack of icon-over-label items. A rail is meant to
+stay put, so pair it with `@collapsible="none"`. The size is a preset, not a
+length: for any other width, pass a width utility through `class` and set
+`--app-sidebar-width` yourself if you read it.
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import { ViewIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout @variant='attached' class='demo-app-layout' as |layout|>
+      <layout.Sidebar @size='rail' @collapsible='none' as |sidebar|>
+        <sidebar.Body>
+          <sidebar.Item
+            @href='#home'
+            @layout='stacked'
+            @icon={{ViewIcon}}
+            @shortLabel='Home'
+          >Home</sidebar.Item>
+          <sidebar.Item
+            @href='#reports'
+            @layout='stacked'
+            @icon={{ViewIcon}}
+            @shortLabel='Reports'
+          >Reports</sidebar.Item>
+          <sidebar.Item
+            @href='#settings'
+            @layout='stacked'
+            @icon={{ViewIcon}}
+            @shortLabel='Settings'
+          >Settings</sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <span class='text-sm font-medium'>size: rail</span>
+      </layout.Navbar>
+      <layout.Main />
+    </AppLayout>
+  </div>
+</template>
+```
+
 ### Sidebar side
 
 `@sidebarSide="end"` on `AppLayout` moves the sidebar to the last column. The
@@ -648,7 +694,8 @@ element, so your own parts can line up with the shell:
 | `--app-sidebar-width` | The sidebar's drawn width, including the `inset` variant's gutter |
 
 `--app-sidebar-width` is `16rem` expanded and `4rem` collapsed in the
-`attached` variant, and `15rem` and `4.5rem` in `inset`. It is `0px` when there
+`attached` variant, and `15rem` and `4.5rem` in `inset`. With `@size="rail"` it
+is `5rem` (`attached`) or `5.75rem` (`inset`, including the gutter). It is `0px` when there
 is no sidebar column: the layout has no `Sidebar`, the viewport is below the
 breakpoint and the sidebar is a drawer, or the sidebar is collapsed with
 `@collapsible="offcanvas"`.
@@ -916,7 +963,6 @@ These are not part of `AppLayout` yet. Each one would be added without breaking 
 | Top navigation above the sidebar | The sidebar spans the full height, with nothing above it |
 | Floating sidebar variant | The `inset` variant, which floats the sidebar on the frame |
 | Bottom-sheet mobile navigation | Below the breakpoint, the sidebar opens in a drawer |
-| Stacked rail style, with a short label under each icon | The collapsed sidebar shows only the icons, with the label as a tooltip |
 
 ## API
 

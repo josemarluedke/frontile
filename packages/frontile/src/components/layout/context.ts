@@ -50,6 +50,7 @@ export interface AppLayoutContext {
 export interface RegisteredSidebar {
   readonly collapsed: boolean;
   readonly collapsible: 'icon' | 'offcanvas' | 'none';
+  readonly size: 'default' | 'rail';
 }
 
 export interface AppLayoutConfig {

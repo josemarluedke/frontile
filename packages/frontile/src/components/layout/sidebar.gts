@@ -32,6 +32,17 @@ interface SidebarArgs {
   collapsible?: 'icon' | 'offcanvas' | 'none';
 
   /**
+   * The sidebar's width preset. `default` is the standard sidebar; `rail` is
+   * a narrow column (80px) for a stack of icon-over-label items, usually with
+   * `@collapsible="none"`. It is a named preset, not a length: for any other
+   * width, pass a width utility through `class` (and set `--app-sidebar-width`
+   * yourself if you read the token).
+   *
+   * @defaultValue 'default'
+   */
+  size?: 'default' | 'rail';
+
+  /**
    * The accessible name of the sidebar's `nav` landmark. Give each navigation
    * on the page a distinct name.
    *
@@ -165,6 +176,10 @@ class Sidebar extends Component<SidebarSignature> {
     return this.collapsible !== 'none' && this.state.sidebarCollapsed;
   }
 
+  get size(): 'default' | 'rail' {
+    return this.args.size ?? 'default';
+  }
+
   get id(): string {
     return this.args.layout?.sidebarId ?? `${guidFor(this)}-sidebar`;
   }
@@ -185,7 +200,8 @@ class Sidebar extends Component<SidebarSignature> {
       standalone: !layout,
       inDrawer: this.inDrawer,
       collapsible: this.collapsible,
-      collapsed: this.collapsed
+      collapsed: this.collapsed,
+      sidebarSize: this.size
     });
   }
 

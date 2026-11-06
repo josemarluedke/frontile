@@ -579,6 +579,36 @@ module(
       assert.strictEqual(readVar('--app-sidebar-width'), '4.5rem');
     });
 
+    test('--app-sidebar-width reports 5rem for an attached rail', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar @size="rail" @collapsible="none" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(readVar('--app-sidebar-width'), '5rem');
+    });
+
+    test('--app-sidebar-width reports 5.75rem for an inset rail', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="inset" as |layout|>
+            <layout.Sidebar @size="rail" @collapsible="none" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(readVar('--app-sidebar-width'), '5.75rem');
+    });
+
     test('--app-sidebar-width is 0px for an offcanvas sidebar while collapsed', async function (assert) {
       await render(
         <template>

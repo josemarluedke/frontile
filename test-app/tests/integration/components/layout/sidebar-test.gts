@@ -3,6 +3,8 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click, settled } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { AppLayout, AppLayoutState, Sidebar, SidebarToggle } from 'frontile';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
+import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 
 function isVisiblyHidden(el: Element): boolean {
   const rect = el.getBoundingClientRect();
@@ -394,3 +396,101 @@ module('Integration | Component | Sidebar | frontile/layout', function (hooks) {
     assert.true(isVisiblyHidden(find('[data-sidebar-label]')!));
   });
 });
+
+module(
+  'Integration | Component | Sidebar size | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    let previous: Partial<ReturnType<typeof useStyles>>;
+
+    hooks.beforeEach(function () {
+      previous = { appLayout: useStyles().appLayout };
+      registerCustomStyles({ appLayout: realStyles.appLayout });
+    });
+
+    hooks.afterEach(function () {
+      registerCustomStyles(previous);
+    });
+
+    // The test container is scaled, so read the computed width (layout px).
+    function widthOf(selector = '[data-part="sidebar"]'): number {
+      const el = find(selector)!;
+      (el as HTMLElement).style.transition = 'none';
+      return parseFloat(getComputedStyle(el).width);
+    }
+
+    test('size="rail" is 80px wide in the attached variant', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar @size="rail" @collapsible="none" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(widthOf(), 80);
+    });
+
+    test('size="rail" in the inset variant is 92px including the gutter', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="inset" as |layout|>
+            <layout.Sidebar @size="rail" @collapsible="none" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(widthOf(), 92);
+    });
+
+    test('rail width with collapsible="none" ignores collapse', async function (assert) {
+      const state = new AppLayoutState({ sidebarCollapsed: true });
+      await render(
+        <template>
+          <AppLayout @variant="attached" @state={{state}} as |layout|>
+            <layout.Sidebar @size="rail" @collapsible="none" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.true(state.sidebarCollapsed, 'the layout is collapsed');
+      assert.strictEqual(widthOf(), 80);
+    });
+
+    test('default size is unchanged (16rem attached, 15rem inset)', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+      assert.strictEqual(widthOf(), 256);
+
+      await render(
+        <template>
+          <AppLayout @variant="inset" as |layout|>
+            <layout.Sidebar @size="default" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+      assert.strictEqual(widthOf(), 240);
+    });
+  }
+);
