@@ -241,8 +241,16 @@ class NavFolder extends Component<NavFolderSignature> {
     }
   }
 
+  /** Whether a bump is already queued; items registering together share one. */
+  #bumpScheduled = false;
+
   #bumpRegistry(): void {
+    if (this.#bumpScheduled) {
+      return;
+    }
+    this.#bumpScheduled = true;
     schedule('afterRender', () => {
+      this.#bumpScheduled = false;
       if (!this.isDestroying && !this.isDestroyed) {
         this.registryVersion++;
       }
@@ -270,11 +278,13 @@ class NavFolder extends Component<NavFolderSignature> {
     return [...this.#items];
   }
 
+  @cached
   get visibleItems(): NavItemHandle[] {
     return this.items.filter((item) => !item.isHidden);
   }
 
   /** A hidden item never makes the folder active. */
+  @cached
   get hasActiveDescendant(): boolean {
     return this.visibleItems.some((item) => item.isActive);
   }
