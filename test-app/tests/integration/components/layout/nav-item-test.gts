@@ -298,6 +298,48 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
     assert.strictEqual(unregistered, 1, 'unregistered on destroy');
   });
 
+  test('the folder handle reports hasBadge for a shown badge on a visible item', async function (assert) {
+    const handles: { readonly hasBadge: boolean }[] = [];
+    const folder = {
+      registerItem(item: {
+        readonly isActive: boolean;
+        readonly isHidden: boolean;
+        readonly hasBadge: boolean;
+      }) {
+        handles.push(item);
+        return () => {};
+      }
+    };
+    const state = new (class {
+      @tracked badge: number | string | undefined = 3;
+      @tracked hidden = false;
+    })();
+
+    await render(
+      <template>
+        <NavItem
+          @href="/a"
+          @badge={{state.badge}}
+          @isHidden={{state.hidden}}
+          @folder={{folder}}
+        >A</NavItem>
+        <NavItem @href="/b" @folder={{folder}}>B</NavItem>
+      </template>
+    );
+
+    assert.true(handles[0]!.hasBadge, 'a badge of 3');
+    assert.false(handles[1]!.hasBadge, 'no badge');
+
+    state.badge = 0;
+    await settled();
+    assert.false(handles[0]!.hasBadge, 'a badge of 0 is not shown');
+
+    state.badge = 'new';
+    state.hidden = true;
+    await settled();
+    assert.false(handles[0]!.hasBadge, 'a hidden item has no badge');
+  });
+
   module('layouts, short labels and badges', function (nested) {
     let previous: Partial<ReturnType<typeof useStyles>>;
 
@@ -527,6 +569,31 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
       assert.dom('[data-part="nav-item-badge"]').doesNotExist();
       assert.dom('#zero [data-part="nav-item-label"]').hasText('Zero');
       assert.dom('#empty [data-part="nav-item-label"]').hasText('Empty');
+    });
+
+    test('badgeDot renders an empty dot and reads badgeLabel', async function (assert) {
+      await render(
+        <template>
+          <NavItem
+            @layout="icon"
+            @icon={{TestIcon}}
+            @badgeDot={{true}}
+            @badgeLabel="has updates"
+            id="item"
+          >More</NavItem>
+        </template>
+      );
+
+      const dot = find('#item [data-part="nav-item-badge"]')!;
+      assert.dom(dot).hasNoText().hasAttribute('aria-hidden', 'true');
+      assert.strictEqual(getComputedStyle(dot).width, '8px');
+      assert.strictEqual(getComputedStyle(dot).height, '8px');
+      assert
+        .dom('#item [data-part="nav-item-badge-label"]')
+        .hasText(', has updates');
+      assert
+        .dom('#item [data-part="nav-item-label"]')
+        .hasText('More, has updates');
     });
 
     test('data-layout reflects @layout', async function (assert) {

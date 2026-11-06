@@ -3,6 +3,7 @@ import { cached, tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { schedule } from '@ember/runloop';
+import { registerDestructor } from '@ember/destroyable';
 import { guidFor } from '@ember/object/internals';
 import { modifier } from 'ember-modifier';
 import { waitForPromise } from '@ember/test-waiters';
@@ -104,6 +105,16 @@ interface NavFolderArgs {
    * @internal
    */
   onActivate?: () => void;
+
+  /**
+   * Supplied by `BottomNav.More`: the container this folder belongs to. The
+   * folder registers a handle with it that reports its children: active when
+   * a visible child is, hidden when the folder or every child is, badged
+   * when a visible child is. Not part of the public API.
+   *
+   * @internal
+   */
+  parent?: NavFolderContext;
 }
 
 interface NavFolderSignature {
@@ -156,6 +167,30 @@ class NavFolder extends Component<NavFolderSignature> {
 
   /** Whether an active item has been seen; untracked, the modifier's memory. */
   #wasActive = false;
+
+  constructor(owner: unknown, args: NavFolderSignature['Args']) {
+    super(owner as never, args);
+
+    const parent = args.parent;
+    if (parent) {
+      // Lazy getters over the folder's own derived state, so the parent sees
+      // the children as they are when it reads them (after render; see
+      // `registryVersion`).
+      const folder = (): NavFolder => this;
+      const unregister = parent.registerItem({
+        get isActive() {
+          return folder().hasActiveDescendant;
+        },
+        get isHidden() {
+          return folder().isFolderHidden ?? false;
+        },
+        get hasBadge() {
+          return folder().visibleItems.some((item) => item.hasBadge);
+        }
+      });
+      registerDestructor(this, unregister);
+    }
+  }
 
   #bumpRegistry(): void {
     schedule('afterRender', () => {

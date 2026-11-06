@@ -116,8 +116,21 @@ const navItem = tv({
       // At the icon's top-end corner.
       icon: { navItemBadge: 'absolute -top-1 -end-1' },
       end: { navItemBadge: 'ms-auto' }
+    },
+    // A plain dot with no text (the More tab's "something inside has a
+    // badge" marker).
+    badgeDot: {
+      true: { navItemBadge: 'size-2 min-w-2 p-0' }
     }
   },
+  compoundVariants: [
+    // The dot is smaller than the pill, so it sits closer to the corner.
+    {
+      badgeDot: true,
+      badgePlacement: 'icon',
+      class: { navItemBadge: '-top-0.5 -end-0.5' }
+    }
+  ],
   defaultVariants: {
     layout: 'inline'
   }

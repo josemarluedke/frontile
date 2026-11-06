@@ -129,6 +129,15 @@ interface NavItemArgs {
    * @internal
    */
   folder?: NavFolderContext;
+
+  /**
+   * Supplied by `BottomNav.More`: shows the badge as a small dot with no
+   * text, whatever `@badge` is. `@badgeLabel` is its screen-reader text.
+   * Not part of the public API.
+   *
+   * @internal
+   */
+  badgeDot?: boolean;
 }
 
 interface NavItemSignature {
@@ -170,6 +179,9 @@ class NavItem extends Component<NavItemSignature> {
         },
         get isHidden() {
           return args.isHidden ?? false;
+        },
+        get hasBadge() {
+          return Boolean(args.badge) && args.badge !== 0 && !args.isHidden;
         }
       });
       registerDestructor(this, unregister);
@@ -186,7 +198,8 @@ class NavItem extends Component<NavItemSignature> {
     const styles = useStyles().navItem({
       layout: this.layout,
       shortLabel: this.hasShortLabel,
-      badgePlacement: this.args.icon ? 'icon' : 'end'
+      badgePlacement: this.args.icon ? 'icon' : 'end',
+      badgeDot: Boolean(this.args.badgeDot)
     });
     return {
       navItem: styles.navItem(),
@@ -210,8 +223,14 @@ class NavItem extends Component<NavItemSignature> {
     return this.layout === 'stacked' && Boolean(this.args.shortLabel);
   }
 
-  /** Whether a badge is shown: not for `undefined`, `null`, `0` or `''`. */
+  /**
+   * Whether a badge is shown: not for `undefined`, `null`, `0` or `''`.
+   * Always for `@badgeDot`.
+   */
   get hasBadge(): boolean {
+    if (this.args.badgeDot) {
+      return true;
+    }
     const badge = this.args.badge;
     return badge !== undefined && badge !== null && badge !== 0 && badge !== '';
   }
@@ -226,6 +245,11 @@ class NavItem extends Component<NavItemSignature> {
 
   get badgeText(): string | number | undefined {
     return this.args.badgeLabel ?? this.args.badge;
+  }
+
+  /** The pill's visible text: none for a dot. */
+  get badgeValue(): string | number | undefined {
+    return this.args.badgeDot ? undefined : this.args.badge;
   }
 
   /** Merged, so a consumer class wins over a conflicting theme class. */
@@ -271,7 +295,7 @@ class NavItem extends Component<NavItemSignature> {
                   data-part="nav-item-badge"
                   class={{this.classes.navItemBadge}}
                   aria-hidden="true"
-                >{{@badge}}</span>{{/if}}</span>
+                >{{this.badgeValue}}</span>{{/if}}</span>
           {{/if}}
           {{#if this.hasShortLabel}}
             <span
@@ -292,7 +316,7 @@ class NavItem extends Component<NavItemSignature> {
                 data-part="nav-item-badge"
                 class={{this.classes.navItemBadge}}
                 aria-hidden="true"
-              >{{@badge}}</span>{{/unless}}{{/if}}
+              >{{this.badgeValue}}</span>{{/unless}}{{/if}}
         </NavLink>
         <t.Content>{{yield}}</t.Content>
       </Tooltip>

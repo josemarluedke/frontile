@@ -363,6 +363,101 @@ module(
       assert.dom(ROOT).isNotVisible();
     });
 
+    test('with a @parent it registers a handle that follows its visible children', async function (assert) {
+      type Handle = {
+        readonly isActive: boolean;
+        readonly isHidden: boolean;
+        readonly hasBadge: boolean;
+      };
+      const handles: Handle[] = [];
+      let unregistered = 0;
+      const parent = {
+        registerItem(item: Handle) {
+          handles.push(item);
+          return () => {
+            unregistered++;
+          };
+        }
+      };
+      const state = new (class {
+        @tracked show = true;
+        @tracked active = false;
+        @tracked hidden = false;
+        @tracked folderHidden = false;
+        @tracked badge: number | undefined;
+      })();
+
+      await render(
+        <template>
+          {{#if state.show}}
+            <NavFolder
+              @label="Reports"
+              @parent={{parent}}
+              @isHidden={{state.folderHidden}}
+              as |folder|
+            >
+              <folder.Item
+                @href="/a"
+                @isActive={{state.active}}
+                @isHidden={{state.hidden}}
+                @badge={{state.badge}}
+              >A</folder.Item>
+              <folder.Item @href="/b">B</folder.Item>
+            </NavFolder>
+          {{/if}}
+        </template>
+      );
+
+      assert.strictEqual(handles.length, 1, 'registered once');
+      const handle = handles[0]!;
+      assert.false(handle.isActive);
+      assert.false(handle.isHidden);
+      assert.false(handle.hasBadge);
+
+      state.active = true;
+      state.badge = 2;
+      await settled();
+      assert.true(handle.isActive, 'an active child makes it active');
+      assert.true(handle.hasBadge, 'a badged child gives it a badge');
+
+      state.hidden = true;
+      await settled();
+      assert.false(handle.isActive, 'a hidden child does not count');
+      assert.false(handle.hasBadge, 'a hidden badged child does not count');
+      assert.false(handle.isHidden, 'one child is still visible');
+
+      state.folderHidden = true;
+      await settled();
+      assert.true(handle.isHidden, '@isHidden hides it');
+
+      state.show = false;
+      await settled();
+      assert.strictEqual(unregistered, 1, 'unregistered on destroy');
+    });
+
+    test('with a @parent it is hidden when every child is hidden', async function (assert) {
+      const handles: { readonly isHidden: boolean }[] = [];
+      const parent = {
+        registerItem(item: {
+          readonly isActive: boolean;
+          readonly isHidden: boolean;
+          readonly hasBadge: boolean;
+        }) {
+          handles.push(item);
+          return () => {};
+        }
+      };
+      await render(
+        <template>
+          <NavFolder @label="Reports" @parent={{parent}} as |folder|>
+            <folder.Item @href="/a" @isHidden={{true}}>A</folder.Item>
+          </NavFolder>
+        </template>
+      );
+
+      assert.true(handles[0]!.isHidden);
+    });
+
     test('a removed child is unregistered', async function (assert) {
       const state = new State();
       state.showExtra = true;
