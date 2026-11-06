@@ -649,12 +649,12 @@ import {
 </template>
 ```
 
-### Platform-style navigation
+### Rail and bottom bar
 
-A rail with stacked icon-over-label items on desktop and a top bar, tab bar and
-More sheet on a phone, built from the parts above: `@size="rail"` on the
-sidebar, `@layout="stacked"` with `@shortLabel` on its items, a `Navbar` as
-the phone top bar, and a `BottomNav` with a `More` tab. The full label is the
+A rail with stacked icon-over-label items on desktop that becomes a top bar, a
+bottom tab bar and a More sheet on a phone, built from the parts above:
+`@size="rail"` on the sidebar, `@layout="stacked"` with `@shortLabel` on its
+items, a `Navbar` as the phone top bar, and a `BottomNav` with a `More` tab. The full label is the
 accessible name; `@shortLabel` is the visible text. `class="theme-inverse"`
 on the sidebar flips it to the opposite color scheme.
 
@@ -706,7 +706,7 @@ const PAGES = [
   { id: 'support', label: 'Support', short: 'Support', icon: SparklesIcon }
 ];
 
-export default class PlatformNavExample extends Component {
+export default class RailNavExample extends Component {
   @tracked page = 'overview';
 
   go = (id: string): void => {

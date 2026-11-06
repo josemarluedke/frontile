@@ -98,8 +98,8 @@ const SearchIcon: TOC<{ Element: SVGSVGElement }> = <template>
 </template>;
 
 /**
- * The platform-style shell: a stacked rail on desktop, a top bar and a tab bar
- * with a More sheet on a phone. The account tile, avatar and brandmark are
+ * A stacked rail on desktop; a top bar and a bottom tab bar with a More sheet
+ * on a phone. The account tile, avatar and brandmark are
  * plain placeholder markup, not Frontile. Names and counts are made up.
  */
 export default class PlatformShell extends Component {
