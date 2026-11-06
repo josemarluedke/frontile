@@ -127,6 +127,15 @@ class Sidebar extends Component<SidebarSignature> {
   }
 
   /**
+   * `@mobileNav="bottom"` below the breakpoint: the layout's `BottomNav`
+   * replaces the sidebar, so nothing renders (no drawer, no block). The
+   * sidebar stays registered, so the layout still knows about it.
+   */
+  get hiddenForBottomNav(): boolean {
+    return this.args.layout?.bottomNavMode ?? false;
+  }
+
+  /**
    * `Drawer` placements are physical, so `start` is resolved against the
    * layout's direction: left in a left-to-right document, right in RTL.
    */
@@ -247,7 +256,9 @@ class Sidebar extends Component<SidebarSignature> {
   }
 
   <template>
-    {{#if this.inDrawer}}
+    {{#if this.hiddenForBottomNav}}
+      {{! Nothing: the BottomNav is the navigation here. }}
+    {{else if this.inDrawer}}
       <Drawer
         @isOpen={{this.state.mobileSidebarOpen}}
         @onClose={{this.closeDrawer}}

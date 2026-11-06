@@ -389,7 +389,13 @@ const KNOWN_UNRENDERED_SLOTS = {
  * where it actually occurs today.
  */
 const MANUAL_PART_OWNERS = {
-  'overlays/popover.gts': [{ part: 'arrow', owner: 'tooltip' }]
+  'overlays/popover.gts': [{ part: 'arrow', owner: 'tooltip' }],
+  // Inside an `AppLayout`, the BottomNav's one `nav` also takes the
+  // `appLayout` config's `bottomNav` slot (its grid row and position),
+  // merged over the bar's own classes. The file carries
+  // `data-component="bottom-nav"`, so the part is counted for `app-layout`
+  // here as well.
+  'layout/bottom-nav.gts': [{ part: 'bottom-nav', owner: 'app-layout' }]
 };
 
 function applyManualPartOwners(file, parts, ensure) {
@@ -470,6 +476,8 @@ export function readRenderedParts(componentsDir, knownConfigNames) {
         recordPart(entry, part.value, file);
         entry.files.add(file);
       }
+      // A part can also belong to a second config (see MANUAL_PART_OWNERS).
+      applyManualPartOwners(file, parts, ensure);
     } else if (parts.length > 0) {
       const owner = findOwnerByDirectory(file, componentsDir, knownConfigNames);
       if (owner) {

@@ -483,6 +483,30 @@ module(
       assert.dom('main').hasClass('custom-main');
       assert.dom('[data-part="main-card"]').hasClass('custom-card');
     });
+
+    test('BottomNav renders nothing when mobileNav is drawer', async function (assert) {
+      for (const width of [500, 1200]) {
+        const media = mockMatchMedia(width);
+        try {
+          await render(
+            <template>
+              <AppLayout as |layout|>
+                <layout.Sidebar />
+                <layout.Main>Content</layout.Main>
+                <layout.BottomNav as |bar|>
+                  <bar.Item @href="#a">A</bar.Item>
+                </layout.BottomNav>
+              </AppLayout>
+            </template>
+          );
+          assert
+            .dom('[data-part="bottom-nav"]')
+            .doesNotExist(`no bar at ${width}px in the default drawer mode`);
+        } finally {
+          media.restore();
+        }
+      }
+    });
   }
 );
 

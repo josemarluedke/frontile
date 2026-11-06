@@ -45,7 +45,9 @@ interface SidebarToggleSignature {
  * A button that collapses and expands the sidebar. `aria-expanded` is true
  * while the sidebar is expanded. Inside an `AppLayout`, below its
  * `@breakpoint` (where the sidebar is a drawer) it opens the drawer instead,
- * like `MenuToggle`, and `aria-expanded` follows the drawer.
+ * like `MenuToggle`, and `aria-expanded` follows the drawer. With
+ * `@mobileNav="bottom"` there is no sidebar below the breakpoint, so there it
+ * renders nothing.
  */
 class SidebarToggle extends Component<SidebarToggleSignature> {
   fallbackState = new AppLayoutState();
@@ -97,35 +99,37 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
   };
 
   <template>
-    <button
-      type="button"
-      data-part="sidebar-toggle"
-      aria-label={{this.label}}
-      aria-expanded={{this.expanded}}
-      aria-controls={{this.controls}}
-      class={{this.classNames}}
-      {{on "click" this.toggle}}
-      ...attributes
-    >
-      {{#if (has-block)}}
-        {{yield}}
-      {{else}}
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          width="20"
-          height="20"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <path d="M9 4v16" />
-        </svg>
-      {{/if}}
-    </button>
+    {{#unless @layout.bottomNavMode}}
+      <button
+        type="button"
+        data-part="sidebar-toggle"
+        aria-label={{this.label}}
+        aria-expanded={{this.expanded}}
+        aria-controls={{this.controls}}
+        class={{this.classNames}}
+        {{on "click" this.toggle}}
+        ...attributes
+      >
+        {{#if (has-block)}}
+          {{yield}}
+        {{else}}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <path d="M9 4v16" />
+          </svg>
+        {{/if}}
+      </button>
+    {{/unless}}
   </template>
 }
 

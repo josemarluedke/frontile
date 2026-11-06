@@ -46,6 +46,8 @@ interface MenuToggleSignature {
  * `SidebarToggle` also opens the drawer below the breakpoint, so a layout can
  * use either one there; with both in the navbar, both show on narrow
  * screens. Closing the drawer returns focus to the button that opened it.
+ * With `@mobileNav="bottom"` there is no drawer, so below the breakpoint it
+ * renders nothing.
  */
 class MenuToggle extends Component<MenuToggleSignature> {
   fallbackState = new AppLayoutState();
@@ -78,35 +80,37 @@ class MenuToggle extends Component<MenuToggleSignature> {
   };
 
   <template>
-    <button
-      type="button"
-      id={{@layout.menuToggleId}}
-      data-part="menu-toggle"
-      aria-label={{this.label}}
-      aria-expanded={{this.expanded}}
-      aria-controls={{this.controls}}
-      class={{this.classNames}}
-      {{on "click" this.open}}
-      ...attributes
-    >
-      {{#if (has-block)}}
-        {{yield}}
-      {{else}}
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          width="20"
-          height="20"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      {{/if}}
-    </button>
+    {{#unless @layout.bottomNavMode}}
+      <button
+        type="button"
+        id={{@layout.menuToggleId}}
+        data-part="menu-toggle"
+        aria-label={{this.label}}
+        aria-expanded={{this.expanded}}
+        aria-controls={{this.controls}}
+        class={{this.classNames}}
+        {{on "click" this.open}}
+        ...attributes
+      >
+        {{#if (has-block)}}
+          {{yield}}
+        {{else}}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        {{/if}}
+      </button>
+    {{/unless}}
   </template>
 }
 

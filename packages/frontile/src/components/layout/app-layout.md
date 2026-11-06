@@ -558,6 +558,91 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 </template>
 ```
 
+### Bottom navigation
+
+`@mobileNav="bottom"` replaces the drawer with a bar of tabs along the bottom
+of the screen. Below `@breakpoint` the layout renders its yielded
+[BottomNav](./bottom-nav) as a row under `Main`, and renders no `Sidebar`,
+`MenuToggle` or `SidebarToggle`; the keyboard shortcut does nothing there. At
+or above the breakpoint the layout shows the sidebar as usual and the
+`BottomNav` renders nothing, so you write both and each appears at its own
+width. An open More sheet closes when the window grows past the breakpoint.
+The default, `@mobileNav="drawer"`, is the drawer described above, and a
+`BottomNav` in it never renders.
+
+Place `<layout.BottomNav>` after `<layout.Main>`. With `@scrollMode="page"`
+the bar sticks to the bottom of the viewport with `z-10`, so it rises above
+in-page layers such as sticky table headers while overlays rendered later in
+the page still cover it. This is a workaround: a theme-level z-index scale is
+the proper fix and is a follow-up task. See
+[BottomNav: Stacking order](./bottom-nav#stacking-order).
+
+This demo shows a rail at desktop width. Narrow the window to below 48rem to
+see the bar instead. The items and badge count are placeholder data.
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import {
+  ViewIcon,
+  UserIcon,
+  SettingsIcon,
+  SparklesIcon
+} from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout
+      @variant='attached'
+      @mobileNav='bottom'
+      class='demo-app-layout'
+      as |layout|
+    >
+      <layout.Sidebar @size='rail' @collapsible='none' as |sidebar|>
+        <sidebar.Body>
+          <sidebar.Item
+            @href='#home'
+            @layout='stacked'
+            @icon={{ViewIcon}}
+            @isActive={{true}}
+          >Home</sidebar.Item>
+          <sidebar.Item
+            @href='#people'
+            @layout='stacked'
+            @icon={{UserIcon}}
+            @badge={{2}}
+          >People</sidebar.Item>
+          <sidebar.Item
+            @href='#settings'
+            @layout='stacked'
+            @icon={{SettingsIcon}}
+          >Settings</sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <SparklesIcon class='shrink-0 text-primary' />
+        <span class='text-sm font-medium'>Acme</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Home' />
+      </layout.Main>
+      <layout.BottomNav as |bar|>
+        <bar.Item @href='#home' @icon={{ViewIcon}} @isActive={{true}}>
+          Home
+        </bar.Item>
+        <bar.Item @href='#people' @icon={{UserIcon}} @badge={{2}}>
+          People
+        </bar.Item>
+        <bar.More as |more|>
+          <more.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </more.Item>
+        </bar.More>
+      </layout.BottomNav>
+    </AppLayout>
+  </div>
+</template>
+```
+
 ### Keyboard shortcut
 
 <kbd>Cmd</kbd>+<kbd>B</kbd> (<kbd>Ctrl</kbd>+<kbd>B</kbd> outside Apple
@@ -570,7 +655,9 @@ such as `'mod+shift+s'`.
 
 The shortcut does nothing while focus is in editable content
 (`contenteditable`), where the browser's own <kbd>Cmd</kbd>+<kbd>B</kbd>
-makes text bold, and it does not repeat while the keys are held down.
+makes text bold, and it does not repeat while the keys are held down. With
+`@mobileNav="bottom"` it does nothing below the breakpoint, where there is no
+sidebar.
 
 ### Using the sidebar on its own
 
@@ -685,13 +772,14 @@ import { AppLayout, Button } from 'frontile';
 
 ## Sizing tokens
 
-The layout publishes its two main sizes as CSS custom properties on its root
+The layout publishes its main sizes as CSS custom properties on its root
 element, so your own parts can line up with the shell:
 
-| Property              | Value                                                             |
-| --------------------- | ----------------------------------------------------------------- |
-| `--app-navbar-height` | `3rem`: the height of the navbar and of the sidebar header        |
-| `--app-sidebar-width` | The sidebar's drawn width, including the `inset` variant's gutter |
+| Property                 | Value                                                             |
+| ------------------------ | ----------------------------------------------------------------- |
+| `--app-navbar-height`    | `3rem`: the height of the navbar and of the sidebar header        |
+| `--app-sidebar-width`    | The sidebar's drawn width, including the `inset` variant's gutter |
+| `--app-bottomnav-height` | The bottom bar's height, including the safe-area inset            |
 
 `--app-sidebar-width` is `16rem` expanded and `4rem` collapsed in the
 `attached` variant, and `15rem` and `4.5rem` in `inset`. With `@size="rail"` it
@@ -717,12 +805,30 @@ state the sidebar is in:
 </div>
 ```
 
+`--app-bottomnav-height` is `3.75rem` plus the device's bottom safe-area
+inset (or `--bottomnav-safe-area`, when set) while a `BottomNav` is shown, and
+`0px` otherwise: in the default drawer mode, at or above the breakpoint, or
+with no `BottomNav` in the layout. Like `--app-sidebar-width`, it is set after
+the first render. Use it to keep your own fixed elements, such as a floating
+action button, clear of the bar:
+
+```gts
+<div
+  class='fixed end-4'
+  style='bottom: calc(var(--app-bottomnav-height, 0px) + 1rem);'
+>
+  New
+</div>
+```
+
 ## Scrolling
 
 With `@scrollMode='content'`, the default, the layout is exactly the height
 of the viewport and `Main` scrolls. With `@scrollMode='page'` the layout grows
 with its content and the document scrolls instead, while the sidebar sticks
-to the top of the viewport (inside the frame's gutter with `inset`).
+to the top of the viewport (inside the frame's gutter with `inset`). A
+`BottomNav` is the layout's last row in `content` mode and sticks to the
+bottom of the viewport in `page` mode.
 
 ## State
 
@@ -919,6 +1025,10 @@ export default class FullAppLayoutExample extends Component {
 - `MenuToggle` is a button named by `@label` (default "Open menu"). It sets
   `aria-expanded` to `true` while the drawer is open and `aria-controls` to the
   sidebar.
+- With `@mobileNav="bottom"`, below the breakpoint, the `BottomNav` is the
+  page's navigation landmark: there is no sidebar `nav`, no drawer, and no
+  `MenuToggle` or `SidebarToggle`. See [BottomNav](./bottom-nav) for the bar's
+  roles and keys.
 - The drawer is a modal dialog named by the sidebar's `@label`. Focus stays
   inside it while it is open. Closing it returns focus to the element that
   opened it: the toggle that opened it, otherwise the element that had focus
@@ -962,7 +1072,6 @@ These are not part of `AppLayout` yet. Each one would be added without breaking 
 | Sticky toolbar row under the navbar | One navbar row |
 | Top navigation above the sidebar | The sidebar spans the full height, with nothing above it |
 | Floating sidebar variant | The `inset` variant, which floats the sidebar on the frame |
-| Bottom-sheet mobile navigation | Below the breakpoint, the sidebar opens in a drawer |
 
 ## API
 

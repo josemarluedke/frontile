@@ -20,6 +20,7 @@ import {
 } from './context';
 import Aside from './aside';
 import AsideToggle from './aside-toggle';
+import BottomNav from './bottom-nav';
 import Main from './main';
 import MenuToggle from './menu-toggle';
 import Navbar from './navbar';
@@ -55,6 +56,18 @@ interface AppLayoutArgs {
    * @defaultValue 'md'
    */
   breakpoint?: AppLayoutVariants['breakpoint'];
+
+  /**
+   * How navigation is shown below `@breakpoint`. `drawer` moves the sidebar
+   * into a drawer opened by `MenuToggle`. `bottom` shows the yielded
+   * `BottomNav` as a bar along the bottom instead, and renders no sidebar,
+   * `MenuToggle` or `SidebarToggle` there (the toggle shortcut does nothing
+   * either). At or above `@breakpoint` both are the desktop sidebar, and
+   * `BottomNav` renders nothing. Place `BottomNav` after `Main`.
+   *
+   * @defaultValue 'drawer'
+   */
+  mobileNav?: 'drawer' | 'bottom';
 
   /**
    * Which side the sidebar sits on. Logical, so `start` is the right side in
@@ -168,6 +181,7 @@ interface AppLayoutSignature {
         state: AppLayoutState;
         Aside: WithBoundArgs<typeof Aside, 'layout'>;
         AsideToggle: WithBoundArgs<typeof AsideToggle, 'layout'>;
+        BottomNav: WithBoundArgs<typeof BottomNav, 'layout'>;
         Main: WithBoundArgs<typeof Main, 'layout'>;
         MenuToggle: WithBoundArgs<typeof MenuToggle, 'layout'>;
         Navbar: WithBoundArgs<typeof Navbar, 'layout'>;
@@ -285,6 +299,38 @@ class AppLayout extends Component<AppLayoutSignature> {
     };
   };
 
+  // Registered after render for the same reason as the Sidebar: the root
+  // reads it for the bottom row.
+  @tracked registeredBottomNav?: object;
+
+  registerBottomNav = (nav: object): (() => void) => {
+    schedule('afterRender', () => {
+      if (!this.isDestroying) {
+        this.registeredBottomNav = nav;
+      }
+    });
+    return () => {
+      schedule('afterRender', () => {
+        if (!this.isDestroying && this.registeredBottomNav === nav) {
+          this.registeredBottomNav = undefined;
+        }
+      });
+    };
+  };
+
+  get mobileNav(): 'drawer' | 'bottom' {
+    return this.args.mobileNav ?? 'drawer';
+  }
+
+  /** The bottom bar replaces the sidebar: bottom mode, below the breakpoint. */
+  get bottomNavMode(): boolean {
+    return this.mobileNav === 'bottom' && this.belowBreakpoint;
+  }
+
+  get bottomNavShown(): boolean {
+    return this.bottomNavMode && this.registeredBottomNav !== undefined;
+  }
+
   get effectiveSidebarCollapsed(): boolean {
     return this.registeredSidebar
       ? this.registeredSidebar.collapsed
@@ -330,6 +376,11 @@ class AppLayout extends Component<AppLayoutSignature> {
       !matchesShortcut(event, shortcut) ||
       !this.ownsTarget(event.target)
     ) {
+      return;
+    }
+    // No sidebar exists below the breakpoint in bottom mode; leave the keys
+    // to the browser.
+    if (this.bottomNavMode) {
       return;
     }
     event.preventDefault();
@@ -422,7 +473,8 @@ class AppLayout extends Component<AppLayoutSignature> {
       variant: this.variant,
       scrollMode: this.scrollMode,
       sidebarColumn: this.sidebarColumn,
-      sidebarSize: this.registeredSidebar?.size
+      sidebarSize: this.registeredSidebar?.size,
+      bottomNavRow: this.bottomNavShown ? 'shown' : 'none'
     }).base({ class: this.args.classes?.base });
   }
 
@@ -475,8 +527,18 @@ class AppLayout extends Component<AppLayoutSignature> {
       get sidebarCollapsed() {
         return layout.effectiveSidebarCollapsed;
       },
+      get mobileNav() {
+        return layout.mobileNav;
+      },
+      get bottomNavMode() {
+        return layout.bottomNavMode;
+      },
+      get bottomNavShown() {
+        return layout.bottomNavShown;
+      },
       isRtl: this.isRtl,
-      registerSidebar: this.registerSidebar
+      registerSidebar: this.registerSidebar,
+      registerBottomNav: this.registerBottomNav
     };
   }
 
@@ -505,6 +567,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       data-scroll-mode={{this.scrollMode}}
       data-breakpoint={{this.breakpoint}}
       data-sidebar-side={{this.sidebarSide}}
+      data-mobile-nav={{this.mobileNav}}
       data-sidebar-collapsed={{boolString this.effectiveSidebarCollapsed}}
       data-mobile-sidebar-open={{boolString this.state.mobileSidebarOpen}}
       data-aside-open={{boolString this.state.asideOpen}}
@@ -535,6 +598,7 @@ class AppLayout extends Component<AppLayoutSignature> {
           state=this.state
           Aside=(component Aside layout=this.context)
           AsideToggle=(component AsideToggle layout=this.context)
+          BottomNav=(component BottomNav layout=this.context)
           Main=(component Main layout=this.context)
           MenuToggle=(component MenuToggle layout=this.context)
           Navbar=(component Navbar layout=this.context)

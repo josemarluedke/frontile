@@ -45,6 +45,29 @@ export interface AppLayoutContext {
    * Returns the matching unregister function.
    */
   registerSidebar(sidebar: RegisteredSidebar): () => void;
+  /**
+   * How navigation is shown below the breakpoint: the sidebar in a `drawer`,
+   * or a `bottom` bar (`BottomNav`) with no sidebar (tracked).
+   */
+  readonly mobileNav: 'drawer' | 'bottom';
+  /**
+   * Whether the bottom bar replaces the sidebar right now: `mobileNav` is
+   * `bottom` and the viewport is below the breakpoint. `Sidebar`,
+   * `MenuToggle` and `SidebarToggle` render nothing then, and `BottomNav`
+   * renders (tracked).
+   */
+  readonly bottomNavMode: boolean;
+  /**
+   * Whether a registered `BottomNav` is shown: `bottomNavMode` with a
+   * `BottomNav` in the layout. Settles after the first render, like the
+   * registered sidebar (tracked).
+   */
+  readonly bottomNavShown: boolean;
+  /**
+   * Called by `BottomNav` so the layout can give it a row and publish
+   * `--app-bottomnav-height`. Returns the matching unregister function.
+   */
+  registerBottomNav(nav: object): () => void;
 }
 
 export interface RegisteredSidebar {

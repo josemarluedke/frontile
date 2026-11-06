@@ -10,6 +10,8 @@ import type { VariantProps } from '../tw';
 //   row 1  sidebar  |  navbar           |  navbar
 //   row 2  sidebar  |  main             |  aside
 //
+//   row 3  bottom nav (all columns; only with `bottomNavRow: 'shown'`)
+//
 // Empty columns and rows are `auto` and collapse to nothing, so a layout with
 // no sidebar or aside needs no special casing. The inset card is a single
 // decorative element (`mainCard`) drawn behind the parts in the same grid
@@ -102,6 +104,10 @@ const appLayout = tv({
     //   when there is no sidebar column:
     //   no Sidebar in the layout, below the breakpoint, or collapsed with
     //   `collapsible="offcanvas"`.
+    // - `--app-bottomnav-height`: the `BottomNav` bar's full height, the row
+    //   plus the safe-area inset (`bottomNavHeight` in `bottom-nav.ts`), set
+    //   by the `bottomNavRow` variant below. `0px` when no bar is shown, so
+    //   consumers can offset by it unconditionally.
     //
     // The navbar and sidebar header read `--app-navbar-height` (always set)
     // with a literal fallback for parts rendered outside an `AppLayout`.
@@ -159,6 +165,11 @@ const appLayout = tv({
 
     main: 'col-start-2 row-start-2 min-h-0 min-w-0 outline-none',
     mainCard: 'pointer-events-none col-[2/-1]',
+
+    // `BottomNav` inside the layout: the third row, across every column.
+    // Merged over the bar's own (standalone, `fixed`) classes; the scroll
+    // mode decides how it is positioned (see `scrollMode`).
+    bottomNav: 'col-[1/-1] row-start-3',
 
     pageHeader: 'flex shrink-0 flex-wrap items-start gap-x-4 gap-y-2 px-4 py-4',
     pageHeaderContent: 'flex min-w-0 flex-1 flex-col gap-1',
@@ -239,6 +250,19 @@ const appLayout = tv({
       none: { base: '[--app-sidebar-width:0px]' }
     },
 
+    // Whether the layout shows a `BottomNav` row: `@mobileNav="bottom"`,
+    // below the breakpoint, with a `BottomNav` registered. `shown` adds the
+    // third `auto` row (compound variants below) and publishes the bar's
+    // height; the value is `bottomNavHeight` from `bottom-nav.ts`, written
+    // out because Tailwind generates nothing from an interpolated class.
+    // Set by `AppLayout` only.
+    bottomNavRow: {
+      shown: {
+        base: '[--app-bottomnav-height:calc(3.75rem+var(--bottomnav-safe-area,env(safe-area-inset-bottom,0px)))]'
+      },
+      none: { base: '[--app-bottomnav-height:0px]' }
+    },
+
     // The sidebar's width preset: `default`, or `rail` for a narrow
     // icon-over-label rail. Set by `Sidebar`, and by `AppLayout` for the root's
     // token. Defaults to `default` so existing callers are unchanged.
@@ -290,7 +314,9 @@ const appLayout = tv({
     scrollMode: {
       content: {
         base: 'h-dvh grid-rows-[auto_minmax(0,1fr)] overflow-hidden',
-        main: 'overflow-y-auto'
+        main: 'overflow-y-auto',
+        // A plain grid row under `main`, which scrolls on its own.
+        bottomNav: 'static'
       },
       page: {
         base: 'min-h-dvh grid-rows-[auto_1fr]',
@@ -305,7 +331,14 @@ const appLayout = tv({
         sidebar: [
           'sticky top-0 h-dvh self-start',
           'has-[[data-part=nav-folder-flyout]:not([hidden])]:z-20'
-        ]
+        ],
+        // The document scrolls, so the bar sticks to the bottom of the
+        // viewport over the content. `z-10` is a workaround until the theme
+        // has a z-index scale: it lifts the bar over in-page layers (z-10 is
+        // the highest used in content) while overlays, which have no
+        // z-index and stack by DOM order, still cover it. That only holds if
+        // the bar comes after `Main` in the DOM.
+        bottomNav: 'sticky bottom-0 z-10'
       }
     }
   },
@@ -344,6 +377,18 @@ const appLayout = tv({
       variant: 'attached',
       sidebarSide: 'end',
       class: { aside: 'border-s-0 border-e' }
+    },
+
+    // The bottom nav's row, after the navbar and main rows.
+    {
+      scrollMode: 'content',
+      bottomNavRow: 'shown',
+      class: { base: 'grid-rows-[auto_minmax(0,1fr)_auto]' }
+    },
+    {
+      scrollMode: 'page',
+      bottomNavRow: 'shown',
+      class: { base: 'grid-rows-[auto_1fr_auto]' }
     },
 
     // Page mode with the inset frame: the sticky sidebar sits inside the
@@ -406,6 +451,7 @@ const appLayout = tv({
     collapsed: false,
     collapsible: 'icon',
     sidebarColumn: 'shown',
+    bottomNavRow: 'none',
     sidebarSide: 'start',
     sidebarSize: 'default',
     standalone: false,
