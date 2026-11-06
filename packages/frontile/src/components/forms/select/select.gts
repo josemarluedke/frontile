@@ -596,7 +596,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return select({
       size: this.args.inputSize,
       hasChips: this.showChips,
-      isFilterable: !!this.args.isFilterable
+      isFilterable: !!this.args.isFilterable,
+      hasSelection: this.hasSelection
     });
   }
 

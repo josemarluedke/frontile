@@ -509,6 +509,13 @@ const select = tv({
     isFilterable: {
       true: {},
       false: {}
+    },
+    // Whether any key is selected. In chips mode an empty field shows the
+    // placeholder in the bare trigger, which has to be offset to where a
+    // single select's placeholder sits (see the compound variants below).
+    hasSelection: {
+      true: {},
+      false: {}
     }
   },
   compoundVariants: [
@@ -538,6 +545,30 @@ const select = tv({
       size: 'lg',
       class: { chipsField: 'p-2 gap-0 min-h-13.5' }
     },
+    // That padding is tight so chips fit, which leaves an empty field's
+    // placeholder closer to the border than a single select's (`p-2`/`p-3`/
+    // `p-4` on `input`). The trigger makes up the difference while nothing is
+    // selected. Listed before the start-content rules so their `ps-0` wins:
+    // with start content `chipsField` already reserves the same `ps-8` a
+    // single select's input does.
+    {
+      hasChips: true,
+      hasSelection: false,
+      size: 'sm',
+      class: { input: 'ps-1' }
+    },
+    {
+      hasChips: true,
+      hasSelection: false,
+      size: 'md',
+      class: { input: 'ps-1.5' }
+    },
+    {
+      hasChips: true,
+      hasSelection: false,
+      size: 'lg',
+      class: { input: 'ps-2' }
+    },
     // Chips have to clear the absolutely-positioned start/end content the same
     // way a bare `input` does, otherwise they run underneath the chevron and the
     // clear button.
@@ -549,11 +580,18 @@ const select = tv({
     { hasChips: true, hasEndContent: true, class: { input: 'pe-0' } },
     // Only the filterable trigger needs typing room -- and, since the field
     // itself no longer sets a gap, its own separation from the last chip.
-    // See `min-w-0` and `gap-0` above.
+    // See `min-w-0` and `gap-0` above. With no chips there is no last chip to
+    // clear, and the placeholder offset above positions the text instead.
     {
       hasChips: true,
       isFilterable: true,
-      class: { input: 'min-w-16 ms-1' }
+      class: { input: 'min-w-16' }
+    },
+    {
+      hasChips: true,
+      isFilterable: true,
+      hasSelection: true,
+      class: { input: 'ms-1' }
     }
   ],
   defaultVariants: {
