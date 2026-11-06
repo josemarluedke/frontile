@@ -494,3 +494,70 @@ module(
     });
   }
 );
+
+module(
+  'Integration | Component | Sidebar rail stacked item | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    let previous: Partial<ReturnType<typeof useStyles>>;
+
+    hooks.beforeEach(function () {
+      previous = {
+        appLayout: useStyles().appLayout,
+        navItem: useStyles().navItem
+      };
+      registerCustomStyles({
+        appLayout: realStyles.appLayout,
+        navItem: realStyles.navItem
+      });
+    });
+
+    hooks.afterEach(function () {
+      registerCustomStyles(previous);
+    });
+
+    // The test container is scaled, so compare scroll and client widths
+    // (layout px) and positions relative to each other, not sizes.
+    function measure() {
+      const body = find('[data-part="sidebar-body"]') as HTMLElement;
+      const item = find('[data-part="nav-item"]') as HTMLElement;
+      const bodyRect = body.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      const scale = bodyRect.width / body.offsetWidth;
+      const style = getComputedStyle(body);
+      const padStart = parseFloat(style.paddingLeft) * scale;
+      const padEnd = parseFloat(style.paddingRight) * scale;
+      return {
+        overflow: body.scrollWidth - body.clientWidth,
+        leftGap: itemRect.left - bodyRect.left - padStart,
+        rightGap: bodyRect.right - itemRect.right - padEnd,
+        scale
+      };
+    }
+
+    for (const variant of ['attached', 'inset'] as const) {
+      test(`a stacked item fits and is centered in the ${variant} rail`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @variant={{variant}} as |layout|>
+              <layout.Sidebar @size="rail" @collapsible="none" as |sidebar|>
+                <sidebar.Body>
+                  <sidebar.Item @href="/a" @layout="stacked">Home</sidebar.Item>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const { overflow, leftGap, rightGap, scale } = measure();
+        assert.true(overflow <= 0, `no horizontal overflow (${overflow})`);
+        assert.true(
+          Math.abs(leftGap - rightGap) <= 1 * scale,
+          `centered: left gap ${leftGap}, right gap ${rightGap}`
+        );
+      });
+    }
+  }
+);

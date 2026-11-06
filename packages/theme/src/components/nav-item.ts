@@ -88,7 +88,7 @@ const navItem = tv({
       // Small icon over text. Ignores the sidebar's collapsed state.
       stacked: {
         navItem: [
-          'group/nav-item min-h-14 w-[72px] flex-col justify-center gap-0.5 px-1 py-1.5 text-[10px]',
+          'group/nav-item mx-auto min-h-14 w-full max-w-[72px] flex-col justify-center gap-0.5 px-1 py-1.5 text-[10px]',
           // The active fill sits behind the icon, not the whole item.
           'data-[active=true]:bg-transparent not-data-[disabled=true]:hover:bg-transparent',
           'not-data-[disabled=true]:data-[active=true]:hover:bg-transparent'
