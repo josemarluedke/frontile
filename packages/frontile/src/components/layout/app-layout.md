@@ -687,7 +687,12 @@ const PAGES = [
   },
   { id: 'services', label: 'Services', short: 'Services', icon: PackageIcon },
   { id: 'billing', label: 'Billing', short: 'Billing', icon: BookIcon },
-  { id: 'offers', label: 'Offers', short: 'Offers', icon: StarIcon },
+  {
+    id: 'marketplace',
+    label: 'Marketplace',
+    short: 'Marketplace',
+    icon: StarIcon
+  },
   {
     id: 'referrals',
     label: 'Referral program',
@@ -774,6 +779,11 @@ export default class PlatformNavExample extends Component {
           <button type='button' aria-label='Search' class='ms-auto'>
             <SearchIcon />
           </button>
+          <button
+            type='button'
+            aria-label='Your account'
+            class='size-8 shrink-0 rounded-full bg-primary'
+          ></button>
         </layout.Navbar>
         <layout.Main>
           <layout.PageHeader @title={{this.title}} />
