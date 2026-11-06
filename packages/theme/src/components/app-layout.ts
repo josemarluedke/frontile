@@ -208,7 +208,10 @@ const appLayout = tv({
         sidebar: 'bg-transparent [--sidebar-body-px:0px]',
         mainCard:
           'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted',
-        aside: 'border-s border-neutral-subtle'
+        aside: 'border-s border-neutral-subtle',
+        // The bottom bar runs edge to edge: it pulls out over the frame's
+        // side and bottom gutter (`p-3`).
+        bottomNav: '-mx-3 -mb-3'
       },
       attached: {
         base: 'bg-surface-app',

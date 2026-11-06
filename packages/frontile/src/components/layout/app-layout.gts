@@ -327,6 +327,24 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.mobileNav === 'bottom' && this.belowBreakpoint;
   }
 
+  /**
+   * There is no drawer in bottom mode below the breakpoint, so an open flag
+   * (seeded, set through `@state`, or left over) is cleared rather than
+   * opening a drawer later. Deferred to after render, where changing state
+   * is safe.
+   */
+  closeDrawerInBottomMode = modifier(
+    (_element: HTMLElement, [active, open]: [boolean, boolean]) => {
+      if (active && open) {
+        schedule('afterRender', () => {
+          if (!this.isDestroying && this.bottomNavMode) {
+            this.state.mobileSidebarOpen = false;
+          }
+        });
+      }
+    }
+  );
+
   get bottomNavShown(): boolean {
     return this.bottomNavMode && this.registeredBottomNav !== undefined;
   }
@@ -573,6 +591,10 @@ class AppLayout extends Component<AppLayoutSignature> {
       data-aside-open={{boolString this.state.asideOpen}}
       class={{this.rootClass}}
       {{this.captureRoot}}
+      {{this.closeDrawerInBottomMode
+        this.bottomNavMode
+        this.state.mobileSidebarOpen
+      }}
       ...attributes
     >
       {{#if this.showSkipLink}}

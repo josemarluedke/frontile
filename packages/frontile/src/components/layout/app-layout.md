@@ -567,8 +567,10 @@ of the screen. Below `@breakpoint` the layout renders its yielded
 or above the breakpoint the layout shows the sidebar as usual and the
 `BottomNav` renders nothing, so you write both and each appears at its own
 width. An open More sheet closes when the window grows past the breakpoint.
-The default, `@mobileNav="drawer"`, is the drawer described above, and a
-`BottomNav` in it never renders.
+The bar spans the full width of the layout and sits on its bottom edge in
+both variants; with `inset` it covers the frame's gutter. The default,
+`@mobileNav="drawer"`, is the drawer described above, and a `BottomNav` in it
+never renders.
 
 Place `<layout.BottomNav>` after `<layout.Main>`. With `@scrollMode="page"`
 the bar sticks to the bottom of the viewport with `z-10`, so it rises above

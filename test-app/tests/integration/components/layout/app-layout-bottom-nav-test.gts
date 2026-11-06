@@ -7,6 +7,7 @@ import {
   settled,
   triggerKeyEvent
 } from '@ember/test-helpers';
+import { tracked } from '@glimmer/tracking';
 import { AppLayout, AppLayoutState } from 'frontile';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
@@ -42,6 +43,24 @@ const DESKTOP = 1200;
 const ROOT = '[data-component="app-layout"]';
 const BAR = 'nav[data-part="bottom-nav"]';
 const MORE_TAB = `${BAR} [aria-haspopup="dialog"]`;
+
+// Both rects are in the scaled container, so they compare directly.
+function edgesMatch(
+  assert: Assert,
+  inner: Element,
+  outer: Element,
+  label: string
+): void {
+  const a = inner.getBoundingClientRect();
+  const b = outer.getBoundingClientRect();
+  assert.true(Math.abs(a.left - b.left) < 0.5, `${label}: left edge`);
+  assert.true(Math.abs(a.right - b.right) < 0.5, `${label}: right edge`);
+  assert.true(Math.abs(a.bottom - b.bottom) < 0.5, `${label}: bottom edge`);
+}
+
+class MobileNavHolder {
+  @tracked value: 'drawer' | 'bottom' = 'bottom';
+}
 
 function readVar(name: string): string {
   return getComputedStyle(find(ROOT)!).getPropertyValue(name).trim();
@@ -433,6 +452,87 @@ module(
         </template>
       );
       assert.dom(BAR).hasClass('custom-bottom-nav');
+    });
+
+    test('inset variant bottom bar reaches the left, right and bottom edges of the layout root', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <AppLayout @mobileNav="bottom" as |layout|>
+            <layout.Navbar>Top</layout.Navbar>
+            <layout.Main>Content</layout.Main>
+            <layout.BottomNav as |bar|>
+              <bar.Item @href="#a" @icon={{TestIcon}}>A</bar.Item>
+            </layout.BottomNav>
+          </AppLayout>
+        </template>
+      );
+      assert.dom(ROOT).hasAttribute('data-variant', 'inset');
+      edgesMatch(assert, find(BAR)!, find(ROOT)!, 'content scroll mode');
+    });
+
+    test('inset variant in page scroll mode: the sticky bar reaches the edges', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <AppLayout @mobileNav="bottom" @scrollMode="page" as |layout|>
+            <layout.Navbar>Top</layout.Navbar>
+            <layout.Main>Content</layout.Main>
+            <layout.BottomNav as |bar|>
+              <bar.Item @href="#a" @icon={{TestIcon}}>A</bar.Item>
+            </layout.BottomNav>
+          </AppLayout>
+        </template>
+      );
+      const bar = find(BAR)!;
+      const root = find(ROOT)!;
+      const style = getComputedStyle(bar);
+      assert.strictEqual(style.position, 'sticky');
+      const barRect = bar.getBoundingClientRect();
+      const rootRect = root.getBoundingClientRect();
+      assert.true(Math.abs(barRect.left - rootRect.left) < 0.5, 'left edge');
+      assert.true(Math.abs(barRect.right - rootRect.right) < 0.5, 'right edge');
+      // The bar is stuck to the bottom of the scroll container, which can
+      // end above the root, so the bottom edge is checked through the
+      // margin that cancels the frame's bottom gutter.
+      assert.strictEqual(
+        style.marginBottom,
+        `-${getComputedStyle(root).paddingBottom}`,
+        'the bar pulls over the bottom gutter'
+      );
+    });
+
+    test('bottom mode closes an open mobile sidebar below the breakpoint', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      const state = new AppLayoutState({ mobileSidebarOpen: true });
+      const mobileNav = new MobileNavHolder();
+      await render(
+        <template>
+          <AppLayout
+            @mobileNav={{mobileNav.value}}
+            @state={{state}}
+            as |layout|
+          >
+            <layout.Sidebar />
+            <layout.Main>Content</layout.Main>
+            <layout.BottomNav as |bar|>
+              <bar.Item @href="#a" @icon={{TestIcon}}>A</bar.Item>
+            </layout.BottomNav>
+          </AppLayout>
+        </template>
+      );
+      assert.false(state.mobileSidebarOpen, 'a seeded open flag is cleared');
+
+      state.mobileSidebarOpen = true;
+      await settled();
+      assert.false(state.mobileSidebarOpen, 'a later open is cleared too');
+
+      mobileNav.value = 'drawer';
+      await settled();
+      assert
+        .dom('[role="dialog"]')
+        .doesNotExist('switching to drawer mode does not open the drawer');
+      assert.dom('[data-part="menu-toggle"]').doesNotExist();
     });
 
     test('the existing Navbar still renders as the phone top bar', async function (assert) {
