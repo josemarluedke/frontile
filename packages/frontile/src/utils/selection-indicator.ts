@@ -25,6 +25,14 @@ class SelectionIndicator {
   #resize = deferredWork('@frontile/utils:selection-indicator:resize');
   #isReady = false;
 
+  // How many live claims the current target holds. A modifier whose
+  // definition changes -- its owner's context was rebuilt, say -- is
+  // reinstalled rather than updated, and Glimmer installs the new instance
+  // before destroying the old one. The same element is then claimed twice and
+  // released once, and that one release must not take the target away from
+  // the claim that is still live.
+  #claims = 0;
+
   // Whether a real measurement has ever landed. Only the very first one is
   // forced-layout-sensitive (see `setupContainer`); once it has happened, a
   // click that moves the selection is no longer racing an ancestor's own
@@ -84,7 +92,12 @@ class SelectionIndicator {
    * indicator immediately rather than a frame later.
    */
   claim(element: HTMLElement): void {
-    this.#target = element;
+    if (this.#target === element) {
+      this.#claims += 1;
+    } else {
+      this.#target = element;
+      this.#claims = 1;
+    }
     this.#observer?.observe(element);
     if (this.#hasMeasuredOnce) {
       this.#measure();
@@ -92,13 +105,20 @@ class SelectionIndicator {
   }
 
   /**
-   * Releases `element` if it is still the target. When selection moves
-   * backwards, the incoming item's setup runs before the outgoing item's
-   * teardown, and without this guard that teardown would wipe the new
-   * target.
+   * Releases one claim on `element` if it is still the target, and gives the
+   * target up once no claim on it is left. When selection moves backwards,
+   * the incoming item's setup runs before the outgoing item's teardown, and
+   * without the target guard that teardown would wipe the new target. When a
+   * modifier is reinstalled on the same element, its new claim lands before
+   * the old one's release, and without the count that release would wipe the
+   * live claim.
    */
   release(element: HTMLElement): void {
     if (this.#target !== element) {
+      return;
+    }
+    this.#claims -= 1;
+    if (this.#claims > 0) {
       return;
     }
     this.#observer?.unobserve(element);
