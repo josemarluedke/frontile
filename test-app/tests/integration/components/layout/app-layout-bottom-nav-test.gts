@@ -270,9 +270,10 @@ module(
       assert.dom('[role="dialog"]').doesNotExist('the sheet closed');
       assert.dom('[data-part="bottom-nav-more-sheet"]').doesNotExist();
       assert.dom('[data-part="bottom-nav-more-registry"]').doesNotExist();
-      assert.true(
-        document.activeElement === null || document.activeElement.isConnected,
-        'focus is not left on a removed element'
+      assert.strictEqual(
+        document.activeElement,
+        document.body,
+        'focus falls back to the body when the bar unmounts'
       );
 
       media.setWidth(MOBILE);
