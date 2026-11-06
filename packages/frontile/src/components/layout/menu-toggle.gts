@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
+import { MenuIcon } from '../../-private/icons';
 import { AppLayoutState } from './app-layout-state';
 import { standaloneStyles, type AppLayoutContext } from './context';
 
@@ -95,19 +96,7 @@ class MenuToggle extends Component<MenuToggleSignature> {
         {{#if (has-block)}}
           {{yield}}
         {{else}}
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            width="20"
-            height="20"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          <MenuIcon />
         {{/if}}
       </button>
     {{/unless}}

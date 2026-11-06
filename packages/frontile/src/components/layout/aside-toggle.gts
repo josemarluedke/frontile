@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
+import { SidebarRightIcon } from '../../-private/icons';
 import { AppLayoutState } from './app-layout-state';
 import { standaloneStyles, type AppLayoutContext } from './context';
 
@@ -88,20 +89,7 @@ class AsideToggle extends Component<AsideToggleSignature> {
       {{#if (has-block)}}
         {{yield}}
       {{else}}
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          width="20"
-          height="20"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <path d="M15 4v16" />
-        </svg>
+        <SidebarRightIcon />
       {{/if}}
     </button>
   </template>

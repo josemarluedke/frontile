@@ -265,3 +265,59 @@ export const EllipsisHorizontalIcon: TOC<IconSignature> = <template>
     />
   </svg>
 </template>;
+
+export const SidebarLeftIcon: TOC<IconSignature> = <template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    stroke-width="2"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    ...attributes
+  >
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M9 4v16" />
+  </svg>
+</template>;
+
+export const SidebarRightIcon: TOC<IconSignature> = <template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    stroke-width="2"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    ...attributes
+  >
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M15 4v16" />
+  </svg>
+</template>;
+
+export const MenuIcon: TOC<IconSignature> = <template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    stroke-width="2"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    ...attributes
+  >
+    <path d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+</template>;
