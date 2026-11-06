@@ -48,10 +48,11 @@ A folder holding the current page opens by itself, on load and whenever one of
 its items newly becomes the current page. It never reopens on its own after
 the user closes it.
 
-The folder's trigger shows `data-active="true"` while one of its items is
-active, so you can style it. The trigger does not get `aria-current`: the
-folder is not the current page, its item is. A hidden item never makes the
-folder active.
+The folder's trigger has no active styling: the item inside it is the current
+page, so only that item is filled. The trigger still carries
+`data-active="true"` while one of its items is active, as a hook if you want to
+style it yourself. It does not get `aria-current`: the folder is not the
+current page, its item is. A hidden item never makes the folder active.
 
 A folder that is open when the page loads is open from the first paint. Opening
 and closing afterwards animates.
@@ -145,7 +146,7 @@ item, click outside, press <kbd>Escape</kbd> or tab out of it. Expanding the
 sidebar closes it too; if focus was inside it, focus moves to the trigger.
 Opening it never
 changes the inline state, so expanding the sidebar again shows the folder as
-you left it. A folder holding the current page still shows as active in the
+you left it. A folder holding the current page still reports `data-active` in the
 rail, and a newly active item does not pop the flyout open.
 
 In the mobile drawer a folder is always inline.

@@ -152,7 +152,7 @@ interface NavFolderSignature {
 /**
  * A collapsible group of navigation items, one level deep. The trigger is a
  * disclosure button (`aria-expanded`, `aria-controls`); the items sit in a
- * `role="group"` panel labelled by it. The folder shows active and opens when
+ * `role="group"` panel labelled by it. The folder opens when
  * one of its items is active, on load and whenever an item newly becomes
  * active, but never forces itself open otherwise. It is hidden when none of
  * its items is visible.
@@ -521,7 +521,7 @@ class NavFolder extends Component<NavFolderSignature> {
     >
       {{! Not passing @isActive: the folder is not the current page, so the
           trigger must not get aria-current. data-active (overriding
-          NavLink's) shows an active item for styling only. No
+          NavLink's) is a hook only: the trigger has no active styling. No
           aria-haspopup in the rail either: the flyout is a disclosed group
           of links, not a menu or a dialog. }}
       <Tooltip
@@ -536,7 +536,7 @@ class NavFolder extends Component<NavFolderSignature> {
           aria-controls={{this.controlsId}}
           data-open="{{this.isExpanded}}"
           data-active="{{this.hasActiveDescendant}}"
-          class={{this.classes.navFolderTrigger}}
+          class="{{this.classes.navFolderTrigger}}"
           {{this.registerTrigger}}
           {{t.trigger}}
           {{on "click" this.toggle}}

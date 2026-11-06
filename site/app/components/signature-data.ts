@@ -9864,7 +9864,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
     description:
-      '<p>A collapsible group of navigation items, one level deep. The trigger is a\ndisclosure button (<code>aria-expanded</code>, <code>aria-controls</code>); the items sit in a\n<code>role="group"</code> panel labelled by it. The folder shows active and opens when\none of its items is active, on load and whenever an item newly becomes\nactive, but never forces itself open otherwise. It is hidden when none of\nits items is visible.</p>\n<p>In the collapsed icon rail (not in the mobile drawer) the items move into\na flyout beside the rail instead, opened only by the trigger. The flyout\nis still a disclosure: it follows the trigger in the DOM, so Tab walks\nfrom the trigger into it. Escape closes it and returns focus to the\ntrigger; following an item, clicking outside or tabbing out closes it.</p>',
+      '<p>A collapsible group of navigation items, one level deep. The trigger is a\ndisclosure button (<code>aria-expanded</code>, <code>aria-controls</code>); the items sit in a\n<code>role="group"</code> panel labelled by it. The folder opens when\none of its items is active, on load and whenever an item newly becomes\nactive, but never forces itself open otherwise. It is hidden when none of\nits items is visible.</p>\n<p>In the collapsed icon rail (not in the mobile drawer) the items move into\na flyout beside the rail instead, opened only by the trigger. The flyout\nis still a disclosure: it follows the trigger in the DOM, so Tab walks\nfrom the trigger into it. Escape closes it and returns focus to the\ntrigger; following an item, clicking outside or tabbing out closes it.</p>',
     tags: {},
   },
   {

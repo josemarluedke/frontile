@@ -2,7 +2,7 @@ import { tv } from '../tw';
 import { focusVisibleRing } from './shared';
 import type { VariantProps } from '../tw';
 
-const navItemRow = [
+const navRow = [
   ...focusVisibleRing,
   'flex min-h-9 w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm',
   // The icon's position never depends on the collapsed state, so the rail
@@ -14,9 +14,15 @@ const navItemRow = [
   'text-neutral-firm',
   'not-data-[disabled=true]:hover:bg-neutral-subtle',
   'not-data-[disabled=true]:hover:text-neutral-strong',
-  'data-[active=true]:bg-neutral-soft data-[active=true]:font-medium',
-  'data-[active=true]:text-neutral-strong',
   'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
+];
+
+// An item is filled while it is the current page. A folder is never the
+// current page, so its trigger takes `navRow` alone.
+const navItemRow = [
+  ...navRow,
+  'data-[active=true]:bg-neutral-soft data-[active=true]:font-medium',
+  'data-[active=true]:text-neutral-strong'
 ];
 
 /**
@@ -32,7 +38,7 @@ const navItem = tv({
     navItemLabel:
       'truncate group-data-[collapsed=true]/sidebar:[&:not([data-part=nav-folder-flyout]_*)]:sr-only',
     navFolder: 'flex flex-col',
-    navFolderTrigger: navItemRow,
+    navFolderTrigger: navRow,
     navFolderChevron: [
       'ms-auto size-4 shrink-0 transition-transform data-[open=true]:rotate-90 motion-reduce:transition-none',
       // Mirrored right to left, so it points toward the inline end. CSS
