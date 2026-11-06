@@ -39,11 +39,6 @@ export {
 } from './page-header';
 export { Sidebar, type SidebarSignature, type SidebarArgs } from './sidebar';
 export {
-  SidebarBrand,
-  type SidebarBrandSignature,
-  type SidebarBrandArgs
-} from './sidebar-brand';
-export {
   SidebarGroup,
   type SidebarGroupSignature,
   type SidebarGroupArgs

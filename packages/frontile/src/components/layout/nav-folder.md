@@ -170,9 +170,10 @@ import {
     >
       <layout.Sidebar @label='Catalog' as |sidebar|>
         <sidebar.Header>
-          <sidebar.Brand @title='Acme' @href='#'>
-            <:logo><SparklesIcon /></:logo>
-          </sidebar.Brand>
+          <SparklesIcon class='shrink-0 text-primary' />
+          <span class='truncate text-sm font-semibold' data-sidebar-label>
+            Acme
+          </span>
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}}>

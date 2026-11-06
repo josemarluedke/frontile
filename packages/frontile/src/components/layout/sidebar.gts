@@ -8,7 +8,6 @@ import Drawer from '../overlays/drawer';
 import NavItem from './nav-item';
 import NavFolder from './nav-folder';
 import SidebarGroup from './sidebar-group';
-import SidebarBrand from './sidebar-brand';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
 import type { NavItemClasses } from './nav-item';
@@ -70,7 +69,7 @@ interface SidebarSignature {
     /**
      * Yields `Header`, `Body` and `Footer` sections, `Item` links, `Folder`
      * for a collapsible set of items, `Group`
-     * to label a set of items, and `Brand` for a logo and name in the header. In the icon rail, `Item` labels are visually
+     * to label a set of items. In the icon rail, `Item` labels are visually
      * hidden but still read by screen readers; for your own markup, wrap the
      * text in `<span data-sidebar-label>` to get the same behavior.
      */
@@ -93,7 +92,6 @@ interface SidebarSignature {
           | 'onActivate'
         >;
         Group: WithBoundArgs<typeof SidebarGroup, 'classes'>;
-        Brand: WithBoundArgs<typeof SidebarBrand, 'classes'>;
       }
     ];
   };
@@ -254,21 +252,6 @@ class Sidebar extends Component<SidebarSignature> {
         sidebarGroupLabel: this.styles.sidebarGroupLabel({
           class: custom?.sidebarGroupLabel
         })
-      },
-      brand: {
-        sidebarBrand: this.styles.sidebarBrand({ class: custom?.sidebarBrand }),
-        sidebarBrandLogo: this.styles.sidebarBrandLogo({
-          class: custom?.sidebarBrandLogo
-        }),
-        sidebarBrandText: this.styles.sidebarBrandText({
-          class: custom?.sidebarBrandText
-        }),
-        sidebarBrandTitle: this.styles.sidebarBrandTitle({
-          class: custom?.sidebarBrandTitle
-        }),
-        sidebarBrandSubtitle: this.styles.sidebarBrandSubtitle({
-          class: custom?.sidebarBrandSubtitle
-        })
       }
     };
   }
@@ -329,7 +312,6 @@ class Sidebar extends Component<SidebarSignature> {
                 onActivate=this.closeDrawer
               )
               Group=(component SidebarGroup classes=this.slotClasses.group)
-              Brand=(component SidebarBrand classes=this.slotClasses.brand)
             )
           }}
         </nav>
@@ -364,7 +346,6 @@ class Sidebar extends Component<SidebarSignature> {
               inDrawer=false
             )
             Group=(component SidebarGroup classes=this.slotClasses.group)
-            Brand=(component SidebarBrand classes=this.slotClasses.brand)
           )
         }}
       </nav>

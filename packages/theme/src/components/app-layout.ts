@@ -105,35 +105,6 @@ const appLayout = tv({
     mobileSidebar: 'group/sidebar flex min-h-0 flex-1 flex-col',
     sidebarHeader:
       'flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 px-3',
-    // `Sidebar.Brand`: logo and name, meant for the header. In the rail only
-    // the logo shows, centered like an item's icon; the text block is taken
-    // out of the flow (`sr-only`) so it neither pushes the logo aside nor
-    // leaves the accessibility tree.
-    sidebarBrand: [
-      ...focusVisibleRing,
-      'flex min-w-0 flex-1 items-center gap-2 rounded-md',
-      // Offset so the logo sits at the rail's center in both states (see
-      // `navItem`): header padding is 0.75rem, the logo is 2rem wide.
-      'ms-[calc((var(--sidebar-rail,4rem)_-_3.5rem)/2)]'
-    ],
-    // A fixed 2rem square. `data-tile="true"` tints it; without the tile the
-    // consumer's logo is shown as is.
-    sidebarBrandLogo: [
-      'inline-flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg',
-      'data-[tile=true]:bg-primary data-[tile=true]:text-on-primary'
-    ],
-    sidebarBrandText: [
-      'flex min-w-0 flex-1 flex-col leading-tight',
-      'group-data-[collapsed=true]/sidebar:sr-only'
-    ],
-    sidebarBrandTitle: [
-      'truncate text-sm font-semibold text-neutral-strong',
-      'group-data-[collapsed=true]/sidebar:sr-only'
-    ],
-    sidebarBrandSubtitle: [
-      'truncate text-xs text-neutral-firm',
-      'group-data-[collapsed=true]/sidebar:sr-only'
-    ],
     sidebarBody: 'min-h-0 flex-1 overflow-y-auto px-2',
     sidebarFooter: 'shrink-0 px-2 py-2',
     // `Sidebar.Group`: a labelled set of items. The label is visually hidden
