@@ -1,20 +1,6 @@
 import { tv } from '../tw';
 import type { VariantProps } from '../tw';
 
-/** The bar's height above the safe-area inset. */
-export const bottomNavRowHeight = '3.75rem';
-
-/**
- * The bottom inset the bar pads for. `--bottomnav-safe-area` overrides it,
- * so tests and apps can set their own; otherwise it is the device inset,
- * which is `0px` unless the page opts in with `viewport-fit=cover`.
- */
-export const bottomNavSafeArea =
-  'var(--bottomnav-safe-area, env(safe-area-inset-bottom, 0px))';
-
-/** The bar's full height: the row plus the safe-area inset. */
-export const bottomNavHeight = `calc(${bottomNavRowHeight} + ${bottomNavSafeArea})`;
-
 /**
  * The mobile bottom tab bar. Slot names equal the kebab-cased `data-part`
  * each component renders.

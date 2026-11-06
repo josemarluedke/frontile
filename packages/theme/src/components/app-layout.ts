@@ -105,7 +105,7 @@ const appLayout = tv({
     //   no Sidebar in the layout, below the breakpoint, or collapsed with
     //   `collapsible="offcanvas"`.
     // - `--app-bottomnav-height`: the `BottomNav` bar's full height, the row
-    //   plus the safe-area inset (`bottomNavHeight` in `bottom-nav.ts`), set
+    //   plus the safe-area inset (the literals in `bottom-nav.ts`), set
     //   by the `bottomNavRow` variant below. `0px` when no bar is shown, so
     //   consumers can offset by it unconditionally.
     //
@@ -256,8 +256,8 @@ const appLayout = tv({
     // Whether the layout shows a `BottomNav` row: `@mobileNav="bottom"`,
     // below the breakpoint, with a `BottomNav` registered. `shown` adds the
     // third `auto` row (compound variants below) and publishes the bar's
-    // height; the value is `bottomNavHeight` from `bottom-nav.ts`, written
-    // out because Tailwind generates nothing from an interpolated class.
+    // height; the row height and safe-area expression must match `bottom-nav.ts`,
+    // written out because Tailwind generates nothing from an interpolated class.
     // Set by `AppLayout` only.
     bottomNavRow: {
       shown: {
