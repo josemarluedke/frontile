@@ -23,7 +23,7 @@ order you write them in does not matter.
 By default the layout fills the viewport and `Main` scrolls on its own. The
 demos on this page give the layout a fixed height so it fits on the page.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout, Button } from 'frontile';
 
 <template>
@@ -310,7 +310,7 @@ trigger that opens and closes a set of items, one level deep. Give it a
 opens by itself when it holds the current page. In the icon rail it opens as a
 flyout beside the rail, and in the drawer it is always inline.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { ViewIcon, PackageIcon, SparklesIcon } from 'site/components/icons';
 
@@ -386,7 +386,7 @@ while any of its child routes is, so `@route='users'` stays active on
 sidebar to a rail. `offcanvas` hides it entirely while collapsed. `none` keeps
 it expanded and ignores collapse.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { array } from '@ember/helper';
 import { ViewIcon } from 'site/components/icons';
@@ -468,7 +468,7 @@ side is logical, so `start` is the right side in a right-to-left document. In
 the `attached` variant the sidebar's border moves to the side facing the
 content.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 
 <template>
@@ -841,7 +841,7 @@ Outside an `AppLayout`, pass `@state` (and, if you want the `inset` look,
 same `@state`, and `@controls` with the sidebar's id so `aria-controls` points
 at it.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { Sidebar, SidebarToggle, AppLayoutState } from 'frontile';
 
@@ -889,7 +889,7 @@ When the window narrows below `lg` while the aside is open, the aside closes
 Name the landmark with `@label` (default `Details`). The drawer uses the same
 name.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 
 <template>
@@ -917,7 +917,7 @@ import { AppLayout } from 'frontile';
 It takes a `@title` and a `@description`; buttons for the page go in the
 `<:actions>` block, and anything else under the title goes in `<:default>`.
 
-```gts preview
+```gts preview collapsible
 import { AppLayout, Button } from 'frontile';
 
 <template>
