@@ -133,7 +133,7 @@ import { NavItem } from 'frontile';
 import { ViewIcon, SettingsIcon, UserIcon } from 'site/components/icons';
 
 <template>
-  <div class='not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
+  <div class='theme-inverse not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
     <nav aria-label='Inline' class='flex w-48 flex-col gap-0.5'>
       <NavItem @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
         Overview
@@ -188,7 +188,7 @@ import { NavItem } from 'frontile';
 import { ViewIcon, UserIcon } from 'site/components/icons';
 
 <template>
-  <div class='not-prose flex flex-wrap items-start gap-8'>
+  <div class='theme-inverse not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
     <nav aria-label='Inbox' class='flex w-48 flex-col gap-0.5'>
       <NavItem @href='#inbox' @icon={{ViewIcon}} @badge={{3}} @badgeLabel='3 unread'>
         Inbox
@@ -223,7 +223,7 @@ import { ViewIcon, UserIcon } from 'site/components/icons';
   the label, so give `@badgeLabel` when the bare value is unclear.
 - The `@icon` is hidden from assistive technology, so the label is the link's
   name.
-- In a sidebar's icon rail the label is visually hidden but still names the
+- In a sidebar's icon rail the `inline` layout's label is visually hidden but still names the
   link, and it shows as a tooltip on hover or focus.
 - Put items in a `nav` landmark. `Sidebar` provides one, named by its `@label`.
 

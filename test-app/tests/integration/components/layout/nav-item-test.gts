@@ -302,8 +302,16 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
     let previous: Partial<ReturnType<typeof useStyles>>;
 
     nested.beforeEach(function () {
-      previous = { navItem: useStyles().navItem };
-      registerCustomStyles({ navItem: realStyles.navItem });
+      previous = {
+        navItem: useStyles().navItem,
+        appLayout: useStyles().appLayout
+      };
+      // appLayout carries the rule that hides `[data-sidebar-label]` in a
+      // collapsed sidebar.
+      registerCustomStyles({
+        navItem: realStyles.navItem,
+        appLayout: realStyles.appLayout
+      });
     });
 
     nested.afterEach(function () {
