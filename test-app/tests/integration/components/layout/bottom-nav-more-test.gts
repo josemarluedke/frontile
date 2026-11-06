@@ -5,8 +5,10 @@ import {
   find,
   click,
   focus,
-  triggerKeyEvent
+  triggerKeyEvent,
+  settled
 } from '@ember/test-helpers';
+import { tracked } from '@glimmer/tracking';
 import { BottomNav } from 'frontile';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
@@ -501,6 +503,39 @@ module(
       assert.dom(TAB).isFocused();
       await click(TAB);
       assert.dom(SHEET).exists('opens again');
+    });
+
+    test('the sheet stays closed after items hide and reappear', async function (assert) {
+      const state = new (class {
+        @tracked hidden = false;
+      })();
+      await render(
+        <template>
+          <BottomNav as |bar|>
+            <bar.More as |more|>
+              <more.Item
+                @href="#a"
+                @icon={{TestIcon}}
+                @isHidden={{state.hidden}}
+              >A</more.Item>
+            </bar.More>
+          </BottomNav>
+        </template>
+      );
+
+      await click(TAB);
+      assert.dom(SHEET).exists();
+
+      state.hidden = true;
+      await settled();
+      assert.dom(TAB).doesNotExist();
+      assert.dom(SHEET).doesNotExist();
+
+      state.hidden = false;
+      await settled();
+      assert.dom(TAB).exists();
+      assert.dom(SHEET).doesNotExist('the sheet does not reopen on its own');
+      assert.dom(TAB).hasAria('expanded', 'false');
     });
 
     test('the hidden registry copy stays out of sight and out of the tab order', async function (assert) {

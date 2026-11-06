@@ -4,6 +4,7 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { schedule } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
+import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 import Drawer from '../overlays/drawer';
 import { EllipsisHorizontalIcon } from '../../-private/icons';
@@ -46,6 +47,10 @@ interface BottomNavMoreSignature {
     /**
      * The sheet's content. Yields `Item`, an inline `NavItem`, and `Folder`,
      * an inline `NavFolder`. Following an item closes the sheet.
+     *
+     * The block is rendered twice: once hidden, always, to track which item
+     * is active or badged, and once in the open sheet. Avoid `id`s and side
+     * effects (modifiers, analytics, data loading) inside it.
      */
     default: [
       {
@@ -191,6 +196,21 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
     this.isOpen = false;
   };
 
+  /**
+   * Closes the sheet when the tab goes away (every item hidden), so it does
+   * not reopen on its own when an item reappears. Deferred to after render,
+   * where changing state is safe.
+   */
+  closeWhenHidden = modifier((_element: HTMLElement, [hidden]: [boolean]) => {
+    if (hidden && this.isOpen) {
+      schedule('afterRender', () => {
+        if (!this.isDestroying && !this.isDestroyed) {
+          this.isOpen = false;
+        }
+      });
+    }
+  });
+
   /** Handed to the hidden copy's items, which are never clicked. */
   ignore = (): void => {};
 
@@ -234,6 +254,7 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
       aria-hidden="true"
       data-part="bottom-nav-more-registry"
       class={{this.classes.bottomNavMoreRegistry}}
+      {{this.closeWhenHidden this.isTabHidden}}
     >
       {{yield
         (hash

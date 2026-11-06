@@ -70,6 +70,10 @@ The sheet holds exactly what you put in the block. Tabs never move into it on
 their own when the bar runs out of room, so choose which destinations are tabs
 and which go in the sheet.
 
+The block is rendered twice: once hidden, all the time, to track which item is
+active or badged, and once in the open sheet. Avoid `id`s and side effects,
+such as modifiers, analytics or data loading, inside it.
+
 `@label` names the tab (default `More`), `@icon` replaces its ellipsis icon,
 and `@sheetLabel` names the sheet (default the label). In the demo, Billing is
 the current page and Messages has unread items (made-up data).
