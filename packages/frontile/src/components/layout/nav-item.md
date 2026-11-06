@@ -115,14 +115,112 @@ import { StarIcon } from 'site/components/icons';
 </template>
 ```
 
-`@layout` sets how the icon and label are arranged. `inline`, the only value
-today and the default, puts the label beside the icon.
+## Layouts
+
+`@layout` sets how the icon and label are arranged.
+
+- `inline`, the default, puts the label beside the icon. Inside a collapsed
+  [Sidebar](./app-layout#sidebar) the label is hidden and the icon stays put.
+- `stacked` puts a small label under the icon, with the current page marked by
+  a pill behind the icon. Give `@shortLabel` for the text shown under the icon;
+  without it the block text is shown. A stacked item ignores the sidebar's
+  collapsed state.
+- `icon` shows the icon alone in a round hit target. The label shows as a
+  tooltip on hover or focus. An icon item also ignores the collapsed state.
+
+```gts preview
+import { NavItem } from 'frontile';
+import { ViewIcon, SettingsIcon, UserIcon } from 'site/components/icons';
+
+<template>
+  <div class='not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
+    <nav aria-label='Inline' class='flex w-48 flex-col gap-0.5'>
+      <NavItem @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+        Overview
+      </NavItem>
+      <NavItem @href='#members' @icon={{UserIcon}}>Members</NavItem>
+    </nav>
+    <nav aria-label='Stacked' class='flex gap-1'>
+      <NavItem
+        @href='#overview'
+        @layout='stacked'
+        @icon={{ViewIcon}}
+        @shortLabel='Home'
+        @isActive={{true}}
+      >
+        Overview
+      </NavItem>
+      <NavItem
+        @href='#settings'
+        @layout='stacked'
+        @icon={{SettingsIcon}}
+        @shortLabel='Prefs'
+      >
+        Settings
+      </NavItem>
+    </nav>
+    <nav aria-label='Icon only' class='flex gap-1'>
+      <NavItem
+        @href='#overview'
+        @layout='icon'
+        @icon={{ViewIcon}}
+        @isActive={{true}}
+      >
+        Overview
+      </NavItem>
+      <NavItem @href='#members' @layout='icon' @icon={{UserIcon}}>
+        Members
+      </NavItem>
+    </nav>
+  </div>
+</template>
+```
+
+## Badges
+
+`@badge` shows a count or short status as a pill on the icon's top corner. An
+item without an icon shows it at the end of the row. Nothing is shown for
+`undefined`, `null`, `0` or an empty string. Screen readers hear the badge
+after the label; set `@badgeLabel` to word it, such as "3 unread".
+
+```gts preview
+import { NavItem } from 'frontile';
+import { ViewIcon, UserIcon } from 'site/components/icons';
+
+<template>
+  <div class='not-prose flex flex-wrap items-start gap-8'>
+    <nav aria-label='Inbox' class='flex w-48 flex-col gap-0.5'>
+      <NavItem @href='#inbox' @icon={{ViewIcon}} @badge={{3}} @badgeLabel='3 unread'>
+        Inbox
+      </NavItem>
+      <NavItem @href='#members' @icon={{UserIcon}}>Members</NavItem>
+    </nav>
+    <nav aria-label='Inbox stacked' class='flex gap-1'>
+      <NavItem
+        @href='#inbox'
+        @layout='stacked'
+        @icon={{ViewIcon}}
+        @shortLabel='Inbox'
+        @badge='9+'
+        @badgeLabel='more than nine unread'
+      >
+        Inbox
+      </NavItem>
+    </nav>
+  </div>
+</template>
+```
 
 ## Accessibility
 
 - The active item has `aria-current="page"`.
 - A disabled item has `aria-disabled="true"` and no `href`; a disabled button
   is also natively disabled and skipped by <kbd>Tab</kbd>.
+- In the `stacked` layout `@shortLabel` is hidden from assistive technology;
+  the full label is still the link's name. The `icon` layout names the link
+  the same way.
+- A `@badge` is hidden from assistive technology and its text is read after
+  the label, so give `@badgeLabel` when the bare value is unclear.
 - The `@icon` is hidden from assistive technology, so the label is the link's
   name.
 - In a sidebar's icon rail the label is visually hidden but still names the

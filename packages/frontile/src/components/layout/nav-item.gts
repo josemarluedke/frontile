@@ -12,7 +12,7 @@ import type RouterService from '@ember/routing/router-service';
 import type { ComponentLike } from '@glint/template';
 
 /** How the item lays out its icon and label. */
-type NavItemLayout = 'inline';
+type NavItemLayout = 'inline' | 'stacked' | 'icon';
 
 interface NavItemArgs {
   /**
@@ -62,11 +62,32 @@ interface NavItemArgs {
   icon?: ComponentLike;
 
   /**
-   * How the item lays out its icon and label.
+   * How the item lays out its icon and label. `inline` puts the label beside
+   * the icon and follows the sidebar's icon rail; `stacked` puts a small label
+   * under the icon; `icon` shows the icon alone, with the label as a tooltip.
+   * `stacked` and `icon` ignore the sidebar's collapsed state.
    *
    * @defaultValue 'inline'
    */
   layout?: NavItemLayout;
+
+  /**
+   * Shorter text shown in place of the label in the `stacked` layout. The
+   * full label stays the link's accessible name.
+   */
+  shortLabel?: string;
+
+  /**
+   * A count or short status shown as a pill on the icon. Nothing is shown
+   * for `undefined`, `null`, `0` or an empty string.
+   */
+  badge?: string | number;
+
+  /**
+   * Screen-reader text for the badge, read after the label. Defaults to the
+   * badge value.
+   */
+  badgeLabel?: string;
 
   /**
    * Class names added to this item's theme classes. Merged with Tailwind
@@ -161,12 +182,49 @@ class NavItem extends Component<NavItemSignature> {
   /** The item's theme slots for its layout. */
   @cached
   get classes() {
-    const styles = useStyles().navItem({ layout: this.layout });
+    const styles = useStyles().navItem({
+      layout: this.layout,
+      shortLabel: this.hasShortLabel,
+      badgePlacement: this.args.icon ? 'icon' : 'end'
+    });
     return {
       navItem: styles.navItem(),
       navItemIcon: styles.navItemIcon(),
-      navItemLabel: styles.navItemLabel()
+      navItemLabel: styles.navItemLabel(),
+      navItemShortLabel: styles.navItemShortLabel(),
+      navItemBadge: styles.navItemBadge(),
+      navItemBadgeLabel: styles.navItemBadgeLabel()
     };
+  }
+
+  /**
+   * Only the inline layout follows the sidebar's collapsed state, which hides
+   * `[data-sidebar-label]` elements.
+   */
+  get isInline(): true | undefined {
+    return this.layout === 'inline' ? true : undefined;
+  }
+
+  get hasShortLabel(): boolean {
+    return this.layout === 'stacked' && Boolean(this.args.shortLabel);
+  }
+
+  /** Whether a badge is shown: not for `undefined`, `null`, `0` or `''`. */
+  get hasBadge(): boolean {
+    const badge = this.args.badge;
+    return badge !== undefined && badge !== null && badge !== 0 && badge !== '';
+  }
+
+  /** The label is not otherwise visible, so a tooltip names the item. */
+  get showTooltip(): boolean {
+    return (
+      (Boolean(this.args.rail) && this.layout === 'inline') ||
+      this.layout === 'icon'
+    );
+  }
+
+  get badgeText(): string | number | undefined {
+    return this.args.badgeLabel ?? this.args.badge;
   }
 
   /** Merged, so a consumer class wins over a conflicting theme class. */
@@ -183,7 +241,7 @@ class NavItem extends Component<NavItemSignature> {
   <template>
     {{#unless @isHidden}}
       <Tooltip
-        @isDisabled={{if @rail false true}}
+        @isDisabled={{if this.showTooltip false true}}
         @placement={{if @tooltipPlacement @tooltipPlacement "right"}}
         as |t|
       >
@@ -208,13 +266,32 @@ class NavItem extends Component<NavItemSignature> {
               data-part="nav-item-icon"
               class={{this.classes.navItemIcon}}
               aria-hidden="true"
-            ><@icon /></span>
+            ><@icon />{{#if this.hasBadge}}<span
+                  data-part="nav-item-badge"
+                  class={{this.classes.navItemBadge}}
+                  aria-hidden="true"
+                >{{@badge}}</span>{{/if}}</span>
+          {{/if}}
+          {{#if this.hasShortLabel}}
+            <span
+              data-part="nav-item-short-label"
+              class={{this.classes.navItemShortLabel}}
+              aria-hidden="true"
+            >{{@shortLabel}}</span>
           {{/if}}
           <span
             data-part="nav-item-label"
-            data-sidebar-label
+            data-sidebar-label={{this.isInline}}
             class={{this.classes.navItemLabel}}
-          >{{yield}}</span>
+          >{{yield}}{{#if this.hasBadge}}<span
+                data-part="nav-item-badge-label"
+                class={{this.classes.navItemBadgeLabel}}
+              >, {{this.badgeText}}</span>{{/if}}</span>
+          {{#if this.hasBadge}}{{#unless @icon}}<span
+                data-part="nav-item-badge"
+                class={{this.classes.navItemBadge}}
+                aria-hidden="true"
+              >{{@badge}}</span>{{/unless}}{{/if}}
         </NavLink>
         <t.Content>{{yield}}</t.Content>
       </Tooltip>

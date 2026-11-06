@@ -9,7 +9,9 @@ import {
   settled
 } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
-import { NavItem } from 'frontile';
+import { NavItem, Sidebar, AppLayoutState } from 'frontile';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
+import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 import type { TOC } from '@ember/component/template-only';
 
 const TestIcon: TOC<{ Element: SVGSVGElement }> = <template>
@@ -294,5 +296,241 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
     state.show = false;
     await settled();
     assert.strictEqual(unregistered, 1, 'unregistered on destroy');
+  });
+
+  module('layouts, short labels and badges', function (nested) {
+    let previous: Partial<ReturnType<typeof useStyles>>;
+
+    nested.beforeEach(function () {
+      previous = { navItem: useStyles().navItem };
+      registerCustomStyles({ navItem: realStyles.navItem });
+    });
+
+    nested.afterEach(function () {
+      registerCustomStyles(previous);
+    });
+
+    test('stacked renders the shortLabel visibly and the full label as screen-reader text', async function (assert) {
+      await render(
+        <template>
+          <NavItem
+            @href="/a"
+            @layout="stacked"
+            @icon={{TestIcon}}
+            @shortLabel="Home"
+            id="item"
+          >
+            Home page
+          </NavItem>
+        </template>
+      );
+
+      const short = find('#item [data-part="nav-item-short-label"]')!;
+      assert.dom(short).hasText('Home');
+      assert.false(isVisiblyHidden(short), 'the short label is visible');
+      assert.true(
+        isVisiblyHidden(find('#item [data-part="nav-item-label"]')!),
+        'the full label is sr-only'
+      );
+      assert.dom('#item [data-part="nav-item-label"]').hasText('Home page');
+    });
+
+    test('stacked without shortLabel shows the block text', async function (assert) {
+      await render(
+        <template>
+          <NavItem @href="/a" @layout="stacked" @icon={{TestIcon}} id="item">
+            Reports
+          </NavItem>
+        </template>
+      );
+
+      assert.dom('#item [data-part="nav-item-short-label"]').doesNotExist();
+      const label = find('#item [data-part="nav-item-label"]')!;
+      assert.dom(label).hasText('Reports');
+      assert.false(isVisiblyHidden(label));
+    });
+
+    test('stacked has the accessible name of the full label', async function (assert) {
+      await render(
+        <template>
+          <NavItem @href="/a" @layout="stacked" @shortLabel="Home" id="item">
+            Home page
+          </NavItem>
+        </template>
+      );
+
+      assert
+        .dom('#item [data-part="nav-item-short-label"]')
+        .hasAttribute('aria-hidden', 'true');
+      assert.dom('#item [data-part="nav-item-label"]').hasText('Home page');
+    });
+
+    test('icon layout hides the label visually but keeps the accessible name', async function (assert) {
+      await render(
+        <template>
+          <NavItem @href="/a" @layout="icon" @icon={{TestIcon}} id="item">
+            Reports
+          </NavItem>
+        </template>
+      );
+
+      const label = find('#item [data-part="nav-item-label"]')!;
+      assert.dom(label).hasText('Reports');
+      assert.true(isVisiblyHidden(label));
+      const item = getComputedStyle(find('#item')!);
+      assert.strictEqual(item.width, '44px');
+      assert.strictEqual(item.height, '44px');
+    });
+
+    test('icon layout shows the label as a tooltip on focus', async function (assert) {
+      await render(
+        <template>
+          <NavItem @href="/a" @layout="icon" @icon={{TestIcon}} id="item">
+            Reports
+          </NavItem>
+        </template>
+      );
+
+      await focus('#item');
+      assert.dom('[role="tooltip"]').hasText('Reports');
+    });
+
+    test('stacked has no tooltip', async function (assert) {
+      await render(
+        <template>
+          <NavItem @href="/a" @layout="stacked" @shortLabel="Rep" id="item">
+            Reports
+          </NavItem>
+        </template>
+      );
+
+      await focus('#item');
+      assert.dom('[role="tooltip"]').doesNotExist();
+    });
+
+    test('stacked item in a collapsed Sidebar keeps its label visible', async function (assert) {
+      const state = new AppLayoutState();
+      state.collapseSidebar();
+      await render(
+        <template>
+          <Sidebar @state={{state}} @collapsible="icon" as |sidebar|>
+            <sidebar.Body>
+              <sidebar.Item
+                @href="#a"
+                @layout="stacked"
+                @icon={{TestIcon}}
+                @shortLabel="Home"
+                id="item"
+              >
+                Home page
+              </sidebar.Item>
+              <sidebar.Item
+                @href="#b"
+                @layout="stacked"
+                @icon={{TestIcon}}
+                id="plain"
+              >
+                Plain
+              </sidebar.Item>
+            </sidebar.Body>
+          </Sidebar>
+        </template>
+      );
+
+      assert.true(state.sidebarCollapsed);
+      const short = find('#item [data-part="nav-item-short-label"]')!;
+      assert.true(short.getBoundingClientRect().width > 1);
+      assert.notStrictEqual(getComputedStyle(short).position, 'absolute');
+      const label = find('#plain [data-part="nav-item-label"]')!;
+      assert.true(label.getBoundingClientRect().width > 1);
+    });
+
+    test('icon item in a collapsed Sidebar is unchanged', async function (assert) {
+      const state = new AppLayoutState();
+      state.collapseSidebar();
+      await render(
+        <template>
+          <Sidebar @state={{state}} @collapsible="icon" as |sidebar|>
+            <sidebar.Body>
+              <sidebar.Item
+                @href="#a"
+                @layout="icon"
+                @icon={{TestIcon}}
+                id="item"
+              >
+                Reports
+              </sidebar.Item>
+            </sidebar.Body>
+          </Sidebar>
+        </template>
+      );
+
+      assert.true(isVisiblyHidden(find('#item [data-part="nav-item-label"]')!));
+      assert.strictEqual(getComputedStyle(find('#item')!).width, '44px');
+    });
+
+    test('badge renders a pill and sr-only text', async function (assert) {
+      await render(
+        <template>
+          <NavItem @href="/a" @icon={{TestIcon}} @badge={{3}} id="item">
+            Inbox
+          </NavItem>
+        </template>
+      );
+
+      assert
+        .dom('#item [data-part="nav-item-badge"]')
+        .hasText('3')
+        .hasAttribute('aria-hidden', 'true');
+      assert.dom('#item [data-part="nav-item-label"]').includesText(', 3');
+      const sr = find('#item [data-part="nav-item-badge-label"]')!;
+      assert.dom(sr).hasText(', 3');
+    });
+
+    test('badgeLabel overrides the sr-only text', async function (assert) {
+      await render(
+        <template>
+          <NavItem
+            @href="/a"
+            @badge="9+"
+            @badgeLabel="more than nine unread"
+            id="item"
+          >
+            Inbox
+          </NavItem>
+        </template>
+      );
+
+      assert.dom('#item [data-part="nav-item-badge"]').hasText('9+');
+      assert
+        .dom('#item [data-part="nav-item-label"]')
+        .includesText(', more than nine unread');
+    });
+
+    test('badge 0 and empty string render nothing', async function (assert) {
+      await render(
+        <template>
+          <NavItem @href="/a" @badge={{0}} id="zero">Zero</NavItem>
+          <NavItem @href="/b" @badge="" id="empty">Empty</NavItem>
+          <NavItem @href="/c" id="none">None</NavItem>
+        </template>
+      );
+
+      assert.dom('[data-part="nav-item-badge"]').doesNotExist();
+      assert.dom('#zero [data-part="nav-item-label"]').hasText('Zero');
+      assert.dom('#empty [data-part="nav-item-label"]').hasText('Empty');
+    });
+
+    test('data-layout reflects @layout', async function (assert) {
+      await render(
+        <template>
+          <NavItem @href="/a" @layout="stacked" id="s">S</NavItem>
+          <NavItem @href="/b" @layout="icon" id="i">I</NavItem>
+        </template>
+      );
+
+      assert.dom('#s').hasAttribute('data-layout', 'stacked');
+      assert.dom('#i').hasAttribute('data-layout', 'icon');
+    });
   });
 });

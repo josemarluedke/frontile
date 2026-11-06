@@ -2,17 +2,19 @@ import { tv } from '../tw';
 import { focusVisibleRing } from './shared';
 import type { VariantProps } from '../tw';
 
+// The icon's position never depends on the collapsed state, so the rail
+// closes over it instead of the icon sliding as the width animates.
+// Start padding puts it at the center of the rail's content box:
+// (rail - body padding on both sides - icon 1.25rem) / 2. The body's
+// side padding is `--sidebar-body-px` (0.5rem unless the variant sets it).
+// `--sidebar-rail` is the content width, so the inset variant excludes its
+// 0.75rem gap. Only the inline layout follows the rail.
+const railStart =
+  'ps-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-body-px,0.5rem)_-_1.25rem)/2)]';
+
 const navRow = [
   ...focusVisibleRing,
   'flex min-h-9 w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm',
-  // The icon's position never depends on the collapsed state, so the rail
-  // closes over it instead of the icon sliding as the width animates.
-  // Start padding puts it at the center of the rail's content box:
-  // (rail - body padding on both sides - icon 1.25rem) / 2. The body's
-  // side padding is `--sidebar-body-px` (0.5rem unless the variant sets it).
-  // `--sidebar-rail` is
-  // the content width, so the inset variant excludes its 0.75rem gap.
-  'ps-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-body-px,0.5rem)_-_1.25rem)/2)]',
   'text-neutral-firm',
   'not-data-[disabled=true]:hover:bg-neutral-muted',
   'not-data-[disabled=true]:hover:text-neutral-strong',
@@ -36,11 +38,14 @@ const navItemRow = [
 const navItem = tv({
   slots: {
     navItem: navItemRow,
-    navItemIcon: 'inline-flex size-5 shrink-0 items-center justify-center',
-    // Hidden in the icon rail, except inside a folder's flyout: the flyout
-    // sits inside the sidebar's DOM but lists items with their labels.
-    navItemLabel:
-      'truncate group-data-[collapsed=true]/sidebar:[&:not([data-part=nav-folder-flyout]_*)]:sr-only',
+    navItemIcon: 'relative inline-flex shrink-0 items-center justify-center',
+    navItemLabel: 'truncate',
+    // The short text shown under the icon in the stacked layout.
+    navItemShortLabel: 'max-w-full truncate text-[10px] leading-tight',
+    navItemBadge:
+      'inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] leading-none font-medium text-on-danger',
+    // Screen-reader text appended to the label for a badge.
+    navItemBadgeLabel: 'sr-only',
     navFolder: 'flex flex-col',
     // A button, which browsers do not give a pointer cursor on their own.
     navFolderTrigger: [...navRow, 'not-data-[disabled=true]:cursor-pointer'],
@@ -70,7 +75,47 @@ const navItem = tv({
   },
   variants: {
     layout: {
-      inline: {}
+      inline: {
+        navItem: railStart,
+        navFolderTrigger: railStart,
+        navItemIcon: 'size-5',
+        // Hidden in the icon rail, except inside a folder's flyout: the
+        // flyout sits inside the sidebar's DOM but lists items with their
+        // labels.
+        navItemLabel:
+          'group-data-[collapsed=true]/sidebar:[&:not([data-part=nav-folder-flyout]_*)]:sr-only'
+      },
+      // Small icon over text. Ignores the sidebar's collapsed state.
+      stacked: {
+        navItem: [
+          'group/nav-item min-h-14 w-[72px] flex-col justify-center gap-0.5 px-1 py-1.5 text-[10px]',
+          // The active fill sits behind the icon, not the whole item.
+          'data-[active=true]:bg-transparent not-data-[disabled=true]:hover:bg-transparent',
+          'not-data-[disabled=true]:data-[active=true]:hover:bg-transparent'
+        ],
+        navItemIcon: [
+          'h-8 w-11 rounded-full [&>svg]:size-5',
+          'group-data-[active=true]/nav-item:bg-neutral-soft',
+          'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-neutral-muted',
+          'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-neutral-soft'
+        ]
+      },
+      // Icon only; the label is screen-reader text and a tooltip.
+      icon: {
+        navItem: 'size-11 min-h-11 justify-center rounded-full px-0 py-0',
+        navItemIcon: 'size-5',
+        navItemLabel: 'sr-only'
+      }
+    },
+    // The visible text is the short label, so the full label is for
+    // screen readers only.
+    shortLabel: {
+      true: { navItemLabel: 'sr-only' }
+    },
+    badgePlacement: {
+      // At the icon's top-end corner.
+      icon: { navItemBadge: 'absolute -top-1 -end-1' },
+      end: { navItemBadge: 'ms-auto' }
     }
   },
   defaultVariants: {

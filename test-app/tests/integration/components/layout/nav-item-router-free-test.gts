@@ -41,5 +41,22 @@ module(
 
       assert.dom('a[href="/one"]').hasAttribute('aria-current', 'page');
     });
+
+    test('stacked and icon layouts never resolve the router for @href items', async function (assert) {
+      await render(
+        <template>
+          <NavItem
+            @href="/one"
+            @layout="stacked"
+            @shortLabel="One"
+            @badge={{2}}
+          >One</NavItem>
+          <NavItem @href="/two" @layout="icon">Two</NavItem>
+        </template>
+      );
+
+      assert.dom('a[href="/one"]').exists();
+      assert.dom('a[href="/two"]').exists();
+    });
   }
 );
