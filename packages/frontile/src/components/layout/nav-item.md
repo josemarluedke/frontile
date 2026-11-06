@@ -122,10 +122,10 @@ import { StarIcon } from 'site/components/icons';
 - `inline`, the default, puts the label beside the icon. Inside a collapsed
   [Sidebar](./app-layout#sidebar) the label is hidden and the icon stays put.
 - `stacked` puts a small label under the icon, with the current page marked by
-  a pill behind the icon. Give `@shortLabel` for the text shown under the icon;
+  a rounded fill behind the icon. Give `@shortLabel` for the text shown under the icon;
   without it the block text is shown. A stacked item ignores the sidebar's
   collapsed state.
-- `icon` shows the icon alone in a round hit target. The label shows as a
+- `icon` shows the icon alone in a 44px hit target. The label shows as a
   tooltip on hover or focus. An icon item also ignores the collapsed state.
 
 ```gts preview collapsible
@@ -133,7 +133,7 @@ import { NavItem } from 'frontile';
 import { ViewIcon, SettingsIcon, UserIcon } from 'site/components/icons';
 
 <template>
-  <div class='theme-inverse not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
+  <div class='not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
     <nav aria-label='Inline' class='flex w-48 flex-col gap-0.5'>
       <NavItem @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
         Overview
@@ -188,7 +188,7 @@ import { NavItem } from 'frontile';
 import { ViewIcon, UserIcon } from 'site/components/icons';
 
 <template>
-  <div class='theme-inverse not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
+  <div class='not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
     <nav aria-label='Inbox' class='flex w-48 flex-col gap-0.5'>
       <NavItem @href='#inbox' @icon={{ViewIcon}} @badge={{3}} @badgeLabel='3 unread'>
         Inbox
