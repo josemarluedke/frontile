@@ -6,8 +6,8 @@ imports:
 
 # AppLayout
 
-The application shell: a sidebar, a navbar and a main content area. Reach for
-it to give every page of an app the same frame.
+The application shell: a sidebar, a navbar, the main content and an optional
+side panel, arranged for desktop and rearranged for phones.
 
 ## Import
 
@@ -17,180 +17,304 @@ import { AppLayout } from 'frontile';
 
 ## Usage
 
-`AppLayout` yields its parts. Each part places itself in the shell, so the
-order you write them in does not matter.
+`AppLayout` yields its parts, and each part places itself, so the order you
+write them in does not matter. The layout fills the viewport and `Main`
+scrolls on its own.
 
-By default the layout fills the viewport and `Main` scrolls on its own. The
-demos on this page give the layout a fixed height so it fits on the page.
+Below the `md` breakpoint the sidebar moves into a drawer, opened by
+`MenuToggle`. Expand the demo and pick _Phone_ to try it.
 
 ```gts preview collapsible
-import { AppLayout, Button } from 'frontile';
+import { AppLayout } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+import {
+  ViewIcon,
+  UserIcon,
+  SettingsIcon,
+  SparklesIcon
+} from 'site/components/icons';
 
 <template>
-  <div class='demo-stack demo-stack--wide not-prose'>
-    <AppLayout class='demo-app-layout' as |layout|>
+  <DemoFrame @id='usage' @label='App shell'>
+    <AppLayout as |layout|>
+      <layout.Sidebar as |sidebar|>
+        <sidebar.Header>
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
+          <span class='truncate text-sm font-semibold' data-sidebar-label>
+            Acme
+          </span>
+          <sidebar.Toggle class='ml-auto' />
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Item @href='#members' @icon={{UserIcon}}>
+            Members
+          </sidebar.Item>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
       <layout.Navbar>
-        <span class='flex-1 text-sm font-medium'>Access management</span>
-        <Button @size='sm' @variant='ghost'>Help</Button>
+        <layout.MenuToggle />
+        <span class='text-sm font-medium'>Overview</span>
       </layout.Navbar>
       <layout.Main>
         <layout.PageHeader
-          @title='Users'
-          @description='Everyone with access to this workspace.'
+          @title='Overview'
+          @description='Activity across your workspace.'
         />
-        <p class='px-4 text-sm text-neutral-firm'>
-          Page content scrolls inside the card.
-        </p>
       </layout.Main>
     </AppLayout>
-  </div>
+  </DemoFrame>
 </template>
 ```
+
+## Anatomy
+
+| Part                           | What it is                                                                   |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| `Navbar`                       | The top bar, a `header` landmark                                             |
+| `Sidebar`                      | The navigation column; see [Sidebar](./sidebar)                              |
+| `Main`                         | The page content, the `main` landmark                                        |
+| `PageHeader`                   | A title row with actions, placed inside `Main`                               |
+| `Aside`                        | An optional panel beside `Main` for details or filters                       |
+| `BottomNav`                    | A tab bar that replaces the sidebar on phones; see [BottomNav](./bottom-nav) |
+| `MenuToggle`                   | Opens the sidebar's drawer on small screens                                  |
+| `SidebarToggle`, `AsideToggle` | Collapse the sidebar, open the aside, from outside them                      |
 
 ## Variants
 
-`inset`, the default, sets the content in a rounded card on a tinted frame, and
-the sidebar sits directly on that frame with no border of its own. `attached`
-runs the content edge to edge: the sidebar becomes its own bordered surface
-and the navbar gets a border underneath instead of a card.
-
-Below the `@breakpoint`, where the sidebar becomes a drawer, `inset` also goes
-edge to edge: the frame's gutter and the card's rounded corners are dropped so
-a phone gets the full width.
+`inset`, the default, sets the content in a rounded card on a tinted frame.
+`attached` runs the content edge to edge and gives the sidebar and navbar
+borders. On phones both run edge to edge.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
-import { array } from '@ember/helper';
+import { array, concat } from '@ember/helper';
+import DemoFrame from 'site/components/demo-frame';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 <template>
-  <div class='demo-stack demo-stack--wide not-prose'>
+  <div class='demo-stack demo-stack--wide'>
     {{#each (array 'inset' 'attached') as |variant|}}
-      <AppLayout @variant={{variant}} class='demo-app-layout' as |layout|>
-        <layout.Sidebar @label={{variant}} as |sidebar|>
-          <sidebar.Header>
-            <SparklesIcon class='size-5 shrink-0 text-primary' />
-            <span class='truncate text-sm font-semibold' data-sidebar-label>
-              Acme
-            </span>
-            <sidebar.Toggle class='ml-auto' />
-          </sidebar.Header>
-          <sidebar.Body>
-            <sidebar.Item
-              @href='#overview'
-              @icon={{ViewIcon}}
-              @isActive={{true}}
-            >
-              Overview
-            </sidebar.Item>
-            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
-              Settings
-            </sidebar.Item>
-          </sidebar.Body>
-        </layout.Sidebar>
-        <layout.Navbar>
-          <layout.MenuToggle />
-          <span class='text-sm font-medium'>{{variant}}</span>
-        </layout.Navbar>
-        <layout.Main>
-          <layout.PageHeader
-            @title='Projects'
-            @description='Every project you can see.'
-          />
-        </layout.Main>
-      </AppLayout>
+      <DemoFrame @id={{variant}} @label={{concat 'Variant: ' variant}}>
+        <AppLayout @variant={{variant}} as |layout|>
+          <layout.Sidebar @label={{variant}} as |sidebar|>
+            <sidebar.Header>
+              <SparklesIcon class='size-5 shrink-0 text-primary' />
+              <span class='truncate text-sm font-semibold' data-sidebar-label>
+                Acme
+              </span>
+              <sidebar.Toggle class='ml-auto' />
+            </sidebar.Header>
+            <sidebar.Body>
+              <sidebar.Item
+                @href='#overview'
+                @icon={{ViewIcon}}
+                @isActive={{true}}
+              >
+                Overview
+              </sidebar.Item>
+              <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+                Settings
+              </sidebar.Item>
+            </sidebar.Body>
+          </layout.Sidebar>
+          <layout.Navbar>
+            <layout.MenuToggle />
+            <code class='text-sm'>@variant='{{variant}}'</code>
+          </layout.Navbar>
+          <layout.Main>
+            <layout.PageHeader @title='Overview' />
+          </layout.Main>
+        </AppLayout>
+      </DemoFrame>
     {{/each}}
   </div>
 </template>
 ```
 
-## Navbar placement
+### Navbar placement
 
-In the `inset` variant, `@navbarPlacement` decides whether the navbar is part
-of the frame or part of the card. `frame`, the default, puts it on the tinted
-background above the card. `content` makes it the card's first row.
+In the `inset` variant, `@navbarPlacement` puts the navbar on the frame above
+the card (`frame`, the default) or makes it the card's first row (`content`).
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
-import { array } from '@ember/helper';
-import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
+import { array, concat } from '@ember/helper';
+import DemoFrame from 'site/components/demo-frame';
+import { ViewIcon, SettingsIcon } from 'site/components/icons';
 
 <template>
-  <div class='demo-stack demo-stack--wide not-prose'>
+  <div class='demo-stack demo-stack--wide'>
     {{#each (array 'frame' 'content') as |placement|}}
-      <AppLayout
-        @navbarPlacement={{placement}}
-        class='demo-app-layout'
-        as |layout|
+      <DemoFrame
+        @id={{concat 'navbar-' placement}}
+        @label={{concat 'Navbar placement: ' placement}}
       >
-        <layout.Sidebar @label={{placement}} as |sidebar|>
-          <sidebar.Header>
-            <SparklesIcon class='size-5 shrink-0 text-primary' />
-            <span class='truncate text-sm font-semibold' data-sidebar-label>
-              Acme
-            </span>
-          </sidebar.Header>
-          <sidebar.Body>
-            <sidebar.Item
-              @href='#overview'
-              @icon={{ViewIcon}}
-              @isActive={{true}}
-            >
-              Overview
-            </sidebar.Item>
-            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
-              Settings
-            </sidebar.Item>
-          </sidebar.Body>
-        </layout.Sidebar>
-        <layout.Navbar>
-          <span class='text-sm font-medium'>{{placement}}</span>
-        </layout.Navbar>
-        <layout.Main>
-          <layout.PageHeader @title='Settings' />
-        </layout.Main>
-      </AppLayout>
+        <AppLayout @navbarPlacement={{placement}} as |layout|>
+          <layout.Sidebar @label={{placement}} as |sidebar|>
+            <sidebar.Body>
+              <sidebar.Item
+                @href='#overview'
+                @icon={{ViewIcon}}
+                @isActive={{true}}
+              >
+                Overview
+              </sidebar.Item>
+              <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+                Settings
+              </sidebar.Item>
+            </sidebar.Body>
+          </layout.Sidebar>
+          <layout.Navbar>
+            <layout.MenuToggle />
+            <code class='text-sm'>@navbarPlacement='{{placement}}'</code>
+          </layout.Navbar>
+          <layout.Main>
+            <layout.PageHeader @title='Overview' />
+          </layout.Main>
+        </AppLayout>
+      </DemoFrame>
     {{/each}}
   </div>
 </template>
 ```
 
-## Sidebar
+## Responsive navigation
 
-`layout.Sidebar` is a full-height `nav` landmark that takes the first column and
-collapses to an icon rail. It is documented on its own page: see
-[Sidebar](./sidebar) for the header, items, folders, groups, collapse modes,
-sizes, mobile drawer and standalone use.
+Below `@breakpoint` (`sm` 40rem, `md` 48rem by default, `lg` 64rem) the
+sidebar leaves the page. These are Tailwind's default breakpoints, read in
+JavaScript, so changing `--breakpoint-*` in your theme does not move them.
+
+By default (`@mobileNav='drawer'`) it opens as a drawer from its side, as in
+[Usage](#usage). Put a `MenuToggle` in the navbar to open it; it shows only
+below the breakpoint, and `sidebar.Toggle` hides there, so one set of markup
+works at every width. The drawer closes on <kbd>Escape</kbd>, a click outside,
+a followed `Item`, or when the window grows past the breakpoint.
+
+With `@mobileNav='bottom'` the layout shows its [BottomNav](./bottom-nav) as
+a tab bar instead, and the sidebar and its toggles render nothing. Write both
+the `Sidebar` and the `BottomNav`; each appears at its own width. Place
+`BottomNav` after `Main`. Expand this demo and pick _Phone_.
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+import {
+  ViewIcon,
+  UserIcon,
+  SettingsIcon,
+  SparklesIcon
+} from 'site/components/icons';
+
+<template>
+  <DemoFrame @id='bottom-nav' @label='Bottom navigation'>
+    <AppLayout @mobileNav='bottom' as |layout|>
+      <layout.Sidebar as |sidebar|>
+        <sidebar.Header>
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
+          <span class='truncate text-sm font-semibold' data-sidebar-label>
+            Acme
+          </span>
+          <sidebar.Toggle class='ml-auto' />
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#home' @icon={{ViewIcon}} @isActive={{true}}>
+            Home
+          </sidebar.Item>
+          <sidebar.Item @href='#people' @icon={{UserIcon}} @badge={{2}}>
+            People
+          </sidebar.Item>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <span class='text-sm font-medium'>Home</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Home' />
+      </layout.Main>
+      <layout.BottomNav as |bar|>
+        <bar.Item @href='#home' @icon={{ViewIcon}} @isActive={{true}}>
+          Home
+        </bar.Item>
+        <bar.Item @href='#people' @icon={{UserIcon}} @badge={{2}}>
+          People
+        </bar.Item>
+        <bar.Item @href='#settings' @icon={{SettingsIcon}}>
+          Settings
+        </bar.Item>
+      </layout.BottomNav>
+    </AppLayout>
+  </DemoFrame>
+</template>
+```
+
+The sidebar's block remounts when the window crosses the breakpoint, so state
+held by components inside it starts over.
+
+## Sidebar side
+
+`@sidebarSide='end'` moves the sidebar to the last column, the aside to the
+first, and the drawer to the end edge. Sides are logical, so `start` is the
+right in a right-to-left page.
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+import { ViewIcon, SettingsIcon } from 'site/components/icons';
+
+<template>
+  <DemoFrame @id='sidebar-end' @label='Sidebar on the end'>
+    <AppLayout @variant='attached' @sidebarSide='end' as |layout|>
+      <layout.Sidebar as |sidebar|>
+        <sidebar.Header><sidebar.Toggle class='mr-auto' /></sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <span class='text-sm font-medium'>Overview</span>
+        <layout.MenuToggle class='ms-auto' />
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Overview' />
+      </layout.Main>
+    </AppLayout>
+  </DemoFrame>
+</template>
+```
 
 ## Aside
 
-`Aside` is an optional panel beside `Main`, for details, filters or help. It
-renders only while `asideOpen` is true. Put an `AsideToggle` at the end of the
-navbar to open and close it.
+`Aside` is a panel beside `Main` for details, filters or help, shown while
+the layout's `asideOpen` is true. `AsideToggle` opens and closes it. From `lg`
+(64rem) up it is a column and `Main` narrows; below `lg` the same block opens
+as a drawer.
 
-From `lg` (64rem) up the aside is a column inside the card, and `Main` narrows
-to make room. Below `lg` the same block renders in a drawer from the same
-side instead, so you write it once. The drawer closes on Escape, on a click outside
-it, or from its close button, and `asideOpen` follows. The aside's breakpoint
-is always `lg`: it does not follow the layout's `@breakpoint`, which only
-moves the sidebar. With `@sidebarSide="end"` the aside moves to the start
-side, so the two panels stay on opposite sides of the page.
-
-When the window narrows below `lg` while the aside is open, the aside closes
-(and `asideOpen` becomes `false`) instead of reopening as a drawer. Below
-`lg`, `AsideToggle` still opens it as a drawer. A layout that starts with
-`asideOpen` true on a narrow screen opens the drawer, so set
-`@defaultAsideOpen` only where you know the window is wide.
-
-Name the landmark with `@label` (default `Details`). The drawer uses the same
-name.
+If the window narrows while the aside is open, it closes rather than popping
+up as a drawer. A layout that starts with the aside open on a narrow screen
+does open the drawer, so set `@defaultAsideOpen` only where the window is
+wide.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
 
 <template>
-  <div class='demo-stack demo-stack--wide not-prose'>
-    <AppLayout class='demo-app-layout' as |layout|>
+  <DemoFrame @id='aside' @label='Aside'>
+    <AppLayout as |layout|>
       <layout.Navbar>
         <span class='text-sm font-medium'>Access management</span>
         <layout.AsideToggle class='ms-auto' />
@@ -200,25 +324,28 @@ import { AppLayout } from 'frontile';
       </layout.Main>
       <layout.Aside @label='Role details'>
         <h2 class='font-semibold'>Administrator</h2>
-        <p class='mt-1 text-neutral-firm'>Full access to every workspace.</p>
+        <p class='mt-1 text-sm text-neutral-firm'>
+          Full access to every workspace.
+        </p>
       </layout.Aside>
     </AppLayout>
-  </div>
+  </DemoFrame>
 </template>
 ```
 
 ## Page header
 
-`PageHeader` is the title row at the top of a page. Place it inside `Main`.
-It takes a `@title` and a `@description`; buttons for the page go in the
-`<:actions>` block, and anything else under the title goes in `<:default>`.
+`PageHeader` is the title row at the top of `Main`: a `@title`, a
+`@description`, buttons in `<:actions>`, and anything else under the title in
+`<:default>`.
 
 ```gts preview collapsible
-import { AppLayout, Button } from 'frontile';
+import { AppLayout, Button, Chip } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
 
 <template>
-  <div class='demo-stack demo-stack--wide not-prose'>
-    <AppLayout class='demo-app-layout' as |layout|>
+  <DemoFrame @id='page-header' @label='Page header'>
+    <AppLayout as |layout|>
       <layout.Navbar>
         <span class='text-sm font-medium'>Access management</span>
       </layout.Navbar>
@@ -232,98 +359,85 @@ import { AppLayout, Button } from 'frontile';
             <Button @size='sm' @color='primary'>New role</Button>
           </:actions>
           <:default>
-            <span class='text-xs text-neutral-firm'>12 roles</span>
+            <Chip @size='sm'>12 roles</Chip>
           </:default>
         </layout.PageHeader>
       </layout.Main>
     </AppLayout>
-  </div>
+  </DemoFrame>
 </template>
-```
-
-## Sizing tokens
-
-The layout publishes its main sizes as CSS custom properties on its root
-element, so your own parts can line up with the shell:
-
-| Property                 | Value                                                             |
-| ------------------------ | ----------------------------------------------------------------- |
-| `--app-navbar-height`    | `3rem`: the height of the navbar and of the sidebar header        |
-| `--app-sidebar-width`    | The sidebar's drawn width, including the `inset` variant's gutter |
-| `--app-bottomnav-height` | The bottom bar's height, including the safe-area inset            |
-
-`--app-sidebar-width` is `16rem` expanded and `4rem` collapsed in the
-`attached` variant, and `15rem` and `3.75rem` in `inset`. With `@size="rail"` it
-is `5rem` (`attached`) or `5.75rem` (`inset`, including the gutter). It is `0px` when there
-is no sidebar column: the layout has no `Sidebar`, the viewport is below the
-breakpoint and the sidebar is a drawer, or the sidebar is collapsed with
-`@collapsible="offcanvas"`.
-
-The sidebar sizes itself and does not read the token, so it is for your own
-styles. It is set after the first render, and is `0px` until a `Sidebar`
-registers with the layout. Where a flash matters, give it a fallback, such as
-`var(--app-sidebar-width, 0px)`.
-
-This bar is fixed under the navbar and starts beside the sidebar, whatever
-state the sidebar is in:
-
-```gts
-<div
-  class='fixed end-0 z-10'
-  style='top: var(--app-navbar-height, 3rem); inset-inline-start: var(--app-sidebar-width, 0px);'
->
-  Filters
-</div>
-```
-
-`--app-bottomnav-height` is `3.75rem` plus the device's bottom safe-area
-inset (or `--bottomnav-safe-area`, when set) while a `BottomNav` is shown, and
-`0px` otherwise: in the default drawer mode, at or above the breakpoint, or
-with no `BottomNav` in the layout. Like `--app-sidebar-width`, it is set after
-the first render. Use it to keep your own fixed elements, such as a floating
-action button, clear of the bar:
-
-```gts
-<div
-  class='fixed end-4'
-  style='bottom: calc(var(--app-bottomnav-height, 0px) + 1rem);'
->
-  New
-</div>
 ```
 
 ## Scrolling
 
-With `@scrollMode='content'`, the default, the layout is exactly the height
-of the viewport and `Main` scrolls. With `@scrollMode='page'` the layout grows
-with its content and the document scrolls instead, while the sidebar sticks
-to the top of the viewport (inside the frame's gutter with `inset`). A
-`BottomNav` is the layout's last row in `content` mode and sticks to the
-bottom of the viewport in `page` mode.
+By default (`@scrollMode='content'`) the layout is the height of the viewport
+and `Main` scrolls. With `@scrollMode='page'` the layout grows with its
+content and the document scrolls, while the sidebar sticks to the top and a
+`BottomNav` to the bottom. Use `page` when the browser's own scrolling
+matters: scroll restoration, anchor links, pull-to-refresh on phones.
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import { array } from '@ember/helper';
+import DemoFrame from 'site/components/demo-frame';
+import { BookIcon, ViewIcon } from 'site/components/icons';
+
+<template>
+  <DemoFrame @id='page-scroll' @label='Page scrolling'>
+    <AppLayout @scrollMode='page' @variant='attached' as |layout|>
+      <layout.Sidebar @label='Guides' as |sidebar|>
+        <sidebar.Body>
+          <sidebar.Item @href='#start' @icon={{BookIcon}} @isActive={{true}}>
+            Getting started
+          </sidebar.Item>
+          <sidebar.Item @href='#concepts' @icon={{ViewIcon}}>
+            Concepts
+          </sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.MenuToggle />
+        <span class='text-sm font-medium'>Guides</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Getting started' />
+        <div class='flex flex-col gap-4 px-4 pb-8 text-sm text-neutral-firm'>
+          {{#each (array 1 2 3 4 5 6 7 8) as |step|}}
+            <section>
+              <h2 class='font-semibold text-neutral-strong'>Step {{step}}</h2>
+              <p>Scroll the page: the sidebar stays where it is.</p>
+            </section>
+          {{/each}}
+        </div>
+      </layout.Main>
+    </AppLayout>
+  </DemoFrame>
+</template>
+```
 
 ## State
 
-The layout tracks three values: `sidebarCollapsed`, `mobileSidebarOpen` and
-`asideOpen`. It yields them as `state`, together with methods to change them:
+The layout tracks `sidebarCollapsed`, `mobileSidebarOpen` and `asideOpen`, and
+yields them as `layout.state` with methods that change them:
 `toggleSidebar`, `collapseSidebar`, `expandSidebar`, `openMobileSidebar`,
-`closeMobileSidebar`, `toggleAside` and `closeAside`. The methods can be passed
-straight to `@onPress` or `{{on}}`.
+`closeMobileSidebar`, `toggleAside` and `closeAside`. Pass a method straight
+to `@onPress` or `{{on}}`.
 
-Each value can be set three ways:
+Each value can be:
 
-- Uncontrolled: `@defaultAsideOpen` (and `@defaultSidebarCollapsed`,
-  `@defaultMobileSidebarOpen`) sets the starting value and the layout keeps
-  track of changes.
-- Controlled: `@asideOpen` sets the value. A toggle calls `@onAsideOpenChange`
-  with the new value, and the layout changes once you update the argument.
-- Shared: pass an `AppLayoutState` as `@state`. The layout reads from it and
-  writes to it, and so can anything else that holds it. When `@state` is
-  passed, the individual arguments and their callbacks are ignored.
+- **Uncontrolled**: `@defaultSidebarCollapsed`, `@defaultMobileSidebarOpen`
+  and `@defaultAsideOpen` set where it starts.
+- **Controlled**: `@sidebarCollapsed`, `@mobileSidebarOpen` and `@asideOpen`
+  set it, and the matching `@on…Change` callback receives the requested
+  value. The layout changes once you update the argument.
+- **Shared**: an `AppLayoutState` passed as `@state`. Anything holding it can
+  read and change the layout. The individual arguments are then ignored.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { AppLayout, Button } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
 
 export default class ControlledAsideExample extends Component {
   @tracked asideOpen = false;
@@ -333,44 +447,47 @@ export default class ControlledAsideExample extends Component {
   };
 
   <template>
-    <div class='demo-stack demo-stack--wide not-prose'>
+    <DemoFrame @id='controlled' @label='Controlled aside'>
       <AppLayout
         @asideOpen={{this.asideOpen}}
         @onAsideOpenChange={{this.setAsideOpen}}
-        class='demo-app-layout'
         as |layout|
       >
         <layout.Navbar>
-          <span class='flex-1 text-sm font-medium'>Billing</span>
-          <Button @size='sm' @onPress={{layout.state.toggleAside}}>
-            Details
+          <span class='text-sm font-medium'>Billing</span>
+          <Button
+            @size='sm'
+            @class='ms-auto'
+            @onPress={{layout.state.toggleAside}}
+          >
+            {{if this.asideOpen 'Hide details' 'Show details'}}
           </Button>
         </layout.Navbar>
         <layout.Main>
-          <layout.PageHeader
-            @title='Invoices'
-            @description='Details panel: {{if this.asideOpen "open" "closed"}}'
-          />
+          <layout.PageHeader @title='Invoices' />
         </layout.Main>
+        <layout.Aside @label='Invoice details'>
+          <p class='text-sm'>Invoice #1042 · Paid</p>
+        </layout.Aside>
       </AppLayout>
-    </div>
+    </DemoFrame>
   </template>
 }
 ```
 
-### Triggering the layout from another component
+### From outside the layout
 
-To open or close parts of the layout from a component that is not inside the
-`AppLayout` block, create an `AppLayoutState` and pass it to both. Store it
-wherever suits the app, such as a service or a controller property. Each
-`AppLayout` has its own state, so two layouts on one page stay independent.
+Create an `AppLayoutState` where both sides can reach it, such as a service,
+and pass it to the layout as `@state`. Each layout has its own state, so two
+layouts on a page stay independent.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import type { TOC } from '@ember/component/template-only';
 import { AppLayout, AppLayoutState, Button } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
 
-const DetailsToggle: TOC<{ Args: { state: AppLayoutState } }> = <template>
+const DetailsButton: TOC<{ Args: { state: AppLayoutState } }> = <template>
   <Button @size='sm' @onPress={{@state.toggleAside}}>
     {{if @state.asideOpen 'Hide details' 'Show details'}}
   </Button>
@@ -380,167 +497,374 @@ export default class SharedStateExample extends Component {
   state = new AppLayoutState();
 
   <template>
-    <div class='demo-stack demo-stack--wide not-prose'>
-      <DetailsToggle @state={{this.state}} />
-
-      <AppLayout @state={{this.state}} class='demo-app-layout' as |layout|>
-        <layout.Navbar>
-          <span class='text-sm font-medium'>Reports</span>
-        </layout.Navbar>
-        <layout.Main>
-          <layout.PageHeader
-            @title='Monthly report'
-            @description='Details panel: {{if
-              layout.state.asideOpen
-              "open"
-              "closed"
-            }}'
-          />
-        </layout.Main>
-      </AppLayout>
+    <div class='demo-stack demo-stack--wide'>
+      <DetailsButton @state={{this.state}} />
+      <DemoFrame @id='shared' @label='Shared state'>
+        <AppLayout @state={{this.state}} as |layout|>
+          <layout.Navbar>
+            <span class='text-sm font-medium'>Reports</span>
+            <layout.AsideToggle class='ms-auto' />
+          </layout.Navbar>
+          <layout.Main>
+            <layout.PageHeader @title='Monthly report' />
+          </layout.Main>
+          <layout.Aside @label='Report details'>
+            <p class='text-sm'>Generated on the 1st of each month.</p>
+          </layout.Aside>
+        </AppLayout>
+      </DemoFrame>
     </div>
   </template>
 }
 ```
 
-## Putting it together
+## Sizing tokens
 
-Every part in one layout, driven by one `AppLayoutState`: a sidebar with
-items and a group, its toggle, a navbar, a page header, the main content,
-and an aside with its toggle. Narrow the window to see the drawers.
+The layout sets its sizes as CSS custom properties on its root, for your own
+elements to line up with:
+
+| Property                 | Value                                                                     |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `--app-navbar-height`    | `3rem`                                                                    |
+| `--app-sidebar-width`    | The sidebar column's width, including the `inset` gutter; `0px` when none |
+| `--app-bottomnav-height` | The bottom bar's height, including the safe-area inset; `0px` when hidden |
+
+The width and bottom-bar tokens are set after the first render, so give them a
+fallback. A toolbar fixed under the navbar and beside the sidebar:
+
+```gts
+<div
+  class='fixed end-0'
+  style='top: var(--app-navbar-height, 3rem); inset-inline-start: var(--app-sidebar-width, 0px);'
+>
+  Filters
+</div>
+```
+
+## Examples
+
+### Dashboard
+
+A workspace with grouped navigation, a folder, an account menu in the
+navbar, page actions and a details panel.
 
 ```gts preview collapsible
-import Component from '@glimmer/component';
-import { AppLayout, AppLayoutState, Button } from 'frontile';
+import { AppLayout, Avatar, Button } from 'frontile';
+import { array } from '@ember/helper';
+import DemoFrame from 'site/components/demo-frame';
 import {
   ViewIcon,
+  PackageIcon,
+  BookIcon,
   StarIcon,
   SettingsIcon,
+  SearchIcon,
+  PlusIcon,
   SparklesIcon
 } from 'site/components/icons';
 
-export default class FullAppLayoutExample extends Component {
+<template>
+  <DemoFrame @id='dashboard' @label='Dashboard'>
+    <AppLayout as |layout|>
+      <layout.Sidebar @label='Workspace' as |sidebar|>
+        <sidebar.Header>
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
+          <span class='truncate text-sm font-semibold' data-sidebar-label>
+            Acme
+          </span>
+          <sidebar.Toggle class='ml-auto' />
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Folder @label='Products' @icon={{PackageIcon}} as |folder|>
+            <folder.Item @href='#catalog'>Catalog</folder.Item>
+            <folder.Item @href='#pricing'>Pricing</folder.Item>
+          </sidebar.Folder>
+          <sidebar.Item @href='#orders' @icon={{BookIcon}} @badge={{4}}>
+            Orders
+          </sidebar.Item>
+          <sidebar.Group @label='Saved'>
+            <sidebar.Item @href='#q3' @icon={{StarIcon}}>Q3 review</sidebar.Item>
+          </sidebar.Group>
+        </sidebar.Body>
+        <sidebar.Footer>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
+        </sidebar.Footer>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.MenuToggle />
+        <Button @size='sm' @variant='outline' @class='ms-auto'>
+          <SearchIcon class='size-4' />
+          Search
+        </Button>
+        <layout.AsideToggle />
+        <Avatar @name='Sample User' @size='sm' />
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader
+          @title='Overview'
+          @description='The last 30 days in your workspace.'
+        >
+          <:actions>
+            <Button @size='sm' @color='primary'>
+              <PlusIcon class='size-4' />
+              New order
+            </Button>
+          </:actions>
+        </layout.PageHeader>
+        <div class='grid gap-3 px-4 pb-4 sm:grid-cols-3'>
+          {{#each (array 'Revenue' 'Orders' 'Customers') as |metric|}}
+            <div class='rounded-lg border border-neutral-soft p-4'>
+              <p class='text-sm text-neutral-firm'>{{metric}}</p>
+              <p class='mt-1 text-xl font-semibold'>—</p>
+            </div>
+          {{/each}}
+        </div>
+      </layout.Main>
+      <layout.Aside @label='Activity'>
+        <h2 class='font-semibold'>Activity</h2>
+        <p class='mt-1 text-sm text-neutral-firm'>No new activity.</p>
+      </layout.Aside>
+    </AppLayout>
+  </DemoFrame>
+</template>
+```
+
+### List and detail
+
+Selecting a row opens its details in the aside, through `layout.state`. On a
+phone the details open as a drawer.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { AppLayout, AppLayoutState, Listbox } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+
+const PEOPLE: Record<string, { role: string; team: string }> = {
+  'Avery Kim': { role: 'Administrator', team: 'Platform' },
+  'Blake Moreno': { role: 'Editor', team: 'Marketing' },
+  'Casey Lin': { role: 'Viewer', team: 'Finance' }
+};
+
+export default class ListDetailExample extends Component {
   state = new AppLayoutState();
+  people = Object.keys(PEOPLE);
+  @tracked selected: string[] = [];
+
+  get person() {
+    const name = this.selected[0];
+    return name ? { name, ...PEOPLE[name] } : undefined;
+  }
+
+  select = (keys: string[]) => {
+    this.selected = keys;
+    this.state.asideOpen = keys.length > 0;
+  };
 
   <template>
-    <div class='demo-stack demo-stack--wide not-prose'>
-      <AppLayout @state={{this.state}} class='demo-app-layout' as |layout|>
-        <layout.Sidebar @label='Workspace' as |sidebar|>
-          <sidebar.Header>
-            <SparklesIcon class='size-5 shrink-0 text-primary' />
-            <span class='truncate text-sm font-semibold' data-sidebar-label>
-              Acme
-            </span>
-            <sidebar.Toggle class='ml-auto' />
-          </sidebar.Header>
-          <sidebar.Body>
-            <sidebar.Item @href='#all' @icon={{ViewIcon}} @isActive={{true}}>
-              All projects
-            </sidebar.Item>
-            <sidebar.Group @label='Saved'>
-              <sidebar.Item @href='#starred' @icon={{StarIcon}}>
-                Starred
-              </sidebar.Item>
-            </sidebar.Group>
-          </sidebar.Body>
-          <sidebar.Footer>
-            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
-              Settings
-            </sidebar.Item>
-          </sidebar.Footer>
-        </layout.Sidebar>
+    <DemoFrame @id='list-detail' @label='List and detail'>
+      <AppLayout @state={{this.state}} as |layout|>
         <layout.Navbar>
-          <layout.MenuToggle />
-          <span class='text-sm font-medium'>Projects</span>
-          <layout.AsideToggle class='ms-auto' />
+          <span class='text-sm font-medium'>People</span>
         </layout.Navbar>
         <layout.Main>
-          <layout.PageHeader
-            @title='All projects'
-            @description='Everything in this workspace.'
-          >
-            <:actions>
-              <Button @size='sm' @color='primary'>New project</Button>
-            </:actions>
-          </layout.PageHeader>
-          <p class='px-4 text-sm text-neutral-firm'>
-            Sidebar collapsed:
-            {{if this.state.sidebarCollapsed 'yes' 'no'}}. Details open:
-            {{if this.state.asideOpen 'yes' 'no'}}.
-          </p>
+          <layout.PageHeader @title='People' />
+          <div class='px-2'>
+            <Listbox
+              @selectionMode='single'
+              @items={{this.people}}
+              @selectedKeys={{this.selected}}
+              @onSelectionChange={{this.select}}
+            />
+          </div>
         </layout.Main>
-        <layout.Aside @label='Project details'>
-          <h2 class='font-semibold'>All projects</h2>
-          <p class='mt-1 text-neutral-firm'>12 projects, 3 starred.</p>
+        <layout.Aside @label='Person details'>
+          {{#if this.person}}
+            <h2 class='font-semibold'>{{this.person.name}}</h2>
+            <p class='mt-1 text-sm text-neutral-firm'>
+              {{this.person.role}}
+              ·
+              {{this.person.team}}
+            </p>
+          {{/if}}
         </layout.Aside>
       </AppLayout>
-    </div>
+    </DemoFrame>
+  </template>
+}
+```
+
+### Rail and bottom bar
+
+A mobile-first app: a rail of stacked items on desktop, and on a phone a top
+bar, a bottom tab bar and a More sheet. The active page is a tracked value
+so the demo needs no router; in an app, pass `@route` instead. The account
+buttons are your own markup.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
+import { AppLayout, Avatar } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+import {
+  ViewIcon,
+  PackageIcon,
+  BookIcon,
+  StarIcon,
+  UserIcon,
+  SparklesIcon
+} from 'site/components/icons';
+
+const PAGES = [
+  { id: 'overview', label: 'Overview', icon: ViewIcon, badge: 2 },
+  { id: 'services', label: 'Services', icon: PackageIcon },
+  { id: 'billing', label: 'Billing', icon: BookIcon },
+  { id: 'market', label: 'Marketplace', short: 'Market', icon: StarIcon },
+  {
+    id: 'referrals',
+    label: 'Referral program',
+    short: 'Referrals',
+    icon: UserIcon
+  },
+  { id: 'support', label: 'Support', icon: SparklesIcon }
+];
+
+export default class RailAppExample extends Component {
+  @tracked page = 'overview';
+
+  go = (id: string) => {
+    this.page = id;
+  };
+
+  get items() {
+    return PAGES.map((p) => ({ ...p, isActive: p.id === this.page }));
+  }
+
+  // The first four pages are tabs on a phone; the rest go in More.
+  get tabs() {
+    return this.items.slice(0, 4);
+  }
+
+  get more() {
+    return this.items.slice(4);
+  }
+
+  get title() {
+    return PAGES.find((p) => p.id === this.page)?.label;
+  }
+
+  <template>
+    <DemoFrame @id='rail-app' @label='Rail and bottom bar'>
+      <AppLayout @variant='attached' @mobileNav='bottom' as |layout|>
+        <layout.Sidebar @size='rail' @collapsible='none' as |sidebar|>
+          <sidebar.Header>
+            <SparklesIcon class='size-5 shrink-0 text-primary' />
+          </sidebar.Header>
+          <sidebar.Body>
+            {{#each this.items as |item|}}
+              <sidebar.Item
+                @layout='stacked'
+                @icon={{item.icon}}
+                @shortLabel={{item.short}}
+                @isActive={{item.isActive}}
+                @badge={{item.badge}}
+                {{on 'click' (fn this.go item.id)}}
+              >{{item.label}}</sidebar.Item>
+            {{/each}}
+          </sidebar.Body>
+          <sidebar.Footer>
+            <Avatar @name='Sample User' @size='sm' class='mx-auto' />
+          </sidebar.Footer>
+        </layout.Sidebar>
+        <layout.Navbar class='md:hidden'>
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
+          <span class='text-sm font-medium'>{{this.title}}</span>
+          <Avatar @name='Sample User' @size='sm' class='ms-auto' />
+        </layout.Navbar>
+        <layout.Main>
+          <layout.PageHeader @title={{this.title}} />
+        </layout.Main>
+        <layout.BottomNav as |bar|>
+          {{#each this.tabs as |item|}}
+            <bar.Item
+              @icon={{item.icon}}
+              @badge={{item.badge}}
+              @isActive={{item.isActive}}
+              {{on 'click' (fn this.go item.id)}}
+            >{{item.label}}</bar.Item>
+          {{/each}}
+          <bar.More as |more|>
+            {{#each this.more as |item|}}
+              <more.Item
+                @icon={{item.icon}}
+                @isActive={{item.isActive}}
+                {{on 'click' (fn this.go item.id)}}
+              >{{item.label}}</more.Item>
+            {{/each}}
+          </bar.More>
+        </layout.BottomNav>
+      </AppLayout>
+    </DemoFrame>
   </template>
 }
 ```
 
 ## Accessibility
 
-- `Navbar` renders a `header` landmark and `Main` renders the `main` landmark.
-  Render one `AppLayout` per page so there is one of each.
-- A "Skip to main content" link is the first focusable element. It is visible
-  only while focused, and activating it moves focus to `Main`. Change its text
-  with `@skipLinkLabel`, or remove it with `@skipLink={{false}}` if the app
-  already provides one.
-- `Sidebar` renders a `nav` landmark named by `@label` (default `Main`).
-- `Toggle` (`sidebar.Toggle`, or `layout.SidebarToggle` outside the sidebar)
-  is a button named by `@label` (default "Toggle sidebar"). It sets
-  `aria-expanded` to `true` while the sidebar is expanded (always, with
-  `@collapsible="none"`) and `aria-controls` to the sidebar. Below the
-  breakpoint `layout.SidebarToggle` opens the drawer, and `aria-expanded`
-  follows the drawer; `sidebar.Toggle` renders nothing there.
-- `MenuToggle` is a button named by `@label` (default "Open menu"). It sets
-  `aria-expanded` to `true` while the drawer is open and `aria-controls` to the
-  sidebar.
-- With `@mobileNav="bottom"`, below the breakpoint, the `BottomNav` is the
-  page's navigation landmark: there is no sidebar `nav`, no drawer, and no
-  `MenuToggle` or `SidebarToggle`. See [BottomNav](./bottom-nav) for the bar's
-  roles and keys.
-- The drawer is a modal dialog named by the sidebar's `@label`. Focus stays
-  inside it while it is open. Closing it returns focus to the element that
-  opened it: the toggle that opened it, otherwise the element that had focus
-  when it opened (`MenuToggle` if focus was on the page body).
-- `Item` is a link. The active item has `aria-current="page"`. A disabled
-  item has no href and has `aria-disabled="true"`; with neither `@href` nor
-  `@route` it is a disabled `<button>` instead. Its `@icon` is hidden from
-  assistive technology, so the label is the link's name.
-- `Folder` has a button trigger with `aria-expanded` and `aria-controls`, and
-  its items sit in a `group` named by the trigger. In the icon rail the
-  trigger is a menu button and the items are link items of a `menu` named by
-  it: the arrow keys move between them, <kbd>Enter</kbd> follows one, and
-  <kbd>Escape</kbd> closes the menu and returns focus to the trigger. See
-  [Sidebar](./sidebar#folder-behavior).
-- In the icon rail, `Item` labels, `Group` headings and text inside
-  `[data-sidebar-label]` are visually hidden but remain in the accessibility
-  tree, so each link keeps its name. Hovering or focusing an `Item` in the
-  rail shows its label as a tooltip.
-- `Group` renders a `group` named by its `@label`.
-- `Aside` renders an `aside` landmark named by `@label` (default `Details`);
-  in the drawer the dialog and the landmark inside it share that name.
-- `AsideToggle` is a button named by `@label` (default "Toggle details"). It
-  sets `aria-expanded` to `true` while the aside is open and `aria-controls` to
-  the aside. Closing the drawer returns focus to the toggle.
+- `Navbar` is a `header` landmark and `Main` the `main` landmark. Render one
+  `AppLayout` per page so there is one of each.
+- A "Skip to main content" link is the first focusable element, visible only
+  while focused. Change its text with `@skipLinkLabel`, or remove it with
+  `@skipLink={{false}}` if the app has its own.
+- The sidebar's drawer is a modal dialog named by the sidebar's `@label`.
+  Focus stays inside while it is open and returns to the element that opened
+  it.
+- `MenuToggle` (default "Open menu"), `SidebarToggle` (default "Toggle
+  sidebar") and `AsideToggle` (default "Toggle details") are buttons named by
+  `@label`, with `aria-expanded` and `aria-controls` for what they open.
+- `Aside` is an `aside` landmark named by `@label` (default `Details`); as a
+  drawer, the dialog has the same name.
 - `PageHeader` renders `@title` as an `h1`.
-- The inset card is decorative and hidden from assistive technology.
+- With `@mobileNav='bottom'` on a phone, the `BottomNav` is the page's
+  navigation; see [BottomNav](./bottom-nav#accessibility).
+- Items, groups and folders are covered on the [Sidebar](./sidebar#accessibility) page.
 
-| Key              | Action                                                                             |
-| ---------------- | ---------------------------------------------------------------------------------- |
-| `Tab`            | From the top of the page, reveals and focuses the skip link                        |
-| `Enter`          | On the skip link, moves focus to the main content                                  |
-| `Cmd/Ctrl` + `B` | Collapses or expands the sidebar; below the breakpoint, opens or closes the drawer |
-| `Escape`         | Closes the drawer (sidebar or aside)                                               |
+| Key               | Action                                                    |
+| ----------------- | --------------------------------------------------------- |
+| <kbd>Tab</kbd>    | From the top of the page, shows and focuses the skip link |
+| <kbd>Escape</kbd> | Closes the open drawer                                    |
 
 ## API
 
 <Signature @component="AppLayout" />
-<Signature @component="MenuToggle" />
-<Signature @component="Aside" />
-<Signature @component="AsideToggle" />
+
+### Navbar
+
 <Signature @component="Navbar" />
+
+### Main
+
 <Signature @component="Main" />
+
+### PageHeader
+
 <Signature @component="PageHeader" />
+
+### Aside
+
+<Signature @component="Aside" />
+
+### AsideToggle
+
+<Signature @component="AsideToggle" />
+
+### MenuToggle
+
+<Signature @component="MenuToggle" />

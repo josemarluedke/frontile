@@ -6,8 +6,8 @@ imports:
 
 # BottomNav
 
-A bar of icon tabs along the bottom of the screen, for the primary navigation
-on small viewports. Each tab is a [Sidebar](./sidebar#item-layouts) `Item` in its `icon` layout.
+A bar of icon tabs along the bottom of the screen: the primary navigation on
+phones.
 
 ## Import
 
@@ -17,15 +17,13 @@ import { BottomNav } from 'frontile';
 
 ## Usage
 
-`BottomNav` yields `Item`, a sidebar `Item` with `@layout="icon"` already
-set. Give each tab an `@icon` and its label as the block: the label names the
-tab for assistive technology and shows as a tooltip above it. Set `@isActive`
-on the current tab, or pass `@route` to let the router decide. `@badge` shows
-a count on the tab's icon.
+Each tab is an `Item` with an `@icon` and its label as the block. The label
+names the tab and shows as a tooltip. Mark the current tab with `@isActive`,
+or pass `@route` and let the router decide. Items take the same arguments as
+[Sidebar items](./sidebar#items), including `@badge`.
 
-Standalone, the bar is fixed to the bottom of the viewport. The demo below
-confines it to a frame with a transform, which makes the frame its containing
-block.
+On its own the bar is fixed to the bottom of the viewport. The demos keep it
+inside a frame.
 
 ```gts preview
 import { BottomNav } from 'frontile';
@@ -55,33 +53,21 @@ import { ViewIcon, UserIcon, SettingsIcon } from 'site/components/icons';
 
 ## More sheet
 
-`BottomNav` also yields `More`, a last tab that opens a sheet from the bottom
-of the screen with further navigation. `More` yields `Item` and `Folder`:
-the [sidebar](./sidebar#items-and-groups) `Item` and `Folder` as full-width rows, with
-folders opening inline. Following an item closes the sheet.
+`More` adds a last tab that opens a sheet of further navigation from the
+bottom of the screen. It yields `Item` and `Folder`, the sidebar's items and
+folders as full-width rows. Following an item closes the sheet.
 
-The tab follows what is inside it, even while the sheet is closed:
+Tabs never move into the sheet on their own: choose which destinations are
+tabs and which go in the sheet. The tab shows active when an item inside is
+the current page, and a dot when an item inside has a badge. It is not shown
+when every item inside is hidden, or with `@isHidden`.
 
-- It shows active when an item inside is active, including one in a folder.
-  It is never `aria-current`; the item is the current page.
-- It shows a dot when an item inside has a `@badge`.
-- Hidden items count for neither, and the tab is not rendered when every item
-  inside is hidden. `@isHidden` hides the tab outright.
+`@label` names the tab (default `More`), `@icon` replaces its ellipsis, and
+`@sheetLabel` names the sheet (default the label).
 
-The sheet holds exactly what you put in the block. Tabs never move into it on
-their own when the bar runs out of room, so choose which destinations are tabs
-and which go in the sheet.
-
-The block is rendered twice: once hidden, all the time, to track which item is
-active or badged, and once in the open sheet. Avoid `id`s and side effects,
-such as modifiers, analytics or data loading, inside it. That includes
-`@onOpenChange` on a folder in the block: the hidden copy's active-item logic
-can call it on load, and the sheet's copy can call it again when the sheet
-opens.
-
-`@label` names the tab (default `More`), `@icon` replaces its ellipsis icon,
-and `@sheetLabel` names the sheet (default the label). In the demo, Billing is
-the current page and Messages has unread items (made-up data).
+> Note: `More` renders its block twice, once hidden to track the active and
+> badged items and once in the open sheet. Keep `id`s and side effects
+> (modifiers, analytics, data loading, a folder's `@onOpenChange`) out of it.
 
 ```gts preview collapsible
 import { BottomNav } from 'frontile';
@@ -110,7 +96,10 @@ import {
             Settings
           </more.Item>
           <more.Folder @label='Account' @icon={{PackageIcon}} as |folder|>
-            <folder.Item @href='#billing' @isActive={{true}}>Billing</folder.Item>
+            <folder.Item
+              @href='#billing'
+              @isActive={{true}}
+            >Billing</folder.Item>
             <folder.Item @href='#invoices'>Invoices</folder.Item>
           </more.Folder>
         </bar.More>
@@ -120,21 +109,30 @@ import {
 </template>
 ```
 
-The sheet is as tall as its items, up to 80% of the viewport, and scrolls past
-that. Its bottom padding is the same safe-area inset as the bar's.
+The sheet is as tall as its items, up to 80% of the viewport, and then
+scrolls.
+
+## In an AppLayout
+
+Inside an [AppLayout](./app-layout#responsive-navigation) with
+`@mobileNav='bottom'`, use the yielded `layout.BottomNav`. It shows only below
+the layout's breakpoint, in place of the sidebar, as the layout's bottom row.
+Above the breakpoint it renders nothing and an open sheet closes.
 
 ## Safe area
 
-The bar pads its bottom edge by the device's safe-area inset, so tabs stay
-clear of the home indicator, and grows by the same amount. The inset is only
-non-zero when the page opts in to the full screen:
+The bar and the sheet pad their bottom edge by the device's safe-area inset,
+so tabs stay clear of the home indicator. The inset is only non-zero when the
+page opts in to the full screen:
 
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
+/>
 ```
 
-To use another inset, set `--bottomnav-safe-area` on the bar or an ancestor.
-It defaults to `env(safe-area-inset-bottom, 0px)`.
+Set `--bottomnav-safe-area` on the bar or an ancestor to use another inset.
 
 ```gts
 <BottomNav style='--bottomnav-safe-area: 0px' as |bar|>
@@ -144,17 +142,11 @@ It defaults to `env(safe-area-inset-bottom, 0px)`.
 
 ## Stacking order
 
-Overlays such as modals, drawers and popovers set no `z-index`: they render
-at the end of the page and stack by their place in the document.
-
-Standalone, the bar sets no `z-index` either, so render `BottomNav` before
-any overlay.
-
-In an `AppLayout` with `@scrollMode="page"`, the bar takes `z-10` to rise
-above in-page layers such as sticky table headers. The layout root is
-`isolate`, which keeps that `z-10` inside the layout, so overlays still cover
-the bar. This relies on overlays rendering outside the layout: a
-`PortalTarget` placed inside `AppLayout` puts its overlays under the bar.
+Modals, drawers and other overlays cover the bar. On its own the bar sets no
+`z-index`, so render it before any overlay. In an `AppLayout` with
+`@scrollMode='page'` it also rises above in-page layers such as sticky table
+headers; keep any `PortalTarget` outside the `AppLayout`, or its overlays
+render under the bar.
 
 ## Accessibility
 
