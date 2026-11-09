@@ -102,6 +102,15 @@
   }
 }
 
+/* The demo icons' (site/components/icons) default size. In the base layer so
+   a size utility a demo passes (`class='size-5'`) always wins over it. */
+@layer base {
+  .demo-icon {
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+  }
+}
+
 @layer components {
   .prose code::before,
   .prose code::after {

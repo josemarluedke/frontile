@@ -141,7 +141,7 @@ export default class DemoFrame extends Component<DemoFrameSignature> {
         <a
           href={{this.frameUrl}}
           target="_blank"
-          rel="noopener"
+          rel="noopener noreferrer"
           class="demo-frame__open"
           data-demo-frame-open
         >
