@@ -203,13 +203,24 @@ class AppLayout extends Component<AppLayoutSignature> {
     stopWatcher(asideWatchers, this);
   }
 
-  #root?: HTMLElement;
+  /**
+   * The root's direction, read once it is in the DOM. Until then `isRtl`
+   * falls back to the document's. Tracked so drawer placements computed on
+   * the first render (an aside drawer mounts closed) pick up an RTL
+   * ancestor of the root. Set after render, where changing state is safe.
+   */
+  @tracked rootRtl?: boolean;
 
   captureRoot = modifier((element: HTMLElement) => {
-    this.#root = element;
-    return () => {
-      this.#root = undefined;
-    };
+    schedule('afterRender', () => {
+      if (this.isDestroying) {
+        return;
+      }
+      const rtl = getComputedStyle(element).direction === 'rtl';
+      if (rtl !== this.rootRtl) {
+        this.rootRtl = rtl;
+      }
+    });
   });
 
   /**
@@ -332,7 +343,10 @@ class AppLayout extends Component<AppLayoutSignature> {
   }
 
   isRtl = (): boolean => {
-    const element = this.#root ?? globalDocument()?.documentElement;
+    if (this.rootRtl !== undefined) {
+      return this.rootRtl;
+    }
+    const element = globalDocument()?.documentElement;
     return element ? getComputedStyle(element).direction === 'rtl' : false;
   };
 

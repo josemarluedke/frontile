@@ -47,7 +47,8 @@ interface AsideSignature {
 /**
  * A panel beside `Main`, shown while `asideOpen` is true. From `lg` (64rem)
  * up it is an in-flow column that narrows `Main`; below `lg` the same block
- * renders in a right-side `Drawer`, whatever the layout's `@breakpoint` is.
+ * renders in a `Drawer` from the same side, whatever the layout's
+ * `@breakpoint` is.
  * Open it with `AsideToggle`. Outside an `AppLayout` it needs `@state` and
  * is always inline.
  */
@@ -74,9 +75,16 @@ class Aside extends Component<AsideSignature> {
     return this.args.layout?.asideId ?? `${guidFor(this)}-aside`;
   }
 
-  /** `Drawer` placements are physical: the aside's side is `right`, `left` in RTL. */
+  /**
+   * The aside sits opposite the sidebar: at the end, or at the start with
+   * `sidebarSide="end"`. `Drawer` placements are physical, so that side is
+   * resolved against the layout's direction.
+   */
   get placement(): 'left' | 'right' {
-    return this.args.layout?.isRtl() ? 'left' : 'right';
+    const layout = this.args.layout;
+    const atStart = layout?.config.sidebarSide === 'end';
+    const rtl = layout?.isRtl() ?? false;
+    return atStart !== rtl ? 'left' : 'right';
   }
 
   closeDrawer = (): void => {

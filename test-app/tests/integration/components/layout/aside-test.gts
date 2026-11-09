@@ -89,6 +89,37 @@ module('Integration | Component | Aside | frontile/layout', function (hooks) {
     assert.dom('[role="dialog"] aside').exists({ count: 1 });
   });
 
+  // The aside sits opposite the sidebar, so its drawer slides in from that
+  // side too: the start (left) edge with sidebarSide=end, mirrored in RTL.
+  for (const [side, dir, expected] of [
+    ['start', 'ltr', 'right'],
+    ['end', 'ltr', 'left'],
+    ['start', 'rtl', 'left'],
+    ['end', 'rtl', 'right']
+  ] as const) {
+    test(`below lg the drawer opens from the ${expected} with sidebarSide=${side} in ${dir}`, async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      const state = new AppLayoutState({ asideOpen: true });
+      await render(
+        <template>
+          <div dir={{dir}}>
+            <AppLayout @state={{state}} @sidebarSide={{side}} as |layout|>
+              <layout.Main>Content</layout.Main>
+              <layout.Aside>Details</layout.Aside>
+            </AppLayout>
+          </div>
+        </template>
+      );
+      const other = expected === 'left' ? 'right' : 'left';
+      const names = [...find('[role="dialog"]')!.classList];
+      assert.true(
+        names.some((n) => n.includes(expected)) &&
+          !names.some((n) => n.includes(other)),
+        `placed ${expected}`
+      );
+    });
+  }
+
   test('narrowing below lg closes an open aside instead of popping a drawer', async function (assert) {
     media = mockMatchMedia(DESKTOP);
     const changes: boolean[] = [];

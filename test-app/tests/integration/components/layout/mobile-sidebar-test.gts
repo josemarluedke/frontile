@@ -125,6 +125,24 @@ module(
       assert.true(isPlaced(find('[role="dialog"]')!, 'right'));
     });
 
+    test('right Drawer for the start side in a right-to-left page', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <div dir="rtl">
+            <AppLayout as |layout|>
+              <layout.Navbar><layout.MenuToggle /></layout.Navbar>
+              <layout.Sidebar />
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </div>
+        </template>
+      );
+      await click('[data-part="menu-toggle"]');
+
+      assert.true(isPlaced(find('[role="dialog"]')!, 'right'));
+    });
+
     test('Drawer does not mount above the breakpoint', async function (assert) {
       media = mockMatchMedia(DESKTOP);
       await render(

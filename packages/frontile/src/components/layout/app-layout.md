@@ -169,8 +169,8 @@ renders only while `asideOpen` is true. Put an `AsideToggle` at the end of the
 navbar to open and close it.
 
 From `lg` (64rem) up the aside is a column inside the card, and `Main` narrows
-to make room. Below `lg` the same block renders in a right-side drawer
-instead, so you write it once. The drawer closes on Escape, on a click outside
+to make room. Below `lg` the same block renders in a drawer from the same
+side instead, so you write it once. The drawer closes on Escape, on a click outside
 it, or from its close button, and `asideOpen` follows. The aside's breakpoint
 is always `lg`: it does not follow the layout's `@breakpoint`, which only
 moves the sidebar. With `@sidebarSide="end"` the aside moves to the start
