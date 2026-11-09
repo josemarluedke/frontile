@@ -32,21 +32,23 @@ import { BottomNav } from 'frontile';
 import { ViewIcon, UserIcon, SettingsIcon } from 'site/components/icons';
 
 <template>
-  <div
-    class='not-prose relative h-48 w-full max-w-sm overflow-hidden rounded-lg border border-neutral-subtle'
-    style='transform: translateZ(0)'
-  >
-    <BottomNav @label='Workspace' as |bar|>
-      <bar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
-        Overview
-      </bar.Item>
-      <bar.Item @href='#members' @icon={{UserIcon}} @badge={{3}}>
-        Members
-      </bar.Item>
-      <bar.Item @href='#settings' @icon={{SettingsIcon}}>
-        Settings
-      </bar.Item>
-    </BottomNav>
+  <div class='demo-stack not-prose'>
+    <div
+      class='relative mx-auto h-48 w-full max-w-sm overflow-hidden rounded-lg border border-neutral-subtle'
+      style='transform: translateZ(0)'
+    >
+      <BottomNav @label='Workspace' as |bar|>
+        <bar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+          Overview
+        </bar.Item>
+        <bar.Item @href='#members' @icon={{UserIcon}} @badge={{3}}>
+          Members
+        </bar.Item>
+        <bar.Item @href='#settings' @icon={{SettingsIcon}}>
+          Settings
+        </bar.Item>
+      </BottomNav>
+    </div>
   </div>
 </template>
 ```
@@ -92,26 +94,28 @@ import {
 } from 'site/components/icons';
 
 <template>
-  <div
-    class='not-prose relative h-48 w-full max-w-sm overflow-hidden rounded-lg border border-neutral-subtle'
-    style='transform: translateZ(0)'
-  >
-    <BottomNav @label='Workspace' as |bar|>
-      <bar.Item @href='#overview' @icon={{ViewIcon}}>Overview</bar.Item>
-      <bar.Item @href='#members' @icon={{UserIcon}}>Members</bar.Item>
-      <bar.More @sheetLabel='More pages' as |more|>
-        <more.Item @href='#messages' @icon={{BookIcon}} @badge={{2}}>
-          Messages
-        </more.Item>
-        <more.Item @href='#settings' @icon={{SettingsIcon}}>
-          Settings
-        </more.Item>
-        <more.Folder @label='Account' @icon={{PackageIcon}} as |folder|>
-          <folder.Item @href='#billing' @isActive={{true}}>Billing</folder.Item>
-          <folder.Item @href='#invoices'>Invoices</folder.Item>
-        </more.Folder>
-      </bar.More>
-    </BottomNav>
+  <div class='demo-stack not-prose'>
+    <div
+      class='relative mx-auto h-48 w-full max-w-sm overflow-hidden rounded-lg border border-neutral-subtle'
+      style='transform: translateZ(0)'
+    >
+      <BottomNav @label='Workspace' as |bar|>
+        <bar.Item @href='#overview' @icon={{ViewIcon}}>Overview</bar.Item>
+        <bar.Item @href='#members' @icon={{UserIcon}}>Members</bar.Item>
+        <bar.More @sheetLabel='More pages' as |more|>
+          <more.Item @href='#messages' @icon={{BookIcon}} @badge={{2}}>
+            Messages
+          </more.Item>
+          <more.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </more.Item>
+          <more.Folder @label='Account' @icon={{PackageIcon}} as |folder|>
+            <folder.Item @href='#billing' @isActive={{true}}>Billing</folder.Item>
+            <folder.Item @href='#invoices'>Invoices</folder.Item>
+          </more.Folder>
+        </bar.More>
+      </BottomNav>
+    </div>
   </div>
 </template>
 ```
