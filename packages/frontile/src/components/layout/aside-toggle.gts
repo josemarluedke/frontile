@@ -71,27 +71,34 @@ class AsideToggle extends Component<AsideToggleSignature> {
     });
   }
 
+  /** PROTOTYPE: hidden while a route-driven aside has no content. */
+  get available(): boolean {
+    return this.args.layout?.asideAvailable ?? true;
+  }
+
   toggle = (): void => {
     this.state.toggleAside();
   };
 
   <template>
-    <button
-      type="button"
-      data-part="aside-toggle"
-      aria-label={{this.label}}
-      aria-expanded={{this.expanded}}
-      aria-controls={{this.controls}}
-      class={{this.classNames}}
-      {{on "click" this.toggle}}
-      ...attributes
-    >
-      {{#if (has-block)}}
-        {{yield}}
-      {{else}}
-        <SidebarRightIcon />
-      {{/if}}
-    </button>
+    {{#if this.available}}
+      <button
+        type="button"
+        data-part="aside-toggle"
+        aria-label={{this.label}}
+        aria-expanded={{this.expanded}}
+        aria-controls={{this.controls}}
+        class={{this.classNames}}
+        {{on "click" this.toggle}}
+        ...attributes
+      >
+        {{#if (has-block)}}
+          {{yield}}
+        {{else}}
+          <SidebarRightIcon />
+        {{/if}}
+      </button>
+    {{/if}}
   </template>
 }
 

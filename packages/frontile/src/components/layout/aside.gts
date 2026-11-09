@@ -1,11 +1,16 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
+import { service } from '@ember/service';
+import { registerDestructor } from '@ember/destroyable';
+import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 import Drawer from '../overlays/drawer';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
 import type { AppLayoutVariants } from '@frontile/theme';
+import type AppLayoutService from '../../services/app-layout';
+import type Owner from '@ember/owner';
 
 interface AsideArgs {
   /**
@@ -31,6 +36,13 @@ interface AsideArgs {
   state?: AppLayoutState;
 
   /**
+   * PROTOTYPE. Fill the aside from route templates (`LayoutAside`) instead
+   * of this block. While the region is empty the aside and `AsideToggle`
+   * render nothing, and emptying it closes the aside. Read once.
+   */
+  region?: string;
+
+  /**
    * Supplied by `AppLayout`. Not part of the public API.
    *
    * @internal
@@ -53,7 +65,41 @@ interface AsideSignature {
  * is always inline.
  */
 class Aside extends Component<AsideSignature> {
+  @service('app-layout') declare appLayout: AppLayoutService;
+
   fallbackState = new AppLayoutState();
+
+  constructor(owner: Owner, args: AsideArgs) {
+    super(owner, args);
+    const region = args.region;
+    if (region === undefined) {
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const aside = this;
+    const unregister = args.layout?.registerAside({
+      get available() {
+        return aside.hasContent;
+      }
+    });
+    const unsubscribe = this.appLayout.onEmpty(region, () =>
+      this.state.closeAside()
+    );
+    registerDestructor(this, () => {
+      unregister?.();
+      unsubscribe();
+    });
+  }
+
+  /** Always true for a block aside; a route-driven one needs a source. */
+  get hasContent(): boolean {
+    const region = this.args.region;
+    return region === undefined || this.appLayout.hasContent(region);
+  }
+
+  registerTarget = modifier((element: HTMLElement, [region]: [string]) =>
+    this.appLayout.registerTarget(region, element)
+  );
 
   get state(): AppLayoutState {
     return this.args.layout?.state ?? this.args.state ?? this.fallbackState;
@@ -117,36 +163,60 @@ class Aside extends Component<AsideSignature> {
   }
 
   <template>
-    {{#if this.inDrawer}}
-      <Drawer
-        @isOpen={{this.state.asideOpen}}
-        @onClose={{this.closeDrawer}}
-        @placement={{this.placement}}
-        @size="xs"
-        @variant="flat"
-        id={{@layout.asideDrawerId}}
-        aria-label={{this.label}}
-      >
-        <aside
-          id={{this.id}}
+    {{#if this.hasContent}}
+      {{#if this.inDrawer}}
+        <Drawer
+          @isOpen={{this.state.asideOpen}}
+          @onClose={{this.closeDrawer}}
+          @placement={{this.placement}}
+          @size="xs"
+          @variant="flat"
+          id={{@layout.asideDrawerId}}
           aria-label={{this.label}}
-          data-part="mobile-aside"
-          class={{this.mobileClassNames}}
-          ...attributes
         >
-          {{yield}}
-        </aside>
-      </Drawer>
-    {{else if this.state.asideOpen}}
-      <aside
-        id={{this.id}}
-        aria-label={{this.label}}
-        data-part="aside"
-        class={{this.classNames}}
-        ...attributes
-      >
-        {{yield}}
-      </aside>
+          {{#if @region}}
+            <aside
+              id={{this.id}}
+              aria-label={{this.label}}
+              data-part="mobile-aside"
+              class={{this.mobileClassNames}}
+              {{this.registerTarget @region}}
+              ...attributes
+            ></aside>
+          {{else}}
+            <aside
+              id={{this.id}}
+              aria-label={{this.label}}
+              data-part="mobile-aside"
+              class={{this.mobileClassNames}}
+              ...attributes
+            >
+              {{yield}}
+            </aside>
+          {{/if}}
+        </Drawer>
+      {{else if this.state.asideOpen}}
+        {{#if @region}}
+          <aside
+            id={{this.id}}
+            aria-label={{this.label}}
+            data-part="aside"
+            class={{this.classNames}}
+            {{this.registerTarget @region}}
+            ...attributes
+          ></aside>
+        {{else}}
+          <aside
+            id={{this.id}}
+            aria-label={{this.label}}
+            data-part="aside"
+            class={{this.classNames}}
+            ...attributes
+          >
+            {{yield}}
+          </aside>
+        {{/if}}
+      {{/if}}
     {{/if}}
   </template>
 }

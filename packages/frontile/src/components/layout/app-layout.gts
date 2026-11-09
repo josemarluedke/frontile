@@ -4,6 +4,7 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { guidFor } from '@ember/object/internals';
 import { schedule } from '@ember/runloop';
+import { service } from '@ember/service';
 import { modifier } from 'ember-modifier';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import {
@@ -16,8 +17,12 @@ import { AppLayoutState } from './app-layout-state';
 import {
   ControlledAppLayoutState,
   type AppLayoutContext,
+  type RegisteredAside,
   type RegisteredSidebar
 } from './context';
+import Region from './region';
+import LayoutBreadcrumbs from './layout-breadcrumbs';
+import type AppLayoutService from '../../services/app-layout';
 import Aside from './aside';
 import AsideToggle from './aside-toggle';
 import BottomNav from './bottom-nav';
@@ -166,6 +171,8 @@ interface AppLayoutSignature {
       {
         state: AppLayoutState;
         Aside: WithBoundArgs<typeof Aside, 'layout'>;
+        Breadcrumbs: WithBoundArgs<typeof LayoutBreadcrumbs, 'layout'>;
+        Region: WithBoundArgs<typeof Region, 'layout'>;
         AsideToggle: WithBoundArgs<typeof AsideToggle, 'layout'>;
         BottomNav: WithBoundArgs<typeof BottomNav, 'layout'>;
         Main: WithBoundArgs<typeof Main, 'layout'>;
@@ -185,7 +192,10 @@ interface AppLayoutSignature {
  * themselves in, so they can be written in any order.
  */
 class AppLayout extends Component<AppLayoutSignature> {
+  @service('app-layout') declare appLayout: AppLayoutService;
+
   #controlled: ControlledAppLayoutState;
+  #unregisterFromService: () => void;
 
   constructor(owner: Owner, args: AppLayoutArgs) {
     super(owner, args);
@@ -195,10 +205,18 @@ class AppLayout extends Component<AppLayoutSignature> {
       asideOpen: args.defaultAsideOpen
     });
     this.#controlled = new ControlledAppLayoutState(own, () => this.args);
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const layout = this;
+    this.#unregisterFromService = this.appLayout.registerLayout({
+      get state() {
+        return layout.state;
+      }
+    });
   }
 
   willDestroy(): void {
     super.willDestroy();
+    this.#unregisterFromService();
     stopWatcher(watchers, this);
     stopWatcher(asideWatchers, this);
   }
@@ -304,6 +322,29 @@ class AppLayout extends Component<AppLayoutSignature> {
       });
     };
   };
+
+  // PROTOTYPE: a route-driven Aside registers so AsideToggle can hide while
+  // it is empty. After render, like the Sidebar.
+  @tracked registeredAside?: RegisteredAside;
+
+  registerAside = (aside: RegisteredAside): (() => void) => {
+    schedule('afterRender', () => {
+      if (!this.isDestroying) {
+        this.registeredAside = aside;
+      }
+    });
+    return () => {
+      schedule('afterRender', () => {
+        if (!this.isDestroying && this.registeredAside === aside) {
+          this.registeredAside = undefined;
+        }
+      });
+    };
+  };
+
+  get asideAvailable(): boolean {
+    return this.registeredAside?.available ?? true;
+  }
 
   get mobileNav(): 'drawer' | 'bottom' {
     return this.args.mobileNav ?? 'drawer';
@@ -495,7 +536,11 @@ class AppLayout extends Component<AppLayoutSignature> {
       get bottomNavShown() {
         return layout.bottomNavShown;
       },
+      get asideAvailable() {
+        return layout.asideAvailable;
+      },
       isRtl: this.isRtl,
+      registerAside: this.registerAside,
       registerSidebar: this.registerSidebar,
       registerBottomNav: this.registerBottomNav
     };
@@ -561,6 +606,8 @@ class AppLayout extends Component<AppLayoutSignature> {
           state=this.state
           Aside=(component Aside layout=this.context)
           AsideToggle=(component AsideToggle layout=this.context)
+          Breadcrumbs=(component LayoutBreadcrumbs layout=this.context)
+          Region=(component Region layout=this.context)
           BottomNav=(component BottomNav layout=this.context)
           Main=(component Main layout=this.context)
           MenuToggle=(component MenuToggle layout=this.context)

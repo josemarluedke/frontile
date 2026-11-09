@@ -26,6 +26,11 @@ Router.map(function () {
     this.route('second');
   });
   this.route('platform-demo');
+  this.route('regions-demo', function () {
+    this.route('orders', function () {
+      this.route('show', { path: '/:order_id' });
+    });
+  });
   this.route('breadcrumbs-demo', function () {
     this.route('second');
     this.route('item', { path: '/item/:item_id' });

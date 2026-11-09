@@ -68,6 +68,17 @@ export interface AppLayoutContext {
    * `--app-bottomnav-height`. Returns the matching unregister function.
    */
   registerBottomNav(nav: object): () => void;
+  /**
+   * PROTOTYPE. Whether `AsideToggle` has an aside to open: true unless a
+   * route-driven `Aside` (`@region`) is registered and empty (tracked).
+   */
+  readonly asideAvailable: boolean;
+  /** PROTOTYPE. Called by a route-driven `Aside`. */
+  registerAside(aside: RegisteredAside): () => void;
+}
+
+export interface RegisteredAside {
+  readonly available: boolean;
 }
 
 export interface RegisteredSidebar {

@@ -43,3 +43,15 @@ export {
   type SidebarToggleSignature,
   type SidebarToggleArgs
 } from './sidebar-toggle';
+export { Region, type RegionSignature, type RegionArgs } from './region';
+export {
+  LayoutRegion,
+  type LayoutRegionSignature,
+  type LayoutRegionArgs
+} from './layout-region';
+export { LayoutAside, type LayoutAsideSignature } from './layout-aside';
+export {
+  LayoutBreadcrumbs,
+  type LayoutBreadcrumbsSignature
+} from './layout-breadcrumbs';
+export { breadcrumb } from '../../helpers/breadcrumb';
