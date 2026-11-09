@@ -141,47 +141,97 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 ### Navbar placement
 
-In the `inset` variant, `@navbarPlacement` puts the navbar on the frame above
-the card (`frame`, the default) or makes it the card's first row (`content`).
+In the `inset` variant, `@navbarPlacement` decides what the navbar belongs to.
+`frame`, the default, puts it on the frame with the sidebar: use it for
+app-wide controls such as search and the account menu. `content` makes it the
+card's first row, part of the page: use it for the page's own breadcrumb and
+actions.
 
 ```gts preview collapsible
-import { AppLayout } from 'frontile';
-import { array, concat } from '@ember/helper';
+import { AppLayout, Avatar, Breadcrumbs, Button } from 'frontile';
 import DemoFrame from 'site/components/demo-frame';
-import { ViewIcon, SettingsIcon } from 'site/components/icons';
+import {
+  PackageIcon,
+  SearchIcon,
+  SettingsIcon,
+  ViewIcon
+} from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide'>
-    {{#each (array 'frame' 'content') as |placement|}}
-      <DemoFrame
-        @id={{concat 'navbar-' placement}}
-        @label={{concat 'Navbar placement: ' placement}}
-      >
-        <AppLayout @navbarPlacement={{placement}} as |layout|>
-          <layout.Sidebar @label={{placement}} as |sidebar|>
-            <sidebar.Body>
-              <sidebar.Item
-                @href='#overview'
-                @icon={{ViewIcon}}
-                @isActive={{true}}
-              >
-                Overview
-              </sidebar.Item>
-              <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
-                Settings
-              </sidebar.Item>
-            </sidebar.Body>
-          </layout.Sidebar>
-          <layout.Navbar>
-            <layout.MenuToggle />
-            <code class='text-sm'>@navbarPlacement='{{placement}}'</code>
-          </layout.Navbar>
-          <layout.Main>
-            <layout.PageHeader @title='Overview' />
-          </layout.Main>
-        </AppLayout>
-      </DemoFrame>
-    {{/each}}
+    <DemoFrame @id='navbar-frame' @label='Navbar placement: frame'>
+      <AppLayout @navbarPlacement='frame' as |layout|>
+        <layout.Sidebar @label='Frame' as |sidebar|>
+          <sidebar.Body>
+            <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
+              Overview
+            </sidebar.Item>
+            <sidebar.Item
+              @href='#orders'
+              @icon={{PackageIcon}}
+              @isActive={{true}}
+            >
+              Orders
+            </sidebar.Item>
+            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+              Settings
+            </sidebar.Item>
+          </sidebar.Body>
+        </layout.Sidebar>
+        <layout.Navbar>
+          <layout.MenuToggle />
+          <Button @size='sm' @variant='outline' @class='ms-auto'>
+            <SearchIcon class='size-4' />
+            Search
+          </Button>
+          <Avatar @name='Sample User' @size='sm' />
+        </layout.Navbar>
+        <layout.Main>
+          <layout.PageHeader
+            @title='Orders'
+            @description='Everything placed in the last 30 days.'
+          />
+        </layout.Main>
+      </AppLayout>
+    </DemoFrame>
+
+    <DemoFrame @id='navbar-content' @label='Navbar placement: content'>
+      <AppLayout @navbarPlacement='content' as |layout|>
+        <layout.Sidebar @label='Content' as |sidebar|>
+          <sidebar.Body>
+            <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
+              Overview
+            </sidebar.Item>
+            <sidebar.Item
+              @href='#orders'
+              @icon={{PackageIcon}}
+              @isActive={{true}}
+            >
+              Orders
+            </sidebar.Item>
+            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+              Settings
+            </sidebar.Item>
+          </sidebar.Body>
+        </layout.Sidebar>
+        <layout.Navbar>
+          <layout.MenuToggle />
+          <Breadcrumbs as |b|>
+            <b.Item @href='#orders'>Orders</b.Item>
+            <b.Item>#1042</b.Item>
+          </Breadcrumbs>
+          <Button @size='sm' @variant='outline' @class='ms-auto'>
+            Refund
+          </Button>
+        </layout.Navbar>
+        <layout.Main>
+          <layout.PageHeader
+            @title='Order #1042'
+            @description='Paid · 3 items · Ships tomorrow'
+          />
+        </layout.Main>
+      </AppLayout>
+    </DemoFrame>
   </div>
 </template>
 ```
