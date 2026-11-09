@@ -144,13 +144,17 @@ It defaults to `env(safe-area-inset-bottom, 0px)`.
 
 ## Stacking order
 
-The bar sets no `z-index`. Overlays such as modals and drawers stack by their
-place in the document, so render `BottomNav` before them.
+Overlays such as modals, drawers and popovers set no `z-index`: they render
+at the end of the page and stack by their place in the document.
 
-Known limitation: this is a workaround. When the bar sits in a scrolling page
-it needs to rise above in-page layers (`z-10`) while staying below overlays,
-and Frontile has no shared z-index scale to express that. A theme-level z-index
-scale is the proper fix and is a follow-up task.
+Standalone, the bar sets no `z-index` either, so render `BottomNav` before
+any overlay.
+
+In an `AppLayout` with `@scrollMode="page"`, the bar takes `z-10` to rise
+above in-page layers such as sticky table headers. The layout root is
+`isolate`, which keeps that `z-10` inside the layout, so overlays still cover
+the bar. This relies on overlays rendering outside the layout: a
+`PortalTarget` placed inside `AppLayout` puts its overlays under the bar.
 
 ## Accessibility
 

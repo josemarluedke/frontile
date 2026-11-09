@@ -421,17 +421,21 @@ const appLayout = tv({
         bottomNav: 'static'
       },
       page: {
-        base: 'min-h-dvh grid-rows-[auto_1fr]',
-        // No z-index: overlays (Modal, Drawer, Popover, Tooltip, a rail
-        // `NavFolder`'s menu) have none and stack by coming later in the DOM,
-        // so a lifted sidebar would cover them.
+        // `isolate` keeps the z-indexes below (the sticky bar, the sidebar
+        // lifted for a flyout) inside the shell. Overlays portal to the end
+        // of the body with no z-index of their own, so they paint above the
+        // whole shell by DOM order. Without it, any positive z-index in here
+        // would paint over every Modal, Drawer and Popover.
+        base: 'isolate min-h-dvh grid-rows-[auto_1fr]',
+        // No z-index: nothing in `main` needs to pass under it, and overlays
+        // (Modal, Drawer, Popover, Tooltip, a rail `NavFolder`'s menu) are
+        // portalled out of the shell.
         sidebar: 'sticky top-0 h-dvh self-start',
         // The document scrolls, so the bar sticks to the bottom of the
-        // viewport over the content. `z-10` is a workaround until the theme
-        // has a z-index scale: it lifts the bar over in-page layers (z-10 is
-        // the highest used in content) while overlays, which have no
-        // z-index and stack by DOM order, still cover it. That only holds if
-        // the bar comes after `Main` in the DOM.
+        // viewport over the content. `z-10` lifts it over in-page layers
+        // (z-10 is the highest used in content; a tie goes to the later
+        // element, so the bar should come after `Main` in the DOM). The
+        // root's `isolate` keeps it under overlays.
         bottomNav: 'sticky bottom-0 z-10'
       }
     }

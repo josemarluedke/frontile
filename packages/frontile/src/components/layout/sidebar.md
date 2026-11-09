@@ -764,9 +764,8 @@ never renders.
 
 Place `<layout.BottomNav>` after `<layout.Main>`. With `@scrollMode="page"`
 the bar sticks to the bottom of the viewport with `z-10`, so it rises above
-in-page layers such as sticky table headers while overlays rendered later in
-the page still cover it. This is a workaround: a theme-level z-index scale is
-the proper fix and is a follow-up task. See
+in-page layers such as sticky table headers. The layout root isolates that
+`z-10`, so overlays still cover the bar. See
 [BottomNav: Stacking order](./bottom-nav#stacking-order).
 
 This demo shows a rail at desktop width. Narrow the window to below 48rem to

@@ -378,6 +378,38 @@ module(
       assert.strictEqual(style.zIndex, '10');
     });
 
+    // Overlays portal to the end of the body and set no z-index, so they
+    // stack by DOM order. The bar's z-index must not lift it above them.
+    test('in page scroll mode an open More sheet covers the bar', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <AppLayout @mobileNav="bottom" @scrollMode="page" as |layout|>
+            <layout.Main>Content</layout.Main>
+            <layout.BottomNav as |bar|>
+              <bar.Item @href="#a" @icon={{TestIcon}}>A</bar.Item>
+              <bar.More as |more|>
+                <more.Item @href="#b" @icon={{TestIcon}}>B</more.Item>
+              </bar.More>
+            </layout.BottomNav>
+          </AppLayout>
+        </template>
+      );
+      await click(MORE_TAB);
+
+      const bar = find(BAR)!;
+      const rect = bar.getBoundingClientRect();
+      const hit = document.elementFromPoint(
+        rect.left + 2,
+        rect.top + rect.height / 2
+      );
+      assert.ok(hit, 'something is at the bar');
+      assert.false(
+        bar.contains(hit),
+        'the sheet or its backdrop is on top, not the bar'
+      );
+    });
+
     test('@classes.bottomNav is merged into the bar', async function (assert) {
       media = mockMatchMedia(MOBILE);
       const classes = { bottomNav: 'custom-bottom-nav' };
