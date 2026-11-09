@@ -9,7 +9,8 @@ import {
   settled
 } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
-import { NavItem, Sidebar, AppLayoutState } from 'frontile';
+import { Sidebar, AppLayoutState } from 'frontile';
+import NavItem from 'frontile/components/layout/nav-item';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 import type { TOC } from '@ember/component/template-only';

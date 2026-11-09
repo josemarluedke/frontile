@@ -7,7 +7,7 @@ imports:
 # BottomNav
 
 A bar of icon tabs along the bottom of the screen, for the primary navigation
-on small viewports. Each tab is a [NavItem](./nav-item) in its `icon` layout.
+on small viewports. Each tab is a [Sidebar](./sidebar#item-layouts) `Item` in its `icon` layout.
 
 ## Import
 
@@ -17,7 +17,7 @@ import { BottomNav } from 'frontile';
 
 ## Usage
 
-`BottomNav` yields `Item`, which is `NavItem` with `@layout="icon"` already
+`BottomNav` yields `Item`, a sidebar `Item` with `@layout="icon"` already
 set. Give each tab an `@icon` and its label as the block: the label names the
 tab for assistive technology and shows as a tooltip above it. Set `@isActive`
 on the current tab, or pass `@route` to let the router decide. `@badge` shows
@@ -55,7 +55,7 @@ import { ViewIcon, UserIcon, SettingsIcon } from 'site/components/icons';
 
 `BottomNav` also yields `More`, a last tab that opens a sheet from the bottom
 of the screen with further navigation. `More` yields `Item` and `Folder`:
-[NavItem](./nav-item) and [NavFolder](./nav-folder) as full-width rows, with
+the [sidebar](./sidebar#items-and-groups) `Item` and `Folder` as full-width rows, with
 folders opening inline. Following an item closes the sheet.
 
 The tab follows what is inside it, even while the sheet is closed:

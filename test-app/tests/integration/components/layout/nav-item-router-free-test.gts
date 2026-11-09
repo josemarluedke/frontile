@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import Service from '@ember/service';
-import { NavItem } from 'frontile';
+import NavItem from 'frontile/components/layout/nav-item';
 
 class ThrowingRouter extends Service {
   constructor(...args: ConstructorParameters<typeof Service>) {

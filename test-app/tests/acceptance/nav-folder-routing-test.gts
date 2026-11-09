@@ -7,7 +7,9 @@ import {
   focus,
   triggerKeyEvent
 } from '@ember/test-helpers';
-import { AppLayout, NavFolder, NavLink } from 'frontile';
+import { AppLayout } from 'frontile';
+import NavFolder from 'frontile/components/layout/nav-folder';
+import NavLink from 'frontile/components/layout/nav-link';
 import {
   mockMatchMedia,
   type MatchMediaMock

@@ -12,7 +12,8 @@ import {
 } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { htmlSafe } from '@ember/template';
-import { AppLayout, NavFolder } from 'frontile';
+import { AppLayout } from 'frontile';
+import NavFolder from 'frontile/components/layout/nav-folder';
 import { setPrefersReducedMotion } from 'frontile/test-support';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';

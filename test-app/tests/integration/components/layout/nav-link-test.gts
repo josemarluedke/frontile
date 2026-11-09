@@ -4,7 +4,7 @@ import { render, click, find, settled } from '@ember/test-helpers';
 import Service from '@ember/service';
 import { on } from '@ember/modifier';
 import { array, hash } from '@ember/helper';
-import { NavLink } from 'frontile';
+import NavLink from 'frontile/components/layout/nav-link';
 
 class ThrowingRouter extends Service {
   constructor(...args: ConstructorParameters<typeof Service>) {

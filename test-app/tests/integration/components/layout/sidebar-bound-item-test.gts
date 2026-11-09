@@ -1,13 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, triggerEvent, click } from '@ember/test-helpers';
-import {
-  AppLayout,
-  Sidebar,
-  SidebarGroup,
-  NavItem,
-  AppLayoutState
-} from 'frontile';
+import { AppLayout, Sidebar, SidebarGroup, AppLayoutState } from 'frontile';
+import NavItem from 'frontile/components/layout/nav-item';
 import type { TOC } from '@ember/component/template-only';
 
 const TestIcon: TOC<{ Element: SVGSVGElement }> = <template>

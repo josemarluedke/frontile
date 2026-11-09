@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit, click } from '@ember/test-helpers';
-import { NavItem, NavLink } from 'frontile';
+import NavItem from 'frontile/components/layout/nav-item';
+import NavLink from 'frontile/components/layout/nav-link';
 
 interface Handle {
   readonly isActive: boolean;

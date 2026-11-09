@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit } from '@ember/test-helpers';
-import { NavLink } from 'frontile';
+import NavLink from 'frontile/components/layout/nav-link';
 
 module('Acceptance | NavLink routing', function (hooks) {
   setupApplicationTest(hooks);
