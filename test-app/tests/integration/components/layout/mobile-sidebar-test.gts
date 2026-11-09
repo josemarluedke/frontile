@@ -5,7 +5,6 @@ import {
   find,
   click,
   settled,
-  triggerEvent,
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { AppLayout, MenuToggle, AppLayoutState } from 'frontile';
@@ -202,11 +201,12 @@ module(
       assert.dom('[data-part="menu-toggle"]').isFocused();
     });
 
-    test('closing returns focus to MenuToggle when opened by the shortcut', async function (assert) {
+    test('closing returns focus to MenuToggle when opened through state', async function (assert) {
       media = mockMatchMedia(MOBILE);
+      const state = new AppLayoutState();
       await render(
         <template>
-          <AppLayout @classes={{shownToggle}} as |layout|>
+          <AppLayout @state={{state}} @classes={{shownToggle}} as |layout|>
             <layout.Navbar><layout.MenuToggle /></layout.Navbar>
             <layout.Sidebar />
             <layout.Main>Content</layout.Main>
@@ -214,7 +214,9 @@ module(
         </template>
       );
 
-      await pressModB(document.body);
+      // Nothing is focused, as when the drawer is opened from code.
+      state.openMobileSidebar();
+      await settled();
       assert.dom('[role="dialog"]').exists();
       await triggerKeyEvent('[role="dialog"]', 'keydown', 'Escape');
 
@@ -222,11 +224,12 @@ module(
       assert.dom('[data-part="menu-toggle"]').isFocused();
     });
 
-    test('closing returns focus to the element that had focus when the shortcut opened it', async function (assert) {
+    test('closing returns focus to the element that had focus when the drawer opened', async function (assert) {
       media = mockMatchMedia(MOBILE);
+      const state = new AppLayoutState();
       await render(
         <template>
-          <AppLayout @classes={{shownToggle}} as |layout|>
+          <AppLayout @state={{state}} @classes={{shownToggle}} as |layout|>
             <layout.Navbar>
               <layout.MenuToggle />
               <button type="button" id="inside">Inside</button>
@@ -239,7 +242,8 @@ module(
 
       const inside = find('#inside') as HTMLElement;
       inside.focus();
-      await pressModB(inside);
+      state.openMobileSidebar();
+      await settled();
       assert.dom('[role="dialog"]').exists();
       await triggerKeyEvent('[role="dialog"]', 'keydown', 'Escape');
 
@@ -266,15 +270,12 @@ module(
       assert.dom('[data-part="menu-toggle"]').hasAria('expanded', 'false');
     });
 
-    test('mod+b toggles the sidebar', async function (assert) {
+    test('pressing mod+b does nothing', async function (assert) {
       media = mockMatchMedia(DESKTOP);
       await render(
         <template>
           <AppLayout as |layout|>
-            <layout.Navbar>
-              <layout.MenuToggle />
-              <button type="button" id="inside">Inside</button>
-            </layout.Navbar>
+            <layout.Navbar><layout.MenuToggle /></layout.Navbar>
             <layout.Sidebar />
             <layout.Main>Content</layout.Main>
           </AppLayout>
@@ -282,78 +283,17 @@ module(
       );
 
       const root = '[data-component="app-layout"]';
-      await pressModB('#inside');
-      assert.dom(root).hasAttribute('data-sidebar-collapsed', 'true');
-      await pressModB(document.body);
+      await pressModB('[data-part="main"]');
       assert
-        .dom(root)
-        .hasAttribute('data-sidebar-collapsed', 'false', 'from body too');
-
-      await triggerKeyEvent('#inside', 'keydown', 'B');
-      assert
-        .dom(root)
-        .hasAttribute(
-          'data-sidebar-collapsed',
-          'false',
-          'b alone does nothing'
-        );
+        .dom('[data-part="sidebar"]')
+        .hasAttribute('data-collapsed', 'false');
+      assert.dom(root).hasAttribute('data-sidebar-collapsed', 'false');
 
       media.setWidth(MOBILE);
       await settled();
-      await pressModB('#inside');
-      assert.dom(root).hasAttribute('data-mobile-sidebar-open', 'true');
-      assert
-        .dom(root)
-        .hasAttribute('data-sidebar-collapsed', 'false', 'collapse untouched');
-      assert.dom('[role="dialog"]').exists('below the breakpoint it opens');
-
-      await pressModB('[role="dialog"]');
-      assert
-        .dom(root)
-        .hasAttribute('data-mobile-sidebar-open', 'false', 'and closes');
-    });
-
-    test('mod+b is ignored when toggleShortcut=false', async function (assert) {
-      media = mockMatchMedia(DESKTOP);
-      await render(
-        <template>
-          <AppLayout @toggleShortcut={{false}} as |layout|>
-            <layout.Navbar>
-              <button type="button" id="inside">Inside</button>
-            </layout.Navbar>
-            <layout.Sidebar />
-            <layout.Main>Content</layout.Main>
-          </AppLayout>
-        </template>
-      );
-
-      await pressModB('#inside');
-      assert
-        .dom('[data-component="app-layout"]')
-        .hasAttribute('data-sidebar-collapsed', 'false');
-    });
-
-    test('mod+b inside one layout does not toggle a second layout', async function (assert) {
-      media = mockMatchMedia(DESKTOP);
-      await render(
-        <template>
-          <AppLayout id="one" as |layout|>
-            <layout.Navbar>
-              <button type="button" id="in-one">One</button>
-            </layout.Navbar>
-            <layout.Sidebar />
-            <layout.Main>One</layout.Main>
-          </AppLayout>
-          <AppLayout id="two" as |layout|>
-            <layout.Sidebar />
-            <layout.Main>Two</layout.Main>
-          </AppLayout>
-        </template>
-      );
-
-      await pressModB('#in-one');
-      assert.dom('#one').hasAttribute('data-sidebar-collapsed', 'true');
-      assert.dom('#two').hasAttribute('data-sidebar-collapsed', 'false');
+      await pressModB('[data-part="main"]');
+      assert.dom(root).hasAttribute('data-mobile-sidebar-open', 'false');
+      assert.dom('[role="dialog"]').doesNotExist('the drawer stays closed');
     });
 
     test('no matchMedia: renders desktop and does not throw', async function (assert) {
@@ -466,90 +406,6 @@ module(
 
       await click('#item-a');
       assert.true(state.mobileSidebarOpen);
-    });
-
-    test('mod+b ignores key repeat', async function (assert) {
-      media = mockMatchMedia(DESKTOP);
-      await render(
-        <template>
-          <AppLayout as |layout|>
-            <layout.Navbar>
-              <button type="button" id="inside">Inside</button>
-            </layout.Navbar>
-            <layout.Sidebar />
-            <layout.Main>Content</layout.Main>
-          </AppLayout>
-        </template>
-      );
-
-      const root = '[data-component="app-layout"]';
-      await pressModB('#inside');
-      assert.dom(root).hasAttribute('data-sidebar-collapsed', 'true');
-      await triggerEvent('#inside', 'keydown', {
-        key: 'b',
-        repeat: true,
-        ...modKeys()
-      });
-      assert
-        .dom(root)
-        .hasAttribute('data-sidebar-collapsed', 'true', 'a held key repeats');
-    });
-
-    test('mod+b is left to a contenteditable element', async function (assert) {
-      media = mockMatchMedia(DESKTOP);
-      await render(
-        <template>
-          <AppLayout as |layout|>
-            <layout.Main>
-              <div id="editor" contenteditable="true">Text</div>
-            </layout.Main>
-            <layout.Sidebar />
-          </AppLayout>
-        </template>
-      );
-
-      // `window` hears the event after the layout's `document` listener.
-      let prevented: boolean | undefined;
-      const record = (event: Event): void => {
-        prevented = event.defaultPrevented;
-      };
-      window.addEventListener('keydown', record);
-      try {
-        await triggerEvent('#editor', 'keydown', {
-          key: 'b',
-          ...modKeys()
-        });
-      } finally {
-        window.removeEventListener('keydown', record);
-      }
-      assert
-        .dom('[data-component="app-layout"]')
-        .hasAttribute('data-sidebar-collapsed', 'false');
-      assert.false(prevented, 'the browser keeps its own bold');
-    });
-
-    test('an alt shortcut matches by key code (Option changes the key on macOS)', async function (assert) {
-      media = mockMatchMedia(DESKTOP);
-      await render(
-        <template>
-          <AppLayout @toggleShortcut="alt+b" as |layout|>
-            <layout.Navbar>
-              <button type="button" id="inside">Inside</button>
-            </layout.Navbar>
-            <layout.Sidebar />
-            <layout.Main>Content</layout.Main>
-          </AppLayout>
-        </template>
-      );
-
-      await triggerEvent('#inside', 'keydown', {
-        key: '∫',
-        code: 'KeyB',
-        altKey: true
-      });
-      assert
-        .dom('[data-component="app-layout"]')
-        .hasAttribute('data-sidebar-collapsed', 'true');
     });
 
     test('data-sidebar-collapsed is false for a sidebar with collapsible=none', async function (assert) {

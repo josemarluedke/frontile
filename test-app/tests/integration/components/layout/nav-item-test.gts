@@ -177,6 +177,26 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
     assert.dom('[role="tooltip"]').hasText('Reports');
   });
 
+  test("a rail item's label opens on hover with no delay", async function (assert) {
+    await render(
+      <template>
+        <NavItem @href="/reports" @icon={{TestIcon}} @rail={{true}} id="item">
+          Reports
+        </NavItem>
+      </template>
+    );
+
+    // `triggerEvent` awaits `settled()`, which would wait out a pending open
+    // timer and hide the delay. Dispatch directly and give it only a short,
+    // real wait, far under the Tooltip's 200ms default.
+    document
+      .querySelector('#item')!
+      .dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    assert.dom('[role="tooltip"]').exists();
+    assert.dom('[role="tooltip"]').hasText('Reports');
+  });
+
   test('without @rail there is no tooltip', async function (assert) {
     await render(
       <template>

@@ -8079,7 +8079,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How navigation is shown below <code>@breakpoint</code>. <code>drawer</code> moves the sidebar\ninto a drawer opened by <code>MenuToggle</code>. <code>bottom</code> shows the yielded\n<code>BottomNav</code> as a bar along the bottom instead, and renders no sidebar,\n<code>MenuToggle</code> or <code>SidebarToggle</code> there (the toggle shortcut does nothing\neither). At or above <code>@breakpoint</code> both are the desktop sidebar, and\n<code>BottomNav</code> renders nothing. Place <code>BottomNav</code> after <code>Main</code>.',
+          'How navigation is shown below <code>@breakpoint</code>. <code>drawer</code> moves the sidebar\ninto a drawer opened by <code>MenuToggle</code>. <code>bottom</code> shows the yielded\n<code>BottomNav</code> as a bar along the bottom instead, and renders no sidebar,\n<code>MenuToggle</code> or <code>SidebarToggle</code> there. At or above <code>@breakpoint</code> both are\nthe desktop sidebar, and <code>BottomNav</code> renders nothing. Place <code>BottomNav</code>\nafter <code>Main</code>.',
         tags: { defaultValue: { name: 'defaultValue', value: "'drawer'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'drawer\'</span></span>',
@@ -8227,21 +8227,6 @@ const data: ComponentDoc[] = [
         description:
           'A shared <code>AppLayoutState</code> to drive the layout from elsewhere in the app.\nWhen passed, it is the only source of state: the individual state\narguments and their callbacks are ignored.',
         tags: {},
-      },
-      {
-        identifier: 'toggleShortcut',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> false</span></span>',
-          items: ['string', 'false'],
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'The keyboard shortcut that toggles the sidebar, or <code>false</code> for none. It\ncollapses or expands the sidebar on desktop and opens or closes the\ndrawer below <code>@breakpoint</code>. <code>mod</code> is Cmd on Apple platforms and Ctrl\nelsewhere; <code>ctrl</code>, <code>meta</code>, <code>alt</code> and <code>shift</code> can be combined with a key,\njoined by <code>+</code>. It fires when focus is inside this layout or its drawer,\nor on the page body; with focus on the body every layout on the page\ntoggles. It is left alone in editable content (<code>contenteditable</code>) and\nignored while the keys are held down.',
-        tags: { defaultValue: { name: 'defaultValue', value: "'mod+b'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'mod+b\'</span></span>',
       },
       {
         identifier: 'variant',
@@ -8483,8 +8468,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -8823,8 +8807,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -9285,8 +9268,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -9636,8 +9618,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -9976,8 +9957,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -10304,7 +10284,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: true,
         description:
-          'Supplied by <code>Sidebar</code>: whether the sidebar renders in the mobile drawer,\nwhere the folder is always inline (never a flyout). Not part of the\npublic API.',
+          'Supplied by <code>Sidebar</code>: whether the sidebar renders in the mobile drawer,\nwhere the folder is always inline (never a menu). Not part of the\npublic API.',
         tags: { internal: { name: 'internal', value: '' } },
       },
       {
@@ -10341,7 +10321,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Called with the requested inline open state whenever it would change.\nNot called when the flyout of the collapsed icon rail opens or closes.',
+          'Called with the requested inline open state whenever it would change.\nNot called when the menu of the collapsed icon rail opens or closes.',
         tags: {},
       },
       {
@@ -10352,7 +10332,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          '<p>Makes the open state controlled. Clicks then only call <code>@onOpenChange</code>,\nand so does an automatic open when a child becomes active.</p>\n<p>This is the inline open state. In the collapsed icon rail the folder\nopens as a flyout instead, whose state is its own: <code>@open</code> does not\ncontrol it and <code>@onOpenChange</code> is not called for it. The inline state\nstill follows an active child there, and shows on expanding.</p>',
+          '<p>Makes the open state controlled. Clicks then only call <code>@onOpenChange</code>,\nand so does an automatic open when a child becomes active.</p>\n<p>This is the inline open state. In the collapsed icon rail the folder\nopens as a menu instead, whose state is its own: <code>@open</code> does not\ncontrol it and <code>@onOpenChange</code> is not called for it. The inline state\nstill follows an active child there, and shows on expanding.</p>',
         tags: {},
       },
       {
@@ -10387,7 +10367,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: true,
         description:
-          'Supplied by <code>Sidebar</code>: whether the sidebar is drawn as the icon rail,\nwhere the folder opens as a flyout. Not part of the public API.',
+          'Supplied by <code>Sidebar</code>: whether the sidebar is drawn as the icon rail,\nwhere the folder opens as a menu. Not part of the public API.',
         tags: { internal: { name: 'internal', value: '' } },
       },
       {
@@ -10400,7 +10380,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: true,
         description:
-          'Supplied by <code>Sidebar</code>: the side rail tooltips, and so the flyout, open\non. Not part of the public API.',
+          'Supplied by <code>Sidebar</code>: the side rail tooltips, and so the menu, open\non. Not part of the public API.',
         tags: {
           defaultValue: { name: 'defaultValue', value: "'right'" },
           internal: { name: 'internal', value: '' },
@@ -10456,7 +10436,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
     description:
-      '<p>A collapsible group of navigation items, one level deep. The trigger is a\ndisclosure button (<code>aria-expanded</code>, <code>aria-controls</code>); the items sit in a\n<code>role="group"</code> panel labelled by it. The folder opens when\none of its items is active, on load and whenever an item newly becomes\nactive, but never forces itself open otherwise. It is hidden when none of\nits items is visible.</p>\n<p>In the collapsed icon rail (not in the mobile drawer) the items move into\na flyout beside the rail instead, opened only by the trigger. The flyout\nis still a disclosure: it follows the trigger in the DOM, so Tab walks\nfrom the trigger into it. Escape closes it and returns focus to the\ntrigger; following an item, clicking outside or tabbing out closes it.</p>',
+      '<p>A collapsible group of navigation items, one level deep. The trigger is a\ndisclosure button (<code>aria-expanded</code>, <code>aria-controls</code>); the items sit in a\n<code>role="group"</code> panel labelled by it. The folder opens when\none of its items is active, on load and whenever an item newly becomes\nactive, but never forces itself open otherwise. It is hidden when none of\nits items is visible.</p>\n<p>In the collapsed icon rail (not in the mobile drawer) the trigger is a\n<code>Dropdown</code> menu button instead, and the items are the menu\'s link items,\nbeside the rail. The menu brings the keyboard model (arrows, type-ahead,\nEscape returning focus to the trigger); tabbing out of it or following an\nitem closes it.</p>',
     tags: {},
   },
   {
@@ -10610,6 +10590,17 @@ const data: ComponentDoc[] = [
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'inline\'</span></span>',
       },
       {
+        identifier: 'menuItem',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager, onLinkActivate bound)</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Supplied by <code>NavFolder</code> in the icon rail: the <code>Dropdown</code> menu\'s item\ncomponent. The item then renders as a link row of that menu (a\n<code>role="menuitem"</code> holding the link) instead of a nav row. Not part of\nthe public API.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
         identifier: 'model',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown</span></span>',
@@ -10675,6 +10666,17 @@ const data: ComponentDoc[] = [
         tags: { internal: { name: 'internal', value: '' } },
       },
       {
+        identifier: 'registerOnly',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Supplied by <code>NavFolder</code> in the icon rail: the item only registers with\nits folder and renders nothing, so the folder can follow its active state\nwhile its menu is closed. Not part of the public API.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
         identifier: 'route',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
@@ -10728,8 +10730,8 @@ const data: ComponentDoc[] = [
       identifier: 'Element',
       type: {
         type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-        raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLButtonElement </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> HTMLAnchorElement</span></span>',
-        items: ['HTMLButtonElement', 'HTMLAnchorElement'],
+        raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLButtonElement </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> HTMLAnchorElement </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> HTMLLIElement</span></span>',
+        items: ['HTMLButtonElement', 'HTMLAnchorElement', 'HTMLLIElement'],
       },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/enum',
@@ -10922,8 +10924,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -11249,8 +11250,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -11531,6 +11531,162 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'sidebar-brand',
+    name: 'SidebarBrand',
+    fileName:
+      'packages/frontile/declarations/components/layout/sidebar-brand.d.ts',
+    Args: [
+      {
+        identifier: 'title',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'The product or workspace name. It is shown next to the logo and, with\n<code>@href</code>, names the link. In the icon rail it is visually hidden but\nstays available to assistive technology.',
+        tags: {},
+      },
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: "Class names appended to the brand's theme classes.",
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'sidebarBrand',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'sidebarBrandLogo',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'sidebarBrandText',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'sidebarBrandTitle',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'sidebarBrandSubtitle',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          "Supplied by <code>Sidebar</code>. Not part of the public API. Without it (a brand\nrendered on its own) the standalone sidebar's classes are used.",
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'href',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Makes the whole brand (logo and text) one link to this URL. Without it\nthe brand is not interactive.',
+        tags: {},
+      },
+      {
+        identifier: 'subtitle',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'A second, smaller line under the title, such as a workspace or plan.',
+        tags: {},
+      },
+      {
+        identifier: 'tile',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Draws the logo on a tinted square. Set it to <code>false</code> to show your own\nlogo as is, in the same 2rem square.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'logo',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'The logo, shown in a 2rem square before the title. It stays visible in\nthe icon rail.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+        raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLDivElement </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> HTMLAnchorElement</span></span>',
+        items: ['HTMLDivElement', 'HTMLAnchorElement'],
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/enum',
+    },
+    description:
+      "<p>The product's logo and name, for the sidebar's <code>Header</code>. With <code>@href</code> the\nwhole block is one link. In the icon rail only the logo shows; the title\nand subtitle are visually hidden but keep naming the link.</p>",
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'sidebar-group',
     name: 'SidebarGroup',
     fileName:
@@ -11619,6 +11775,230 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'sidebar-item',
+    name: 'SidebarItem',
+    fileName:
+      'packages/frontile/declarations/components/layout/sidebar-item.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: "Class names appended to this item's theme classes.",
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'sidebarItem',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'sidebarItemIcon',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'sidebarLabel',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          "Supplied by <code>Sidebar</code>. Not part of the public API. Without it (an item\nrendered on its own) the standalone sidebar's classes are used.",
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'href',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders a plain anchor. Ignored when <code>@route</code> is given.',
+        tags: {},
+      },
+      {
+        identifier: 'icon',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ComponentLike</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'An icon component, shown before the label. In the icon rail it is the\nonly visible part of the item. It is hidden from assistive technology.',
+        tags: {},
+      },
+      {
+        identifier: 'isActive',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Overrides the active state. Always wins over anything derived from the\nrouter, and is the only source of truth when <code>@route</code> is not used.',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Marks the link as disabled. The href is dropped as well, so the link\ncannot be followed.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isHidden',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders nothing at all. For items the current user may not see.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'model',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'A single dynamic segment for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'models',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Dynamic segments for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'onActivate',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          "Supplied by <code>Sidebar</code> while it renders in the mobile drawer: called when\nthe item's link is clicked, so the drawer closes. Not called for a\ndisabled item. Not part of the public API.",
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'query',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Record</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string, unknown</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Query params for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'rail',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Supplied by <code>Sidebar</code>: whether the sidebar is drawn as the icon rail.\nNot part of the public API.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'route',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders a <code>LinkTo</code> for this route and derives the active state from the\nrouter. Omit it (and pass <code>@href</code>) to stay entirely router-free.',
+        tags: {},
+      },
+      {
+        identifier: 'tooltipPlacement',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'right\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left\'</span></span>',
+          items: ["'right'", "'left'"],
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Supplied by <code>Sidebar</code>: the side of the item its rail tooltip opens on.\nNot part of the public API.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: "The item's label.",
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLAnchorElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement',
+    },
+    description:
+      '<p>A link in the sidebar. It takes the same routing arguments as\n<code>TabNav.Item</code>: <code>@route</code> renders a <code>LinkTo</code> and the router decides whether it\nis active; <code>@href</code> renders a plain anchor and needs no router. The active\nitem carries <code>aria-current="page"</code>. In the icon rail the label is visually\nhidden but keeps naming the link, and shows as a tooltip on hover or focus.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'sidebar-toggle',
     name: 'SidebarToggle',
     fileName:
@@ -11702,8 +12082,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -12057,8 +12436,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: true,
               isInternal: false,
-              description:
-                "The mobile drawer's id, so the shortcut can tell it belongs here.",
+              description: "The mobile drawer's id.",
               tags: {},
             },
             {
@@ -12334,7 +12712,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Header: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarHeader</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Body</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarBody</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Footer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarFooter</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Item</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rail</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">tooltipPlacement</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Folder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rail</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">tooltipPlacement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">inDrawer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">onActivate</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Group</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">classes</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); }]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Header: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarHeader</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Body</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarBody</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Footer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarFooter</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Item</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rail</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">tooltipPlacement</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Folder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rail</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">tooltipPlacement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">inDrawer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">onActivate</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Group</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">classes</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Toggle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarToggle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">layout</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">state</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); }]</span></span>',
           items: [
             {
               identifier: '0',
@@ -12401,6 +12779,16 @@ const data: ComponentDoc[] = [
                     description: '',
                     tags: {},
                   },
+                  {
+                    identifier: 'Toggle',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarToggle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (layout, state bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
                 ],
               },
               isRequired: true,
@@ -12413,7 +12801,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Yields <code>Header</code>, <code>Body</code> and <code>Footer</code> sections, <code>Item</code> links, <code>Folder</code>\nfor a collapsible set of items, <code>Group</code>\nto label a set of items. In the icon rail, <code>Item</code> labels are visually\nhidden but still read by screen readers; for your own markup, wrap the\ntext in <code>&#x3C;span data-sidebar-label></code> to get the same behavior.',
+          'Yields <code>Header</code>, <code>Body</code> and <code>Footer</code> sections, <code>Item</code> links, <code>Folder</code>\nfor a collapsible set of items, <code>Group</code> to label a set of items, and\n<code>Toggle</code>, the button that collapses and expands the sidebar. Place\n<code>Toggle</code> yourself, usually in <code>Header</code> or <code>Footer</code>; there is no default\ntoggle. In the phone drawer <code>Toggle</code> renders nothing (the drawer is\nalways expanded and has its own close button), so the same markup works\nat every width. In the icon rail, <code>Item</code> labels are visually\nhidden but still read by screen readers; for your own markup, wrap the\ntext in <code>&#x3C;span data-sidebar-label></code> to get the same behavior.',
         tags: {},
       },
     ],
@@ -30539,6 +30927,17 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'isOpen',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the popover is open. Pair with <code>onOpenChange</code> to control it;\nleave it unset to let the popover manage its own state.',
+        tags: {},
+      },
+      {
         identifier: 'middleware',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
@@ -30567,6 +30966,18 @@ const data: ComponentDoc[] = [
         tags: { defaultValue: { name: 'defaultValue', value: '5' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">5</span></span>',
+      },
+      {
+        identifier: 'onOpenChange',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">isOpen</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Callback when the popover opens or closes, receiving the new state.',
+        tags: {},
       },
       {
         identifier: 'placement',
@@ -30628,7 +31039,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Trigger: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Trigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (anchor, toggle, trigger, setOpenSource bound); Menu: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Menu</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (toggle, close, Content, closeOnItemSelect bound); }]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Trigger: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Trigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (triggerModifier bound); triggerModifier: TriggerModifier; Menu: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Menu</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (toggle, close, Content, closeOnItemSelect bound); }]</span></span>',
           items: [
             {
               identifier: '0',
@@ -30638,11 +31049,22 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Trigger',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Trigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (anchor, toggle, trigger, setOpenSource bound)</span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Trigger</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (triggerModifier bound)</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
                     description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'triggerModifier',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">TriggerModifier</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Makes the element it is placed on the dropdown\'s anchor and trigger,\nwired exactly like `Trigger`: it positions the menu, opens it on\nclick, and opens it onto the first item on ArrowDown, ArrowUp, Enter\nor Space. Use it to make something other than a `Button` -- a link, a\nnav item -- the trigger.\n\nThe element should be focusable and announce itself as a button (a\n`<button>`, or `role="button"` with `tabindex="0"`). Enter and Space\nare cancelled on it, so an `<a href>` does not follow its link from\nthe keyboard; a pointer click on one still does (see the docs).',
                     tags: {},
                   },
                   {
@@ -30689,20 +31111,9 @@ const data: ComponentDoc[] = [
       'packages/frontile/declarations/components/collections/dropdown/dropdown.d.ts',
     Args: [
       {
-        identifier: 'anchor',
+        identifier: 'triggerModifier',
         type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
-        },
-        isRequired: true,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'setOpenSource',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">source</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> OpenSource</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">TriggerModifier</span></span>',
         },
         isRequired: true,
         isInternal: true,
@@ -30710,31 +31121,9 @@ const data: ComponentDoc[] = [
         tags: {
           internal: {
             name: 'internal',
-            value:
-              'Reports how this open was initiated, so the menu can decide whether to\nland on an item.',
+            value: "The dropdown's own `triggerModifier`, bound by `Dropdown`.",
           },
         },
-      },
-      {
-        identifier: 'toggle',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-        },
-        isRequired: true,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'trigger',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ModifierLike</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{ </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Element</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: HTMLElement; }</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
-        },
-        isRequired: true,
-        isInternal: true,
-        description: '',
-        tags: { internal: { name: 'internal', value: '' } },
       },
       {
         identifier: 'appearance',
@@ -30885,7 +31274,8 @@ const data: ComponentDoc[] = [
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
     },
-    description: '',
+    description:
+      "<p>The button form of the trigger: Frontile's <code>Button</code> with <code>triggerModifier</code>\non it, so all of the open/close behaviour lives in one place.</p>",
     tags: {},
   },
   {
@@ -31789,12 +32179,12 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager bound), sub: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Sub</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (item, menu, parentContext bound)]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager, onLinkActivate bound), sub: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Sub</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (item, menu, parentContext bound)]</span></span>',
           items: [
             {
               identifier: '0',
               type: {
-                type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager bound)</span></span>',
+                type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">ListboxItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (manager, onLinkActivate bound)</span></span>',
               },
               isRequired: false,
               isInternal: false,
@@ -32682,6 +33072,17 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'href',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Renders the item as a link to this URL (a plain <code>&#x3C;a></code>, no router\nneeded). Only honoured inside a <code>Dropdown</code> menu (<code>@type="menu"</code>).</p>\n<p>A link item follows its link instead of selecting: <code>@onAction</code> and\n<code>@onSelectionChange</code> are not called, and the menu closes.</p>',
+        tags: {},
+      },
+      {
         identifier: 'intent',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -32703,6 +33104,22 @@ const data: ComponentDoc[] = [
           deprecated: {
             name: 'deprecated',
             value: 'Use `color`. `default` is now `neutral`.',
+          },
+        },
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value:
+              "Disables this one item, on top of the list's `@disabledKeys`: it is\nskipped by the arrow keys and type-ahead, cannot be chosen, and is\nmarked `aria-disabled`. Supplied by `NavFolder` for its menu items,\nwhose disabled state is known per item rather than as a list of keys.",
           },
         },
       },
@@ -32729,6 +33146,27 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'model',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'A single dynamic segment for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'models',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Dynamic segments for <code>@route</code>.',
+        tags: {},
+      },
+      {
         identifier: 'onClick',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
@@ -32737,6 +33175,44 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onLinkActivate',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value:
+              'Called after a link item is activated. The `Dropdown` menu binds this\nto dismiss itself (honouring `@closeOnItemSelect`).',
+          },
+        },
+      },
+      {
+        identifier: 'query',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Record</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string, unknown</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Query params for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'route',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders the item as a router link to this route. Only honoured inside\na <code>Dropdown</code> menu. See <code>@href</code> for what a link item does on activation.',
         tags: {},
       },
       {

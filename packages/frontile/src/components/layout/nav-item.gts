@@ -3,13 +3,15 @@ import { cached } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { on } from '@ember/modifier';
 import { registerDestructor } from '@ember/destroyable';
+import { guidFor } from '@ember/object/internals';
 import { twMerge, useStyles } from '@frontile/theme';
 import Tooltip from '../overlays/tooltip';
 import NavLink from './nav-link';
 import { isLinkActive } from '../../utils/route-active';
 import type { NavFolderContext } from './nav-context';
+import type { ListboxItem } from '../collections/listbox/item';
 import type RouterService from '@ember/routing/router-service';
-import type { ComponentLike } from '@glint/template';
+import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 /** How the item lays out its icon and label. */
 type NavItemLayout = 'inline' | 'stacked' | 'icon';
@@ -146,6 +148,25 @@ interface NavItemArgs {
    * @internal
    */
   noTooltip?: boolean;
+
+  /**
+   * Supplied by `NavFolder` in the icon rail: the `Dropdown` menu's item
+   * component. The item then renders as a link row of that menu (a
+   * `role="menuitem"` holding the link) instead of a nav row. Not part of
+   * the public API.
+   *
+   * @internal
+   */
+  menuItem?: WithBoundArgs<typeof ListboxItem, 'manager' | 'onLinkActivate'>;
+
+  /**
+   * Supplied by `NavFolder` in the icon rail: the item only registers with
+   * its folder and renders nothing, so the folder can follow its active state
+   * while its menu is closed. Not part of the public API.
+   *
+   * @internal
+   */
+  registerOnly?: boolean;
 }
 
 interface NavItemSignature {
@@ -156,8 +177,8 @@ interface NavItemSignature {
   };
   // Like `NavLink`: a button when neither `@route` nor `@href` is given. The
   // element type has to match it, or Glint rejects `...attributes` flowing
-  // from here onto `NavLink`.
-  Element: HTMLAnchorElement | HTMLButtonElement;
+  // from here onto `NavLink`. In a rail folder's menu it is the menu row.
+  Element: HTMLAnchorElement | HTMLButtonElement | HTMLLIElement;
 }
 
 /**
@@ -263,9 +284,44 @@ class NavItem extends Component<NavItemSignature> {
     return this.args.badgeDot ? undefined : this.args.badge;
   }
 
+  /** The label and badge of a menu row, which shows its label at any size. */
+  @cached
+  get menuClasses() {
+    const styles = useStyles().navItem({
+      layout: 'menu',
+      current: this.isCurrent,
+      badgeDot: Boolean(this.args.badgeDot)
+    });
+    return {
+      navItemIcon: styles.navItemIcon(),
+      navItemLabel: styles.navItemLabel(),
+      navItemBadge: styles.navItemBadge(),
+      navItemBadgeLabel: styles.navItemBadgeLabel()
+    };
+  }
+
   /** Merged, so a consumer class wins over a conflicting theme class. */
   get className(): string {
     return twMerge(this.classes.navItem, this.args.class) ?? '';
+  }
+
+  /** The row's key in a rail folder's menu. */
+  menuKey = guidFor(this);
+
+  /** Whether the item is the current page, router included. */
+  get isCurrent(): boolean {
+    return isLinkActive(this.args, () => this.router);
+  }
+
+  /**
+   * In a rail folder's menu a disabled item is plain text: no link args, so
+   * there is nothing to follow.
+   */
+  get menuLink(): Pick<NavItemArgs, 'href' | 'route'> {
+    if (this.args.isDisabled) {
+      return {};
+    }
+    return { href: this.args.href, route: this.args.route };
   }
 
   activate = (): void => {
@@ -275,8 +331,50 @@ class NavItem extends Component<NavItemSignature> {
   };
 
   <template>
-    {{#unless @isHidden}}
+    {{#if @registerOnly}}
+      {{! Registered in the constructor; nothing to show. }}
+    {{else if @isHidden}}
+      {{! Renders nothing. }}
+    {{else if @menuItem}}
+      <@menuItem
+        @key={{this.menuKey}}
+        @href={{this.menuLink.href}}
+        @route={{this.menuLink.route}}
+        @model={{@model}}
+        @models={{@models}}
+        @query={{@query}}
+        @isDisabled={{@isDisabled}}
+        @onClick={{this.activate}}
+        aria-current={{if this.isCurrent "page"}}
+        ...attributes
+      >
+        <:start>
+          {{#if @icon}}
+            <span
+              data-part="nav-item-icon"
+              class={{this.menuClasses.navItemIcon}}
+              aria-hidden="true"
+            ><@icon /></span>
+          {{/if}}
+        </:start>
+        <:default><span
+            data-part="nav-item-label"
+            class={{this.menuClasses.navItemLabel}}
+          >{{yield}}</span>{{#if this.hasBadge}}<span
+              data-part="nav-item-badge-label"
+              class={{this.menuClasses.navItemBadgeLabel}}
+            >, {{this.badgeText}}</span>{{/if}}</:default>
+        <:end>
+          {{#if this.hasBadge}}<span
+              data-part="nav-item-badge"
+              class={{this.menuClasses.navItemBadge}}
+              aria-hidden="true"
+            >{{this.badgeValue}}</span>{{/if}}
+        </:end>
+      </@menuItem>
+    {{else}}
       <Tooltip
+        @openDelay={{0}}
         @isDisabled={{if this.showTooltip false true}}
         @placement={{if @tooltipPlacement @tooltipPlacement "right"}}
         as |t|
@@ -331,7 +429,7 @@ class NavItem extends Component<NavItemSignature> {
         </NavLink>
         <t.Content>{{yield}}</t.Content>
       </Tooltip>
-    {{/unless}}
+    {{/if}}
   </template>
 }
 

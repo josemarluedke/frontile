@@ -280,11 +280,12 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
           active link: the tab only shows that the current page is inside.
 
           No tooltip, unlike the other tabs. Focus returns here when the
-          sheet closes, which opens a tooltip; with no PortalTarget in the
-          app, that tooltip's Portal creates an unnamed target, and the
-          sheet's Portal, opened next, renders into it. The sheet then
-          disappears with the tooltip. The label is still the accessible
-          name. }}
+          sheet closes, which would open a tooltip over the tab that was
+          just used. Portal no longer lets the sheet render into the
+          unnamed target a tooltip's Portal made for itself (it is marked
+          data-portal-owner), so that is no longer a hazard, but the
+          tooltip is still unwanted there. The label is still the
+          accessible name. }}
       <NavItem
         @layout="icon"
         @noTooltip={{true}}

@@ -5,6 +5,10 @@ import { cell } from 'ember-resources';
 import { AppLayout, AppLayoutState, Sidebar, SidebarToggle } from 'frontile';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
+import {
+  mockMatchMedia,
+  type MatchMediaMock
+} from 'test-app/tests/helpers/match-media';
 
 function isVisiblyHidden(el: Element): boolean {
   const rect = el.getBoundingClientRect();
@@ -395,7 +399,166 @@ module('Integration | Component | Sidebar | frontile/layout', function (hooks) {
     assert.true(sidebar.getBoundingClientRect().width < wide.width);
     assert.true(isVisiblyHidden(find('[data-sidebar-label]')!));
   });
+
+  test('Toggle in Sidebar.Header collapses and expands the sidebar', async function (assert) {
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Sidebar as |sidebar|>
+            <sidebar.Header><sidebar.Toggle /></sidebar.Header>
+          </layout.Sidebar>
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+
+    const sidebar = find('[data-part="sidebar"]')!;
+    const toggle = find(
+      '[data-part="sidebar-header"] [data-part="sidebar-toggle"]'
+    )!;
+    assert.ok(toggle, 'toggle renders in the header');
+    assert.dom(toggle).hasAria('expanded', 'true');
+    assert.dom(toggle).hasAria('controls', sidebar.id);
+
+    await click(toggle);
+    assert.dom(sidebar).hasAttribute('data-collapsed', 'true');
+    assert.dom(toggle).hasAria('expanded', 'false');
+
+    await click(toggle);
+    assert.dom(sidebar).hasAttribute('data-collapsed', 'false');
+    assert.dom(toggle).hasAria('expanded', 'true');
+  });
+
+  test('Toggle in Sidebar.Footer collapses and expands the sidebar', async function (assert) {
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Sidebar as |sidebar|>
+            <sidebar.Footer><sidebar.Toggle /></sidebar.Footer>
+          </layout.Sidebar>
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+
+    const sidebar = find('[data-part="sidebar"]')!;
+    const toggle = find(
+      '[data-part="sidebar-footer"] [data-part="sidebar-toggle"]'
+    )!;
+    assert.ok(toggle, 'toggle renders in the footer');
+
+    await click(toggle);
+    assert.dom(sidebar).hasAttribute('data-collapsed', 'true');
+    assert.dom(toggle).hasAria('expanded', 'false');
+
+    await click(toggle);
+    assert.dom(sidebar).hasAttribute('data-collapsed', 'false');
+    assert.dom(toggle).hasAria('expanded', 'true');
+  });
+
+  test('Toggle stays rendered, focusable and named in the collapsed rail', async function (assert) {
+    await render(
+      <template>
+        <AppLayout @defaultSidebarCollapsed={{true}} as |layout|>
+          <layout.Sidebar as |sidebar|>
+            <sidebar.Header><sidebar.Toggle /></sidebar.Header>
+          </layout.Sidebar>
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+
+    assert.dom('[data-part="sidebar"]').hasAttribute('data-collapsed', 'true');
+    const toggle = find('[data-part="sidebar-toggle"]') as HTMLElement;
+    assert.ok(toggle, 'toggle renders in the rail');
+    assert.dom(toggle).hasAria('label', 'Toggle sidebar');
+    assert.dom(toggle).hasAria('expanded', 'false');
+    assert.false(isVisiblyHidden(toggle), 'toggle is visible');
+    toggle.focus();
+    assert.strictEqual(document.activeElement, toggle, 'toggle takes focus');
+  });
+
+  test('Toggle passes attributes and @label through', async function (assert) {
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Sidebar as |sidebar|>
+            <sidebar.Header><sidebar.Toggle
+                @label="Shrink menu"
+                data-test-x
+              /></sidebar.Header>
+          </layout.Sidebar>
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+
+    assert.dom('[data-part="sidebar-toggle"]').hasAria('label', 'Shrink menu');
+    assert.dom('[data-part="sidebar-toggle"]').hasAttribute('data-test-x');
+  });
+
+  test('standalone Sidebar Toggle toggles the passed @state', async function (assert) {
+    const state = new AppLayoutState();
+
+    await render(
+      <template>
+        <Sidebar @state={{state}} as |sidebar|>
+          <sidebar.Header><sidebar.Toggle /></sidebar.Header>
+        </Sidebar>
+      </template>
+    );
+
+    const toggle = find('[data-part="sidebar-toggle"]')!;
+    assert.dom(toggle).hasAria('expanded', 'true');
+
+    await click(toggle);
+    assert.true(state.sidebarCollapsed);
+    assert.dom('[data-part="sidebar"]').hasAttribute('data-collapsed', 'true');
+    assert.dom(toggle).hasAria('expanded', 'false');
+
+    await click(toggle);
+    assert.false(state.sidebarCollapsed);
+    assert.dom(toggle).hasAria('expanded', 'true');
+  });
 });
+
+module(
+  'Integration | Component | Sidebar Toggle in the drawer | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    let media: MatchMediaMock | undefined;
+
+    hooks.afterEach(function () {
+      media?.restore();
+      media = undefined;
+    });
+
+    test('Toggle renders nothing in the phone drawer', async function (assert) {
+      media = mockMatchMedia(500);
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Navbar><layout.MenuToggle /></layout.Navbar>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Header><span data-test-brand>Acme</span><sidebar.Toggle
+                  data-test-toggle
+                /></sidebar.Header>
+              <sidebar.Body><a href="#a">Home</a></sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      await click('[data-part="menu-toggle"]');
+      assert.dom('[data-part="mobile-sidebar"]').exists('the drawer is open');
+      assert.dom('[data-test-brand]').exists('the rest of the header renders');
+      assert.dom('[data-part="sidebar-toggle"]').doesNotExist();
+      assert.dom('[data-test-toggle]').doesNotExist();
+    });
+  }
+);
 
 module(
   'Integration | Component | Sidebar size | frontile/layout',

@@ -72,6 +72,16 @@ function findParentPortal(origin: Element | null): Element | null {
   return null;
 }
 
+/**
+ * A portal target that no `Portal` made for itself. A portal with nowhere
+ * better to go makes its own (see `needsTarget`), marked with
+ * `data-portal-owner`, and another portal must not adopt that one: it is
+ * removed together with the portal that made it, and would take anything
+ * else rendered into it along. A tooltip that closed as the menu on the
+ * same trigger opened did exactly that, emptying the menu.
+ */
+const UNOWNED_TARGET = '[data-portal-target="true"]:not([data-portal-owner])';
+
 function findClosestPortalTarget(
   element: Element | null,
   name?: string
@@ -88,7 +98,7 @@ function findClosestPortalTarget(
         return target;
       }
     }
-    const target = getElementByAttribute(parent, 'data-portal-target', 'true');
+    const target = parent.querySelector(UNOWNED_TARGET);
     if (target && target.getAttribute('data-portal-for') === null) {
       return target;
     }
@@ -180,7 +190,7 @@ class Portal extends Component<PortalSignature> {
         @destinationElement={{destinationElement}}
       >
         {{#if (this.needsTarget destinationElement)}}
-          <PortalTarget>
+          <PortalTarget data-portal-owner={{this.id}}>
             <div data-portal="true" ...attributes>
               {{yield}}
             </div>

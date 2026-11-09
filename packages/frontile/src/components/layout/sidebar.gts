@@ -8,6 +8,7 @@ import Drawer from '../overlays/drawer';
 import NavItem from './nav-item';
 import NavFolder from './nav-folder';
 import SidebarGroup from './sidebar-group';
+import SidebarToggle, { type SidebarToggleSignature } from './sidebar-toggle';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
 import type Owner from '@ember/owner';
@@ -77,8 +78,12 @@ interface SidebarSignature {
   Blocks: {
     /**
      * Yields `Header`, `Body` and `Footer` sections, `Item` links, `Folder`
-     * for a collapsible set of items, `Group`
-     * to label a set of items. In the icon rail, `Item` labels are visually
+     * for a collapsible set of items, `Group` to label a set of items, and
+     * `Toggle`, the button that collapses and expands the sidebar. Place
+     * `Toggle` yourself, usually in `Header` or `Footer`; there is no default
+     * toggle. In the phone drawer `Toggle` renders nothing (the drawer is
+     * always expanded and has its own close button), so the same markup works
+     * at every width. In the icon rail, `Item` labels are visually
      * hidden but still read by screen readers; for your own markup, wrap the
      * text in `<span data-sidebar-label>` to get the same behavior.
      */
@@ -93,6 +98,7 @@ interface SidebarSignature {
           'rail' | 'tooltipPlacement' | 'inDrawer' | 'onActivate'
         >;
         Group: WithBoundArgs<typeof SidebarGroup, 'classes'>;
+        Toggle: WithBoundArgs<typeof SidebarToggle, 'layout' | 'state'>;
       }
     ];
   };
@@ -155,9 +161,9 @@ class Sidebar extends Component<SidebarSignature> {
   };
 
   /**
-   * Return focus to whatever opened the drawer: `MenuToggle`, or the element
-   * focused when the shortcut was pressed. With nothing focused (the body),
-   * fall back to the layout's `MenuToggle` when it is on screen.
+   * Return focus to the element that opened the drawer, `MenuToggle` or
+   * otherwise. With nothing focused (the body), fall back to the layout's
+   * `MenuToggle` when it is on screen.
    */
   get focusTrapOptions() {
     const toggleId = this.args.layout?.menuToggleId;
@@ -297,6 +303,7 @@ class Sidebar extends Component<SidebarSignature> {
                 onActivate=this.closeDrawer
               )
               Group=(component SidebarGroup classes=this.slotClasses.group)
+              Toggle=(component DrawerToggle)
             )
           }}
         </nav>
@@ -326,12 +333,20 @@ class Sidebar extends Component<SidebarSignature> {
               inDrawer=false
             )
             Group=(component SidebarGroup classes=this.slotClasses.group)
+            Toggle=(component SidebarToggle layout=@layout state=this.state)
           )
         }}
       </nav>
     {{/if}}
   </template>
 }
+
+// In the drawer there is nothing to collapse, so `Toggle` renders nothing.
+// It takes `SidebarToggle`'s signature so the same invocation, arguments and
+// attributes included, compiles in both places; they are dropped.
+const DrawerToggle: TOC<SidebarToggleSignature> = <template>
+  {{! No toggle in the drawer. }}
+</template>;
 
 const SidebarHeader: TOC<SidebarSectionSignature> = <template>
   <div data-part="sidebar-header" class={{@class}} ...attributes>{{yield}}</div>

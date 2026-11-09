@@ -508,6 +508,56 @@ export default class CustomHandlers extends Component {
 }
 ```
 
+### Link items
+
+Give an item `@href` and it renders as a real link. The anchor fills the whole row, so middle-click, open in new tab, Enter and click all behave like any other link. Activating a link item closes the menu and does not call `@onAction` or `@onSelectionChange`. Use `@route` (with `@models`, `@model` and `@query`, as on `NavLink`) to link to a route in your app instead.
+
+```gts preview collapsible
+import { Dropdown } from 'frontile';
+
+<template>
+  <Dropdown as |d|>
+    <d.Trigger @color='primary' @size='sm'>Help</d.Trigger>
+
+    <d.Menu as |Item|>
+      <Item @key='docs' @href='/docs'>Documentation</Item>
+      <Item @key='shortcuts'>Keyboard shortcuts</Item>
+    </d.Menu>
+  </Dropdown>
+</template>
+```
+
+### Custom trigger
+
+`d.Trigger` renders a `Button`. To make something else the trigger -- a link, a nav item, an avatar -- put `d.triggerModifier` on it instead. It wires the same behaviour as `d.Trigger`: the element becomes the menu's anchor, a click toggles the menu, and ArrowDown, ArrowUp, Enter and Space open it onto the first item.
+
+Give the element a role and focus the way a button has them: a `<button>`, or `role="button"` with `tabindex="0"`.
+
+```gts preview collapsible
+import { Dropdown } from 'frontile';
+
+<template>
+  <Dropdown as |d|>
+    {{! template-lint-disable no-invalid-interactive }}
+    <a
+      role='button'
+      tabindex='0'
+      class='cursor-pointer underline'
+      {{d.triggerModifier}}
+    >
+      Account
+    </a>
+
+    <d.Menu as |Item|>
+      <Item @key='profile'>Profile</Item>
+      <Item @key='sign-out'>Sign out</Item>
+    </d.Menu>
+  </Dropdown>
+</template>
+```
+
+> **Caveat for links.** Enter and Space are cancelled on the element, so an `<a href>` does not follow its link from the keyboard -- that key opens the menu instead. A pointer click is not cancelled: it opens the menu _and_ follows the `href`. Leave `href` off (as above), or cancel the click yourself, if the element should only open the menu.
+
 ### With Backdrop
 
 Control the backdrop appearance behind the dropdown menu.
@@ -573,6 +623,39 @@ export default class DropdownBackdrop extends Component {
         </d.Menu>
       </Dropdown>
     </div>
+  </template>
+}
+```
+
+### Controlled open state
+
+`@isOpen` and `@onOpenChange` let the parent own whether the menu is open.
+Pass `@isOpen` to open or close the menu from outside, and
+`@onOpenChange={{fn}}` to hear every change, including those made by the user
+(a click, <kbd>Escape</kbd>, a click outside). `NavFolder` uses them to close
+its rail menu when the sidebar expands.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Dropdown } from 'frontile';
+
+export default class ControlledDropdown extends Component {
+  @tracked isOpen = false;
+
+  setOpen = (value: boolean) => {
+    this.isOpen = value;
+  };
+
+  <template>
+    <Dropdown @isOpen={{this.isOpen}} @onOpenChange={{this.setOpen}} as |d|>
+      <d.Trigger @size='sm'>{{if this.isOpen 'Open' 'Closed'}}</d.Trigger>
+
+      <d.Menu as |Item|>
+        <Item @key='one'>One</Item>
+        <Item @key='two'>Two</Item>
+      </d.Menu>
+    </Dropdown>
   </template>
 }
 ```
@@ -751,12 +834,13 @@ export default class SiblingSubmenuDropdown extends Component {
 
 Dropdown yields the pieces you assemble the menu from:
 
-| Yielded     | Purpose                                                                                                |
-| ----------- | ------------------------------------------------------------------------------------------------------ |
-| `d.Trigger` | Button that opens the menu                                                                             |
-| `d.Menu`    | The menu itself; yields an `Item` for each entry and, as a second block param, `Sub` for a nested menu |
-| `Item`      | A single menu entry                                                                                    |
-| `Sub`       | A nested menu, yielded alongside `Item`; yields its own `s.Trigger` and `s.Menu`                       |
+| Yielded             | Purpose                                                                                                |
+| ------------------- | ------------------------------------------------------------------------------------------------------ |
+| `d.Trigger`         | Button that opens the menu                                                                             |
+| `d.triggerModifier` | Modifier that makes any element the trigger (see [Custom trigger](#custom-trigger))                    |
+| `d.Menu`            | The menu itself; yields an `Item` for each entry and, as a second block param, `Sub` for a nested menu |
+| `Item`              | A single menu entry                                                                                    |
+| `Sub`               | A nested menu, yielded alongside `Item`; yields its own `s.Trigger` and `s.Menu`                       |
 
 A `Sub`'s `s.Menu` yields `Item` and `Sub` again, the same as the root `d.Menu`, so menus can
 nest to any depth.

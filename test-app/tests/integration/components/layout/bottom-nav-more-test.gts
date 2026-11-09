@@ -227,7 +227,7 @@ module(
       assert.dom(TAB).hasAttribute('data-active', 'true');
     });
 
-    test('folder inside the sheet is inline disclosure, never a flyout', async function (assert) {
+    test('folder inside the sheet is inline disclosure, never a menu', async function (assert) {
       await render(
         <template>
           <BottomNav as |bar|>
@@ -243,7 +243,7 @@ module(
       await click(TAB);
       const trigger = `${SHEET} [data-part="nav-folder-trigger"]`;
       assert.dom(`${SHEET} [data-part="nav-folder-panel"]`).exists();
-      assert.dom(`${SHEET} [data-part="nav-folder-flyout"]`).doesNotExist();
+      assert.dom(trigger).doesNotHaveAria('haspopup');
       assert.dom(trigger).hasAria('expanded', 'false');
 
       await click(trigger);

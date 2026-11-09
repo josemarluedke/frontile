@@ -11,7 +11,7 @@ import {
   watchBreakpoint,
   type Breakpoint
 } from '../../utils/breakpoint';
-import { globalDocument, listen } from '../../utils/document-listener';
+import { globalDocument } from '../../utils/document-listener';
 import { AppLayoutState } from './app-layout-state';
 import {
   ControlledAppLayoutState,
@@ -61,9 +61,9 @@ interface AppLayoutArgs {
    * How navigation is shown below `@breakpoint`. `drawer` moves the sidebar
    * into a drawer opened by `MenuToggle`. `bottom` shows the yielded
    * `BottomNav` as a bar along the bottom instead, and renders no sidebar,
-   * `MenuToggle` or `SidebarToggle` there (the toggle shortcut does nothing
-   * either). At or above `@breakpoint` both are the desktop sidebar, and
-   * `BottomNav` renders nothing. Place `BottomNav` after `Main`.
+   * `MenuToggle` or `SidebarToggle` there. At or above `@breakpoint` both are
+   * the desktop sidebar, and `BottomNav` renders nothing. Place `BottomNav`
+   * after `Main`.
    *
    * @defaultValue 'drawer'
    */
@@ -84,20 +84,6 @@ interface AppLayoutArgs {
    * @defaultValue 'content'
    */
   scrollMode?: AppLayoutVariants['scrollMode'];
-
-  /**
-   * The keyboard shortcut that toggles the sidebar, or `false` for none. It
-   * collapses or expands the sidebar on desktop and opens or closes the
-   * drawer below `@breakpoint`. `mod` is Cmd on Apple platforms and Ctrl
-   * elsewhere; `ctrl`, `meta`, `alt` and `shift` can be combined with a key,
-   * joined by `+`. It fires when focus is inside this layout or its drawer,
-   * or on the page body; with focus on the body every layout on the page
-   * toggles. It is left alone in editable content (`contenteditable`) and
-   * ignored while the keys are held down.
-   *
-   * @defaultValue 'mod+b'
-   */
-  toggleShortcut?: string | false;
 
   /**
    * Renders a "Skip to main content" link as the first focusable element.
@@ -209,20 +195,10 @@ class AppLayout extends Component<AppLayoutSignature> {
       asideOpen: args.defaultAsideOpen
     });
     this.#controlled = new ControlledAppLayoutState(own, () => this.args);
-    // `listen` is a no-op without a global `document` (FastBoot/SSR), so
-    // constructing the layout on the server does not throw.
-    this.#stopShortcut = listen(
-      globalDocument(),
-      'keydown',
-      this.handleShortcut
-    );
   }
-
-  #stopShortcut: () => void;
 
   willDestroy(): void {
     super.willDestroy();
-    this.#stopShortcut();
     stopWatcher(watchers, this);
     stopWatcher(asideWatchers, this);
   }
@@ -358,55 +334,6 @@ class AppLayout extends Component<AppLayoutSignature> {
   isRtl = (): boolean => {
     const element = this.#root ?? globalDocument()?.documentElement;
     return element ? getComputedStyle(element).direction === 'rtl' : false;
-  };
-
-  get shortcut(): string | false {
-    return this.args.toggleShortcut ?? 'mod+b';
-  }
-
-  /** Focus inside this layout, its drawer, or on the page body. */
-  ownsTarget(target: EventTarget | null): boolean {
-    if (target === document.body) {
-      return true;
-    }
-    if (!(target instanceof Node)) {
-      return false;
-    }
-    if (this.#root?.contains(target)) {
-      return true;
-    }
-    return document.getElementById(this.drawerId)?.contains(target) ?? false;
-  }
-
-  handleShortcut = (event: KeyboardEvent): void => {
-    // A held key repeats keydown; toggling on each would flicker. In
-    // editable content the browser's own mod+b (bold) wins.
-    if (
-      event.repeat ||
-      (event.target as HTMLElement | null)?.isContentEditable
-    ) {
-      return;
-    }
-    const shortcut = this.shortcut;
-    if (
-      shortcut === false ||
-      event.defaultPrevented ||
-      !matchesShortcut(event, shortcut) ||
-      !this.ownsTarget(event.target)
-    ) {
-      return;
-    }
-    // No sidebar exists below the breakpoint in bottom mode; leave the keys
-    // to the browser.
-    if (this.bottomNavMode) {
-      return;
-    }
-    event.preventDefault();
-    if (this.belowBreakpoint) {
-      this.state.mobileSidebarOpen = !this.state.mobileSidebarOpen;
-    } else {
-      this.state.toggleSidebar();
-    }
   };
 
   get state(): AppLayoutState {
@@ -685,53 +612,6 @@ function stopWatcher(
 ): void {
   registry.get(owner)?.stop();
   registry.delete(owner);
-}
-
-function isApplePlatform(): boolean {
-  const nav = navigator as Navigator & {
-    userAgentData?: { platform?: string };
-  };
-  const platform = nav.userAgentData?.platform || nav.platform || '';
-  return /mac|iphone|ipad|ipod/i.test(platform);
-}
-
-/**
- * Whether `event` is exactly `shortcut`, e.g. `mod+b` or `ctrl+shift+k`:
- * the named modifiers held, no others, and the key (case-insensitive).
- * Option on macOS turns a letter into another character (`alt+b` types
- * `∫`), so with `alt` held a letter also matches by its physical key.
- */
-function matchesShortcut(event: KeyboardEvent, shortcut: string): boolean {
-  const parts = shortcut.toLowerCase().split('+');
-  const key = parts.pop();
-  if (!key) {
-    return false;
-  }
-  const byKey = event.key?.toLowerCase() === key;
-  const byCode =
-    event.altKey &&
-    /^[a-z]$/.test(key) &&
-    event.code === `Key${key.toUpperCase()}`;
-  if (!byKey && !byCode) {
-    return false;
-  }
-  const apple = isApplePlatform();
-  const wanted = { ctrl: false, meta: false, alt: false, shift: false };
-  for (const part of parts) {
-    if (part === 'mod') {
-      wanted[apple ? 'meta' : 'ctrl'] = true;
-    } else if (part in wanted) {
-      wanted[part as keyof typeof wanted] = true;
-    } else {
-      return false;
-    }
-  }
-  return (
-    event.ctrlKey === wanted.ctrl &&
-    event.metaKey === wanted.meta &&
-    event.altKey === wanted.alt &&
-    event.shiftKey === wanted.shift
-  );
 }
 
 export { AppLayout, type AppLayoutSignature, type AppLayoutArgs };

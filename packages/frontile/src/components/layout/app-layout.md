@@ -73,9 +73,14 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
             <span class='truncate text-sm font-semibold' data-sidebar-label>
               Acme
             </span>
+            <sidebar.Toggle />
           </sidebar.Header>
           <sidebar.Body>
-            <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            <sidebar.Item
+              @href='#overview'
+              @icon={{ViewIcon}}
+              @isActive={{true}}
+            >
               Overview
             </sidebar.Item>
             <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
@@ -84,7 +89,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
           </sidebar.Body>
         </layout.Sidebar>
         <layout.Navbar>
-          <layout.SidebarToggle />
+          <layout.MenuToggle />
           <span class='text-sm font-medium'>{{variant}}</span>
         </layout.Navbar>
         <layout.Main>
@@ -126,7 +131,11 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
             </span>
           </sidebar.Header>
           <sidebar.Body>
-            <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            <sidebar.Item
+              @href='#overview'
+              @icon={{ViewIcon}}
+              @isActive={{true}}
+            >
               Overview
             </sidebar.Item>
             <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
@@ -150,10 +159,22 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 `Sidebar` is a full-height `nav` landmark that takes the first column. It
 yields `Header`, `Body` and `Footer` sections, `Item` links, `Folder` for a
-collapsible set of items and `Group`. Give it a name with `@label` (default `Main`); if the page has more than one
-navigation, each needs its own. Render one `Sidebar` per layout: the layout
-gives its sidebar a fixed id, so a second one would repeat it.
-`SidebarToggle` is a button that collapses and expands it.
+collapsible set of items, `Group` and `Toggle`. Give it a name with `@label`
+(default `Main`); if the page has more than one navigation, each needs its own.
+Render one `Sidebar` per layout: the layout gives its sidebar a fixed id, so a
+second one would repeat it.
+
+`Toggle` is the button that collapses and expands the sidebar. There is no
+default toggle: place `<sidebar.Toggle />` where you want it, usually in
+`Header` next to the brand. In the icon rail the header stacks its children,
+so the brand sits above the toggle without any CSS from you. In the phone
+drawer `Toggle` renders nothing (the drawer is always expanded and has its own
+close button), so the same markup works at every width. Put a
+`layout.MenuToggle` in the `Navbar` to open the drawer.
+
+`layout.SidebarToggle` is the same button for use outside the sidebar, such as
+in a `Navbar` or `PageHeader`; see [Collapse modes](#collapse-modes) for when
+you need it.
 
 By default the sidebar collapses to an icon rail. Each `Item`'s label is then
 visually hidden but still names the link for screen readers, and it shows as
@@ -174,6 +195,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
+          <sidebar.Toggle />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
@@ -185,7 +207,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
-        <layout.SidebarToggle />
+        <layout.MenuToggle />
         <span class='text-sm font-medium'>Access management</span>
       </layout.Navbar>
       <layout.Main>
@@ -213,8 +235,9 @@ import { ViewIcon, RocketIcon } from 'site/components/icons';
         <sidebar.Header>
           <RocketIcon class='shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
-            Rocketry
+            Acme
           </span>
+          <sidebar.Toggle class='ml-auto' />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#launches' @icon={{ViewIcon}} @isActive={{true}}>
@@ -223,7 +246,7 @@ import { ViewIcon, RocketIcon } from 'site/components/icons';
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
-        <layout.SidebarToggle />
+        <layout.MenuToggle />
         <span class='text-sm font-medium'>Custom header</span>
       </layout.Navbar>
       <layout.Main />
@@ -264,6 +287,7 @@ import {
   <div class='demo-stack demo-stack--wide not-prose'>
     <AppLayout class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Projects' as |sidebar|>
+        <sidebar.Header><sidebar.Toggle /></sidebar.Header>
         <sidebar.Body>
           <sidebar.Group @label='Projects'>
             <sidebar.Item @href='#all' @icon={{ViewIcon}} @isActive={{true}}>
@@ -295,7 +319,7 @@ import {
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
-        <layout.SidebarToggle />
+        <layout.MenuToggle />
         <span class='text-sm font-medium'>Projects</span>
       </layout.Navbar>
       <layout.Main>
@@ -312,7 +336,8 @@ import {
 trigger that opens and closes a set of items, one level deep. Give it a
 `@label` and an optional `@icon`, and write its items as `folder.Item`. It
 opens by itself when it holds the current page. In the icon rail it opens as a
-flyout beside the rail, and in the drawer it is always inline.
+[Dropdown](../collections/dropdown) menu of its items beside the rail, and in
+the drawer it is always inline.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
@@ -327,6 +352,7 @@ import { ViewIcon, PackageIcon, SparklesIcon } from 'site/components/icons';
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
+          <sidebar.Toggle />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
@@ -341,7 +367,7 @@ import { ViewIcon, PackageIcon, SparklesIcon } from 'site/components/icons';
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
-        <layout.SidebarToggle />
+        <layout.MenuToggle />
         <span class='text-sm font-medium'>Catalog</span>
       </layout.Navbar>
       <layout.Main>
@@ -370,7 +396,11 @@ import { ViewIcon, UserIcon } from 'my-app/components/icons';
         <sidebar.Item @route='dashboard' @icon={{ViewIcon}}>
           Dashboard
         </sidebar.Item>
-        <sidebar.Item @route='users.show' @model={{@currentUser.id}} @icon={{UserIcon}}>
+        <sidebar.Item
+          @route='users.show'
+          @model={{@currentUser.id}}
+          @icon={{UserIcon}}
+        >
           My profile
         </sidebar.Item>
       </sidebar.Body>
@@ -384,11 +414,57 @@ import { ViewIcon, UserIcon } from 'my-app/components/icons';
 while any of its child routes is, so `@route='users'` stays active on
 `users.show`; pass `@isActive` if only the exact route should light up.
 
+### Custom toggle placement
+
+`Toggle` can go anywhere in the sidebar. This one sits in the `Footer`, below
+the items. It is the same button wherever it is: it keeps its name and
+`aria-expanded`, and it stays visible in the collapsed rail.
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <AppLayout class='demo-app-layout' as |layout|>
+      <layout.Sidebar @label='Footer toggle' as |sidebar|>
+        <sidebar.Header>
+          <SparklesIcon class='shrink-0 text-primary' />
+          <span class='truncate text-sm font-semibold' data-sidebar-label>
+            Acme
+          </span>
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
+        </sidebar.Body>
+        <sidebar.Footer>
+          <sidebar.Toggle />
+        </sidebar.Footer>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.MenuToggle />
+        <span class='text-sm font-medium'>Toggle in the footer</span>
+      </layout.Navbar>
+      <layout.Main />
+    </AppLayout>
+  </div>
+</template>
+```
+
 ### Collapse modes
 
 `@collapsible` sets what collapsing does. `icon`, the default, shrinks the
 sidebar to a rail. `offcanvas` hides it entirely while collapsed. `none` keeps
 it expanded and ignores collapse.
+
+An `offcanvas` sidebar that is collapsed is not on screen, so a `Toggle` inside
+it cannot bring it back. Use `layout.SidebarToggle` in the `Navbar` for that
+mode, as this demo does.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
@@ -484,13 +560,14 @@ import { AppLayout } from 'frontile';
       as |layout|
     >
       <layout.Sidebar as |sidebar|>
+        <sidebar.Header><sidebar.Toggle /></sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#home'>Home</sidebar.Item>
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
-        <span class='flex-1 text-sm font-medium'>Sidebar on the end</span>
-        <layout.SidebarToggle />
+        <layout.MenuToggle />
+        <span class='text-sm font-medium'>Sidebar on the end</span>
       </layout.Navbar>
       <layout.Main />
     </AppLayout>
@@ -506,11 +583,10 @@ breakpoints, and the layout measures them in JavaScript: an app that changes
 `--breakpoint-sm`, `--breakpoint-md` or `--breakpoint-lg` in its theme moves
 the CSS but not the layout's switch, so the two can disagree.
 
-Below the breakpoint `SidebarToggle` opens the drawer, so on its own it covers
-every width. For a separate menu button on narrow screens, put a `MenuToggle`
-in the navbar, top-left by convention. `MenuToggle` shows only below the
-breakpoint; to show only one button at each width, hide `SidebarToggle` below
-it with `@classes`, as this demo does.
+Put a `MenuToggle` in the navbar, top-left by convention, to open the drawer.
+`MenuToggle` shows only below the breakpoint. `sidebar.Toggle` renders nothing
+in the drawer, so a header that holds one needs no extra handling and phones
+never see two toggles.
 
 The drawer shows the same `Sidebar` block, so you write the sidebar once. It
 slides in from the sidebar's side (`@sidebarSide`, following the document's
@@ -522,23 +598,19 @@ the breakpoint, so any state held by the components inside it starts over.
 Narrow the window to below 48rem to open this one.
 
 ```gts preview collapsible
-import { hash } from '@ember/helper';
 import { AppLayout } from 'frontile';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
-    <AppLayout
-      class='demo-app-layout'
-      @classes={{hash sidebarToggle='hidden md:inline-flex'}}
-      as |layout|
-    >
+    <AppLayout class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Workspace' as |sidebar|>
         <sidebar.Header>
           <SparklesIcon class='shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
+          <sidebar.Toggle />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
@@ -551,7 +623,6 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
       </layout.Sidebar>
       <layout.Navbar>
         <layout.MenuToggle />
-        <layout.SidebarToggle />
         <span class='text-sm font-medium'>Access management</span>
       </layout.Navbar>
       <layout.Main>
@@ -566,10 +637,10 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 `@mobileNav="bottom"` replaces the drawer with a bar of tabs along the bottom
 of the screen. Below `@breakpoint` the layout renders its yielded
-[BottomNav](./bottom-nav) as a row under `Main`, and renders no `Sidebar`,
-`MenuToggle` or `SidebarToggle`; the keyboard shortcut does nothing there. At
-or above the breakpoint the layout shows the sidebar as usual and the
-`BottomNav` renders nothing, so you write both and each appears at its own
+[BottomNav](./bottom-nav) as a row under `Main`. There is no sidebar there, so
+`Sidebar` (and its yielded `Toggle`), `MenuToggle` and `SidebarToggle` render
+nothing. At or above the breakpoint the layout shows the sidebar as usual and
+the `BottomNav` renders nothing, so you write both and each appears at its own
 width. An open More sheet closes when the window grows past the breakpoint.
 The bar spans the full width of the layout and sits on its bottom edge in
 both variants; with `inset` it covers the frame's gutter. The default,
@@ -817,28 +888,13 @@ export default class RailNavExample extends Component {
 }
 ```
 
-### Keyboard shortcut
-
-<kbd>Cmd</kbd>+<kbd>B</kbd> (<kbd>Ctrl</kbd>+<kbd>B</kbd> outside Apple
-platforms) toggles the sidebar: it collapses or expands it on wide screens and
-opens or closes the drawer below the breakpoint. With focus inside a layout,
-only that layout toggles. With focus on the page body, the shortcut toggles
-every `AppLayout` on the page; turn it off on the others with
-`@toggleShortcut={{false}}`. Pick another combination with `@toggleShortcut`,
-such as `'mod+shift+s'`.
-
-The shortcut does nothing while focus is in editable content
-(`contenteditable`), where the browser's own <kbd>Cmd</kbd>+<kbd>B</kbd>
-makes text bold, and it does not repeat while the keys are held down. With
-`@mobileNav="bottom"` it does nothing below the breakpoint, where there is no
-sidebar.
-
 ### Using the sidebar on its own
 
 Outside an `AppLayout`, pass `@state` (and, if you want the `inset` look,
-`@variant`). The sidebar is as tall as its container. Give `SidebarToggle` the
-same `@state`, and `@controls` with the sidebar's id so `aria-controls` points
-at it.
+`@variant`). The sidebar is as tall as its container. `sidebar.Toggle` inside it
+toggles that `@state`. To put the toggle outside the sidebar, as here, give
+`SidebarToggle` the same `@state`, and `@controls` with the sidebar's id so
+`aria-controls` points at it.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
@@ -1093,7 +1149,11 @@ export default class SharedStateExample extends Component {
         <layout.Main>
           <layout.PageHeader
             @title='Monthly report'
-            @description='Details panel: {{if layout.state.asideOpen "open" "closed"}}'
+            @description='Details panel: {{if
+              layout.state.asideOpen
+              "open"
+              "closed"
+            }}'
           />
         </layout.Main>
       </AppLayout>
@@ -1105,12 +1165,11 @@ export default class SharedStateExample extends Component {
 ## Putting it together
 
 Every part in one layout, driven by one `AppLayoutState`: a sidebar with
-items and a group, both toggles, a navbar, a page header, the main content,
+items and a group, its toggle, a navbar, a page header, the main content,
 and an aside with its toggle. Narrow the window to see the drawers.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { AppLayout, AppLayoutState, Button } from 'frontile';
 import {
   ViewIcon,
@@ -1124,18 +1183,14 @@ export default class FullAppLayoutExample extends Component {
 
   <template>
     <div class='demo-stack demo-stack--wide not-prose'>
-      <AppLayout
-        @state={{this.state}}
-        @classes={{hash sidebarToggle='hidden md:inline-flex'}}
-        class='demo-app-layout'
-        as |layout|
-      >
+      <AppLayout @state={{this.state}} class='demo-app-layout' as |layout|>
         <layout.Sidebar @label='Workspace' as |sidebar|>
           <sidebar.Header>
             <SparklesIcon class='shrink-0 text-primary' />
             <span class='truncate text-sm font-semibold' data-sidebar-label>
               Acme
             </span>
+            <sidebar.Toggle />
           </sidebar.Header>
           <sidebar.Body>
             <sidebar.Item @href='#all' @icon={{ViewIcon}} @isActive={{true}}>
@@ -1155,7 +1210,6 @@ export default class FullAppLayoutExample extends Component {
         </layout.Sidebar>
         <layout.Navbar>
           <layout.MenuToggle />
-          <layout.SidebarToggle />
           <span class='text-sm font-medium'>Projects</span>
           <layout.AsideToggle class='ms-auto' />
         </layout.Navbar>
@@ -1169,8 +1223,9 @@ export default class FullAppLayoutExample extends Component {
             </:actions>
           </layout.PageHeader>
           <p class='px-4 text-sm text-neutral-firm'>
-            Sidebar collapsed: {{if this.state.sidebarCollapsed 'yes' 'no'}}.
-            Details open: {{if this.state.asideOpen 'yes' 'no'}}.
+            Sidebar collapsed:
+            {{if this.state.sidebarCollapsed 'yes' 'no'}}. Details open:
+            {{if this.state.asideOpen 'yes' 'no'}}.
           </p>
         </layout.Main>
         <layout.Aside @label='Project details'>
@@ -1192,10 +1247,12 @@ export default class FullAppLayoutExample extends Component {
   with `@skipLinkLabel`, or remove it with `@skipLink={{false}}` if the app
   already provides one.
 - `Sidebar` renders a `nav` landmark named by `@label` (default `Main`).
-- `SidebarToggle` is a button named by `@label` (default "Toggle sidebar"). It
-  sets `aria-expanded` to `true` while the sidebar is expanded (always, with
+- `Toggle` (`sidebar.Toggle`, or `layout.SidebarToggle` outside the sidebar)
+  is a button named by `@label` (default "Toggle sidebar"). It sets
+  `aria-expanded` to `true` while the sidebar is expanded (always, with
   `@collapsible="none"`) and `aria-controls` to the sidebar. Below the
-  breakpoint it opens the drawer, and `aria-expanded` follows the drawer.
+  breakpoint `layout.SidebarToggle` opens the drawer, and `aria-expanded`
+  follows the drawer; `sidebar.Toggle` renders nothing there.
 - `MenuToggle` is a button named by `@label` (default "Open menu"). It sets
   `aria-expanded` to `true` while the drawer is open and `aria-controls` to the
   sidebar.
@@ -1206,15 +1263,17 @@ export default class FullAppLayoutExample extends Component {
 - The drawer is a modal dialog named by the sidebar's `@label`. Focus stays
   inside it while it is open. Closing it returns focus to the element that
   opened it: the toggle that opened it, otherwise the element that had focus
-  when the shortcut was pressed (`MenuToggle` if focus was on the page body).
+  when it opened (`MenuToggle` if focus was on the page body).
 - `Item` is a link. The active item has `aria-current="page"`. A disabled
   item has no href and has `aria-disabled="true"`; with neither `@href` nor
   `@route` it is a disabled `<button>` instead. Its `@icon` is hidden from
   assistive technology, so the label is the link's name.
 - `Folder` has a button trigger with `aria-expanded` and `aria-controls`, and
-  its items sit in a `group` named by the trigger. In the icon rail it opens a
-  flyout that follows the trigger in the DOM. <kbd>Escape</kbd> closes the
-  flyout and returns focus to the trigger. See [NavFolder](./nav-folder).
+  its items sit in a `group` named by the trigger. In the icon rail the
+  trigger is a menu button and the items are link items of a `menu` named by
+  it: the arrow keys move between them, <kbd>Enter</kbd> follows one, and
+  <kbd>Escape</kbd> closes the menu and returns focus to the trigger. See
+  [NavFolder](./nav-folder).
 - In the icon rail, `Item` labels, `Group` headings and text inside
   `[data-sidebar-label]` are visually hidden but remain in the accessibility
   tree, so each link keeps its name. Hovering or focusing an `Item` in the
@@ -1228,24 +1287,24 @@ export default class FullAppLayoutExample extends Component {
 - `PageHeader` renders `@title` as an `h1`.
 - The inset card is decorative and hidden from assistive technology.
 
-| Key              | Action                                                              |
-| ---------------- | ------------------------------------------------------------------- |
-| `Tab`            | From the top of the page, reveals and focuses the skip link         |
-| `Enter`          | On the skip link, moves focus to the main content                   |
+| Key              | Action                                                                             |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| `Tab`            | From the top of the page, reveals and focuses the skip link                        |
+| `Enter`          | On the skip link, moves focus to the main content                                  |
 | `Cmd/Ctrl` + `B` | Collapses or expands the sidebar; below the breakpoint, opens or closes the drawer |
-| `Escape`         | Closes the drawer (sidebar or aside)                                                 |
+| `Escape`         | Closes the drawer (sidebar or aside)                                               |
 
 ## Roadmap
 
 These are not part of `AppLayout` yet. Each one would be added without breaking the current API.
 
-| Not available yet | What you get today |
-| --- | --- |
-| Resizable sidebar and aside | Fixed widths |
-| Persisted layout state | Pass `@state` and save it wherever you keep preferences, such as a cookie or `localStorage` |
-| Sticky toolbar row under the navbar | One navbar row |
-| Top navigation above the sidebar | The sidebar spans the full height, with nothing above it |
-| Floating sidebar variant | The `inset` variant, which floats the sidebar on the frame |
+| Not available yet                   | What you get today                                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| Resizable sidebar and aside         | Fixed widths                                                                                |
+| Persisted layout state              | Pass `@state` and save it wherever you keep preferences, such as a cookie or `localStorage` |
+| Sticky toolbar row under the navbar | One navbar row                                                                              |
+| Top navigation above the sidebar    | The sidebar spans the full height, with nothing above it                                    |
+| Floating sidebar variant            | The `inset` variant, which floats the sidebar on the frame                                  |
 
 ## API
 

@@ -171,20 +171,27 @@ const appLayout = tv({
     // react to the icon rail with `group-data-[collapsed=true]/sidebar:`.
     // Labels written as `<span data-sidebar-label>`, anywhere in the sidebar
     // (header, body or footer), are visually hidden in the icon rail but stay
-    // in the accessibility tree (`sr-only`, never `display: none`). A
-    // `NavFolder` flyout (`data-part="nav-folder-flyout"`) is exempt: it
-    // floats beside the rail and lists its items with their labels.
+    // in the accessibility tree (`sr-only`, never `display: none`).
     sidebar: [
       'group/sidebar col-start-1 row-[1/-1] shrink-0 flex-col',
-      'data-[collapsed=true]:[&_[data-sidebar-label]:not([data-part=nav-folder-flyout]_*)]:sr-only',
+      'data-[collapsed=true]:[&_[data-sidebar-label]]:sr-only',
       'transition-[width] duration-200',
       'motion-reduce:transition-none'
     ],
     // The sidebar's `nav` inside the mobile drawer: always expanded, as tall
     // as the drawer.
     mobileSidebar: 'group/sidebar flex min-h-0 flex-1 flex-col',
-    sidebarHeader:
+    // In the icon rail the header stacks its children (logo above `Toggle`)
+    // and grows taller than the navbar if it has to; its 12px side padding
+    // leaves room for the 36px toggle in the 4rem rail.
+    sidebarHeader: [
       'flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 px-3',
+      'group-data-[collapsed=true]/sidebar:h-auto',
+      'group-data-[collapsed=true]/sidebar:min-h-(--app-navbar-height,3rem)',
+      'group-data-[collapsed=true]/sidebar:flex-col',
+      'group-data-[collapsed=true]/sidebar:justify-center',
+      'group-data-[collapsed=true]/sidebar:py-2'
+    ],
     // Side padding comes from `--sidebar-body-px` (0.5rem by default; the
     // inset variant sets it to 0), which the items' rail-centering uses too.
     sidebarBody:
@@ -375,18 +382,10 @@ const appLayout = tv({
       },
       page: {
         base: 'min-h-dvh grid-rows-[auto_1fr]',
-        // `sticky` makes the sidebar a stacking context, so a `NavFolder`
-        // flyout's z-index only counts inside it and positioned content in
-        // `main` (later in the DOM) would paint over it. While a flyout is
-        // open the sidebar is lifted above in-page layers (z-10 is the
-        // highest used inside content: table headers, tabs, calendar).
-        // Only then: overlays (Modal, Drawer, Popover, Tooltip) have no
-        // z-index and stack by coming later in the DOM, so a sidebar lifted
-        // for good would cover them.
-        sidebar: [
-          'sticky top-0 h-dvh self-start',
-          'has-[[data-part=nav-folder-flyout]:not([hidden])]:z-20'
-        ],
+        // No z-index: overlays (Modal, Drawer, Popover, Tooltip, a rail
+        // `NavFolder`'s menu) have none and stack by coming later in the DOM,
+        // so a lifted sidebar would cover them.
+        sidebar: 'sticky top-0 h-dvh self-start',
         // The document scrolls, so the bar sticks to the bottom of the
         // viewport over the content. `z-10` is a workaround until the theme
         // has a z-index scale: it lifts the bar over in-page layers (z-10 is

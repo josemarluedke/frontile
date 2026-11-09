@@ -95,6 +95,13 @@ import { ArchiveIcon, DeleteIcon, StarIcon } from 'site/components/icons';
 </template>
 ```
 
+## Element type
+
+`NavItem` renders an `<a>` (with `@route` or `@href`) or a `<button>`, and
+inside a collapsed `NavFolder`'s menu an `<li>` menu row. Its `Element`
+signature is `HTMLAnchorElement | HTMLButtonElement | HTMLLIElement`, so
+`...attributes` you pass must suit all of them.
+
 ## Styling
 
 An item's look comes from the theme. Add classes to one item with `@class`;
@@ -126,7 +133,8 @@ import { StarIcon } from 'site/components/icons';
   without it the block text is shown. A stacked item ignores the sidebar's
   collapsed state.
 - `icon` shows the icon alone in a 44px hit target. The label shows as a
-  tooltip on hover or focus. An icon item also ignores the collapsed state.
+  tooltip on hover or focus, opening immediately with no delay. An icon item also
+  ignores the collapsed state.
 
 ```gts preview collapsible
 import { NavItem } from 'frontile';
@@ -224,7 +232,8 @@ import { ViewIcon, UserIcon } from 'site/components/icons';
 - The `@icon` is hidden from assistive technology, so the label is the link's
   name.
 - In a sidebar's icon rail the `inline` layout's label is visually hidden but still names the
-  link, and it shows as a tooltip on hover or focus.
+  link, and it shows as a tooltip on hover or focus, opening immediately with no
+  delay.
 - Put items in a `nav` landmark. `Sidebar` provides one, named by its `@label`.
 
 ## API

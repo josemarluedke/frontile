@@ -16,7 +16,7 @@ export interface AppLayoutContext {
   sidebarId: string;
   /** The `MenuToggle`'s id, so the drawer can return focus to it. */
   menuToggleId: string;
-  /** The mobile drawer's id, so the shortcut can tell it belongs here. */
+  /** The mobile drawer's id. */
   drawerId: string;
   styles: AppLayoutStyles;
   /** The variant props the layout's `styles` were built from. */

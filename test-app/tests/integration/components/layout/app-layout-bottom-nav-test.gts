@@ -1,12 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import {
-  render,
-  find,
-  click,
-  settled,
-  triggerKeyEvent
-} from '@ember/test-helpers';
+import { render, find, click, settled } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { AppLayout, AppLayoutState } from 'frontile';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
@@ -22,20 +16,6 @@ const TestIcon: TOC<{ Element: SVGSVGElement }> = <template>
     <rect width="16" height="16" />
   </svg>
 </template>;
-
-// Matches the platform check in AppLayout: Cmd on Apple platforms, else Ctrl.
-function modKeys(): { metaKey: boolean; ctrlKey: boolean } {
-  const nav = navigator as Navigator & {
-    userAgentData?: { platform?: string };
-  };
-  const platform = nav.userAgentData?.platform || nav.platform || '';
-  const apple = /mac|iphone|ipad|ipod/i.test(platform);
-  return { metaKey: apple, ctrlKey: !apple };
-}
-
-async function pressModB(): Promise<void> {
-  await triggerKeyEvent(document.body, 'keydown', 'B', modKeys());
-}
 
 const MOBILE = 500;
 const DESKTOP = 1200;
@@ -282,47 +262,6 @@ module(
       assert
         .dom('[role="dialog"]')
         .doesNotExist('the sheet does not reopen with the bar');
-    });
-
-    test('mod+b does nothing below the breakpoint in bottom mode', async function (assert) {
-      media = mockMatchMedia(MOBILE);
-      const state = new AppLayoutState();
-      await render(
-        <template>
-          <AppLayout @mobileNav="bottom" @state={{state}} as |layout|>
-            <layout.Sidebar />
-            <layout.Main>Content</layout.Main>
-            <layout.BottomNav as |bar|>
-              <bar.Item @href="#a" @icon={{TestIcon}}>A</bar.Item>
-            </layout.BottomNav>
-          </AppLayout>
-        </template>
-      );
-
-      await pressModB();
-      assert.false(state.mobileSidebarOpen);
-      assert.false(state.sidebarCollapsed);
-      assert.dom('[role="dialog"]').doesNotExist();
-    });
-
-    test('mod+b still collapses the sidebar at desktop width in bottom mode', async function (assert) {
-      media = mockMatchMedia(DESKTOP);
-      const state = new AppLayoutState();
-      await render(
-        <template>
-          <AppLayout @mobileNav="bottom" @state={{state}} as |layout|>
-            <layout.Sidebar />
-            <layout.Main>Content</layout.Main>
-            <layout.BottomNav as |bar|>
-              <bar.Item @href="#a" @icon={{TestIcon}}>A</bar.Item>
-            </layout.BottomNav>
-          </AppLayout>
-        </template>
-      );
-
-      await pressModB();
-      assert.true(state.sidebarCollapsed);
-      assert.dom(ROOT).hasAttribute('data-sidebar-collapsed', 'true');
     });
 
     test('--app-bottomnav-height is 0px with no BottomNav and equals the row height with one', async function (assert) {

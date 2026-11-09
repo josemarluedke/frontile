@@ -142,15 +142,22 @@ beneath the trigger.
 
 In the collapsed icon rail the trigger shows only its icon, with the folder's
 label as a tooltip on hover or focus, like the rail items beside it. The
-folder opens as a flyout beside the rail instead. The flyout starts with the
-folder's label, lists the items with their labels (long ones are cut short
-with an ellipsis), appears without animation, and closes when you follow an
-item, click outside, press <kbd>Escape</kbd> or tab out of it. Expanding the
-sidebar closes it too; if focus was inside it, focus moves to the trigger.
-Opening it never
-changes the inline state, so expanding the sidebar again shows the folder as
-you left it. A folder holding the current page still reports `data-active` in the
-rail, and a newly active item does not pop the flyout open.
+tooltip appears at once and never over the open menu. There the folder opens
+as a [Dropdown](../collections/dropdown) menu beside the rail instead: its
+items become link items of the menu, with their icons and labels (long ones
+are cut short with an ellipsis), and the current page is marked. The menu has
+no heading; it is named by the trigger. It closes when you follow an item,
+click outside, press <kbd>Escape</kbd> or tab out of it, and expanding the
+sidebar closes it too. Opening it never changes the inline state, so
+expanding the sidebar again shows the folder as you left it. A folder holding
+the current page still reports `data-active` in the rail while its menu is
+closed, and a newly active item does not pop the menu open.
+
+In the rail the folder's items render as menu rows, so put only
+`folder.Item` in the folder's block. Any other content renders twice: once
+hidden, so the folder can track which item is active, and once inside the
+menu. An item's own `@class` and `data-part="nav-item"` do not apply to its
+menu row.
 
 In the mobile drawer a folder is always inline.
 
@@ -178,6 +185,7 @@ import {
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
+          <sidebar.Toggle />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
@@ -197,7 +205,7 @@ import {
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
-        <layout.SidebarToggle />
+        <layout.MenuToggle />
         <span class='text-sm font-medium'>Catalog</span>
       </layout.Navbar>
       <layout.Main>
@@ -210,32 +218,40 @@ import {
 
 ## Accessibility
 
-- The trigger is a native `button` named by `@label`, with `aria-expanded` and
-  `aria-controls` pointing at the items. In the icon rail `aria-expanded`
-  follows the flyout.
-- The items sit in a `group` named by the trigger. The label at the top of
-  the flyout repeats that name for sighted users only, so it is hidden from
-  assistive technology and is not a control.
+- The trigger is a native `button` named by `@label`. Inline it is a
+  disclosure, with `aria-expanded` and `aria-controls` pointing at the items,
+  which sit in a `group` named by the trigger.
+- In the icon rail the trigger is a menu button instead (`aria-haspopup`,
+  `aria-expanded`, `aria-controls`). The items are `menuitem`s of a `menu`
+  named by the trigger (`aria-labelledby`); each holds a real link, so it
+  still opens in a new tab. A disabled item is `aria-disabled` and has no
+  link to follow.
 - The trigger never has `aria-current`; the active item inside it does.
 - The folder's `@icon` is hidden from assistive technology.
 - A closed folder keeps its items out of the tab order and the accessibility
   tree.
-- The flyout is a disclosure, not a menu: it has no `menu` role and the trigger
-  has no `aria-haspopup`. It follows the trigger in the DOM, so <kbd>Tab</kbd>
-  moves from the trigger into the flyout and out of it again; focus is never
-  trapped.
 
 ### Keyboard
 
-| Key                                  | Action                                                                             |
-| ------------------------------------ | ---------------------------------------------------------------------------------- |
-| <kbd>Enter</kbd> or <kbd>Space</kbd> | On the trigger, opens or closes the folder                                         |
-| <kbd>Tab</kbd>                       | Moves through the trigger and, while open, its items. Leaving the flyout closes it |
-| <kbd>Escape</kbd>                    | Closes the flyout and returns focus to the trigger                                 |
+Inline:
 
-Clicking outside an open flyout closes it. Expanding the sidebar with its
-keyboard shortcut while focus is in the flyout moves focus to the trigger,
-which stays in place as the folder turns inline.
+| Key                                  | Action                                               |
+| ------------------------------------ | ---------------------------------------------------- |
+| <kbd>Enter</kbd> or <kbd>Space</kbd> | On the trigger, opens or closes the folder           |
+| <kbd>Tab</kbd>                       | Moves through the trigger and, while open, its items |
+
+In the icon rail:
+
+| Key                                                                            | Action                                                                                       |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| <kbd>Enter</kbd>, <kbd>Space</kbd>, <kbd>ArrowDown</kbd> or <kbd>ArrowUp</kbd> | On the trigger, opens the menu                                                               |
+| Letters                                                                        | On the trigger, opens the menu; in the menu, moves to the next item whose label starts with them |
+| <kbd>ArrowDown</kbd> or <kbd>ArrowUp</kbd>                                     | In the menu, moves between the items, skipping disabled ones                                 |
+| <kbd>Enter</kbd>                                                               | Follows the item's link and closes the menu                                                  |
+| <kbd>Escape</kbd>                                                              | Closes the menu and returns focus to the trigger                                             |
+| <kbd>Tab</kbd>                                                                 | Closes the menu and returns focus to the trigger                                             |
+
+Clicking outside an open menu closes it, and so does expanding the sidebar.
 
 ## API
 

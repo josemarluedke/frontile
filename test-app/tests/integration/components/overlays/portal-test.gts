@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, find, settled } from '@ember/test-helpers';
+import { tracked } from '@glimmer/tracking';
 import { Portal, PortalTarget } from 'frontile';
 import { ref } from 'frontile';
 
@@ -96,6 +97,38 @@ module('Integration | Component | @frontile/overlays/Portal', function (hooks) {
     const wrapper2 = find('[data-test-id="portal-wrapper-2"]');
     const portal2 = wrapper2?.querySelector('[data-test-id="portal-1"]');
     assert.ok(portal2, 'should have found a portal inside of portal-wrapper-2');
+  });
+
+  test('a portal outlives a sibling portal whose own target it would otherwise share', async function (assert) {
+    class State {
+      @tracked showFirst = true;
+    }
+    const state = new State();
+
+    await render(
+      <template>
+        {{#if state.showFirst}}
+          <Portal data-test-id="first">First</Portal>
+        {{/if}}
+        <Portal data-test-id="second">Second</Portal>
+      </template>
+    );
+
+    assert.dom('[data-test-id="first"]').exists();
+    assert.dom('[data-test-id="second"]').exists();
+    assert.notOk(
+      find('[data-test-id="second"]')?.closest('[data-portal-owner]') ===
+        find('[data-test-id="first"]')?.closest('[data-portal-owner]'),
+      'each top-level portal has a target of its own'
+    );
+
+    state.showFirst = false;
+    await settled();
+
+    assert.dom('[data-test-id="first"]').doesNotExist();
+    assert
+      .dom('[data-test-id="second"]')
+      .exists('removing the first portal leaves the second in place');
   });
 
   test('it does not nest portal if argument  is passed in', async function (assert) {

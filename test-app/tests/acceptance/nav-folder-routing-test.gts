@@ -1,6 +1,12 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { visit, click } from '@ember/test-helpers';
+import {
+  visit,
+  click,
+  currentURL,
+  focus,
+  triggerKeyEvent
+} from '@ember/test-helpers';
 import { AppLayout, NavFolder, NavLink } from 'frontile';
 import {
   mockMatchMedia,
@@ -8,7 +14,7 @@ import {
 } from 'test-app/tests/helpers/match-media';
 
 const TRIGGER = '[data-part="nav-folder-trigger"]';
-const FLYOUT = '[data-part="nav-folder-flyout"]';
+const MENU = '[role="menu"]';
 
 module('Acceptance | NavFolder routing', function (hooks) {
   setupApplicationTest(hooks);
@@ -105,22 +111,45 @@ module('Acceptance | NavFolder routing in the icon rail', function (hooks) {
     );
   });
 
-  test('the router makes the folder active while its flyout is closed', async function (assert) {
+  test('the router makes the folder active while its menu is closed', async function (assert) {
     await visit('/sidebar-demo/second');
 
     assert.dom(TRIGGER).hasAttribute('data-active', 'true');
-    assert.dom(TRIGGER).hasAria('expanded', 'false', 'no flyout on load');
-    assert.dom(FLYOUT).isNotVisible();
-    assert.dom('#child').hasAttribute('aria-current', 'page');
-    assert.dom('#child').isNotVisible('not reachable until opened');
+    assert.dom(TRIGGER).hasAria('expanded', 'false', 'no menu on load');
+    assert.dom(MENU).doesNotExist();
+    assert.dom('#child').doesNotExist('not rendered until opened');
 
     await click('#to-first');
     assert.dom(TRIGGER).hasAttribute('data-active', 'false');
 
     await click(TRIGGER);
-    assert.dom('#child').isVisible();
+    assert.dom('#child').hasAttribute('role', 'menuitem');
+    assert.dom('#child').doesNotHaveAria('current');
     await click('#child');
+    assert.strictEqual(currentURL(), '/sidebar-demo/second');
     assert.dom(TRIGGER).hasAttribute('data-active', 'true');
     assert.dom(TRIGGER).hasAria('expanded', 'false', 'following it closed it');
+    assert.dom(MENU).doesNotExist();
+
+    await click(TRIGGER);
+    assert.dom('#child').hasAria('current', 'page');
+  });
+
+  test('Enter on a @route item transitions to its route and closes the menu', async function (assert) {
+    await visit('/sidebar-demo');
+    assert.dom(TRIGGER).hasAttribute('data-active', 'false');
+
+    await focus(TRIGGER);
+    // Only the keyup: in a browser the keydown has already moved focus into
+    // the menu, so a keyup on the trigger never happens.
+    await triggerKeyEvent(TRIGGER, 'keyup', 'ArrowDown');
+    assert.dom('#child').hasAttribute('data-active', 'true', 'on the item');
+    assert.dom('#child a').hasAttribute('href', '/sidebar-demo/second');
+
+    await triggerKeyEvent(MENU, 'keydown', 'Enter');
+    assert.strictEqual(currentURL(), '/sidebar-demo/second', 'transitioned');
+    assert.dom(MENU).doesNotExist('the menu closed');
+    assert.dom(TRIGGER).hasAria('expanded', 'false');
+    assert.dom(TRIGGER).hasAttribute('data-active', 'true', 'now active');
   });
 });

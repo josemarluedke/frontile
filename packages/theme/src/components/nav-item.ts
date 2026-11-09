@@ -59,20 +59,7 @@ const navItem = tv({
       'group-data-[collapsed=true]/sidebar:hidden'
     ],
     navFolderPanel:
-      'ms-4 flex flex-col gap-0.5 border-s border-neutral-muted ps-2',
-    // A folder's items, floating beside the icon rail. Positioned `fixed`
-    // by the component, so it escapes the sidebar body's scroll clipping.
-    // `--sidebar-rail` is reset so the rows' rail-centering start padding
-    // (see `navItemRow`) works out to the same 0.5rem as their end padding.
-    navFolderFlyout: [
-      // Bounded, so long labels truncate instead of widening it.
-      'z-50 flex min-w-48 max-w-xs flex-col gap-0.5 p-1 [--sidebar-body-px:0.5rem] [--sidebar-rail:3.25rem]',
-      'rounded-xl border border-neutral-subtle bg-surface-input shadow-elevation-3'
-    ],
-    // The folder's name at the top of its flyout, where the rail trigger
-    // shows only an icon. Text only: the group is named by the trigger.
-    navFolderFlyoutLabel:
-      'truncate px-2 pt-1 pb-0.5 text-xs font-medium text-neutral-firm'
+      'ms-4 flex flex-col gap-0.5 border-s border-neutral-muted ps-2'
   },
   variants: {
     layout: {
@@ -80,11 +67,8 @@ const navItem = tv({
         navItem: railStart,
         navFolderTrigger: railStart,
         navItemIcon: 'size-5',
-        // Hidden in the icon rail, except inside a folder's flyout: the
-        // flyout sits inside the sidebar's DOM but lists items with their
-        // labels.
-        navItemLabel:
-          'group-data-[collapsed=true]/sidebar:[&:not([data-part=nav-folder-flyout]_*)]:sr-only'
+        // Hidden in the icon rail.
+        navItemLabel: 'group-data-[collapsed=true]/sidebar:sr-only'
       },
       // Small icon over text. Ignores the sidebar's collapsed state.
       stacked: {
@@ -106,7 +90,16 @@ const navItem = tv({
         navItem: 'size-11 min-h-11 justify-center rounded-lg px-0 py-0',
         navItemIcon: 'size-5',
         navItemLabel: 'sr-only'
+      },
+      // A row of a rail folder's `Dropdown` menu: the menu item draws the
+      // row, the item only its icon, label and badge.
+      menu: {
+        navItemIcon: 'size-5'
       }
+    },
+    // The current page, in a rail folder's menu.
+    current: {
+      true: { navItemLabel: 'font-medium text-neutral-strong' }
     },
     // The visible text is the short label, so the full label is for
     // screen readers only.
