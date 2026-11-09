@@ -196,7 +196,8 @@ class NavItem extends Component<NavItemSignature> {
   constructor(owner: unknown, args: NavItemSignature['Args']) {
     super(owner as never, args);
 
-    const getRouter = (): RouterService => this.router;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const item = this;
     const folder = this.args.folder;
     if (folder) {
       // The handle reads the args lazily, so the folder always sees the
@@ -204,7 +205,7 @@ class NavItem extends Component<NavItemSignature> {
       const unregister = folder.registerItem({
         // What the link renders as active, router included.
         get isActive() {
-          return isLinkActive(args, getRouter);
+          return item.isCurrent;
         },
         get isHidden() {
           return args.isHidden ?? false;
@@ -308,7 +309,11 @@ class NavItem extends Component<NavItemSignature> {
   /** The row's key in a rail folder's menu. */
   menuKey = guidFor(this);
 
-  /** Whether the item is the current page, router included. */
+  /**
+   * Whether the item is the current page, router included. Cached so the
+   * link, the folder's handle and a rail menu row share one router lookup.
+   */
+  @cached
   get isCurrent(): boolean {
     return isLinkActive(this.args, () => this.router);
   }
@@ -385,7 +390,7 @@ class NavItem extends Component<NavItemSignature> {
           @models={{@models}}
           @query={{@query}}
           @href={{@href}}
-          @isActive={{@isActive}}
+          @isActive={{this.isCurrent}}
           @isDisabled={{@isDisabled}}
           data-component="nav-item"
           data-part="nav-item"

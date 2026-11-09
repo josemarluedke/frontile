@@ -83,15 +83,6 @@ interface NavFolderArgs {
   tooltipPlacement?: 'left' | 'right';
 
   /**
-   * Supplied by `Sidebar`: whether the sidebar renders in the mobile drawer,
-   * where the folder is always inline (never a menu). Not part of the
-   * public API.
-   *
-   * @internal
-   */
-  inDrawer?: boolean;
-
-  /**
    * Supplied by `Sidebar` while it renders in the mobile drawer: handed to
    * each item so following one closes the drawer. Not part of the public API.
    *
@@ -306,11 +297,11 @@ class NavFolder extends Component<NavFolderSignature> {
   }
 
   /**
-   * In the icon rail the items sit in a menu; inside the mobile drawer
-   * the sidebar is always expanded, so the folder is inline there.
+   * In the icon rail the items sit in a menu. `rail` is never set inside the
+   * mobile drawer, which is always expanded, so the folder is inline there.
    */
   get isMenuMode(): boolean {
-    return Boolean(this.args.rail) && !this.args.inDrawer;
+    return Boolean(this.args.rail);
   }
 
   get isMenuOpen(): boolean {

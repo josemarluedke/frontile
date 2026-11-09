@@ -69,13 +69,8 @@ class NavLink extends Component<NavLinkSignature> {
   @service declare router: RouterService;
 
   @cached
-  get models(): unknown[] {
-    return normalizeRouteArgs(this.args).models;
-  }
-
-  @cached
-  get query(): Record<string, unknown> {
-    return normalizeRouteArgs(this.args).query;
+  get routeArgs(): ReturnType<typeof normalizeRouteArgs> {
+    return normalizeRouteArgs(this.args);
   }
 
   get isActive(): boolean {
@@ -104,8 +99,8 @@ class NavLink extends Component<NavLinkSignature> {
       {{#if this.rendersLink}}
         <LinkTo
           @route={{@route}}
-          @models={{this.models}}
-          @query={{this.query}}
+          @models={{this.routeArgs.models}}
+          @query={{this.routeArgs.query}}
           aria-current={{if this.isActive "page"}}
           aria-disabled="false"
           data-active="{{this.isActive}}"

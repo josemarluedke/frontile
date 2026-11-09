@@ -95,7 +95,7 @@ interface SidebarSignature {
         Item: WithBoundArgs<typeof NavItem, 'rail' | 'tooltipPlacement'>;
         Folder: WithBoundArgs<
           typeof NavFolder,
-          'rail' | 'tooltipPlacement' | 'inDrawer' | 'onActivate'
+          'rail' | 'tooltipPlacement' | 'onActivate'
         >;
         Group: WithBoundArgs<typeof SidebarGroup, 'classes'>;
         Toggle: WithBoundArgs<typeof SidebarToggle, 'layout' | 'state'>;
@@ -299,7 +299,6 @@ class Sidebar extends Component<SidebarSignature> {
                 NavFolder
                 rail=this.rail
                 tooltipPlacement=this.tooltipPlacement
-                inDrawer=true
                 onActivate=this.closeDrawer
               )
               Group=(component SidebarGroup classes=this.slotClasses.group)
@@ -327,10 +326,7 @@ class Sidebar extends Component<SidebarSignature> {
               NavItem rail=this.rail tooltipPlacement=this.tooltipPlacement
             )
             Folder=(component
-              NavFolder
-              rail=this.rail
-              tooltipPlacement=this.tooltipPlacement
-              inDrawer=false
+              NavFolder rail=this.rail tooltipPlacement=this.tooltipPlacement
             )
             Group=(component SidebarGroup classes=this.slotClasses.group)
             Toggle=(component SidebarToggle layout=@layout state=this.state)

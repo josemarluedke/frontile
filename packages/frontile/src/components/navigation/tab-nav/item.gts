@@ -4,7 +4,7 @@ import { service } from '@ember/service';
 import { LinkTo } from '@ember/routing';
 import type RouterService from '@ember/routing/router-service';
 import type { ModifierLike } from '@glint/template';
-import { isRouteActive, normalizeRouteArgs } from '../../../utils/route-active';
+import { isLinkActive, normalizeRouteArgs } from '../../../utils/route-active';
 
 interface TabNavItemArgs {
   /**
@@ -75,26 +75,12 @@ class TabNavItem extends Component<TabNavItemSignature> {
   @service declare router: RouterService;
 
   @cached
-  get models(): unknown[] {
-    return normalizeRouteArgs(this.args).models;
-  }
-
-  @cached
-  get query(): Record<string, unknown> {
-    return normalizeRouteArgs(this.args).query;
+  get routeArgs(): ReturnType<typeof normalizeRouteArgs> {
+    return normalizeRouteArgs(this.args);
   }
 
   get isActive(): boolean {
-    // The early returns come first on purpose: `this.router` is read only
-    // once `@route` is given and `@isActive` is not.
-    if (this.args.isActive !== undefined) {
-      return this.args.isActive;
-    }
-    if (!this.args.route) {
-      return false;
-    }
-
-    return isRouteActive(this.router, this.args);
+    return isLinkActive(this.args, () => this.router);
   }
 
   get isDisabled(): boolean {
@@ -121,8 +107,8 @@ class TabNavItem extends Component<TabNavItemSignature> {
     {{#if this.rendersLink}}
       <LinkTo
         @route={{@route}}
-        @models={{this.models}}
-        @query={{this.query}}
+        @models={{this.routeArgs.models}}
+        @query={{this.routeArgs.query}}
         data-part="tab"
         class="{{@itemClass}} {{@class}}"
         aria-disabled="false"

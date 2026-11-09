@@ -60,7 +60,7 @@ interface BottomNavMoreSignature {
         >;
         Folder: WithBoundArgs<
           typeof NavFolder,
-          'rail' | 'inDrawer' | 'onActivate' | 'parent'
+          'rail' | 'onActivate' | 'parent'
         >;
       }
     ];
@@ -132,16 +132,19 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
     return [...this.#items];
   }
 
+  @cached
   get visibleItems(): NavItemHandle[] {
     return this.items.filter((item) => !item.isHidden);
   }
 
   /** A hidden item never makes the tab active. */
+  @cached
   get hasActive(): boolean {
     return this.visibleItems.some((item) => item.isActive);
   }
 
   /** A hidden item never badges the tab. */
+  @cached
   get hasBadge(): boolean {
     return this.visibleItems.some((item) => item.hasBadge);
   }
@@ -266,11 +269,7 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
             folder=this.registry
           )
           Folder=(component
-            NavFolder
-            rail=false
-            inDrawer=true
-            onActivate=this.ignore
-            parent=this.registry
+            NavFolder rail=false onActivate=this.ignore parent=this.registry
           )
         )
       }}
@@ -336,7 +335,6 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
               Folder=(component
                 NavFolder
                 rail=false
-                inDrawer=true
                 onActivate=this.closeSheet
                 parent=this.sheetRegistry
               )
