@@ -1160,5 +1160,40 @@ module(
       const { x } = geometry();
       assert.true(Math.abs(x(find('[data-part="nav-item"]')!)) <= 1);
     });
+
+    test('with no header or footer, the body insets its first and last rows like their sides', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>
+                <sidebar.Item @href="#a" data-test-first>A</sidebar.Item>
+                <sidebar.Item @href="#b" data-test-last>B</sidebar.Item>
+              </sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const { sidebar, scale, x } = geometry();
+      const rect = sidebar.getBoundingClientRect();
+      const first = find('[data-test-first]')!.getBoundingClientRect();
+      const last = find('[data-test-last]')!.getBoundingClientRect();
+      const side = x(find('[data-test-first]')!);
+      const top = (first.top - rect.top) / scale;
+      const bottom = (rect.bottom - last.bottom) / scale;
+
+      assert.true(side > 0, `side inset ${side}`);
+      assert.true(Math.abs(top - side) <= 1, `top ${top}, side ${side}`);
+      // The body fills the sidebar, so the last row is far from the bottom;
+      // its own bottom padding is what keeps a full body off the edge.
+      const body = find('[data-part="sidebar-body"]')!;
+      assert.strictEqual(
+        getComputedStyle(body).paddingBottom,
+        `${side}px`,
+        `bottom padding, row ${bottom}px from the bottom`
+      );
+    });
   }
 );

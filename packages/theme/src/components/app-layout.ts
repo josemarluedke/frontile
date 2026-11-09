@@ -243,8 +243,13 @@ const appLayout = tv({
     // negative margin, so it does not move the rows: they start at the gutter.
     // The body is a column with the rows' 4px gap, so items placed straight in
     // it are spaced like those in a `Group` (a column that must not shrink).
-    sidebarBody:
+    // With no header above it or footer below it, the body insets its first
+    // and last rows by the gutter, as it does their sides. Inset's gutter is
+    // 0: the frame's padding already holds them off the edge.
+    sidebarBody: [
       '-mx-(--sidebar-clip,0px) flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto *:shrink-0 px-[calc(var(--sidebar-gutter,0.5rem)+var(--sidebar-clip,0px))]',
+      'first:pt-(--sidebar-gutter,0.5rem) last:pb-(--sidebar-gutter,0.5rem)'
+    ],
     // A bare `Toggle` is offset so its icon sits on the content line.
     sidebarFooter: [
       'shrink-0 px-(--sidebar-gutter,0.5rem) py-2',
