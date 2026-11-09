@@ -180,7 +180,7 @@ import {
         </layout.Sidebar>
         <layout.Navbar>
           <layout.MenuToggle />
-          <Button @size='sm' @variant='outline' @class='ms-auto'>
+          <Button @size='xs' @variant='outline' @class='ms-auto'>
             <SearchIcon class='size-4' />
             Search
           </Button>
@@ -220,7 +220,7 @@ import {
             <b.Item @href='#orders'>Orders</b.Item>
             <b.Item>#1042</b.Item>
           </Breadcrumbs>
-          <Button @size='sm' @variant='outline' @class='ms-auto'>
+          <Button @size='xs' @variant='outline' @class='ms-auto'>
             Refund
           </Button>
         </layout.Navbar>
@@ -407,8 +407,8 @@ import DemoFrame from 'site/components/demo-frame';
           @description='Roles group the permissions you grant to people.'
         >
           <:actions>
-            <Button @size='sm' @variant='outline'>Export</Button>
-            <Button @size='sm' @color='primary'>New role</Button>
+            <Button @size='xs' @variant='outline'>Export</Button>
+            <Button @size='xs' @color='primary'>New role</Button>
           </:actions>
           <:default>
             <Chip @size='sm'>12 roles</Chip>
@@ -508,7 +508,7 @@ export default class ControlledAsideExample extends Component {
         <layout.Navbar>
           <span class='text-sm font-medium'>Billing</span>
           <Button
-            @size='sm'
+            @size='xs'
             @class='ms-auto'
             @onPress={{layout.state.toggleAside}}
           >
@@ -540,7 +540,7 @@ import { AppLayout, AppLayoutState, Button } from 'frontile';
 import DemoFrame from 'site/components/demo-frame';
 
 const DetailsButton: TOC<{ Args: { state: AppLayoutState } }> = <template>
-  <Button @size='sm' @onPress={{@state.toggleAside}}>
+  <Button @size='xs' @onPress={{@state.toggleAside}}>
     {{if @state.asideOpen 'Hide details' 'Show details'}}
   </Button>
 </template>;
@@ -649,7 +649,7 @@ import {
       </layout.Sidebar>
       <layout.Navbar>
         <layout.MenuToggle />
-        <Button @size='sm' @variant='outline' @class='ms-auto'>
+        <Button @size='xs' @variant='outline' @class='ms-auto'>
           <SearchIcon class='size-4' />
           Search
         </Button>
@@ -662,7 +662,7 @@ import {
           @description='The last 30 days in your workspace.'
         >
           <:actions>
-            <Button @size='sm' @color='primary'>
+            <Button @size='xs' @color='primary'>
               <PlusIcon class='size-4' />
               New order
             </Button>
