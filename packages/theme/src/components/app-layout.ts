@@ -34,12 +34,12 @@ const sidebarWidths = {
   },
   inset: {
     expanded: {
-      sidebar: 'w-60 [--sidebar-rail:3.75rem]',
+      sidebar: 'w-60 [--sidebar-rail:3rem]',
       token: '[--app-sidebar-width:15rem]'
     },
     collapsed: {
-      sidebar: 'w-[4.5rem] [--sidebar-rail:3.75rem]',
-      token: '[--app-sidebar-width:4.5rem]'
+      sidebar: 'w-[3.75rem] [--sidebar-rail:3rem]',
+      token: '[--app-sidebar-width:3.75rem]'
     },
     // 80px plus the 12px `pe-3`/`ps-3` gutter.
     rail: {
@@ -184,24 +184,41 @@ const appLayout = tv({
     // In the icon rail the header stacks its children (logo above `Toggle`)
     // and grows taller than the navbar if it has to; its 12px side padding
     // leaves room for the 36px toggle in the 4rem rail.
+    // Its start is the content line, where the items' icons sit (centered in
+    // the rail, so a 1.25rem brand icon lines up with them), and its end the
+    // gutter (the toggle's fill lines up with a row's).
     sidebarHeader: [
-      'flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 px-3',
+      'flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2)] pe-(--sidebar-gutter,0.5rem)',
+      'group-data-[collapsed=true]/sidebar:ps-(--sidebar-gutter,0.5rem)',
+      // The stacked children are centered; an `ml-auto` meant for the
+      // expanded row (a toggle pushed to the end) would shove one aside.
+      'group-data-[collapsed=true]/sidebar:*:mx-0',
       'group-data-[collapsed=true]/sidebar:h-auto',
       'group-data-[collapsed=true]/sidebar:min-h-(--app-navbar-height,3rem)',
       'group-data-[collapsed=true]/sidebar:flex-col',
       'group-data-[collapsed=true]/sidebar:justify-center',
       'group-data-[collapsed=true]/sidebar:py-2'
     ],
-    // Side padding comes from `--sidebar-body-px` (0.5rem by default; the
-    // inset variant sets it to 0), which the items' rail-centering uses too.
+    // Where a row's fill starts, from the sidebar's edge: `--sidebar-gutter`
+    // (0.5rem by default, 0 in the inset variant, whose frame is the gutter).
+    // The items' rail-centering, the header and the footer use it too.
+    // `--sidebar-clip` is the room the scrolling body leaves for the focus
+    // ring, which it would clip at its edge. It is padding with an equal
+    // negative margin, so it does not move the rows: they start at the gutter.
+    // The body is a column with the rows' 4px gap, so items placed straight in
+    // it are spaced like those in a `Group` (a column that must not shrink).
     sidebarBody:
-      'min-h-0 flex-1 overflow-y-auto px-[var(--sidebar-body-px,0.5rem)]',
-    sidebarFooter: 'shrink-0 px-2 py-2',
+      '-mx-(--sidebar-clip,0px) flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto *:shrink-0 px-[calc(var(--sidebar-gutter,0.5rem)+var(--sidebar-clip,0px))]',
+    // A bare `Toggle` is offset so its icon sits on the content line.
+    sidebarFooter: [
+      'shrink-0 px-(--sidebar-gutter,0.5rem) py-2',
+      '*:data-[part=sidebar-toggle]:ms-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2_-_var(--sidebar-gutter,0.5rem)_-_0.5rem)]'
+    ],
     // `Sidebar.Group`: a labelled set of items. The label is visually hidden
     // in the rail like any other sidebar label.
-    sidebarGroup: 'flex flex-col gap-0.5 py-2',
+    sidebarGroup: 'flex flex-col gap-1 py-2',
     sidebarGroupLabel: [
-      'truncate px-2 pb-1 text-xs font-medium text-neutral-firm',
+      'truncate ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2_-_var(--sidebar-gutter,0.5rem))] pe-2 pb-1 text-xs font-medium text-neutral-firm',
       'group-data-[collapsed=true]/sidebar:sr-only'
     ],
     sidebarToggle: [
@@ -262,9 +279,11 @@ const appLayout = tv({
       inset: {
         base: 'bg-neutral-subtle p-3',
         // Transparent, borderless: the sidebar floats on the tinted frame.
-        // 0.375rem clears the 5px focus ring, which the scrolling body would
-        // otherwise clip at its edge.
-        sidebar: 'bg-transparent [--sidebar-body-px:0.375rem]',
+        // The frame's own padding is the gutter, so rows start at the sidebar's
+        // edge. 0.375rem of clip room clears the 5px focus ring, which the
+        // scrolling body would otherwise clip at its edge.
+        sidebar:
+          'bg-transparent [--sidebar-clip:0.375rem] [--sidebar-gutter:0px]',
         mainCard:
           'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted',
         aside: 'border-s border-neutral-subtle',
@@ -406,7 +425,7 @@ const appLayout = tv({
     // stacked labels. 0.3125rem still clears the 5px focus ring.
     {
       sidebarSize: 'rail',
-      class: { sidebar: '[--sidebar-body-px:0.3125rem]' }
+      class: { sidebar: '[--sidebar-gutter:0.3125rem]' }
     },
 
     // The inset sidebar floats on the frame, so it supplies its own spacing

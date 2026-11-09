@@ -6,16 +6,21 @@ import type { VariantProps } from '../tw';
 // closes over it instead of the icon sliding as the width animates.
 // Start padding puts it at the center of the rail's content box:
 // (rail - body padding on both sides - icon 1.25rem) / 2. The body's
-// side padding is `--sidebar-body-px` (0.5rem unless the variant sets it).
+// side padding is `--sidebar-gutter` (0.5rem unless the variant sets it).
 // `--sidebar-rail` is the content width, so the inset variant excludes its
 // 0.75rem gap. Only the inline layout follows the rail.
 const railStart =
-  'ps-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-body-px,0.5rem)_-_1.25rem)/2)]';
+  'ps-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-gutter,0.5rem)_-_1.25rem)/2)]';
+
+// The end padding puts a trailing icon or badge 1rem from the sidebar's edge,
+// whatever the variant's gutter: a `Toggle` at the header's end has its icon
+// there too (its fill starts at the gutter, its icon sits 0.5rem inside).
+const rowPe = 'pe-[calc(1rem_-_var(--sidebar-gutter,0.5rem))]';
 
 const navRow = [
   ...focusVisibleRing,
   // 36px with a mouse; 44px where the pointer is coarse (touch).
-  'flex min-h-9 w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm pointer-coarse:min-h-11',
+  `flex min-h-9 w-full items-center gap-2 rounded-lg ps-2 ${rowPe} py-1.5 text-sm pointer-coarse:min-h-11`,
   'text-neutral-firm',
   'not-data-[disabled=true]:hover:bg-neutral-muted',
   'not-data-[disabled=true]:hover:text-neutral-strong',
@@ -58,8 +63,11 @@ const navItem = tv({
       'rtl:-scale-x-100 rtl:data-[open=true]:-rotate-90',
       'group-data-[collapsed=true]/sidebar:hidden'
     ],
+    // The first child's top margin spaces it from the trigger. It lives
+    // inside the panel because the collapsed panel clips it; a gap or
+    // padding on the folder would show 4px while closed.
     navFolderPanel:
-      'ms-4 flex flex-col gap-0.5 border-s border-neutral-muted ps-2'
+      'ms-4 flex flex-col gap-1 border-s border-neutral-muted ps-2 *:first:mt-1'
   },
   variants: {
     layout: {

@@ -65,7 +65,7 @@ import { NavFolder } from 'frontile';
 import { PackageIcon, UserIcon } from 'site/components/icons';
 
 <template>
-  <nav aria-label='Admin' class='not-prose flex w-56 flex-col gap-0.5'>
+  <nav aria-label='Admin' class='not-prose flex w-56 flex-col gap-1'>
     <NavFolder @label='Products' @icon={{PackageIcon}} as |folder|>
       <folder.Item @href='#all-products' @isActive={{true}}>
         All products
@@ -185,7 +185,7 @@ import {
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
-          <sidebar.Toggle />
+          <sidebar.Toggle class='ml-auto' />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}}>

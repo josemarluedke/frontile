@@ -73,7 +73,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
             <span class='truncate text-sm font-semibold' data-sidebar-label>
               Acme
             </span>
-            <sidebar.Toggle />
+            <sidebar.Toggle class='ml-auto' />
           </sidebar.Header>
           <sidebar.Body>
             <sidebar.Item
@@ -182,6 +182,24 @@ a tooltip on hover or focus. For your own markup in the header, body or
 footer, wrap the text in `<span data-sidebar-label>` to hide it in the rail
 the same way.
 
+### Alignment and spacing
+
+The header, body and footer share one set of lines, so they stack without any
+padding of your own. A row's hover and active fill starts a small gutter in
+from the sidebar's edge (`0.5rem` in `attached`; none in `inset`, where the
+frame's padding is the gutter), so it never touches the edge of the window or
+the content. Icons, header brand and group labels start at one content line,
+which sits where the icon is centered in the collapsed rail, so nothing moves
+when the sidebar collapses. A trailing icon or badge, and the header's
+`Toggle`, end `1rem` from the edge.
+
+Rows in the `Body`, a `Group` or a `Folder` are `0.25rem` apart. To line your
+own markup up with the items, give a brand icon `size-5` and put other
+content in a row styled like an item. A bare `Toggle` in the `Footer` lines up
+by itself. In the header, put `class='ml-auto'` on a `Toggle` that follows the
+brand, or `mr-auto` when the sidebar is on the end side; the collapsed rail
+ignores both.
+
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
@@ -195,7 +213,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
-          <sidebar.Toggle />
+          <sidebar.Toggle class='ml-auto' />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
@@ -287,7 +305,7 @@ import {
   <div class='demo-stack demo-stack--wide not-prose'>
     <AppLayout class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Projects' as |sidebar|>
-        <sidebar.Header><sidebar.Toggle /></sidebar.Header>
+        <sidebar.Header><sidebar.Toggle class='ml-auto' /></sidebar.Header>
         <sidebar.Body>
           <sidebar.Group @label='Projects'>
             <sidebar.Item @href='#all' @icon={{ViewIcon}} @isActive={{true}}>
@@ -352,7 +370,7 @@ import { ViewIcon, PackageIcon, SparklesIcon } from 'site/components/icons';
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
-          <sidebar.Toggle />
+          <sidebar.Toggle class='ml-auto' />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
@@ -462,31 +480,40 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 sidebar to a rail. `offcanvas` hides it entirely while collapsed. `none` keeps
 it expanded and ignores collapse.
 
-An `offcanvas` sidebar that is collapsed is not on screen, so a `Toggle` inside
-it cannot bring it back. Use `layout.SidebarToggle` in the `Navbar` for that
-mode, as this demo does.
+Each demo collapses with the `Toggle` in its sidebar header. An `offcanvas`
+sidebar that is collapsed is not on screen, so a `Toggle` inside it cannot bring
+it back. Show `layout.SidebarToggle` in the `Navbar` while the sidebar is
+collapsed, as the `offcanvas` demo does with `layout.state.sidebarCollapsed`.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
-import { array } from '@ember/helper';
+import { array, hash } from '@ember/helper';
 import { ViewIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide not-prose'>
-    {{#each (array 'icon' 'offcanvas' 'none') as |mode|}}
-      <AppLayout
-        @defaultSidebarCollapsed={{true}}
-        class='demo-app-layout'
-        as |layout|
-      >
-        <layout.Sidebar @collapsible={{mode}} as |sidebar|>
+    {{#each
+      (array
+        (hash name='icon')
+        (hash name='offcanvas' reopen=true)
+        (hash name='none')
+      )
+      as |mode|
+    }}
+      <AppLayout class='demo-app-layout' as |layout|>
+        <layout.Sidebar @collapsible={{mode.name}} as |sidebar|>
+          <sidebar.Header><sidebar.Toggle class='ml-auto' /></sidebar.Header>
           <sidebar.Body>
             <sidebar.Item @href='#home' @icon={{ViewIcon}}>Home</sidebar.Item>
           </sidebar.Body>
         </layout.Sidebar>
         <layout.Navbar>
-          <layout.SidebarToggle />
-          <span class='text-sm font-medium'>collapsible: {{mode}}</span>
+          {{#if mode.reopen}}
+            {{#if layout.state.sidebarCollapsed}}
+              <layout.SidebarToggle />
+            {{/if}}
+          {{/if}}
+          <span class='text-sm font-medium'>collapsible: {{mode.name}}</span>
         </layout.Navbar>
         <layout.Main />
       </AppLayout>
@@ -560,7 +587,7 @@ import { AppLayout } from 'frontile';
       as |layout|
     >
       <layout.Sidebar as |sidebar|>
-        <sidebar.Header><sidebar.Toggle /></sidebar.Header>
+        <sidebar.Header><sidebar.Toggle class='mr-auto' /></sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#home'>Home</sidebar.Item>
         </sidebar.Body>
@@ -610,7 +637,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
-          <sidebar.Toggle />
+          <sidebar.Toggle class='ml-auto' />
         </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item @href='#overview' @icon={{ViewIcon}}>
@@ -1012,7 +1039,7 @@ element, so your own parts can line up with the shell:
 | `--app-bottomnav-height` | The bottom bar's height, including the safe-area inset            |
 
 `--app-sidebar-width` is `16rem` expanded and `4rem` collapsed in the
-`attached` variant, and `15rem` and `4.5rem` in `inset`. With `@size="rail"` it
+`attached` variant, and `15rem` and `3.75rem` in `inset`. With `@size="rail"` it
 is `5rem` (`attached`) or `5.75rem` (`inset`, including the gutter). It is `0px` when there
 is no sidebar column: the layout has no `Sidebar`, the viewport is below the
 breakpoint and the sidebar is a drawer, or the sidebar is collapsed with
@@ -1190,7 +1217,7 @@ export default class FullAppLayoutExample extends Component {
             <span class='truncate text-sm font-semibold' data-sidebar-label>
               Acme
             </span>
-            <sidebar.Toggle />
+            <sidebar.Toggle class='ml-auto' />
           </sidebar.Header>
           <sidebar.Body>
             <sidebar.Item @href='#all' @icon={{ViewIcon}} @isActive={{true}}>

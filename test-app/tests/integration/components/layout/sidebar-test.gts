@@ -1,3 +1,4 @@
+import type { TOC } from '@ember/component/template-only';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click, settled } from '@ember/test-helpers';
@@ -722,5 +723,199 @@ module(
         );
       });
     }
+  }
+);
+
+const TestIcon: TOC<{ Element: SVGSVGElement }> = <template>
+  <svg viewBox="0 0 20 20" width="20" height="20" ...attributes>
+    <rect width="20" height="20" />
+  </svg>
+</template>;
+
+module(
+  'Integration | Component | Sidebar alignment | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    let previous: Partial<ReturnType<typeof useStyles>>;
+
+    hooks.beforeEach(function () {
+      previous = {
+        appLayout: useStyles().appLayout,
+        navItem: useStyles().navItem
+      };
+      registerCustomStyles({
+        appLayout: realStyles.appLayout,
+        navItem: realStyles.navItem
+      });
+    });
+
+    hooks.afterEach(function () {
+      registerCustomStyles(previous);
+    });
+
+    // The test container is scaled, so work in layout px: divide every
+    // measured distance by the sidebar's own scale.
+    function geometry() {
+      const sidebar = find('[data-part="sidebar"]') as HTMLElement;
+      const rect = sidebar.getBoundingClientRect();
+      const scale = rect.width / sidebar.offsetWidth;
+      const x = (el: Element, inset = 0) =>
+        (el.getBoundingClientRect().left - rect.left) / scale + inset;
+      return { sidebar, scale, x };
+    }
+
+    // The sidebar's width transitions when it collapses; wait for it to stop.
+    async function widthSettled() {
+      const sidebar = find('[data-part="sidebar"]') as HTMLElement;
+      let last = -1;
+      for (let i = 0; i < 40 && sidebar.offsetWidth !== last; i++) {
+        last = sidebar.offsetWidth;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+
+    for (const variant of ['attached', 'inset'] as const) {
+      test(`the ${variant} header, items, group labels and footer share one content line`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @variant={{variant}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Header>
+                  <TestIcon data-test-brand />
+                  <sidebar.Toggle class="ml-auto" />
+                </sidebar.Header>
+                <sidebar.Body>
+                  <sidebar.Group @label="Projects">
+                    <sidebar.Item
+                      @href="#a"
+                      @icon={{TestIcon}}
+                    >Alpha</sidebar.Item>
+                  </sidebar.Group>
+                </sidebar.Body>
+                <sidebar.Footer><sidebar.Toggle
+                    data-test-footer-toggle
+                  /></sidebar.Footer>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const { x } = geometry();
+        const icon = x(find('[data-part="nav-item-icon"]')!);
+        const brand = x(find('[data-test-brand]')!);
+        // The toggle's 20px icon sits 8px inside its 36px button.
+        const footerToggle = x(find('[data-test-footer-toggle]')!, 8);
+        const group = find('[data-part="sidebar-group-label"]') as HTMLElement;
+        const groupText =
+          x(group) + parseFloat(getComputedStyle(group).paddingLeft);
+
+        assert.true(
+          Math.abs(brand - icon) <= 1,
+          `brand ${brand}, icon ${icon}`
+        );
+        assert.true(
+          Math.abs(footerToggle - icon) <= 1,
+          `footer toggle ${footerToggle}, icon ${icon}`
+        );
+        assert.true(
+          Math.abs(groupText - icon) <= 1,
+          `group label ${groupText}, icon ${icon}`
+        );
+      });
+
+      test(`${variant} rows are 4px apart in the body and in a group`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @variant={{variant}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Body>
+                  <sidebar.Item @href="#a">A</sidebar.Item>
+                  <sidebar.Item @href="#b">B</sidebar.Item>
+                  <sidebar.Group @label="More">
+                    <sidebar.Item @href="#c">C</sidebar.Item>
+                    <sidebar.Item @href="#d">D</sidebar.Item>
+                  </sidebar.Group>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const { scale } = geometry();
+        const rows = [
+          ...document.querySelectorAll('[data-part="nav-item"]')
+        ].map((el) => el.getBoundingClientRect());
+        const gap = (a: number, b: number) =>
+          (rows[b]!.top - rows[a]!.bottom) / scale;
+
+        assert.true(Math.abs(gap(0, 1) - 4) <= 0.5, `body gap ${gap(0, 1)}`);
+        assert.true(Math.abs(gap(2, 3) - 4) <= 0.5, `group gap ${gap(2, 3)}`);
+      });
+
+      test(`the ${variant} collapsed rail keeps the icon and centers the header toggle`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @variant={{variant}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Header>
+                  <sidebar.Toggle class="ml-auto" />
+                </sidebar.Header>
+                <sidebar.Body>
+                  <sidebar.Item @href="#a" @icon={{TestIcon}}>A</sidebar.Item>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const before = x2();
+        await click('[data-part="sidebar-toggle"]');
+        await widthSettled();
+        const after = x2();
+
+        assert.true(
+          Math.abs(after.icon - before.icon) <= 1,
+          `icon stays put: ${before.icon} -> ${after.icon}`
+        );
+        assert.true(
+          Math.abs(after.toggleCenter - (after.icon + 10)) <= 1,
+          `toggle centered on the icon: ${after.toggleCenter} vs ${after.icon + 10}`
+        );
+
+        function x2() {
+          const { x } = geometry();
+          const icon = x(find('[data-part="nav-item-icon"]')!);
+          const toggle = find('[data-part="sidebar-toggle"]') as HTMLElement;
+          const { scale } = geometry();
+          return {
+            icon,
+            toggleCenter:
+              x(toggle) + toggle.getBoundingClientRect().width / scale / 2
+          };
+        }
+      });
+    }
+
+    test('inset rows start at the sidebar edge: the frame padding is the gutter', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="inset" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body><sidebar.Item
+                  @href="#a"
+                >A</sidebar.Item></sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const { x } = geometry();
+      assert.true(Math.abs(x(find('[data-part="nav-item"]')!)) <= 1);
+    });
   }
 );

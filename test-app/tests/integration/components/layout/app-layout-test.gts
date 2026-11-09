@@ -580,7 +580,7 @@ module(
       assert.strictEqual(readVar('--app-sidebar-width'), '16rem');
     });
 
-    test('inset values: 15rem expanded, 4.5rem collapsed', async function (assert) {
+    test('inset values: 15rem expanded, 3.75rem collapsed', async function (assert) {
       await render(
         <template>
           <AppLayout as |layout|>
@@ -600,7 +600,7 @@ module(
 
       assert.strictEqual(readVar('--app-sidebar-width'), '15rem');
       await click('[data-test-toggle]');
-      assert.strictEqual(readVar('--app-sidebar-width'), '4.5rem');
+      assert.strictEqual(readVar('--app-sidebar-width'), '3.75rem');
     });
 
     test('--app-sidebar-width reports 5rem for an attached rail', async function (assert) {

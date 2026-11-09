@@ -33,7 +33,7 @@ import { NavItem } from 'frontile';
 import { ViewIcon, SettingsIcon, UserIcon } from 'site/components/icons';
 
 <template>
-  <nav aria-label='Workspace' class='not-prose flex w-56 flex-col gap-0.5'>
+  <nav aria-label='Workspace' class='not-prose flex w-56 flex-col gap-1'>
     <NavItem @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
       Overview
     </NavItem>
@@ -83,7 +83,7 @@ import { NavItem } from 'frontile';
 import { ArchiveIcon, DeleteIcon, StarIcon } from 'site/components/icons';
 
 <template>
-  <nav aria-label='Projects' class='not-prose flex w-56 flex-col gap-0.5'>
+  <nav aria-label='Projects' class='not-prose flex w-56 flex-col gap-1'>
     <NavItem @href='#starred' @icon={{StarIcon}}>Starred</NavItem>
     <NavItem @href='#archived' @icon={{ArchiveIcon}} @isDisabled={{true}}>
       Archived
@@ -109,12 +109,16 @@ they are merged with the item's own, so a class that conflicts with a theme
 class wins, like the text color here. `AppLayout`'s `@classes` does not reach
 items.
 
+Items do not space themselves: stack them in a column with `gap-1`, as these
+demos do. Inside a `Sidebar` that is already done, and the row's padding lines
+its icon up with the rest of the sidebar.
+
 ```gts preview
 import { NavItem } from 'frontile';
 import { StarIcon } from 'site/components/icons';
 
 <template>
-  <nav aria-label='Favorites' class='not-prose flex w-56 flex-col gap-0.5'>
+  <nav aria-label='Favorites' class='not-prose flex w-56 flex-col gap-1'>
     <NavItem @href='#starred' @icon={{StarIcon}} @class='text-primary'>
       Starred
     </NavItem>
@@ -142,7 +146,7 @@ import { ViewIcon, SettingsIcon, UserIcon } from 'site/components/icons';
 
 <template>
   <div class='not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
-    <nav aria-label='Inline' class='flex w-48 flex-col gap-0.5'>
+    <nav aria-label='Inline' class='flex w-48 flex-col gap-1'>
       <NavItem @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
         Overview
       </NavItem>
@@ -197,7 +201,7 @@ import { ViewIcon, UserIcon } from 'site/components/icons';
 
 <template>
   <div class='not-prose flex flex-wrap items-start gap-8 rounded-lg bg-surface-card p-4'>
-    <nav aria-label='Inbox' class='flex w-48 flex-col gap-0.5'>
+    <nav aria-label='Inbox' class='flex w-48 flex-col gap-1'>
       <NavItem @href='#inbox' @icon={{ViewIcon}} @badge={{3}} @badgeLabel='3 unread'>
         Inbox
       </NavItem>
