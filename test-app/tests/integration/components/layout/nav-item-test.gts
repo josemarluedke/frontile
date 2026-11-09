@@ -9,7 +9,7 @@ import {
   settled
 } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
-import { Sidebar, AppLayoutState } from 'frontile';
+import { Sidebar } from 'frontile';
 import NavItem from 'frontile/components/layout/nav-item';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
@@ -497,11 +497,9 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
     });
 
     test('stacked item in a collapsed Sidebar keeps its label visible', async function (assert) {
-      const state = new AppLayoutState();
-      state.collapseSidebar();
       await render(
         <template>
-          <Sidebar @state={{state}} @collapsible="icon" as |sidebar|>
+          <Sidebar @defaultCollapsed={{true}} @collapsible="icon" as |sidebar|>
             <sidebar.Body>
               <sidebar.Item
                 @href="#a"
@@ -525,7 +523,9 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
         </template>
       );
 
-      assert.true(state.sidebarCollapsed);
+      assert
+        .dom('[data-part="sidebar"]')
+        .hasAttribute('data-collapsed', 'true');
       const short = find('#item [data-part="nav-item-short-label"]')!;
       assert.true(short.getBoundingClientRect().width > 1);
       assert.notStrictEqual(getComputedStyle(short).position, 'absolute');
@@ -534,11 +534,9 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
     });
 
     test('icon item in a collapsed Sidebar is unchanged', async function (assert) {
-      const state = new AppLayoutState();
-      state.collapseSidebar();
       await render(
         <template>
-          <Sidebar @state={{state}} @collapsible="icon" as |sidebar|>
+          <Sidebar @defaultCollapsed={{true}} @collapsible="icon" as |sidebar|>
             <sidebar.Body>
               <sidebar.Item
                 @href="#a"

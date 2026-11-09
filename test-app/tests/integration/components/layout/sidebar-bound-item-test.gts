@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, triggerEvent, click } from '@ember/test-helpers';
-import { AppLayout, Sidebar, SidebarGroup, AppLayoutState } from 'frontile';
+import { AppLayout, Sidebar, SidebarGroup } from 'frontile';
 import NavItem from 'frontile/components/layout/nav-item';
 import type { TOC } from '@ember/component/template-only';
 
@@ -287,10 +287,9 @@ module(
     });
 
     test('Item and Group work in a standalone Sidebar', async function (assert) {
-      const state = new AppLayoutState();
       await render(
         <template>
-          <Sidebar @state={{state}} as |sidebar|>
+          <Sidebar as |sidebar|>
             <sidebar.Body>
               <sidebar.Group @label="Reports">
                 <sidebar.Item @href="/daily" @isActive={{true}}>

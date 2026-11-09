@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { registerDestructor } from '@ember/destroyable';
 import { guidFor } from '@ember/object/internals';
@@ -9,7 +9,6 @@ import NavItem from './nav-item';
 import NavFolder from './nav-folder';
 import SidebarGroup from './sidebar-group';
 import SidebarToggle, { type SidebarToggleSignature } from './sidebar-toggle';
-import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
 import type Owner from '@ember/owner';
 import type { AppLayoutVariants } from '@frontile/theme';
@@ -69,10 +68,27 @@ interface SidebarArgs {
   variant?: AppLayoutVariants['variant'];
 
   /**
-   * The state that drives collapse. Only used when the sidebar is rendered
-   * outside an `AppLayout`; inside one it follows the layout's state.
+   * Whether the sidebar is collapsed, for a sidebar you control. `Toggle`
+   * and the yielded actions then call `@onCollapsedChange` and leave the
+   * change to you. Without it the sidebar keeps its own state, starting from
+   * `@defaultCollapsed`. Only used outside an `AppLayout`; inside one, use the
+   * layout's `@sidebarCollapsed`.
    */
-  state?: AppLayoutState;
+  collapsed?: boolean;
+
+  /**
+   * Whether the sidebar starts collapsed when it keeps its own state (no
+   * `@collapsed`). Only used outside an `AppLayout`.
+   *
+   * @defaultValue false
+   */
+  defaultCollapsed?: boolean;
+
+  /**
+   * Called with the requested collapsed state when `Toggle` or a yielded
+   * action changes it. Only used outside an `AppLayout`.
+   */
+  onCollapsedChange?: (collapsed: boolean) => void;
 
   /**
    * Supplied by `AppLayout`. Not part of the public API.
@@ -88,7 +104,9 @@ interface SidebarSignature {
     /**
      * Yields `Header`, `Body` and `Footer` sections, `Item` links, `Folder`
      * for a collapsible set of items, `Group` to label a set of items, and
-     * `Toggle`, the button that collapses and expands the sidebar. Place
+     * `Toggle`, the button that collapses and expands the sidebar. It also
+     * yields the sidebar's state, `isCollapsed` and `isInDrawer`, and the
+     * actions `toggle`, `collapse` and `expand`. Place
      * `Toggle` yourself, usually in `Header` or `Footer`; there is no default
      * toggle. In the phone drawer `Toggle` renders nothing (the drawer is
      * always expanded and has its own close button), so the same markup works
@@ -107,7 +125,22 @@ interface SidebarSignature {
           'rail' | 'tooltipPlacement' | 'onActivate'
         >;
         Group: WithBoundArgs<typeof SidebarGroup, 'classes'>;
-        Toggle: WithBoundArgs<typeof SidebarToggle, 'layout' | 'state'>;
+        Toggle: WithBoundArgs<
+          typeof SidebarToggle,
+          'layout' | 'collapsed' | 'onToggle'
+        >;
+        /**
+         * Whether the sidebar is drawn collapsed: the icon rail, or hidden
+         * with `@collapsible="offcanvas"`. Never in the drawer, which is
+         * always expanded.
+         */
+        isCollapsed: boolean;
+        /** Whether the sidebar is rendered in the phone drawer. */
+        isInDrawer: boolean;
+        /** Collapses an expanded sidebar and expands a collapsed one. */
+        toggle: () => void;
+        collapse: () => void;
+        expand: () => void;
       }
     ];
   };
@@ -119,14 +152,15 @@ interface SidebarSignature {
  * an icon rail. Inside `AppLayout` it takes the first (or, with
  * `@sidebarSide="end"`, the last) column. Below the layout's `@breakpoint`
  * the same block renders inside a `Drawer` instead, opened by `MenuToggle`,
- * so the sidebar is written once. It also works on its own when given
- * `@state` (always inline; no drawer).
+ * so the sidebar is written once. It also works on its own, always inline,
+ * with `@collapsed` or its own state.
  */
 class Sidebar extends Component<SidebarSignature> {
-  fallbackState = new AppLayoutState();
+  @tracked localCollapsed: boolean;
 
   constructor(owner: Owner, args: SidebarArgs) {
     super(owner, args);
+    this.localCollapsed = args.defaultCollapsed ?? false;
     const unregister = args.layout?.registerSidebar(this);
     if (unregister) {
       registerDestructor(this, unregister);
@@ -165,8 +199,12 @@ class Sidebar extends Component<SidebarSignature> {
    * Closes the drawer. Also handed to each `Item` while the sidebar is in the
    * drawer, so picking a destination closes it.
    */
+  get drawerOpen(): boolean {
+    return this.args.layout?.state.mobileSidebarOpen ?? false;
+  }
+
   closeDrawer = (): void => {
-    this.state.closeMobileSidebar();
+    this.args.layout?.state.closeMobileSidebar();
   };
 
   /**
@@ -187,9 +225,38 @@ class Sidebar extends Component<SidebarSignature> {
     };
   }
 
-  get state(): AppLayoutState {
-    return this.args.layout?.state ?? this.args.state ?? this.fallbackState;
+  /**
+   * The collapse asked for, before `@collapsible="none"` overrides it: the
+   * layout's state, `@collapsed`, or the sidebar's own.
+   */
+  get collapseRequested(): boolean {
+    const layout = this.args.layout;
+    if (layout) return layout.state.sidebarCollapsed;
+    return this.args.collapsed ?? this.localCollapsed;
   }
+
+  setCollapsed(collapsed: boolean): void {
+    const layout = this.args.layout;
+    if (layout) {
+      if (collapsed) layout.state.collapseSidebar();
+      else layout.state.expandSidebar();
+      return;
+    }
+    if (this.args.collapsed === undefined) this.localCollapsed = collapsed;
+    this.args.onCollapsedChange?.(collapsed);
+  }
+
+  toggle = (): void => {
+    this.setCollapsed(!this.collapseRequested);
+  };
+
+  collapse = (): void => {
+    this.setCollapsed(true);
+  };
+
+  expand = (): void => {
+    this.setCollapsed(false);
+  };
 
   get collapsible(): 'icon' | 'offcanvas' | 'none' {
     return this.args.collapsible ?? 'icon';
@@ -197,7 +264,12 @@ class Sidebar extends Component<SidebarSignature> {
 
   /** Collapse applies unless the sidebar opted out of it. */
   get collapsed(): boolean {
-    return this.collapsible !== 'none' && this.state.sidebarCollapsed;
+    return this.collapsible !== 'none' && this.collapseRequested;
+  }
+
+  /** As drawn: the drawer is always expanded. */
+  get isCollapsed(): boolean {
+    return !this.inDrawer && this.collapsed;
   }
 
   get size(): 'default' | 'rail' {
@@ -284,7 +356,7 @@ class Sidebar extends Component<SidebarSignature> {
       {{! Nothing: the BottomNav is the navigation here. }}
     {{else if this.inDrawer}}
       <Drawer
-        @isOpen={{this.state.mobileSidebarOpen}}
+        @isOpen={{this.drawerOpen}}
         @onClose={{this.closeDrawer}}
         @placement={{this.placement}}
         @size="xs"
@@ -323,6 +395,11 @@ class Sidebar extends Component<SidebarSignature> {
               )
               Group=(component SidebarGroup classes=this.slotClasses.group)
               Toggle=(component DrawerToggle)
+              isCollapsed=false
+              isInDrawer=true
+              toggle=this.toggle
+              collapse=this.collapse
+              expand=this.expand
             )
           }}
         </nav>
@@ -349,7 +426,17 @@ class Sidebar extends Component<SidebarSignature> {
               NavFolder rail=this.rail tooltipPlacement=this.tooltipPlacement
             )
             Group=(component SidebarGroup classes=this.slotClasses.group)
-            Toggle=(component SidebarToggle layout=@layout state=this.state)
+            Toggle=(component
+              SidebarToggle
+              layout=@layout
+              collapsed=this.collapsed
+              onToggle=this.toggle
+            )
+            isCollapsed=this.isCollapsed
+            isInDrawer=false
+            toggle=this.toggle
+            collapse=this.collapse
+            expand=this.expand
           )
         }}
       </nav>

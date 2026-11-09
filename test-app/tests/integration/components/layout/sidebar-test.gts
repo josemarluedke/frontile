@@ -2,6 +2,7 @@ import type { TOC } from '@ember/component/template-only';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click, settled } from '@ember/test-helpers';
+import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
 import { AppLayout, AppLayoutState, Sidebar, SidebarToggle } from 'frontile';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
@@ -140,22 +141,56 @@ module('Integration | Component | Sidebar | frontile/layout', function (hooks) {
     assert.true(rail < wide, `rail ${rail} is narrower than ${wide}`);
   });
 
-  test('offcanvas hides the sidebar when collapsed', async function (assert) {
+  test('offcanvas hides the sidebar when collapsed: no width, and out of reach', async function (assert) {
     await render(
       <template>
         <AppLayout @defaultSidebarCollapsed={{true}} as |layout|>
           <layout.Sidebar @collapsible="offcanvas" as |sidebar|>
-            <sidebar.Body>x</sidebar.Body>
+            <sidebar.Body><a href="#a" id="link">Link</a></sidebar.Body>
           </layout.Sidebar>
           <layout.Main>Content</layout.Main>
         </AppLayout>
       </template>
     );
 
-    assert.strictEqual(
-      getComputedStyle(find('[data-part="sidebar"]')!).display,
-      'none'
+    const sidebar = find('[data-part="sidebar"]') as HTMLElement;
+    const style = getComputedStyle(sidebar);
+    assert.strictEqual(sidebar.offsetWidth, 0, 'takes no width');
+    assert.strictEqual(style.visibility, 'hidden', 'hidden from everyone');
+    (find('#link') as HTMLElement).focus();
+    assert.notStrictEqual(
+      document.activeElement,
+      find('#link'),
+      'its links cannot take focus'
     );
+  });
+
+  test('offcanvas animates its width instead of disappearing', async function (assert) {
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Sidebar @collapsible="offcanvas" as |sidebar|>
+            <sidebar.Body>x</sidebar.Body>
+          </layout.Sidebar>
+          <layout.SidebarToggle />
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+
+    const sidebar = find('[data-part="sidebar"]') as HTMLElement;
+    await click('[data-part="sidebar-toggle"]');
+
+    const style = getComputedStyle(sidebar);
+    assert.notStrictEqual(style.display, 'none', 'stays rendered');
+    assert.true(
+      style.transitionProperty.includes('width'),
+      `transitions ${style.transitionProperty}`
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    assert.strictEqual(sidebar.offsetWidth, 0, 'ends with no width');
+    assert.strictEqual(getComputedStyle(sidebar).visibility, 'hidden');
   });
 
   test('offcanvas shows the sidebar when expanded', async function (assert) {
@@ -366,18 +401,28 @@ module('Integration | Component | Sidebar | frontile/layout', function (hooks) {
     assert.strictEqual(style.paddingRight, '0px');
   });
 
-  test('standalone Sidebar works with @state', async function (assert) {
-    const state = new AppLayoutState();
+  test('a standalone Sidebar collapses through @collapsed and an outside SidebarToggle', async function (assert) {
+    const collapsed = cell(false);
+    const toggle = () => (collapsed.current = !collapsed.current);
 
     await render(
       <template>
         <div data-test-wrap class="flex">
-          <Sidebar @state={{state}} @variant="attached" as |sidebar|>
+          <Sidebar
+            @collapsed={{collapsed.current}}
+            @variant="attached"
+            id="nav"
+            as |sidebar|
+          >
             <sidebar.Body>
               <a href="#a"><span data-sidebar-label>Dashboard</span></a>
             </sidebar.Body>
           </Sidebar>
-          <SidebarToggle @state={{state}} />
+          <SidebarToggle
+            @collapsed={{collapsed.current}}
+            @onToggle={{toggle}}
+            @controls="nav"
+          />
         </div>
       </template>
     );
@@ -394,9 +439,11 @@ module('Integration | Component | Sidebar | frontile/layout', function (hooks) {
       'full height'
     );
     assert.dom('[data-part="sidebar-toggle"]').hasAria('expanded', 'true');
+    assert.dom('[data-part="sidebar-toggle"]').hasAria('controls', 'nav');
 
     await click('[data-part="sidebar-toggle"]');
-    assert.true(state.sidebarCollapsed);
+    assert.true(collapsed.current);
+    assert.dom('[data-part="sidebar-toggle"]').hasAria('expanded', 'false');
     assert.true(sidebar.getBoundingClientRect().width < wide.width);
     assert.true(isVisiblyHidden(find('[data-sidebar-label]')!));
   });
@@ -498,28 +545,141 @@ module('Integration | Component | Sidebar | frontile/layout', function (hooks) {
     assert.dom('[data-part="sidebar-toggle"]').hasAttribute('data-test-x');
   });
 
-  test('standalone Sidebar Toggle toggles the passed @state', async function (assert) {
-    const state = new AppLayoutState();
+  test('on its own the Sidebar keeps its own collapsed state, starting from @defaultCollapsed', async function (assert) {
+    const changes: boolean[] = [];
+    const onChange = (value: boolean) => changes.push(value);
 
     await render(
       <template>
-        <Sidebar @state={{state}} as |sidebar|>
+        <Sidebar
+          @defaultCollapsed={{true}}
+          @onCollapsedChange={{onChange}}
+          as |sidebar|
+        >
           <sidebar.Header><sidebar.Toggle /></sidebar.Header>
         </Sidebar>
       </template>
     );
 
     const toggle = find('[data-part="sidebar-toggle"]')!;
-    assert.dom(toggle).hasAria('expanded', 'true');
-
-    await click(toggle);
-    assert.true(state.sidebarCollapsed);
     assert.dom('[data-part="sidebar"]').hasAttribute('data-collapsed', 'true');
     assert.dom(toggle).hasAria('expanded', 'false');
 
     await click(toggle);
-    assert.false(state.sidebarCollapsed);
+    assert.dom('[data-part="sidebar"]').hasAttribute('data-collapsed', 'false');
     assert.dom(toggle).hasAria('expanded', 'true');
+
+    await click(toggle);
+    assert.dom('[data-part="sidebar"]').hasAttribute('data-collapsed', 'true');
+    assert.deepEqual(changes, [false, true]);
+  });
+
+  test('with @collapsed the Sidebar is controlled: Toggle asks, the argument decides', async function (assert) {
+    const collapsed = cell(false);
+    const requests: boolean[] = [];
+    const onChange = (value: boolean) => requests.push(value);
+
+    await render(
+      <template>
+        <Sidebar
+          @collapsed={{collapsed.current}}
+          @onCollapsedChange={{onChange}}
+          as |sidebar|
+        >
+          <sidebar.Header><sidebar.Toggle /></sidebar.Header>
+        </Sidebar>
+      </template>
+    );
+
+    await click('[data-part="sidebar-toggle"]');
+    assert.deepEqual(requests, [true], 'asks to collapse');
+    assert
+      .dom('[data-part="sidebar"]')
+      .hasAttribute(
+        'data-collapsed',
+        'false',
+        'unchanged until the argument changes'
+      );
+
+    collapsed.current = true;
+    await settled();
+    assert.dom('[data-part="sidebar"]').hasAttribute('data-collapsed', 'true');
+    assert.dom('[data-part="sidebar-toggle"]').hasAria('expanded', 'false');
+  });
+
+  test('the Sidebar yields its state and the actions that change it', async function (assert) {
+    await render(
+      <template>
+        <Sidebar as |sidebar|>
+          <sidebar.Body>
+            {{#if sidebar.isCollapsed}}
+              <p id="rail-note">Collapsed</p>
+            {{else}}
+              <p id="wide-note">Expanded</p>
+            {{/if}}
+            {{#if sidebar.isInDrawer}}<p id="drawer-note">Drawer</p>{{/if}}
+            <button id="collapse" type="button" {{on "click" sidebar.collapse}}>
+              Collapse
+            </button>
+            <button id="expand" type="button" {{on "click" sidebar.expand}}>
+              Expand
+            </button>
+            <button id="toggle" type="button" {{on "click" sidebar.toggle}}>
+              Toggle
+            </button>
+          </sidebar.Body>
+        </Sidebar>
+      </template>
+    );
+
+    assert.dom('#wide-note').exists();
+    assert.dom('#drawer-note').doesNotExist('not in a drawer on its own');
+
+    await click('#collapse');
+    assert.dom('#rail-note').exists();
+
+    await click('#expand');
+    assert.dom('#wide-note').exists();
+
+    await click('#toggle');
+    assert.dom('#rail-note').exists();
+  });
+
+  test('in an AppLayout the yielded state follows the layout, and isInDrawer below the breakpoint', async function (assert) {
+    const state = new AppLayoutState({ sidebarCollapsed: true });
+    const media = mockMatchMedia(1200);
+    try {
+      await render(
+        <template>
+          <AppLayout @state={{state}} as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>
+                {{#if sidebar.isCollapsed}}<p id="collapsed">C</p>{{/if}}
+                {{#if sidebar.isInDrawer}}<p id="in-drawer">D</p>{{/if}}
+                <button
+                  id="expand"
+                  type="button"
+                  {{on "click" sidebar.expand}}
+                >Expand</button>
+              </sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.dom('#collapsed').exists();
+      await click('#expand');
+      assert.false(state.sidebarCollapsed, 'expand changes the layout state');
+      assert.dom('#collapsed').doesNotExist();
+
+      media.setWidth(500);
+      state.openMobileSidebar();
+      await settled();
+      assert.dom('[role="dialog"] #in-drawer').exists();
+    } finally {
+      media.restore();
+    }
   });
 });
 
@@ -933,11 +1093,7 @@ module(
                   <sidebar.Toggle class="ml-auto" />
                 </sidebar.Header>
                 <sidebar.Body>
-                  <sidebar.Folder
-                    @label="Alpha"
-                    @icon={{TestIcon}}
-                    as |folder|
-                  >
+                  <sidebar.Folder @label="Alpha" @icon={{TestIcon}} as |folder|>
                     <folder.Item @href="#a">One</folder.Item>
                   </sidebar.Folder>
                 </sidebar.Body>

@@ -519,8 +519,6 @@ const hashClasses = {
   mainCard: 'custom-card'
 };
 
-const collapsedState = new AppLayoutState({ sidebarCollapsed: true });
-
 function readVar(name: string): string {
   const root = find('[data-component="app-layout"]')!;
   return getComputedStyle(root).getPropertyValue(name).trim();
@@ -794,7 +792,7 @@ module(
             </Sidebar>
           </div>
           <div data-test-host-collapsed>
-            <Sidebar @state={{collapsedState}} as |sidebar|>
+            <Sidebar @defaultCollapsed={{true}} as |sidebar|>
               <sidebar.Body>Items</sidebar.Body>
             </Sidebar>
           </div>
@@ -859,7 +857,9 @@ module(
         await render(
           <template>
             <AppLayout @navbarPlacement={{placement}} as |layout|>
-              <layout.Navbar><span data-test-navbar-text>Crumb</span></layout.Navbar>
+              <layout.Navbar><span
+                  data-test-navbar-text
+                >Crumb</span></layout.Navbar>
               <layout.Main>
                 <layout.PageHeader @title="Overview" />
               </layout.Main>

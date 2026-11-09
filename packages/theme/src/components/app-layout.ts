@@ -189,7 +189,9 @@ const appLayout = tv({
       // already visually hidden when collapsing, so the fade-out is unseen.
       'data-[collapsed=true]:[&_[data-sidebar-label]]:opacity-0',
       '[&_[data-sidebar-label]]:transition-opacity [&_[data-sidebar-label]]:delay-100 [&_[data-sidebar-label]]:duration-150',
-      'transition-[width] duration-200',
+      // `visibility` is listed so an offcanvas sidebar stays visible while it
+      // closes and becomes hidden only once its width reaches 0.
+      'transition-[width,padding,visibility] duration-200',
       'motion-reduce:transition-none motion-reduce:[&_[data-sidebar-label]]:transition-none'
     ],
     // The sidebar's `nav` inside the mobile drawer: always expanded, as tall
@@ -397,7 +399,15 @@ const appLayout = tv({
     // `collapsed` (the Sidebar passes `collapsed: false` for it).
     collapsible: {
       icon: {},
-      offcanvas: {},
+      // The sidebar closes to no width, so its contents fade rather than
+      // being seen squeezed: out quickly on collapse, back in once the width
+      // has mostly opened (the delay, cleared while collapsing).
+      offcanvas: {
+        sidebar: [
+          'overflow-x-clip',
+          '*:transition-opacity *:delay-100 *:duration-150 motion-reduce:*:transition-none'
+        ]
+      },
       none: {}
     },
 
@@ -551,30 +561,16 @@ const appLayout = tv({
       class: { sidebar: 'top-3 h-[calc(100dvh-1.5rem)]' }
     },
 
-    // Offcanvas: collapsed means gone, at every width. These come after
-    // `standalone` and the breakpoint display classes so they win.
+    // Offcanvas: collapsed is no width, no gutter, no border, and once the
+    // width transition ends, `invisible`, so its links leave the tab order
+    // and the accessibility tree. Comes after the width variants so `w-0`
+    // wins.
     {
       collapsible: 'offcanvas',
       collapsed: true,
-      class: { sidebar: 'hidden' }
-    },
-    {
-      collapsible: 'offcanvas',
-      collapsed: true,
-      breakpoint: 'sm',
-      class: { sidebar: 'sm:hidden' }
-    },
-    {
-      collapsible: 'offcanvas',
-      collapsed: true,
-      breakpoint: 'md',
-      class: { sidebar: 'md:hidden' }
-    },
-    {
-      collapsible: 'offcanvas',
-      collapsed: true,
-      breakpoint: 'lg',
-      class: { sidebar: 'lg:hidden' }
+      class: {
+        sidebar: 'invisible w-0 border-0 ps-0 pe-0 *:opacity-0 *:delay-0'
+      }
     },
 
     // Main and navbar round their own corners to the card's, so content

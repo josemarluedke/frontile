@@ -539,8 +539,9 @@ module(
         )!.getBoundingClientRect();
         const rowIcon = row.left - nav.left;
         assert.true(
-          Math.abs(nav.right - icon.right - (rowIcon + 14 * (row.height / 36))) <=
-            2,
+          Math.abs(
+            nav.right - icon.right - (rowIcon + 14 * (row.height / 36))
+          ) <= 2,
           `close icon ${nav.right - icon.right}px from the edge`
         );
 

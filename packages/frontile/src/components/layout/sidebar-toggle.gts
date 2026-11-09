@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
 import { SidebarLeftIcon } from '../../-private/icons';
-import { AppLayoutState } from './app-layout-state';
 import { standaloneStyles, type AppLayoutContext } from './context';
 
 interface SidebarToggleArgs {
@@ -20,10 +19,17 @@ interface SidebarToggleArgs {
   controls?: string;
 
   /**
-   * The state to toggle. Only used outside an `AppLayout`; inside one the
-   * layout's state is toggled.
+   * Whether the sidebar it controls is collapsed, for `aria-expanded`. Only
+   * used outside an `AppLayout`; inside one the button follows the layout.
    */
-  state?: AppLayoutState;
+  collapsed?: boolean;
+
+  /**
+   * Called when the button is pressed. Only used outside an `AppLayout`,
+   * where you flip the value you pass to the `Sidebar`'s `@collapsed`;
+   * inside one the button changes the layout's state itself.
+   */
+  onToggle?: () => void;
 
   /**
    * Supplied by `AppLayout`. Not part of the public API.
@@ -51,12 +57,6 @@ interface SidebarToggleSignature {
  * renders nothing.
  */
 class SidebarToggle extends Component<SidebarToggleSignature> {
-  fallbackState = new AppLayoutState();
-
-  get state(): AppLayoutState {
-    return this.args.layout?.state ?? this.args.state ?? this.fallbackState;
-  }
-
   get label(): string {
     return this.args.label ?? 'Toggle sidebar';
   }
@@ -72,11 +72,13 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
    * whether the drawer is open.
    */
   get expanded(): 'true' | 'false' {
-    if (this.controlsDrawer) {
-      return this.state.mobileSidebarOpen ? 'true' : 'false';
+    const layout = this.args.layout;
+    if (layout && this.controlsDrawer) {
+      return layout.state.mobileSidebarOpen ? 'true' : 'false';
     }
-    const collapsed =
-      this.args.layout?.sidebarCollapsed ?? this.state.sidebarCollapsed;
+    const collapsed = layout
+      ? layout.sidebarCollapsed
+      : (this.args.collapsed ?? false);
     return collapsed ? 'false' : 'true';
   }
 
@@ -92,10 +94,13 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
   }
 
   toggle = (): void => {
-    if (this.controlsDrawer) {
-      this.state.openMobileSidebar();
+    const layout = this.args.layout;
+    if (!layout) {
+      this.args.onToggle?.();
+    } else if (this.controlsDrawer) {
+      layout.state.openMobileSidebar();
     } else {
-      this.state.toggleSidebar();
+      layout.state.toggleSidebar();
     }
   };
 
