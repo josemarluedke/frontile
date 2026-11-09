@@ -36,12 +36,20 @@ interface SidebarArgs {
    * The sidebar's width preset. `default` is the standard sidebar; `rail` is
    * a narrow column (80px) for a stack of icon-over-label items, usually with
    * `@collapsible="none"`. It is a named preset, not a length: for any other
-   * width, pass a width utility through `class` (and set `--app-sidebar-width`
+   * width, pass a width utility as `@class` (and set `--app-sidebar-width`
    * yourself if you read the token).
    *
    * @defaultValue 'default'
    */
   size?: 'default' | 'rail';
+
+  /**
+   * Classes for the sidebar, merged with the theme's so a conflicting class
+   * wins: `@class="w-72"` replaces the width. A width given this way applies
+   * whether or not the sidebar is collapsed, so pair it with
+   * `@collapsible="none"`. Applies to the inline sidebar, not the drawer.
+   */
+  class?: string;
 
   /**
    * The accessible name of the sidebar's `nav` landmark. Give each navigation
@@ -222,7 +230,10 @@ class Sidebar extends Component<SidebarSignature> {
 
   @cached
   get classNames(): string {
-    return this.styles.sidebar({ class: this.args.layout?.classes?.sidebar });
+    const custom = [this.args.layout?.classes?.sidebar, this.args.class]
+      .filter(Boolean)
+      .join(' ');
+    return this.styles.sidebar({ class: custom || undefined });
   }
 
   @cached

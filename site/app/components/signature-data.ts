@@ -3272,6 +3272,24 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'icons',
+    name: 'ChevronDownIcon',
+    fileName: 'packages/frontile/declarations/components/disclosure/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'autocomplete',
     name: 'Autocomplete',
     fileName:
@@ -5903,6 +5921,42 @@ const data: ComponentDoc[] = [
           '={{form.isLoading}}>\nSubmit\n<:loading>Submitting...</:loading>\n</Button>\n</Form>\n```',
       },
     },
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'IconChevronUpDown',
+    fileName: 'packages/frontile/declarations/components/forms/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'IconCalendar',
+    fileName: 'packages/frontile/declarations/components/forms/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
   },
   {
     package: 'unknown',
@@ -9086,7 +9140,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
     },
     description:
-      "<p>A panel beside <code>Main</code>, shown while <code>asideOpen</code> is true. From <code>lg</code> (64rem)\nup it is an in-flow column that narrows <code>Main</code>; below <code>lg</code> the same block\nrenders in a right-side <code>Drawer</code>, whatever the layout's <code>@breakpoint</code> is.\nOpen it with <code>AsideToggle</code>. Outside an <code>AppLayout</code> it needs <code>@state</code> and\nis always inline.</p>",
+      "<p>A panel beside <code>Main</code>, shown while <code>asideOpen</code> is true. From <code>lg</code> (64rem)\nup it is an in-flow column that narrows <code>Main</code>; below <code>lg</code> the same block\nrenders in a <code>Drawer</code> from the same side, whatever the layout's\n<code>@breakpoint</code> is.\nOpen it with <code>AsideToggle</code>. Outside an <code>AppLayout</code> it needs <code>@state</code> and\nis always inline.</p>",
     tags: {},
   },
   {
@@ -9149,7 +9203,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (rail, tooltipPlacement, onActivate, folder bound); Folder: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (rail, inDrawer, onActivate, parent bound); }]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Item: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (rail, tooltipPlacement, onActivate, folder bound); Folder: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (rail, onActivate, parent bound); }]</span></span>',
           items: [
             {
               identifier: '0',
@@ -9169,7 +9223,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Folder',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (rail, inDrawer, onActivate, parent bound)</span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (rail, onActivate, parent bound)</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -10275,17 +10329,6 @@ const data: ComponentDoc[] = [
         description:
           'An icon component, shown before the label. It is hidden from assistive\ntechnology.',
         tags: {},
-      },
-      {
-        identifier: 'inDrawer',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description:
-          'Supplied by <code>Sidebar</code>: whether the sidebar renders in the mobile drawer,\nwhere the folder is always inline (never a menu). Not part of the\npublic API.',
-        tags: { internal: { name: 'internal', value: '' } },
       },
       {
         identifier: 'isHidden',
@@ -11531,162 +11574,6 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
-    module: 'sidebar-brand',
-    name: 'SidebarBrand',
-    fileName:
-      'packages/frontile/declarations/components/layout/sidebar-brand.d.ts',
-    Args: [
-      {
-        identifier: 'title',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description:
-          'The product or workspace name. It is shown next to the logo and, with\n<code>@href</code>, names the link. In the icon rail it is visually hidden but\nstays available to assistive technology.',
-        tags: {},
-      },
-      {
-        identifier: 'class',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: "Class names appended to the brand's theme classes.",
-        tags: {},
-      },
-      {
-        identifier: 'classes',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
-          items: [
-            {
-              identifier: 'sidebarBrand',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'sidebarBrandLogo',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'sidebarBrandText',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'sidebarBrandTitle',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'sidebarBrandSubtitle',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-          ],
-        },
-        isRequired: false,
-        isInternal: true,
-        description:
-          "Supplied by <code>Sidebar</code>. Not part of the public API. Without it (a brand\nrendered on its own) the standalone sidebar's classes are used.",
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'href',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Makes the whole brand (logo and text) one link to this URL. Without it\nthe brand is not interactive.',
-        tags: {},
-      },
-      {
-        identifier: 'subtitle',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'A second, smaller line under the title, such as a workspace or plan.',
-        tags: {},
-      },
-      {
-        identifier: 'tile',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Draws the logo on a tinted square. Set it to <code>false</code> to show your own\nlogo as is, in the same 2rem square.',
-        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span></span>',
-      },
-    ],
-    Blocks: [
-      {
-        identifier: 'logo',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
-          items: [],
-        },
-        isRequired: true,
-        isInternal: false,
-        description:
-          'The logo, shown in a 2rem square before the title. It stays visible in\nthe icon rail.',
-        tags: {},
-      },
-    ],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-        raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLDivElement </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> HTMLAnchorElement</span></span>',
-        items: ['HTMLDivElement', 'HTMLAnchorElement'],
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/enum',
-    },
-    description:
-      "<p>The product's logo and name, for the sidebar's <code>Header</code>. With <code>@href</code> the\nwhole block is one link. In the icon rail only the logo shows; the title\nand subtitle are visually hidden but keep naming the link.</p>",
-    tags: {},
-  },
-  {
-    package: 'unknown',
     module: 'sidebar-group',
     name: 'SidebarGroup',
     fileName:
@@ -11771,230 +11658,6 @@ const data: ComponentDoc[] = [
     },
     description:
       '<p>A labelled set of sidebar items: a <code>group</code> named by its visible <code>@label</code>.</p>',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'sidebar-item',
-    name: 'SidebarItem',
-    fileName:
-      'packages/frontile/declarations/components/layout/sidebar-item.d.ts',
-    Args: [
-      {
-        identifier: 'class',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: "Class names appended to this item's theme classes.",
-        tags: {},
-      },
-      {
-        identifier: 'classes',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
-          items: [
-            {
-              identifier: 'sidebarItem',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'sidebarItemIcon',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-            {
-              identifier: 'sidebarLabel',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {},
-            },
-          ],
-        },
-        isRequired: false,
-        isInternal: true,
-        description:
-          "Supplied by <code>Sidebar</code>. Not part of the public API. Without it (an item\nrendered on its own) the standalone sidebar's classes are used.",
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'href',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Renders a plain anchor. Ignored when <code>@route</code> is given.',
-        tags: {},
-      },
-      {
-        identifier: 'icon',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">ComponentLike</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'An icon component, shown before the label. In the icon rail it is the\nonly visible part of the item. It is hidden from assistive technology.',
-        tags: {},
-      },
-      {
-        identifier: 'isActive',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Overrides the active state. Always wins over anything derived from the\nrouter, and is the only source of truth when <code>@route</code> is not used.',
-        tags: {},
-      },
-      {
-        identifier: 'isDisabled',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Marks the link as disabled. The href is dropped as well, so the link\ncannot be followed.',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
-      },
-      {
-        identifier: 'isHidden',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Renders nothing at all. For items the current user may not see.',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
-      },
-      {
-        identifier: 'model',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'A single dynamic segment for <code>@route</code>.',
-        tags: {},
-      },
-      {
-        identifier: 'models',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown[]</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'Dynamic segments for <code>@route</code>.',
-        tags: {},
-      },
-      {
-        identifier: 'onActivate',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description:
-          "Supplied by <code>Sidebar</code> while it renders in the mobile drawer: called when\nthe item's link is clicked, so the drawer closes. Not called for a\ndisabled item. Not part of the public API.",
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'query',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Record</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string, unknown</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'Query params for <code>@route</code>.',
-        tags: {},
-      },
-      {
-        identifier: 'rail',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description:
-          'Supplied by <code>Sidebar</code>: whether the sidebar is drawn as the icon rail.\nNot part of the public API.',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-      {
-        identifier: 'route',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Renders a <code>LinkTo</code> for this route and derives the active state from the\nrouter. Omit it (and pass <code>@href</code>) to stay entirely router-free.',
-        tags: {},
-      },
-      {
-        identifier: 'tooltipPlacement',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'right\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'left\'</span></span>',
-          items: ["'right'", "'left'"],
-        },
-        isRequired: false,
-        isInternal: true,
-        description:
-          'Supplied by <code>Sidebar</code>: the side of the item its rail tooltip opens on.\nNot part of the public API.',
-        tags: { internal: { name: 'internal', value: '' } },
-      },
-    ],
-    Blocks: [
-      {
-        identifier: 'default',
-        type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
-          items: [],
-        },
-        isRequired: true,
-        isInternal: false,
-        description: "The item's label.",
-        tags: {},
-      },
-    ],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLAnchorElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement',
-    },
-    description:
-      '<p>A link in the sidebar. It takes the same routing arguments as\n<code>TabNav.Item</code>: <code>@route</code> renders a <code>LinkTo</code> and the router decides whether it\nis active; <code>@href</code> renders a plain anchor and needs no router. The active\nitem carries <code>aria-current="page"</code>. In the icon rail the label is visually\nhidden but keeps naming the link, and shows as a tooltip on hover or focus.</p>',
     tags: {},
   },
   {
@@ -12356,6 +12019,17 @@ const data: ComponentDoc[] = [
     fileName: 'packages/frontile/declarations/components/layout/sidebar.d.ts',
     Args: [
       {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Classes for the sidebar, merged with the theme\'s so a conflicting class\nwins: <code>@class="w-72"</code> replaces the width. A width given this way applies\nwhether or not the sidebar is collapsed, so pair it with\n<code>@collapsible="none"</code>. Applies to the inline sidebar, not the drawer.',
+        tags: {},
+      },
+      {
         identifier: 'collapsible',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -12675,7 +12349,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The sidebar\'s width preset. <code>default</code> is the standard sidebar; <code>rail</code> is\na narrow column (80px) for a stack of icon-over-label items, usually with\n<code>@collapsible="none"</code>. It is a named preset, not a length: for any other\nwidth, pass a width utility through <code>class</code> (and set <code>--app-sidebar-width</code>\nyourself if you read the token).',
+          'The sidebar\'s width preset. <code>default</code> is the standard sidebar; <code>rail</code> is\na narrow column (80px) for a stack of icon-over-label items, usually with\n<code>@collapsible="none"</code>. It is a named preset, not a length: for any other\nwidth, pass a width utility as <code>@class</code> (and set <code>--app-sidebar-width</code>\nyourself if you read the token).',
         tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
@@ -12712,7 +12386,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Header: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarHeader</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Body</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarBody</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Footer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarFooter</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Item</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rail</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">tooltipPlacement</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Folder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rail</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">tooltipPlacement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">inDrawer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">onActivate</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Group</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">classes</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Toggle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarToggle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">layout</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">state</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); }]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Header: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarHeader</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Body</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarBody</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Footer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarFooter</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Item</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavItem</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rail</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">tooltipPlacement</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Folder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">rail</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">tooltipPlacement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">onActivate</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Group</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">classes</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Toggle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">SidebarToggle</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">layout</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">state</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> bound</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">); }]</span></span>',
           items: [
             {
               identifier: '0',
@@ -12762,7 +12436,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Folder',
                     type: {
-                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (rail, tooltipPlacement, inDrawer, onActivate bound)</span></span>',
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">NavFolder</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (rail, tooltipPlacement, onActivate bound)</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -13105,6 +12779,25 @@ const data: ComponentDoc[] = [
     },
     description:
       '<p>A link to another site.</p>\n<p>It opens a new tab, marks itself with an external-link glyph, protects the\nopener with <code>rel="noopener noreferrer"</code>, and tells assistive technology that\na new tab is coming — so the four cannot drift apart. For in-app navigation\nuse <code>TabNav</code> or Ember\'s <code>LinkTo</code>.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'Component',
+    fileName:
+      'packages/frontile/declarations/components/notifications/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
     tags: {},
   },
   {
@@ -27731,6 +27424,44 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'icons',
+    name: 'ChevronLeftIcon',
+    fileName:
+      'packages/frontile/declarations/components/collections/calendar/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronRightIcon',
+    fileName:
+      'packages/frontile/declarations/components/collections/calendar/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'month-grid',
     name: 'MonthGrid',
     fileName:
@@ -34934,6 +34665,63 @@ const data: ComponentDoc[] = [
       },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronUpIcon',
+    fileName:
+      'packages/frontile/declarations/components/collections/table/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronDownIcon',
+    fileName:
+      'packages/frontile/declarations/components/collections/table/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ColumnVisibilityIcon',
+    fileName:
+      'packages/frontile/declarations/components/collections/table/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
     },
     description: '',
     tags: {},
@@ -48277,6 +48065,82 @@ const data: ComponentDoc[] = [
     },
     description:
       "<p>The punctuation between two crumbs.</p>\n<p>Shared by <code>Item</code> and <code>Ellipsis</code>, which each render their own <code>&#x3C;li></code> and so\neach need one. The CSS that hides it on the last <code>&#x3C;li></code> only works while the\ntwo stay identical, which one definition guarantees and two copies don't.</p>\n<p>Always <code>aria-hidden</code>: the <code>&#x3C;ol></code> and <code>aria-current</code> carry the structure, so\nannouncing a chevron between every crumb would be reading decoration.</p>",
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronLeftIcon',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronRightIcon',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronDoubleLeftIcon',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icons',
+    name: 'ChevronDoubleRightIcon',
+    fileName:
+      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
     tags: {},
   },
   {

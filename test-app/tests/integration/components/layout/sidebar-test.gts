@@ -584,6 +584,55 @@ module(
       return parseFloat(getComputedStyle(el).width);
     }
 
+    test('@class replaces the theme width, on its own', async function (assert) {
+      await render(
+        <template>
+          <div style="height: 200px">
+            <Sidebar @class="w-72" @collapsible="none" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </Sidebar>
+          </div>
+        </template>
+      );
+
+      assert.strictEqual(widthOf(), 288);
+      assert.dom('[data-part="sidebar"]').doesNotHaveClass('w-64');
+    });
+
+    test('@class replaces the theme width in an AppLayout', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar @class="w-72" @collapsible="none" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(widthOf(), 288);
+    });
+
+    test('@class merges with @classes.sidebar from the layout', async function (assert) {
+      const classes = { sidebar: 'custom-from-layout' };
+      await render(
+        <template>
+          <AppLayout @classes={{classes}} as |layout|>
+            <layout.Sidebar @class="custom-from-sidebar" as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="sidebar"]')
+        .hasClass('custom-from-layout')
+        .hasClass('custom-from-sidebar');
+    });
+
     test('size="rail" is 80px wide in the attached variant', async function (assert) {
       await render(
         <template>

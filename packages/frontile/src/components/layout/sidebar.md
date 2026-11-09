@@ -523,8 +523,10 @@ The header, body and footer share one content line, so items, group headings
 and your own markup line up without padding of your own. To keep a brand in
 place when the sidebar collapses, give its icon `size-5`, as the demos do.
 
-Style a single item with `@class`. Its classes are merged with the theme's, so
-a conflicting class wins.
+`@class` on the sidebar or on an item is merged with the theme's classes, so a
+conflicting class wins. Use it on the sidebar for another width, such as
+`@class='w-48'`. That width holds in the rail too, so pair it with
+`@collapsible='none'`.
 
 ```gts preview
 import { Sidebar } from 'frontile';
@@ -532,7 +534,7 @@ import { StarIcon, ViewIcon } from 'site/components/icons';
 
 <template>
   <div class='not-prose h-32'>
-    <Sidebar @label='Favorites' as |sidebar|>
+    <Sidebar @label='Favorites' @class='w-48' @collapsible='none' as |sidebar|>
       <sidebar.Body>
         <sidebar.Item @href='#all' @icon={{ViewIcon}}>All</sidebar.Item>
         <sidebar.Item @href='#starred' @icon={{StarIcon}} @class='text-primary'>
