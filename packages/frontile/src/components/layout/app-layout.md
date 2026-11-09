@@ -69,7 +69,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
       <AppLayout @variant={{variant}} class='demo-app-layout' as |layout|>
         <layout.Sidebar @label={{variant}} as |sidebar|>
           <sidebar.Header>
-            <SparklesIcon class='shrink-0 text-primary' />
+            <SparklesIcon class='size-5 shrink-0 text-primary' />
             <span class='truncate text-sm font-semibold' data-sidebar-label>
               Acme
             </span>
@@ -125,7 +125,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
       >
         <layout.Sidebar @label={{placement}} as |sidebar|>
           <sidebar.Header>
-            <SparklesIcon class='shrink-0 text-primary' />
+            <SparklesIcon class='size-5 shrink-0 text-primary' />
             <span class='truncate text-sm font-semibold' data-sidebar-label>
               Acme
             </span>
@@ -200,6 +200,13 @@ by itself. In the header, put `class='ml-auto'` on a `Toggle` that follows the
 brand, or `mr-auto` when the sidebar is on the end side; the collapsed rail
 ignores both.
 
+Collapsing and expanding move the header with the width. The header's height
+eases, the brand stays where it is, the `Toggle` fades in under it when the
+rail closes and slides out with the edge when it opens, and a
+`<span data-sidebar-label>` fades in as the sidebar finishes opening. For the
+brand to stay put, give it the icon size, `size-5`, as these demos do. With
+`prefers-reduced-motion` they all switch instantly.
+
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
@@ -209,7 +216,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
     <AppLayout class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Workspace' as |sidebar|>
         <sidebar.Header>
-          <SparklesIcon class='shrink-0 text-primary' />
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
@@ -251,7 +258,7 @@ import { ViewIcon, RocketIcon } from 'site/components/icons';
     <AppLayout @variant='attached' class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Custom header' as |sidebar|>
         <sidebar.Header>
-          <RocketIcon class='shrink-0 text-primary' />
+          <RocketIcon class='size-5 shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
@@ -366,7 +373,7 @@ import { ViewIcon, PackageIcon, SparklesIcon } from 'site/components/icons';
     <AppLayout class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Catalog' as |sidebar|>
         <sidebar.Header>
-          <SparklesIcon class='shrink-0 text-primary' />
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
@@ -447,7 +454,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
     <AppLayout class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Footer toggle' as |sidebar|>
         <sidebar.Header>
-          <SparklesIcon class='shrink-0 text-primary' />
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
@@ -633,7 +640,7 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
     <AppLayout class='demo-app-layout' as |layout|>
       <layout.Sidebar @label='Workspace' as |sidebar|>
         <sidebar.Header>
-          <SparklesIcon class='shrink-0 text-primary' />
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>
@@ -723,7 +730,7 @@ import {
         </sidebar.Body>
       </layout.Sidebar>
       <layout.Navbar>
-        <SparklesIcon class='shrink-0 text-primary' />
+        <SparklesIcon class='size-5 shrink-0 text-primary' />
         <span class='text-sm font-medium'>Acme</span>
       </layout.Navbar>
       <layout.Main>
@@ -872,7 +879,7 @@ export default class RailNavExample extends Component {
           </sidebar.Footer>
         </layout.Sidebar>
         <layout.Navbar class='md:hidden'>
-          <SparklesIcon class='shrink-0 text-primary' />
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
           <span class='flex min-w-0 flex-col'>
             <span class='text-xs'>{{this.title}}</span>
             <span class='truncate text-sm font-medium'>Sample account</span>
@@ -1213,7 +1220,7 @@ export default class FullAppLayoutExample extends Component {
       <AppLayout @state={{this.state}} class='demo-app-layout' as |layout|>
         <layout.Sidebar @label='Workspace' as |sidebar|>
           <sidebar.Header>
-            <SparklesIcon class='shrink-0 text-primary' />
+            <SparklesIcon class='size-5 shrink-0 text-primary' />
             <span class='truncate text-sm font-semibold' data-sidebar-label>
               Acme
             </span>

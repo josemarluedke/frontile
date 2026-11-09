@@ -175,29 +175,50 @@ const appLayout = tv({
     sidebar: [
       'group/sidebar col-start-1 row-[1/-1] shrink-0 flex-col',
       'data-[collapsed=true]:[&_[data-sidebar-label]]:sr-only',
+      // Expanding, a label fades in once the width has mostly opened. It is
+      // already visually hidden when collapsing, so the fade-out is unseen.
+      'data-[collapsed=true]:[&_[data-sidebar-label]]:opacity-0',
+      '[&_[data-sidebar-label]]:transition-opacity [&_[data-sidebar-label]]:delay-100 [&_[data-sidebar-label]]:duration-150',
       'transition-[width] duration-200',
-      'motion-reduce:transition-none'
+      'motion-reduce:transition-none motion-reduce:[&_[data-sidebar-label]]:transition-none'
     ],
     // The sidebar's `nav` inside the mobile drawer: always expanded, as tall
     // as the drawer.
     mobileSidebar: 'group/sidebar flex min-h-0 flex-1 flex-col',
-    // In the icon rail the header stacks its children (logo above `Toggle`)
-    // and grows taller than the navbar if it has to; its 12px side padding
-    // leaves room for the 36px toggle in the 4rem rail.
-    // Its start is the content line, where the items' icons sit (centered in
-    // the rail, so a 1.25rem brand icon lines up with them), and its end the
-    // gutter (the toggle's fill lines up with a row's).
+    // In the icon rail the header stacks its children: the brand on its
+    // content line (where the items' icons sit, so it does not move when the
+    // rail opens) and the `Toggle` under it. The end is the gutter, so the
+    // toggle's fill lines up with a row's.
+    //
+    // The layout flips in one frame while the width eases over 200ms, so the
+    // header carries its own motion. Its content box is always the navbar
+    // height (`box-content`), so the row centers the same way in both states;
+    // the stacked toggle hangs below it in `padding-bottom`, which eases on the
+    // width's curve, so the body glides rather than jumps. The toggle fades in
+    // at its new spot on collapse, and `overflow-x-clip` keeps a toggle that is
+    // still arriving inside the narrow rail on expand (0.375rem of clip margin
+    // leaves its focus ring visible). A header that is only a `Toggle` keeps
+    // its one row.
     sidebarHeader: [
-      'flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2)] pe-(--sidebar-gutter,0.5rem)',
-      'group-data-[collapsed=true]/sidebar:ps-(--sidebar-gutter,0.5rem)',
-      // The stacked children are centered; an `ml-auto` meant for the
-      // expanded row (a toggle pushed to the end) would shove one aside.
-      'group-data-[collapsed=true]/sidebar:*:mx-0',
-      'group-data-[collapsed=true]/sidebar:h-auto',
-      'group-data-[collapsed=true]/sidebar:min-h-(--app-navbar-height,3rem)',
+      'box-content flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 pb-0 ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2)] pe-(--sidebar-gutter,0.5rem)',
+      'overflow-x-clip [overflow-clip-margin:0.375rem]',
+      'transition-[padding-bottom] duration-200 motion-reduce:transition-none',
       'group-data-[collapsed=true]/sidebar:flex-col',
-      'group-data-[collapsed=true]/sidebar:justify-center',
-      'group-data-[collapsed=true]/sidebar:py-2'
+      'group-data-[collapsed=true]/sidebar:items-start',
+      'group-data-[collapsed=true]/sidebar:*:shrink-0',
+      // An `ml-auto` meant for the expanded row (a toggle pushed to the end)
+      // would shove a stacked child aside.
+      'group-data-[collapsed=true]/sidebar:*:mx-0',
+      // Brand and toggle: the brand's top is where a 1.25rem icon centered in
+      // the navbar height sits, so only the toggle travels.
+      'group-data-[collapsed=true]/sidebar:has-[>*:not([data-part=sidebar-toggle])]:pb-10',
+      'group-data-[collapsed=true]/sidebar:has-[>*:not([data-part=sidebar-toggle])]:*:first:mt-[calc((var(--app-navbar-height,3rem)-1.25rem)/2)]',
+      'group-data-[collapsed=true]/sidebar:not-has-[>*:not([data-part=sidebar-toggle])]:justify-center',
+      // The toggle's icon sits 0.5rem inside its fill; pull the fill back so
+      // the icon lands on the content line, centered in the rail.
+      'group-data-[collapsed=true]/sidebar:*:data-[part=sidebar-toggle]:-ms-2',
+      'group-data-[collapsed=true]/sidebar:*:data-[part=sidebar-toggle]:animate-[frontile-fade-in_160ms_60ms_ease-out_backwards]',
+      'group-data-[collapsed=true]/sidebar:*:data-[part=sidebar-toggle]:motion-reduce:animate-none'
     ],
     // Where a row's fill starts, from the sidebar's edge: `--sidebar-gutter`
     // (0.5rem by default, 0 in the inset variant, whose frame is the gutter).

@@ -181,7 +181,7 @@ import {
     >
       <layout.Sidebar @label='Catalog' as |sidebar|>
         <sidebar.Header>
-          <SparklesIcon class='shrink-0 text-primary' />
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
             Acme
           </span>

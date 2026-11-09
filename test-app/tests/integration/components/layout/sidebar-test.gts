@@ -900,6 +900,100 @@ module(
       });
     }
 
+    for (const variant of ['attached', 'inset'] as const) {
+      test(`the ${variant} header keeps its brand in place and stacks the toggle below it`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @variant={{variant}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Header>
+                  <TestIcon data-test-brand />
+                  <sidebar.Toggle class="ml-auto" />
+                </sidebar.Header>
+                <sidebar.Body>
+                  <sidebar.Item @href="#a">A</sidebar.Item>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const spot = () => {
+          const { sidebar, scale } = geometry();
+          const header = find('[data-part="sidebar-header"]') as HTMLElement;
+          const hRect = header.getBoundingClientRect();
+          const brand = (
+            find('[data-test-brand]') as Element
+          ).getBoundingClientRect();
+          const toggle = (
+            find('[data-part="sidebar-toggle"]') as Element
+          ).getBoundingClientRect();
+          const sRect = sidebar.getBoundingClientRect();
+          return {
+            height: hRect.height / scale,
+            brandX: (brand.left - sRect.left) / scale,
+            brandY: (brand.top - hRect.top) / scale,
+            toggleBelow: (toggle.top - brand.bottom) / scale
+          };
+        };
+
+        const open = spot();
+        await click('[data-part="sidebar-toggle"]');
+        await widthSettled();
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        const rail = spot();
+
+        assert.true(
+          Math.abs(open.height - 48) <= 1,
+          `row height ${open.height}`
+        );
+        assert.true(
+          Math.abs(rail.height - 88) <= 1,
+          `stacked height ${rail.height}`
+        );
+        assert.true(
+          Math.abs(rail.brandX - open.brandX) <= 1,
+          `brand x ${open.brandX} -> ${rail.brandX}`
+        );
+        assert.true(
+          Math.abs(rail.brandY - open.brandY) <= 1,
+          `brand y ${open.brandY} -> ${rail.brandY}`
+        );
+        assert.true(
+          rail.toggleBelow >= 0,
+          `toggle is below the brand (${rail.toggleBelow})`
+        );
+      });
+    }
+
+    test('a header that is only a Toggle stays one row when collapsed', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Header><sidebar.Toggle /></sidebar.Header>
+              <sidebar.Body>
+                <sidebar.Item @href="#a">A</sidebar.Item>
+              </sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      await click('[data-part="sidebar-toggle"]');
+      await widthSettled();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const { scale } = geometry();
+      const header = find('[data-part="sidebar-header"]') as HTMLElement;
+      assert.true(
+        Math.abs(header.getBoundingClientRect().height / scale - 48) <= 1,
+        'the header is still the navbar height'
+      );
+    });
+
     test('inset rows start at the sidebar edge: the frame padding is the gutter', async function (assert) {
       await render(
         <template>
