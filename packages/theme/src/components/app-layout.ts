@@ -195,6 +195,12 @@ const appLayout = tv({
     // The sidebar's `nav` inside the mobile drawer: always expanded, as tall
     // as the drawer.
     mobileSidebar: 'group/sidebar flex min-h-0 flex-1 flex-col',
+    // The drawer's close button, merged over the Drawer's own position. The
+    // drawer is portalled out of the layout, so the layout's custom
+    // properties do not reach it: the values are the defaults written out.
+    // The 36px button is centered in the 3rem header row (top 6px), and its
+    // icon ends 22px from the edge, where a row's trailing content does.
+    drawerCloseButton: 'top-1.5 right-3.5 rtl:right-auto rtl:left-3.5',
     // In the icon rail the header stacks its children: the brand on its
     // content line (where the items' icons sit, so it does not move when the
     // rail opens) and the `Toggle` under it. The end is the gutter, so the
@@ -412,9 +418,13 @@ const appLayout = tv({
     },
 
     // The sidebar rendered in the mobile drawer. The drawer's close button
-    // sits over the header's end edge, so the header leaves room for it.
+    // sits at the end of the first row: the header leaves room for it, and a
+    // body with no header above it leaves that row empty.
     inDrawer: {
-      true: { sidebarHeader: 'pe-16' },
+      true: {
+        sidebarHeader: 'pe-[3.625rem]',
+        sidebarBody: 'first:pt-(--app-navbar-height,3rem)'
+      },
       false: {}
     },
 

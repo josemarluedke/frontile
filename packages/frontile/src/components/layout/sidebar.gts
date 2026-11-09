@@ -238,6 +238,12 @@ class Sidebar extends Component<SidebarSignature> {
   }
 
   @cached
+  get drawerCloseButtonClass(): string {
+    return this.styles.drawerCloseButton({
+      class: this.args.layout?.classes?.drawerCloseButton
+    });
+  }
+
   get mobileClassNames(): string {
     return this.styles.mobileSidebar({
       class: this.args.layout?.classes?.mobileSidebar
@@ -283,6 +289,8 @@ class Sidebar extends Component<SidebarSignature> {
         @placement={{this.placement}}
         @size="xs"
         @variant="flat"
+        @closeButtonSize="md"
+        @classes={{hash closeButton=this.drawerCloseButtonClass}}
         @focusTrapOptions={{this.focusTrapOptions}}
         id={{@layout.drawerId}}
         aria-label={{this.label}}

@@ -483,6 +483,99 @@ module(
       }
     });
 
+    test('in the drawer the close button sits in its own row, sized like a toggle', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      const previous = {
+        appLayout: useStyles().appLayout,
+        closeButton: useStyles().closeButton,
+        drawer: useStyles().drawer,
+        overlay: useStyles().overlay,
+        backdrop: useStyles().backdrop
+      };
+      registerCustomStyles({
+        appLayout: realStyles.appLayout,
+        closeButton: realStyles.closeButton,
+        drawer: realStyles.drawer,
+        overlay: realStyles.overlay,
+        backdrop: realStyles.backdrop
+      });
+      try {
+        // No header: the rows start below the close button's row.
+        await render(
+          <template>
+            <AppLayout @defaultMobileSidebarOpen={{true}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Body>
+                  <sidebar.Item @href="#a">Alpha</sidebar.Item>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const close = find(
+          '[role="dialog"] [data-part="close-button"]'
+        )!.getBoundingClientRect();
+        const row = find(
+          '[role="dialog"] [data-part="nav-item"]'
+        )!.getBoundingClientRect();
+        const nav = find(
+          '[role="dialog"] [data-part="mobile-sidebar"]'
+        )!.getBoundingClientRect();
+
+        assert.true(
+          row.top >= close.bottom,
+          `first row (top ${row.top}) starts below the close button (bottom ${close.bottom})`
+        );
+        // The test container is scaled; compare the button to the row.
+        assert.true(
+          Math.abs(close.height - row.height) <= 1,
+          `close button ${close.height}px tall, a row ${row.height}px`
+        );
+        // Its icon ends where a row's trailing content would.
+        const icon = find(
+          '[role="dialog"] [data-part="close-button"] svg'
+        )!.getBoundingClientRect();
+        const rowIcon = row.left - nav.left;
+        assert.true(
+          Math.abs(nav.right - icon.right - (rowIcon + 14 * (row.height / 36))) <=
+            2,
+          `close icon ${nav.right - icon.right}px from the edge`
+        );
+
+        // With a header: the button is centered on the header row.
+        await render(
+          <template>
+            <AppLayout @defaultMobileSidebarOpen={{true}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Header><span>Acme</span></sidebar.Header>
+                <sidebar.Body>
+                  <sidebar.Item @href="#a">Alpha</sidebar.Item>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const header = find(
+          '[role="dialog"] [data-part="sidebar-header"]'
+        )!.getBoundingClientRect();
+        const button = find(
+          '[role="dialog"] [data-part="close-button"]'
+        )!.getBoundingClientRect();
+        const headerCenter = header.top + header.height / 2;
+        const buttonCenter = button.top + button.height / 2;
+        assert.true(
+          Math.abs(headerCenter - buttonCenter) <= 1,
+          `header center ${headerCenter}, button center ${buttonCenter}`
+        );
+      } finally {
+        registerCustomStyles(previous);
+      }
+    });
+
     test('standalone MenuToggle opens @state', async function (assert) {
       const state = new AppLayoutState();
       await render(
