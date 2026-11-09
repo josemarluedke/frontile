@@ -236,6 +236,57 @@ import {
 </template>
 ```
 
+## Sidebar toggle
+
+`sidebar.Toggle` sits inside the sidebar. To collapse the sidebar from
+anywhere else in the layout, such as the start of the navbar, use the yielded
+`layout.SidebarToggle`. Below the breakpoint the same button opens the
+drawer, so it can stand in for `MenuToggle`. It pairs well with
+`@collapsible='offcanvas'`, where the sidebar has no room left for a toggle of
+its own.
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+import {
+  ViewIcon,
+  PackageIcon,
+  SettingsIcon,
+  SparklesIcon
+} from 'site/components/icons';
+
+<template>
+  <DemoFrame @id='navbar-toggle' @label='Sidebar toggle in the navbar'>
+    <AppLayout as |layout|>
+      <layout.Sidebar @collapsible='offcanvas' as |sidebar|>
+        <sidebar.Header>
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
+          <span class='truncate text-sm font-semibold'>Acme</span>
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            Overview
+          </sidebar.Item>
+          <sidebar.Item @href='#orders' @icon={{PackageIcon}}>
+            Orders
+          </sidebar.Item>
+          <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+            Settings
+          </sidebar.Item>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar>
+        <layout.SidebarToggle />
+        <span class='text-sm font-medium'>Overview</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Overview' />
+      </layout.Main>
+    </AppLayout>
+  </DemoFrame>
+</template>
+```
+
 ## Responsive navigation
 
 Below `@breakpoint` (`sm` 40rem, `md` 48rem by default, `lg` 64rem) the

@@ -366,58 +366,6 @@ import {
 </template>
 ```
 
-### Collapse modes
-
-`@collapsible` sets what collapsing does: `icon` (the default) shrinks the
-sidebar to a rail, `offcanvas` hides it, and `none` keeps it expanded.
-
-A hidden sidebar cannot hold the button that brings it back, so put a
-`SidebarToggle` outside it. Give the toggle and the sidebar the same
-`AppLayoutState` as `@state`, and pass the sidebar's id as `@controls` so the
-toggle's `aria-controls` points at it.
-
-```gts preview collapsible
-import Component from '@glimmer/component';
-import { Sidebar, SidebarToggle, AppLayoutState } from 'frontile';
-import { ViewIcon, BookIcon } from 'site/components/icons';
-
-export default class CollapseModesExample extends Component {
-  modes = ['icon', 'offcanvas', 'none'].map((name) => ({
-    name,
-    id: `collapse-mode-${name}`,
-    state: new AppLayoutState()
-  }));
-
-  <template>
-    <div class='demo-stack demo-stack--wide not-prose'>
-      {{#each this.modes as |mode|}}
-        <div
-          class='flex h-40 overflow-hidden rounded-lg border border-neutral-soft'
-        >
-          <Sidebar
-            @state={{mode.state}}
-            @collapsible={{mode.name}}
-            @label={{mode.name}}
-            @class='border-e border-neutral-muted'
-            id={{mode.id}}
-            as |sidebar|
-          >
-            <sidebar.Body>
-              <sidebar.Item @href='#home' @icon={{ViewIcon}}>Home</sidebar.Item>
-              <sidebar.Item @href='#docs' @icon={{BookIcon}}>Docs</sidebar.Item>
-            </sidebar.Body>
-          </Sidebar>
-          <div class='flex flex-1 items-start gap-2 p-2 text-sm'>
-            <SidebarToggle @state={{mode.state}} @controls={{mode.id}} />
-            <code class='py-2'>@collapsible='{{mode.name}}'</code>
-          </div>
-        </div>
-      {{/each}}
-    </div>
-  </template>
-}
-```
-
 ### Toggle placement
 
 `Toggle` works anywhere inside the sidebar and stays visible in the rail. In
@@ -443,6 +391,150 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
         <sidebar.Toggle />
       </sidebar.Footer>
     </Sidebar>
+  </div>
+</template>
+```
+
+### Collapse modes
+
+`@collapsible` sets what collapsing does: `icon` (the default) shrinks the
+sidebar to a rail, `offcanvas` slides it closed, and `none` keeps it expanded.
+
+A closed offcanvas sidebar cannot hold the button that brings it back, so
+these demos use a [toggle outside the sidebar](#a-toggle-outside-the-sidebar).
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Sidebar, SidebarToggle } from 'frontile';
+import { ViewIcon, BookIcon } from 'site/components/icons';
+
+class Mode {
+  @tracked collapsed = false;
+  name: string;
+  id: string;
+  constructor(name: string) {
+    this.name = name;
+    this.id = `collapse-mode-${name}`;
+  }
+  toggle = () => (this.collapsed = !this.collapsed);
+}
+
+export default class CollapseModesExample extends Component {
+  modes = ['icon', 'offcanvas', 'none'].map((name) => new Mode(name));
+
+  <template>
+    <div class='demo-stack demo-stack--wide not-prose'>
+      {{#each this.modes as |mode|}}
+        <div
+          class='flex h-40 overflow-hidden rounded-lg border border-neutral-soft'
+        >
+          <Sidebar
+            @collapsed={{mode.collapsed}}
+            @collapsible={{mode.name}}
+            @label={{mode.name}}
+            @class='border-e border-neutral-muted'
+            id={{mode.id}}
+            as |sidebar|
+          >
+            <sidebar.Body>
+              <sidebar.Item @href='#home' @icon={{ViewIcon}}>Home</sidebar.Item>
+              <sidebar.Item @href='#docs' @icon={{BookIcon}}>Docs</sidebar.Item>
+            </sidebar.Body>
+          </Sidebar>
+          <div class='flex flex-1 items-start gap-2 p-2 text-sm'>
+            <SidebarToggle
+              @collapsed={{mode.collapsed}}
+              @onToggle={{mode.toggle}}
+              @controls={{mode.id}}
+            />
+            <code class='py-2'>@collapsible='{{mode.name}}'</code>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </template>
+}
+```
+
+### A toggle outside the sidebar
+
+On its own the sidebar keeps its collapsed state itself, starting from
+`@defaultCollapsed`. To drive it from outside, pass `@collapsed` and change
+it yourself: from a `SidebarToggle` anywhere on the page, which calls
+`@onToggle`, or from `@onCollapsedChange`, which the sidebar's own `Toggle`
+calls with the value it asks for. Give the sidebar an `id` and pass it to the
+toggle as `@controls`, so its `aria-controls` points at the sidebar. The
+Collapse modes demo above is wired this way.
+
+```gts
+<Sidebar @collapsed={{this.collapsed}} id='main-nav' as |sidebar|>
+  ...
+</Sidebar>
+
+<SidebarToggle
+  @collapsed={{this.collapsed}}
+  @onToggle={{this.toggle}}
+  @controls='main-nav'
+/>
+```
+
+In an [AppLayout](./app-layout#sidebar-toggle) the layout holds this state;
+put `layout.SidebarToggle` where you want it, such as the navbar.
+
+### Using the state
+
+The sidebar also yields its state, `isCollapsed` and `isInDrawer`, and the
+actions `toggle`, `collapse` and `expand`, so the block can render
+differently in each state. `isCollapsed` is true in the rail and while an
+offcanvas sidebar is closed; `isInDrawer` is true when an `AppLayout` shows
+the sidebar in its phone drawer. Collapse this one to swap the trial card for
+a single item.
+
+```gts preview collapsible
+import { Button, Sidebar } from 'frontile';
+import { on } from '@ember/modifier';
+import { ViewIcon, RocketIcon, SparklesIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide not-prose'>
+    <div
+      class='flex h-72 overflow-hidden rounded-lg border border-neutral-soft'
+    >
+      <Sidebar
+        @label='Workspace'
+        @class='border-e border-neutral-muted'
+        as |sidebar|
+      >
+        <sidebar.Header>
+          <SparklesIcon class='size-5 shrink-0 text-primary' />
+          <span class='truncate text-sm font-semibold' data-sidebar-label>
+            Acme
+          </span>
+          <sidebar.Toggle class='ml-auto' />
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Item @href='#overview' @icon={{ViewIcon}} @isActive={{true}}>
+            Overview
+          </sidebar.Item>
+        </sidebar.Body>
+        <sidebar.Footer>
+          {{#if sidebar.isCollapsed}}
+            <sidebar.Item @icon={{RocketIcon}} {{on 'click' sidebar.expand}}>
+              Upgrade
+            </sidebar.Item>
+          {{else}}
+            <div class='rounded-lg border border-neutral-muted p-3 text-sm'>
+              <p class='font-medium'>Trial ends in 5 days</p>
+              <Button @size='xs' @color='primary' @class='mt-2'>
+                Upgrade
+              </Button>
+            </div>
+          {{/if}}
+        </sidebar.Footer>
+      </Sidebar>
+      <p class='flex-1 p-4 text-sm text-neutral-firm'>Page content</p>
+    </div>
   </div>
 </template>
 ```
