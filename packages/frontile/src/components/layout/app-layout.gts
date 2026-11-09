@@ -430,6 +430,8 @@ class AppLayout extends Component<AppLayoutSignature> {
 
     return appLayout({
       variant: this.variant,
+      navbarPlacement: this.navbarPlacement,
+      breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
       sidebarColumn: this.sidebarColumn,
       sidebarSize: this.registeredSidebar?.size,
