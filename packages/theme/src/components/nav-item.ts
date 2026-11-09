@@ -9,18 +9,17 @@ import type { VariantProps } from '../tw';
 // side padding is `--sidebar-gutter` (0.5rem unless the variant sets it).
 // `--sidebar-rail` is the content width, so the inset variant excludes its
 // 0.75rem gap. Only the inline layout follows the rail.
-const railStart =
-  'ps-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-gutter,0.5rem)_-_1.25rem)/2)]';
-
-// The end padding puts a trailing icon or badge 1rem from the sidebar's edge,
-// whatever the variant's gutter: a `Toggle` at the header's end has its icon
-// there too (its fill starts at the gutter, its icon sits 0.5rem inside).
-const rowPe = 'pe-[calc(1rem_-_var(--sidebar-gutter,0.5rem))]';
+//
+// The end padding is the same inset, so a trailing chevron or badge sits as
+// far inside the row as the icon does. A `Toggle` at the header's end lines
+// its icon up with them (see `sidebarHeader` in `app-layout.ts`).
+const railInset =
+  'ps-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-gutter,0.5rem)_-_1.25rem)/2)] pe-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-gutter,0.5rem)_-_1.25rem)/2)]';
 
 const navRow = [
   ...focusVisibleRing,
   // 36px with a mouse; 44px where the pointer is coarse (touch).
-  `flex min-h-9 w-full items-center gap-2 rounded-lg ps-2 ${rowPe} py-1.5 text-sm pointer-coarse:min-h-11`,
+  'flex min-h-9 w-full items-center gap-2 rounded-lg px-2 py-1.5 font-body text-body-sm pointer-coarse:min-h-11',
   'text-neutral-firm',
   'not-data-[disabled=true]:hover:bg-neutral-muted',
   'not-data-[disabled=true]:hover:text-neutral-strong',
@@ -44,12 +43,15 @@ const navItemRow = [
 const navItem = tv({
   slots: {
     navItem: navItemRow,
-    navItemIcon: 'relative inline-flex shrink-0 items-center justify-center',
+    // The slot sizes the icon, so an SVG that brings its own size (Lucide's
+    // 24px attributes, a utility class) still matches the other rows.
+    navItemIcon:
+      'relative inline-flex shrink-0 items-center justify-center [&>svg]:size-5',
     navItemLabel: 'truncate',
     // The short text shown under the icon in the stacked layout.
-    navItemShortLabel: 'max-w-full truncate text-[11px] leading-tight',
+    navItemShortLabel: 'max-w-full truncate text-body-4xs leading-tight',
     navItemBadge:
-      'inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] leading-none font-medium text-on-danger',
+      'inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 font-label text-label-micro leading-none text-on-danger',
     // Screen-reader text appended to the label for a badge.
     navItemBadgeLabel: 'sr-only',
     navFolder: 'flex flex-col',
@@ -72,8 +74,8 @@ const navItem = tv({
   variants: {
     layout: {
       inline: {
-        navItem: railStart,
-        navFolderTrigger: railStart,
+        navItem: railInset,
+        navFolderTrigger: railInset,
         navItemIcon: 'size-5',
         // Hidden in the icon rail.
         navItemLabel: 'group-data-[collapsed=true]/sidebar:sr-only'
@@ -81,13 +83,13 @@ const navItem = tv({
       // Small icon over text. Ignores the sidebar's collapsed state.
       stacked: {
         navItem: [
-          'group/nav-item mx-auto min-h-14 w-full max-w-[72px] flex-col justify-center gap-0.5 px-0.5 py-1 text-[11px]',
+          'group/nav-item mx-auto min-h-14 w-full max-w-[72px] flex-col justify-center gap-0.5 px-0.5 py-1 text-body-4xs',
           // The active fill sits behind the icon, not the whole item.
           'data-[active=true]:bg-transparent not-data-[disabled=true]:hover:bg-transparent',
           'not-data-[disabled=true]:data-[active=true]:hover:bg-transparent'
         ],
         navItemIcon: [
-          'h-8 w-11 rounded-lg [&>svg]:size-5',
+          'h-8 w-11 rounded-lg',
           'group-data-[active=true]/nav-item:bg-neutral-soft',
           'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-neutral-muted',
           'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-neutral-soft'

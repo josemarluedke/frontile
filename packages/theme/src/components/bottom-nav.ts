@@ -13,7 +13,7 @@ const bottomNav = tv({
     // Class names are literal strings so Tailwind can see them.
     bottomNav: [
       'fixed inset-x-0 bottom-0 box-border flex items-center justify-around',
-      'border-t border-neutral-subtle bg-surface-app',
+      'border-t border-neutral-muted bg-surface-app',
       'min-h-[calc(3.75rem+var(--bottomnav-safe-area,env(safe-area-inset-bottom,0px)))]',
       'pb-[var(--bottomnav-safe-area,env(safe-area-inset-bottom,0px))]'
     ],

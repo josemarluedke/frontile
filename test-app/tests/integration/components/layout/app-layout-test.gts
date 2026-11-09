@@ -12,6 +12,8 @@ import { cell } from 'ember-resources';
 import { on } from '@ember/modifier';
 import { AppLayout, AppLayoutState, Sidebar } from 'frontile';
 import { mockMatchMedia } from 'test-app/tests/helpers/match-media';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
+import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 
 // The navbar sits inside the card when its box lies within the card's box.
 function isWithin(inner: Element, outer: Element): boolean {
@@ -833,5 +835,47 @@ module(
         'same row'
       );
     });
+  }
+);
+
+module(
+  'Integration | Component | AppLayout alignment | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    let previous: Partial<ReturnType<typeof useStyles>>;
+
+    hooks.beforeEach(function () {
+      previous = { appLayout: useStyles().appLayout };
+      registerCustomStyles({ appLayout: realStyles.appLayout });
+    });
+
+    hooks.afterEach(function () {
+      registerCustomStyles(previous);
+    });
+
+    for (const placement of ['frame', 'content'] as const) {
+      test(`navbar text lines up with the page header's (${placement})`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @navbarPlacement={{placement}} as |layout|>
+              <layout.Navbar><span data-test-navbar-text>Crumb</span></layout.Navbar>
+              <layout.Main>
+                <layout.PageHeader @title="Overview" />
+              </layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const navbarText = find('[data-test-navbar-text]')!;
+        const title = find('[data-part="page-header-title"]')!;
+        const left = (el: Element) => el.getBoundingClientRect().left;
+
+        assert.true(
+          Math.abs(left(navbarText) - left(title)) <= 1,
+          `navbar ${left(navbarText)}, title ${left(title)}`
+        );
+      });
+    }
   }
 );

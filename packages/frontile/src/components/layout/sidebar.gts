@@ -60,7 +60,8 @@ interface SidebarArgs {
   label?: string;
 
   /**
-   * The layout variant, `inset` or `attached`. Only used when the sidebar is
+   * The layout variant, `inset` or `attached`, which sets the sidebar's
+   * widths and the gutter around its rows. Only used when the sidebar is
    * rendered outside an `AppLayout`; inside one it follows the layout.
    *
    * @defaultValue 'attached'

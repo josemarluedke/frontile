@@ -74,7 +74,11 @@ export default class SidebarAnatomyExample extends Component {
       <div
         class='flex h-96 overflow-hidden rounded-lg border border-neutral-soft'
       >
-        <Sidebar @label='Workspace' as |sidebar|>
+        <Sidebar
+          @label='Workspace'
+          @class='border-e border-neutral-muted'
+          as |sidebar|
+        >
           <sidebar.Header>
             <SparklesIcon class='size-5 shrink-0 text-primary' />
             <span class='truncate text-sm font-semibold' data-sidebar-label>
@@ -329,7 +333,11 @@ import {
     <div
       class='flex h-80 overflow-hidden rounded-lg border border-neutral-soft'
     >
-      <Sidebar @label='Workspace' as |sidebar|>
+      <Sidebar
+        @label='Workspace'
+        @class='border-e border-neutral-muted'
+        as |sidebar|
+      >
         <sidebar.Header>
           <SparklesIcon class='size-5 shrink-0 text-primary' />
           <span class='truncate text-sm font-semibold' data-sidebar-label>
@@ -390,6 +398,7 @@ export default class CollapseModesExample extends Component {
             @state={{mode.state}}
             @collapsible={{mode.name}}
             @label={{mode.name}}
+            @class='border-e border-neutral-muted'
             id={{mode.id}}
             as |sidebar|
           >
@@ -516,8 +525,10 @@ import {
 
 ## Styling
 
-On its own the sidebar is a bordered surface (`@variant='attached'`); in an
-`AppLayout` it follows the layout's variant.
+On its own the sidebar has no background or border: it sits on its
+container's surface. Draw an edge with `@class`, as the demos above do with
+`@class='border-e border-neutral-muted'`. In an `AppLayout` the layout draws
+both.
 
 The header, body and footer share one content line, so items, group headings
 and your own markup line up without padding of your own. To keep a brand in

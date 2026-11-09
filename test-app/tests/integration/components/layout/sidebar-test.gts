@@ -705,6 +705,55 @@ module(
       );
       assert.strictEqual(widthOf(), 240);
     });
+
+    test('on its own the sidebar draws no background or border', async function (assert) {
+      await render(
+        <template>
+          <div style="height: 200px">
+            <Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </Sidebar>
+          </div>
+        </template>
+      );
+
+      const style = getComputedStyle(find('[data-part="sidebar"]')!);
+      assert.strictEqual(style.backgroundColor, 'rgba(0, 0, 0, 0)');
+      assert.strictEqual(style.borderInlineEndWidth, '0px');
+      assert.strictEqual(style.borderInlineStartWidth, '0px');
+    });
+
+    test('the attached layout gives its sidebar a ground and a border facing the content', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @variant="attached" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const style = getComputedStyle(find('[data-part="sidebar"]')!);
+      assert.notStrictEqual(style.backgroundColor, 'rgba(0, 0, 0, 0)');
+      assert.strictEqual(style.borderInlineEndWidth, '1px');
+
+      await render(
+        <template>
+          <AppLayout @variant="attached" @sidebarSide="end" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body>Items</sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const endStyle = getComputedStyle(find('[data-part="sidebar"]')!);
+      assert.strictEqual(endStyle.borderInlineStartWidth, '1px');
+      assert.strictEqual(endStyle.borderInlineEndWidth, '0px');
+    });
   }
 );
 
@@ -871,6 +920,57 @@ module(
         assert.true(
           Math.abs(groupText - icon) <= 1,
           `group label ${groupText}, icon ${icon}`
+        );
+      });
+
+      test(`${variant} rows inset their trailing chevron like their icon, and the header toggle lines up with it`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @variant={{variant}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Header>
+                  <TestIcon data-test-brand />
+                  <sidebar.Toggle class="ml-auto" />
+                </sidebar.Header>
+                <sidebar.Body>
+                  <sidebar.Folder
+                    @label="Alpha"
+                    @icon={{TestIcon}}
+                    as |folder|
+                  >
+                    <folder.Item @href="#a">One</folder.Item>
+                  </sidebar.Folder>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const { x, scale } = geometry();
+        const width = (el: Element) => el.getBoundingClientRect().width / scale;
+        const row = find('[data-part="nav-folder-trigger"]')!;
+        const icon = find('[data-part="nav-item-icon"]')!;
+        const chevron = find('[data-part="nav-folder-chevron"]')!;
+        const toggleIcon = find('[data-part="sidebar-toggle"] svg')!;
+
+        const leading = x(icon) - x(row);
+        const rowEnd = x(row) + width(row);
+        const trailing = rowEnd - (x(chevron) + width(chevron));
+        const toggleEnd = x(toggleIcon) + width(toggleIcon);
+        const brand = x(find('[data-test-brand]')!);
+
+        assert.true(
+          Math.abs(leading - trailing) <= 1,
+          `icon inset ${leading}, chevron inset ${trailing}`
+        );
+        assert.true(
+          Math.abs(toggleEnd - (rowEnd - trailing)) <= 1,
+          `toggle icon ends at ${toggleEnd}, chevron at ${rowEnd - trailing}`
+        );
+        assert.true(
+          Math.abs(brand - x(icon)) <= 1,
+          `brand ${brand}, icon ${x(icon)}`
         );
       });
 

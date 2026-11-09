@@ -88,8 +88,10 @@ import {
 ## Variants
 
 `inset`, the default, sets the content in a rounded card on a tinted frame.
-`attached` runs the content edge to edge and gives the sidebar and navbar
-borders. On phones both run edge to edge.
+`attached` runs the content edge to edge, with the sidebar on the same tinted
+ground and borders between the sidebar, navbar and content. The layout draws
+these, not the parts: a `Sidebar` on its own has neither. On phones both
+variants run edge to edge.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';

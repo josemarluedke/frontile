@@ -139,6 +139,16 @@ const edgeToEdgeVariants = (['sm', 'md', 'lg'] as const).flatMap(
   }
 );
 
+// The layout's icon buttons (sidebar, menu and aside toggles). Same radius and
+// hover fill as a navigation row, so a toggle in the sidebar header reads as
+// one of its rows. `neutral-muted` stays visible on the frame's
+// `neutral-subtle` ground as well as on the content surface.
+const iconButton = [
+  ...focusVisibleRing,
+  'inline-flex size-9 shrink-0 items-center justify-center rounded-lg',
+  'text-neutral-firm hover:bg-neutral-muted hover:text-neutral-strong'
+];
+
 const appLayout = tv({
   slots: {
     // Publishes the shell's sizes as custom properties, for the parts below
@@ -199,8 +209,13 @@ const appLayout = tv({
     // still arriving inside the narrow rail on expand (0.375rem of clip margin
     // leaves its focus ring visible). A header that is only a `Toggle` keeps
     // its one row.
+    //
+    // The two ends mirror each other: the brand's start and the end toggle's
+    // icon are both half a rail minus half an icon from the sidebar's edge,
+    // the same inset a row gives its icon and its trailing chevron or badge.
+    // The end padding is that inset less the toggle's 0.5rem icon padding.
     sidebarHeader: [
-      'box-content flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 pb-0 ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2)] pe-(--sidebar-gutter,0.5rem)',
+      'box-content flex h-(--app-navbar-height,3rem) shrink-0 items-center gap-2 pb-0 ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2)] pe-[calc(var(--sidebar-rail,4rem)/2_-_1.125rem)]',
       'overflow-x-clip [overflow-clip-margin:0.375rem]',
       'transition-[padding-bottom] duration-200 motion-reduce:transition-none',
       'group-data-[collapsed=true]/sidebar:flex-col',
@@ -239,24 +254,21 @@ const appLayout = tv({
     // in the rail like any other sidebar label.
     sidebarGroup: 'flex flex-col gap-1 py-2',
     sidebarGroupLabel: [
-      'truncate ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2_-_var(--sidebar-gutter,0.5rem))] pe-2 pb-1 text-xs font-medium text-neutral-firm',
+      'truncate ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2_-_var(--sidebar-gutter,0.5rem))] pe-2 pb-1 font-label text-label-2xs text-neutral-firm',
       'group-data-[collapsed=true]/sidebar:sr-only'
     ],
-    sidebarToggle: [
-      ...focusVisibleRing,
-      'inline-flex size-9 shrink-0 items-center justify-center rounded-md',
-      'text-neutral-firm hover:bg-neutral-subtle hover:text-neutral-strong'
-    ],
+    sidebarToggle: iconButton,
 
     // Opens the mobile drawer. Hidden from `breakpoint` up (see below).
-    menuToggle: [
-      ...focusVisibleRing,
-      'inline-flex size-9 shrink-0 items-center justify-center rounded-md',
-      'text-neutral-firm hover:bg-neutral-subtle hover:text-neutral-strong'
-    ],
+    menuToggle: iconButton,
 
-    navbar:
-      'col-[2/-1] row-start-1 flex h-(--app-navbar-height,3rem) min-w-0 items-center gap-2 px-3',
+    // The navbar's side padding is the page header's, so its text lines up
+    // with the page's. A toggle at either end is pulled back by its 0.5rem
+    // icon padding, so its icon lines up instead of its fill.
+    navbar: [
+      'col-[2/-1] row-start-1 flex h-(--app-navbar-height,3rem) min-w-0 items-center gap-2 px-4',
+      '[&>[data-part$=-toggle]:first-child]:-ms-2 [&>[data-part$=-toggle]:last-child]:-me-2'
+    ],
 
     main: 'col-start-2 row-start-2 min-h-0 min-w-0 outline-none',
     mainCard: 'pointer-events-none col-[2/-1]',
@@ -268,22 +280,18 @@ const appLayout = tv({
 
     pageHeader: 'flex shrink-0 flex-wrap items-start gap-x-4 gap-y-2 px-4 py-4',
     pageHeaderContent: 'flex min-w-0 flex-1 flex-col gap-1',
-    pageHeaderTitle: 'text-xl font-semibold text-neutral-strong',
-    pageHeaderDescription: 'text-sm text-neutral-firm',
+    pageHeaderTitle: 'font-header text-header-lg text-neutral-strong',
+    pageHeaderDescription: 'font-body text-body-sm text-neutral-firm',
     pageHeaderActions: 'flex shrink-0 items-center gap-2',
 
     // Literal `lg:block` here, not tied to `breakpoint`: the aside is a
     // wide-viewport affordance regardless of where the sidebar collapses.
     // Below `lg` the same block renders in a Drawer instead (`mobileAside`).
     aside:
-      'col-start-3 row-start-2 hidden w-72 shrink-0 overflow-y-auto p-4 text-sm lg:block',
+      'col-start-3 row-start-2 hidden w-72 shrink-0 overflow-y-auto p-4 font-body text-body-sm lg:block',
     // The aside's `aside` element inside the drawer: as tall as the drawer.
-    mobileAside: 'min-h-0 flex-1 overflow-y-auto p-4 text-sm',
-    asideToggle: [
-      ...focusVisibleRing,
-      'inline-flex size-9 shrink-0 items-center justify-center rounded-md',
-      'text-neutral-firm hover:bg-neutral-subtle hover:text-neutral-strong'
-    ],
+    mobileAside: 'min-h-0 flex-1 overflow-y-auto p-4 font-body text-body-sm',
+    asideToggle: iconButton,
 
     skipLink: [
       ...focusVisibleRing,
@@ -307,14 +315,15 @@ const appLayout = tv({
           'bg-transparent [--sidebar-clip:0.375rem] [--sidebar-gutter:0px]',
         mainCard:
           'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted',
-        aside: 'border-s border-neutral-subtle',
+        aside: 'border-s border-neutral-muted',
         // The bottom bar runs edge to edge: it pulls out over the frame's
         // side and bottom gutter (`p-3`).
         bottomNav: '-mx-3 -mb-3'
       },
+      // The sidebar's ground and border are the layout's (see the compound
+      // variants), so a standalone sidebar draws neither.
       attached: {
         base: 'bg-surface-app',
-        sidebar: 'border-e border-neutral-muted bg-surface-card',
         // Edge-to-edge content: no card chrome. The element is not rendered.
         mainCard: 'hidden',
         navbar: 'border-b border-neutral-muted bg-surface-app',
@@ -459,7 +468,8 @@ const appLayout = tv({
     {
       sidebarSize: 'rail',
       class: {
-        sidebarHeader: 'ps-(--sidebar-gutter,0.5rem) justify-center',
+        sidebarHeader:
+          'ps-(--sidebar-gutter,0.5rem) pe-(--sidebar-gutter,0.5rem) justify-center',
         sidebarGroupLabel: 'ps-0 pe-0 text-center'
       }
     },
@@ -476,9 +486,18 @@ const appLayout = tv({
       sidebarSide: 'end',
       class: { sidebar: 'ps-3' }
     },
-    // Attached: the border sits on the side facing the content.
+    // Attached: the sidebar sits on the frame's ground, the same
+    // `neutral-subtle` the inset variant's sidebar floats on, with a border on
+    // the side facing the content. Only in a layout: standalone, the sidebar
+    // is transparent and borderless, and its container decides both.
     {
       variant: 'attached',
+      standalone: false,
+      class: { sidebar: 'border-e border-neutral-muted bg-neutral-subtle' }
+    },
+    {
+      variant: 'attached',
+      standalone: false,
       sidebarSide: 'end',
       class: { sidebar: 'border-e-0 border-s' }
     },
@@ -554,7 +573,7 @@ const appLayout = tv({
       variant: 'inset',
       navbarPlacement: 'content',
       class: {
-        navbar: 'rounded-t-xl border-b border-neutral-subtle',
+        navbar: 'rounded-t-xl border-b border-neutral-muted',
         main: 'rounded-b-xl'
       }
     },
