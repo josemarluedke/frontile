@@ -6,7 +6,7 @@
   @apply p-4 border-t border-l border-r rounded-t;
 
   @apply relative gap-4 p-6 flex min-h-56 items-center justify-start sm:justify-center overflow-x-auto py-6;
-/* sm:py-24 lg:max-h-120 lg:min-h-120 */
+  /* sm:py-24 lg:max-h-120 lg:min-h-120 */
 }
 
 .docfy-demo__example,
@@ -37,7 +37,8 @@
    means the stage stays shrink-to-fit-centered for every un-converted demo,
    and only demos that have opted in via `.demo-stack` get the full-width
    treatment — so pages can be migrated to `.demo-stack` one at a time. */
-.docfy-demo__example:has(> .demo-stack) {
+.docfy-demo__example:has(> .demo-stack),
+.docfy-demo__example:has(> .demo-frame) {
   @apply w-full;
 }
 
@@ -50,12 +51,87 @@
   @apply max-w-none;
 }
 
-/* `AppLayout` fills the viewport by default. Its demos opt into a fixed
-   height so the shell fits on the docs page; unlayered, so it wins over the
-   theme's `h-dvh` utility. */
-.demo-app-layout {
-  height: 22rem;
-  @apply overflow-hidden rounded-lg border border-neutral-soft;
+/* `DemoFrame` (site/components/demo-frame): a stage for demos that need a
+   whole screen, such as `AppLayout`. These rules are unlayered, so they win
+   over the theme's `h-dvh` / `min-h-dvh` utilities on the layout root. */
+.demo-frame {
+  @apply flex w-full flex-col items-end gap-2;
+}
+
+.demo-frame__stage {
+  --demo-frame-height: 24rem;
+  height: var(--demo-frame-height);
+  @apply w-full overflow-auto rounded-lg border border-neutral-soft;
+}
+
+.demo-frame__stage > [data-component='app-layout'] {
+  height: 100%;
+}
+
+/* A page-scrolling layout grows past the stage, which scrolls instead of the
+   document. Its sticky sidebar is as tall as the stage, not the viewport. */
+.demo-frame__stage > [data-component='app-layout'][data-scroll-mode='page'] {
+  height: auto;
+  min-height: 100%;
+}
+
+.demo-frame__stage > [data-scroll-mode='page'] > [data-part='sidebar'] {
+  height: var(--demo-frame-height);
+}
+
+/* Frame mode: the page loaded in the viewer's iframe with
+   `?demo-frame=<id>`. The matching frame fills the viewport, and the rest of
+   the page is hidden, out of sight and out of the tab order. Portalled
+   overlays (the layout's drawers, menus, tooltips) stay visible. The frame
+   sits under the site's portal target (z-20). */
+.demo-frame[data-fullscreen='true'] {
+  @apply fixed inset-0 z-[15] block bg-surface-app;
+}
+
+.demo-frame[data-fullscreen='true'] .demo-frame__stage {
+  --demo-frame-height: 100dvh;
+  @apply rounded-none border-0;
+}
+
+html.demo-frame-mode {
+  overflow: hidden;
+}
+
+html.demo-frame-mode
+  body
+  *:not(
+    .demo-frame[data-fullscreen='true'],
+    .demo-frame[data-fullscreen='true'] *,
+    [data-portal-target],
+    [data-portal-target] *
+  ) {
+  visibility: hidden;
+}
+
+html.demo-frame-mode
+  :is(.demo-frame[data-fullscreen='true'], [data-portal-target]) {
+  visibility: visible;
+}
+
+/* The viewer: a full-screen modal holding the iframe. */
+.demo-frame__viewer {
+  @apply h-dvh;
+}
+
+.demo-frame__viewer-header {
+  @apply flex flex-wrap items-center gap-3 pe-14 text-base;
+}
+
+.demo-frame__open {
+  @apply ms-auto inline-flex items-center gap-1.5 text-sm font-normal text-neutral-firm hover:text-neutral-strong;
+}
+
+.demo-frame__viewer-body {
+  @apply flex flex-1 justify-center overflow-auto bg-surface-canvas p-4;
+}
+
+.demo-frame__iframe {
+  @apply h-full max-w-full rounded-lg border border-neutral-soft bg-surface-app transition-[width] duration-200;
 }
 
 .docfy-demo__description {
