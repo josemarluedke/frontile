@@ -141,8 +141,8 @@ const edgeToEdgeVariants = (['sm', 'md', 'lg'] as const).flatMap(
 
 // The layout's icon buttons (sidebar, menu and aside toggles). Same radius and
 // hover fill as a navigation row, so a toggle in the sidebar header reads as
-// one of its rows. `neutral-muted` stays visible on the frame's
-// `neutral-subtle` ground as well as on the content surface.
+// one of its rows. `neutral-muted` stays visible on the frame's ground as
+// well as on the content surface.
 const iconButton = [
   ...focusVisibleRing,
   'inline-flex size-9 shrink-0 items-center justify-center rounded-lg',
@@ -317,9 +317,11 @@ const appLayout = tv({
 
   variants: {
     variant: {
-      // The tinted frame shows through a gutter around the card.
+      // The tinted frame shows through a gutter around the card. The content
+      // is the lit surface in both schemes: on a `canvas` frame in light, and
+      // in dark, where `app` is black, `canvas` content on an `app` frame.
       inset: {
-        base: 'bg-neutral-subtle p-3',
+        base: 'bg-surface-canvas p-3 dark:bg-surface-app',
         // Transparent, borderless: the sidebar floats on the tinted frame.
         // The frame's own padding is the gutter, so rows start at the sidebar's
         // edge. 0.375rem of clip room clears the 5px focus ring, which the
@@ -327,7 +329,7 @@ const appLayout = tv({
         sidebar:
           'bg-transparent [--sidebar-clip:0.375rem] [--sidebar-gutter:0px]',
         mainCard:
-          'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted',
+          'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted dark:bg-surface-canvas',
         aside: 'border-s border-neutral-muted',
         // The bottom bar runs edge to edge: it pulls out over the frame's
         // side and bottom gutter (`p-3`).
@@ -336,10 +338,11 @@ const appLayout = tv({
       // The sidebar's ground and border are the layout's (see the compound
       // variants), so a standalone sidebar draws neither.
       attached: {
-        base: 'bg-surface-app',
+        base: 'bg-surface-app dark:bg-surface-canvas',
         // Edge-to-edge content: no card chrome. The element is not rendered.
         mainCard: 'hidden',
-        navbar: 'border-b border-neutral-muted bg-surface-app',
+        navbar:
+          'border-b border-neutral-muted bg-surface-app dark:bg-surface-canvas',
         aside: 'border-s border-neutral-muted'
       }
     },
@@ -512,13 +515,16 @@ const appLayout = tv({
       class: { sidebar: 'ps-3' }
     },
     // Attached: the sidebar sits on the frame's ground, the same
-    // `neutral-subtle` the inset variant's sidebar floats on, with a border on
+    // ground the inset variant's sidebar floats on, with a border on
     // the side facing the content. Only in a layout: standalone, the sidebar
     // is transparent and borderless, and its container decides both.
     {
       variant: 'attached',
       standalone: false,
-      class: { sidebar: 'border-e border-neutral-muted bg-neutral-subtle' }
+      class: {
+        sidebar:
+          'border-e border-neutral-muted bg-surface-canvas dark:bg-surface-app'
+      }
     },
     {
       variant: 'attached',

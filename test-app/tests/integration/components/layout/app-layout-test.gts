@@ -877,5 +877,55 @@ module(
         );
       });
     }
+
+    // Resolves any CSS color (oklch included) to relative luminance.
+    function luminance(color: string): number {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 1;
+      const ctx = canvas.getContext('2d')!;
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, 1, 1);
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+      const lin = (c: number) => {
+        const v = c / 255;
+        return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+      };
+      return 0.2126 * lin(r!) + 0.7152 * lin(g!) + 0.0722 * lin(b!);
+    }
+
+    for (const scheme of ['light', 'dark'] as const) {
+      for (const variant of ['inset', 'attached'] as const) {
+        test(`the content is lighter than the frame (${variant}, ${scheme})`, async function (assert) {
+          await render(
+            <template>
+              <div class={{scheme}}>
+                <AppLayout @variant={{variant}} as |layout|>
+                  <layout.Sidebar as |sidebar|>
+                    <sidebar.Body>Items</sidebar.Body>
+                  </layout.Sidebar>
+                  <layout.Main>Content</layout.Main>
+                </AppLayout>
+              </div>
+            </template>
+          );
+
+          const bg = (selector: string) =>
+            getComputedStyle(find(selector)!).backgroundColor;
+          const frame =
+            variant === 'inset'
+              ? bg('[data-component="app-layout"]')
+              : bg('[data-part="sidebar"]');
+          const content =
+            variant === 'inset'
+              ? bg('[data-part="main-card"]')
+              : bg('[data-component="app-layout"]');
+
+          assert.true(
+            luminance(content) > luminance(frame),
+            `content ${content} (${luminance(content)}) vs frame ${frame} (${luminance(frame)})`
+          );
+        });
+      }
+    }
   }
 );
