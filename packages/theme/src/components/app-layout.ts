@@ -448,6 +448,17 @@ const appLayout = tv({
       sidebarSize: 'rail',
       class: { sidebar: '[--sidebar-gutter:0.3125rem]' }
     },
+    // The rail's items are centered columns (icon over label), and the header
+    // assumes a 4rem `--sidebar-rail` that this 5rem column does not set. Give
+    // it the body's gutter on both sides and center its content, so a brand
+    // sits over the same box as the items. A group label is centered likewise.
+    {
+      sidebarSize: 'rail',
+      class: {
+        sidebarHeader: 'ps-(--sidebar-gutter,0.5rem) justify-center',
+        sidebarGroupLabel: 'ps-0 pe-0 text-center'
+      }
+    },
 
     // The inset sidebar floats on the frame, so it supplies its own spacing
     // to the card (the grid has no gap).

@@ -612,6 +612,9 @@ stay put, so pair it with `@collapsible="none"`. The size is a preset, not a
 length: for any other width, pass a width utility through `class` and set
 `--app-sidebar-width` yourself if you read it.
 
+In a rail the header centers its content over the same column as the items, so
+a brand icon lines up with them.
+
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
 import { ViewIcon } from 'site/components/icons';
@@ -620,6 +623,9 @@ import { ViewIcon } from 'site/components/icons';
   <div class='demo-stack demo-stack--wide not-prose'>
     <AppLayout @variant='attached' class='demo-app-layout' as |layout|>
       <layout.Sidebar @size='rail' @collapsible='none' as |sidebar|>
+        <sidebar.Header>
+          <ViewIcon class='size-5 shrink-0 text-primary' />
+        </sidebar.Header>
         <sidebar.Body>
           <sidebar.Item
             @href='#home'
