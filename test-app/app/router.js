@@ -7,6 +7,17 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
+  this.route('foundations', function () {
+    this.route('global');
+    this.route('palette');
+    this.route('theme');
+    this.route('typography');
+  });
+  this.route('component-pages', { path: '/components' }, function () {
+    this.route('buttons');
+    this.route('form-controls');
+    this.route('status');
+  });
   this.route('buttons');
   this.route('changeset-form');
   this.route('core');
