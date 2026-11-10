@@ -69,16 +69,22 @@ export interface AppLayoutContext {
    */
   registerBottomNav(nav: object): () => void;
   /**
-   * PROTOTYPE. Whether `AsideToggle` has an aside to open: true unless a
-   * route-driven `Aside` (`@region`) is registered and empty (tracked).
+   * Whether an `Aside` is rendered in the layout. `AsideToggle` renders
+   * nothing without one. Settles after the first render, like the registered
+   * sidebar (tracked). PROTOTYPE: false while a route-driven `Aside`
+   * (`@region`) is registered but empty.
    */
-  readonly asideAvailable: boolean;
-  /** PROTOTYPE. Called by a route-driven `Aside`. */
+  readonly hasAside: boolean;
+  /**
+   * Called by `Aside` so the layout knows it has one. Returns the matching
+   * unregister function.
+   */
   registerAside(aside: RegisteredAside): () => void;
 }
 
 export interface RegisteredAside {
-  readonly available: boolean;
+  /** PROTOTYPE. Whether the aside has content; omitted means it does. */
+  readonly available?: boolean;
 }
 
 export interface RegisteredSidebar {

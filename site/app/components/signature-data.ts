@@ -8743,6 +8743,29 @@ const data: ComponentDoc[] = [
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
               tags: {},
             },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
+              tags: {},
+            },
           ],
         },
         isRequired: false,
@@ -8786,7 +8809,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
     },
     description:
-      '<p>A button that opens and closes the <code>Aside</code>. Conventionally placed at the\nend of the <code>Navbar</code>. <code>aria-expanded</code> is true while the aside is open.</p>',
+      '<p>A button that opens and closes the <code>Aside</code>. Conventionally placed at the\nend of the <code>Navbar</code>. <code>aria-expanded</code> is true while the aside is open.\nInside an <code>AppLayout</code> it renders nothing while the layout has no <code>Aside</code>,\nso a page without one shows no toggle.</p>',
     tags: {},
   },
   {
@@ -9080,6 +9103,29 @@ const data: ComponentDoc[] = [
               isInternal: false,
               description:
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
+              tags: {},
+            },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
               tags: {},
             },
           ],
@@ -9543,6 +9589,29 @@ const data: ComponentDoc[] = [
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
               tags: {},
             },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
+              tags: {},
+            },
           ],
         },
         isRequired: false,
@@ -9893,6 +9962,29 @@ const data: ComponentDoc[] = [
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
               tags: {},
             },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
+              tags: {},
+            },
           ],
         },
         isRequired: false,
@@ -10230,6 +10322,29 @@ const data: ComponentDoc[] = [
               isInternal: false,
               description:
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
+              tags: {},
+            },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
               tags: {},
             },
           ],
@@ -11188,6 +11303,29 @@ const data: ComponentDoc[] = [
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
               tags: {},
             },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
+              tags: {},
+            },
           ],
         },
         isRequired: false,
@@ -11512,6 +11650,29 @@ const data: ComponentDoc[] = [
               isInternal: false,
               description:
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
+              tags: {},
+            },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
               tags: {},
             },
           ],
@@ -11977,6 +12138,29 @@ const data: ComponentDoc[] = [
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
               tags: {},
             },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
+              tags: {},
+            },
           ],
         },
         isRequired: false,
@@ -12365,6 +12549,29 @@ const data: ComponentDoc[] = [
               isInternal: false,
               description:
                 'Called by `BottomNav` so the layout can give it a row and publish\n`--app-bottomnav-height`. Returns the matching unregister function.',
+              tags: {},
+            },
+            {
+              identifier: 'hasAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether an `Aside` is rendered in the layout. `AsideToggle` renders\nnothing without one. Settles after the first render, like the registered\nsidebar (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'registerAside',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">aside</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> object</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Called by `Aside` so the layout knows it has one. Returns the matching\nunregister function.',
               tags: {},
             },
           ],

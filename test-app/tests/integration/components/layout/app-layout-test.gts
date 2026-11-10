@@ -927,5 +927,74 @@ module(
         });
       }
     }
+
+    test('in frame placement the navbar row is the top gutter', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @navbarPlacement="frame" as |layout|>
+            <layout.Navbar>Crumb</layout.Navbar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      const scale =
+        root.getBoundingClientRect().width / (root as HTMLElement).offsetWidth;
+      const top = (selector: string) =>
+        (find(selector)!.getBoundingClientRect().top -
+          root.getBoundingClientRect().top) /
+        scale;
+      const navbar = find('[data-part="navbar"]')!.getBoundingClientRect();
+
+      assert.strictEqual(top('[data-part="navbar"]'), 0, 'navbar at the top');
+      assert.strictEqual(
+        top('[data-part="main-card"]'),
+        navbar.height / scale,
+        'card right under the navbar row'
+      );
+    });
+
+    test('with no navbar, or with the navbar in the card, the frame keeps its top gutter', async function (assert) {
+      await render(
+        <template>
+          <div id="no-navbar">
+            <AppLayout @navbarPlacement="frame" as |layout|>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </div>
+          <div id="in-card">
+            <AppLayout @navbarPlacement="content" as |layout|>
+              <layout.Navbar>Crumb</layout.Navbar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </div>
+        </template>
+      );
+
+      for (const id of ['no-navbar', 'in-card']) {
+        const root = find(`#${id} [data-component="app-layout"]`)!;
+        assert.strictEqual(
+          getComputedStyle(root).paddingTop,
+          '12px',
+          `${id}: 12px top gutter`
+        );
+      }
+    });
+
+    test('the root goes edge to edge below its own @breakpoint', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @breakpoint="lg" as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="app-layout"]')
+        .hasClass('max-lg:p-0')
+        .doesNotHaveClass('max-md:p-0');
+    });
   }
 );

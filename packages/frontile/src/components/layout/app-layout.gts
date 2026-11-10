@@ -323,8 +323,8 @@ class AppLayout extends Component<AppLayoutSignature> {
     };
   };
 
-  // PROTOTYPE: a route-driven Aside registers so AsideToggle can hide while
-  // it is empty. After render, like the Sidebar.
+  // Registered after render for the same reason as the Sidebar: the toggle
+  // that reads it may come before the Aside in the template.
   @tracked registeredAside?: RegisteredAside;
 
   registerAside = (aside: RegisteredAside): (() => void) => {
@@ -342,8 +342,13 @@ class AppLayout extends Component<AppLayoutSignature> {
     };
   };
 
-  get asideAvailable(): boolean {
-    return this.registeredAside?.available ?? true;
+  /**
+   * An `Aside` is registered and has something to show. PROTOTYPE: a
+   * route-driven `Aside` (`@region`) reports `available: false` while empty.
+   */
+  get hasAside(): boolean {
+    const aside = this.registeredAside;
+    return aside !== undefined && (aside.available ?? true);
   }
 
   get mobileNav(): 'drawer' | 'bottom' {
@@ -471,6 +476,8 @@ class AppLayout extends Component<AppLayoutSignature> {
 
     return appLayout({
       variant: this.variant,
+      navbarPlacement: this.navbarPlacement,
+      breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
       sidebarColumn: this.sidebarColumn,
       sidebarSize: this.registeredSidebar?.size,
@@ -536,13 +543,13 @@ class AppLayout extends Component<AppLayoutSignature> {
       get bottomNavShown() {
         return layout.bottomNavShown;
       },
-      get asideAvailable() {
-        return layout.asideAvailable;
+      get hasAside() {
+        return layout.hasAside;
       },
       isRtl: this.isRtl,
-      registerAside: this.registerAside,
       registerSidebar: this.registerSidebar,
-      registerBottomNav: this.registerBottomNav
+      registerBottomNav: this.registerBottomNav,
+      registerAside: this.registerAside
     };
   }
 

@@ -44,6 +44,8 @@ interface AsideToggleSignature {
 /**
  * A button that opens and closes the `Aside`. Conventionally placed at the
  * end of the `Navbar`. `aria-expanded` is true while the aside is open.
+ * Inside an `AppLayout` it renders nothing while the layout has no `Aside`,
+ * so a page without one shows no toggle.
  */
 class AsideToggle extends Component<AsideToggleSignature> {
   fallbackState = new AppLayoutState();
@@ -71,17 +73,18 @@ class AsideToggle extends Component<AsideToggleSignature> {
     });
   }
 
-  /** PROTOTYPE: hidden while a route-driven aside has no content. */
-  get available(): boolean {
-    return this.args.layout?.asideAvailable ?? true;
-  }
-
   toggle = (): void => {
     this.state.toggleAside();
   };
 
+  /** Inside a layout, only while it has an `Aside` to open. */
+  get shown(): boolean {
+    const layout = this.args.layout;
+    return layout ? layout.hasAside : true;
+  }
+
   <template>
-    {{#if this.available}}
+    {{#if this.shown}}
       <button
         type="button"
         data-part="aside-toggle"

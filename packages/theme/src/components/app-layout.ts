@@ -570,6 +570,26 @@ const appLayout = tv({
       class: { sidebar: 'top-3 h-[calc(100dvh-1.5rem)]' }
     },
 
+    // A navbar on the frame is itself the top gutter: its row starts at the
+    // frame's edge, so its content is centered between that edge and the
+    // card instead of sitting a gutter low. Without a navbar, or with the
+    // navbar inside the card (`content`), the card keeps the top gutter.
+    {
+      variant: 'inset',
+      navbarPlacement: 'frame',
+      class: { base: 'has-[>[data-part=navbar]]:pt-0' }
+    },
+    // The same in page mode: the sticky sidebar starts at the top and is
+    // shorter by the bottom gutter only.
+    {
+      variant: 'inset',
+      navbarPlacement: 'frame',
+      scrollMode: 'page',
+      class: {
+        base: 'has-[>[data-part=navbar]]:[&>[data-part=sidebar]]:top-0 has-[>[data-part=navbar]]:[&>[data-part=sidebar]]:h-[calc(100dvh-0.75rem)]'
+      }
+    },
+
     // Offcanvas: collapsed is no width, no gutter, no border, and once the
     // width transition ends, `invisible`, so its links leave the tab order
     // and the accessibility tree. Comes after the width variants so `w-0`

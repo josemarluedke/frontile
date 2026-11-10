@@ -71,30 +71,28 @@ class Aside extends Component<AsideSignature> {
 
   constructor(owner: Owner, args: AsideArgs) {
     super(owner, args);
-    const region = args.region;
-    if (region === undefined) {
-      return;
+    const unregister = args.layout?.registerAside(this);
+    if (unregister) {
+      registerDestructor(this, unregister);
     }
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const aside = this;
-    const unregister = args.layout?.registerAside({
-      get available() {
-        return aside.hasContent;
-      }
-    });
-    const unsubscribe = this.appLayout.onEmpty(region, () =>
-      this.state.closeAside()
-    );
-    registerDestructor(this, () => {
-      unregister?.();
-      unsubscribe();
-    });
+    const region = args.region;
+    if (region !== undefined) {
+      const unsubscribe = this.appLayout.onEmpty(region, () =>
+        this.state.closeAside()
+      );
+      registerDestructor(this, unsubscribe);
+    }
   }
 
   /** Always true for a block aside; a route-driven one needs a source. */
   get hasContent(): boolean {
     const region = this.args.region;
     return region === undefined || this.appLayout.hasContent(region);
+  }
+
+  /** PROTOTYPE. Read by the layout's `hasAside` (`RegisteredAside`). */
+  get available(): boolean {
+    return this.hasContent;
   }
 
   registerTarget = modifier((element: HTMLElement, [region]: [string]) =>
