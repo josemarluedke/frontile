@@ -2829,6 +2829,17 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'href',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders the body as a plain <code>&#x3C;a href></code>, for a router-free link. Ignored\nwhen <code>@route</code> is given; takes precedence over <code>@onPress</code>.',
+        tags: {},
+      },
+      {
         identifier: 'intent',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -2860,10 +2871,44 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'Dims the chip and disables its close button, if any.',
+        description:
+          'Dims the chip and disables its body and close button. A button body\ngets <code>disabled</code>; a link body drops its <code>href</code> and gets\n<code>aria-disabled="true"</code>, since an anchor cannot be natively disabled.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isSelected',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Marks the chip as selected (a toggled filter, say): it holds its\npressed fill, and a button body gets <code>aria-pressed</code>. Leave it\n<code>undefined</code> for a chip that is not a toggle, so no <code>aria-pressed</code> is\nrendered at all.',
+        tags: {},
+      },
+      {
+        identifier: 'model',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'A single dynamic segment for <code>@route</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'models',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">unknown[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Dynamic segments for <code>@route</code>. Wins over <code>@model</code>.',
+        tags: {},
       },
       {
         identifier: 'onClose',
@@ -2875,6 +2920,28 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'Function to be called when clicking on the close button.\nIf you pass this argument, the close button will be visible.',
+        tags: {},
+      },
+      {
+        identifier: 'onPress',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">event</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> PressEvent</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders the body as a <code>&#x3C;button type="button"></code> and calls this when it\nis pressed (pointer, Enter or Space). Ignored when <code>@route</code> or <code>@href</code>\nis given.',
+        tags: {},
+      },
+      {
+        identifier: 'query',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Record</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string, unknown</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Query params for <code>@route</code>.',
         tags: {},
       },
       {
@@ -2894,6 +2961,17 @@ const data: ComponentDoc[] = [
               'Ignored. Chip is always a pill; use `Badge` for a squared\nlabel.',
           },
         },
+      },
+      {
+        identifier: 'route',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders the body as a <code>LinkTo</code> for this route. Takes precedence over\n<code>@href</code> and <code>@onPress</code>.',
+        tags: {},
       },
       {
         identifier: 'size',
@@ -2959,7 +3037,8 @@ const data: ComponentDoc[] = [
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
-    description: '',
+    description:
+      '<p>An interactive, pill-shaped label: its body is a link or a button, and it\nmay also be removable. For a non-interactive label, use <code>Badge</code>.</p>\n<p>The body element follows the arguments, first match wins:</p>\n<ul>\n<li><code>@route</code> (with <code>@model</code>, <code>@models</code>, <code>@query</code>): a <code>LinkTo</code> anchor.</li>\n<li><code>@href</code>: a plain <code>&#x3C;a href></code>.</li>\n<li><code>@onPress</code>: a <code>&#x3C;button type="button"></code>.</li>\n<li>none of those: a non-interactive <code>&#x3C;span></code>, only meaningful with\n<code>@onClose</code> (a removable chip, as in Select\'s selected items).</li>\n</ul>\n<p>The wrapper (<code>data-part="base"</code>, which receives <code>...attributes</code>) holds the\nbody (<code>data-part="body"</code>, containing the dot and the content) and, with\n<code>@onClose</code>, the close button as the body\'s <em>sibling</em>: two separate controls,\neach with its own tab stop and focus ring. Enter and Space activate a\nbutton body; Enter activates a link body. With <code>@onClose</code>, Backspace or\nDelete on the focused body or close button removes the chip (as MUI does).</p>',
     tags: {},
   },
   {
