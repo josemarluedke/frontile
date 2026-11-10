@@ -631,6 +631,231 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
     });
   });
 
+  module('removal keys', function () {
+    const keys = ['Backspace', 'Delete'] as const;
+
+    for (const key of keys) {
+      test(`${key} on a focused button body calls @onClose once`, async function (assert) {
+        let closed = 0;
+        let pressed = 0;
+        const onClose = () => {
+          closed++;
+        };
+        const onPress = () => {
+          pressed++;
+        };
+        await render(
+          <template>
+            <Chip @onPress={{onPress}} @onClose={{onClose}}>x</Chip>
+          </template>
+        );
+
+        await triggerKeyEvent('button[data-part="body"]', 'keydown', key);
+        assert.strictEqual(closed, 1, 'closed once');
+        assert.strictEqual(pressed, 0, 'did not press');
+      });
+
+      test(`${key} on a focused link body calls @onClose once`, async function (assert) {
+        let closed = 0;
+        const onClose = () => {
+          closed++;
+        };
+        await render(
+          <template>
+            <Chip @href="/x" @onClose={{onClose}} data-test-id="href">a</Chip>
+            <Chip
+              @route="tab-nav-demo.index"
+              @onClose={{onClose}}
+              data-test-id="route"
+            >b</Chip>
+          </template>
+        );
+
+        await triggerKeyEvent(
+          '[data-test-id="href"] a[data-part="body"]',
+          'keydown',
+          key
+        );
+        assert.strictEqual(closed, 1, 'href body closed once');
+        await triggerKeyEvent(
+          '[data-test-id="route"] a[data-part="body"]',
+          'keydown',
+          key
+        );
+        assert.strictEqual(closed, 2, 'route body closed once');
+      });
+
+      test(`${key} on a focused close button calls @onClose once`, async function (assert) {
+        let closed = 0;
+        const onClose = () => {
+          closed++;
+        };
+        await render(
+          <template>
+            <Chip @onClose={{onClose}}>x</Chip>
+          </template>
+        );
+
+        await triggerKeyEvent('[data-part="close-button"]', 'keydown', key);
+        assert.strictEqual(closed, 1, 'closed once');
+      });
+    }
+
+    test('the removal keys prevent the default only when they close', async function (assert) {
+      const onClose = () => {};
+      const onPress = () => {};
+      await render(
+        <template>
+          <Chip
+            @onPress={{onPress}}
+            @onClose={{onClose}}
+            data-test-id="removable"
+          >a</Chip>
+          <Chip @onPress={{onPress}} data-test-id="plain">b</Chip>
+        </template>
+      );
+
+      const fire = (selector: string) => {
+        const event = new KeyboardEvent('keydown', {
+          key: 'Backspace',
+          bubbles: true,
+          cancelable: true
+        });
+        document.querySelector(selector)!.dispatchEvent(event);
+        return event.defaultPrevented;
+      };
+
+      assert.true(fire('[data-test-id="removable"] [data-part="body"]'));
+      assert.false(fire('[data-test-id="plain"] [data-part="body"]'));
+    });
+
+    test('the removal keys do nothing without @onClose', async function (assert) {
+      let pressed = 0;
+      const onPress = () => {
+        pressed++;
+      };
+      await render(
+        <template>
+          <Chip @onPress={{onPress}} data-test-id="button">a</Chip>
+          <Chip @href="/x" data-test-id="link">b</Chip>
+        </template>
+      );
+
+      for (const key of keys) {
+        await triggerKeyEvent(
+          '[data-test-id="button"] [data-part="body"]',
+          'keydown',
+          key
+        );
+        await triggerKeyEvent(
+          '[data-test-id="link"] [data-part="body"]',
+          'keydown',
+          key
+        );
+      }
+      assert.strictEqual(pressed, 0, 'no press either');
+      assert.dom('[data-part="body"]').exists({ count: 2 }, 'nothing removed');
+    });
+
+    test('the removal keys do nothing when disabled', async function (assert) {
+      let closed = 0;
+      const onClose = () => {
+        closed++;
+      };
+      const onPress = () => {};
+      await render(
+        <template>
+          <Chip
+            @onPress={{onPress}}
+            @onClose={{onClose}}
+            @isDisabled={{true}}
+            data-test-id="button"
+          >a</Chip>
+          <Chip
+            @href="/x"
+            @onClose={{onClose}}
+            @isDisabled={{true}}
+            data-test-id="link"
+          >b</Chip>
+        </template>
+      );
+
+      // `triggerKeyEvent` refuses a disabled control, so dispatch directly.
+      for (const selector of [
+        '[data-test-id="button"] [data-part="body"]',
+        '[data-test-id="button"] [data-part="close-button"]',
+        '[data-test-id="link"] [data-part="body"]',
+        '[data-test-id="link"] [data-part="close-button"]'
+      ]) {
+        for (const key of keys) {
+          document
+            .querySelector(selector)!
+            .dispatchEvent(
+              new KeyboardEvent('keydown', { key, bubbles: true })
+            );
+        }
+      }
+      assert.strictEqual(closed, 0, 'never closed');
+    });
+
+    test('Enter and Space still press a removable button body once each', async function (assert) {
+      let closed = 0;
+      let pressed = 0;
+      const onClose = () => {
+        closed++;
+      };
+      const onPress = () => {
+        pressed++;
+      };
+      await render(
+        <template>
+          <Chip @onPress={{onPress}} @onClose={{onClose}}>x</Chip>
+        </template>
+      );
+
+      const selector = 'button[data-part="body"]';
+      await triggerKeyEvent(selector, 'keydown', 'Enter');
+      await triggerKeyEvent(selector, 'keyup', 'Enter');
+      assert.strictEqual(pressed, 1, 'Enter pressed once');
+      await triggerKeyEvent(selector, 'keydown', ' ');
+      await triggerKeyEvent(selector, 'keyup', ' ');
+      assert.strictEqual(pressed, 2, 'Space pressed once');
+      assert.strictEqual(closed, 0, 'did not close');
+    });
+  });
+
+  module('hit area (real theme)', function () {
+    const padding = { xs: '0.5', sm: '1', md: '1', lg: '2' } as const;
+
+    for (const size of ['xs', 'sm', 'md', 'lg'] as const) {
+      test(`${size}: the body covers the pill except the close button`, function (assert) {
+        const styles = realStyles.chip({ size, isPressable: true });
+        const base = styles.base().split(' ');
+        const body = styles.body().split(' ');
+        const closeButton = styles.closeButton().split(' ');
+        const px = padding[size];
+
+        assert.true(body.includes('self-stretch'), 'body is full height');
+        assert.true(
+          body.includes(`pl-${px}`),
+          'body carries the start padding'
+        );
+        assert.true(
+          body.includes(`last:pr-${px}`),
+          'body carries the end padding when it is the last child'
+        );
+        assert.true(
+          closeButton.includes(`mr-${px}`),
+          'close button carries the end padding'
+        );
+        assert.false(
+          base.some((c) => /^p[xlr]?-/.test(c)),
+          'base has no horizontal padding (no dead rim)'
+        );
+      });
+    }
+  });
+
   module('anatomy', function () {
     test('renders data-component="chip" on the root only, with data-part on every slot', async function (assert) {
       const onClose = () => {};

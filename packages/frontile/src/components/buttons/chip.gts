@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { deprecate } from '@ember/debug';
+import { on } from '@ember/modifier';
 import { LinkTo } from '@ember/routing';
 import type { TOC } from '@ember/component/template-only';
 import { useStyles } from '@frontile/theme';
@@ -182,7 +183,8 @@ const ChipBodyContent: TOC<ChipBodyContentSignature> = <template>
  * body (`data-part="body"`, containing the dot and the content) and, with
  * `@onClose`, the close button as the body's *sibling*: two separate controls,
  * each with its own tab stop and focus ring. Enter and Space activate a
- * button body; Enter activates a link body.
+ * button body; Enter activates a link body. With `@onClose`, Backspace or
+ * Delete on the focused body or close button removes the chip (as MUI does).
  */
 class Chip extends Component<ChipSignature> {
   @cached
@@ -241,6 +243,22 @@ class Chip extends Component<ChipSignature> {
     }
     return this.args.isSelected ? 'true' : 'false';
   }
+
+  /**
+   * Backspace/Delete on a focused body or close button calls `@onClose`. It
+   * prevents the default only when it actually closes, so a chip that is not
+   * removable leaves those keys alone.
+   */
+  handleRemoveKey = (event: KeyboardEvent): void => {
+    if (event.key !== 'Backspace' && event.key !== 'Delete') {
+      return;
+    }
+    if (this.isDisabled || typeof this.args.onClose !== 'function') {
+      return;
+    }
+    event.preventDefault();
+    this.args.onClose();
+  };
 
   handlePress = (event: PressEvent): void => {
     // The `press` modifier does not check `disabled` itself.
@@ -320,6 +338,7 @@ class Chip extends Component<ChipSignature> {
           @query={{this.query}}
           class={{this.classNames.body}}
           data-part="body"
+          {{on "keydown" this.handleRemoveKey}}
         >
           <ChipBodyContent
             @withDot={{@withDot}}
@@ -328,12 +347,13 @@ class Chip extends Component<ChipSignature> {
           >{{yield}}</ChipBodyContent>
         </LinkTo>
       {{else if this.rendersAnchor}}
-        {{! template-lint-disable no-unsupported-role-attributes }}
         <a
+          {{! template-lint-disable no-unsupported-role-attributes }}
           href={{unless this.isDisabled @href}}
           aria-disabled={{if this.isDisabled "true"}}
           class={{this.classNames.body}}
           data-part="body"
+          {{on "keydown" this.handleRemoveKey}}
         >
           <ChipBodyContent
             @withDot={{@withDot}}
@@ -349,6 +369,7 @@ class Chip extends Component<ChipSignature> {
           class={{this.classNames.body}}
           data-part="body"
           {{press this.handlePress}}
+          {{on "keydown" this.handleRemoveKey}}
         >
           <ChipBodyContent
             @withDot={{@withDot}}
@@ -373,6 +394,7 @@ class Chip extends Component<ChipSignature> {
           tabindex={{@closeButtonTabIndex}}
           disabled={{@isDisabled}}
           data-part="close-button"
+          {{on "keydown" this.handleRemoveKey}}
         />
       {{/if}}
     </div>

@@ -9,7 +9,16 @@ const chip = tv({
     // The clickable part: a link, a button or (with neither) a plain span. It
     // holds the dot and the content; the close button is its sibling, never a
     // descendant, so the two stay separate controls with separate tab stops.
-    body: ['inline-flex items-center flex-1 min-w-0 rounded-full outline-none'],
+    //
+    // It covers the whole pill except the close button: `self-stretch` gives it the
+    // chip's full height and it carries the chip's horizontal padding (per
+    // size below), so there is no dead rim around it and its focus ring
+    // traces the pill's edge. The trailing padding moves to the close button
+    // (`mr-*`) when there is one; `last:` gives it back to the body when the
+    // body is the only child.
+    body: [
+      'inline-flex items-center self-stretch flex-1 min-w-0 rounded-full outline-none'
+    ],
     // label text role (size set per size variant)
     content: ['flex-1 text-inherit font-label'],
     dot: ['shrink-0', 'ml-1', 'rounded-full'],
@@ -88,6 +97,8 @@ const chip = tv({
         closeButton: 'bg-danger-muted text-on-danger-muted'
       }
     },
+    // The horizontal padding sits on the body and the close button, not the
+    // base (see the `body` slot), so the visual padding is unchanged.
     size: {
       // For dense UI — table cells, list rows, multi-select fields. It keeps
       // `sm`'s text size and loses height and padding instead: 12px is about
@@ -95,28 +106,32 @@ const chip = tv({
       // `label-micro` so its circle (icon plus `p-0.5`) still fits the 20px
       // chip.
       xs: {
-        base: 'text-label-2xs px-0.5 h-5',
+        base: 'text-label-2xs h-5',
         content: 'px-1 leading-4',
         dot: 'size-1.5',
-        closeButton: 'text-label-micro'
+        body: 'pl-0.5 last:pr-0.5',
+        closeButton: 'text-label-micro mr-0.5'
       },
       sm: {
-        base: 'text-label-2xs px-1 h-6',
+        base: 'text-label-2xs h-6',
         content: 'px-1 leading-4',
         dot: 'size-1.5',
-        closeButton: 'text-label-2xs'
+        body: 'pl-1 last:pr-1',
+        closeButton: 'text-label-2xs mr-1'
       },
       md: {
-        base: 'text-label-xs px-1 h-7',
+        base: 'text-label-xs h-7',
         content: 'px-2 leading-5',
         dot: 'size-2',
-        closeButton: 'text-label-xs'
+        body: 'pl-1 last:pr-1',
+        closeButton: 'text-label-xs mr-1'
       },
       lg: {
-        base: 'text-label-md px-2 h-8',
+        base: 'text-label-md h-8',
         content: 'px-2 leading-6',
         dot: 'size-2.5',
-        closeButton: 'text-label-md'
+        body: 'pl-2 last:pr-2',
+        closeButton: 'text-label-md mr-2'
       }
     }
   },
