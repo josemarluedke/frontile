@@ -18,9 +18,7 @@ Router.map(function () {
     this.route('form-controls');
     this.route('status');
   });
-  this.route('buttons');
   this.route('changeset-form');
-  this.route('core');
   this.route('forms', function () {
     this.route('style-variants');
   });
