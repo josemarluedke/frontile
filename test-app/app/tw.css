@@ -37,3 +37,22 @@
 @custom-variant active (&:active, &[data-force-active]);
 @custom-variant focus (&:focus, &[data-focus-visible-added]);
 @custom-variant focus-within (&:focus-within, &:has([data-focus-visible-added]));
+
+/* Tailwind v4 emits a theme variable only when something uses it. Nothing in
+   the test app reads `--breakpoint-*` (responsive variants compile to literal
+   media queries), and the Global page reads `--shadow-elevation-*` only from
+   inline styles, which Tailwind does not scan. The page shows these values
+   live, so reference each one here to have them emitted on :root. */
+:root {
+  --workbench-breakpoint-sm: var(--breakpoint-sm);
+  --workbench-breakpoint-md: var(--breakpoint-md);
+  --workbench-breakpoint-lg: var(--breakpoint-lg);
+  --workbench-breakpoint-xl: var(--breakpoint-xl);
+  --workbench-breakpoint-2xl: var(--breakpoint-2xl);
+  --workbench-elevation-0: var(--shadow-elevation-0);
+  --workbench-elevation-1: var(--shadow-elevation-1);
+  --workbench-elevation-2: var(--shadow-elevation-2);
+  --workbench-elevation-3: var(--shadow-elevation-3);
+  --workbench-elevation-4: var(--shadow-elevation-4);
+  --workbench-elevation-5: var(--shadow-elevation-5);
+}
