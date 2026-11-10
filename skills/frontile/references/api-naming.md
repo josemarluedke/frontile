@@ -68,6 +68,15 @@ each component's `.gts` file.
 | Alert, NotificationCard                    | — (see note below)                                                                                   | `@status`                      |
 | FormFeedback                               | —                                                                                                    | `@status`                      |
 
+### Ignored arguments
+
+Some arguments are still accepted but no longer do anything. They warn once and are removed in
+0.19.0. Drop them, or switch to the component that has the behaviour:
+
+| Component | Old prop  | Replacement                                                                           |
+| --------- | --------- | ------------------------------------------------------------------------------------- |
+| Chip      | `@radius` | none: Chip is always a pill (`frontile.chip.radius`). Use `Badge` for a squared label |
+
 ### The `faded` trap — same old name, different new value per component
 
 `faded` does **not** map to the same thing everywhere. This is the single easiest mistake to

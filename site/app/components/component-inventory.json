@@ -173,7 +173,7 @@
       {
         "name": "Chip",
         "path": "/docs/components/buttons/chip",
-        "description": "A compact label for statuses, filters, and removable tags."
+        "description": "An interactive compact element: a clickable filter, link or value, optionally removable."
       }
     ]
   },
@@ -261,7 +261,7 @@
       {
         "name": "Badge",
         "path": "/docs/components/status/badge",
-        "description": "A small non-interactive label for status or metadata."
+        "description": "A small, non-interactive status label for a state, plan name or count."
       },
       {
         "name": "ProgressBar",
