@@ -59,8 +59,13 @@ const navItem = tv({
     navItem: navItemRow,
     // The slot sizes the icon, so an SVG that brings its own size (Lucide's
     // 24px attributes, a utility class) still matches the other rows.
+    // `text-[1.25rem]` is for icons that size by font-size instead, such as
+    // FontAwesome's 1em SVGs: their stylesheet is unlayered, so it beats
+    // `size-5` (Tailwind utilities live in a layer) whatever the specificity.
+    // It is set on the SVG, not the slot, so a badge inside the slot keeps
+    // its own size. Keep it equal to `size-5`.
     navItemIcon:
-      'relative inline-flex shrink-0 items-center justify-center [&>svg]:size-5',
+      'relative inline-flex shrink-0 items-center justify-center [&>svg]:size-5 [&>svg]:text-[1.25rem]',
     navItemLabel: 'truncate',
     // The short text shown under the icon in the stacked layout.
     navItemShortLabel: 'max-w-full truncate text-body-4xs leading-tight',
