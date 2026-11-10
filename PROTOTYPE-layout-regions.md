@@ -40,7 +40,7 @@ All 15 pass. A mutation run turned 4 tests red as expected:
 
 - making the oldest source win
 - dropping close-on-empty
-- forcing `AsideToggle` visible
+- forcing `AsideToggle` visible (before the merge with `hasAside`)
 
 ## Answers
 
@@ -91,7 +91,7 @@ run it against the site's Vite SSR prototype.
   sources both register in `afterRender`, so the first pass renders:
   - each `Region`'s fallback block
   - no route-driven aside
-  - `AsideToggle` *shown*, because no `Aside` has registered yet
+  - `AsideToggle` *hidden*, because no `Aside` has registered yet
   - an empty breadcrumb trail
 
   The fill comes from the afterRender re-render, through the normal update
@@ -179,9 +179,12 @@ source `<InAside>`, or keep `LayoutAside`.
   registry of region names, would help.
 - `@name` and `@region` are read once.
 - **Mounting a second `AppLayout`** logs a warning; the newest wins.
-- **`AsideToggle` shows for one render pass** before a route-driven `Aside`
-  registers. This is the same settle-after-first-render behavior as the
-  other registrations, and the source of the SSR mismatch above.
+- **`AsideToggle` is hidden for one render pass** until an `Aside`
+  registers. Since the merge of `feat/app-layout`'s `hasAside`, every
+  `Aside` registers, and a route-driven one reports `available: false`
+  while its region is empty. This is the same settle-after-first-render
+  behavior as the other registrations, and the source of the SSR mismatch
+  above.
 - **The service is app-reexported as `service:app-layout`.** It would
   collide with an app's own service of that name. Consider a namespaced name
   (`frontile-layout`) before shipping.
