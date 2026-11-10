@@ -22,3 +22,4 @@ export {
   type PromiseNotificationOptions,
   type DefaultConfig
 } from './notifications';
+export * from './layout';

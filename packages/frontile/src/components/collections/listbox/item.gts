@@ -10,6 +10,7 @@ import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, ListItem } from '../../../utils/listManager';
 import { renamedArgValue } from '../../../-private/deprecated-args';
+import { NavLink } from '../../layout/nav-link';
 
 export interface ListboxItemSignature {
   Args: {
@@ -107,6 +108,48 @@ export interface ListboxItemSignature {
      * `aria-controls`. Only meaningful alongside `@hasSubmenu`.
      */
     submenuId?: string;
+
+    /**
+     * Renders the item as a link to this URL (a plain `<a>`, no router
+     * needed). Only honoured inside a `Dropdown` menu (`@type="menu"`).
+     *
+     * A link item follows its link instead of selecting: `@onAction` and
+     * `@onSelectionChange` are not called, and the menu closes.
+     */
+    href?: string;
+
+    /**
+     * Renders the item as a router link to this route. Only honoured inside
+     * a `Dropdown` menu. See `@href` for what a link item does on activation.
+     */
+    route?: string;
+
+    /** Dynamic segments for `@route`. */
+    models?: unknown[];
+
+    /** A single dynamic segment for `@route`. */
+    model?: unknown;
+
+    /** Query params for `@route`. */
+    query?: Record<string, unknown>;
+
+    /**
+     * @internal
+     *
+     * Disables this one item, on top of the list's `@disabledKeys`: it is
+     * skipped by the arrow keys and type-ahead, cannot be chosen, and is
+     * marked `aria-disabled`. Supplied by `NavFolder` for its menu items,
+     * whose disabled state is known per item rather than as a list of keys.
+     */
+    isDisabled?: boolean;
+
+    /**
+     * @internal
+     *
+     * Called after a link item is activated. The `Dropdown` menu binds this
+     * to dismiss itself (honouring `@closeOnItemSelect`).
+     */
+    onLinkActivate?: () => void;
   };
   Element: HTMLLIElement;
   Blocks: {
@@ -146,8 +189,23 @@ class ListboxItem extends Component<ListboxItemSignature> {
     this.listItem = item;
   };
 
-  onClick = (): void => {
+  /**
+   * A link item exists only in a menu. `@type="listbox"` ignores the link
+   * args, so Listbox and Select are unchanged.
+   */
+  get isLink(): boolean {
+    return (
+      this.args.type === 'menu' && Boolean(this.args.href || this.args.route)
+    );
+  }
+
+  onClick = (event: MouseEvent): void => {
     if (this.listItem?.isDisabled) {
+      return;
+    }
+
+    if (this.isLink) {
+      this.activateLink(event);
       return;
     }
 
@@ -163,6 +221,30 @@ class ListboxItem extends Component<ListboxItemSignature> {
       this.args.onClick();
     }
   };
+
+  /**
+   * A link item never goes through `selectItem`, which is what fires
+   * `onAction` and `onSelectionChange`: following a link is not choosing.
+   *
+   * A click that did not start on the anchor -- Enter and Space (the listbox
+   * clicks the active `li`) or a click on the row's padding -- is forwarded to
+   * the anchor, so the browser or `LinkTo` does the navigating. That click
+   * bubbles back here with the anchor as its target, and only then does the
+   * menu close.
+   */
+  private activateLink(event: MouseEvent): void {
+    const anchor = (event.currentTarget as HTMLElement).querySelector('a');
+
+    if (anchor && !anchor.contains(event.target as Node)) {
+      anchor.click();
+      return;
+    }
+
+    if (typeof this.args.onClick === 'function') {
+      this.args.onClick();
+    }
+    this.args.onLinkActivate?.();
+  }
 
   /**
    * A roving tabindex: the manager nominates one option as the composite's tab
@@ -375,6 +457,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
         key=this.key
         textValue=@textValue
         item=@item
+        isDisabled=@isDisabled
         onRegister=this.onRegister
       }}
       {{on "click" this.onClick}}
@@ -408,7 +491,16 @@ class ListboxItem extends Component<ListboxItemSignature> {
             data-part="label"
             class={{this.classNames.label}}
             id={{this.labelId}}
-          >{{yield}}</span>
+          >{{#if this.isLink}}<NavLink
+                @href={{@href}}
+                @route={{@route}}
+                @models={{@models}}
+                @model={{@model}}
+                @query={{@query}}
+                @isDisabled={{this.listItem.isDisabled}}
+                tabindex="-1"
+                class="after:absolute after:inset-0 after:content-['']"
+              >{{yield}}</NavLink>{{else}}{{yield}}{{/if}}</span>
           <span
             data-part="description"
             class={{this.classNames.description}}
@@ -419,7 +511,16 @@ class ListboxItem extends Component<ListboxItemSignature> {
           data-part="label"
           class={{this.classNames.label}}
           id={{this.labelId}}
-        >{{yield}}</span>
+        >{{#if this.isLink}}<NavLink
+              @href={{@href}}
+              @route={{@route}}
+              @models={{@models}}
+              @model={{@model}}
+              @query={{@query}}
+              @isDisabled={{this.listItem.isDisabled}}
+              tabindex="-1"
+              class="after:absolute after:inset-0 after:content-['']"
+            >{{yield}}</NavLink>{{else}}{{yield}}{{/if}}</span>
       {{/if}}
 
       {{#if @shortcut}}

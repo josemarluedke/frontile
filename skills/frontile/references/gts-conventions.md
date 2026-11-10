@@ -21,7 +21,7 @@ import { Input, Select } from 'frontile/forms';
 ```
 
 Available subpaths: `buttons`, `forms`, `overlays`, `collections`, `notifications`, `status`,
-`utilities`, `navigation`, `disclosure`.
+`utilities`, `navigation`, `disclosure`, `layout`.
 
 **Do not confuse `frontile/buttons` with `@frontile/buttons`.** The first is a current entry
 point of the `frontile` package. The second is a separate, deprecated package. They differ only

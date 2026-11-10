@@ -56,6 +56,18 @@ interface CollapsibleArgs {
    * @defaultValue 0
    */
   initialHeight?: string;
+
+  /**
+   * When true, an `@isOpen` change that lands before the first animation
+   * frame after the element is inserted is applied without a transition, as
+   * if it had been the initial state. For callers that only learn their open
+   * state right after the first render (e.g. once their children have
+   * registered), so the content does not visibly slide open on load. Later
+   * changes animate as usual. Read once, when the element is inserted.
+   *
+   * @defaultValue false
+   */
+  instantUntilPainted?: boolean;
 }
 
 interface CollapsibleSignature {
@@ -111,11 +123,26 @@ class Collapsible extends Component<CollapsibleSignature> {
     return safeStyles(styles);
   }
 
+  /**
+   * False from insert until the first animation frame, while
+   * `@instantUntilPainted` is set; changes in that window skip the transition.
+   */
+  isPainted = true;
+  paintFrame?: number;
+
   hasSetupUpdate = false;
   update = modifier((element: HTMLElement, [isOpen]: boolean[]) => {
     // do not run update on the initial setup of modifier
     if (!this.hasSetupUpdate) {
       this.hasSetupUpdate = true;
+      if (this.args.instantUntilPainted) {
+        this.isPainted = false;
+        // Kept apart from `pendingFrames`: expand/contract cancel those.
+        this.paintFrame = window.requestAnimationFrame(() => {
+          this.paintFrame = undefined;
+          this.isPainted = true;
+        });
+      }
       return;
     }
 
@@ -126,10 +153,11 @@ class Collapsible extends Component<CollapsibleSignature> {
       this.waiterToken = waiter.beginAsync();
     }
 
+    const instant = !this.isPainted;
     if (isOpen) {
-      this.expand(element);
+      this.expand(element, instant);
     } else {
-      this.contract(element);
+      this.contract(element, instant);
     }
   });
 
@@ -145,6 +173,9 @@ class Collapsible extends Component<CollapsibleSignature> {
   willDestroy(): void {
     super.willDestroy();
     this.cancelFrames();
+    if (this.paintFrame !== undefined) {
+      window.cancelAnimationFrame(this.paintFrame);
+    }
     // Do not leave a waiter pending if we are torn down mid-transition.
     this.endWaiter();
   }
@@ -251,9 +282,20 @@ class Collapsible extends Component<CollapsibleSignature> {
     return `opacity ${duration}s ease-in-out 0ms`;
   }
 
-  expand(element: HTMLElement): void {
+  expand(element: HTMLElement, instant = false): void {
     this.isCurrentlyOpen = true;
     this.cancelFrames();
+
+    // Before the first paint (`@instantUntilPainted`): end where an
+    // initially open panel starts, with no inline geometry at all.
+    if (instant) {
+      element.style.transition = '';
+      element.style.overflow = this.initialHeight ? 'hidden' : '';
+      element.style.opacity = '';
+      element.style.height = '';
+      this.endWaiter();
+      return;
+    }
 
     // The transition is written as an inline style, so a
     // `motion-reduce:transition-none` class could never beat it. The check has
@@ -305,11 +347,11 @@ class Collapsible extends Component<CollapsibleSignature> {
     element.style.height = initialHeight || '0';
   }
 
-  contract(element: HTMLElement): void {
+  contract(element: HTMLElement, instant = false): void {
     this.isCurrentlyOpen = false;
     this.cancelFrames();
 
-    if (prefersReducedMotion()) {
+    if (instant || prefersReducedMotion()) {
       element.style.transition = '';
       element.style.overflow = 'hidden';
       this.applyClosedState(element);

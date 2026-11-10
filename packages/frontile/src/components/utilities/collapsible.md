@@ -227,6 +227,24 @@ export default class NestedCollapsibles extends Component {
 }
 ```
 
+## Opening before the first paint
+
+`@instantUntilPainted` is for a Collapsible whose open state is only known just
+after it renders, for example once its children have reported in. By default
+that late change animates, and the content visibly slides open on load. With
+`@instantUntilPainted={{true}}`, an `@isOpen` change that arrives before the
+first animation frame is applied at once, as if it had been the initial state.
+Changes after that animate as usual.
+
+It is `false` by default and is read once, when the element is inserted.
+`NavFolder` uses it so a folder holding the current page starts open.
+
+```gts
+<Collapsible @isOpen={{this.isOpen}} @instantUntilPainted={{true}}>
+  Content here
+</Collapsible>
+```
+
 ## Accessibility
 
 Collapsible renders a plain `<div>` with no roles or ARIA of its own, and it has no trigger — the disclosure semantics are yours to supply. It forwards `...attributes`, so `id`, `role`, and `aria-*` can be set on it directly.

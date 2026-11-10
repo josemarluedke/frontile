@@ -125,6 +125,10 @@ import { PortalTarget } from 'frontile';
 When the destination ends up being plain `document.body`, `Portal` wraps its content in a
 `PortalTarget` for you, so portals nested inside it still have somewhere to go.
 
+A target that a `Portal` creates for itself (in an app with no application-level `PortalTarget`) is
+never adopted by another portal. Each overlay gets its own, so closing one overlay does not
+remove the content of another.
+
 ## Nesting Portals
 
 Portals nest: an inner `Portal` renders into the destination of the outer one.

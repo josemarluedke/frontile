@@ -3,12 +3,14 @@ import { setupRenderingTest } from 'ember-qunit';
 import {
   click,
   render,
+  rerender,
   triggerKeyEvent,
   triggerEvent
 } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Dropdown } from 'frontile';
+import { tracked } from '@glimmer/tracking';
 import { cell } from 'ember-resources';
 import { array } from '@ember/helper';
 import { settled } from '@ember/test-helpers';
@@ -1607,6 +1609,593 @@ module(
       assert.dom('[data-key="work-email"]').doesNotExist('depth 2 closed');
       assert.dom('[data-key="whatsapp"]').exists('depth 1 survived');
       assert.dom('[data-key="copy-link"]').exists('the root survived');
+    });
+
+    module('triggerModifier', function () {
+      /**
+       * Dispatches a cancelable key event and reports whether the element's
+       * handlers cancelled the browser's native response to it -- the thing that
+       * decides if an `<a href>` navigates or a `<button>` fires a click of its
+       * own on top of the toggle the modifier already did.
+       */
+      const press = (selector: string, type: string, key: string): boolean => {
+        const el = document.querySelector(selector) as HTMLElement;
+        const event = new KeyboardEvent(type, {
+          key,
+          bubbles: true,
+          cancelable: true
+        });
+        el.dispatchEvent(event);
+        return event.defaultPrevented;
+      };
+
+      const menuOpen = () =>
+        document.querySelector('[data-component="listbox"]');
+
+      const pressOn = (el: Element | null, type: string, key: string): void => {
+        el?.dispatchEvent(
+          new KeyboardEvent(type, { key, bubbles: true, cancelable: true })
+        );
+      };
+
+      const elements = {
+        button: async (): Promise<void> => {
+          await render(
+            <template>
+              <Dropdown as |d|>
+                <button type="button" data-test-id="t" {{d.triggerModifier}}>
+                  Open
+                </button>
+                <d.Menu @disableTransitions={{true}} as |Item|>
+                  <Item @key="a">A</Item>
+                  <Item @key="b">B</Item>
+                </d.Menu>
+              </Dropdown>
+            </template>
+          );
+        },
+        anchor: async (): Promise<void> => {
+          await render(
+            <template>
+              <Dropdown as |d|>
+                {{! template-lint-disable no-invalid-interactive require-valid-anchor }}
+                <a
+                  role="button"
+                  tabindex="0"
+                  data-test-id="t"
+                  {{d.triggerModifier}}
+                >
+                  Open
+                </a>
+                <d.Menu @disableTransitions={{true}} as |Item|>
+                  <Item @key="a">A</Item>
+                  <Item @key="b">B</Item>
+                </d.Menu>
+              </Dropdown>
+            </template>
+          );
+        }
+      };
+
+      for (const [name, renderIt] of Object.entries(elements)) {
+        module(
+          `on a plain <${name === 'button' ? 'button' : 'a'}>`,
+          function () {
+            for (const key of ['Enter', ' ', 'ArrowDown'] as const) {
+              test(`a real ${JSON.stringify(key)} press puts focus in the menu at once, and the next ArrowDown moves within it`, async function (assert) {
+                await renderIt();
+                (
+                  document.querySelector('[data-test-id="t"]') as HTMLElement
+                ).focus();
+
+                // Real key presses: keydown, then keyup on whatever has focus
+                // by then. Only the render is awaited, not timers, so focus
+                // must already be in the menu before the next key event.
+                press('[data-test-id="t"]', 'keydown', key);
+                await rerender();
+                pressOn(document.activeElement, 'keyup', key);
+                await rerender();
+
+                assert.ok(menuOpen(), 'open');
+                assert.strictEqual(
+                  document.activeElement,
+                  menuOpen(),
+                  'focus is in the menu'
+                );
+                assert
+                  .dom('[data-key="a"]')
+                  .hasAttribute('data-active', 'true', 'onto the first item');
+
+                // The list's 1ms bookkeeping flush, far inside any human gap
+                // between two keys.
+                await settled();
+                pressOn(document.activeElement, 'keydown', 'ArrowDown');
+                await rerender();
+                pressOn(document.activeElement, 'keyup', 'ArrowDown');
+                await settled();
+
+                assert.ok(menuOpen(), 'still open');
+                assert
+                  .dom('[data-key="b"]')
+                  .hasAttribute('data-active', 'true');
+              });
+            }
+
+            test('an ArrowDown keyup that still lands on the element does not close the menu its keydown opened', async function (assert) {
+              await renderIt();
+              (
+                document.querySelector('[data-test-id="t"]') as HTMLElement
+              ).focus();
+              press('[data-test-id="t"]', 'keydown', 'ArrowDown');
+              press('[data-test-id="t"]', 'keyup', 'ArrowDown');
+              await settled();
+
+              assert.ok(menuOpen(), 'still open');
+              assert.dom('[data-key="a"]').hasAttribute('data-active', 'true');
+            });
+
+            test('clicking opens the menu and sets the menu ARIA attributes', async function (assert) {
+              await renderIt();
+              assert.strictEqual(menuOpen(), null, 'closed to begin with');
+
+              await click('[data-test-id="t"]');
+
+              assert.ok(menuOpen(), 'the click opened the menu');
+              assert
+                .dom('[data-test-id="t"]')
+                .hasAttribute('aria-expanded', 'true');
+              assert
+                .dom('[data-test-id="t"]')
+                .hasAttribute('aria-haspopup', 'true');
+            });
+
+            test('a pointer open highlights nothing', async function (assert) {
+              await renderIt();
+              await triggerEvent('[data-test-id="t"]', 'pointerup');
+              await click('[data-test-id="t"]');
+
+              assert.dom('[data-key="a"]').hasAttribute('data-active', 'false');
+            });
+
+            test('ArrowDown opens the menu onto the first item', async function (assert) {
+              await renderIt();
+              // Only the keyup: in a browser Popover's keydown handler has already moved
+              // focus into the menu by then, so the trigger never sees it.
+              await triggerKeyEvent('[data-test-id="t"]', 'keyup', 'ArrowDown');
+
+              assert.ok(menuOpen(), 'the menu is open');
+              assert.dom('[data-key="a"]').hasAttribute('data-active', 'true');
+            });
+
+            test('Enter opens the menu', async function (assert) {
+              await renderIt();
+              await triggerKeyEvent('[data-test-id="t"]', 'keydown', 'Enter');
+              await triggerKeyEvent('[data-test-id="t"]', 'keyup', 'Enter');
+
+              assert.ok(menuOpen(), 'Enter opened it');
+              assert.dom('[data-key="a"]').hasAttribute('data-active', 'true');
+            });
+
+            test('Space opens the menu', async function (assert) {
+              await renderIt();
+              await triggerKeyEvent('[data-test-id="t"]', 'keydown', ' ');
+              await triggerKeyEvent('[data-test-id="t"]', 'keyup', ' ');
+
+              assert.ok(menuOpen(), 'Space opened it');
+            });
+
+            test('Escape closes the menu and returns focus to the element', async function (assert) {
+              await renderIt();
+              (
+                document.querySelector('[data-test-id="t"]') as HTMLElement
+              ).focus();
+              // Only the keyup: in a browser Popover's keydown handler has already moved
+              // focus into the menu by then, so the trigger never sees it.
+              await triggerKeyEvent('[data-test-id="t"]', 'keyup', 'ArrowDown');
+              assert.ok(menuOpen(), 'open');
+
+              await triggerKeyEvent(
+                '[data-component="listbox"]',
+                'keydown',
+                'Escape'
+              );
+
+              assert.strictEqual(menuOpen(), null, 'Escape closed it');
+              assert.dom('[data-test-id="t"]').isFocused();
+            });
+
+            test('Enter and Space keep the browser from also activating the element', async function (assert) {
+              await renderIt();
+
+              // Without this a native `<button>` clicks itself on Enter (keydown)
+              // and Space (keyup), which Popover's `trigger` would toggle on top
+              // of the keyup handler -- opening and immediately closing the menu.
+              // An `<a href>` would also navigate on Enter.
+              assert.true(
+                press('[data-test-id="t"]', 'keydown', 'Enter'),
+                'Enter keydown is cancelled'
+              );
+              assert.true(
+                press('[data-test-id="t"]', 'keydown', ' '),
+                'Space keydown is cancelled'
+              );
+              assert.true(
+                press('[data-test-id="t"]', 'keyup', ' '),
+                'Space keyup is cancelled'
+              );
+              assert.true(
+                press('[data-test-id="t"]', 'keydown', 'ArrowDown'),
+                'ArrowDown keydown is cancelled'
+              );
+              assert.false(
+                press('[data-test-id="t"]', 'keydown', 'a'),
+                'other keys are left alone'
+              );
+            });
+          }
+        );
+      }
+
+      for (const name of Object.keys(elements) as (keyof typeof elements)[]) {
+        test(`Enter after a click open and close opens it again, not shut, on a ${name}`, async function (assert) {
+          await elements[name]();
+
+          await click('[data-test-id="t"]');
+          assert.ok(menuOpen(), 'open after one click');
+          await click('[data-test-id="t"]');
+          assert.strictEqual(menuOpen(), null, 'closed after the second');
+
+          await triggerKeyEvent('[data-test-id="t"]', 'keydown', 'Enter');
+          await triggerKeyEvent('[data-test-id="t"]', 'keyup', 'Enter');
+          assert.ok(menuOpen(), 'one Enter opens it, without toggling it shut');
+        });
+      }
+
+      test('Trigger and triggerModifier toggle the same menu', async function (assert) {
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger data-test-id="own">Own</d.Trigger>
+              <button type="button" data-test-id="mod" {{d.triggerModifier}}>
+                Mod
+              </button>
+              <d.Menu @disableTransitions={{true}} as |Item|>
+                <Item @key="a">A</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await click('[data-test-id="own"]');
+        assert.ok(menuOpen(), 'Trigger opens the menu');
+        await click('[data-test-id="own"]');
+        assert.strictEqual(menuOpen(), null, 'Trigger closes it');
+        await click('[data-test-id="mod"]');
+        assert.ok(menuOpen(), 'the modifier opens the same menu');
+      });
+    });
+
+    module('link items', function () {
+      const openMenu = () => click('[data-test-id="dropdown-trigger"]');
+
+      test('an item with @href renders an anchor with that href', async function (assert) {
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu @disableTransitions={{true}} as |Item|>
+                <Item @key="a" @href="/x">Docs</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await openMenu();
+
+        assert
+          .dom('[data-key="a"] a')
+          .hasAttribute('href', '/x')
+          .hasText('Docs');
+      });
+
+      test('a link item disabled by @disabledKeys or @isDisabled renders no live href', async function (assert) {
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu
+                @disableTransitions={{true}}
+                @disabledKeys={{array "a"}}
+                as |Item|
+              >
+                <Item @key="a" @href="/x">Docs</Item>
+                <Item @key="b" @href="/y" @isDisabled={{true}}>Blog</Item>
+                <Item @key="c" @href="/z">Live</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await openMenu();
+
+        assert.dom('[data-key="a"] a[href]').doesNotExist('disabledKeys');
+        assert.dom('[data-key="b"] a[href]').doesNotExist('isDisabled');
+        assert.dom('[data-key="a"] a').hasAria('disabled', 'true');
+        assert.dom('[data-key="c"] a').hasAttribute('href', '/z');
+      });
+
+      test('exactly one element per link item has role="menuitem"', async function (assert) {
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu @disableTransitions={{true}} as |Item|>
+                <Item @key="a" @href="/x">Docs</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await openMenu();
+
+        assert.dom('[role="menuitem"]').exists({ count: 1 });
+        assert.dom('li[data-key="a"]').hasAttribute('role', 'menuitem');
+        assert.dom('li[data-key="a"] a').hasAttribute('tabindex', '-1');
+        assert.dom('li[data-key="a"] [role="menuitem"]').doesNotExist();
+      });
+
+      test('Enter on the active link item clicks its anchor and closes the menu', async function (assert) {
+        const onAction = (_key: string) => assert.step('action');
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu
+                @disableTransitions={{true}}
+                @onAction={{onAction}}
+                as |Item|
+              >
+                <Item @key="p">Plain</Item>
+                <Item @key="a" @href="/x">Docs</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await triggerKeyEvent(
+          '[data-test-id="dropdown-trigger"]',
+          'keyup',
+          'ArrowDown'
+        );
+        const anchor = document.querySelector(
+          '[data-key="a"] a'
+        ) as HTMLAnchorElement;
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+          assert.step('anchor click');
+        });
+
+        await triggerKeyEvent(
+          '[data-component="listbox"]',
+          'keydown',
+          'ArrowDown'
+        );
+        assert.dom('[data-key="a"]').hasAttribute('data-active', 'true');
+        await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Enter');
+
+        assert.verifySteps(['anchor click']);
+        assert.dom('[data-component="listbox"]').doesNotExist('menu closed');
+      });
+
+      test('clicking a link item closes the menu and does not call @onAction', async function (assert) {
+        const onAction = (key: string) => assert.step(`action:${key}`);
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu
+                @disableTransitions={{true}}
+                @onAction={{onAction}}
+                as |Item|
+              >
+                <Item @key="a" @href="/x">Docs</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await openMenu();
+        document
+          .querySelector('[data-key="a"] a')
+          ?.addEventListener('click', (e) => e.preventDefault());
+
+        await click('[data-key="a"] a');
+
+        assert.verifySteps([], 'onAction not called');
+        assert.dom('[data-component="listbox"]').doesNotExist('menu closed');
+      });
+
+      test('clicking the item padding outside the anchor also follows the link', async function (assert) {
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu @disableTransitions={{true}} as |Item|>
+                <Item @key="a" @href="/x">Docs</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await openMenu();
+        document
+          .querySelector('[data-key="a"] a')
+          ?.addEventListener('click', (e) => {
+            e.preventDefault();
+            assert.step('anchor click');
+          });
+
+        await click('li[data-key="a"]');
+
+        assert.verifySteps(['anchor click']);
+        assert.dom('[data-component="listbox"]').doesNotExist();
+      });
+
+      test('a plain item still calls @onAction and closes', async function (assert) {
+        const onAction = (key: string) => assert.step(`action:${key}`);
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu
+                @disableTransitions={{true}}
+                @onAction={{onAction}}
+                as |Item|
+              >
+                <Item @key="p">Plain</Item>
+                <Item @key="a" @href="/x">Docs</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await openMenu();
+        await click('[data-key="p"]');
+
+        assert.verifySteps(['action:p']);
+        assert.dom('[data-component="listbox"]').doesNotExist();
+      });
+
+      test('@closeOnItemSelect={{false}} keeps the menu open after a link click', async function (assert) {
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu
+                @disableTransitions={{true}}
+                @closeOnItemSelect={{false}}
+                as |Item|
+              >
+                <Item @key="a" @href="/x">Docs</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+        await openMenu();
+        document
+          .querySelector('[data-key="a"] a')
+          ?.addEventListener('click', (e) => e.preventDefault());
+        await click('[data-key="a"] a');
+
+        assert.dom('[data-component="listbox"]').exists();
+      });
+    });
+
+    module('controlled open state', function () {
+      class OpenState {
+        @tracked isOpen = false;
+        changes: boolean[] = [];
+
+        onOpenChange = (open: boolean): void => {
+          this.changes.push(open);
+          this.isOpen = open;
+        };
+      }
+
+      test('@isOpen with @onOpenChange controls the menu', async function (assert) {
+        const state = new OpenState();
+        await render(
+          <template>
+            <Dropdown
+              @isOpen={{state.isOpen}}
+              @onOpenChange={{state.onOpenChange}}
+              as |d|
+            >
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu @disableTransitions={{true}} as |Item|>
+                <Item @key="a">A</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+
+        state.isOpen = true;
+        await settled();
+        assert.dom('[role="menu"]').exists('opened from outside');
+        assert
+          .dom('[data-test-id="dropdown-trigger"]')
+          .hasAria('expanded', 'true');
+
+        await click('[data-test-id="dropdown-trigger"]');
+        assert.deepEqual(state.changes, [false], 'a click asks to close');
+        assert.dom('[role="menu"]').doesNotExist();
+
+        await click('[data-test-id="dropdown-trigger"]');
+        assert.deepEqual(state.changes, [false, true], 'and to open');
+        assert.dom('[role="menu"]').exists();
+
+        state.isOpen = false;
+        await settled();
+        assert.dom('[role="menu"]').doesNotExist('closed from outside');
+      });
+
+      test('a declined request leaves the menu as it was', async function (assert) {
+        const changes: boolean[] = [];
+        const ignore = (open: boolean): void => {
+          changes.push(open);
+        };
+        await render(
+          <template>
+            <Dropdown @isOpen={{false}} @onOpenChange={{ignore}} as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu @disableTransitions={{true}} as |Item|>
+                <Item @key="a">A</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+
+        await click('[data-test-id="dropdown-trigger"]');
+        assert.deepEqual(changes, [true]);
+        assert.dom('[role="menu"]').doesNotExist();
+      });
+    });
+
+    module('item @isDisabled', function () {
+      test('a disabled item is skipped, marked and cannot be chosen', async function (assert) {
+        const actions: string[] = [];
+        const onAction = (key: string): void => {
+          actions.push(key);
+        };
+        await render(
+          <template>
+            <Dropdown as |d|>
+              <d.Trigger>Open</d.Trigger>
+              <d.Menu
+                @disableTransitions={{true}}
+                @onAction={{onAction}}
+                as |Item|
+              >
+                <Item @key="a" @isDisabled={{true}}>A</Item>
+                <Item @key="b">B</Item>
+                <Item @key="c" @isDisabled={{true}}>C</Item>
+              </d.Menu>
+            </Dropdown>
+          </template>
+        );
+
+        await triggerKeyEvent(
+          '[data-test-id="dropdown-trigger"]',
+          'keyup',
+          'ArrowDown'
+        );
+        assert
+          .dom('[data-key="b"]')
+          .hasAttribute('data-active', 'true', 'a keyboard open skips it');
+        assert.dom('[data-key="a"]').hasAria('disabled', 'true');
+        assert.dom('[data-key="b"]').doesNotHaveAria('disabled');
+
+        await triggerKeyEvent('[role="menu"]', 'keydown', 'ArrowDown');
+        assert
+          .dom('[data-key="b"]')
+          .hasAttribute('data-active', 'true', 'the arrows skip it');
+
+        await click('[data-key="a"]');
+        assert.deepEqual(actions, [], 'clicking it chooses nothing');
+        assert.dom('[role="menu"]').exists('and leaves the menu open');
+      });
     });
   }
 );

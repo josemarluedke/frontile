@@ -3,8 +3,8 @@
  *
  * Each icon wraps a Lucide icon (via unplugin-icons' `~icons/lucide/*` virtual
  * modules, compiled to a Glimmer template-only component by `compiler: 'ember'`
- * in site/vite.config.mjs) with this file's stable size class, so every `.md`
- * demo that imports from `site/components/icons` keeps working unchanged.
+ * in site/vite.config.mjs) with the `demo-icon` class, a default size that any
+ * size utility the demo passes overrides (see app.css).
  */
 import type { TOC } from '@ember/component/template-only';
 import IconEye from '~icons/lucide/eye';
@@ -38,39 +38,39 @@ import IconLogOut from '~icons/lucide/log-out';
 type IconSignature = TOC<{ Element: SVGSVGElement }>;
 
 export const ViewIcon: IconSignature = <template>
-  <IconEye class="size-icon-lg" ...attributes />
+  <IconEye class="demo-icon" ...attributes />
 </template>;
 
 export const EditIcon: IconSignature = <template>
-  <IconPencil class="size-icon-lg" ...attributes />
+  <IconPencil class="demo-icon" ...attributes />
 </template>;
 
 export const DuplicateIcon: IconSignature = <template>
-  <IconCopy class="size-icon-lg" ...attributes />
+  <IconCopy class="demo-icon" ...attributes />
 </template>;
 
 export const ShareIcon: IconSignature = <template>
-  <IconShare2 class="size-icon-lg" ...attributes />
+  <IconShare2 class="demo-icon" ...attributes />
 </template>;
 
 export const DownloadIcon: IconSignature = <template>
-  <IconDownload class="size-icon-lg" ...attributes />
+  <IconDownload class="demo-icon" ...attributes />
 </template>;
 
 export const ArchiveIcon: IconSignature = <template>
-  <IconArchive class="size-icon-lg" ...attributes />
+  <IconArchive class="demo-icon" ...attributes />
 </template>;
 
 export const DeleteIcon: IconSignature = <template>
-  <IconTrash2 class="size-icon-lg" ...attributes />
+  <IconTrash2 class="demo-icon" ...attributes />
 </template>;
 
 export const PlusIcon: IconSignature = <template>
-  <IconPlus class="size-icon-lg" ...attributes />
+  <IconPlus class="demo-icon" ...attributes />
 </template>;
 
 export const FilterIcon: IconSignature = <template>
-  <IconFilter class="size-icon-lg" ...attributes />
+  <IconFilter class="demo-icon" ...attributes />
 </template>;
 
 export const ChevronDownIcon: IconSignature = <template>
@@ -78,7 +78,7 @@ export const ChevronDownIcon: IconSignature = <template>
 </template>;
 
 export const StarIcon: IconSignature = <template>
-  <IconStar class="size-icon-lg" ...attributes />
+  <IconStar class="demo-icon" ...attributes />
 </template>;
 
 export const SearchIcon: IconSignature = <template>
@@ -98,49 +98,49 @@ export const UserIcon: IconSignature = <template>
 </template>;
 
 export const CheckIcon: IconSignature = <template>
-  <IconCheck class="size-icon-lg" ...attributes />
+  <IconCheck class="demo-icon" ...attributes />
 </template>;
 
 export const CodeIcon: IconSignature = <template>
-  <IconCode class="size-icon-lg" ...attributes />
+  <IconCode class="demo-icon" ...attributes />
 </template>;
 
 export const PaletteIcon: IconSignature = <template>
-  <IconPalette class="size-icon-lg" ...attributes />
+  <IconPalette class="demo-icon" ...attributes />
 </template>;
 
 export const BookIcon: IconSignature = <template>
-  <IconBookOpen class="size-icon-lg" ...attributes />
+  <IconBookOpen class="demo-icon" ...attributes />
 </template>;
 
 export const TargetIcon: IconSignature = <template>
-  <IconTarget class="size-icon-lg" ...attributes />
+  <IconTarget class="demo-icon" ...attributes />
 </template>;
 
 export const AccessibilityIcon: IconSignature = <template>
-  <IconAccessibility class="size-icon-lg" ...attributes />
+  <IconAccessibility class="demo-icon" ...attributes />
 </template>;
 
 export const SparklesIcon: IconSignature = <template>
-  <IconSparkles class="size-icon-lg" ...attributes />
+  <IconSparkles class="demo-icon" ...attributes />
 </template>;
 
 export const ComponentIcon: IconSignature = <template>
-  <IconComponent class="size-icon-lg" ...attributes />
+  <IconComponent class="demo-icon" ...attributes />
 </template>;
 
 export const PackageIcon: IconSignature = <template>
-  <IconPackage class="size-icon-lg" ...attributes />
+  <IconPackage class="demo-icon" ...attributes />
 </template>;
 
 export const RocketIcon: IconSignature = <template>
-  <IconRocket class="size-icon-lg" ...attributes />
+  <IconRocket class="demo-icon" ...attributes />
 </template>;
 
 export const SettingsIcon: IconSignature = <template>
-  <IconSettings class="size-icon-lg" ...attributes />
+  <IconSettings class="demo-icon" ...attributes />
 </template>;
 
 export const LogoutIcon: IconSignature = <template>
-  <IconLogOut class="size-icon-lg" ...attributes />
+  <IconLogOut class="demo-icon" ...attributes />
 </template>;

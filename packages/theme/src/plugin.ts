@@ -18,6 +18,11 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
     ({ addComponents, theme, addVariant, addBase, addUtilities }) => {
       addBase({
         ...resolved?.base,
+        // The sidebar header's toggle fades in when the rail collapses.
+        '@keyframes frontile-fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' }
+        },
         ':root': {
           '--divider-sketch': `url("${svgToDataUri(dividerSketchIcon)}")`
         }
