@@ -15,7 +15,7 @@ module('Acceptance | workbench nav', function (hooks) {
       sidebar!.querySelectorAll<HTMLAnchorElement>('a[href]')
     ).map((a) => a.getAttribute('href') as string);
 
-    assert.ok(hrefs.length === 16, `16 sidebar links (got ${hrefs.length})`);
+    assert.strictEqual(hrefs.length, 16, '16 sidebar links');
     for (const old of ['/buttons', '/core', '/forms']) {
       assert.notOk(hrefs.includes(old), `${old} is not in the sidebar`);
     }
@@ -26,8 +26,24 @@ module('Acceptance | workbench nav', function (hooks) {
       if (href.startsWith('/foundations') || href.startsWith('/components')) {
         assert.dom('h1').exists(`${href} has an h1`);
       } else {
+        // Fixture and legacy pages may have no h1, so only require content.
         assert.dom('main *').exists(`${href} renders content in main`);
       }
+    }
+  });
+
+  test('Home links resolve', async function (assert) {
+    await visit('/');
+
+    const hrefs = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>('[data-home-links] a[href]')
+    ).map((a) => a.getAttribute('href') as string);
+
+    assert.strictEqual(hrefs.length, 8, 'one link per numbered group 1-8');
+
+    for (const href of hrefs) {
+      await visit(href);
+      assert.strictEqual(currentURL(), href, `${href} resolves`);
     }
   });
 
