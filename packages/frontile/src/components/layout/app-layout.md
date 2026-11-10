@@ -932,7 +932,9 @@ export default class RailAppExample extends Component {
   it.
 - `MenuToggle` (default "Open menu"), `SidebarToggle` (default "Toggle
   sidebar") and `AsideToggle` (default "Toggle details") are buttons named by
-  `@label`, with `aria-expanded` and `aria-controls` for what they open.
+  `@label`, with `aria-expanded`. `aria-controls` names what they open while
+  it is on the page, so a drawer is named only while it is open. Without a
+  `Sidebar` (or an `Aside`) in the layout, its toggles render nothing.
 - `Aside` is an `aside` landmark named by `@label` (default `Details`); as a
   drawer, the dialog has the same name.
 - `PageHeader` renders `@title` as an `h1`.

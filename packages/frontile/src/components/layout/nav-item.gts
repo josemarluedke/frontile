@@ -213,7 +213,7 @@ class NavItem extends Component<NavItemSignature> {
           return args.isHidden ?? false;
         },
         get hasBadge() {
-          return Boolean(args.badge) && args.badge !== 0 && !args.isHidden;
+          return item.hasBadge && !args.isHidden;
         }
       });
       registerDestructor(this, unregister);

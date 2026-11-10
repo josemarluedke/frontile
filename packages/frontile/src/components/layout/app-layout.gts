@@ -516,6 +516,9 @@ class AppLayout extends Component<AppLayoutSignature> {
       get bottomNavShown() {
         return layout.bottomNavShown;
       },
+      get hasSidebar() {
+        return layout.registeredSidebar !== undefined;
+      },
       get hasAside() {
         return layout.registeredAside !== undefined;
       },

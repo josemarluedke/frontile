@@ -54,7 +54,7 @@ interface SidebarToggleSignature {
  * `@breakpoint` (where the sidebar is a drawer) it opens the drawer instead,
  * like `MenuToggle`, and `aria-expanded` follows the drawer. With
  * `@mobileNav="bottom"` there is no sidebar below the breakpoint, so there it
- * renders nothing.
+ * renders nothing; nor does it in a layout with no `Sidebar`.
  */
 class SidebarToggle extends Component<SidebarToggleSignature> {
   get label(): string {
@@ -82,8 +82,25 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
     return collapsed ? 'false' : 'true';
   }
 
+  /**
+   * The sidebar it controls. Below the breakpoint that is the drawer, which
+   * only exists while it is open.
+   */
   get controls(): string | undefined {
-    return this.args.controls ?? this.args.layout?.sidebarId;
+    const layout = this.args.layout;
+    if (this.args.controls || !layout) {
+      return this.args.controls;
+    }
+    if (this.controlsDrawer && !layout.state.mobileSidebarOpen) {
+      return undefined;
+    }
+    return layout.sidebarId;
+  }
+
+  /** In a layout, only while it has a sidebar to toggle. */
+  get shown(): boolean {
+    const layout = this.args.layout;
+    return layout ? layout.hasSidebar && !layout.bottomNavMode : true;
   }
 
   get classNames(): string {
@@ -105,7 +122,7 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
   };
 
   <template>
-    {{#unless @layout.bottomNavMode}}
+    {{#if this.shown}}
       <button
         type="button"
         data-part="sidebar-toggle"
@@ -122,7 +139,7 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
           <SidebarLeftIcon />
         {{/if}}
       </button>
-    {{/unless}}
+    {{/if}}
   </template>
 }
 

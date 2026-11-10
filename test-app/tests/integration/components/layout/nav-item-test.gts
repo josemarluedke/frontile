@@ -345,15 +345,21 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
           @folder={{folder}}
         >A</NavItem>
         <NavItem @href="/b" @folder={{folder}}>B</NavItem>
+        <NavItem @href="/c" @badgeDot={{true}} @folder={{folder}}>C</NavItem>
       </template>
     );
 
     assert.true(handles[0]!.hasBadge, 'a badge of 3');
     assert.false(handles[1]!.hasBadge, 'no badge');
+    assert.true(handles[2]!.hasBadge, 'a dot is a badge too');
 
     state.badge = 0;
     await settled();
     assert.false(handles[0]!.hasBadge, 'a badge of 0 is not shown');
+
+    state.badge = '';
+    await settled();
+    assert.false(handles[0]!.hasBadge, 'an empty badge is not shown');
 
     state.badge = 'new';
     state.hidden = true;

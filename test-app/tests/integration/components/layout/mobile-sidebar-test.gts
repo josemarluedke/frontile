@@ -107,6 +107,54 @@ module(
       assert.dom(toggle).hasAria('controls', nav.id);
     });
 
+    test('MenuToggle and SidebarToggle render nothing in a layout with no Sidebar', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Navbar>
+              <layout.MenuToggle />
+              <layout.SidebarToggle />
+            </layout.Navbar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.dom('[data-part="menu-toggle"]').doesNotExist();
+      assert.dom('[data-part="sidebar-toggle"]').doesNotExist();
+    });
+
+    test('below the breakpoint the toggles point at the drawer only while it is open', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Navbar>
+              <layout.MenuToggle />
+              <layout.SidebarToggle />
+            </layout.Navbar>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body><a href="#a">Home</a></sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const menu = find('[data-part="menu-toggle"]')!;
+      const sidebarToggle = find('[data-part="sidebar-toggle"]')!;
+      assert.dom(menu).doesNotHaveAttribute('aria-controls', 'closed: menu');
+      assert
+        .dom(sidebarToggle)
+        .doesNotHaveAttribute('aria-controls', 'closed: sidebar toggle');
+
+      await click(menu);
+      const nav = find('nav[data-part="mobile-sidebar"]')!;
+      assert.dom(menu).hasAria('controls', nav.id);
+      assert.dom(sidebarToggle).hasAria('controls', nav.id);
+    });
+
     test('right Drawer when sidebarSide=end', async function (assert) {
       media = mockMatchMedia(MOBILE);
       await render(

@@ -510,7 +510,7 @@ export default class CustomHandlers extends Component {
 
 ### Link items
 
-Give an item `@href` and it renders as a real link. The anchor fills the whole row, so middle-click, open in new tab, Enter and click all behave like any other link. Activating a link item closes the menu and does not call `@onAction` or `@onSelectionChange`. Use `@route` (with `@models`, `@model` and `@query`, as on `NavLink`) to link to a route in your app instead.
+Give an item `@href` and it renders as a real link. The anchor fills the whole row, so middle-click, open in new tab, Enter and click all behave like any other link. Activating a link item closes the menu and does not call `@onAction` or `@onSelectionChange`. Use `@route` (with `@model`, `@models` and `@query`, as on `LinkTo`) to link to a route in your app instead.
 
 ```gts preview collapsible
 import { Dropdown } from 'frontile';

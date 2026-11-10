@@ -46,6 +46,11 @@ export interface AppLayoutContext {
    */
   registerSidebar(sidebar: RegisteredSidebar): () => void;
   /**
+   * Whether a `Sidebar` is registered. `SidebarToggle` and `MenuToggle`
+   * render nothing without one (tracked).
+   */
+  readonly hasSidebar: boolean;
+  /**
    * How navigation is shown below the breakpoint: the sidebar in a `drawer`,
    * or a `bottom` bar (`BottomNav`) with no sidebar (tracked).
    */
