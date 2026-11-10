@@ -109,7 +109,7 @@ export default class Example extends Component {
 its pressed fill, and a button body gets `aria-pressed`. Leave `@isSelected` out
 for a chip that is not a toggle, so no `aria-pressed` is rendered at all.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { fn } from '@ember/helper';
@@ -164,7 +164,7 @@ the pointer and the keyboard:
 Hover a chip, then its close button. Pressing the body and pressing the close
 button are separate actions.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
