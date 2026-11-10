@@ -41,7 +41,8 @@
 /* Tailwind v4 emits a theme variable only when something uses it. Nothing in
    the test app reads `--breakpoint-*` (responsive variants compile to literal
    media queries), and the Global page reads `--shadow-elevation-*` only from
-   inline styles, which Tailwind does not scan. The page shows these values
+   inline styles, which Tailwind does not scan. The Typography page reads
+   `--typescale-ratio` and `--font-size-*` the same way. The page shows these values
    live, so reference each one here to have them emitted on :root. */
 :root {
   --workbench-breakpoint-sm: var(--breakpoint-sm);
@@ -55,4 +56,40 @@
   --workbench-elevation-3: var(--shadow-elevation-3);
   --workbench-elevation-4: var(--shadow-elevation-4);
   --workbench-elevation-5: var(--shadow-elevation-5);
+  --workbench-typescale-ratio: var(--typescale-ratio);
+  --workbench-font-size-0: var(--font-size-0);
+  --workbench-font-size-1: var(--font-size-1);
+  --workbench-font-size-2: var(--font-size-2);
+  --workbench-font-size-3: var(--font-size-3);
+  --workbench-font-size-4: var(--font-size-4);
+  --workbench-font-size-5: var(--font-size-5);
+  --workbench-font-size-6: var(--font-size-6);
+  --workbench-font-size-7: var(--font-size-7);
+  --workbench-font-size-8: var(--font-size-8);
+  --workbench-font-size-9: var(--font-size-9);
+  --workbench-font-size-10: var(--font-size-10);
+  --workbench-font-size-11: var(--font-size-11);
+  --workbench-font-size-12: var(--font-size-12);
+  --workbench-font-size-13: var(--font-size-13);
+  --workbench-font-size-14: var(--font-size-14);
+  --workbench-font-size-15: var(--font-size-15);
+  --workbench-font-size-16: var(--font-size-16);
+  --workbench-font-size-17: var(--font-size-17);
+  --workbench-font-size-18: var(--font-size-18);
+  --workbench-font-size-19: var(--font-size-19);
+  --workbench-font-size-20: var(--font-size-20);
+  --workbench-font-size-21: var(--font-size-21);
+  --workbench-font-size-22: var(--font-size-22);
+  --workbench-font-size-23: var(--font-size-23);
+  --workbench-font-size-24: var(--font-size-24);
+  --workbench-font-size-25: var(--font-size-25);
+  --workbench-font-size-26: var(--font-size-26);
+  --workbench-font-size-27: var(--font-size-27);
+  --workbench-font-size-28: var(--font-size-28);
+  --workbench-font-size-29: var(--font-size-29);
+  --workbench-font-size-30: var(--font-size-30);
+  --workbench-font-size-31: var(--font-size-31);
+  --workbench-font-size-32: var(--font-size-32);
+  --workbench-font-size-33: var(--font-size-33);
+  --workbench-font-size-34: var(--font-size-34);
 }
