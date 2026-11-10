@@ -97,7 +97,11 @@ class Badge extends Component<BadgeSignature> {
       ...attributes
     >
       {{#if (has-block "startIcon")}}
-        <span class={{this.classNames.icon}} data-part="start-icon">
+        <span
+          class={{this.classNames.icon}}
+          data-part="icon"
+          data-position="start"
+        >
           {{yield to="startIcon"}}
         </span>
       {{/if}}
@@ -112,7 +116,11 @@ class Badge extends Component<BadgeSignature> {
         <span class={{this.classNames.unit}} data-part="unit">{{@unit}}</span>
       {{/if}}
       {{#if (has-block "endIcon")}}
-        <span class={{this.classNames.icon}} data-part="end-icon">
+        <span
+          class={{this.classNames.icon}}
+          data-part="icon"
+          data-position="end"
+        >
           {{yield to="endIcon"}}
         </span>
       {{/if}}

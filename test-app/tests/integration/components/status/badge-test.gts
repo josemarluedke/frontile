@@ -80,17 +80,29 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       );
 
       assert
-        .dom('[data-part="start-icon"] svg[data-test-icon="start"]')
+        .dom(
+          '[data-part="icon"][data-position="start"] svg[data-test-icon="start"]'
+        )
         .exists();
-      assert.dom('[data-part="end-icon"] svg[data-test-icon="end"]').exists();
+      assert
+        .dom(
+          '[data-part="icon"][data-position="end"] svg[data-test-icon="end"]'
+        )
+        .exists();
 
       const parts = Array.from(
         document.querySelectorAll('[data-test-id="badge"] > [data-part]')
-      ).map((el) => el.getAttribute('data-part'));
-      assert.deepEqual(parts, ['start-icon', 'value', 'unit', 'end-icon']);
+      ).map((el) =>
+        [el.getAttribute('data-part'), el.getAttribute('data-position')]
+          .filter(Boolean)
+          .join(':')
+      );
+      assert.deepEqual(parts, ['icon:start', 'value', 'unit', 'icon:end']);
 
       const badge = document.querySelector('[data-test-id="badge"]')!;
-      const startIcon = badge.querySelector('[data-part="start-icon"]')!;
+      const startIcon = badge.querySelector(
+        '[data-part="icon"][data-position="start"]'
+      )!;
       const label = Array.from(badge.childNodes).find(
         (n) => n.nodeType === Node.TEXT_NODE && n.textContent?.includes('Pro')
       )!;
@@ -104,7 +116,7 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       assert.true(
         Boolean(
           label.compareDocumentPosition(
-            badge.querySelector('[data-part="end-icon"]')!
+            badge.querySelector('[data-part="icon"][data-position="end"]')!
           ) & Node.DOCUMENT_POSITION_FOLLOWING
         ),
         'end icon follows the label'
@@ -120,8 +132,8 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
 
       assert.dom('[data-part="value"]').doesNotExist();
       assert.dom('[data-part="unit"]').doesNotExist();
-      assert.dom('[data-part="start-icon"]').doesNotExist();
-      assert.dom('[data-part="end-icon"]').doesNotExist();
+      assert.dom('[data-part="icon"][data-position="start"]').doesNotExist();
+      assert.dom('[data-part="icon"][data-position="end"]').doesNotExist();
     });
   });
 
