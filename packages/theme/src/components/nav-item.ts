@@ -67,8 +67,12 @@ const navItem = tv({
     navItemIcon:
       'relative inline-flex shrink-0 items-center justify-center [&>svg]:size-5 [&>svg]:text-[1.25rem]',
     navItemLabel: 'truncate',
-    // The short text shown under the icon in the stacked layout.
-    navItemShortLabel: 'max-w-full truncate text-body-4xs leading-tight',
+    // The short text shown under the icon in the stacked layout. A label, not
+    // body copy: semibold in the label face, and the same weight whether or
+    // not the item is current. `leading-tight` is kept over the token's
+    // line-height of 1, which `truncate` (overflow hidden) would clip.
+    navItemShortLabel:
+      'max-w-full truncate font-label text-label-micro leading-tight',
     navItemBadge:
       'inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 font-label text-label-micro leading-none text-on-danger',
     // Screen-reader text appended to the label for a badge.
