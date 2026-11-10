@@ -4,3 +4,36 @@
 @source "../../packages/theme/src";
 @plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";
+
+/* Frozen interaction states for the workbench.
+
+   These redefine Tailwind's built-in `hover`, `active`, `focus` and
+   `focus-within` variants so an attribute can force each state without
+   interaction:
+
+   - `data-force-hover`         -> `hover:` (and `group-hover:`/`peer-hover:`)
+   - `data-force-active`        -> `active:`
+   - `data-focus-visible-added` -> `focus:`, `focus-within:` on an ancestor,
+     and the theme's own `focus-visible:` variant (packages/theme/src/index.css)
+
+   Real hover keeps Tailwind's `@media (hover: hover)` guard; the forced
+   selector sits outside it, so it applies even where headless Chrome reports
+   `hover: none`. Redefining a built-in variant keeps its position in the
+   variant order, so `active:` still wins over `hover:` as it does on a real
+   press. Tailwind compiles Frontile's classes here (see the `@source` lines),
+   so this changes component styles in the test app only and never ships.
+   `app/utils/workbench/frozen-states.ts` records that this works;
+   `tests/integration/workbench/frozen-states-test.gts` covers it. */
+@custom-variant hover {
+  @media (hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+  &[data-force-hover] {
+    @slot;
+  }
+}
+@custom-variant active (&:active, &[data-force-active]);
+@custom-variant focus (&:focus, &[data-focus-visible-added]);
+@custom-variant focus-within (&:focus-within, &:has([data-focus-visible-added]));
