@@ -46,6 +46,85 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
     assert.dom('[data-test-id="badge"]').doesNotHaveAttribute('tabindex');
   });
 
+  module('Content', () => {
+    test('it renders a value and unit after the label', async function (assert) {
+      await render(
+        <template>
+          <Badge @value="$24.00" @unit="/mo" data-test-id="badge">Pro</Badge>
+        </template>
+      );
+
+      assert.dom('[data-test-id="badge"]').hasText('Pro $24.00 /mo');
+      assert.dom('[data-part="value"]').hasText('$24.00');
+      assert.dom('[data-part="unit"]').hasText('/mo');
+    });
+
+    test('it renders with only a value', async function (assert) {
+      await render(
+        <template><Badge @value="$24.00" data-test-id="badge" /></template>
+      );
+
+      assert.dom('[data-test-id="badge"]').hasText('$24.00');
+      assert.dom('[data-part="unit"]').doesNotExist();
+    });
+
+    test('it renders start and end icon blocks', async function (assert) {
+      await render(
+        <template>
+          <Badge @value="$24.00" @unit="/mo" data-test-id="badge">
+            <:startIcon><svg data-test-icon="start"></svg></:startIcon>
+            <:default>Pro</:default>
+            <:endIcon><svg data-test-icon="end"></svg></:endIcon>
+          </Badge>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="start-icon"] svg[data-test-icon="start"]')
+        .exists();
+      assert.dom('[data-part="end-icon"] svg[data-test-icon="end"]').exists();
+
+      const parts = Array.from(
+        document.querySelectorAll('[data-test-id="badge"] > [data-part]')
+      ).map((el) => el.getAttribute('data-part'));
+      assert.deepEqual(parts, ['start-icon', 'value', 'unit', 'end-icon']);
+
+      const badge = document.querySelector('[data-test-id="badge"]')!;
+      const startIcon = badge.querySelector('[data-part="start-icon"]')!;
+      const label = Array.from(badge.childNodes).find(
+        (n) => n.nodeType === Node.TEXT_NODE && n.textContent?.includes('Pro')
+      )!;
+      assert.true(
+        Boolean(
+          startIcon.compareDocumentPosition(label) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+        ),
+        'start icon precedes the label'
+      );
+      assert.true(
+        Boolean(
+          label.compareDocumentPosition(
+            badge.querySelector('[data-part="end-icon"]')!
+          ) & Node.DOCUMENT_POSITION_FOLLOWING
+        ),
+        'end icon follows the label'
+      );
+    });
+
+    test('it does not render unit or icon wrappers when absent', async function (assert) {
+      await render(
+        <template>
+          <Badge data-test-id="badge">Paid</Badge>
+        </template>
+      );
+
+      assert.dom('[data-part="value"]').doesNotExist();
+      assert.dom('[data-part="unit"]').doesNotExist();
+      assert.dom('[data-part="start-icon"]').doesNotExist();
+      assert.dom('[data-part="end-icon"]').doesNotExist();
+    });
+  });
+
   module('Style classes', () => {
     test('variant defaults to soft', async function (assert) {
       await render(

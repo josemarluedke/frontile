@@ -30,25 +30,62 @@ interface BadgeSignature {
      * Custom class name, it will override the default ones using Tailwind Merge library.
      */
     class?: string;
+
+    /**
+     * A figure shown after the label, such as a price or a count. Rendered in
+     * its own part so the theme can give it a tabular, heavier treatment.
+     */
+    value?: string;
+
+    /**
+     * A unit shown after the value, such as `/mo`. Rendered only when set.
+     */
+    unit?: string;
   };
   Blocks: {
+    /**
+     * The badge label.
+     */
     default: [];
+
+    /**
+     * An icon shown before the label. Using this block means the label must
+     * go in the `<:default>` block.
+     */
+    startIcon?: [];
+
+    /**
+     * An icon shown after the value and unit. Using this block means the label
+     * must go in the `<:default>` block.
+     */
+    endIcon?: [];
   };
   Element: HTMLSpanElement;
 }
 
+/**
+ * A non-interactive label for status or metadata. Renders, in order: start
+ * icon, label, value, unit, end icon.
+ *
+ * When you pass a named block (`<:startIcon>` or `<:endIcon>`), Glimmer no
+ * longer treats loose content as the default block, so put the label in
+ * `<:default>`.
+ */
 class Badge extends Component<BadgeSignature> {
   get classNames() {
     const { badge } = useStyles();
 
-    const { base } = badge({
+    const { base, value, unit, icon } = badge({
       color: this.args.color,
       size: this.args.size,
       variant: this.args.variant
     });
 
     return {
-      base: base({ class: this.args.class })
+      base: base({ class: this.args.class }),
+      value: value(),
+      unit: unit(),
+      icon: icon()
     };
   }
 
@@ -59,7 +96,26 @@ class Badge extends Component<BadgeSignature> {
       data-part="base"
       ...attributes
     >
+      {{#if (has-block "startIcon")}}
+        <span class={{this.classNames.icon}} data-part="start-icon">
+          {{yield to="startIcon"}}
+        </span>
+      {{/if}}
       {{yield}}
+      {{#if @value}}
+        <span
+          class={{this.classNames.value}}
+          data-part="value"
+        >{{@value}}</span>
+      {{/if}}
+      {{#if @unit}}
+        <span class={{this.classNames.unit}} data-part="unit">{{@unit}}</span>
+      {{/if}}
+      {{#if (has-block "endIcon")}}
+        <span class={{this.classNames.icon}} data-part="end-icon">
+          {{yield to="endIcon"}}
+        </span>
+      {{/if}}
     </span>
   </template>
 }
