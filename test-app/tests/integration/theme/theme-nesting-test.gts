@@ -200,7 +200,7 @@ module('Integration | theme nesting', function (hooks) {
     );
   });
 
-  test('an unthemed root with a nested dark keeps both themes', async function (assert) {
+  test('an unthemed root resolves the default (light) theme', async function (assert) {
     // The test container sits under an <html> with no theme class, so the
     // bare probe gets the default (light) theme from `:root`.
     await render(
@@ -393,6 +393,73 @@ module('Integration | theme nesting', function (hooks) {
     assert.notStrictEqual(
       bg('[data-case] [data-vprobe]'),
       bg('[data-opposite] [data-vprobe]')
+    );
+  });
+
+  test('light variant applies inside a nested light', async function (assert) {
+    await render(
+      <template>
+        <div class="dark" data-case>
+          <div class="light">
+            <div class="bg-neutral-subtle light:bg-danger" data-lprobe></div>
+          </div>
+        </div>
+        <div class="light" data-ref>
+          <div class="bg-neutral-subtle light:bg-danger" data-lprobe></div>
+        </div>
+        <div class="dark" data-opposite>
+          <div class="bg-neutral-subtle light:bg-danger" data-lprobe></div>
+        </div>
+      </template>
+    );
+
+    assert.strictEqual(
+      bg('[data-case] [data-lprobe]'),
+      bg('[data-ref] [data-lprobe]')
+    );
+    assert.notStrictEqual(
+      bg('[data-case] [data-lprobe]'),
+      bg('[data-opposite] [data-lprobe]')
+    );
+  });
+
+  test('neither variant applies with four themed ancestors', async function (assert) {
+    // Pins the documented limit in `index.css`: the variants enumerate up to
+    // three themed ancestors. At four, neither `dark:` nor `light:` applies,
+    // so the probe shows its plain utility in the nearest theme's tokens.
+    await render(
+      <template>
+        <div class="dark" data-case>
+          <div class="light">
+            <div class="dark">
+              <div class="light">
+                <div
+                  class="bg-neutral-subtle dark:bg-danger light:bg-success"
+                  data-dprobe
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="light" data-ref>
+          <div class="bg-neutral-subtle" data-dprobe></div>
+        </div>
+        <div class="light" data-opposite>
+          <div
+            class="bg-neutral-subtle dark:bg-danger light:bg-success"
+            data-dprobe
+          ></div>
+        </div>
+      </template>
+    );
+
+    assert.strictEqual(
+      bg('[data-case] [data-dprobe]'),
+      bg('[data-ref] [data-dprobe]')
+    );
+    assert.notStrictEqual(
+      bg('[data-case] [data-dprobe]'),
+      bg('[data-opposite] [data-dprobe]')
     );
   });
 

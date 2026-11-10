@@ -118,11 +118,14 @@ function shouldGenerateOnColor(colorName: string): boolean {
  *
  * Consecutive `.theme-inverse` chains resolve up to 2 deep: `@scope` cannot
  * count parity, so a third directly nested inverse keeps its parent's
- * tokens. The `dark`/`light` variants in `index.css` follow the same rules.
+ * tokens. The `dark`/`light` variants in `index.css` do not use `@scope`:
+ * they enumerate themed ancestors and stop at 3 (see the comment there).
  *
- * Every themed element matches exactly one theme rule, so the cascade layer
- * each rule lands in (the default theme goes through `addBase`, the others
- * through `addUtilities`) never decides the outcome.
+ * Every `.theme-inverse` matches exactly one of these rules, so their cascade
+ * layer never decides the outcome. (`:root` is the exception by design: it
+ * carries the default theme in the base layer, and a theme class on `<html>`
+ * overrides it from the utilities layer while tokens only the default theme
+ * defines stay available.)
  */
 function addInverseRules(
   base: CSSRuleObject,
@@ -170,17 +173,9 @@ function resolveThemes(
     const scheme =
       themeName === 'light' || themeName === 'dark' ? themeName : extend;
 
-    // The default theme also applies to the root element, unless the root
-    // carries another theme's class -- so `<html class="dark">` matches only
-    // `.dark`, whichever layer each rule lands in.
+    // if the theme is the default theme, add the selector to the root element
     if (themeName === defaultTheme) {
-      const otherThemes = Object.keys(themes)
-        .filter((name) => name !== themeName)
-        .map((name) => `.${name}`)
-        .join(', ');
-      baseSelector = otherThemes
-        ? `:root:where(:not(${otherThemes})), ${cssSelector}`
-        : `:root, ${cssSelector}`;
+      baseSelector = `:root, ${cssSelector}`;
     }
 
     const themeRules: CSSRuleObject = scheme ? { 'color-scheme': scheme } : {};

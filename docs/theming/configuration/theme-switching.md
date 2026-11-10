@@ -156,6 +156,8 @@ when an outer ancestor is `.dark`. A `dark:` utility on the element that itself 
   `.theme-inverse` works at any depth. Directly nested `.theme-inverse` chains are
   supported up to two levels (the second returns to the outer theme); a third
   `.theme-inverse` directly inside two others keeps its parent's colors.
+  `.theme-inverse` needs a `.light` or `.dark` ancestor to invert: directly under an
+  `<html>` with no theme class it does nothing.
 - **`dark:` and `light:` variants:** resolved up to three themed ancestors, counting every
   `.light`, `.dark` and `.theme-inverse` above the element. With four or more, neither
   variant applies and the plain utility shows. Color tokens keep working at that depth.
