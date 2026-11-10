@@ -2,12 +2,12 @@ import { tv } from '../tw';
 
 const badge = tv({
   slots: {
-    base: 'inline-flex items-center whitespace-nowrap font-label',
+    base: 'inline-flex items-center whitespace-nowrap font-label leading-none',
     // emphasized value, e.g. a price
-    value: 'font-bold tabular-nums',
+    value: 'font-bold tabular-nums leading-none',
     // unit following the value, e.g. "/mo"
-    unit: 'opacity-80',
-    icon: 'size-3 shrink-0'
+    unit: 'opacity-80 leading-none',
+    icon: 'inline-flex shrink-0 items-center justify-center [&>svg]:size-full'
   },
   variants: {
     variant: {
@@ -22,24 +22,26 @@ const badge = tv({
       success: '',
       danger: ''
     },
-    // Heights match Chip (20, 24, 28, 32px). Radius steps with size and is
-    // never a pill: that shape belongs to Chip.
+    // Value and unit share the label's font size so their baselines line up;
+    // the value is set apart by weight only. Heights match Chip (20, 24, 28,
+    // 32px). Radius steps with size and is never a pill: that shape belongs
+    // to Chip.
     size: {
       xs: {
         base: 'text-label-2xs h-5 px-1.5 gap-1 rounded-sm',
-        value: 'text-label-xs'
+        icon: 'size-3'
       },
       sm: {
         base: 'text-label-2xs h-6 px-2 gap-1 rounded-sm',
-        value: 'text-label-xs'
+        icon: 'size-3'
       },
       md: {
         base: 'text-label-xs h-7 px-2.5 gap-1.5 rounded-md',
-        value: 'text-label-md'
+        icon: 'size-3.5'
       },
       lg: {
         base: 'text-label-md h-8 px-3 gap-1.5 rounded-md',
-        value: 'text-label-lg'
+        icon: 'size-4'
       }
     }
   },

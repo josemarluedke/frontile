@@ -83,15 +83,28 @@ const colors = [
 
 ## Badge Sizes
 
+The second row shows each size with an icon and a value.
+
 ```gts preview
 import { Badge } from 'frontile';
+import { array } from '@ember/helper';
+import { StarIcon } from 'site/components/icons';
 
 <template>
-  <div class='flex flex-wrap items-center gap-3'>
-    <Badge @size='xs'>Badge xs</Badge>
-    <Badge @size='sm'>Badge sm</Badge>
-    <Badge @size='md'>Badge md</Badge>
-    <Badge @size='lg'>Badge lg</Badge>
+  <div class='flex flex-col gap-4'>
+    <div class='flex flex-wrap items-center gap-3'>
+      {{#each (array 'xs' 'sm' 'md' 'lg') as |size|}}
+        <Badge @size={{size}}>Badge {{size}}</Badge>
+      {{/each}}
+    </div>
+    <div class='flex flex-wrap items-center gap-3'>
+      {{#each (array 'xs' 'sm' 'md' 'lg') as |size|}}
+        <Badge @size={{size}} @color='primary' @value='4.8'>
+          <:startIcon><StarIcon /></:startIcon>
+          <:default>Rating {{size}}</:default>
+        </Badge>
+      {{/each}}
+    </div>
   </div>
 </template>
 ```
@@ -145,23 +158,31 @@ pressable, selectable or closable. If the element is none of those, use a Badge;
 it is any of them, use a Chip.
 
 ```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { Badge, Chip } from 'frontile';
 
-const noop = (): void => {};
+export default class extends Component {
+  @tracked isSelected = false;
 
-<template>
-  <div class='flex flex-wrap items-center gap-3'>
-    <Badge @color='success'>Active</Badge>
-    <Chip
-      @variant='soft'
-      @color='primary'
-      @onClose={{noop}}
-      @closeButtonTitle='Remove Fiber'
-    >
-      Fiber
-    </Chip>
-  </div>
-</template>
+  toggle = (): void => {
+    this.isSelected = !this.isSelected;
+  };
+
+  <template>
+    <div class='flex flex-wrap items-center gap-3'>
+      <Badge @color='success'>Active</Badge>
+      <Chip
+        @variant='soft'
+        @color='primary'
+        @isSelected={{this.isSelected}}
+        @onPress={{this.toggle}}
+      >
+        Fiber
+      </Chip>
+    </div>
+  </template>
+}
 ```
 
 ## Accessibility
