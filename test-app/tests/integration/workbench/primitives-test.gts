@@ -7,7 +7,11 @@ import WorkbenchSection from 'test-app/components/workbench/section';
 import WorkbenchPanes from 'test-app/components/workbench/panes';
 import WorkbenchSpecimen from 'test-app/components/workbench/specimen';
 import WorkbenchSwatch from 'test-app/components/workbench/swatch';
-import { parseColor } from 'test-app/utils/workbench/color';
+import {
+  compositeOver,
+  parseColor,
+  toHex
+} from 'test-app/utils/workbench/color';
 
 function el(selector: string): Element {
   const found = find(selector);
@@ -40,6 +44,50 @@ module('Integration | workbench | primitives', function (hooks) {
   });
 
   module('card', function () {
+    test('card scrolls itself into view on a matching hash', async function (assert) {
+      const original = Object.getOwnPropertyDescriptor(
+        Element.prototype,
+        'scrollIntoView'
+      );
+      const scrolled: string[] = [];
+      Element.prototype.scrollIntoView = function (this: Element) {
+        scrolled.push(this.id);
+      };
+
+      try {
+        window.history.replaceState(window.history.state, '', '#c');
+        await render(
+          <template>
+            <WorkbenchCard
+              @id="c"
+              @title="T"
+              @description="D"
+              @sections={{array}}
+            />
+            <WorkbenchCard
+              @id="other"
+              @title="T"
+              @description="D"
+              @sections={{array}}
+            />
+          </template>
+        );
+        assert.deepEqual(
+          scrolled,
+          ['c'],
+          'only the matching card scrolls on render'
+        );
+
+        window.location.hash = '#other';
+        await waitUntil(() => scrolled.includes('other'), { timeout: 2000 });
+        assert.deepEqual(scrolled, ['c', 'other'], 'scrolls on hashchange');
+      } finally {
+        if (original) {
+          Object.defineProperty(Element.prototype, 'scrollIntoView', original);
+        }
+      }
+    });
+
     test('card renders chips that link to sections', async function (assert) {
       await render(
         <template>
@@ -323,6 +371,34 @@ module('Integration | workbench | primitives', function (hooks) {
       assert.dom(`${sel} [data-swatch-hex]`).hasText(/^#[0-9a-f]{6}$/);
       assert.dom(`${sel} [data-swatch-ratio]`).hasText(/^\d+\.\d:1$/);
       assert.dom(`${sel} [data-swatch-sample]`).hasText('Aa');
+
+      // Light surface-app is near white, so a wrong backdrop could still pass
+      // above. The dark pane's backdrop is dark: the hex must be the fill
+      // composited over that pane's own background.
+      const darkSel = '[data-test-swatch="dark"]';
+      const darkPane = el('[data-workbench-pane="dark"]');
+      const darkFill = parseColor(fill(darkSel));
+      assert.ok(
+        darkFill.a < 1,
+        'precondition: dark primary-soft is translucent'
+      );
+      const expected = toHex(
+        compositeOver(
+          darkFill,
+          parseColor(getComputedStyle(darkPane).backgroundColor)
+        )
+      );
+      assert.strictEqual(
+        el(darkSel).getAttribute('data-swatch-hex'),
+        expected,
+        'DARK hex is the fill composited over the dark pane'
+      );
+      assert.dom(`${darkSel} [data-swatch-hex]`).hasText(expected);
+      assert.notStrictEqual(
+        el(darkSel).getAttribute('data-swatch-hex'),
+        el(sel).getAttribute('data-swatch-hex'),
+        'DARK and LIGHT hexes differ'
+      );
     });
 
     test('swatch flags low contrast', async function (assert) {

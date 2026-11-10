@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
+import { schedule } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
 import { Button } from 'frontile';
 
@@ -56,10 +57,32 @@ export default class WorkbenchCard extends Component<WorkbenchCardSignature> {
     input.select();
   });
 
+  /**
+   * The browser's own fragment scroll happens before the app renders the
+   * card, so a deep link to `#{@id}` has to be honoured here: after render,
+   * and on every `hashchange`.
+   */
+  revealOnHash = modifier((card: HTMLElement, [id]: [string]) => {
+    let cancelled = false;
+    const reveal = (): void => {
+      if (!cancelled && window.location.hash === `#${id}`) {
+        card.scrollIntoView({ block: 'start' });
+      }
+    };
+    // After render, so the card's body is laid out before scrolling to it.
+    schedule('afterRender', reveal);
+    window.addEventListener('hashchange', reveal);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('hashchange', reveal);
+    };
+  });
+
   <template>
     <article
       id={{@id}}
       data-workbench-card
+      {{this.revealOnHash @id}}
       class="bg-surface-card border-neutral-soft scroll-mt-4 overflow-hidden rounded-xl border"
       ...attributes
     >
