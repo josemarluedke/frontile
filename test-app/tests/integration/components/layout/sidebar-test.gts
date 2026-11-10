@@ -1160,6 +1160,64 @@ module(
         assert.true(Math.abs(gap(2, 3) - 4) <= 0.5, `group gap ${gap(2, 3)}`);
       });
 
+      test(`${variant} rows put a badge at the trailing end, and on the icon's corner in the rail`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @variant={{variant}} as |layout|>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Header>
+                  <sidebar.Toggle class="ml-auto" />
+                </sidebar.Header>
+                <sidebar.Body>
+                  <sidebar.Item
+                    @href="#a"
+                    @icon={{TestIcon}}
+                    @badge={{2}}
+                  >People</sidebar.Item>
+                </sidebar.Body>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const box = () => {
+          const { x, scale } = geometry();
+          const top = (el: Element) => el.getBoundingClientRect().top / scale;
+          const width = (el: Element) =>
+            el.getBoundingClientRect().width / scale;
+          const row = find('[data-part="nav-item"]')!;
+          const icon = find('[data-part="nav-item-icon"]')!;
+          const badge = find('[data-part="nav-item-badge"]')!;
+          return {
+            leading: x(icon) - x(row),
+            trailing: x(row) + width(row) - (x(badge) + width(badge)),
+            iconEnd: x(icon) + width(icon),
+            iconTop: top(icon),
+            badgeEnd: x(badge) + width(badge),
+            badgeTop: top(badge)
+          };
+        };
+
+        const open = box();
+        assert.true(
+          Math.abs(open.leading - open.trailing) <= 1,
+          `expanded: icon inset ${open.leading}, badge inset ${open.trailing}`
+        );
+
+        await click('[data-part="sidebar-toggle"]');
+        await widthSettled();
+        const rail = box();
+        assert.true(
+          Math.abs(rail.badgeEnd - (rail.iconEnd + 4)) <= 1,
+          `rail: badge ends at ${rail.badgeEnd}, icon at ${rail.iconEnd}`
+        );
+        assert.true(
+          Math.abs(rail.badgeTop - (rail.iconTop - 4)) <= 1,
+          `rail: badge top ${rail.badgeTop}, icon top ${rail.iconTop}`
+        );
+      });
+
       test(`the ${variant} collapsed rail keeps the icon and centers the header toggle`, async function (assert) {
         await render(
           <template>

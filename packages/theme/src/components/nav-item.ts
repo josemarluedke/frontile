@@ -16,6 +16,20 @@ import type { VariantProps } from '../tw';
 const railInset =
   'ps-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-gutter,0.5rem)_-_1.25rem)/2)] pe-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-gutter,0.5rem)_-_1.25rem)/2)]';
 
+// A badge on an inline row with an icon: at the row's trailing end, like a
+// folder's chevron, and on the icon's top-end corner once the sidebar
+// collapses to the rail and the label is gone. The row is the containing
+// block, so the corner is measured from the row's start, where the icon
+// sits at the rail inset: 4px past the icon's 1.25rem end and above its
+// top. Written out in full: Tailwind only sees literal class names.
+const railBadge = [
+  'ms-auto',
+  'group-data-[collapsed=true]/sidebar:absolute',
+  'group-data-[collapsed=true]/sidebar:start-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-gutter,0.5rem)_-_1.25rem)/2_+_1.5rem)]',
+  'group-data-[collapsed=true]/sidebar:top-[calc(50%_-_0.875rem)]',
+  'group-data-[collapsed=true]/sidebar:-translate-x-full rtl:group-data-[collapsed=true]/sidebar:translate-x-full'
+];
+
 const navRow = [
   ...focusVisibleRing,
   // 36px with a mouse; 44px where the pointer is coarse (touch).
@@ -74,7 +88,8 @@ const navItem = tv({
   variants: {
     layout: {
       inline: {
-        navItem: railInset,
+        // The containing block for a badge on the icon's corner in the rail.
+        navItem: ['relative', railInset],
         navFolderTrigger: railInset,
         navItemIcon: 'size-5',
         // Hidden in the icon rail.
@@ -119,7 +134,9 @@ const navItem = tv({
     badgePlacement: {
       // At the icon's top-end corner.
       icon: { navItemBadge: 'absolute -top-1 -end-1' },
-      end: { navItemBadge: 'ms-auto' }
+      end: { navItemBadge: 'ms-auto' },
+      // At the end of an inline row with an icon; on the icon in the rail.
+      rail: { navItemBadge: railBadge }
     },
     // A plain dot with no text (the More tab's "something inside has a
     // badge" marker).
@@ -133,6 +150,16 @@ const navItem = tv({
       badgeDot: true,
       badgePlacement: 'icon',
       class: { navItemBadge: '-top-0.5 -end-0.5' }
+    },
+    {
+      badgeDot: true,
+      badgePlacement: 'rail',
+      class: {
+        navItemBadge: [
+          'group-data-[collapsed=true]/sidebar:start-[calc((var(--sidebar-rail,4rem)_-_2*var(--sidebar-gutter,0.5rem)_-_1.25rem)/2_+_1.375rem)]',
+          'group-data-[collapsed=true]/sidebar:top-[calc(50%_-_0.75rem)]'
+        ]
+      }
     }
   ],
   defaultVariants: {
