@@ -1,0 +1,1 @@
+<template>First panel</template>

@@ -1,6 +1,6 @@
 {
   "name": "frontile",
-  "version": "0.18.6",
+  "version": "0.18.7",
   "description": "Component Library for Ember Octane apps",
   "keywords": [
     "ember-addon",
@@ -45,6 +45,10 @@
     "./navigation": {
       "types": "./declarations/navigation.d.ts",
       "default": "./dist/navigation.js"
+    },
+    "./layout": {
+      "types": "./declarations/layout.d.ts",
+      "default": "./dist/layout.js"
     },
     "./disclosure": {
       "types": "./declarations/disclosure.d.ts",

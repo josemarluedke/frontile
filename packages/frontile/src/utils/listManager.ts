@@ -118,6 +118,13 @@ class ListItem {
     return this.isDisabledMirror;
   }
 
+  /**
+   * Disabled by the item itself (`setupItem`'s `isDisabled`), on top of the
+   * manager's `disabledKeys`. Fixed at registration like `item`: a change
+   * re-runs `setupItem`, which registers a fresh item.
+   */
+  isDisabledByItem = false;
+
   constructor(
     el: HTMLLIElement | HTMLOptionElement,
     args: ListItemRegistration
@@ -460,7 +467,7 @@ class ListManager {
     for (let i = 0; i < this.#items.length; i++) {
       const item = this.#items[i] as ListItem;
       item.isSelected = this.isKeySelected(item.key);
-      item.isDisabled = this.isKeyDisabled(item.key);
+      item.isDisabled = item.isDisabledByItem || this.isKeyDisabled(item.key);
     }
 
     // Callbacks are replaced whenever the caller *mentions* them, rather than
@@ -763,7 +770,7 @@ class ListManager {
     (
       el: HTMLLIElement | HTMLOptionElement,
       _: unknown[],
-      args: Pick<ListItemArgs, 'key' | 'textValue' | 'item'> & {
+      args: Pick<ListItemArgs, 'key' | 'textValue' | 'item' | 'isDisabled'> & {
         onRegister?: (item: ListItem) => void;
         disableEvents?: boolean;
       }
@@ -803,10 +810,13 @@ class ListManager {
         textValue: textValue || '',
         item: args.item,
         isActive: false,
-        isDisabled: this.isKeyDisabled(args.key),
+        isDisabled: Boolean(args.isDisabled) || this.isKeyDisabled(args.key),
         isSelected: this.isKeySelected(args.key)
       });
       const item = this.at(el);
+      if (item) {
+        item.isDisabledByItem = Boolean(args.isDisabled);
+      }
       if (item && typeof args.onRegister === 'function') {
         args.onRegister(item);
       }
