@@ -127,7 +127,8 @@ export default class PlatformShell extends Component {
     <AppLayout
       @variant="attached"
       @mobileNav="bottom"
-      @scrollMode="page"
+      @scrollMode="content"
+      class="h-full"
       as |layout|
     >
       <layout.Sidebar
