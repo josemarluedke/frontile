@@ -597,8 +597,15 @@ You can also use TailwindCSS classes to customize even further.
 ```gts preview
 import { Chip } from 'frontile';
 
+const noop = (): void => {};
+
 <template>
-  <Chip @variant='outline' @color='primary' @class='px-20 py-2 italic'>
+  <Chip
+    @variant='outline'
+    @color='primary'
+    @class='px-20 py-2 italic'
+    @onPress={{noop}}
+  >
     Chip
   </Chip>
 </template>
