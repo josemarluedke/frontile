@@ -6,6 +6,7 @@ import { resolveThemes, resolveConfig } from './plugin/resolve';
 import { modalSizes, drawerSizes } from './plugin/overlays';
 import { registerPowerSelectComponents } from './plugin/power-select';
 import { addTransitions } from './plugin/transitions';
+import { inDarkContext } from './plugin/theme-context';
 import type { PluginConfig } from './types';
 export { swapColorValues } from './colors/util';
 export { safelist } from './plugin/safelist';
@@ -52,7 +53,7 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
         '.checked-bg-radio:checked': {
           backgroundImage: `url("${svgToDataUri(radioIconLight)}")`
         },
-        '.dark .checked-bg-radio:checked': {
+        [inDarkContext('.checked-bg-radio:checked')]: {
           backgroundImage: `url("${svgToDataUri(radioIconDark)}")`
         },
         '.divider-sketch': {

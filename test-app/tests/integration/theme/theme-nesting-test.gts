@@ -11,6 +11,8 @@ import { render, find } from '@ember/test-helpers';
 // them):
 //   token probe:   <div class="bg-surface-canvas" data-probe>
 //   variant probe: <div class="bg-neutral-subtle dark:bg-danger" data-vprobe>
+//   radio probe:   <input type="radio" class="checked-bg-radio" checked>
+//   power-select:  <div class="ember-power-select-trigger">
 
 function style(selector: string): CSSStyleDeclaration {
   const el = find(selector);
@@ -460,6 +462,146 @@ module('Integration | theme nesting', function (hooks) {
     assert.notStrictEqual(
       bg('[data-case] [data-dprobe]'),
       bg('[data-opposite] [data-dprobe]')
+    );
+  });
+
+  test('dark radio icon does not leak into a nested light', async function (assert) {
+    await render(
+      <template>
+        <div class="dark" data-case>
+          <div class="light">
+            <input
+              type="radio"
+              class="checked-bg-radio"
+              checked
+              data-radio
+              aria-label="case"
+            />
+          </div>
+        </div>
+        <div class="light" data-ref>
+          <input
+            type="radio"
+            class="checked-bg-radio"
+            checked
+            data-radio
+            aria-label="ref"
+          />
+        </div>
+        <div class="dark" data-opposite>
+          <input
+            type="radio"
+            class="checked-bg-radio"
+            checked
+            data-radio
+            aria-label="opposite"
+          />
+        </div>
+      </template>
+    );
+
+    const image = (s: string) => style(s).backgroundImage;
+    assert.strictEqual(
+      image('[data-case] [data-radio]'),
+      image('[data-ref] [data-radio]')
+    );
+    assert.notStrictEqual(
+      image('[data-case] [data-radio]'),
+      image('[data-opposite] [data-radio]')
+    );
+  });
+
+  test('dark radio icon applies inside a nested dark', async function (assert) {
+    await render(
+      <template>
+        <div class="light" data-case>
+          <div class="dark">
+            <input
+              type="radio"
+              class="checked-bg-radio"
+              checked
+              data-radio
+              aria-label="case"
+            />
+          </div>
+        </div>
+        <div class="dark" data-ref>
+          <input
+            type="radio"
+            class="checked-bg-radio"
+            checked
+            data-radio
+            aria-label="ref"
+          />
+        </div>
+        <div class="light" data-opposite>
+          <input
+            type="radio"
+            class="checked-bg-radio"
+            checked
+            data-radio
+            aria-label="opposite"
+          />
+        </div>
+      </template>
+    );
+
+    const image = (s: string) => style(s).backgroundImage;
+    assert.strictEqual(
+      image('[data-case] [data-radio]'),
+      image('[data-ref] [data-radio]')
+    );
+    assert.notStrictEqual(
+      image('[data-case] [data-radio]'),
+      image('[data-opposite] [data-radio]')
+    );
+  });
+
+  test('dark power-select surface does not leak into a nested light', async function (assert) {
+    await render(
+      <template>
+        <div class="dark" data-case>
+          <div class="light">
+            <div class="ember-power-select-trigger" data-ps></div>
+          </div>
+        </div>
+        <div class="light" data-ref>
+          <div class="ember-power-select-trigger" data-ps></div>
+        </div>
+        <div class="dark" data-opposite>
+          <div class="ember-power-select-trigger" data-ps></div>
+        </div>
+      </template>
+    );
+
+    assert.strictEqual(bg('[data-case] [data-ps]'), bg('[data-ref] [data-ps]'));
+    assert.notStrictEqual(
+      bg('[data-case] [data-ps]'),
+      bg('[data-opposite] [data-ps]')
+    );
+  });
+
+  test('dark power-select surface applies inside a nested dark', async function (assert) {
+    await render(
+      <template>
+        <div class="light" data-case>
+          <div class="dark">
+            <div class="ember-power-select-trigger" data-ps></div>
+          </div>
+        </div>
+        <div class="dark" data-ref>
+          <div class="ember-power-select-trigger" data-ps></div>
+        </div>
+        <div class="light" data-opposite>
+          <div class="ember-power-select-trigger" data-ps></div>
+        </div>
+      </template>
+    );
+
+    assert.strictEqual(bg('[data-case] [data-ps]'), bg('[data-ref] [data-ps]'));
+    assert.notStrictEqual(
+      bg('[data-case] [data-ps]'),
+      bg('[data-opposite] [data-ps]')
     );
   });
 

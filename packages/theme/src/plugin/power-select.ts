@@ -1,5 +1,6 @@
 import powerSelectPlugin from 'tailwindcss-ember-power-select';
 import type { PluginAPI } from './types';
+import { inDarkContext } from './theme-context';
 
 function registerPowerSelectComponents(
   addComponents: PluginAPI['addComponents']
@@ -15,12 +16,14 @@ function registerPowerSelectComponents(
     // Dark-mode surfaces for the deprecated forms-legacy components. These
     // used to reference the numbered `--default-*` variables, which went away
     // with the color scale in v0.18 — leaving the dropdown transparent and its
-    // options unreadable. Mapped onto the semantic tokens instead.
-    '.dark .ember-power-select-search-input, .dark .ember-power-select-trigger, .dark .ember-power-select-dropdown':
-      {
-        backgroundColor: `var(--color-surface-input)`,
-        color: `var(--color-neutral-bolder)`
-      }
+    // options unreadable. Mapped onto the semantic tokens instead. Resolved
+    // from the nearest themed ancestor, so a nested `.light` stays light.
+    [inDarkContext(
+      '.ember-power-select-search-input, .ember-power-select-trigger, .ember-power-select-dropdown'
+    )]: {
+      backgroundColor: `var(--color-surface-input)`,
+      color: `var(--color-neutral-bolder)`
+    }
   });
   powerSelectPlugin.registerComponents(
     {
