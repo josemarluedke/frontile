@@ -6,6 +6,11 @@ export interface WorkbenchPanesSignature {
   Args: {
     /** Adds a third pane: `.theme-inverse` inside a `.light` pane. */
     inverse?: boolean;
+    /**
+     * Stack the panes at every width. For content too wide for a third of
+     * the page, such as a state matrix.
+     */
+    stacked?: boolean;
   };
   Blocks: { default: [scheme: WorkbenchScheme] };
   Element: HTMLDivElement;
@@ -14,12 +19,13 @@ export interface WorkbenchPanesSignature {
 /**
  * Renders its block once per color scheme. Each pane is its own themed
  * ancestor, so the panes hold their scheme whatever the page's root scheme.
- * Side by side at `lg`, stacked below it.
+ * Side by side at `lg`, stacked below it (or always, with `@stacked`).
  */
 const WorkbenchPanes: TOC<WorkbenchPanesSignature> = <template>
   <div
     data-workbench-panes
-    class="grid gap-4 {{if @inverse 'lg:grid-cols-3' 'lg:grid-cols-2'}}"
+    class="grid gap-4
+      {{unless @stacked (if @inverse 'lg:grid-cols-3' 'lg:grid-cols-2')}}"
     ...attributes
   >
     <div

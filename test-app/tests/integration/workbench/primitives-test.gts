@@ -302,6 +302,31 @@ module('Integration | workbench | primitives', function (hooks) {
       );
     });
 
+    test('stacked panes drop the side-by-side columns', async function (assert) {
+      await render(
+        <template>
+          <WorkbenchPanes @inverse={{true}} data-test-default as |scheme|>
+            {{scheme}}
+          </WorkbenchPanes>
+          <WorkbenchPanes @inverse={{true}} @stacked={{true}} data-test-stacked>
+            x
+          </WorkbenchPanes>
+        </template>
+      );
+      const cls = (s: string) => el(s).className;
+      assert.true(
+        /lg:grid-cols-/.test(cls('[data-test-default]')),
+        'default panes sit side by side at lg'
+      );
+      assert.false(
+        /lg:grid-cols-/.test(cls('[data-test-stacked]')),
+        'stacked panes have no lg:grid-cols- class'
+      );
+      assert
+        .dom('[data-test-stacked] [data-workbench-pane]')
+        .exists({ count: 3 }, 'still three panes');
+    });
+
     test('panes keep light under a dark root', async function (assert) {
       document.documentElement.classList.add('dark');
 
@@ -458,6 +483,34 @@ module('Integration | workbench | primitives', function (hooks) {
       assert.strictEqual(m('height'), '20px');
 
       assert.dom('[data-test-plain] [data-measure]').doesNotExist();
+    });
+
+    test('specimen shows a pill radius as full', async function (assert) {
+      await render(
+        <template>
+          <WorkbenchSpecimen @label="Pill" @measure={{true}} data-test-pill>
+            {{! template-lint-disable no-inline-styles }}
+            <div style="border-radius: 9999px; height: 20px;">x</div>
+          </WorkbenchSpecimen>
+          <WorkbenchSpecimen @label="Huge" @measure={{true}} data-test-huge>
+            <div class="rounded-full">x</div>
+          </WorkbenchSpecimen>
+          <WorkbenchSpecimen @label="Below" @measure={{true}} data-test-below>
+            {{! template-lint-disable no-inline-styles }}
+            <div style="border-radius: 9998px;">x</div>
+          </WorkbenchSpecimen>
+        </template>
+      );
+
+      const radius = (scope: string) =>
+        text(`${scope} [data-measure="borderRadius"]`);
+      assert.strictEqual(radius('[data-test-pill]'), 'full', '9999px');
+      assert.strictEqual(radius('[data-test-huge]'), 'full', 'rounded-full');
+      assert.strictEqual(
+        radius('[data-test-below]'),
+        '9998px',
+        'below stays raw'
+      );
     });
   });
 });

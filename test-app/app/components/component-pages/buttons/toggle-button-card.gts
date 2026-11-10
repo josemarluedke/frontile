@@ -34,8 +34,7 @@ const SELECTION = [
         @title={{selection.title}}
         @subtitle="Colors by state"
       >
-        {{! A five-column matrix overflows a third of the page, so stack the panes. }}
-        <WorkbenchPanes @inverse={{true}} class="lg:grid-cols-1!">
+        <WorkbenchPanes @inverse={{true}} @stacked={{true}}>
           <WorkbenchStateMatrix
             @rows={{TOGGLE_BUTTON_COLORS}}
             @rowLabel="Color"

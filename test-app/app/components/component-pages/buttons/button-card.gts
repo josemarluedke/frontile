@@ -38,8 +38,7 @@ const SECTIONS = [
         @title={{color}}
         @subtitle="Variants by state"
       >
-        {{! A five-column matrix overflows a third of the page, so stack the panes. }}
-        <WorkbenchPanes @inverse={{true}} class="lg:grid-cols-1!">
+        <WorkbenchPanes @inverse={{true}} @stacked={{true}}>
           <WorkbenchStateMatrix
             @rows={{BUTTON_VARIANTS}}
             data-color={{color}}

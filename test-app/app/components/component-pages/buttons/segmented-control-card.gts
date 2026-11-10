@@ -25,7 +25,7 @@ import {
     <WorkbenchSection @id="segmented-control-sizes" @title="Sizes">
       <div class="flex flex-wrap items-start gap-6">
         {{#each SEGMENTED_CONTROL_SIZES as |size|}}
-          <WorkbenchSpecimen @label={{size}} @measure={{true}}>
+          <WorkbenchSpecimen @label={{size}}>
             <SegmentedControl
               @size={{size}}
               @defaultValue="week"

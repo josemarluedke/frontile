@@ -31,6 +31,13 @@ interface Metric {
   value: string;
 }
 
+/** Pill radii (Tailwind's `rounded-full` computes to ~1.7e7px) read as `full`. */
+const FULL_RADIUS_PX = 9999;
+
+function radius(value: string): string {
+  return parseFloat(value) >= FULL_RADIUS_PX ? 'full' : value;
+}
+
 function measure(el: Element): Metric[] {
   const type = measureType(el);
   const style = getComputedStyle(el);
@@ -41,7 +48,7 @@ function measure(el: Element): Metric[] {
     { key: 'letterSpacing', name: 'letter-spacing', value: type.letterSpacing },
     { key: 'padding', name: 'padding', value: style.padding },
     { key: 'gap', name: 'gap', value: style.gap },
-    { key: 'borderRadius', name: 'radius', value: style.borderRadius },
+    { key: 'borderRadius', name: 'radius', value: radius(style.borderRadius) },
     { key: 'height', name: 'height', value: style.height }
   ];
 }
