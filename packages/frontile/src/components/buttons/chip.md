@@ -144,9 +144,9 @@ export default class Example extends Component {
 }
 ```
 
-On a link body, `@isSelected` changes the color only. It does not set
-`aria-current`, and `...attributes` land on the chip's wrapper and not on the
-anchor, so a selected link chip is not announced as selected.
+A selected link body gets `aria-current="true"` instead, since a link has no
+pressed state. It is rendered only while `@isSelected` is true: a link that is
+not selected has no `aria-current` at all.
 
 ## Hover and focus
 
@@ -340,8 +340,9 @@ A Chip is always a pill, which signals that it can be acted on.
 
 ## Chip with Dots
 
-`@withDot` adds a small color-tinted dot before the content — useful when the
-chip stands for a status and the color needs to read at a glance.
+`@withDot` adds a small color-tinted dot before the content, so the chip's color
+reads at a glance in a row of filters or tags. For a status on its own, use a
+[Badge](/docs/components/status/badge).
 
 ```gts preview collapsible
 import { Chip } from 'frontile';
@@ -603,7 +604,7 @@ const noop = (): void => {};
   <Chip
     @variant='outline'
     @color='primary'
-    @class='px-20 py-2 italic'
+    @class='italic shadow-md'
     @onPress={{noop}}
   >
     Chip
@@ -613,6 +614,12 @@ const noop = (): void => {};
 
 The argument `@class` overrides and merges TailwindCSS class names, while the HTML
 attribute `class` just appends the class names passed in.
+
+Both land on the chip's wrapper, not on its body. Leave padding alone there: the
+body carries the chip's padding so that the whole pill is clickable, and padding
+added to the wrapper puts a rim around the body that does not respond to the
+pointer. There is no per-slot class argument yet, so to change the padding, change
+`@size` or the theme.
 
 ## Accessibility
 
@@ -628,8 +635,8 @@ link or another button.
   link body. `Backspace` or `Delete` on a focused body or close button calls
   `@onClose` when it is set and the chip is not disabled, and does nothing
   otherwise.
-- **Selected.** `@isSelected` gives a button body `aria-pressed`. A link body only
-  changes color, and sets no `aria-current`.
+- **Selected.** `@isSelected` gives a button body `aria-pressed`, and a selected
+  link body `aria-current="true"`, so both are announced as selected.
 - **Disabled.** A disabled button body is `disabled`. A disabled link has no
   `href` and gets `aria-disabled="true"`, so it is announced as disabled but is
   not a link any more.

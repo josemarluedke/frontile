@@ -100,9 +100,11 @@ interface ChipSignature {
 
     /**
      * Marks the chip as selected (a toggled filter, say): it holds its
-     * pressed fill, and a button body gets `aria-pressed`. Leave it
-     * `undefined` for a chip that is not a toggle, so no `aria-pressed` is
-     * rendered at all.
+     * pressed fill and is announced as selected. A button body gets
+     * `aria-pressed` (`"true"` or `"false"`); a link body gets
+     * `aria-current="true"` while selected and no `aria-current` otherwise.
+     * Leave it `undefined` for a chip that is not a toggle, so no
+     * `aria-pressed` is rendered at all.
      */
     isSelected?: boolean;
 
@@ -245,12 +247,31 @@ class Chip extends Component<ChipSignature> {
   }
 
   /**
+   * `aria-current` for a link body: set only while selected. A link has no
+   * "not selected" value the way `aria-pressed` has `false`.
+   */
+  get ariaCurrent(): 'true' | undefined {
+    return this.args.isSelected === true ? 'true' : undefined;
+  }
+
+  /**
    * Backspace/Delete on a focused body or close button calls `@onClose`. It
    * prevents the default only when it actually closes, so a chip that is not
-   * removable leaves those keys alone.
+   * removable leaves those keys alone. A held-down key (`repeat`) or a key
+   * pressed with a modifier is left alone too: holding Backspace must not
+   * remove a row of chips, and modified keys belong to the browser or app.
    */
   handleRemoveKey = (event: KeyboardEvent): void => {
     if (event.key !== 'Backspace' && event.key !== 'Delete') {
+      return;
+    }
+    if (
+      event.repeat ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey ||
+      event.shiftKey
+    ) {
       return;
     }
     if (this.isDisabled || typeof this.args.onClose !== 'function') {
@@ -336,6 +357,7 @@ class Chip extends Component<ChipSignature> {
           @route={{@route}}
           @models={{this.models}}
           @query={{this.query}}
+          aria-current={{this.ariaCurrent}}
           class={{this.classNames.body}}
           data-part="body"
           {{on "keydown" this.handleRemoveKey}}
@@ -351,6 +373,7 @@ class Chip extends Component<ChipSignature> {
           {{! template-lint-disable no-unsupported-role-attributes }}
           href={{unless this.isDisabled @href}}
           aria-disabled={{if this.isDisabled "true"}}
+          aria-current={{this.ariaCurrent}}
           class={{this.classNames.body}}
           data-part="body"
           {{on "keydown" this.handleRemoveKey}}

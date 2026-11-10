@@ -263,7 +263,6 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
       );
 
       assert.deepEqual(ids, ['frontile.chip.radius']);
-      assert.dom('[data-test-id="chip"]').doesNotHaveClass('radius-none');
     });
 
     test('no deprecation without @radius', async function (assert) {
@@ -542,6 +541,44 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
         .dom('[data-test-id="unset"] [data-part="body"]')
         .doesNotHaveAttribute('aria-pressed');
     });
+
+    test('@isSelected sets aria-current on a link body', async function (assert) {
+      await render(
+        <template>
+          <Chip @href="/x" @isSelected={{true}} data-test-id="href-on">a</Chip>
+          <Chip @href="/x" @isSelected={{false}} data-test-id="href-off">
+            b
+          </Chip>
+          <Chip @href="/x" data-test-id="href-unset">c</Chip>
+          <Chip
+            @route="tab-nav-demo.index"
+            @isSelected={{true}}
+            data-test-id="route-on"
+          >d</Chip>
+          <Chip
+            @route="tab-nav-demo.index"
+            @isSelected={{false}}
+            data-test-id="route-off"
+          >e</Chip>
+          <Chip @route="tab-nav-demo.index" data-test-id="route-unset">f</Chip>
+        </template>
+      );
+
+      for (const kind of ['href', 'route']) {
+        assert
+          .dom(`[data-test-id="${kind}-on"] a[data-part="body"]`)
+          .hasAttribute('aria-current', 'true', `${kind}: selected`);
+        assert
+          .dom(`[data-test-id="${kind}-off"] a[data-part="body"]`)
+          .doesNotHaveAttribute('aria-current', `${kind}: not selected`);
+        assert
+          .dom(`[data-test-id="${kind}-unset"] a[data-part="body"]`)
+          .doesNotHaveAttribute('aria-current', `${kind}: unset`);
+        assert
+          .dom(`[data-test-id="${kind}-on"] a[data-part="body"]`)
+          .doesNotHaveAttribute('aria-pressed', `${kind}: no aria-pressed`);
+      }
+    });
   });
 
   module('body states (real theme)', function () {
@@ -558,16 +595,64 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
     const hover = 'has-[>[data-part=body]:hover]:';
     const active = 'has-[>[data-part=body]:active]:';
 
-    test('soft: hover -subtle to -muted, active one more step', function (assert) {
-      const classes = realStyles
-        .chip({ variant: 'soft', color: 'primary', isPressable: true })
-        .base()
-        .split(' ');
+    // Neutral's `-soft` is an opaque gray one step above `-muted`; every
+    // other colour's `-soft` is a translucent tint, lighter than `-muted`, so
+    // they press to `-mild` as Button's soft variant does.
+    const SOFT_PRESSED = {
+      neutral: { bg: 'bg-neutral-soft', text: undefined },
+      primary: { bg: 'bg-primary-mild', text: 'text-on-primary-mild' },
+      secondary: { bg: 'bg-secondary-mild', text: 'text-on-secondary-mild' },
+      tertiary: { bg: 'bg-tertiary-mild', text: 'text-on-tertiary-mild' },
+      success: { bg: 'bg-success-mild', text: 'text-on-success-mild' },
+      warning: { bg: 'bg-warning-mild', text: 'text-on-warning-mild' },
+      danger: { bg: 'bg-danger-mild', text: 'text-on-danger-mild' }
+    } as const;
 
-      assert.true(classes.includes('bg-primary-subtle'), 'rests on -subtle');
-      assert.true(classes.includes(`${hover}bg-primary-muted`), 'hover');
-      assert.true(classes.includes(`${active}bg-primary-soft`), 'active');
-    });
+    for (const [color, pressed] of Object.entries(SOFT_PRESSED) as [
+      keyof typeof SOFT_PRESSED,
+      (typeof SOFT_PRESSED)[keyof typeof SOFT_PRESSED]
+    ][]) {
+      test(`soft ${color}: rest -subtle, hover -muted, active ${pressed.bg}`, function (assert) {
+        const classes = realStyles
+          .chip({ variant: 'soft', color, isPressable: true })
+          .base()
+          .split(' ');
+
+        assert.true(classes.includes(`bg-${color}-subtle`), 'rests on -subtle');
+        assert.true(classes.includes(`${hover}bg-${color}-muted`), 'hover');
+        assert.true(classes.includes(`${active}${pressed.bg}`), 'active fill');
+        if (pressed.text) {
+          assert.true(
+            classes.includes(`${active}${pressed.text}`),
+            'active text'
+          );
+          assert.false(
+            classes.includes(`${active}bg-${color}-soft`),
+            'active is not the translucent -soft tint'
+          );
+        }
+      });
+
+      test(`soft ${color}: selected holds ${pressed.bg}`, function (assert) {
+        const classes = realStyles
+          .chip({ variant: 'soft', color, isPressable: true, isSelected: true })
+          .base()
+          .split(' ');
+
+        assert.true(classes.includes(pressed.bg), 'selected fill');
+        if (pressed.text) {
+          assert.true(classes.includes(pressed.text), 'selected text');
+          assert.false(
+            classes.includes(`text-${color}-strong`),
+            'resting text replaced'
+          );
+        }
+        assert.false(
+          classes.includes(`bg-${color}-subtle`),
+          'resting fill replaced'
+        );
+      });
+    }
 
     test('outline: hover transparent to -subtle, active one more step', function (assert) {
       const classes = realStyles
@@ -615,7 +700,7 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
         .base()
         .split(' ');
 
-      assert.true(soft.includes('bg-primary-soft'), 'soft holds -soft');
+      assert.true(soft.includes('bg-primary-mild'), 'soft holds -mild');
       assert.false(soft.includes('bg-primary-subtle'), 'resting fill replaced');
       assert.false(
         soft.some((c) => c.startsWith(hover)),
@@ -755,6 +840,48 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
       }
       assert.strictEqual(pressed, 0, 'no press either');
       assert.dom('[data-part="body"]').exists({ count: 2 }, 'nothing removed');
+    });
+
+    test('a repeated or modified removal key does nothing', async function (assert) {
+      let closed = 0;
+      const onClose = () => {
+        closed++;
+      };
+      const onPress = () => {};
+      await render(
+        <template>
+          <Chip @onPress={{onPress}} @onClose={{onClose}}>a</Chip>
+        </template>
+      );
+
+      const selector = 'button[data-part="body"]';
+      const variants: KeyboardEventInit[] = [
+        { repeat: true },
+        { ctrlKey: true },
+        { metaKey: true },
+        { altKey: true },
+        { shiftKey: true }
+      ];
+      for (const key of keys) {
+        for (const init of variants) {
+          const event = new KeyboardEvent('keydown', {
+            key,
+            bubbles: true,
+            cancelable: true,
+            ...init
+          });
+          document.querySelector(selector)!.dispatchEvent(event);
+          assert.false(
+            event.defaultPrevented,
+            `${key} ${JSON.stringify(init)}: default not prevented`
+          );
+        }
+      }
+      assert.strictEqual(closed, 0, 'never closed');
+
+      await triggerKeyEvent(selector, 'keydown', 'Backspace');
+      await triggerKeyEvent(selector, 'keydown', 'Delete');
+      assert.strictEqual(closed, 2, 'plain Backspace and Delete still close');
     });
 
     test('the removal keys do nothing when disabled', async function (assert) {

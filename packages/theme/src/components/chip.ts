@@ -333,10 +333,18 @@ const chip = tv({
     // fill on the body instead would tint only part of the pill, since the
     // base's padding and the close button sit outside it.
     //
-    // Steps follow the spec's States table and Button's ladder: soft
-    // `-subtle` -> `-muted` -> `-soft`; outline transparent -> `-subtle` ->
-    // `-muted`; solid DEFAULT -> `-mild` -> `-firm` (neutral, which rests on
-    // `-bolder`, steps down to `-strong` then `-firm`, as Button's does).
+    // Steps (rest -> hover -> active):
+    //
+    // - soft: `-subtle` -> `-muted` -> `-mild` with `text-on-*-mild`, the
+    //   active step Button's soft variant uses. Not `-soft`: for every colour
+    //   but neutral that level is a translucent tint, lighter on the page than
+    //   `-muted`, so pressing would lighten the chip. Neutral's `-soft` is an
+    //   opaque gray one step above `-muted` (gray 50 -> 100 -> 200 in light,
+    //   900 -> 800 -> 700 in dark), so neutral keeps it and its resting text.
+    // - outline: transparent -> `-subtle` -> `-muted`.
+    // - solid: DEFAULT -> `-mild` -> `-firm` (neutral, which rests on
+    //   `-bolder`, steps down to `-strong` then `-firm`, as Button's does).
+    //
     // A selected chip holds the active fill and does not respond to hover.
     {
       variant: 'solid',
@@ -416,7 +424,7 @@ const chip = tv({
       isPressable: true,
       isSelected: false,
       class: {
-        base: 'has-[>[data-part=body]:hover]:bg-primary-muted has-[>[data-part=body]:active]:bg-primary-soft'
+        base: 'has-[>[data-part=body]:hover]:bg-primary-muted has-[>[data-part=body]:active]:bg-primary-mild has-[>[data-part=body]:active]:text-on-primary-mild'
       }
     },
     {
@@ -425,7 +433,7 @@ const chip = tv({
       isPressable: true,
       isSelected: false,
       class: {
-        base: 'has-[>[data-part=body]:hover]:bg-secondary-muted has-[>[data-part=body]:active]:bg-secondary-soft'
+        base: 'has-[>[data-part=body]:hover]:bg-secondary-muted has-[>[data-part=body]:active]:bg-secondary-mild has-[>[data-part=body]:active]:text-on-secondary-mild'
       }
     },
     {
@@ -434,7 +442,7 @@ const chip = tv({
       isPressable: true,
       isSelected: false,
       class: {
-        base: 'has-[>[data-part=body]:hover]:bg-tertiary-muted has-[>[data-part=body]:active]:bg-tertiary-soft'
+        base: 'has-[>[data-part=body]:hover]:bg-tertiary-muted has-[>[data-part=body]:active]:bg-tertiary-mild has-[>[data-part=body]:active]:text-on-tertiary-mild'
       }
     },
     {
@@ -443,7 +451,7 @@ const chip = tv({
       isPressable: true,
       isSelected: false,
       class: {
-        base: 'has-[>[data-part=body]:hover]:bg-success-muted has-[>[data-part=body]:active]:bg-success-soft'
+        base: 'has-[>[data-part=body]:hover]:bg-success-muted has-[>[data-part=body]:active]:bg-success-mild has-[>[data-part=body]:active]:text-on-success-mild'
       }
     },
     {
@@ -452,7 +460,7 @@ const chip = tv({
       isPressable: true,
       isSelected: false,
       class: {
-        base: 'has-[>[data-part=body]:hover]:bg-warning-muted has-[>[data-part=body]:active]:bg-warning-soft'
+        base: 'has-[>[data-part=body]:hover]:bg-warning-muted has-[>[data-part=body]:active]:bg-warning-mild has-[>[data-part=body]:active]:text-on-warning-mild'
       }
     },
     {
@@ -461,7 +469,7 @@ const chip = tv({
       isPressable: true,
       isSelected: false,
       class: {
-        base: 'has-[>[data-part=body]:hover]:bg-danger-muted has-[>[data-part=body]:active]:bg-danger-soft'
+        base: 'has-[>[data-part=body]:hover]:bg-danger-muted has-[>[data-part=body]:active]:bg-danger-mild has-[>[data-part=body]:active]:text-on-danger-mild'
       }
     },
     {
@@ -581,37 +589,37 @@ const chip = tv({
       variant: 'soft',
       color: 'primary',
       isSelected: true,
-      class: { base: 'bg-primary-soft' }
+      class: { base: 'bg-primary-mild text-on-primary-mild' }
     },
     {
       variant: 'soft',
       color: 'secondary',
       isSelected: true,
-      class: { base: 'bg-secondary-soft' }
+      class: { base: 'bg-secondary-mild text-on-secondary-mild' }
     },
     {
       variant: 'soft',
       color: 'tertiary',
       isSelected: true,
-      class: { base: 'bg-tertiary-soft' }
+      class: { base: 'bg-tertiary-mild text-on-tertiary-mild' }
     },
     {
       variant: 'soft',
       color: 'success',
       isSelected: true,
-      class: { base: 'bg-success-soft' }
+      class: { base: 'bg-success-mild text-on-success-mild' }
     },
     {
       variant: 'soft',
       color: 'warning',
       isSelected: true,
-      class: { base: 'bg-warning-soft' }
+      class: { base: 'bg-warning-mild text-on-warning-mild' }
     },
     {
       variant: 'soft',
       color: 'danger',
       isSelected: true,
-      class: { base: 'bg-danger-soft' }
+      class: { base: 'bg-danger-mild text-on-danger-mild' }
     },
     {
       variant: 'outline',
