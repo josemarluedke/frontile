@@ -25,7 +25,11 @@
    Specificity stays at (0,4,0) for the variant, (0,5,0) with the utility, as
    before: the `:not()` depth guard counts four classes and the enumeration
    sits in `:where()`. A `dark:` utility therefore wins and loses against the
-   same compound variants as it did. */
+   same compound variants as it did.
+
+   `plugin/theme-context.ts` repeats the `dark` enumeration for the plugin's
+   `.dark <selector>` component rules (radio icon, power-select surfaces);
+   change both together. */
 @custom-variant dark (&:not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *):where(
   :is(.dark *):not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *),
   :is(:is(.light, .dark, .theme-inverse) .dark *, .light .theme-inverse *):not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *),
