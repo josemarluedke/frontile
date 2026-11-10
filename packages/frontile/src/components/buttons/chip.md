@@ -5,9 +5,10 @@ imports:
 
 # Chip
 
-Chips are compact elements that represent an input, attribute, or action — a
-filter that has been applied, a tag on a record, a value selected in a
-multi-select field.
+Chips are compact, interactive elements — a filter that has been applied, a
+removable value in a multi-select field, an input-like token. For a status, a tag
+or a count that does nothing when clicked, use a
+[Badge](/docs/components/status/badge).
 
 ## Import
 
@@ -20,8 +21,10 @@ import { Chip } from 'frontile';
 ```gts preview
 import { Chip } from 'frontile';
 
+const noop = (): void => {};
+
 <template>
-  <Chip>Chip</Chip>
+  <Chip @onClose={{noop}} @closeButtonTitle='Remove Chip'>Chip</Chip>
 </template>
 ```
 
@@ -142,6 +145,10 @@ const noop = (): void => {};
 Every Chip is pressable, selectable or closable. A chip that is none of those is a
 [Badge](/docs/components/status/badge): use Badge for a status, a count or any other
 label that does not respond to the user.
+
+Until pressable and selectable chips ship, a Chip's interaction is its close button.
+The variant, color and size demos on this page omit it only to isolate the property
+being shown.
 
 A Chip is always a pill. Its close button shows a pointer cursor, since it is the one
 part of a Chip that responds to a click.
@@ -392,10 +399,10 @@ A `Chip` is a `<div>` holding text — it has no role of its own, because a chip
 not one thing. What it means depends on what you are using it for, and that
 determines what you owe it:
 
-- **As a label or attribute** (a status, a tag, a count) it is ordinary text.
-  Nothing extra is needed. Do not rely on `@color` or `@withDot` alone to carry
-  the meaning: `@color='danger'` reads as "failed" to a sighted user and as
-  nothing at all to a screen reader, so keep the word in the content.
+- **Color and dots never carry meaning alone.** `@color='danger'` reads as
+  "failed" to a sighted user and as nothing at all to a screen reader, so keep
+  the word in the content. For a plain status label, use a
+  [Badge](/docs/components/status/badge).
 - **As a removable value** — with `@onClose` — the close button is the only
   interactive part. It is a real `<button>`, reached with `Tab` and activated
   with `Enter` or `Space`, and it needs a name that identifies the chip; see
