@@ -10,7 +10,8 @@ import {
   parseColor,
   toHex
 } from 'test-app/utils/workbench/color';
-import { backdropColor } from 'test-app/utils/workbench/css';
+import { backdropColor, readVar } from 'test-app/utils/workbench/css';
+import { subscribe } from 'test-app/utils/workbench/root-theme-observer';
 
 export interface WorkbenchSwatchSignature {
   Args: {
@@ -47,6 +48,7 @@ export const LOW_CONTRAST_THRESHOLD = 4.5;
 export default class WorkbenchSwatch extends Component<WorkbenchSwatchSignature> {
   @tracked hex = '';
   @tracked ratio: number | null = null;
+  @tracked onTokenMissing = false;
 
   get onToken(): string {
     return this.args.onToken ?? `on-${this.args.token}`;
@@ -96,7 +98,10 @@ export default class WorkbenchSwatch extends Component<WorkbenchSwatchSignature>
     );
     const fg = compositeOver(parseColor(getComputedStyle(sample).color), bg);
     this.hex = toHex(bg);
-    this.ratio = contrastRatio(fg, bg);
+    // Without the on-token the sample inherits unrelated text color, so a
+    // ratio against it would be misleading.
+    this.onTokenMissing = readVar(sample, `--color-${this.onToken}`) === '';
+    this.ratio = this.onTokenMissing ? null : contrastRatio(fg, bg);
   }
 
   measure = modifier(
@@ -110,12 +115,7 @@ export default class WorkbenchSwatch extends Component<WorkbenchSwatchSignature>
         schedule('afterRender', this, this.read, root);
       };
       run();
-      const observer = new MutationObserver(run);
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class']
-      });
-      return () => observer.disconnect();
+      return subscribe(run);
     }
   );
 
@@ -125,6 +125,7 @@ export default class WorkbenchSwatch extends Component<WorkbenchSwatchSignature>
       data-token={{@token}}
       data-swatch-hex={{this.hex}}
       data-low-contrast={{if this.isLowContrast "true"}}
+      data-on-token-missing={{if this.onTokenMissing "true"}}
       title="--color-{{@token}} / --color-{{this.onToken}}"
       class="border-neutral-soft flex min-w-0 flex-col overflow-hidden rounded-md border text-xs"
       {{this.measure @token this.onToken}}
