@@ -263,9 +263,14 @@ class NavItem extends Component<NavItemSignature> {
     return this.layout === 'inline' ? 'rail' : 'icon';
   }
 
-  /** Whether the badge renders inside the icon rather than after the label. */
+  /** A badge inside the icon: the stacked and icon layouts. */
   get badgeOnIcon(): boolean {
-    return this.badgePlacement === 'icon';
+    return this.hasBadge && this.badgePlacement === 'icon';
+  }
+
+  /** A badge after the label: every other row. */
+  get badgeAtEnd(): boolean {
+    return this.hasBadge && this.badgePlacement !== 'icon';
   }
 
   get hasShortLabel(): boolean {
@@ -424,11 +429,11 @@ class NavItem extends Component<NavItemSignature> {
               data-part="nav-item-icon"
               class={{this.classes.navItemIcon}}
               aria-hidden="true"
-            ><@icon />{{#if this.badgeOnIcon}}{{#if this.hasBadge}}<span
-                    data-part="nav-item-badge"
-                    class={{this.classes.navItemBadge}}
-                    aria-hidden="true"
-                  >{{this.badgeValue}}</span>{{/if}}{{/if}}</span>
+            ><@icon />{{#if this.badgeOnIcon}}<span
+                  data-part="nav-item-badge"
+                  class={{this.classes.navItemBadge}}
+                  aria-hidden="true"
+                >{{this.badgeValue}}</span>{{/if}}</span>
           {{/if}}
           {{#if this.hasShortLabel}}
             <span
@@ -445,11 +450,11 @@ class NavItem extends Component<NavItemSignature> {
                 data-part="nav-item-badge-label"
                 class={{this.classes.navItemBadgeLabel}}
               >, {{this.badgeText}}</span>{{/if}}</span>
-          {{#if this.hasBadge}}{{#unless this.badgeOnIcon}}<span
-                data-part="nav-item-badge"
-                class={{this.classes.navItemBadge}}
-                aria-hidden="true"
-              >{{this.badgeValue}}</span>{{/unless}}{{/if}}
+          {{#if this.badgeAtEnd}}<span
+              data-part="nav-item-badge"
+              class={{this.classes.navItemBadge}}
+              aria-hidden="true"
+            >{{this.badgeValue}}</span>{{/if}}
         </NavLink>
         <t.Content>{{yield}}</t.Content>
       </Tooltip>

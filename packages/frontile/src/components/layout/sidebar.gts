@@ -195,14 +195,15 @@ class Sidebar extends Component<SidebarSignature> {
     return atEnd !== rtl ? 'right' : 'left';
   }
 
-  /**
-   * Closes the drawer. Also handed to each `Item` while the sidebar is in the
-   * drawer, so picking a destination closes it.
-   */
+  /** Whether the phone drawer is open. */
   get drawerOpen(): boolean {
     return this.args.layout?.state.mobileSidebarOpen ?? false;
   }
 
+  /**
+   * Closes the drawer. Also handed to each `Item` while the sidebar is in the
+   * drawer, so picking a destination closes it.
+   */
   closeDrawer = (): void => {
     this.args.layout?.state.closeMobileSidebar();
   };

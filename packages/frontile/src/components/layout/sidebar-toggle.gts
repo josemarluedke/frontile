@@ -97,10 +97,8 @@ class SidebarToggle extends Component<SidebarToggleSignature> {
     return layout.sidebarId;
   }
 
-  /** In a layout, only while it has a sidebar to toggle. */
   get shown(): boolean {
-    const layout = this.args.layout;
-    return layout ? layout.hasSidebar && !layout.bottomNavMode : true;
+    return this.args.layout?.canToggleSidebar ?? true;
   }
 
   get classNames(): string {

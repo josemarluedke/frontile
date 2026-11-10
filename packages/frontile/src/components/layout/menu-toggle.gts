@@ -74,10 +74,8 @@ class MenuToggle extends Component<MenuToggleSignature> {
     return layout.state.mobileSidebarOpen ? layout.sidebarId : undefined;
   }
 
-  /** In a layout, only while it has a sidebar to open. */
   get shown(): boolean {
-    const layout = this.args.layout;
-    return layout ? layout.hasSidebar && !layout.bottomNavMode : true;
+    return this.args.layout?.canToggleSidebar ?? true;
   }
 
   get classNames(): string {

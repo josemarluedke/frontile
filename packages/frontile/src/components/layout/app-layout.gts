@@ -4,6 +4,7 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { guidFor } from '@ember/object/internals';
 import { schedule } from '@ember/runloop';
+import { isDestroying } from '@ember/destroyable';
 import { modifier } from 'ember-modifier';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import {
@@ -181,6 +182,35 @@ interface AppLayoutSignature {
 }
 
 /**
+ * A part registered with the layout. It is written after render: the parts
+ * that read it may already have rendered in this pass, and writing it
+ * synchronously would trip Glimmer's backtracking assertion.
+ */
+class RegisteredPart<T extends object> {
+  #owner: object;
+  @tracked current?: T;
+
+  constructor(owner: object) {
+    this.#owner = owner;
+  }
+
+  register = (part: T): (() => void) => {
+    schedule('afterRender', () => {
+      if (!isDestroying(this.#owner)) {
+        this.current = part;
+      }
+    });
+    return () => {
+      schedule('afterRender', () => {
+        if (!isDestroying(this.#owner) && this.current === part) {
+          this.current = undefined;
+        }
+      });
+    };
+  };
+}
+
+/**
  * The application shell. Its root is a grid that the yielded parts place
  * themselves in, so they can be written in any order.
  */
@@ -266,63 +296,28 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.asideWatcher.below;
   }
 
-  // The Sidebar registers after render: the toggles that read it may already
-  // have rendered in this pass, and writing it synchronously would trip
-  // Glimmer's backtracking assertion.
-  @tracked registeredSidebar?: RegisteredSidebar;
+  // The Sidebar, BottomNav and Aside register with the layout; see
+  // `RegisteredPart`. The toggles read the Sidebar and Aside, the root the
+  // BottomNav for its bottom row.
+  sidebarPart = new RegisteredPart<RegisteredSidebar>(this);
+  bottomNavPart = new RegisteredPart<object>(this);
+  asidePart = new RegisteredPart<object>(this);
 
-  registerSidebar = (sidebar: RegisteredSidebar): (() => void) => {
-    schedule('afterRender', () => {
-      if (!this.isDestroying) {
-        this.registeredSidebar = sidebar;
-      }
-    });
-    return () => {
-      schedule('afterRender', () => {
-        if (!this.isDestroying && this.registeredSidebar === sidebar) {
-          this.registeredSidebar = undefined;
-        }
-      });
-    };
-  };
+  registerSidebar = this.sidebarPart.register;
+  registerBottomNav = this.bottomNavPart.register;
+  registerAside = this.asidePart.register;
 
-  // Registered after render for the same reason as the Sidebar: the root
-  // reads it for the bottom row.
-  @tracked registeredBottomNav?: object;
+  get registeredSidebar(): RegisteredSidebar | undefined {
+    return this.sidebarPart.current;
+  }
 
-  registerBottomNav = (nav: object): (() => void) => {
-    schedule('afterRender', () => {
-      if (!this.isDestroying) {
-        this.registeredBottomNav = nav;
-      }
-    });
-    return () => {
-      schedule('afterRender', () => {
-        if (!this.isDestroying && this.registeredBottomNav === nav) {
-          this.registeredBottomNav = undefined;
-        }
-      });
-    };
-  };
+  get registeredBottomNav(): object | undefined {
+    return this.bottomNavPart.current;
+  }
 
-  // Registered after render for the same reason as the Sidebar: the toggle
-  // that reads it may come before the Aside in the template.
-  @tracked registeredAside?: object;
-
-  registerAside = (aside: object): (() => void) => {
-    schedule('afterRender', () => {
-      if (!this.isDestroying) {
-        this.registeredAside = aside;
-      }
-    });
-    return () => {
-      schedule('afterRender', () => {
-        if (!this.isDestroying && this.registeredAside === aside) {
-          this.registeredAside = undefined;
-        }
-      });
-    };
-  };
+  get registeredAside(): object | undefined {
+    return this.asidePart.current;
+  }
 
   get mobileNav(): 'drawer' | 'bottom' {
     return this.args.mobileNav ?? 'drawer';
@@ -434,8 +429,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       navbarPlacement: this.navbarPlacement,
       breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
-      sidebarSide: this.sidebarSide,
-      collapsed: this.state.sidebarCollapsed
+      sidebarSide: this.sidebarSide
     });
   }
 
@@ -518,6 +512,9 @@ class AppLayout extends Component<AppLayoutSignature> {
       },
       get hasSidebar() {
         return layout.registeredSidebar !== undefined;
+      },
+      get canToggleSidebar() {
+        return layout.registeredSidebar !== undefined && !layout.bottomNavMode;
       },
       get hasAside() {
         return layout.registeredAside !== undefined;
