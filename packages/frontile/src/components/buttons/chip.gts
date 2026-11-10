@@ -1,7 +1,11 @@
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 import { deprecate } from '@ember/debug';
+import { LinkTo } from '@ember/routing';
+import type { TOC } from '@ember/component/template-only';
 import { useStyles } from '@frontile/theme';
 import { CloseButton } from './close-button';
+import { press, type PressEvent } from '../../modifiers/press';
 import { renamedArgValue } from '../../-private/deprecated-args';
 
 interface ChipSignature {
@@ -66,6 +70,42 @@ interface ChipSignature {
     withDot?: boolean;
 
     /**
+     * Renders the body as a `LinkTo` for this route. Takes precedence over
+     * `@href` and `@onPress`.
+     */
+    route?: string;
+
+    /** A single dynamic segment for `@route`. */
+    model?: unknown;
+
+    /** Dynamic segments for `@route`. Wins over `@model`. */
+    models?: unknown[];
+
+    /** Query params for `@route`. */
+    query?: Record<string, unknown>;
+
+    /**
+     * Renders the body as a plain `<a href>`, for a router-free link. Ignored
+     * when `@route` is given; takes precedence over `@onPress`.
+     */
+    href?: string;
+
+    /**
+     * Renders the body as a `<button type="button">` and calls this when it
+     * is pressed (pointer, Enter or Space). Ignored when `@route` or `@href`
+     * is given.
+     */
+    onPress?: (event: PressEvent) => void;
+
+    /**
+     * Marks the chip as selected (a toggled filter, say): it holds its
+     * pressed fill, and a button body gets `aria-pressed`. Leave it
+     * `undefined` for a chip that is not a toggle, so no `aria-pressed` is
+     * rendered at all.
+     */
+    isSelected?: boolean;
+
+    /**
      * Function to be called when clicking on the close button.
      * If you pass this argument, the close button will be visible.
      */
@@ -93,7 +133,9 @@ interface ChipSignature {
     closeButtonTabIndex?: number | string;
 
     /**
-     * Dims the chip and disables its close button, if any.
+     * Dims the chip and disables its body and close button. A button body
+     * gets `disabled`; a link body drops its `href` and gets
+     * `aria-disabled="true"`, since an anchor cannot be natively disabled.
      *
      * @defaultValue false
      */
@@ -110,7 +152,104 @@ interface ChipSignature {
   Element: HTMLDivElement;
 }
 
+interface ChipBodyContentSignature {
+  Args: { withDot?: boolean; dotClass: string; contentClass: string };
+  Blocks: { default: [] };
+}
+
+const ChipBodyContent: TOC<ChipBodyContentSignature> = <template>
+  {{#if @withDot}}
+    <span class={{@dotClass}} data-part="dot"></span>
+  {{/if}}
+  <span class={{@contentClass}} data-part="content">
+    {{yield}}
+  </span>
+</template>;
+
+/**
+ * An interactive, pill-shaped label: its body is a link or a button, and it
+ * may also be removable. For a non-interactive label, use `Badge`.
+ *
+ * The body element follows the arguments, first match wins:
+ *
+ * - `@route` (with `@model`, `@models`, `@query`): a `LinkTo` anchor.
+ * - `@href`: a plain `<a href>`.
+ * - `@onPress`: a `<button type="button">`.
+ * - none of those: a non-interactive `<span>`, only meaningful with
+ *   `@onClose` (a removable chip, as in Select's selected items).
+ *
+ * The wrapper (`data-part="base"`, which receives `...attributes`) holds the
+ * body (`data-part="body"`, containing the dot and the content) and, with
+ * `@onClose`, the close button as the body's *sibling*: two separate controls,
+ * each with its own tab stop and focus ring. Enter and Space activate a
+ * button body; Enter activates a link body.
+ */
 class Chip extends Component<ChipSignature> {
+  @cached
+  get models(): unknown[] {
+    // `!= null` (not truthiness) so a falsy dynamic segment such as
+    // `@model={{0}}` is not dropped.
+    return (
+      this.args.models ?? (this.args.model != null ? [this.args.model] : [])
+    );
+  }
+
+  // `LinkTo` throws on an `undefined` `@query`.
+  @cached
+  get query(): Record<string, unknown> {
+    return this.args.query ?? {};
+  }
+
+  get isDisabled(): boolean {
+    return this.args.isDisabled ?? false;
+  }
+
+  /**
+   * A disabled `@route` chip falls through to the plain anchor: `LinkTo`
+   * always renders a real, navigable href, and dropping the href is what
+   * actually disables a link (the same approach as `TabNav` items).
+   */
+  get rendersLinkTo(): boolean {
+    return Boolean(this.args.route) && !this.isDisabled;
+  }
+
+  get rendersAnchor(): boolean {
+    return (
+      !this.rendersLinkTo &&
+      (Boolean(this.args.route) || this.args.href !== undefined)
+    );
+  }
+
+  get rendersButton(): boolean {
+    return (
+      !this.rendersLinkTo &&
+      !this.rendersAnchor &&
+      typeof this.args.onPress === 'function'
+    );
+  }
+
+  get isPressable(): boolean {
+    return (
+      !this.isDisabled &&
+      (this.rendersLinkTo || this.rendersAnchor || this.rendersButton)
+    );
+  }
+
+  get ariaPressed(): 'true' | 'false' | undefined {
+    if (this.args.isSelected === undefined) {
+      return undefined;
+    }
+    return this.args.isSelected ? 'true' : 'false';
+  }
+
+  handlePress = (event: PressEvent): void => {
+    // The `press` modifier does not check `disabled` itself.
+    if (this.isDisabled) {
+      return;
+    }
+    this.args.onPress?.(event);
+  };
+
   get classNames() {
     const { chip } = useStyles();
 
@@ -127,7 +266,7 @@ class Chip extends Component<ChipSignature> {
       );
     }
 
-    const { base, content, dot, closeButton } = chip({
+    const { base, body, content, dot, closeButton } = chip({
       color:
         renamedArgValue(
           this.args.color,
@@ -153,11 +292,14 @@ class Chip extends Component<ChipSignature> {
             id: 'frontile.chip.appearance'
           }
         ) || 'solid',
-      isDisabled: this.args.isDisabled
+      isDisabled: this.args.isDisabled,
+      isPressable: this.isPressable,
+      isSelected: this.args.isSelected ?? false
     });
 
     return {
       base: base({ class: this.args.class }),
+      body: body(),
       content: content(),
       dot: dot(),
       closeButton: closeButton()
@@ -171,12 +313,58 @@ class Chip extends Component<ChipSignature> {
       data-part="base"
       ...attributes
     >
-      {{#if @withDot}}
-        <span class={{this.classNames.dot}} data-part="dot"></span>
+      {{#if this.rendersLinkTo}}
+        <LinkTo
+          @route={{@route}}
+          @models={{this.models}}
+          @query={{this.query}}
+          class={{this.classNames.body}}
+          data-part="body"
+        >
+          <ChipBodyContent
+            @withDot={{@withDot}}
+            @dotClass={{this.classNames.dot}}
+            @contentClass={{this.classNames.content}}
+          >{{yield}}</ChipBodyContent>
+        </LinkTo>
+      {{else if this.rendersAnchor}}
+        {{! template-lint-disable no-unsupported-role-attributes }}
+        <a
+          href={{unless this.isDisabled @href}}
+          aria-disabled={{if this.isDisabled "true"}}
+          class={{this.classNames.body}}
+          data-part="body"
+        >
+          <ChipBodyContent
+            @withDot={{@withDot}}
+            @dotClass={{this.classNames.dot}}
+            @contentClass={{this.classNames.content}}
+          >{{yield}}</ChipBodyContent>
+        </a>
+      {{else if this.rendersButton}}
+        <button
+          type="button"
+          disabled={{this.isDisabled}}
+          aria-pressed={{this.ariaPressed}}
+          class={{this.classNames.body}}
+          data-part="body"
+          {{press this.handlePress}}
+        >
+          <ChipBodyContent
+            @withDot={{@withDot}}
+            @dotClass={{this.classNames.dot}}
+            @contentClass={{this.classNames.content}}
+          >{{yield}}</ChipBodyContent>
+        </button>
+      {{else}}
+        <span class={{this.classNames.body}} data-part="body">
+          <ChipBodyContent
+            @withDot={{@withDot}}
+            @dotClass={{this.classNames.dot}}
+            @contentClass={{this.classNames.content}}
+          >{{yield}}</ChipBodyContent>
+        </span>
       {{/if}}
-      <span class={{this.classNames.content}} data-part="content">
-        {{yield}}
-      </span>
       {{#if @onClose}}
         <CloseButton
           @class={{this.classNames.closeButton}}

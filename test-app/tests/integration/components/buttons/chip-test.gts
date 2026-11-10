@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, render, triggerKeyEvent } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { Chip } from 'frontile';
 import { trackDeprecations } from '../../../helpers/deprecations';
@@ -313,6 +313,324 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
     });
   });
 
+  module('body', function () {
+    test('href renders a link body', async function (assert) {
+      await render(
+        <template>
+          <Chip @href="/x">Go</Chip>
+        </template>
+      );
+
+      assert.dom('a[data-part="body"]').hasAttribute('href', '/x');
+      assert.dom('a[data-part="body"]').hasText('Go');
+      assert.dom('a[data-part="body"]').doesNotHaveAttribute('aria-disabled');
+    });
+
+    test('route renders a LinkTo body', async function (assert) {
+      await render(
+        <template>
+          <Chip @route="tab-nav-demo.item" @model={{0}}>Item</Chip>
+        </template>
+      );
+
+      const body = document.querySelector('a[data-part="body"]');
+      assert.dom(body).exists();
+      assert.dom(body).hasText('Item');
+      assert.ok(
+        body?.getAttribute('href')?.includes('/tab-nav-demo/item/0'),
+        `href resolves the route, got: ${body?.getAttribute('href')}`
+      );
+    });
+
+    test('onPress renders a button body and fires', async function (assert) {
+      let pressed = 0;
+      const onPress = () => {
+        pressed++;
+      };
+      await render(
+        <template>
+          <Chip @onPress={{onPress}}>Filter</Chip>
+        </template>
+      );
+
+      const selector = 'button[type="button"][data-part="body"]';
+      assert.dom(selector).exists();
+      assert.dom(selector).hasText('Filter');
+
+      await click(selector);
+      assert.strictEqual(pressed, 1, 'click pressed once');
+
+      await triggerKeyEvent(selector, 'keydown', 'Enter');
+      await triggerKeyEvent(selector, 'keyup', 'Enter');
+      assert.strictEqual(pressed, 2, 'Enter pressed');
+
+      await triggerKeyEvent(selector, 'keydown', ' ');
+      await triggerKeyEvent(selector, 'keyup', ' ');
+      assert.strictEqual(pressed, 3, 'Space pressed');
+    });
+
+    test('route wins over href, and href over onPress', async function (assert) {
+      const onPress = () => {};
+      await render(
+        <template>
+          <Chip
+            @route="tab-nav-demo.index"
+            @href="/x"
+            @onPress={{onPress}}
+            data-test-id="route"
+          >a</Chip>
+          <Chip @href="/x" @onPress={{onPress}} data-test-id="href">b</Chip>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="route"] [data-part="body"]')
+        .hasAttribute('href', /tab-nav-demo/);
+      assert
+        .dom('[data-test-id="href"] a[data-part="body"]')
+        .hasAttribute('href', '/x');
+    });
+
+    test('neither renders a non-interactive wrapper', async function (assert) {
+      const onClose = () => {};
+      await render(
+        <template>
+          <Chip @onClose={{onClose}}>x</Chip>
+        </template>
+      );
+
+      assert.dom('span[data-part="body"]').exists();
+      assert.dom('span[data-part="body"]').doesNotHaveAttribute('href');
+      assert.dom('span[data-part="body"]').doesNotHaveAttribute('tabindex');
+      assert.dom('span[data-part="body"]').doesNotHaveAttribute('role');
+      assert.dom('span[data-part="body"]').doesNotHaveClass('chip-pressable');
+    });
+
+    test('an interactive body is marked pressable', async function (assert) {
+      const onPress = () => {};
+      await render(
+        <template>
+          <Chip @onPress={{onPress}} data-test-id="button">a</Chip>
+          <Chip @href="/x" data-test-id="link">b</Chip>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="button"] [data-part="body"]')
+        .hasClass('chip-pressable');
+      assert
+        .dom('[data-test-id="link"] [data-part="body"]')
+        .hasClass('chip-pressable');
+    });
+
+    test('the dot and content live inside the body', async function (assert) {
+      const onPress = () => {};
+      await render(
+        <template>
+          <Chip @onPress={{onPress}} @withDot={{true}}>x</Chip>
+        </template>
+      );
+
+      assert.dom('[data-part="body"] [data-part="dot"]').exists();
+      assert.dom('[data-part="body"] [data-part="content"]').hasText('x');
+    });
+
+    test('close button is a sibling, not nested', async function (assert) {
+      let pressed = 0;
+      let closed = 0;
+      const onPress = () => {
+        pressed++;
+      };
+      const onClose = () => {
+        closed++;
+      };
+      await render(
+        <template>
+          <Chip @onPress={{onPress}} @onClose={{onClose}}>x</Chip>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="body"] [data-part="close-button"]')
+        .doesNotExist();
+      const closeButton = document.querySelector('[data-part="close-button"]');
+      assert.strictEqual(
+        closeButton?.parentElement?.getAttribute('data-part'),
+        'base',
+        'the close button is a direct child of the wrapper'
+      );
+
+      await click('[data-part="close-button"]');
+      assert.strictEqual(closed, 1, 'close fired');
+      assert.strictEqual(pressed, 0, 'body press did not fire');
+    });
+
+    test('disabled button body', async function (assert) {
+      let pressed = 0;
+      const onPress = () => {
+        pressed++;
+      };
+      await render(
+        <template>
+          <Chip @onPress={{onPress}} @isDisabled={{true}}>x</Chip>
+        </template>
+      );
+
+      const body = document.querySelector(
+        'button[data-part="body"]'
+      ) as HTMLButtonElement;
+      assert.dom(body).isDisabled();
+      assert.dom(body).doesNotHaveClass('chip-pressable');
+
+      // `click()` refuses a disabled control, so dispatch the events the
+      // `press` modifier listens for directly.
+      body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      body.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+      body.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+      );
+      body.dispatchEvent(
+        new KeyboardEvent('keyup', { key: 'Enter', bubbles: true })
+      );
+      assert.strictEqual(pressed, 0, 'handler did not fire');
+    });
+
+    test('disabled link body', async function (assert) {
+      await render(
+        <template>
+          <Chip @href="/x" @isDisabled={{true}} data-test-id="href">a</Chip>
+          <Chip
+            @route="tab-nav-demo.index"
+            @isDisabled={{true}}
+            data-test-id="route"
+          >b</Chip>
+        </template>
+      );
+
+      for (const id of ['href', 'route']) {
+        const selector = `[data-test-id="${id}"] a[data-part="body"]`;
+        assert.dom(selector).doesNotHaveAttribute('href');
+        assert.dom(selector).hasAttribute('aria-disabled', 'true');
+      }
+    });
+
+    test('@isSelected sets aria-pressed on a button body', async function (assert) {
+      const onPress = () => {};
+      await render(
+        <template>
+          <Chip
+            @onPress={{onPress}}
+            @isSelected={{true}}
+            data-test-id="on"
+          >a</Chip>
+          <Chip
+            @onPress={{onPress}}
+            @isSelected={{false}}
+            data-test-id="off"
+          >b</Chip>
+          <Chip @onPress={{onPress}} data-test-id="unset">c</Chip>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="on"] [data-part="body"]')
+        .hasAttribute('aria-pressed', 'true');
+      assert
+        .dom('[data-test-id="off"] [data-part="body"]')
+        .hasAttribute('aria-pressed', 'false');
+      assert
+        .dom('[data-test-id="unset"] [data-part="body"]')
+        .doesNotHaveAttribute('aria-pressed');
+    });
+  });
+
+  module('body states (real theme)', function () {
+    test('an interactive body is a pointer with a focus ring; a static one is not', function (assert) {
+      const pressable = realStyles.chip({ isPressable: true }).body();
+      const staticBody = realStyles.chip({ isPressable: false }).body();
+
+      assert.true(pressable.split(' ').includes('cursor-pointer'));
+      assert.true(pressable.split(' ').includes('focus-visible:ring-2'));
+      assert.false(staticBody.split(' ').includes('cursor-pointer'));
+      assert.false(staticBody.split(' ').includes('focus-visible:ring-2'));
+    });
+
+    const hover = 'has-[>[data-part=body]:hover]:';
+    const active = 'has-[>[data-part=body]:active]:';
+
+    test('soft: hover -subtle to -muted, active one more step', function (assert) {
+      const classes = realStyles
+        .chip({ variant: 'soft', color: 'primary', isPressable: true })
+        .base()
+        .split(' ');
+
+      assert.true(classes.includes('bg-primary-subtle'), 'rests on -subtle');
+      assert.true(classes.includes(`${hover}bg-primary-muted`), 'hover');
+      assert.true(classes.includes(`${active}bg-primary-soft`), 'active');
+    });
+
+    test('outline: hover transparent to -subtle, active one more step', function (assert) {
+      const classes = realStyles
+        .chip({ variant: 'outline', color: 'primary', isPressable: true })
+        .base()
+        .split(' ');
+
+      assert.true(classes.includes(`${hover}bg-primary-subtle`), 'hover');
+      assert.true(classes.includes(`${active}bg-primary-muted`), 'active');
+    });
+
+    test('solid: hover DEFAULT to -mild, active -firm', function (assert) {
+      const classes = realStyles
+        .chip({ variant: 'solid', color: 'primary', isPressable: true })
+        .base()
+        .split(' ');
+
+      assert.true(classes.includes('bg-primary'), 'rests on DEFAULT');
+      assert.true(classes.includes(`${hover}bg-primary-mild`), 'hover');
+      assert.true(classes.includes(`${active}bg-primary-firm`), 'active');
+    });
+
+    test('a static or disabled chip has no hover or active fill', function (assert) {
+      for (const isPressable of [false, undefined]) {
+        const base = realStyles
+          .chip({ variant: 'soft', color: 'primary', isPressable })
+          .base();
+
+        assert.false(base.includes(hover), `no hover (${String(isPressable)})`);
+        assert.false(
+          base.includes(active),
+          `no active (${String(isPressable)})`
+        );
+      }
+    });
+
+    test('selected holds the pressed fill', function (assert) {
+      const soft = realStyles
+        .chip({
+          variant: 'soft',
+          color: 'primary',
+          isPressable: true,
+          isSelected: true
+        })
+        .base()
+        .split(' ');
+
+      assert.true(soft.includes('bg-primary-soft'), 'soft holds -soft');
+      assert.false(soft.includes('bg-primary-subtle'), 'resting fill replaced');
+      assert.false(
+        soft.some((c) => c.startsWith(hover)),
+        'hover does not lighten a selected chip'
+      );
+
+      const solid = realStyles
+        .chip({ variant: 'solid', color: 'primary', isSelected: true })
+        .base()
+        .split(' ');
+      assert.true(solid.includes('bg-primary-firm'), 'solid holds -firm');
+      assert.false(solid.includes('bg-primary'), 'resting fill replaced');
+    });
+  });
+
   module('anatomy', function () {
     test('renders data-component="chip" on the root only, with data-part on every slot', async function (assert) {
       const onClose = () => {};
@@ -323,6 +641,7 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
       );
 
       assert.dom('[data-component="chip"]').hasAttribute('data-part', 'base');
+      assert.dom('[data-component="chip"] [data-part="body"]').exists();
       assert.dom('[data-component="chip"] [data-part="content"]').exists();
       assert.dom('[data-component="chip"] [data-part="dot"]').exists();
       assert.dom('[data-component="chip"] [data-part="close-button"]').exists();
