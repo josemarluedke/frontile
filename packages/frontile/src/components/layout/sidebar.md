@@ -552,6 +552,15 @@ import { ViewIcon, RocketIcon, SparklesIcon } from 'site/components/icons';
 column meant to stay put, so pair it with `@collapsible='none'`. A rail
 centers its header over the items.
 
+The `stacked` icon pill can be themed with CSS variables set on the item or any
+ancestor, such as the sidebar's `class`:
+
+| Variable                    | Default                      | Sets                                               |
+| --------------------------- | ---------------------------- | -------------------------------------------------- |
+| `--nav-item-pill-radius`    | `var(--radius-lg)`           | The pill's corner radius.                          |
+| `--nav-item-pill-hover-bg`  | `var(--color-neutral-muted)` | The fill while hovered.                            |
+| `--nav-item-pill-active-bg` | `var(--color-neutral-soft)`  | The fill for the current item, also while hovered. |
+
 ```gts preview collapsible
 import { Sidebar } from 'frontile';
 import {

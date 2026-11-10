@@ -112,11 +112,17 @@ const navItem = tv({
           'data-[active=true]:bg-transparent not-data-[disabled=true]:hover:bg-transparent',
           'not-data-[disabled=true]:data-[active=true]:hover:bg-transparent'
         ],
+        // The pill is themable from the item or any ancestor, without
+        // reaching into the part with a descendant selector:
+        //   --nav-item-pill-radius     (default `--radius-lg`)
+        //   --nav-item-pill-hover-bg   (default `--color-neutral-muted`)
+        //   --nav-item-pill-active-bg  (default `--color-neutral-soft`), also
+        //                              used while the current item is hovered
         navItemIcon: [
-          'h-8 w-11 rounded-lg',
-          'group-data-[active=true]/nav-item:bg-neutral-soft',
-          'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-neutral-muted',
-          'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-neutral-soft'
+          'h-8 w-11 rounded-(--nav-item-pill-radius,var(--radius-lg))',
+          'group-data-[active=true]/nav-item:bg-(--nav-item-pill-active-bg,var(--color-neutral-soft))',
+          'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-(--nav-item-pill-hover-bg,var(--color-neutral-muted))',
+          'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-(--nav-item-pill-active-bg,var(--color-neutral-soft))'
         ]
       },
       // Icon only; the label is screen-reader text and a tooltip.
