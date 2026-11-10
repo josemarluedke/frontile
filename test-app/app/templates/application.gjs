@@ -39,7 +39,7 @@ import ThemeSwitcher from '../components/theme-switcher';
       <layout.MenuToggle />
       <div class="ms-auto flex items-center gap-2">
         <ThemeSwitcher />
-        <Button @size="sm" @variant="outline" @isRenderless={{true}} as |btn|>
+        <Button @size="xs" @variant="outline" @isRenderless={{true}} as |btn|>
           <a href="/tests?hidepassed" class={{btn.classNames}}>
             Go to Tests
           </a>
