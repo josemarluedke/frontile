@@ -259,6 +259,11 @@
         "description": "Displays an important message inline in the page until removed."
       },
       {
+        "name": "Badge",
+        "path": "/docs/components/status/badge",
+        "description": "A small non-interactive label for status or metadata."
+      },
+      {
         "name": "ProgressBar",
         "path": "/docs/components/status/progress-bar",
         "description": "Communicates the progress of a determinate or indeterminate task."

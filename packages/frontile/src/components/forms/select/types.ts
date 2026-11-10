@@ -62,10 +62,12 @@ interface SelectedItemBlockArg<T = unknown> {
  * two can never drift apart; see {@link MultipleSelectArgs.chip} for the
  * Select-specific defaults applied on top of Chip's own.
  */
-interface SelectChipOptions extends Pick<
-  ChipSignature['Args'],
-  'radius' | 'withDot'
-> {
+interface SelectChipOptions extends Pick<ChipSignature['Args'], 'withDot'> {
+  /**
+   * @deprecated Ignored. Chip is always a pill.
+   */
+  radius?: ChipSignature['Args']['radius'];
+
   /**
    * The chip variant.
    *
@@ -241,19 +243,19 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * Only applies when `@selectedItemsDisplay` is `'chips'` (the default).
    *
    * Options are the same ones {@link Chip} itself accepts (`variant`,
-   * `color`, `size`, `radius`, `withDot`), but Select applies its own
+   * `color`, `size`, `withDot`), but Select applies its own
    * defaults tuned for sitting inside a field, rather than Chip's:
    * - `variant` defaults to `'soft'`
    * - `color` defaults to the Select's own `@color`, so `@color="primary"`
    *   colors the listbox items and the chips together
    * - `size` defaults to `'sm'`
-   * - `radius` and `withDot` fall back to Chip's own defaults
+   * - `withDot` falls back to Chip's own default
    *
    * @example
    * ```gts
    * <Select
    *   @selectionMode="multiple"
-   *   @chip={{hash variant="outline" size="md" radius="full"}}
+   *   @chip={{hash variant="outline" size="md"}}
    * />
    * ```
    */

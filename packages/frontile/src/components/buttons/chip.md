@@ -137,25 +137,14 @@ const noop = (): void => {};
 </template>
 ```
 
-## Chip Radius
+## Chip vs Badge
 
-`full` is the default. Use a smaller radius when chips sit alongside other
-squared-off controls.
+Every Chip is pressable, selectable or closable. A chip that is none of those is a
+[Badge](/docs/components/status/badge): use Badge for a status, a count or any other
+label that does not respond to the user.
 
-```gts preview
-import { Chip } from 'frontile';
-import { array } from '@ember/helper';
-
-<template>
-  <div class='flex flex-wrap items-center gap-3'>
-    {{#each (array 'none' 'sm' 'lg' 'full') as |radius|}}
-      <Chip @variant='outline' @color='primary' @radius={{radius}}>
-        {{radius}}
-      </Chip>
-    {{/each}}
-  </div>
-</template>
-```
+A Chip is always a pill. Its close button shows a pointer cursor, since it is the one
+part of a Chip that responds to a click.
 
 ## Chip with Dots
 

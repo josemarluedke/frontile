@@ -961,7 +961,7 @@ export default class RemovableChipsSelect extends Component {
 ### Customizing the Chips
 
 `@chip` forwards variant options to every chip: `variant` (defaults to `soft`),
-`color`, `size` (defaults to `sm`), `radius` and `withDot`.
+`color`, `size` (defaults to `sm`) and `withDot`.
 
 `@chip.color` defaults to the Select's own `@color`, so `@color='primary'` colors the
 listbox options and the chips together and you only set `@chip.color` when you want them to
@@ -1010,7 +1010,6 @@ export default class ChipOptionsSelect extends Component {
             variant='outline'
             color='success'
             size='md'
-            radius='full'
             withDot=true
           }}
         />
