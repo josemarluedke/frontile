@@ -2885,7 +2885,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Marks the chip as selected (a toggled filter, say): it holds its\npressed fill, and a button body gets <code>aria-pressed</code>. Leave it\n<code>undefined</code> for a chip that is not a toggle, so no <code>aria-pressed</code> is\nrendered at all.',
+          'Marks the chip as selected (a toggled filter, say): it holds its\npressed fill and is announced as selected. A button body gets\n<code>aria-pressed</code> (<code>"true"</code> or <code>"false"</code>); a link body gets\n<code>aria-current="true"</code> while selected and no <code>aria-current</code> otherwise.\nLeave it <code>undefined</code> for a chip that is not a toggle, so no\n<code>aria-pressed</code> is rendered at all.',
         tags: {},
       },
       {
@@ -12388,12 +12388,14 @@ const data: ComponentDoc[] = [
       {
         identifier: 'value',
         type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+          items: ['string', 'number'],
         },
         isRequired: false,
         isInternal: false,
         description:
-          'A figure shown after the label, such as a price or a count. Rendered in\nits own part so the theme can give it a tabular, heavier treatment.',
+          'A figure shown after the label, such as a price or a count. A number is\naccepted, and <code>0</code> still renders; only <code>undefined</code> or <code>null</code> leaves the\nvalue out. Rendered in its own part so the theme can give it a\ntabular, heavier treatment.',
         tags: {},
       },
       {
