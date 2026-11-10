@@ -177,10 +177,10 @@ collapsed folder's menu, so attributes you pass to it must suit all three.
 
 ### Badges
 
-`@badge` shows a count or short status on the icon's corner, or at the end of
-the row for an item without an icon. `0`, `null`, `undefined` and `''` show
-nothing. Screen readers hear the badge after the label; `@badgeLabel` words
-it, such as "3 unread".
+`@badge` shows a count or short status at the end of the row. In the collapsed
+rail, where only the icon shows, it moves onto the icon's corner. `0`, `null`,
+`undefined` and `''` show nothing. Screen readers hear the badge after the
+label; `@badgeLabel` words it, such as "3 unread".
 
 ```gts preview
 import { Sidebar } from 'frontile';

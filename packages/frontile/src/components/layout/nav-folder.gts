@@ -13,6 +13,7 @@ import Dropdown from '../collections/dropdown/dropdown';
 import { ChevronRightIcon } from '../../-private/icons';
 import NavItem from './nav-item';
 import NavLink from './nav-link';
+import { NavItemRegistry } from './nav-context';
 import type { NavFolderContext, NavItemHandle } from './nav-context';
 import type { TOC } from '@ember/component/template-only';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
@@ -185,14 +186,8 @@ const FolderTrigger: TOC<FolderTriggerSignature> = <template>
  * item closes it.
  */
 class NavFolder extends Component<NavFolderSignature> {
-  /**
-   * The registered items. Items register while they render, so the set is
-   * not tracked: reading it during render and then changing it in the same
-   * render would trip Glimmer's backtracking assertion. `registryVersion`
-   * is bumped after render instead, which re-runs everything that reads it.
-   */
-  #items = new Set<NavItemHandle>();
-  @tracked registryVersion = 0;
+  /** The registered items; see `NavItemRegistry`. */
+  registry = new NavItemRegistry(this);
 
   @tracked internalOpen = this.args.defaultOpen ?? false;
 
@@ -215,7 +210,7 @@ class NavFolder extends Component<NavFolderSignature> {
     if (parent) {
       // Lazy getters over the folder's own derived state, so the parent sees
       // the children as they are when it reads them (after render; see
-      // `registryVersion`).
+      // `NavItemRegistry`).
       const folder = (): NavFolder => this;
       const unregister = parent.registerItem({
         get isActive() {
@@ -225,59 +220,20 @@ class NavFolder extends Component<NavFolderSignature> {
           return folder().isFolderHidden ?? false;
         },
         get hasBadge() {
-          return folder().visibleItems.some((item) => item.hasBadge);
+          return folder().registry.hasBadge;
         }
       });
       registerDestructor(this, unregister);
     }
   }
 
-  /** Whether a bump is already queued; items registering together share one. */
-  #bumpScheduled = false;
-
-  #bumpRegistry(): void {
-    if (this.#bumpScheduled) {
-      return;
-    }
-    this.#bumpScheduled = true;
-    schedule('afterRender', () => {
-      this.#bumpScheduled = false;
-      if (!this.isDestroying && !this.isDestroyed) {
-        this.registryVersion++;
-      }
-    });
-  }
-
-  registerItem = (item: NavItemHandle): (() => void) => {
-    this.#items.add(item);
-    this.#bumpRegistry();
-    return () => {
-      this.#items.delete(item);
-      this.#bumpRegistry();
-    };
-  };
-
-  @cached
-  get context(): NavFolderContext {
-    return { registerItem: this.registerItem };
-  }
-
-  get items(): NavItemHandle[] {
-    // Consumed so the getters below re-run when items come or go. Each
-    // handle's own `isActive` / `isHidden` are live reads.
-    void this.registryVersion;
-    return [...this.#items];
-  }
-
-  @cached
   get visibleItems(): NavItemHandle[] {
-    return this.items.filter((item) => !item.isHidden);
+    return this.registry.visibleItems;
   }
 
   /** A hidden item never makes the folder active. */
-  @cached
   get hasActiveDescendant(): boolean {
-    return this.visibleItems.some((item) => item.isActive);
+    return this.registry.hasActive;
   }
 
   /** Hidden by `@isHidden`, or because no item is visible (or there is none). */
@@ -524,7 +480,7 @@ class NavFolder extends Component<NavFolderSignature> {
                 rail=false
                 tooltipPlacement=@tooltipPlacement
                 onActivate=@onActivate
-                folder=this.context
+                folder=this.registry.context
               )
             )
           }}
@@ -561,7 +517,7 @@ class NavFolder extends Component<NavFolderSignature> {
                 rail=@rail
                 tooltipPlacement=@tooltipPlacement
                 onActivate=@onActivate
-                folder=this.context
+                folder=this.registry.context
               )
             )
           }}

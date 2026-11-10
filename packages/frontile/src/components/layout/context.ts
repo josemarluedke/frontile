@@ -45,6 +45,13 @@ export interface AppLayoutContext {
    * Returns the matching unregister function.
    */
   registerSidebar(sidebar: RegisteredSidebar): () => void;
+  /** Whether a `Sidebar` is registered (tracked). */
+  readonly hasSidebar: boolean;
+  /**
+   * Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,
+   * and the bottom bar is not standing in for it (tracked).
+   */
+  readonly canToggleSidebar: boolean;
   /**
    * How navigation is shown below the breakpoint: the sidebar in a `drawer`,
    * or a `bottom` bar (`BottomNav`) with no sidebar (tracked).

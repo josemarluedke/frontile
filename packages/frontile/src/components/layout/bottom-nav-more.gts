@@ -10,7 +10,8 @@ import Drawer from '../overlays/drawer';
 import { EllipsisHorizontalIcon } from '../../-private/icons';
 import NavItem from './nav-item';
 import NavFolder from './nav-folder';
-import type { NavFolderContext, NavItemHandle } from './nav-context';
+import { NavItemRegistry } from './nav-context';
+import type { NavFolderContext } from './nav-context';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 interface BottomNavMoreArgs {
@@ -86,38 +87,10 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
   @tracked isOpen = false;
 
   /**
-   * The registered items and folders, from the hidden copy of the block.
-   * Items register while they render, so the set is not tracked: reading it
-   * during render and then changing it in the same render would trip
-   * Glimmer's backtracking assertion. `registryVersion` is bumped after
-   * render instead, which re-runs everything that reads it. Same approach as
-   * `NavFolder`.
+   * The registered items and folders, from the hidden copy of the block;
+   * see `NavItemRegistry`.
    */
-  #items = new Set<NavItemHandle>();
-  @tracked registryVersion = 0;
-
-  #bumpRegistry(): void {
-    schedule('afterRender', () => {
-      if (!this.isDestroying && !this.isDestroyed) {
-        this.registryVersion++;
-      }
-    });
-  }
-
-  registerItem = (item: NavItemHandle): (() => void) => {
-    this.#items.add(item);
-    this.#bumpRegistry();
-    return () => {
-      this.#items.delete(item);
-      this.#bumpRegistry();
-    };
-  };
-
-  /** What the hidden copy's items and folders register with. */
-  @cached
-  get registry(): NavFolderContext {
-    return { registerItem: this.registerItem };
-  }
+  registry = new NavItemRegistry(this);
 
   /**
    * The open sheet's copy does not register: the hidden copy is always
@@ -125,28 +98,12 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
    */
   sheetRegistry = IGNORE_REGISTRATION;
 
-  get items(): NavItemHandle[] {
-    // Consumed so the getters below re-run when items come or go. Each
-    // handle's own state is a live read.
-    void this.registryVersion;
-    return [...this.#items];
-  }
-
-  @cached
-  get visibleItems(): NavItemHandle[] {
-    return this.items.filter((item) => !item.isHidden);
-  }
-
-  /** A hidden item never makes the tab active. */
-  @cached
   get hasActive(): boolean {
-    return this.visibleItems.some((item) => item.isActive);
+    return this.registry.hasActive;
   }
 
-  /** A hidden item never badges the tab. */
-  @cached
   get hasBadge(): boolean {
-    return this.visibleItems.some((item) => item.hasBadge);
+    return this.registry.hasBadge;
   }
 
   /**
@@ -156,7 +113,8 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
   get isTabHidden(): boolean {
     return (
       Boolean(this.args.isHidden) ||
-      (this.items.length > 0 && this.visibleItems.length === 0)
+      (this.registry.items.length > 0 &&
+        this.registry.visibleItems.length === 0)
     );
   }
 
@@ -266,10 +224,13 @@ class BottomNavMore extends Component<BottomNavMoreSignature> {
             rail=false
             tooltipPlacement="top"
             onActivate=this.ignore
-            folder=this.registry
+            folder=this.registry.context
           )
           Folder=(component
-            NavFolder rail=false onActivate=this.ignore parent=this.registry
+            NavFolder
+            rail=false
+            onActivate=this.ignore
+            parent=this.registry.context
           )
         )
       }}

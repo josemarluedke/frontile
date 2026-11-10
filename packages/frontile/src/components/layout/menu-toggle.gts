@@ -48,7 +48,7 @@ interface MenuToggleSignature {
  * use either one there; with both in the navbar, both show on narrow
  * screens. Closing the drawer returns focus to the button that opened it.
  * With `@mobileNav="bottom"` there is no drawer, so below the breakpoint it
- * renders nothing.
+ * renders nothing; nor does it in a layout with no `Sidebar`.
  */
 class MenuToggle extends Component<MenuToggleSignature> {
   fallbackState = new AppLayoutState();
@@ -65,8 +65,17 @@ class MenuToggle extends Component<MenuToggleSignature> {
     return this.state.mobileSidebarOpen ? 'true' : 'false';
   }
 
+  /** The drawer, which only exists while it is open. */
   get controls(): string | undefined {
-    return this.args.controls ?? this.args.layout?.sidebarId;
+    const layout = this.args.layout;
+    if (this.args.controls || !layout) {
+      return this.args.controls;
+    }
+    return layout.state.mobileSidebarOpen ? layout.sidebarId : undefined;
+  }
+
+  get shown(): boolean {
+    return this.args.layout?.canToggleSidebar ?? true;
   }
 
   get classNames(): string {
@@ -81,7 +90,7 @@ class MenuToggle extends Component<MenuToggleSignature> {
   };
 
   <template>
-    {{#unless @layout.bottomNavMode}}
+    {{#if this.shown}}
       <button
         type="button"
         id={{@layout.menuToggleId}}
@@ -99,7 +108,7 @@ class MenuToggle extends Component<MenuToggleSignature> {
           <MenuIcon />
         {{/if}}
       </button>
-    {{/unless}}
+    {{/if}}
   </template>
 }
 

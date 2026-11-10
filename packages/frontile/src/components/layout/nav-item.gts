@@ -80,8 +80,10 @@ interface NavItemArgs {
   shortLabel?: string;
 
   /**
-   * A count or short status shown as a pill on the icon. Nothing is shown
-   * for `undefined`, `null`, `0` or an empty string.
+   * A count or short status shown as a pill: at the end of the row, or on
+   * the icon's corner where only the icon shows (the collapsed rail, the
+   * stacked and icon layouts). Nothing is shown for `undefined`, `null`, `0`
+   * or an empty string.
    */
   badge?: string | number;
 
@@ -211,7 +213,7 @@ class NavItem extends Component<NavItemSignature> {
           return args.isHidden ?? false;
         },
         get hasBadge() {
-          return Boolean(args.badge) && args.badge !== 0 && !args.isHidden;
+          return item.hasBadge && !args.isHidden;
         }
       });
       registerDestructor(this, unregister);
@@ -228,7 +230,7 @@ class NavItem extends Component<NavItemSignature> {
     const styles = useStyles().navItem({
       layout: this.layout,
       shortLabel: this.hasShortLabel,
-      badgePlacement: this.args.icon ? 'icon' : 'end',
+      badgePlacement: this.badgePlacement,
       badgeDot: Boolean(this.args.badgeDot)
     });
     return {
@@ -247,6 +249,28 @@ class NavItem extends Component<NavItemSignature> {
    */
   get isInline(): true | undefined {
     return this.layout === 'inline' ? true : undefined;
+  }
+
+  /**
+   * Where the badge sits: on the icon's corner when the icon is all there is
+   * to see (the stacked and icon layouts), at the row's end otherwise. An
+   * inline row with an icon moves it onto the icon in the collapsed rail.
+   */
+  get badgePlacement(): 'icon' | 'end' | 'rail' {
+    if (!this.args.icon) {
+      return 'end';
+    }
+    return this.layout === 'inline' ? 'rail' : 'icon';
+  }
+
+  /** A badge inside the icon: the stacked and icon layouts. */
+  get badgeOnIcon(): boolean {
+    return this.hasBadge && this.badgePlacement === 'icon';
+  }
+
+  /** A badge after the label: every other row. */
+  get badgeAtEnd(): boolean {
+    return this.hasBadge && this.badgePlacement !== 'icon';
   }
 
   get hasShortLabel(): boolean {
@@ -405,7 +429,7 @@ class NavItem extends Component<NavItemSignature> {
               data-part="nav-item-icon"
               class={{this.classes.navItemIcon}}
               aria-hidden="true"
-            ><@icon />{{#if this.hasBadge}}<span
+            ><@icon />{{#if this.badgeOnIcon}}<span
                   data-part="nav-item-badge"
                   class={{this.classes.navItemBadge}}
                   aria-hidden="true"
@@ -426,11 +450,11 @@ class NavItem extends Component<NavItemSignature> {
                 data-part="nav-item-badge-label"
                 class={{this.classes.navItemBadgeLabel}}
               >, {{this.badgeText}}</span>{{/if}}</span>
-          {{#if this.hasBadge}}{{#unless @icon}}<span
-                data-part="nav-item-badge"
-                class={{this.classes.navItemBadge}}
-                aria-hidden="true"
-              >{{this.badgeValue}}</span>{{/unless}}{{/if}}
+          {{#if this.badgeAtEnd}}<span
+              data-part="nav-item-badge"
+              class={{this.classes.navItemBadge}}
+              aria-hidden="true"
+            >{{this.badgeValue}}</span>{{/if}}
         </NavLink>
         <t.Content>{{yield}}</t.Content>
       </Tooltip>
