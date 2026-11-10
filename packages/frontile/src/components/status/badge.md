@@ -99,17 +99,17 @@ import { Badge } from 'frontile';
 ## Value and Unit
 
 `@value` shows a figure after the label, such as a price or a count, in a heavier
-tabular style. `@unit` adds a unit after the value. Both are optional and render only
-when set.
+tabular style. It takes a string or a number, and a count of `0` still renders.
+`@unit` adds a unit after the value. Both are optional and render only when set.
 
 ```gts preview
 import { Badge } from 'frontile';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
-    <Badge @color='primary' @value='12'>Open</Badge>
+    <Badge @color='primary' @value={{12}}>Open</Badge>
     <Badge @color='success' @value='$49' @unit='/mo'>Pro</Badge>
-    <Badge @variant='outline' @color='danger' @value='3'>Failed</Badge>
+    <Badge @variant='outline' @color='danger' @value={{0}}>Failed</Badge>
   </div>
 </template>
 ```

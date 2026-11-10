@@ -32,10 +32,12 @@ interface BadgeSignature {
     class?: string;
 
     /**
-     * A figure shown after the label, such as a price or a count. Rendered in
-     * its own part so the theme can give it a tabular, heavier treatment.
+     * A figure shown after the label, such as a price or a count. A number is
+     * accepted, and `0` still renders; only `undefined` or `null` leaves the
+     * value out. Rendered in its own part so the theme can give it a
+     * tabular, heavier treatment.
      */
-    value?: string;
+    value?: string | number;
 
     /**
      * A unit shown after the value, such as `/mo`. Rendered only when set.
@@ -72,6 +74,11 @@ interface BadgeSignature {
  * `<:default>`.
  */
 class Badge extends Component<BadgeSignature> {
+  // `!= null` rather than truthiness, so a count of `0` is shown.
+  get hasValue(): boolean {
+    return this.args.value != null;
+  }
+
   get classNames() {
     const { badge } = useStyles();
 
@@ -106,7 +113,7 @@ class Badge extends Component<BadgeSignature> {
         </span>
       {{/if}}
       {{yield}}
-      {{#if @value}}
+      {{#if this.hasValue}}
         <span
           class={{this.classNames.value}}
           data-part="value"

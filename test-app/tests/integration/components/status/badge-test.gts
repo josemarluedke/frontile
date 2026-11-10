@@ -123,6 +123,18 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       );
     });
 
+    test('a numeric value renders, including 0', async function (assert) {
+      await render(
+        <template>
+          <Badge @value={{0}} data-test-id="zero">Unread</Badge>
+          <Badge @value={{12}} data-test-id="twelve">Unread</Badge>
+        </template>
+      );
+
+      assert.dom('[data-test-id="zero"] [data-part="value"]').hasText('0');
+      assert.dom('[data-test-id="twelve"] [data-part="value"]').hasText('12');
+    });
+
     test('it does not render unit or icon wrappers when absent', async function (assert) {
       await render(
         <template>
@@ -254,6 +266,13 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
 
       assert.true(base.includes('border-current'));
       assert.true(base.includes('text-danger-strong'));
+    });
+
+    test('the value is bold with tabular figures', function (assert) {
+      const value = realStyles.badge({}).value().split(' ');
+
+      assert.true(value.includes('font-bold'), 'font-bold');
+      assert.true(value.includes('tabular-nums'), 'tabular-nums');
     });
 
     test('md is 28px tall', function (assert) {

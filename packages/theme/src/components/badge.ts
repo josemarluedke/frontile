@@ -4,7 +4,7 @@ const badge = tv({
   slots: {
     base: 'inline-flex items-center whitespace-nowrap font-label',
     // emphasized value, e.g. a price
-    value: 'font-bold',
+    value: 'font-bold tabular-nums',
     // unit following the value, e.g. "/mo"
     unit: 'opacity-80',
     icon: 'size-3 shrink-0'
