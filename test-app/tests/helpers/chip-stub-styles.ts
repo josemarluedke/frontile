@@ -38,12 +38,6 @@ export const chipStubStyles: ReturnType<typeof useStyles>['chip'] = tv({
       sm: 'chip-sm',
       md: 'chip-md',
       lg: 'chip-lg'
-    },
-    radius: {
-      none: 'radius-none',
-      sm: 'radius-sm',
-      lg: 'radius-lg',
-      full: 'radius-full'
     }
   },
   defaultVariants: {
