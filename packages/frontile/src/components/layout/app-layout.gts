@@ -305,6 +305,25 @@ class AppLayout extends Component<AppLayoutSignature> {
     };
   };
 
+  // Registered after render for the same reason as the Sidebar: the toggle
+  // that reads it may come before the Aside in the template.
+  @tracked registeredAside?: object;
+
+  registerAside = (aside: object): (() => void) => {
+    schedule('afterRender', () => {
+      if (!this.isDestroying) {
+        this.registeredAside = aside;
+      }
+    });
+    return () => {
+      schedule('afterRender', () => {
+        if (!this.isDestroying && this.registeredAside === aside) {
+          this.registeredAside = undefined;
+        }
+      });
+    };
+  };
+
   get mobileNav(): 'drawer' | 'bottom' {
     return this.args.mobileNav ?? 'drawer';
   }
@@ -497,9 +516,13 @@ class AppLayout extends Component<AppLayoutSignature> {
       get bottomNavShown() {
         return layout.bottomNavShown;
       },
+      get hasAside() {
+        return layout.registeredAside !== undefined;
+      },
       isRtl: this.isRtl,
       registerSidebar: this.registerSidebar,
-      registerBottomNav: this.registerBottomNav
+      registerBottomNav: this.registerBottomNav,
+      registerAside: this.registerAside
     };
   }
 

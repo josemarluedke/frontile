@@ -7,7 +7,8 @@ import {
   settled,
   triggerKeyEvent
 } from '@ember/test-helpers';
-import { AppLayout, AppLayoutState } from 'frontile';
+import { cell } from 'ember-resources';
+import { AppLayout, AppLayoutState, AsideToggle } from 'frontile';
 import {
   mockMatchMedia,
   type MatchMediaMock
@@ -324,5 +325,50 @@ module('Integration | Component | Aside | frontile/layout', function (hooks) {
       header.right <= sidebar.left + 0.5,
       'navbar stops at the sidebar'
     );
+  });
+
+  test('AsideToggle renders nothing in a layout with no Aside', async function (assert) {
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+
+    assert.dom('[data-part="aside-toggle"]').doesNotExist();
+  });
+
+  test('AsideToggle follows the Aside as it comes and goes', async function (assert) {
+    const shown = cell(true);
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>Content</layout.Main>
+          {{#if shown.current}}
+            <layout.Aside>Details</layout.Aside>
+          {{/if}}
+        </AppLayout>
+      </template>
+    );
+
+    assert.dom('[data-part="aside-toggle"]').exists('shown with an Aside');
+
+    shown.current = false;
+    await settled();
+    assert.dom('[data-part="aside-toggle"]').doesNotExist('gone without one');
+
+    shown.current = true;
+    await settled();
+    assert.dom('[data-part="aside-toggle"]').exists('back with it');
+  });
+
+  test('a standalone AsideToggle still renders', async function (assert) {
+    const state = new AppLayoutState();
+    await render(<template><AsideToggle @state={{state}} /></template>);
+
+    assert.dom('[data-part="aside-toggle"]').exists();
   });
 });

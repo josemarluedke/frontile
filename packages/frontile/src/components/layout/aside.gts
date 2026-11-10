@@ -1,11 +1,13 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
+import { registerDestructor } from '@ember/destroyable';
 import { useStyles } from '@frontile/theme';
 import Drawer from '../overlays/drawer';
 import { AppLayoutState } from './app-layout-state';
 import type { AppLayoutContext } from './context';
 import type { AppLayoutVariants } from '@frontile/theme';
+import type Owner from '@ember/owner';
 
 interface AsideArgs {
   /**
@@ -54,6 +56,14 @@ interface AsideSignature {
  */
 class Aside extends Component<AsideSignature> {
   fallbackState = new AppLayoutState();
+
+  constructor(owner: Owner, args: AsideArgs) {
+    super(owner, args);
+    const unregister = args.layout?.registerAside(this);
+    if (unregister) {
+      registerDestructor(this, unregister);
+    }
+  }
 
   get state(): AppLayoutState {
     return this.args.layout?.state ?? this.args.state ?? this.fallbackState;

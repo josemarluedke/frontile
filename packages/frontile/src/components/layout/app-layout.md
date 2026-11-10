@@ -402,9 +402,10 @@ import { ViewIcon, SettingsIcon } from 'site/components/icons';
 ## Aside
 
 `Aside` is a panel beside `Main` for details, filters or help, shown while
-the layout's `asideOpen` is true. `AsideToggle` opens and closes it. From `lg`
-(64rem) up it is a column and `Main` narrows; below `lg` the same block opens
-as a drawer.
+the layout's `asideOpen` is true. `AsideToggle` opens and closes it, and
+renders nothing while the layout has no `Aside`, so a page without one shows
+no toggle. From `lg` (64rem) up it is a column and `Main` narrows; below `lg`
+the same block opens as a drawer.
 
 If the window narrows while the aside is open, it closes rather than popping
 up as a drawer. A layout that starts with the aside open on a narrow screen

@@ -68,6 +68,17 @@ export interface AppLayoutContext {
    * `--app-bottomnav-height`. Returns the matching unregister function.
    */
   registerBottomNav(nav: object): () => void;
+  /**
+   * Whether an `Aside` is rendered in the layout. `AsideToggle` renders
+   * nothing without one. Settles after the first render, like the registered
+   * sidebar (tracked).
+   */
+  readonly hasAside: boolean;
+  /**
+   * Called by `Aside` so the layout knows it has one. Returns the matching
+   * unregister function.
+   */
+  registerAside(aside: object): () => void;
 }
 
 export interface RegisteredSidebar {
