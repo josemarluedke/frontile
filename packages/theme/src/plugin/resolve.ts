@@ -103,6 +103,53 @@ function shouldGenerateOnColor(colorName: string): boolean {
   return SEMANTIC_COLOR_PREFIXES.some((prefix) => colorName.startsWith(prefix));
 }
 
+/**
+ * Give `.theme-inverse` the tokens of `themeName` wherever its nearest
+ * `.light`/`.dark` ancestor says it should resolve to that theme.
+ *
+ * Each `@scope` runs from a `.light` or `.dark` root down to the next nested
+ * `.light`/`.dark` (exclusive of that boundary's descendants), so a
+ * `.theme-inverse` sits in the scope of its nearest one only, at any depth:
+ *
+ * - a single inverse below the opposite theme's root resolves to `themeName`
+ *   (`.dark` > `.theme-inverse` is light);
+ * - a second inverse inside the first, below this theme's root, flips back
+ *   (`.light` > `.theme-inverse` > `.theme-inverse` is light).
+ *
+ * Consecutive `.theme-inverse` chains resolve up to 2 deep: `@scope` cannot
+ * count parity, so a third directly nested inverse keeps its parent's
+ * tokens. The `dark`/`light` variants in `index.css` follow the same rules.
+ *
+ * Every themed element matches exactly one theme rule, so the cascade layer
+ * each rule lands in (the default theme goes through `addBase`, the others
+ * through `addUtilities`) never decides the outcome.
+ */
+function addInverseRules(
+  base: CSSRuleObject,
+  themeName: 'light' | 'dark',
+  themeRules: CSSRuleObject
+): void {
+  const opposite = themeName === 'light' ? 'dark' : 'light';
+  const scope = (root: string): string =>
+    `@scope (.${root}) to (:scope :is(.light, .dark) *)`;
+  const add = (root: string, selector: string): void => {
+    const key = scope(root);
+    base[key] = {
+      ...(base[key] as CSSRuleObject | undefined),
+      [selector]: themeRules
+    };
+  };
+
+  // `:scope` is spelled out at the front: a selector inside `@scope` that
+  // already mentions `:scope` (here, in `:not()`) is not implicitly relative
+  // to the root, and would let an inverse above the root count.
+  add(opposite, ':scope .theme-inverse:not(:scope .theme-inverse *)');
+  add(
+    themeName,
+    ':scope .theme-inverse .theme-inverse:not(:scope .theme-inverse .theme-inverse *)'
+  );
+}
+
 function resolveThemes(
   themes: ConfigThemes = {},
   defaultTheme: DefaultThemeType
@@ -117,22 +164,23 @@ function resolveThemes(
   for (const [themeName, { extend, layout, colors }] of Object.entries(
     themes
   )) {
-    let cssSelector = `.${themeName}`;
+    const cssSelector = `.${themeName}`;
     let baseSelector = '';
 
     const scheme =
       themeName === 'light' || themeName === 'dark' ? themeName : extend;
 
-    // Add theme-inverse selectors
-    if (themeName === 'light') {
-      cssSelector = `${cssSelector}, .dark .theme-inverse`;
-    } else if (themeName === 'dark') {
-      cssSelector = `${cssSelector}, .light .theme-inverse`;
-    }
-
-    // if the theme is the default theme, add the selector to the root element
+    // The default theme also applies to the root element, unless the root
+    // carries another theme's class -- so `<html class="dark">` matches only
+    // `.dark`, whichever layer each rule lands in.
     if (themeName === defaultTheme) {
-      baseSelector = `:root, ${cssSelector}`;
+      const otherThemes = Object.keys(themes)
+        .filter((name) => name !== themeName)
+        .map((name) => `.${name}`)
+        .join(', ');
+      baseSelector = otherThemes
+        ? `:root:where(:not(${otherThemes})), ${cssSelector}`
+        : `:root, ${cssSelector}`;
     }
 
     const themeRules: CSSRuleObject = scheme ? { 'color-scheme': scheme } : {};
@@ -218,6 +266,10 @@ function resolveThemes(
             : value;
         themeRules[varPrefix] = formattedValue as string;
       }
+    }
+
+    if (themeName === 'light' || themeName === 'dark') {
+      addInverseRules(resolved.base, themeName, themeRules);
     }
 
     if (baseSelector) {
