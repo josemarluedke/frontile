@@ -2,9 +2,44 @@
 @import './styles/font-faces.css';
 @import './styles/theme.css';
 
-/* Theme variants */
-@custom-variant dark (&:is(.dark *, .light .theme-inverse *):not(.dark .theme-inverse *));
-@custom-variant light (&:is(.light *, .dark .theme-inverse *):not(.light .theme-inverse *));
+/* Theme variants
+
+   `dark:` applies when the element's nearest themed ancestor resolves dark:
+   a `.dark`, or a `.theme-inverse` whose own context is light. `light:` is
+   the mirror. Only ancestors count -- a `dark:` utility on the element that
+   itself carries `.dark` does not match.
+
+   The selectors enumerate every chain of themed ancestors (`.light`, `.dark`,
+   `.theme-inverse`) up to 3 deep, grouped by exact depth: one themed ancestor,
+   exactly two, exactly three. On an element with 4 or more themed ancestors
+   neither variant applies, so the plain utility shows. Chains of consecutive
+   `.theme-inverse` resolve up to 2 deep, matching the token rules in
+   `plugin/resolve.ts`.
+
+   Why not `@scope`, as the token rules use: Tailwind nests a block custom
+   variant inside the utility rule (`.dark\:x { @scope (.dark) { ... } }`), and
+   a nested `@scope` resolves its root relative to the parent rule -- among
+   the utility element's descendants, never its ancestors -- so it never
+   matches.
+
+   Specificity stays at (0,4,0) for the variant, (0,5,0) with the utility, as
+   before: the `:not()` depth guard counts four classes and the enumeration
+   sits in `:where()`. A `dark:` utility therefore wins and loses against the
+   same compound variants as it did. */
+@custom-variant dark (&:not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *):where(
+  :is(.dark *):not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *),
+  :is(:is(.light, .dark, .theme-inverse) .dark *, .light .theme-inverse *):not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *),
+  :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) .dark *,
+  :is(.light, .dark, .theme-inverse) .light .theme-inverse *,
+  .dark .theme-inverse .theme-inverse *
+));
+@custom-variant light (&:not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *):where(
+  :is(.light *):not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *),
+  :is(:is(.light, .dark, .theme-inverse) .light *, .dark .theme-inverse *):not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *),
+  :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) .light *,
+  :is(.light, .dark, .theme-inverse) .dark .theme-inverse *,
+  .light .theme-inverse .theme-inverse *
+));
 @custom-variant focus-visible (&[data-focus-visible-added]);
 
 /* Data state variants */

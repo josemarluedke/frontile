@@ -120,19 +120,52 @@ if (!savedTheme) {
 
 ## How Theme Classes Work
 
-Frontile uses CSS selectors that apply theme-specific styles:
+`.light`, `.dark` and `.theme-inverse` each resolve from the **nearest** themed
+ancestor. An element takes its colors, and its `color-scheme`, from the closest
+`.light`, `.dark` or `.theme-inverse` above it, no matter what the outer themes are.
+Themes can be nested anywhere in your application.
 
-```css
-/* Light theme styles apply to: */
-.light *,                    /* Elements in light mode */
-.dark .theme-inverse *       /* Theme-inverse within dark mode */
+```gts preview
+<template>
+  <div class='dark'>
+    <div class='p-6 bg-surface-canvas'>
+      <p class='text-neutral-strong'>Dark, from the outer <code>.dark</code>.</p>
 
-/* Dark theme styles apply to: */
-.dark *,                     /* Elements in dark mode */
-.light .theme-inverse *      /* Theme-inverse within light mode */
+      <div class='light p-6 bg-surface-canvas'>
+        <p class='text-neutral-strong'>Light, from the nested <code>.light</code>.</p>
+
+        <div class='theme-inverse p-6 bg-surface-canvas'>
+          <p class='text-neutral-strong'>
+            Dark again: <code>.theme-inverse</code> flips the nearest theme, which is light.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 ```
 
-This means themes properly cascade and can be nested anywhere in your application.
+The same rule applies to the `dark:` and `light:` variants: they follow the nearest
+themed ancestor, so `dark:bg-danger` inside a nested `.light` does not apply, even
+when an outer ancestor is `.dark`. A `dark:` utility on the element that itself carries
+`.dark` does not apply either, because the variant targets descendants of the theme class.
+
+### Nesting limits
+
+- **Color tokens:** `.light` and `.dark` nest to any depth, and a single
+  `.theme-inverse` works at any depth. Directly nested `.theme-inverse` chains are
+  supported up to two levels (the second returns to the outer theme); a third
+  `.theme-inverse` directly inside two others keeps its parent's colors.
+  `.theme-inverse` needs a `.light` or `.dark` ancestor to invert: directly under an
+  `<html>` with no theme class it does nothing.
+- **`dark:` and `light:` variants:** resolved up to three themed ancestors, counting every
+  `.light`, `.dark` and `.theme-inverse` above the element. With four or more, neither
+  variant applies and the plain utility shows. Color tokens keep working at that depth.
+- **Browser support:** inverse tokens use CSS `@scope` (Chrome 118+, Safari 17.4+,
+  Firefox 146+). In older browsers `.theme-inverse` does not change colors; plain
+  `.light` and `.dark` and the variants do not depend on it.
+- **Portals:** overlays rendered into `<body>` (modals, popovers, drawers) are outside the
+  nested subtree and inherit the root theme.
 
 ## Theme Inverse
 
