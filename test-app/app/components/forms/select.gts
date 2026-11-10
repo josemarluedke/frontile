@@ -40,6 +40,10 @@ const animalsAsOject = [
 
 export default class Example extends Component {
   @tracked selectedKeys: string[] = []; // Multiple selection
+
+  get selectedKeysLabel(): string {
+    return this.selectedKeys.join(', ');
+  }
   @tracked selectedKey2: string | null = 'elephant'; // Single selection
   @tracked selectedKey3: string | null = null; // Single selection
 
@@ -76,7 +80,7 @@ export default class Example extends Component {
       </:item>
     </Select>
     Values:
-    {{this.selectedKeys}}
+    {{this.selectedKeysLabel}}
     <Divider @class="my-8" />
     <Select
       @isFilterable={{true}}

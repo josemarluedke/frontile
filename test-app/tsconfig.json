@@ -1,17 +1,16 @@
 {
   "extends": "@ember/app-tsconfig",
   "compilerOptions": {
-    "baseUrl": ".",
     "skipLibCheck": true,
     "paths": {
       "test-app/tests/*": [
-        "tests/*"
+        "./tests/*"
       ],
       "test-app/*": [
-        "app/*"
+        "./app/*"
       ],
       "*": [
-        "types/*"
+        "./types/*"
       ]
     }
   },

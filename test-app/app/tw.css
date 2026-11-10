@@ -2,6 +2,5 @@
 @source "../tests";
 @source "../../packages/frontile/src";
 @source "../../packages/theme/src";
-/* @plugin "@frontile/theme/plugin/default"; */
-@plugin "../frontile.js";
+@plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";

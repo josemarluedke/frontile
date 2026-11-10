@@ -8,7 +8,7 @@ interface ExampleArgs {}
 export default class Example extends Component<ExampleArgs> {
   @tracked
   isSelected = {
-    default: false,
+    neutral: false,
     primary: false,
     success: false,
     warning: false,

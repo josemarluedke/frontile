@@ -12,7 +12,8 @@ import {
   Select,
   RadioGroup,
   CheckboxGroup,
-  Switch
+  Switch,
+  type FormResultData
 } from 'frontile';
 import { Spinner } from 'frontile';
 
@@ -48,12 +49,20 @@ export default class FormExample extends Component<FormExampleArgs> {
     this.isChecked = !this.isChecked;
   };
 
-  onChange = (data: Record<string, string | File>) => {
-    this.data = data;
+  onChange = (result: FormResultData) => {
+    this.data = result.data;
+  };
+
+  onSubmit = (result: FormResultData) => {
+    this.data = result.data;
   };
 
   <template>
-    <Form @onChange={{this.onChange}} class="flex flex-1 flex-col gap-4">
+    <Form
+      @onChange={{this.onChange}}
+      @onSubmit={{this.onSubmit}}
+      class="flex flex-1 flex-col gap-4"
+    >
       <Input
         @name="field-0"
         @label="field 0"

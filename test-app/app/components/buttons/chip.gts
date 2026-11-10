@@ -1,21 +1,25 @@
 import { Chip } from 'frontile';
 import type { TOC } from '@ember/component/template-only';
 
+const noop = () => {
+  // demo only
+};
+
 const Comp: TOC<null> = <template>
   <h2 class="text-2xl mt-6">
     Sizes
   </h2>
   <div class="mt-6">
-    <Chip @size="xs" @onClose={{true}}>
+    <Chip @size="xs" @onClose={{noop}}>
       Extra small
     </Chip>
-    <Chip @size="sm" @onClose={{true}}>
+    <Chip @size="sm" @onClose={{noop}}>
       Small
     </Chip>
-    <Chip @size="md" @onClose={{true}}>
+    <Chip @size="md" @onClose={{noop}}>
       Medium
     </Chip>
-    <Chip @size="lg" @onClose={{true}}>
+    <Chip @size="lg" @onClose={{noop}}>
       Large
     </Chip>
   </div>
@@ -82,19 +86,19 @@ const Comp: TOC<null> = <template>
   </div>
 
   <div class="mt-6">
-    <Chip @variant="outline" @onClose={{true}}>
+    <Chip @variant="outline" @onClose={{noop}}>
       Chip
     </Chip>
-    <Chip @variant="outline" @color="primary" @onClose={{true}}>
+    <Chip @variant="outline" @color="primary" @onClose={{noop}}>
       Primary
     </Chip>
-    <Chip @variant="outline" @color="success" @onClose={{true}}>
+    <Chip @variant="outline" @color="success" @onClose={{noop}}>
       Success
     </Chip>
-    <Chip @variant="outline" @color="warning" @onClose={{true}}>
+    <Chip @variant="outline" @color="warning" @onClose={{noop}}>
       Warning
     </Chip>
-    <Chip @variant="outline" @color="danger" @onClose={{true}}>
+    <Chip @variant="outline" @color="danger" @onClose={{noop}}>
       Danger
     </Chip>
   </div>
@@ -121,31 +125,31 @@ const Comp: TOC<null> = <template>
   </div>
 
   <div class="mt-6">
-    <Chip @variant="soft" @onClose={{true}}>
+    <Chip @variant="soft" @onClose={{noop}}>
       Chip
     </Chip>
-    <Chip @variant="soft" @color="primary" @onClose={{true}}>
+    <Chip @variant="soft" @color="primary" @onClose={{noop}}>
       Primary
     </Chip>
-    <Chip @variant="soft" @color="success" @onClose={{true}}>
+    <Chip @variant="soft" @color="success" @onClose={{noop}}>
       Success
     </Chip>
-    <Chip @variant="soft" @color="warning" @onClose={{true}}>
+    <Chip @variant="soft" @color="warning" @onClose={{noop}}>
       Warning
     </Chip>
-    <Chip @variant="soft" @color="danger" @onClose={{true}}>
+    <Chip @variant="soft" @color="danger" @onClose={{noop}}>
       Danger
     </Chip>
   </div>
 
   <div class="mt-6">
-    <Chip @variant="soft" @onClose={{true}} @isDisabled={{true}}>
+    <Chip @variant="soft" @onClose={{noop}} @isDisabled={{true}}>
       Chip
     </Chip>
     <Chip
       @variant="soft"
       @color="primary"
-      @onClose={{true}}
+      @onClose={{noop}}
       @isDisabled={{true}}
     >
       Primary
@@ -153,7 +157,7 @@ const Comp: TOC<null> = <template>
     <Chip
       @variant="soft"
       @color="success"
-      @onClose={{true}}
+      @onClose={{noop}}
       @isDisabled={{true}}
     >
       Success
@@ -161,7 +165,7 @@ const Comp: TOC<null> = <template>
     <Chip
       @variant="soft"
       @color="warning"
-      @onClose={{true}}
+      @onClose={{noop}}
       @isDisabled={{true}}
     >
       Warning
@@ -169,7 +173,7 @@ const Comp: TOC<null> = <template>
     <Chip
       @variant="soft"
       @color="danger"
-      @onClose={{true}}
+      @onClose={{noop}}
       @isDisabled={{true}}
     >
       Danger

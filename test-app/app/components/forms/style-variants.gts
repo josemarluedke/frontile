@@ -28,7 +28,7 @@ const animals = [
   'zebra'
 ];
 
-const selectedAnimals = ['elephant'];
+const selectedAnimal = 'elephant';
 
 interface StyleVariantsArgs {}
 
@@ -62,7 +62,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
       <Select
         @label="Animals"
         @items={{animals}}
-        @selectedKeys={{selectedAnimals}}
+        @selectedKey={{selectedAnimal}}
       />
 
       <Select
@@ -104,7 +104,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
       <NativeSelect
         @label="Animals"
         @items={{animals}}
-        @selectedKeys={{selectedAnimals}}
+        @selectedKey={{selectedAnimal}}
       />
 
       <NativeSelect
