@@ -5,7 +5,6 @@ import {
   find,
   triggerEvent,
   click,
-  focus,
   settled
 } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
@@ -13,6 +12,7 @@ import { Sidebar } from 'frontile';
 import NavItem from 'frontile/components/layout/nav-item';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
+import { keyboardFocus } from 'test-app/tests/helpers/keyboard-focus';
 import type { TOC } from '@ember/component/template-only';
 
 const TestIcon: TOC<{ Element: SVGSVGElement }> = <template>
@@ -174,7 +174,7 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
     await triggerEvent('#item', 'mouseleave');
     assert.dom('[role="tooltip"]').doesNotExist();
 
-    await focus('#item');
+    await keyboardFocus('#item');
     assert.dom('[role="tooltip"]').hasText('Reports');
   });
 
@@ -462,7 +462,7 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
         </template>
       );
 
-      await focus('#item');
+      await keyboardFocus('#item');
       assert.dom('[role="tooltip"]').hasText('Reports');
     });
 
@@ -478,7 +478,7 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
         </template>
       );
 
-      await focus('#item');
+      await keyboardFocus('#item');
       assert.dom('[role="tooltip"]').doesNotExist();
       assert.dom('#item [data-part="nav-item-label"]').hasText('Reports');
     });
@@ -492,7 +492,7 @@ module('Integration | Component | NavItem | frontile/layout', function (hooks) {
         </template>
       );
 
-      await focus('#item');
+      await keyboardFocus('#item');
       assert.dom('[role="tooltip"]').doesNotExist();
     });
 
