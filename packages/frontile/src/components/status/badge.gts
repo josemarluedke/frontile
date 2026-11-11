@@ -27,6 +27,13 @@ interface BadgeSignature {
     size?: 'xs' | 'sm' | 'md' | 'lg';
 
     /**
+     * Adds a dot before the content, colored by `@color`.
+     *
+     * @defaultValue false
+     */
+    withDot?: boolean;
+
+    /**
      * Custom class name, it will override the default ones using Tailwind Merge library.
      */
     class?: string;
@@ -66,7 +73,7 @@ interface BadgeSignature {
 }
 
 /**
- * A non-interactive label for status or metadata. Renders, in order: start
+ * A non-interactive label for status or metadata. Renders, in order: dot, start
  * icon, label, value, unit, end icon.
  *
  * When you pass a named block (`<:startIcon>` or `<:endIcon>`), Glimmer no
@@ -82,7 +89,7 @@ class Badge extends Component<BadgeSignature> {
   get classNames() {
     const { badge } = useStyles();
 
-    const { base, value, unit, icon } = badge({
+    const { base, value, unit, icon, dot } = badge({
       color: this.args.color,
       size: this.args.size,
       variant: this.args.variant
@@ -92,7 +99,8 @@ class Badge extends Component<BadgeSignature> {
       base: base({ class: this.args.class }),
       value: value(),
       unit: unit(),
-      icon: icon()
+      icon: icon(),
+      dot: dot()
     };
   }
 
@@ -103,6 +111,9 @@ class Badge extends Component<BadgeSignature> {
       data-part="base"
       ...attributes
     >
+      {{#if @withDot}}
+        <span class={{this.classNames.dot}} data-part="dot"></span>
+      {{/if}}
       {{#if (has-block "startIcon")}}
         <span
           class={{this.classNames.icon}}

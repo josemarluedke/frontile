@@ -6,19 +6,6 @@ const chip = tv({
       'whitespace-nowrap',
       'inline-flex items-center justify-between box-border rounded-full'
     ],
-    // The clickable part: a link, a button or (with neither) a plain span. It
-    // holds the dot and the content; the close button is its sibling, never a
-    // descendant, so the two stay separate controls with separate tab stops.
-    //
-    // It covers the whole pill except the close button: `self-stretch` gives it the
-    // chip's full height and it carries the chip's horizontal padding (per
-    // size below), so there is no dead rim around it and its focus ring
-    // traces the pill's edge. The trailing padding moves to the close button
-    // (`mr-*`) when there is one; `last:` gives it back to the body when the
-    // body is the only child.
-    body: [
-      'inline-flex items-center self-stretch flex-1 min-w-0 rounded-full outline-none'
-    ],
     // label text role (size set per size variant)
     content: ['flex-1 text-inherit font-label'],
     dot: ['shrink-0', 'ml-1', 'rounded-full'],
@@ -33,29 +20,7 @@ const chip = tv({
   },
   variants: {
     isDisabled: {
-      true: {
-        base: 'opacity-disabled cursor-not-allowed',
-        body: 'cursor-not-allowed'
-      }
-    },
-    // The body is a link or a button that can be activated. The component
-    // passes `false` while disabled, so a disabled chip has neither the
-    // pointer nor the hover/active fills below. The ring sits on the body,
-    // without the shared ring's offset for the same reason as the close
-    // button's.
-    isPressable: {
-      true: {
-        body: [
-          'cursor-pointer',
-          'focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0'
-        ]
-      },
-      false: ''
-    },
-    // Holds the pressed (active-step) fill. See the selected compounds below.
-    isSelected: {
-      true: '',
-      false: ''
+      true: 'opacity-disabled cursor-not-allowed'
     },
     variant: {
       solid: '',
@@ -97,8 +62,6 @@ const chip = tv({
         closeButton: 'bg-danger-muted text-on-danger-muted'
       }
     },
-    // The horizontal padding sits on the body and the close button, not the
-    // base (see the `body` slot), so the visual padding is unchanged.
     size: {
       // For dense UI — table cells, list rows, multi-select fields. It keeps
       // `sm`'s text size and loses height and padding instead: 12px is about
@@ -106,32 +69,28 @@ const chip = tv({
       // `label-micro` so its circle (icon plus `p-0.5`) still fits the 20px
       // chip.
       xs: {
-        base: 'text-label-2xs h-5',
+        base: 'text-label-2xs px-0.5 h-5',
         content: 'px-1 leading-4',
         dot: 'size-1.5',
-        body: 'pl-0.5 last:pr-0.5',
-        closeButton: 'text-label-micro mr-0.5'
+        closeButton: 'text-label-micro'
       },
       sm: {
-        base: 'text-label-2xs h-6',
+        base: 'text-label-2xs px-1 h-6',
         content: 'px-1 leading-4',
         dot: 'size-1.5',
-        body: 'pl-1 last:pr-1',
-        closeButton: 'text-label-2xs mr-1'
+        closeButton: 'text-label-2xs'
       },
       md: {
-        base: 'text-label-xs h-7',
+        base: 'text-label-xs px-1 h-7',
         content: 'px-2 leading-5',
         dot: 'size-2',
-        body: 'pl-1 last:pr-1',
-        closeButton: 'text-label-xs mr-1'
+        closeButton: 'text-label-xs'
       },
       lg: {
-        base: 'text-label-md h-8',
+        base: 'text-label-md px-2 h-8',
         content: 'px-2 leading-6',
         dot: 'size-2.5',
-        body: 'pl-2 last:pr-2',
-        closeButton: 'text-label-md mr-2'
+        closeButton: 'text-label-md'
       }
     }
   },
@@ -322,354 +281,12 @@ const chip = tv({
         base: 'text-danger-strong border border-danger',
         closeButton: 'hover:bg-danger hover:text-on-danger'
       }
-    },
-
-    // BODY STATES (hover / active / selected)
-    //
-    // The fills go on the base, so the whole pill changes, but are keyed to
-    // the body's own `:hover`/`:active` through `has-[>[data-part=body]:…]`:
-    // pointing at the close button (a sibling of the body) does not light the
-    // chip up, and the close button keeps its own circle hover. Putting the
-    // fill on the body instead would tint only part of the pill, since the
-    // base's padding and the close button sit outside it.
-    //
-    // Steps (rest -> hover -> active):
-    //
-    // - soft: `-subtle` -> `-muted` -> `-mild` with `text-on-*-mild`, the
-    //   active step Button's soft variant uses. Not `-soft`: for every colour
-    //   but neutral that level is a translucent tint, lighter on the page than
-    //   `-muted`, so pressing would lighten the chip. Neutral's `-soft` is an
-    //   opaque gray one step above `-muted` (gray 50 -> 100 -> 200 in light,
-    //   900 -> 800 -> 700 in dark), so neutral keeps it and its resting text.
-    // - outline: transparent -> `-subtle` -> `-muted`.
-    // - solid: DEFAULT -> `-mild` -> `-firm` (neutral, which rests on
-    //   `-bolder`, steps down to `-strong` then `-firm`, as Button's does).
-    //
-    // A selected chip holds the active fill and does not respond to hover.
-    {
-      variant: 'solid',
-      color: 'neutral',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-neutral-strong has-[>[data-part=body]:hover]:text-on-neutral-strong has-[>[data-part=body]:active]:bg-neutral-firm has-[>[data-part=body]:active]:text-on-neutral-firm'
-      }
-    },
-    {
-      variant: 'solid',
-      color: 'primary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-primary-mild has-[>[data-part=body]:hover]:text-on-primary-mild has-[>[data-part=body]:active]:bg-primary-firm has-[>[data-part=body]:active]:text-on-primary-firm'
-      }
-    },
-    {
-      variant: 'solid',
-      color: 'secondary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-secondary-mild has-[>[data-part=body]:hover]:text-on-secondary-mild has-[>[data-part=body]:active]:bg-secondary-firm has-[>[data-part=body]:active]:text-on-secondary-firm'
-      }
-    },
-    {
-      variant: 'solid',
-      color: 'tertiary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-tertiary-mild has-[>[data-part=body]:hover]:text-on-tertiary-mild has-[>[data-part=body]:active]:bg-tertiary-firm has-[>[data-part=body]:active]:text-on-tertiary-firm'
-      }
-    },
-    {
-      variant: 'solid',
-      color: 'success',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-success-mild has-[>[data-part=body]:hover]:text-on-success-mild has-[>[data-part=body]:active]:bg-success-firm has-[>[data-part=body]:active]:text-on-success-firm'
-      }
-    },
-    {
-      variant: 'solid',
-      color: 'warning',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-warning-mild has-[>[data-part=body]:hover]:text-on-warning-mild has-[>[data-part=body]:active]:bg-warning-firm has-[>[data-part=body]:active]:text-on-warning-firm'
-      }
-    },
-    {
-      variant: 'solid',
-      color: 'danger',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-danger-mild has-[>[data-part=body]:hover]:text-on-danger-mild has-[>[data-part=body]:active]:bg-danger-firm has-[>[data-part=body]:active]:text-on-danger-firm'
-      }
-    },
-    {
-      variant: 'soft',
-      color: 'neutral',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-neutral-muted has-[>[data-part=body]:active]:bg-neutral-soft'
-      }
-    },
-    {
-      variant: 'soft',
-      color: 'primary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-primary-muted has-[>[data-part=body]:active]:bg-primary-mild has-[>[data-part=body]:active]:text-on-primary-mild'
-      }
-    },
-    {
-      variant: 'soft',
-      color: 'secondary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-secondary-muted has-[>[data-part=body]:active]:bg-secondary-mild has-[>[data-part=body]:active]:text-on-secondary-mild'
-      }
-    },
-    {
-      variant: 'soft',
-      color: 'tertiary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-tertiary-muted has-[>[data-part=body]:active]:bg-tertiary-mild has-[>[data-part=body]:active]:text-on-tertiary-mild'
-      }
-    },
-    {
-      variant: 'soft',
-      color: 'success',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-success-muted has-[>[data-part=body]:active]:bg-success-mild has-[>[data-part=body]:active]:text-on-success-mild'
-      }
-    },
-    {
-      variant: 'soft',
-      color: 'warning',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-warning-muted has-[>[data-part=body]:active]:bg-warning-mild has-[>[data-part=body]:active]:text-on-warning-mild'
-      }
-    },
-    {
-      variant: 'soft',
-      color: 'danger',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-danger-muted has-[>[data-part=body]:active]:bg-danger-mild has-[>[data-part=body]:active]:text-on-danger-mild'
-      }
-    },
-    {
-      variant: 'outline',
-      color: 'neutral',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-neutral-subtle has-[>[data-part=body]:active]:bg-neutral-muted'
-      }
-    },
-    {
-      variant: 'outline',
-      color: 'primary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-primary-subtle has-[>[data-part=body]:active]:bg-primary-muted'
-      }
-    },
-    {
-      variant: 'outline',
-      color: 'secondary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-secondary-subtle has-[>[data-part=body]:active]:bg-secondary-muted'
-      }
-    },
-    {
-      variant: 'outline',
-      color: 'tertiary',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-tertiary-subtle has-[>[data-part=body]:active]:bg-tertiary-muted'
-      }
-    },
-    {
-      variant: 'outline',
-      color: 'success',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-success-subtle has-[>[data-part=body]:active]:bg-success-muted'
-      }
-    },
-    {
-      variant: 'outline',
-      color: 'warning',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-warning-subtle has-[>[data-part=body]:active]:bg-warning-muted'
-      }
-    },
-    {
-      variant: 'outline',
-      color: 'danger',
-      isPressable: true,
-      isSelected: false,
-      class: {
-        base: 'has-[>[data-part=body]:hover]:bg-danger-subtle has-[>[data-part=body]:active]:bg-danger-muted'
-      }
-    },
-
-    // Selected: holds the active-step fill.
-    {
-      variant: 'solid',
-      color: 'neutral',
-      isSelected: true,
-      class: { base: 'bg-neutral-firm text-on-neutral-firm' }
-    },
-    {
-      variant: 'solid',
-      color: 'primary',
-      isSelected: true,
-      class: { base: 'bg-primary-firm text-on-primary-firm' }
-    },
-    {
-      variant: 'solid',
-      color: 'secondary',
-      isSelected: true,
-      class: { base: 'bg-secondary-firm text-on-secondary-firm' }
-    },
-    {
-      variant: 'solid',
-      color: 'tertiary',
-      isSelected: true,
-      class: { base: 'bg-tertiary-firm text-on-tertiary-firm' }
-    },
-    {
-      variant: 'solid',
-      color: 'success',
-      isSelected: true,
-      class: { base: 'bg-success-firm text-on-success-firm' }
-    },
-    {
-      variant: 'solid',
-      color: 'warning',
-      isSelected: true,
-      class: { base: 'bg-warning-firm text-on-warning-firm' }
-    },
-    {
-      variant: 'solid',
-      color: 'danger',
-      isSelected: true,
-      class: { base: 'bg-danger-firm text-on-danger-firm' }
-    },
-    {
-      variant: 'soft',
-      color: 'neutral',
-      isSelected: true,
-      class: { base: 'bg-neutral-soft' }
-    },
-    {
-      variant: 'soft',
-      color: 'primary',
-      isSelected: true,
-      class: { base: 'bg-primary-mild text-on-primary-mild' }
-    },
-    {
-      variant: 'soft',
-      color: 'secondary',
-      isSelected: true,
-      class: { base: 'bg-secondary-mild text-on-secondary-mild' }
-    },
-    {
-      variant: 'soft',
-      color: 'tertiary',
-      isSelected: true,
-      class: { base: 'bg-tertiary-mild text-on-tertiary-mild' }
-    },
-    {
-      variant: 'soft',
-      color: 'success',
-      isSelected: true,
-      class: { base: 'bg-success-mild text-on-success-mild' }
-    },
-    {
-      variant: 'soft',
-      color: 'warning',
-      isSelected: true,
-      class: { base: 'bg-warning-mild text-on-warning-mild' }
-    },
-    {
-      variant: 'soft',
-      color: 'danger',
-      isSelected: true,
-      class: { base: 'bg-danger-mild text-on-danger-mild' }
-    },
-    {
-      variant: 'outline',
-      color: 'neutral',
-      isSelected: true,
-      class: { base: 'bg-neutral-muted' }
-    },
-    {
-      variant: 'outline',
-      color: 'primary',
-      isSelected: true,
-      class: { base: 'bg-primary-muted' }
-    },
-    {
-      variant: 'outline',
-      color: 'secondary',
-      isSelected: true,
-      class: { base: 'bg-secondary-muted' }
-    },
-    {
-      variant: 'outline',
-      color: 'tertiary',
-      isSelected: true,
-      class: { base: 'bg-tertiary-muted' }
-    },
-    {
-      variant: 'outline',
-      color: 'success',
-      isSelected: true,
-      class: { base: 'bg-success-muted' }
-    },
-    {
-      variant: 'outline',
-      color: 'warning',
-      isSelected: true,
-      class: { base: 'bg-warning-muted' }
-    },
-    {
-      variant: 'outline',
-      color: 'danger',
-      isSelected: true,
-      class: { base: 'bg-danger-muted' }
     }
   ],
   defaultVariants: {
     size: 'md',
     color: 'neutral',
-    variant: 'solid',
-    isPressable: false,
-    isSelected: false
+    variant: 'solid'
   }
 });
 

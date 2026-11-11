@@ -135,6 +135,39 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       assert.dom('[data-test-id="twelve"] [data-part="value"]').hasText('12');
     });
 
+    test('@withDot renders a dot before the label and start icon', async function (assert) {
+      await render(
+        <template>
+          <Badge @withDot={{true}} data-test-id="badge">
+            <:startIcon><svg data-test-id="icon"></svg></:startIcon>
+            <:default>Active</:default>
+          </Badge>
+        </template>
+      );
+
+      const dot = document.querySelector('[data-part="dot"]') as HTMLElement;
+      const icon = document.querySelector('[data-test-id="icon"]') as Element;
+
+      assert.dom(dot).exists();
+      assert.dom(dot).hasClass('badge-dot');
+      assert.true(
+        Boolean(
+          dot.compareDocumentPosition(icon) & Node.DOCUMENT_POSITION_FOLLOWING
+        ),
+        'dot precedes the icon'
+      );
+    });
+
+    test('no dot unless @withDot is set', async function (assert) {
+      await render(
+        <template>
+          <Badge data-test-id="badge">Active</Badge>
+        </template>
+      );
+
+      assert.dom('[data-part="dot"]').doesNotExist();
+    });
+
     test('it does not render unit or icon wrappers when absent', async function (assert) {
       await render(
         <template>
@@ -273,6 +306,15 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
 
       assert.true(value.includes('font-bold'), 'font-bold');
       assert.true(value.includes('tabular-nums'), 'tabular-nums');
+    });
+
+    test('the dot is a colored circle that scales with size', function (assert) {
+      assert.true(
+        realStyles.badge({ color: 'success' }).dot().includes('bg-success')
+      );
+      assert.true(realStyles.badge({}).dot().includes('rounded-full'));
+      assert.true(realStyles.badge({ size: 'md' }).dot().includes('size-2'));
+      assert.true(realStyles.badge({ size: 'lg' }).dot().includes('size-2.5'));
     });
 
     test('md is 28px tall', function (assert) {

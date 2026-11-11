@@ -151,38 +151,68 @@ import { CheckIcon, StarIcon } from 'site/components/icons';
 </template>
 ```
 
+## Badge with Dots
+
+`@withDot` adds a small dot before the content, colored by `@color`.
+
+```gts preview collapsible
+import { Badge } from 'frontile';
+import { array } from '@ember/helper';
+
+const colors = [
+  'neutral',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'danger'
+];
+
+<template>
+  <div class='flex flex-col gap-6'>
+    {{#each (array 'soft' 'outline') as |variant|}}
+      <div>
+        <p class='font-code text-code-sm text-neutral-strong mb-2'>
+          @variant='{{variant}}'
+        </p>
+        <div class='flex flex-wrap items-center gap-3'>
+          {{#each colors as |color|}}
+            <Badge @variant={{variant}} @color={{color}} @withDot={{true}}>
+              {{color}}
+            </Badge>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</template>
+```
+
 ## Chip vs Badge
 
-A Badge never responds to the user. A [Chip](/docs/components/buttons/chip) is always
-pressable, selectable or closable. If the element is none of those, use a Badge; if
-it is any of them, use a Chip.
+Neither responds to a click. A Badge is a squared label for a status or a count. A
+[Chip](/docs/components/buttons/chip) is a pill for a value the user can remove, and
+its close button is the only part that does anything.
 
 ```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
 import { Badge, Chip } from 'frontile';
 
-export default class extends Component {
-  @tracked isSelected = false;
+const noop = (): void => {};
 
-  toggle = (): void => {
-    this.isSelected = !this.isSelected;
-  };
-
-  <template>
-    <div class='flex flex-wrap items-center gap-3'>
-      <Badge @color='success'>Active</Badge>
-      <Chip
-        @variant='soft'
-        @color='primary'
-        @isSelected={{this.isSelected}}
-        @onPress={{this.toggle}}
-      >
-        Fiber
-      </Chip>
-    </div>
-  </template>
-}
+<template>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Badge @color='success' @withDot={{true}}>Badge</Badge>
+    <Chip
+      @variant='soft'
+      @color='primary'
+      @withDot={{true}}
+      @onClose={{noop}}
+      @closeButtonTitle='Remove Fiber'
+    >
+      Chip
+    </Chip>
+  </div>
+</template>
 ```
 
 ## Accessibility

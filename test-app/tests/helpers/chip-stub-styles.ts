@@ -14,15 +14,11 @@ import { tv } from 'tailwind-variants';
 export const chipStubStyles: ReturnType<typeof useStyles>['chip'] = tv({
   slots: {
     base: ['chip'],
-    body: ['chip-body'],
     content: ['chip-content'],
     dot: ['chip-dot'],
     closeButton: ['chip-close-button']
   },
   variants: {
-    isPressable: {
-      true: { body: 'chip-pressable' }
-    },
     variant: {
       solid: 'chip-solid',
       outline: 'chip-outline',

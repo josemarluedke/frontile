@@ -7,6 +7,8 @@ const badge = tv({
     value: 'font-bold tabular-nums leading-none',
     // unit following the value, e.g. "/mo"
     unit: 'opacity-80 leading-none',
+    // status dot before the content; sized per size, coloured per color
+    dot: 'shrink-0 rounded-full',
     icon: 'inline-flex shrink-0 items-center justify-center [&>svg]:size-full'
   },
   variants: {
@@ -15,12 +17,24 @@ const badge = tv({
       outline: ''
     },
     color: {
-      neutral: '',
-      primary: '',
-      secondary: '',
-      tertiary: '',
-      success: '',
-      danger: ''
+      neutral: {
+        dot: 'bg-neutral-strong'
+      },
+      primary: {
+        dot: 'bg-primary'
+      },
+      secondary: {
+        dot: 'bg-secondary'
+      },
+      tertiary: {
+        dot: 'bg-tertiary'
+      },
+      success: {
+        dot: 'bg-success'
+      },
+      danger: {
+        dot: 'bg-danger'
+      }
     },
     // Value and unit share the label's font size so their baselines line up;
     // the value is set apart by weight only. Heights match Chip (20, 24, 28,
@@ -29,18 +43,22 @@ const badge = tv({
     size: {
       xs: {
         base: 'text-label-2xs h-5 px-1.5 gap-1 rounded-sm',
+        dot: 'size-1.5',
         icon: 'size-3'
       },
       sm: {
         base: 'text-label-2xs h-6 px-2 gap-1 rounded-sm',
+        dot: 'size-1.5',
         icon: 'size-3'
       },
       md: {
         base: 'text-label-xs h-7 px-2.5 gap-1.5 rounded-md',
+        dot: 'size-2',
         icon: 'size-3.5'
       },
       lg: {
         base: 'text-label-md h-8 px-3 gap-1.5 rounded-md',
+        dot: 'size-2.5',
         icon: 'size-4'
       }
     }

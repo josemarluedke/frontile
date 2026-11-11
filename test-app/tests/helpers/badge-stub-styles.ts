@@ -14,6 +14,7 @@ export const badgeStubStyles: ReturnType<typeof useStyles>['badge'] = tv({
     base: ['badge'],
     value: ['badge-value'],
     unit: ['badge-unit'],
+    dot: ['badge-dot'],
     icon: ['badge-icon']
   },
   variants: {
