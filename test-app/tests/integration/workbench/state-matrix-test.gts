@@ -20,6 +20,38 @@ function forced(el: Element): string[] {
 module('Integration | Workbench | state matrix', function (hooks) {
   setupRenderingTest(hooks);
 
+  test('the scroller contains absolutely positioned descendants', async function (assert) {
+    // Visually hidden inputs are `position: absolute`. Absolute boxes escape
+    // an `overflow` ancestor unless it is also their containing block, so an
+    // unpositioned scroller lets them widen the page on narrow screens.
+    const rows = ['a'];
+    await render(
+      <template>
+        <WorkbenchStateMatrix @rows={{rows}} as |row|>
+          <span class="absolute">{{row}}</span>
+        </WorkbenchStateMatrix>
+      </template>
+    );
+
+    const scroller = document.querySelector('[data-workbench-state-matrix]')!;
+    assert.strictEqual(
+      window.getComputedStyle(scroller).position,
+      'relative',
+      'the scroller is the containing block'
+    );
+    assert.strictEqual(
+      window.getComputedStyle(scroller).overflowX,
+      'auto',
+      'and it still scrolls'
+    );
+    const absolute = scroller.querySelector('span.absolute') as HTMLElement;
+    assert.strictEqual(
+      absolute.offsetParent,
+      scroller,
+      'absolute cells resolve against it'
+    );
+  });
+
   test('rows x states with headers', async function (assert) {
     const rows = ['solid', 'outline'];
     await render(

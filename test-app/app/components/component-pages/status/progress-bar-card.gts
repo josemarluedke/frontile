@@ -59,7 +59,8 @@ import {
     >
       <p class="text-neutral mb-3 text-sm">
         At 0 every color renders the same empty track. The fill color shows at
-        50 and 100.
+        50 and 100. Secondary and warning fills are close in hue, so tell them
+        apart by their row label.
       </p>
       <WorkbenchPanes @inverse={{true}}>
         <div class="flex flex-col gap-4">

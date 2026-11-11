@@ -148,7 +148,7 @@ export default class WorkbenchStateMatrix<T extends string> extends Component<
   <template>
     <div
       data-workbench-state-matrix
-      class="min-w-0 overflow-x-auto"
+      class="relative min-w-0 overflow-x-auto"
       ...attributes
     >
       <table class="border-separate border-spacing-x-3 border-spacing-y-2">
