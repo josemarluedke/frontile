@@ -9,8 +9,7 @@ import {
   Switch,
   Textarea
 } from 'frontile';
-import { registerCustomStyles, useStyles } from '@frontile/theme';
-import { realStyles } from '../../helpers/real-theme-styles';
+import { useRealStyles } from '../../helpers/scoped-styles';
 import forceWithin from 'test-app/utils/workbench/force-within';
 
 // The Form controls page forces focus with `data-focus-visible-added`. Where
@@ -32,31 +31,15 @@ function shadow(selector: string): string {
 module('Integration | Workbench | form focus', function (hooks) {
   setupRenderingTest(hooks);
 
-  // Other test files replace these styles process-wide with
-  // `registerCustomStyles`; these tests need the shipped classes.
-  const KEYS = [
+  // Compares computed rings, so render against the shipped classes.
+  useRealStyles(hooks, [
     'textarea',
     'select',
     'nativeSelect',
     'checkbox',
     'radio',
     'switchInput'
-  ] as const;
-  let previous: ReturnType<typeof useStyles> | undefined;
-  hooks.before(function () {
-    previous = useStyles();
-    registerCustomStyles(
-      Object.fromEntries(KEYS.map((k) => [k, realStyles[k]]))
-    );
-  });
-  hooks.after(function () {
-    if (previous) {
-      const restore = previous;
-      registerCustomStyles(
-        Object.fromEntries(KEYS.map((k) => [k, restore[k]]))
-      );
-    }
-  });
+  ]);
 
   test('Textarea: forced on the textarea', async function (assert) {
     await render(

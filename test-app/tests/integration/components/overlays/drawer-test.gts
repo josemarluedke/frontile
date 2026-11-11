@@ -20,11 +20,12 @@ import {
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 import { warn } from '@ember/debug';
 import { ownParts } from 'frontile/test-support';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   setupRenderingTest(hooks);
 
-  registerCustomStyles({
+  useCustomStyles(hooks, {
     backdrop: tv({ base: 'overlay__backdrop' }) as never,
     overlay: tv({
       base: 'overlay__content',
@@ -1149,15 +1150,11 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     // 8px auto-scroll instead of leaving it visible.
     //
     // This has to be checked against the *real*, shipped theme, not this
-    // file's own `registerCustomStyles` mock above (needed by the
-    // class-name assertions elsewhere in this file), which replaces
-    // `drawer`/`overlay` with plain test markers that carry none of the real
-    // utilities (`top-2`, `w-full`, `fixed`, `overflow-auto`, ...) and so
-    // could not exercise this bug either way. `realStyles` is captured in
-    // `tests/helpers/real-theme-styles.ts` before any test file's
-    // module-level `registerCustomStyles` call can replace it (see that
-    // file), so it stays the genuine shipped theme regardless of which test
-    // file happens to load first.
+    // module's own `useCustomStyles` stub above (needed by the class-name
+    // assertions elsewhere in this file), which replaces `drawer`/`overlay`
+    // with plain test markers that carry none of the real utilities
+    // (`top-2`, `w-full`, `fixed`, `overflow-auto`, ...) and so could not
+    // exercise this bug either way.
     const previousDrawerStyles = useStyles().drawer;
     const previousOverlayStyles = useStyles().overlay;
     registerCustomStyles({

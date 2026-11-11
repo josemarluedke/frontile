@@ -10,16 +10,16 @@ import {
   find
 } from '@ember/test-helpers';
 import { Overlay } from 'frontile/overlays';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 module(
   'Integration | Component | @frontile/overlays/Overlay',
   function (hooks) {
     setupRenderingTest(hooks);
 
-    registerCustomStyles({
+    useCustomStyles(hooks, {
       backdrop: tv({ base: 'overlay__backdrop' }) as never,
       overlay: tv({
         base: 'overlay__content',

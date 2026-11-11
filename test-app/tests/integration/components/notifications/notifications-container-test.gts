@@ -18,6 +18,7 @@ import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 /** A plain real-time wait, deliberately bypassing Ember's test waiters —
  * unlike `settled()`, it does not block on other pending runloop timers
@@ -26,11 +27,10 @@ import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
 const sleep = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
-// Captured before the `registerCustomStyles` override below replaces
-// `notificationsContainer` for the rest of this suite, so tests can still
-// assert against the real, shipped classes (e.g. the pointer-events
-// gap-bridging fix) rather than the class names this file mocks in below.
-const realNotificationsContainerStyles = useStyles().notificationsContainer;
+// The real, shipped classes, so tests can assert against them (e.g. the
+// pointer-events gap-bridging fix) rather than the class names this module
+// swaps in via `useCustomStyles` below.
+const realNotificationsContainerStyles = realStyles.notificationsContainer;
 
 // `notification-card.gts`'s `enter` modifier flips `hasEntered` on the frame
 // after insertion (via `requestAnimationFrame`), and only once that happens
@@ -44,7 +44,7 @@ async function settledAfterEnter(): Promise<void> {
   await settled();
 }
 
-registerCustomStyles({
+const stubStyles = {
   notificationsContainer: tv({
     slots: {
       base: 'notifications-container',
@@ -61,13 +61,14 @@ registerCustomStyles({
       }
     },
     defaultVariants: { placement: 'bottom-right' }
-  })
-});
+  }) as never
+};
 
 module(
   'Integration | Component | @frontile/notifications/NotificationsContainer',
   function (hooks) {
     setupRenderingTest(hooks);
+    useCustomStyles(hooks, stubStyles);
 
     const options: NotificationOptions = {
       transitionDuration: 0,
@@ -254,12 +255,9 @@ module(
 
       // This test needs a real flex row layout on the card (icon beside the
       // content column) to get a meaningful, realistic natural height out of
-      // `getBoundingClientRect()`. `notification-card-test.gts` registers a
-      // process-wide `notificationCard` override with empty slot classes
-      // (module-level code runs for every loaded test file regardless of
-      // `--filter`), so this test installs its own minimal-but-real-layout
-      // override for its duration and restores whatever was registered
-      // before it, to avoid leaking into other tests.
+      // `getBoundingClientRect()`, so it installs its own
+      // minimal-but-real-layout `notificationCard` override for its duration
+      // and restores whatever was registered before it.
       const previousNotificationCardStyles = useStyles().notificationCard;
       registerCustomStyles({
         notificationCard: tv({

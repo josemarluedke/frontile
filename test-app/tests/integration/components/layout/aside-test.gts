@@ -8,11 +8,13 @@ import {
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
+import { tv } from 'tailwind-variants';
 import { AppLayout, AppLayoutState, AsideToggle } from 'frontile';
 import {
   mockMatchMedia,
   type MatchMediaMock
 } from 'test-app/tests/helpers/match-media';
+import { useCustomStyles } from 'test-app/tests/helpers/scoped-styles';
 
 const MOBILE = 500;
 const DESKTOP = 1200;
@@ -265,19 +267,26 @@ module('Integration | Component | Aside | frontile/layout', function (hooks) {
     assert.dom('[role="dialog"]').doesNotExist();
   });
 
-  test('closing the drawer by its backdrop sets asideOpen false', async function (assert) {
-    media = mockMatchMedia(MOBILE);
-    const state = new AppLayoutState({ asideOpen: true });
-    await render(
-      <template>
-        <AppLayout @state={{state}} as |layout|>
-          <layout.Main>Content</layout.Main>
-          <layout.Aside>Details</layout.Aside>
-        </AppLayout>
-      </template>
-    );
-    await click('.overlay__backdrop');
-    assert.false(state.asideOpen);
+  module('backdrop', function (hooks) {
+    // A marker class to click; the shipped backdrop has no selector of its own.
+    useCustomStyles(hooks, {
+      backdrop: tv({ base: 'overlay__backdrop' }) as never
+    });
+
+    test('closing the drawer by its backdrop sets asideOpen false', async function (assert) {
+      media = mockMatchMedia(MOBILE);
+      const state = new AppLayoutState({ asideOpen: true });
+      await render(
+        <template>
+          <AppLayout @state={{state}} as |layout|>
+            <layout.Main>Content</layout.Main>
+            <layout.Aside>Details</layout.Aside>
+          </AppLayout>
+        </template>
+      );
+      await click('.overlay__backdrop');
+      assert.false(state.asideOpen);
+    });
   });
 
   test('the drawer toggle returns focus to AsideToggle on close', async function (assert) {

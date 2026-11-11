@@ -1,12 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import Hint from '@frontile/forms-legacy/components/form-field/hint';
 import { cell } from 'ember-resources';
+import { useCustomStyles } from '../../../../helpers/scoped-styles';
 
-registerCustomStyles({
+const stubStyles = {
   formDescription: tv({
     base: 'form-field-hint' as never,
     variants: {
@@ -19,13 +19,14 @@ registerCustomStyles({
     defaultVariants: {
       size: 'md'
     }
-  })
-});
+  }) as never
+};
 
 module(
   'Integration | Component | @frontile/forms-legacy/FormField::Hint',
   function (hooks) {
     setupRenderingTest(hooks);
+    useCustomStyles(hooks, stubStyles);
 
     test('it renders content, attributes and args', async function (assert) {
       await render(

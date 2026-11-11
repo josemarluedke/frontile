@@ -7,9 +7,9 @@ import { tv } from 'tailwind-variants';
  * that measures chip geometry (see the Select tests) depends on it too.
  *
  * Like `chip-stub-styles.ts`: a file that relies on these must register them
- * itself for its own module and restore afterwards, since `registerCustomStyles`
- * is one slot shared by the whole run and `ember-exam` decides which files share
- * a run.
+ * itself with `useCustomStyles` (see `scoped-styles.ts`), since
+ * `registerCustomStyles` is one slot shared by the whole run and `ember-exam`
+ * decides which files share a run.
  */
 export const closeButtonStubStyles: ReturnType<
   typeof useStyles

@@ -57,15 +57,6 @@ module('Acceptance | workbench nav', function (hooks) {
 
     // Workbench pages must render without console errors or warnings. The
     // demo and fixture pages are not held to that.
-    //
-    // One warning is exempt: once any test in the run has thrown during
-    // render (some do on purpose, e.g. Autocomplete's @displayLimit
-    // assertion), Ember warns "Attempted to rerender, but the Ember
-    // application has had an unrecoverable error" on every later render, in
-    // every test. It reports that earlier test, not the page visited here; a
-    // render error on this page would fail `visit` itself.
-    const STALE_RENDER_ERROR =
-      /^Attempted to rerender, but the Ember application has had an unrecoverable error/;
     const original = { error: console.error, warn: console.warn };
     const logged: string[] = [];
     try {
@@ -76,12 +67,8 @@ module('Acceptance | workbench nav', function (hooks) {
         if (strict) {
           console.error = (...args: unknown[]) =>
             logged.push(`error: ${args.map(String).join(' ')}`);
-          console.warn = (...args: unknown[]) => {
-            const text = args.map(String).join(' ');
-            if (!STALE_RENDER_ERROR.test(text)) {
-              logged.push(`warn: ${text}`);
-            }
-          };
+          console.warn = (...args: unknown[]) =>
+            logged.push(`warn: ${args.map(String).join(' ')}`);
         }
         await visit(href);
         console.error = original.error;

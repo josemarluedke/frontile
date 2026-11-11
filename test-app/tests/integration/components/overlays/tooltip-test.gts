@@ -6,22 +6,17 @@ import {
   triggerKeyEvent,
   find,
   settled,
-  setupOnerror,
-  resetOnerror,
   waitUntil
 } from '@ember/test-helpers';
 import { Tooltip } from 'frontile/overlays';
 import { cell } from 'ember-resources';
 import { hash } from '@ember/helper';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 
 module(
   'Integration | Component | Tooltip | @frontile/overlays',
   function (hooks) {
     setupRenderingTest(hooks);
-
-    hooks.afterEach(function () {
-      resetOnerror();
-    });
 
     test('it renders @content on hover and closes on leave', async function (assert) {
       await render(
@@ -213,20 +208,10 @@ module(
       // positioned, so `[data-part="arrow"] exists()` passed throughout --
       // only the *rendered visibility* was broken.
       //
-      // Asserting a computed style (e.g. `getComputedStyle(...).overflow`)
-      // would not reliably constrain this in this suite: several sibling
-      // test files (`overlay-test.gts`, `modal-test.gts`, `drawer-test.gts`,
-      // `popover-test.gts`, `dropdown-test.gts`, `command-test.gts`) call
-      // `registerCustomStyles` at module scope to replace the shared
-      // `overlay` recipe with a bare `overlay__content` fixture that carries
-      // no CSS at all -- and since `registerCustomStyles` mutates a
-      // module-level singleton in `@frontile/theme` with no reset, that
-      // override is live for the rest of the suite once any of those modules
-      // loads, regardless of which test the runner actually executes.
-      // Checking the literal class name is what survives that: the fix
-      // (`overflow-visible` added to the `tooltip` theme's own `base`, unlike
-      // the mocked-out `overlay` base) is asserted as a string, independent
-      // of whether a real stylesheet is attached in this environment.
+      // The fix (`overflow-visible` added to the `tooltip` theme's own
+      // `base`, rather than the shared `overlay` base) is asserted as a
+      // class string, independent of whether a real stylesheet is attached
+      // in this environment.
       await render(
         <template>
           <Tooltip
@@ -539,34 +524,27 @@ module(
     });
 
     test('it asserts when both @content and a <t.Content> block are used', async function (assert) {
-      const errors: unknown[] = [];
-      setupOnerror((error: unknown) => {
-        errors.push(error);
-      });
-
-      await render(
-        <template>
-          <Tooltip @content="Add to library" as |t|>
-            <button
-              data-test-id="trigger"
-              type="button"
-              {{t.trigger}}
-            >Top</button>
-            <t.Content>Also here</t.Content>
-          </Tooltip>
-        </template>
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            <Tooltip @content="Add to library" as |t|>
+              <button
+                data-test-id="trigger"
+                type="button"
+                {{t.trigger}}
+              >Top</button>
+              <t.Content>Also here</t.Content>
+            </Tooltip>
+          </template>
+        )
       );
 
-      assert.strictEqual(
-        errors.length,
-        1,
-        'rendering both @content and a <t.Content> block raised exactly one error'
-      );
-      assert.ok(
-        String((errors[0] as Error)?.message ?? errors[0]).includes(
-          'received both @content and a <t.Content> block'
-        ),
-        'the raised error is the mutual-exclusion assertion, not some other failure'
+      assert.deepEqual(
+        failed,
+        [
+          '<Tooltip> received both @content and a <t.Content> block. Use one or the other.'
+        ],
+        'rendering both @content and a <t.Content> block fails exactly the mutual-exclusion assertion'
       );
     });
 

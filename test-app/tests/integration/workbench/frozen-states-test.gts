@@ -2,8 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find } from '@ember/test-helpers';
 import { Button, Input } from 'frontile';
-import { registerCustomStyles, useStyles } from '@frontile/theme';
-import { realStyles } from '../../helpers/real-theme-styles';
+import { useRealStyles } from '../../helpers/scoped-styles';
 
 // The workbench renders interaction states without interaction. `tw.css`
 // extends Tailwind's `hover`, `active`, `focus` and `focus-within` variants so
@@ -22,21 +21,8 @@ function style(selector: string): CSSStyleDeclaration {
 module('Integration | Workbench | frozen states', function (hooks) {
   setupRenderingTest(hooks);
 
-  // Other test files replace `button` and `input` styles process-wide with
-  // `registerCustomStyles` (see `tests/helpers/real-theme-styles.ts`). These
-  // tests need the shipped classes, so swap them in for this module only and
-  // put back whatever was registered before.
-  let previous: ReturnType<typeof useStyles>;
-  hooks.before(function () {
-    previous = useStyles();
-    registerCustomStyles({
-      button: realStyles.button,
-      input: realStyles.input
-    });
-  });
-  hooks.after(function () {
-    registerCustomStyles({ button: previous.button, input: previous.input });
-  });
+  // Compares computed styles, so render against the shipped classes.
+  useRealStyles(hooks, ['button', 'input']);
 
   test('forced hover renders the hover fill', async function (assert) {
     await render(

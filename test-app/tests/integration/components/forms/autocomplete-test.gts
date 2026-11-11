@@ -6,12 +6,12 @@ import {
   triggerKeyEvent,
   fillIn,
   focus,
-  settled,
-  setupOnerror
+  settled
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Autocomplete } from 'frontile';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 import { array } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { ownParts } from 'frontile/test-support';
@@ -1439,22 +1439,19 @@ module(
       });
 
       test('it asserts on a limit that is not a positive integer', async function (assert) {
-        const errors: string[] = [];
-        setupOnerror((error: unknown) => {
-          errors.push((error as Error).message);
-        });
-
-        await render(
-          <template>
-            <Autocomplete @items={{items}} @displayLimit={{1.5}} />
-          </template>
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              <Autocomplete @items={{items}} @displayLimit={{1.5}} />
+            </template>
+          )
         );
 
         assert.true(
-          errors.some((m) =>
+          failed.some((m) =>
             m.includes('@displayLimit must be a positive integer, received 1.5')
           ),
-          `got: ${errors.join(' | ')}`
+          `got: ${failed.join(' | ')}`
         );
       });
     });

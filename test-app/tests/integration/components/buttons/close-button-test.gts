@@ -1,20 +1,19 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerEvent } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { CloseButton } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import Component from '@glimmer/component';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { closeButtonStubStyles } from '../../../helpers/close-button-stub-styles';
-
-registerCustomStyles({ closeButton: closeButtonStubStyles });
 
 module(
   'Integration | Component | @frontile/utilities/CloseButton',
   function (hooks) {
     setupRenderingTest(hooks);
+    useCustomStyles(hooks, { closeButton: closeButtonStubStyles });
 
     test('it renders title', async function (assert) {
       const title = cell('');
