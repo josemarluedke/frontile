@@ -6,6 +6,7 @@
  * `transparent`/`subtle`) are left out on purpose.
  */
 import type {
+  AlertSignature,
   ButtonGroupSignature,
   ButtonSignature,
   CheckboxGroupSignature,
@@ -18,6 +19,7 @@ import type {
   InputSignature,
   LabelSignature,
   NativeSelectSignature,
+  ProgressBarSignature,
   RadioGroupSignature,
   RadioSignature,
   SegmentedControlSignature,
@@ -209,3 +211,53 @@ export const FORM_FEEDBACK_STATUSES = [
   'secondary',
   'tertiary'
 ] as const satisfies ArgValues<FormFeedbackSignature['Args']['status']>;
+
+// Alert ------------------------------------------------------------------
+
+/** Alert takes `@status`, not `@color`: the value also picks the ARIA role. */
+export const ALERT_STATUSES = [
+  'neutral',
+  'primary',
+  'success',
+  'warning',
+  'danger'
+] as const satisfies ArgValues<AlertSignature['Args']['status']>;
+
+export const ALERT_VARIANTS = [
+  'surface',
+  'soft',
+  'solid'
+] as const satisfies ArgValues<AlertSignature['Args']['variant']>;
+
+export const ALERT_LAYOUTS = ['inline', 'banner'] as const satisfies ArgValues<
+  AlertSignature['Args']['layout']
+>;
+
+// ProgressBar ------------------------------------------------------------
+
+export const PROGRESS_BAR_SIZES = [
+  'xs',
+  'sm',
+  'md',
+  'lg'
+] as const satisfies ArgValues<ProgressBarSignature['Args']['size']>;
+
+export const PROGRESS_BAR_COLORS = [
+  'neutral',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+] as const satisfies ArgValues<ProgressBarSignature['Args']['color']>;
+
+export const PROGRESS_BAR_RADII = [
+  'none',
+  'sm',
+  'lg',
+  'full'
+] as const satisfies ArgValues<ProgressBarSignature['Args']['radius']>;
+
+/** The three positions that matter: empty, partway, full. */
+export const PROGRESS_BAR_VALUES = [0, 50, 100] as const;
