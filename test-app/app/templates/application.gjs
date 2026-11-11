@@ -20,7 +20,7 @@ import IconChevronsRight from '~icons/lucide/chevrons-right';
 import IconPanelsTopLeft from '~icons/lucide/panels-top-left';
 
 <template>
-  <AppLayout @scrollMode="page" as |layout|>
+  <AppLayout @scrollMode="content" as |layout|>
     <layout.Sidebar @label="Playground" @collapsible="none" as |sidebar|>
       <sidebar.Header>
         <LinkTo
