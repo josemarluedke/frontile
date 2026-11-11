@@ -1,5 +1,5 @@
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
-import type { AppLayoutSlots } from '@frontile/theme';
+import type { AppLayoutSlots, AppLayoutVariants } from '@frontile/theme';
 import type { AppLayoutState } from './app-layout-state';
 
 export type AppLayoutStyles = ReturnType<
@@ -100,6 +100,28 @@ export interface AppLayoutConfig {
   breakpoint: 'sm' | 'md' | 'lg';
   scrollMode: 'content' | 'page';
   sidebarSide: 'start' | 'end';
+  color: NonNullable<AppLayoutVariants['color']>;
+  sidebarSurface: NonNullable<AppLayoutVariants['sidebarSurface']>;
+  navbarSurface: NonNullable<AppLayoutVariants['navbarSurface']>;
+}
+
+/**
+ * The layout-wide variants a part passes when it builds its own styles from
+ * the layout's config. `variant` is left to the part: a standalone part
+ * picks its own default.
+ */
+export function layoutVariants(config: AppLayoutConfig | undefined): {
+  navbarPlacement?: AppLayoutConfig['navbarPlacement'];
+  breakpoint?: AppLayoutConfig['breakpoint'];
+  scrollMode?: AppLayoutConfig['scrollMode'];
+  sidebarSide?: AppLayoutConfig['sidebarSide'];
+} {
+  return {
+    navbarPlacement: config?.navbarPlacement,
+    breakpoint: config?.breakpoint,
+    scrollMode: config?.scrollMode,
+    sidebarSide: config?.sidebarSide
+  };
 }
 
 /** Styles for a part rendered outside an `AppLayout`: no card chrome. */

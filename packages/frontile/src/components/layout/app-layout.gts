@@ -50,22 +50,50 @@ interface AppLayoutArgs {
   navbarPlacement?: AppLayoutVariants['navbarPlacement'];
 
   /**
-   * The frame's gradient: a faint left-to-right tint fading to a neutral
-   * grey. `primary` tints it with the app's `primary`, so an app changes the
-   * color by setting its own `primary`. `neutral` uses the `neutral` color
-   * instead, for a neutral ground. `none` is the flat surface. The stops are
-   * the `--app-frame-gradient-from` and `--app-frame-gradient-to` properties.
+   * The shell's color, one of the theme's semantic categories. It tints the
+   * sidebar's rows (hover and the current page), colors a `solid` sidebar or
+   * navbar, and is the frame gradient's tint. `neutral` is the plain shell.
+   * A `Sidebar` or `Navbar` can take its own `@color`. Published as the
+   * `--app-layout-color`, `--app-layout-color-strong` and
+   * `--app-layout-on-color` properties on the root, which an app can set
+   * itself for a color outside the theme.
    *
-   * @defaultValue 'none'
+   * @defaultValue 'neutral'
    */
-  frameGradient?: AppLayoutVariants['frameGradient'];
+  color?: AppLayoutVariants['color'];
+
+  /**
+   * How the sidebar wears `@color`: `plain` keeps its ground and tints its
+   * rows; `solid` fills it with the color, with rows in its contrast color.
+   * The phone drawer always tints. A `Sidebar`'s own `@surface` wins.
+   *
+   * @defaultValue 'plain'
+   */
+  sidebarSurface?: AppLayoutVariants['sidebarSurface'];
+
+  /**
+   * How the navbar wears `@color`: `plain` keeps its ground; `solid` fills
+   * it with the color. A `Navbar`'s own `@surface` wins.
+   *
+   * @defaultValue 'plain'
+   */
+  navbarSurface?: AppLayoutVariants['navbarSurface'];
+
+  /**
+   * Whether the frame carries a faint left-to-right tint of `@color`, fading
+   * to a neutral grey across the content. The stops are the
+   * `--app-frame-gradient-from` and `--app-frame-gradient-to` properties.
+   *
+   * @defaultValue false
+   */
+  frameGradient?: boolean;
 
   /**
    * Whether the `inset` card is opaque (`solid`) or lets the frame's gradient
    * show through (`translucent`, `surface-app` at 50%). No effect on
    * `attached`, which has no card.
    *
-   * @defaultValue 'translucent' with a gradient, 'solid' with `@frameGradient='none'`
+   * @defaultValue 'translucent' with `@frameGradient`, else 'solid'
    */
   cardSurface?: AppLayoutVariants['cardSurface'];
 
@@ -420,15 +448,26 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.args.navbarPlacement ?? 'frame';
   }
 
-  get frameGradient(): NonNullable<AppLayoutVariants['frameGradient']> {
-    return this.args.frameGradient ?? 'none';
+  get color(): NonNullable<AppLayoutVariants['color']> {
+    return this.args.color ?? 'neutral';
+  }
+
+  get sidebarSurface(): NonNullable<AppLayoutVariants['sidebarSurface']> {
+    return this.args.sidebarSurface ?? 'plain';
+  }
+
+  get navbarSurface(): NonNullable<AppLayoutVariants['navbarSurface']> {
+    return this.args.navbarSurface ?? 'plain';
+  }
+
+  get frameGradient(): boolean {
+    return this.args.frameGradient ?? false;
   }
 
   get cardSurface(): 'solid' | 'translucent' {
     // A gradient pairs with a card it shows through; a flat frame keeps it solid.
     return (
-      this.args.cardSurface ??
-      (this.frameGradient === 'none' ? 'solid' : 'translucent')
+      this.args.cardSurface ?? (this.frameGradient ? 'translucent' : 'solid')
     );
   }
 
@@ -460,6 +499,10 @@ class AppLayout extends Component<AppLayoutSignature> {
       variant: this.variant,
       navbarPlacement: this.navbarPlacement,
       cardSurface: this.cardSurface,
+      // The shared styles draw the navbar, so they carry its surface.
+      // `Sidebar` builds its own styles.
+      color: this.color,
+      navbarSurface: this.navbarSurface,
       breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
       sidebarSide: this.sidebarSide
@@ -477,9 +520,11 @@ class AppLayout extends Component<AppLayoutSignature> {
     return appLayout({
       variant: this.variant,
       navbarPlacement: this.navbarPlacement,
+      color: this.color,
       frameGradient: this.frameGradient,
       breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
+      sidebarSide: this.sidebarSide,
       sidebarColumn: this.sidebarColumn,
       sidebarSize: this.registeredSidebar?.size,
       bottomNavRow: this.bottomNavShown ? 'shown' : 'none'
@@ -523,7 +568,10 @@ class AppLayout extends Component<AppLayoutSignature> {
         navbarPlacement: this.navbarPlacement,
         breakpoint: this.breakpoint,
         scrollMode: this.scrollMode,
-        sidebarSide: this.sidebarSide
+        sidebarSide: this.sidebarSide,
+        color: this.color,
+        sidebarSurface: this.sidebarSurface,
+        navbarSurface: this.navbarSurface
       },
       classes: this.args.classes,
       get belowBreakpoint() {

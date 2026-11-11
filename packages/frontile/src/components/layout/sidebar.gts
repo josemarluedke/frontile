@@ -9,7 +9,7 @@ import NavItem from './nav-item';
 import NavFolder from './nav-folder';
 import SidebarGroup from './sidebar-group';
 import SidebarToggle, { type SidebarToggleSignature } from './sidebar-toggle';
-import type { AppLayoutContext } from './context';
+import { layoutVariants, type AppLayoutContext } from './context';
 import type Owner from '@ember/owner';
 import type { AppLayoutVariants } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
@@ -66,6 +66,25 @@ interface SidebarArgs {
    * @defaultValue 'attached'
    */
   variant?: AppLayoutVariants['variant'];
+
+  /**
+   * The sidebar's color, one of the theme's semantic categories. Inside an
+   * `AppLayout` it defaults to the layout's `@color`.
+   *
+   * @defaultValue 'neutral'
+   */
+  color?: AppLayoutVariants['color'];
+
+  /**
+   * How the sidebar wears its color: `plain` keeps its ground and tints its
+   * rows (hover and the current page); `solid` fills the sidebar with the
+   * color, with rows in its contrast color. In the phone drawer the rows are
+   * always tinted. Inside an `AppLayout` it defaults to the layout's
+   * `@sidebarSurface`.
+   *
+   * @defaultValue 'plain'
+   */
+  surface?: AppLayoutVariants['sidebarSurface'];
 
   /**
    * Whether the sidebar is collapsed, for a sidebar you control. `Toggle`
@@ -289,11 +308,11 @@ class Sidebar extends Component<SidebarSignature> {
   get styles() {
     const layout = this.args.layout;
     return useStyles().appLayout({
+      ...layoutVariants(layout?.config),
       variant: layout?.config.variant ?? this.args.variant ?? 'attached',
-      navbarPlacement: layout?.config.navbarPlacement,
-      breakpoint: layout?.config.breakpoint,
-      scrollMode: layout?.config.scrollMode,
-      sidebarSide: layout?.config.sidebarSide,
+      color: this.args.color ?? layout?.config.color,
+      ownColor: !layout || this.args.color !== undefined,
+      sidebarSurface: this.args.surface ?? layout?.config.sidebarSurface,
       standalone: !layout,
       inDrawer: this.inDrawer,
       collapsible: this.collapsible,

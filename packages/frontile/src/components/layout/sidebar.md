@@ -555,11 +555,11 @@ centers its header over the items.
 The `stacked` icon pill can be themed with CSS variables set on the item or any
 ancestor, such as the sidebar's `class`:
 
-| Variable                    | Default                      | Sets                                               |
-| --------------------------- | ---------------------------- | -------------------------------------------------- |
-| `--nav-item-pill-radius`    | `var(--radius-lg)`           | The pill's corner radius.                          |
-| `--nav-item-pill-hover-bg`  | `var(--color-neutral-muted)` | The fill while hovered.                            |
-| `--nav-item-pill-active-bg` | `var(--color-neutral-soft)`  | The fill for the current item, also while hovered. |
+| Variable                    | Default                     | Sets                                               |
+| --------------------------- | --------------------------- | -------------------------------------------------- |
+| `--nav-item-pill-radius`    | `var(--radius-lg)`          | The pill's corner radius.                          |
+| `--nav-item-pill-hover-bg`  | `var(--nav-item-hover-bg)`  | The fill while hovered.                            |
+| `--nav-item-pill-active-bg` | `var(--nav-item-active-bg)` | The fill for the current item, also while hovered. |
 
 ```gts preview collapsible
 import { Sidebar } from 'frontile';
@@ -657,6 +657,68 @@ import { StarIcon, ViewIcon } from 'site/components/icons';
   </div>
 </template>
 ```
+
+### Color
+
+`@color` takes one of your theme's semantic colors, and `@surface` sets how
+the sidebar shows it: `plain` (the default) keeps its background and tints
+the rows, while `solid` fills the sidebar with the color and draws the rows,
+group labels and toggle in its contrast color. Inside an `AppLayout` both
+default to the layout's `@color` and `@sidebarSurface`.
+
+```gts preview
+import { Sidebar } from 'frontile';
+import { array } from '@ember/helper';
+import { ViewIcon, SettingsIcon, UserIcon } from 'site/components/icons';
+
+<template>
+  <div class='not-prose flex h-56 flex-wrap items-start gap-8'>
+    {{#each (array 'plain' 'solid') as |surface|}}
+      <Sidebar
+        @label={{surface}}
+        @color='primary'
+        @surface={{surface}}
+        @collapsible='none'
+        @class='h-full rounded-lg'
+        as |sidebar|
+      >
+        <sidebar.Body>
+          <sidebar.Group @label={{surface}}>
+            <sidebar.Item
+              @href='#overview'
+              @icon={{ViewIcon}}
+              @isActive={{true}}
+            >
+              Overview
+            </sidebar.Item>
+            <sidebar.Item @href='#people' @icon={{UserIcon}}>
+              People
+            </sidebar.Item>
+            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+              Settings
+            </sidebar.Item>
+          </sidebar.Group>
+        </sidebar.Body>
+      </Sidebar>
+    {{/each}}
+  </div>
+</template>
+```
+
+The rows, group labels and toggles read these custom properties. Unset, each
+uses its neutral default. A colored sidebar sets them on itself, so to change
+one there, set it through the sidebar's `@class`, which wins over the theme's.
+On a neutral, `plain` sidebar you can also set them on any element around it:
+
+| Variable                   | Default                       | Sets                                         |
+| -------------------------- | ----------------------------- | -------------------------------------------- |
+| `--nav-item-fg`            | `var(--color-neutral-firm)`   | A row's and a toggle's text.                 |
+| `--nav-item-hover-bg`      | `var(--color-neutral-muted)`  | The fill while hovered.                      |
+| `--nav-item-hover-fg`      | `var(--color-neutral-strong)` | The text while hovered.                      |
+| `--nav-item-active-bg`     | `var(--color-neutral-soft)`   | The current item's fill, also while hovered. |
+| `--nav-item-active-fg`     | `var(--color-neutral-strong)` | The current item's text.                     |
+| `--nav-folder-border`      | `var(--color-neutral-muted)`  | The line beside an open folder's items.      |
+| `--sidebar-group-label-fg` | `var(--color-neutral-firm)`   | A group's heading.                           |
 
 ## In an AppLayout
 

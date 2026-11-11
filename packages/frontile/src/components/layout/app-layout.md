@@ -236,51 +236,13 @@ import {
 </template>
 ```
 
-## Frame gradient
+## Color
 
-The frame behind the layout is flat by default. `@frameGradient` adds a faint
-left-to-right tint, strongest behind the sidebar and fading across the content:
-
-| Value            | Look                                                                                                 |
-| ---------------- | ---------------------------------------------------------------------------------------------------- |
-| `neutral`        | Your theme's `neutral` at 16%, fading to a neutral grey. A neutral ground that needs no brand color. |
-| `primary`        | Your theme's `primary` at 16%, fading to a neutral grey. Set your own `primary` to change the color. |
-| `none` (default) | Flat: no gradient, just the variant's surface.                                                       |
-
-The tint sits over the variant's `surface-app` or `surface-canvas` (black in
-dark mode). With a gradient the inset card defaults to `translucent`, so the
-tint shows through it, as black at 50% in dark mode. A flat frame keeps the
-card opaque. Set `@cardSurface` to override either. Everything is built from
-theme tokens, so it follows light and dark mode and nothing is hard-coded.
-There is no per-color option: an app that wants a different tint sets its own
-`primary` (or the stops below).
-
-The two stops are the `--app-frame-gradient-from` and `--app-frame-gradient-to`
-custom properties on the layout root. Set them through `@classes` to swap a
-color and keep the gradient, or set `--app-frame-gradient` to any CSS `<image>`:
-
-```gts
-import { AppLayout } from 'frontile';
-import { hash } from '@ember/helper';
-
-<template>
-  {{! Brand tint }}
-  <AppLayout @frameGradient='primary' />
-
-  {{! Neutral }}
-  <AppLayout @frameGradient='neutral' />
-
-  {{! Flat, the default }}
-  <AppLayout @frameGradient='none' />
-
-  {{! Your own stops, using theme tokens }}
-  <AppLayout
-    @classes={{hash
-      base='[--app-frame-gradient-from:var(--color-secondary-subtle)] [--app-frame-gradient-to:transparent]'
-    }}
-  />
-</template>
-```
+`@color` gives the shell one of your theme's semantic colors: `neutral` (the
+default), `primary`, `secondary`, `tertiary`, `success`, `warning` or
+`danger`. It colors the sidebar's rows, the hover fill and the current page,
+along with the layout's toggles, and it is the tint of the frame gradient
+below. Your own components inside the shell keep their own colors.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
@@ -290,12 +252,12 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 <template>
   <div class='demo-stack demo-stack--wide'>
-    {{#each (array 'neutral' 'primary' 'none') as |gradient|}}
-      <DemoFrame @id={{gradient}} @label={{gradient}}>
-        <AppLayout @frameGradient={{gradient}} as |layout|>
-          <layout.Sidebar @label={{gradient}} as |sidebar|>
+    {{#each (array 'neutral' 'primary' 'success') as |color|}}
+      <DemoFrame @id='color-{{color}}' @label={{color}}>
+        <AppLayout @color={{color}} as |layout|>
+          <layout.Sidebar @label={{color}} as |sidebar|>
             <sidebar.Header>
-              <SparklesIcon class='size-5 shrink-0 text-primary' />
+              <SparklesIcon class='size-5 shrink-0' />
               <span class='truncate text-sm font-semibold' data-sidebar-label>
                 Acme
               </span>
@@ -315,7 +277,153 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
             </sidebar.Body>
           </layout.Sidebar>
           <layout.Navbar>
-            <code class='text-sm'>@frameGradient='{{gradient}}'</code>
+            <code class='text-sm'>@color='{{color}}'</code>
+          </layout.Navbar>
+          <layout.Main>
+            <layout.PageHeader @title='Overview' />
+          </layout.Main>
+        </AppLayout>
+      </DemoFrame>
+    {{/each}}
+  </div>
+</template>
+```
+
+### Surfaces
+
+`@sidebarSurface` and `@navbarSurface` set how each part shows the color:
+
+| Value             | Look                                                                                      |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| `plain` (default) | The part keeps its background; its rows are tinted with the color.                        |
+| `solid`           | The part is filled with the color, and its text, rows and toggles use its contrast color. |
+
+A solid part's text color comes from the theme's contrast color for that fill,
+so a light color like `warning` gets dark text and a dark one gets light text.
+Your own components in a solid part keep their colors, so pick ones that read
+on the fill: plain text inherits the contrast color, but a `neutral` `Button`
+does not. In the phone drawer the sidebar's rows are always tinted, because
+the drawer has a background of its own.
+
+A `Sidebar` or `Navbar` can also take its own `@color` and `@surface`, which
+win over the layout's. One way to tell environments apart is a solid navbar
+in a different color per environment:
+
+```gts preview
+import { AppLayout } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
+
+<template>
+  <DemoFrame @id='solid-surfaces' @label='Solid navbar and sidebar'>
+    <AppLayout
+      @variant='attached'
+      @color='primary'
+      @sidebarSurface='solid'
+      as |layout|
+    >
+      <layout.Sidebar as |sidebar|>
+        <sidebar.Header>
+          <SparklesIcon class='size-5 shrink-0' />
+          <span class='truncate text-sm font-semibold' data-sidebar-label>
+            Acme
+          </span>
+          <sidebar.Toggle class='ml-auto' />
+        </sidebar.Header>
+        <sidebar.Body>
+          <sidebar.Group @label='Workspace'>
+            <sidebar.Item
+              @href='#overview'
+              @icon={{ViewIcon}}
+              @isActive={{true}}
+            >
+              Overview
+            </sidebar.Item>
+            <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+              Settings
+            </sidebar.Item>
+          </sidebar.Group>
+        </sidebar.Body>
+      </layout.Sidebar>
+      <layout.Navbar @color='warning' @surface='solid'>
+        <layout.MenuToggle />
+        <span class='text-sm font-semibold'>Sandbox</span>
+      </layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Overview' />
+      </layout.Main>
+    </AppLayout>
+  </DemoFrame>
+</template>
+```
+
+### Frame gradient
+
+`@frameGradient` adds a faint left-to-right tint of `@color` to the frame,
+strongest behind the sidebar and fading to a neutral grey across the content.
+It is off by default.
+
+The tint sits over the variant's `surface-app` or `surface-canvas` (black in
+dark mode). With a gradient the inset card defaults to `translucent`, so the
+tint shows through it, as black at 50% in dark mode. A flat frame keeps the
+card opaque. Set `@cardSurface` to override either.
+
+The two stops are the `--app-frame-gradient-from` and `--app-frame-gradient-to`
+custom properties on the layout root. Set them through `@classes` to swap a
+color and keep the gradient, or set `--app-frame-gradient` to any CSS `<image>`:
+
+```gts
+import { AppLayout } from 'frontile';
+import { hash } from '@ember/helper';
+
+<template>
+  {{! A tint of the layout's color }}
+  <AppLayout @color='primary' @frameGradient={{true}} />
+
+  {{! Your own stops, using theme tokens }}
+  <AppLayout
+    @frameGradient={{true}}
+    @classes={{hash
+      base='[--app-frame-gradient-from:var(--color-secondary-subtle)] [--app-frame-gradient-to:transparent]'
+    }}
+  />
+</template>
+```
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import { array } from '@ember/helper';
+import DemoFrame from 'site/components/demo-frame';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide'>
+    {{#each (array 'neutral' 'primary' 'success') as |color|}}
+      <DemoFrame @id='gradient-{{color}}' @label={{color}}>
+        <AppLayout @color={{color}} @frameGradient={{true}} as |layout|>
+          <layout.Sidebar @label={{color}} as |sidebar|>
+            <sidebar.Header>
+              <SparklesIcon class='size-5 shrink-0' />
+              <span class='truncate text-sm font-semibold' data-sidebar-label>
+                Acme
+              </span>
+              <sidebar.Toggle class='ml-auto' />
+            </sidebar.Header>
+            <sidebar.Body>
+              <sidebar.Item
+                @href='#overview'
+                @icon={{ViewIcon}}
+                @isActive={{true}}
+              >
+                Overview
+              </sidebar.Item>
+              <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+                Settings
+              </sidebar.Item>
+            </sidebar.Body>
+          </layout.Sidebar>
+          <layout.Navbar>
+            <code class='text-sm'>@color='{{color}}' @frameGradient</code>
           </layout.Navbar>
           <layout.Main>
             <layout.PageHeader @title='Overview' />
@@ -345,6 +453,43 @@ import DemoFrame from 'site/components/demo-frame';
   </DemoFrame>
 </template>
 ```
+
+### Color properties
+
+`@color` sets three custom properties on the layout's root, which the sidebar,
+navbar and bottom bar inherit. The frame gradient, the tints and a solid fill
+all derive from them:
+
+| Property                    | Value                                               |
+| --------------------------- | --------------------------------------------------- |
+| `--app-layout-color`        | The color: a solid part's fill, and the tints' base |
+| `--app-layout-color-strong` | The current row's text on a `plain` part            |
+| `--app-layout-on-color`     | Text on a `solid` fill                              |
+
+For a color that isn't in your theme, set any non-neutral `@color` (a neutral
+`plain` sidebar draws no tints) and override the properties through
+`@classes`: `base` for the layout, and `mobileSidebar` for the phone drawer,
+which is rendered outside the layout and doesn't inherit them. A `Sidebar` or
+`Navbar` with its own `@color` sets them on itself, so override them there
+through its `class`.
+
+```gts
+import { AppLayout } from 'frontile';
+import { hash } from '@ember/helper';
+
+<template>
+  <AppLayout
+    @color='primary'
+    @classes={{hash
+      base='[--app-layout-color:#5b3cc4] [--app-layout-color-strong:#3b2785] [--app-layout-on-color:white]'
+      mobileSidebar='[--app-layout-color:#5b3cc4] [--app-layout-color-strong:#3b2785] [--app-layout-on-color:white]'
+    }}
+  />
+</template>
+```
+
+The rows themselves read the properties listed under
+[Sidebar styling](./sidebar#color), which you can also set directly.
 
 ## Sidebar toggle
 

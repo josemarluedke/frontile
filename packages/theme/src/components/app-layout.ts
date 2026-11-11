@@ -1,5 +1,12 @@
 import { tv } from '../tw';
 import { focusVisibleRing } from './shared';
+import {
+  layoutColor,
+  frameGradientStops,
+  navSolid,
+  navTint,
+  tintedColors
+} from './nav-color';
 import type { VariantProps } from '../tw';
 
 // The shell is one CSS grid. The parts (sidebar, navbar, main, aside) are
@@ -142,12 +149,25 @@ const edgeToEdgeVariants = (['sm', 'md', 'lg'] as const).flatMap(
 // The layout's icon buttons (sidebar, menu and aside toggles). Same radius and
 // hover fill as a navigation row, so a toggle in the sidebar header reads as
 // one of its rows. `neutral-muted` stays visible on the frame's ground as
-// well as on the content surface.
+// well as on the content surface. It reads the rows' color properties, so a
+// toggle in a colored sidebar or navbar takes its colors (see `nav-color.ts`).
 const iconButton = [
   ...focusVisibleRing,
   'inline-flex size-9 shrink-0 items-center justify-center rounded-lg',
-  'text-neutral-firm hover:bg-neutral-muted hover:text-neutral-strong'
+  'text-(--nav-item-fg,var(--color-neutral-firm))',
+  'hover:bg-(--nav-item-hover-bg,var(--color-neutral-muted))',
+  'hover:text-(--nav-item-hover-fg,var(--color-neutral-strong))'
 ];
+
+// A part declares the layout color itself only when it has its own `@color`
+// or no layout around it (`ownColor`); otherwise it inherits the root's.
+const ownColorVariants = (
+  Object.keys(layoutColor) as (keyof typeof layoutColor)[]
+).map((color) => ({
+  ownColor: true,
+  color,
+  class: { sidebar: layoutColor[color], navbar: layoutColor[color] }
+}));
 
 const appLayout = tv({
   slots: {
@@ -181,9 +201,13 @@ const appLayout = tv({
       // `@classes={{hash base='[--app-frame-gradient-from:...]'}}`.
       // `--app-frame-gradient` itself takes any `<image>`, or `none`. The tint
       // holds at full strength across the sidebar and fades across the content,
-      // so the first stop is the sidebar's edge (`--app-sidebar-width`).
+      // so the first stop is the sidebar's edge (`--app-sidebar-width`). It
+      // runs away from the sidebar: `--app-frame-gradient-direction` flips for
+      // a right-to-left document and for `sidebarSide="end"` (a gradient has
+      // no logical direction of its own).
       'bg-(image:--app-frame-gradient)',
-      '[--app-frame-gradient:linear-gradient(to_right,var(--app-frame-gradient-from)_var(--app-sidebar-width,0px),var(--app-frame-gradient-to)_100%)]'
+      '[--app-frame-gradient-direction:to_right] rtl:[--app-frame-gradient-direction:to_left]',
+      '[--app-frame-gradient:linear-gradient(var(--app-frame-gradient-direction),var(--app-frame-gradient-from)_var(--app-sidebar-width,0px),var(--app-frame-gradient-to)_100%)]'
     ],
 
     // `group/sidebar` plus `data-collapsed` on the element lets any descendant
@@ -276,7 +300,7 @@ const appLayout = tv({
     // in the rail like any other sidebar label.
     sidebarGroup: 'flex flex-col gap-1 py-2',
     sidebarGroupLabel: [
-      'truncate ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2_-_var(--sidebar-gutter,0.5rem))] pe-2 pb-1 font-label text-label-2xs text-neutral-firm',
+      'truncate ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2_-_var(--sidebar-gutter,0.5rem))] pe-2 pb-1 font-label text-label-2xs text-(--sidebar-group-label-fg,var(--color-neutral-firm))',
       'group-data-[collapsed=true]/sidebar:sr-only'
     ],
     sidebarToggle: iconButton,
@@ -424,28 +448,66 @@ const appLayout = tv({
       none: {}
     },
 
-    // The frame's gradient, after the Figma environment frames: a
-    // left-to-right tint fading to a neutral grey, both at a low alpha, over
-    // the variant's own surface (black in dark mode). The frames in the design
-    // differ only in the app's `primary`, so `primary` is the one tint and an
-    // app sets its own `primary` to change it. `neutral` is the same gradient
-    // from the `neutral` color, for an app that wants a neutral ground without
-    // redefining `primary`. `none` is the flat surface. All of it is built from
-    // the theme's own colors, so none of it is hard-coded.
-    frameGradient: {
-      primary: {
-        base: [
-          '[--app-frame-gradient-from:color-mix(in_oklab,var(--color-primary)_16%,transparent)]',
-          '[--app-frame-gradient-to:color-mix(in_oklab,var(--color-neutral-subtle)_16%,transparent)]'
-        ]
-      },
+    // The shell's color: one semantic category, published as the
+    // `--app-layout-color*` properties (see `nav-color.ts`). Declared on the
+    // root, which the parts inherit from, and on the drawer's sidebar, which
+    // is portalled out of the layout. A part with its own color declares it
+    // too (`ownColor`, below).
+    color: {
       neutral: {
-        base: [
-          '[--app-frame-gradient-from:color-mix(in_oklab,var(--color-neutral)_16%,transparent)]',
-          '[--app-frame-gradient-to:color-mix(in_oklab,var(--color-neutral-subtle)_16%,transparent)]'
-        ]
+        base: layoutColor.neutral,
+        mobileSidebar: layoutColor.neutral
       },
-      none: { base: '[--app-frame-gradient:none]' }
+      primary: {
+        base: layoutColor.primary,
+        mobileSidebar: layoutColor.primary
+      },
+      secondary: {
+        base: layoutColor.secondary,
+        mobileSidebar: layoutColor.secondary
+      },
+      tertiary: {
+        base: layoutColor.tertiary,
+        mobileSidebar: layoutColor.tertiary
+      },
+      success: {
+        base: layoutColor.success,
+        mobileSidebar: layoutColor.success
+      },
+      warning: {
+        base: layoutColor.warning,
+        mobileSidebar: layoutColor.warning
+      },
+      danger: { base: layoutColor.danger, mobileSidebar: layoutColor.danger }
+    },
+
+    // Whether the sidebar or navbar declares the layout color on itself: it
+    // has its own `@color`, or there is no layout for it to inherit from.
+    ownColor: {
+      true: {},
+      false: {}
+    },
+
+    // How the sidebar and the navbar wear the color. `plain` keeps the part's
+    // ground and tints its rows; `solid` fills it with the color. The classes
+    // are compound variants below, after the variant's own, so they win over
+    // the attached variant's background and border.
+    sidebarSurface: {
+      plain: {},
+      solid: {}
+    },
+    navbarSurface: {
+      plain: {},
+      solid: {}
+    },
+
+    // The frame's gradient, after the Figma environment frames: a
+    // left-to-right tint of the layout's color fading to a neutral grey,
+    // both at a low alpha, over the variant's own surface (black in dark
+    // mode). Both stops are theme colors, so none of it is hard-coded.
+    frameGradient: {
+      true: { base: frameGradientStops },
+      false: { base: '[--app-frame-gradient:none]' }
     },
 
     // `translucent` lets the frame (and its gradient) show through the inset
@@ -468,6 +530,7 @@ const appLayout = tv({
     sidebarSide: {
       start: {},
       end: {
+        base: '[--app-frame-gradient-direction:to_left] rtl:[--app-frame-gradient-direction:to_right]',
         sidebar: 'col-start-3',
         navbar: 'col-[1/-2]',
         main: 'col-start-2',
@@ -660,7 +723,48 @@ const appLayout = tv({
         main: 'rounded-b-xl'
       }
     },
-    ...edgeToEdgeVariants
+    ...edgeToEdgeVariants,
+    // Color. Last, so the solid fill wins over the attached variant's
+    // backgrounds and border.
+    ...ownColorVariants,
+    {
+      color: tintedColors,
+      sidebarSurface: 'plain',
+      class: { sidebar: navTint }
+    },
+    {
+      color: tintedColors,
+      navbarSurface: 'plain',
+      class: { navbar: navTint }
+    },
+    // The phone drawer is a surface of its own (the drawer's), so its rows
+    // are tinted whatever the sidebar's surface: inverted rows would be
+    // unreadable on it. The bottom bar is the same.
+    {
+      color: tintedColors,
+      class: { mobileSidebar: navTint, bottomNav: navTint }
+    },
+    {
+      sidebarSurface: 'solid',
+      class: { sidebar: [...navSolid, 'border-transparent'] }
+    },
+    {
+      navbarSurface: 'solid',
+      class: { navbar: [...navSolid, 'border-transparent'] }
+    },
+    // On the inset frame a solid part is a panel of its own: it takes the
+    // card's corners, and the sidebar gets back the gutter the frame's
+    // padding otherwise stands in for, so its rows stay off the fill's edge.
+    {
+      sidebarSurface: 'solid',
+      variant: 'inset',
+      class: { sidebar: 'rounded-xl [--sidebar-gutter:0.5rem]' }
+    },
+    {
+      navbarSurface: 'solid',
+      variant: 'inset',
+      class: { navbar: 'rounded-xl' }
+    }
   ],
 
   defaultVariants: {
@@ -673,7 +777,11 @@ const appLayout = tv({
     bottomNavRow: 'none',
     sidebarSide: 'start',
     sidebarSize: 'default',
-    frameGradient: 'none',
+    color: 'neutral',
+    ownColor: false,
+    sidebarSurface: 'plain',
+    navbarSurface: 'plain',
+    frameGradient: false,
     cardSurface: 'solid',
     standalone: false,
     inDrawer: false,
