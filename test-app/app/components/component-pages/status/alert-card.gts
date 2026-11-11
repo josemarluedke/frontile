@@ -111,7 +111,7 @@ function noop(): void {}
             <Alert
               @status="success"
               @title="No icon"
-              @description="@hideIcon removes the glyph."
+              @description="Hiding the icon removes the glyph."
               @hideIcon={{true}}
             />
           </WorkbenchSpecimen>
