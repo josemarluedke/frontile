@@ -53,13 +53,23 @@ module('Acceptance | foundations palette and global', function (hooks) {
     assert
       .dom('#palette-absolute [data-palette-step]')
       .exists({ count: 4 }, 'black and white x 2 panes');
+    const absolute = Array.from(
+      document.querySelectorAll(
+        '#palette-absolute [data-palette-step] [data-step-value]'
+      )
+    ).map((el) => el.textContent?.trim());
+    assert.deepEqual(
+      absolute,
+      ['#000000', '#ffffff', '#000000', '#ffffff'],
+      'black and white come from the theme export, in both panes'
+    );
     assert
       .dom('#palette-absolute')
       .includesText(
-        'copied from palette-absolute.ts',
-        'absolute says its values are copies'
+        'imported from @frontile/theme/colors',
+        'absolute says its values are live'
       )
-      .includesText('they are not live');
+      .doesNotIncludeText('copied');
     assert.dom('#palette-gray').includesText('not emitted as CSS variables');
   });
 
@@ -138,13 +148,12 @@ module('Acceptance | foundations palette and global', function (hooks) {
   test('icon sizes resolve to real, increasing sizes with an icon each', async function (assert) {
     await visit('/foundations/global');
 
-    // In theme.css order. `3xs` is declared as font-size-7, the same as
-    // `nano`, so it sits out of the strictly increasing run and is checked
-    // against `nano` instead.
+    // In theme.css order; every step is strictly larger than the last.
     const SCALE = [
       'pico',
       'nano',
       'micro',
+      '3xs',
       '2xs',
       'xs',
       'sm',
@@ -180,12 +189,12 @@ module('Acceptance | foundations palette and global', function (hooks) {
         return parseFloat(text);
       };
       const values = SCALE.map(px);
+      assert.strictEqual(values.length, 14, `${scheme}: all 14 sizes checked`);
       const increasing = values.every((v, i) => i === 0 || v > values[i - 1]!);
       assert.true(
         increasing,
         `${scheme}: sizes strictly increase pico to mega (${values.join(', ')})`
       );
-      assert.strictEqual(px('3xs'), px('nano'), `${scheme}: 3xs equals nano`);
     }
   });
 });
