@@ -236,6 +236,116 @@ import {
 </template>
 ```
 
+## Frame gradient
+
+The frame behind the layout is flat by default. `@frameGradient` adds a faint
+left-to-right tint, strongest behind the sidebar and fading across the content:
+
+| Value            | Look                                                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------------------------- |
+| `neutral`        | Your theme's `neutral` at 16%, fading to a neutral grey. A neutral ground that needs no brand color. |
+| `primary`        | Your theme's `primary` at 16%, fading to a neutral grey. Set your own `primary` to change the color. |
+| `none` (default) | Flat: no gradient, just the variant's surface.                                                       |
+
+The tint sits over the variant's `surface-app` or `surface-canvas` (black in
+dark mode). With a gradient the inset card defaults to `translucent`, so the
+tint shows through it, as black at 50% in dark mode. A flat frame keeps the
+card opaque. Set `@cardSurface` to override either. Everything is built from
+theme tokens, so it follows light and dark mode and nothing is hard-coded.
+There is no per-color option: an app that wants a different tint sets its own
+`primary` (or the stops below).
+
+The two stops are the `--app-frame-gradient-from` and `--app-frame-gradient-to`
+custom properties on the layout root. Set them through `@classes` to swap a
+color and keep the gradient, or set `--app-frame-gradient` to any CSS `<image>`:
+
+```gts
+import { AppLayout } from 'frontile';
+import { hash } from '@ember/helper';
+
+<template>
+  {{! Brand tint }}
+  <AppLayout @frameGradient='primary' />
+
+  {{! Neutral }}
+  <AppLayout @frameGradient='neutral' />
+
+  {{! Flat, the default }}
+  <AppLayout @frameGradient='none' />
+
+  {{! Your own stops, using theme tokens }}
+  <AppLayout
+    @classes={{hash
+      base='[--app-frame-gradient-from:var(--color-secondary-subtle)] [--app-frame-gradient-to:transparent]'
+    }}
+  />
+</template>
+```
+
+```gts preview collapsible
+import { AppLayout } from 'frontile';
+import { array } from '@ember/helper';
+import DemoFrame from 'site/components/demo-frame';
+import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
+
+<template>
+  <div class='demo-stack demo-stack--wide'>
+    {{#each (array 'neutral' 'primary' 'none') as |gradient|}}
+      <DemoFrame @id={{gradient}} @label={{gradient}}>
+        <AppLayout @frameGradient={{gradient}} as |layout|>
+          <layout.Sidebar @label={{gradient}} as |sidebar|>
+            <sidebar.Header>
+              <SparklesIcon class='size-5 shrink-0 text-primary' />
+              <span class='truncate text-sm font-semibold' data-sidebar-label>
+                Acme
+              </span>
+              <sidebar.Toggle class='ml-auto' />
+            </sidebar.Header>
+            <sidebar.Body>
+              <sidebar.Item
+                @href='#overview'
+                @icon={{ViewIcon}}
+                @isActive={{true}}
+              >
+                Overview
+              </sidebar.Item>
+              <sidebar.Item @href='#settings' @icon={{SettingsIcon}}>
+                Settings
+              </sidebar.Item>
+            </sidebar.Body>
+          </layout.Sidebar>
+          <layout.Navbar>
+            <code class='text-sm'>@frameGradient='{{gradient}}'</code>
+          </layout.Navbar>
+          <layout.Main>
+            <layout.PageHeader @title='Overview' />
+          </layout.Main>
+        </AppLayout>
+      </DemoFrame>
+    {{/each}}
+  </div>
+</template>
+```
+
+`@cardSurface` has no effect on `attached`, which has no card. The translucent
+card is `surface-app` at 50%: black at 50% in dark mode, white at 50% in light.
+
+```gts preview
+import { AppLayout } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+
+<template>
+  <DemoFrame @id='frame-gradient' @label='Translucent card'>
+    <AppLayout @cardSurface='translucent' as |layout|>
+      <layout.Navbar>Gradient frame</layout.Navbar>
+      <layout.Main>
+        <layout.PageHeader @title='Overview' />
+      </layout.Main>
+    </AppLayout>
+  </DemoFrame>
+</template>
+```
+
 ## Sidebar toggle
 
 `sidebar.Toggle` sits inside the sidebar. To collapse the sidebar from

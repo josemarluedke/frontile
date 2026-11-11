@@ -50,6 +50,26 @@ interface AppLayoutArgs {
   navbarPlacement?: AppLayoutVariants['navbarPlacement'];
 
   /**
+   * The frame's gradient: a faint left-to-right tint fading to a neutral
+   * grey. `primary` tints it with the app's `primary`, so an app changes the
+   * color by setting its own `primary`. `neutral` uses the `neutral` color
+   * instead, for a neutral ground. `none` is the flat surface. The stops are
+   * the `--app-frame-gradient-from` and `--app-frame-gradient-to` properties.
+   *
+   * @defaultValue 'none'
+   */
+  frameGradient?: AppLayoutVariants['frameGradient'];
+
+  /**
+   * Whether the `inset` card is opaque (`solid`) or lets the frame's gradient
+   * show through (`translucent`, `surface-app` at 50%). No effect on
+   * `attached`, which has no card.
+   *
+   * @defaultValue 'translucent' with a gradient, 'solid' with `@frameGradient='none'`
+   */
+  cardSurface?: AppLayoutVariants['cardSurface'];
+
+  /**
    * The viewport width (`sm` 40rem, `md` 48rem, `lg` 64rem) below which the
    * sidebar becomes a drawer opened by `MenuToggle`. Growing past it closes
    * an open drawer. Without `window.matchMedia` the layout stays desktop.
@@ -400,6 +420,18 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.args.navbarPlacement ?? 'frame';
   }
 
+  get frameGradient(): NonNullable<AppLayoutVariants['frameGradient']> {
+    return this.args.frameGradient ?? 'none';
+  }
+
+  get cardSurface(): 'solid' | 'translucent' {
+    // A gradient pairs with a card it shows through; a flat frame keeps it solid.
+    return (
+      this.args.cardSurface ??
+      (this.frameGradient === 'none' ? 'solid' : 'translucent')
+    );
+  }
+
   get breakpoint(): 'sm' | 'md' | 'lg' {
     return this.args.breakpoint ?? 'md';
   }
@@ -427,6 +459,7 @@ class AppLayout extends Component<AppLayoutSignature> {
     return appLayout({
       variant: this.variant,
       navbarPlacement: this.navbarPlacement,
+      cardSurface: this.cardSurface,
       breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
       sidebarSide: this.sidebarSide
@@ -444,6 +477,7 @@ class AppLayout extends Component<AppLayoutSignature> {
     return appLayout({
       variant: this.variant,
       navbarPlacement: this.navbarPlacement,
+      frameGradient: this.frameGradient,
       breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
       sidebarColumn: this.sidebarColumn,
