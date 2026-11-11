@@ -1,11 +1,7 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { useStyles } from '@frontile/theme';
-import {
-  layoutVariants,
-  standaloneStyles,
-  type AppLayoutContext
-} from './context';
+import { layoutVariants, type AppLayoutContext } from './context';
 import type { AppLayoutVariants } from '@frontile/theme';
 
 interface NavbarArgs {
@@ -50,22 +46,18 @@ class Navbar extends Component<NavbarSignature> {
     return this.styles.navbar({ class: this.args.layout?.classes?.navbar });
   }
 
-  /**
-   * The layout's shared styles, unless the navbar carries its own color or
-   * surface; then its own, built from the layout's config.
-   */
+  /** Built from the layout's config, with the navbar's own color and surface. */
+  @cached
   get styles() {
-    const { color, surface } = this.args;
-    const layout = this.args.layout;
-    if (color === undefined && surface === undefined) {
-      return layout?.styles ?? standaloneStyles();
-    }
+    const { color, surface, layout } = this.args;
     const config = layout?.config;
     return useStyles().appLayout({
       ...layoutVariants(config),
       variant: config?.variant ?? 'attached',
       color: color ?? config?.color,
-      ownColor: !layout || color !== undefined,
+      // Inside a layout the navbar inherits the root's color unless it has
+      // its own; outside one there is no root to inherit from.
+      partColor: color ?? (layout ? undefined : 'neutral'),
       navbarSurface: surface ?? config?.navbarSurface
     });
   }

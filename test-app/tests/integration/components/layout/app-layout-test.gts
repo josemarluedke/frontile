@@ -1009,17 +1009,7 @@ module(
   'Integration | Component | AppLayout frame gradient | frontile/layout',
   function (hooks) {
     setupRenderingTest(hooks);
-
-    let previous: Partial<ReturnType<typeof useStyles>>;
-
-    hooks.beforeEach(function () {
-      previous = { appLayout: useStyles().appLayout };
-      registerCustomStyles({ appLayout: realStyles.appLayout });
-    });
-
-    hooks.afterEach(function () {
-      registerCustomStyles(previous);
-    });
+    useRealStyles(hooks, ['appLayout']);
 
     test('is flat with a solid card by default', async function (assert) {
       await render(
@@ -1037,53 +1027,23 @@ module(
         .doesNotHaveClass('bg-surface-app/50');
     });
 
-    test('a neutral frameGradient paints a gradient and a translucent card', async function (assert) {
-      await render(
-        <template>
-          <AppLayout @color="neutral" @frameGradient={{true}} as |layout|>
-            <layout.Main>Content</layout.Main>
-          </AppLayout>
-        </template>
-      );
+    for (const color of ['neutral', 'primary'] as const) {
+      test(`a ${color} frameGradient paints a gradient and a translucent card`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @color={{color}} @frameGradient={{true}} as |layout|>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
 
-      const root = find('[data-component="app-layout"]')!;
-      assert.true(
-        getComputedStyle(root).backgroundImage.includes('linear-gradient')
-      );
-      assert.dom('[data-part="main-card"]').hasClass('bg-surface-app/50');
-    });
-
-    test('a primary frameGradient paints a gradient and a translucent card', async function (assert) {
-      await render(
-        <template>
-          <AppLayout @color="primary" @frameGradient={{true}} as |layout|>
-            <layout.Main>Content</layout.Main>
-          </AppLayout>
-        </template>
-      );
-
-      const root = find('[data-component="app-layout"]')!;
-      assert.true(
-        getComputedStyle(root).backgroundImage.includes('linear-gradient')
-      );
-      assert.dom('[data-part="main-card"]').hasClass('bg-surface-app/50');
-    });
-
-    test('frameGradient=false is flat and keeps the card solid', async function (assert) {
-      await render(
-        <template>
-          <AppLayout @frameGradient={{false}} as |layout|>
-            <layout.Main>Content</layout.Main>
-          </AppLayout>
-        </template>
-      );
-
-      const root = find('[data-component="app-layout"]')!;
-      assert.strictEqual(getComputedStyle(root).backgroundImage, 'none');
-      assert
-        .dom('[data-part="main-card"]')
-        .doesNotHaveClass('bg-surface-app/50');
-    });
+        const root = find('[data-component="app-layout"]')!;
+        assert.true(
+          getComputedStyle(root).backgroundImage.includes('linear-gradient')
+        );
+        assert.dom('[data-part="main-card"]').hasClass('bg-surface-app/50');
+      });
+    }
 
     test('a stop override through @classes wins over the default', async function (assert) {
       const classes = { base: '[--app-frame-gradient-to:rgb(255,0,0)]' };
@@ -1161,6 +1121,11 @@ function resolveColor(expression: string, scope: Element): string {
   return value;
 }
 
+// The current row's fill on a tinted part: the color at 18% (`navTint`).
+function activeTint(color: string, scope: Element): string {
+  return resolveColor(`color-mix(in oklab, ${color} 18%, transparent)`, scope);
+}
+
 module(
   'Integration | Component | AppLayout color | frontile/layout',
   function (hooks) {
@@ -1211,10 +1176,7 @@ module(
       const row = activeRow();
       assert.strictEqual(
         getComputedStyle(row).backgroundColor,
-        resolveColor(
-          'color-mix(in oklab, var(--color-primary) 18%, transparent)',
-          row
-        ),
+        activeTint('var(--color-primary)', row),
         'the current row is filled with the color'
       );
       assert.strictEqual(
@@ -1239,10 +1201,7 @@ module(
       const row = activeRow();
       assert.strictEqual(
         getComputedStyle(row).backgroundColor,
-        resolveColor(
-          'color-mix(in oklab, var(--color-success) 18%, transparent)',
-          row
-        )
+        activeTint('var(--color-success)', row)
       );
     });
 
@@ -1321,10 +1280,7 @@ module(
         assert.ok(row, 'the drawer is open');
         assert.strictEqual(
           getComputedStyle(row).backgroundColor,
-          resolveColor(
-            'color-mix(in oklab, var(--color-primary) 18%, transparent)',
-            row
-          ),
+          activeTint('var(--color-primary)', row),
           'the drawer is its own surface, so the rows are tinted, not inverted'
         );
       } finally {
@@ -1373,7 +1329,7 @@ module(
       const row = activeRow();
       assert.strictEqual(
         getComputedStyle(row).backgroundColor,
-        resolveColor('color-mix(in oklab, rgb(255,0,0) 18%, transparent)', row)
+        activeTint('rgb(255,0,0)', row)
       );
     });
 
@@ -1411,25 +1367,48 @@ module(
       );
     });
 
-    test('a solid sidebar on the inset frame keeps its rows off the edge', async function (assert) {
+    // The row's start, from the sidebar's edge.
+    const rowInset = () =>
+      find('[data-part="sidebar"] a')!.getBoundingClientRect().left -
+      find('[data-part="sidebar"]')!.getBoundingClientRect().left;
+
+    test('a plain sidebar on the inset frame runs its rows to its edge', async function (assert) {
       await render(
         <template>
-          <AppLayout @color="primary" @sidebarSurface="solid" as |layout|>
+          <AppLayout @color="primary" as |layout|>
             <layout.Sidebar as |sidebar|>
-              <sidebar.Item @href="#a">A</sidebar.Item>
+              <sidebar.Body><sidebar.Item
+                  @href="#a"
+                >A</sidebar.Item></sidebar.Body>
             </layout.Sidebar>
             <layout.Main>Content</layout.Main>
           </AppLayout>
         </template>
       );
 
-      const style = getComputedStyle(find('[data-part="sidebar"]')!);
-      assert.strictEqual(
-        parseFloat(style.getPropertyValue('--sidebar-gutter')),
-        0.5,
-        'a 0.5rem gutter'
+      assert.strictEqual(rowInset(), 0, 'the frame is the gutter');
+    });
+
+    test('a solid sidebar on the inset frame keeps its rows off the edge', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="primary" @sidebarSurface="solid" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body><sidebar.Item
+                  @href="#a"
+                >A</sidebar.Item></sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
       );
-      assert.notStrictEqual(style.borderTopLeftRadius, '0px', 'rounded');
+
+      assert.true(rowInset() > 0, 'the row is inset from the fill');
+      assert.notStrictEqual(
+        getComputedStyle(find('[data-part="sidebar"]')!).borderTopLeftRadius,
+        '0px',
+        'rounded'
+      );
     });
 
     test("a row property set through a colored Sidebar's @class wins", async function (assert) {
@@ -1495,10 +1474,7 @@ module(
         const item = find('[data-part="bottom-nav"] [aria-current="page"]')!;
         assert.strictEqual(
           getComputedStyle(item).backgroundColor,
-          resolveColor(
-            'color-mix(in oklab, var(--color-primary) 18%, transparent)',
-            item
-          )
+          activeTint('var(--color-primary)', item)
         );
       } finally {
         media.restore();

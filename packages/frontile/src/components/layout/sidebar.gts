@@ -311,7 +311,9 @@ class Sidebar extends Component<SidebarSignature> {
       ...layoutVariants(layout?.config),
       variant: layout?.config.variant ?? this.args.variant ?? 'attached',
       color: this.args.color ?? layout?.config.color,
-      ownColor: !layout || this.args.color !== undefined,
+      // Inside a layout the sidebar inherits the root's color unless it has
+      // its own; outside one there is no root to inherit from.
+      partColor: this.args.color ?? (layout ? undefined : 'neutral'),
       sidebarSurface: this.args.surface ?? layout?.config.sidebarSurface,
       standalone: !layout,
       inDrawer: this.inDrawer,

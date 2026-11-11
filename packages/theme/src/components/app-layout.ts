@@ -159,15 +159,17 @@ const iconButton = [
   'hover:text-(--nav-item-hover-fg,var(--color-neutral-strong))'
 ];
 
-// A part declares the layout color itself only when it has its own `@color`
-// or no layout around it (`ownColor`); otherwise it inherits the root's.
-const ownColorVariants = (
-  Object.keys(layoutColor) as (keyof typeof layoutColor)[]
-).map((color) => ({
-  ownColor: true,
-  color,
-  class: { sidebar: layoutColor[color], navbar: layoutColor[color] }
-}));
+type LayoutColorName = keyof typeof layoutColor;
+
+// One variant entry per layout color, from the literal classes in
+// `nav-color.ts` (which is where Tailwind finds them).
+function perColor<T>(
+  entry: (classes: string) => T
+): Record<LayoutColorName, T> {
+  return Object.fromEntries(
+    Object.entries(layoutColor).map(([name, classes]) => [name, entry(classes)])
+  ) as Record<LayoutColorName, T>;
+}
 
 const appLayout = tv({
   slots: {
@@ -356,12 +358,10 @@ const appLayout = tv({
       // frame.
       inset: {
         base: 'bg-surface-canvas p-3 dark:bg-surface-app',
-        // Transparent, borderless: the sidebar floats on the tinted frame.
-        // The frame's own padding is the gutter, so rows start at the sidebar's
-        // edge. 0.375rem of clip room clears the 5px focus ring, which the
-        // scrolling body would otherwise clip at its edge.
-        sidebar:
-          'bg-transparent [--sidebar-clip:0.375rem] [--sidebar-gutter:0px]',
+        // 0.375rem of clip room clears the 5px focus ring, which the
+        // scrolling body would otherwise clip at its edge. The ground and
+        // gutter depend on the sidebar's surface (see the compound variants).
+        sidebar: '[--sidebar-clip:0.375rem]',
         mainCard:
           'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted dark:bg-surface-card',
         aside: 'border-s border-neutral-muted',
@@ -451,42 +451,13 @@ const appLayout = tv({
     // The shell's color: one semantic category, published as the
     // `--app-layout-color*` properties (see `nav-color.ts`). Declared on the
     // root, which the parts inherit from, and on the drawer's sidebar, which
-    // is portalled out of the layout. A part with its own color declares it
-    // too (`ownColor`, below).
-    color: {
-      neutral: {
-        base: layoutColor.neutral,
-        mobileSidebar: layoutColor.neutral
-      },
-      primary: {
-        base: layoutColor.primary,
-        mobileSidebar: layoutColor.primary
-      },
-      secondary: {
-        base: layoutColor.secondary,
-        mobileSidebar: layoutColor.secondary
-      },
-      tertiary: {
-        base: layoutColor.tertiary,
-        mobileSidebar: layoutColor.tertiary
-      },
-      success: {
-        base: layoutColor.success,
-        mobileSidebar: layoutColor.success
-      },
-      warning: {
-        base: layoutColor.warning,
-        mobileSidebar: layoutColor.warning
-      },
-      danger: { base: layoutColor.danger, mobileSidebar: layoutColor.danger }
-    },
+    // is portalled out of the layout. It also picks the parts' tints below.
+    color: perColor((classes) => ({ base: classes, mobileSidebar: classes })),
 
-    // Whether the sidebar or navbar declares the layout color on itself: it
-    // has its own `@color`, or there is no layout for it to inherit from.
-    ownColor: {
-      true: {},
-      false: {}
-    },
+    // The color a sidebar or navbar declares on itself: its own `@color`, or
+    // the layout's when there is no layout around it to inherit from. Unset,
+    // the part inherits the root's.
+    partColor: perColor((classes) => ({ sidebar: classes, navbar: classes })),
 
     // How the sidebar and the navbar wear the color. `plain` keeps the part's
     // ground and tints its rows; `solid` fills it with the color. The classes
@@ -501,8 +472,7 @@ const appLayout = tv({
       solid: {}
     },
 
-    // The frame's gradient, after the Figma environment frames: a
-    // left-to-right tint of the layout's color fading to a neutral grey,
+    // The frame's gradient: a left-to-right tint of the layout's color fading to a neutral grey,
     // both at a low alpha, over the variant's own surface (black in dark
     // mode). Both stops are theme colors, so none of it is hard-coded.
     frameGradient: {
@@ -724,9 +694,15 @@ const appLayout = tv({
       }
     },
     ...edgeToEdgeVariants,
+    // Inset: a plain sidebar floats on the tinted frame, transparent, and the
+    // frame's own padding is its gutter, so rows start at its edge.
+    {
+      variant: 'inset',
+      sidebarSurface: 'plain',
+      class: { sidebar: 'bg-transparent [--sidebar-gutter:0px]' }
+    },
     // Color. Last, so the solid fill wins over the attached variant's
     // backgrounds and border.
-    ...ownColorVariants,
     {
       color: tintedColors,
       sidebarSurface: 'plain',
@@ -752,13 +728,13 @@ const appLayout = tv({
       navbarSurface: 'solid',
       class: { navbar: [...navSolid, 'border-transparent'] }
     },
-    // On the inset frame a solid part is a panel of its own: it takes the
-    // card's corners, and the sidebar gets back the gutter the frame's
-    // padding otherwise stands in for, so its rows stay off the fill's edge.
+    // On the inset frame a solid part is a panel of its own, with the card's
+    // corners. The sidebar keeps the default gutter, so its rows stay off the
+    // fill's edge.
     {
       sidebarSurface: 'solid',
       variant: 'inset',
-      class: { sidebar: 'rounded-xl [--sidebar-gutter:0.5rem]' }
+      class: { sidebar: 'rounded-xl' }
     },
     {
       navbarSurface: 'solid',
@@ -778,7 +754,6 @@ const appLayout = tv({
     sidebarSide: 'start',
     sidebarSize: 'default',
     color: 'neutral',
-    ownColor: false,
     sidebarSurface: 'plain',
     navbarSurface: 'plain',
     frameGradient: false,

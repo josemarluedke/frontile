@@ -110,12 +110,14 @@ export interface AppLayoutConfig {
  * the layout's config. `variant` is left to the part: a standalone part
  * picks its own default.
  */
-export function layoutVariants(config: AppLayoutConfig | undefined): {
-  navbarPlacement?: AppLayoutConfig['navbarPlacement'];
-  breakpoint?: AppLayoutConfig['breakpoint'];
-  scrollMode?: AppLayoutConfig['scrollMode'];
-  sidebarSide?: AppLayoutConfig['sidebarSide'];
-} {
+export function layoutVariants(
+  config: AppLayoutConfig | undefined
+): Partial<
+  Pick<
+    AppLayoutConfig,
+    'navbarPlacement' | 'breakpoint' | 'scrollMode' | 'sidebarSide'
+  >
+> {
   return {
     navbarPlacement: config?.navbarPlacement,
     breakpoint: config?.breakpoint,

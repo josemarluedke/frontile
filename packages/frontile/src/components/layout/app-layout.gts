@@ -16,6 +16,8 @@ import { globalDocument } from '../../utils/document-listener';
 import { AppLayoutState } from './app-layout-state';
 import {
   ControlledAppLayoutState,
+  layoutVariants,
+  type AppLayoutConfig,
   type AppLayoutContext,
   type RegisteredSidebar
 } from './context';
@@ -464,7 +466,7 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.args.frameGradient ?? false;
   }
 
-  get cardSurface(): 'solid' | 'translucent' {
+  get cardSurface(): NonNullable<AppLayoutVariants['cardSurface']> {
     // A gradient pairs with a card it shows through; a flat frame keeps it solid.
     return (
       this.args.cardSurface ?? (this.frameGradient ? 'translucent' : 'solid')
@@ -496,17 +498,26 @@ class AppLayout extends Component<AppLayoutSignature> {
     const { appLayout } = useStyles();
 
     return appLayout({
+      ...layoutVariants(this.config),
+      variant: this.variant,
+      cardSurface: this.cardSurface,
+      color: this.color
+    });
+  }
+
+  /** What the layout tells its parts, which build their own styles from it. */
+  @cached
+  get config(): AppLayoutConfig {
+    return {
       variant: this.variant,
       navbarPlacement: this.navbarPlacement,
-      cardSurface: this.cardSurface,
-      // The shared styles draw the navbar, so they carry its surface.
-      // `Sidebar` builds its own styles.
-      color: this.color,
-      navbarSurface: this.navbarSurface,
       breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
-      sidebarSide: this.sidebarSide
-    });
+      sidebarSide: this.sidebarSide,
+      color: this.color,
+      sidebarSurface: this.sidebarSurface,
+      navbarSurface: this.navbarSurface
+    };
   }
 
   /**
@@ -518,13 +529,10 @@ class AppLayout extends Component<AppLayoutSignature> {
     const { appLayout } = useStyles();
 
     return appLayout({
+      ...layoutVariants(this.config),
       variant: this.variant,
-      navbarPlacement: this.navbarPlacement,
       color: this.color,
       frameGradient: this.frameGradient,
-      breakpoint: this.breakpoint,
-      scrollMode: this.scrollMode,
-      sidebarSide: this.sidebarSide,
       sidebarColumn: this.sidebarColumn,
       sidebarSize: this.registeredSidebar?.size,
       bottomNavRow: this.bottomNavShown ? 'shown' : 'none'
@@ -563,16 +571,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       asideId: this.asideId,
       asideDrawerId: this.asideDrawerId,
       styles: this.styles,
-      config: {
-        variant: this.variant,
-        navbarPlacement: this.navbarPlacement,
-        breakpoint: this.breakpoint,
-        scrollMode: this.scrollMode,
-        sidebarSide: this.sidebarSide,
-        color: this.color,
-        sidebarSurface: this.sidebarSurface,
-        navbarSurface: this.navbarSurface
-      },
+      config: this.config,
       classes: this.args.classes,
       get belowBreakpoint() {
         return layout.belowBreakpoint;
