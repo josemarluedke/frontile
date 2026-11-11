@@ -59,11 +59,20 @@ const navItem = tv({
     navItem: navItemRow,
     // The slot sizes the icon, so an SVG that brings its own size (Lucide's
     // 24px attributes, a utility class) still matches the other rows.
+    // `text-[1.25rem]` is for icons that size by font-size instead, such as
+    // FontAwesome's 1em SVGs: their stylesheet is unlayered, so it beats
+    // `size-5` (Tailwind utilities live in a layer) whatever the specificity.
+    // It is set on the SVG, not the slot, so a badge inside the slot keeps
+    // its own size. Keep it equal to `size-5`.
     navItemIcon:
-      'relative inline-flex shrink-0 items-center justify-center [&>svg]:size-5',
+      'relative inline-flex shrink-0 items-center justify-center [&>svg]:size-5 [&>svg]:text-[1.25rem]',
     navItemLabel: 'truncate',
-    // The short text shown under the icon in the stacked layout.
-    navItemShortLabel: 'max-w-full truncate text-body-4xs leading-tight',
+    // The short text shown under the icon in the stacked layout. A label, not
+    // body copy: semibold in the label face, and the same weight whether or
+    // not the item is current. `leading-tight` is kept over the token's
+    // line-height of 1, which `truncate` (overflow hidden) would clip.
+    navItemShortLabel:
+      'max-w-full truncate font-label text-label-micro leading-tight',
     navItemBadge:
       'inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 font-label text-label-micro leading-none text-on-danger',
     // Screen-reader text appended to the label for a badge.
@@ -103,11 +112,17 @@ const navItem = tv({
           'data-[active=true]:bg-transparent not-data-[disabled=true]:hover:bg-transparent',
           'not-data-[disabled=true]:data-[active=true]:hover:bg-transparent'
         ],
+        // The pill is themable from the item or any ancestor, without
+        // reaching into the part with a descendant selector:
+        //   --nav-item-pill-radius     (default `--radius-lg`)
+        //   --nav-item-pill-hover-bg   (default `--color-neutral-muted`)
+        //   --nav-item-pill-active-bg  (default `--color-neutral-soft`), also
+        //                              used while the current item is hovered
         navItemIcon: [
-          'h-8 w-11 rounded-lg',
-          'group-data-[active=true]/nav-item:bg-neutral-soft',
-          'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-neutral-muted',
-          'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-neutral-soft'
+          'h-8 w-11 rounded-(--nav-item-pill-radius,var(--radius-lg))',
+          'group-data-[active=true]/nav-item:bg-(--nav-item-pill-active-bg,var(--color-neutral-soft))',
+          'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-(--nav-item-pill-hover-bg,var(--color-neutral-muted))',
+          'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-(--nav-item-pill-active-bg,var(--color-neutral-soft))'
         ]
       },
       // Icon only; the label is screen-reader text and a tooltip.
