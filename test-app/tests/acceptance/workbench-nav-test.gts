@@ -19,6 +19,13 @@ function rootSidebar(): HTMLElement {
   return document.querySelector<HTMLElement>('[data-part="sidebar"]')!;
 }
 
+/** The root sidebar's navigation, without the header's logo link. */
+function rootNav(): HTMLElement {
+  return rootSidebar().querySelector<HTMLElement>(
+    '[data-part="sidebar-body"]'
+  )!;
+}
+
 function hrefsIn(root: Element): string[] {
   return Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href]')).map(
     (a) => a.getAttribute('href') as string
@@ -32,7 +39,7 @@ module('Acceptance | workbench nav', function (hooks) {
     await visit('/');
 
     // Collect once from `/`: fixture pages render their own sidebars.
-    const sidebar = rootSidebar();
+    const sidebar = rootNav();
     assert.ok(sidebar, 'root sidebar renders');
     const hrefs = hrefsIn(sidebar);
 
@@ -101,7 +108,7 @@ module('Acceptance | workbench nav', function (hooks) {
 
   test('sidebar groups are unnumbered, in order, with exact link counts', async function (assert) {
     await visit('/');
-    const sidebar = rootSidebar();
+    const sidebar = rootNav();
 
     const groups = Array.from(
       sidebar.querySelectorAll<HTMLElement>('[data-part="sidebar-group"]')
@@ -167,6 +174,26 @@ module('Acceptance | workbench nav', function (hooks) {
       .exists({ count: 1 }, 'the Fixtures folder has an icon');
   });
 
+  test('the sidebar header is the Frontile logo, linking Home', async function (assert) {
+    await visit('/components/buttons');
+    const header = rootSidebar().querySelector('[data-part="sidebar-header"]');
+    assert.ok(header, 'the sidebar has a header');
+    const links = header!.querySelectorAll('a[href]');
+    assert.strictEqual(links.length, 1, 'one link in the header');
+    assert
+      .dom(links[0])
+      .hasAttribute('href', '/', 'it links Home')
+      .hasAria('label', /Frontile/, 'its accessible name says Frontile');
+    assert
+      .dom('svg', links[0])
+      .exists({ count: 1 }, 'the logo is an svg')
+      .hasAria('hidden', 'true');
+    assert.notOk(
+      rootSidebar().textContent!.includes('Frontile playground'),
+      'the old header text is gone'
+    );
+  });
+
   test('collapsed Fixtures links are reachable by opening the folder', async function (assert) {
     await visit('/');
     const folder = rootSidebar().querySelector('[data-part="nav-folder"]')!;
@@ -223,7 +250,7 @@ module('Acceptance | workbench nav', function (hooks) {
     assert.strictEqual(hrefs.length, 13, 'one Home link per page');
     assert.deepEqual(
       hrefs,
-      hrefsIn(rootSidebar()).filter((href) => href !== '/'),
+      hrefsIn(rootNav()).filter((href) => href !== '/'),
       'Home links the same pages as the sidebar, in the same order'
     );
 

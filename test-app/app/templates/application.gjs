@@ -1,6 +1,8 @@
 import { AppLayout } from 'frontile';
 import { Button } from 'frontile/buttons';
+import { LinkTo } from '@ember/routing';
 import ThemeSwitcher from '../components/theme-switcher';
+import Logo from '../components/logo';
 import IconHouse from '~icons/lucide/house';
 import IconPalette from '~icons/lucide/palette';
 import IconSwatchBook from '~icons/lucide/swatch-book';
@@ -21,9 +23,13 @@ import IconPanelsTopLeft from '~icons/lucide/panels-top-left';
   <AppLayout @scrollMode="page" as |layout|>
     <layout.Sidebar @label="Playground" @collapsible="none" as |sidebar|>
       <sidebar.Header>
-        <span class="truncate text-sm font-semibold text-primary">
-          Frontile playground
-        </span>
+        <LinkTo
+          @route="index"
+          aria-label="Frontile home"
+          class="text-primary inline-flex items-center rounded-sm"
+        >
+          <Logo class="h-5 w-auto" aria-hidden="true" />
+        </LinkTo>
       </sidebar.Header>
       <sidebar.Body>
         <sidebar.Item @route="index" @icon={{IconHouse}}>Home</sidebar.Item>
