@@ -142,7 +142,7 @@ function noop(): void {}
       <WorkbenchPanes @inverse={{true}}>
         <div class="flex flex-col gap-4">
           {{#each ALERT_LAYOUTS as |layout|}}
-            <WorkbenchSpecimen @label={{layout}}>
+            <WorkbenchSpecimen @label={{layout}} data-layout={{layout}}>
               <div class="flex flex-col gap-2">
                 <Alert
                   @status="primary"

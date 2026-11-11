@@ -146,6 +146,9 @@ export default class WorkbenchStateMatrix<T extends string> extends Component<
   }
 
   <template>
+    {{! `relative` makes the scroller the containing block, so it clips
+        non-portaled absolute descendants (visually hidden inputs) instead
+        of letting them widen the page. }}
     <div
       data-workbench-state-matrix
       class="relative min-w-0 overflow-x-auto"

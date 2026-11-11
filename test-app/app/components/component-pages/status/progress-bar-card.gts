@@ -86,7 +86,7 @@ import {
     >
       <div class="flex flex-col gap-4">
         {{#each PROGRESS_BAR_RADII as |radius|}}
-          <WorkbenchSpecimen @label={{radius}}>
+          <WorkbenchSpecimen @label={{radius}} data-radius={{radius}}>
             <ProgressBar
               @radius={{radius}}
               @color="primary"
@@ -104,10 +104,13 @@ import {
       @subtitle="Label, value label, description"
     >
       <div class="flex flex-col gap-4">
-        <WorkbenchSpecimen @label="label (value label follows)">
+        <WorkbenchSpecimen
+          @label="label (value label follows)"
+          data-case="label"
+        >
           <ProgressBar @label="Uploading" @color="primary" @progress={{50}} />
         </WorkbenchSpecimen>
-        <WorkbenchSpecimen @label="custom value label">
+        <WorkbenchSpecimen @label="custom value label" data-case="custom">
           <ProgressBar
             @label="Step"
             @valueLabel="2 of 4"
@@ -115,7 +118,7 @@ import {
             @progress={{50}}
           />
         </WorkbenchSpecimen>
-        <WorkbenchSpecimen @label="value label hidden">
+        <WorkbenchSpecimen @label="value label hidden" data-case="hidden">
           <ProgressBar
             @label="Quiet"
             @showValueLabel={{false}}
@@ -123,7 +126,7 @@ import {
             @progress={{50}}
           />
         </WorkbenchSpecimen>
-        <WorkbenchSpecimen @label="description">
+        <WorkbenchSpecimen @label="description" data-case="description">
           <ProgressBar
             @label="Syncing"
             @description="Copying 12 of 24 files"
