@@ -6,13 +6,13 @@ import WorkbenchPanes from 'test-app/components/workbench/panes';
 import WorkbenchSpecimen from 'test-app/components/workbench/specimen';
 import WorkbenchStateMatrix from 'test-app/components/workbench/state-matrix';
 import { SWITCH_SIZES } from 'test-app/utils/workbench/options';
-import { FORM_STATES_NO_READONLY_NO_FOCUS, STATE_ROWS } from './states';
+import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
 
 <template>
   <WorkbenchCard
     @id="switch"
     @title="Switch"
-    @description="An on/off toggle. Filled is on. The track's focus ring colour only follows real keyboard focus, so a frozen focus would be drawn wrong and the focus columns are omitted; tab to a switch to see it. The track has no invalid styling: invalid shows only as the feedback message."
+    @description="An on/off toggle. Filled is on. Focus is forced on the hidden input; the track draws the ring. The track has no invalid styling: invalid shows only as the feedback message."
     @sections={{array
       (hash id="states" label="States")
       (hash id="sizes" label="Sizes")
@@ -22,7 +22,7 @@ import { FORM_STATES_NO_READONLY_NO_FOCUS, STATE_ROWS } from './states';
       <WorkbenchPanes @stacked={{true}}>
         <WorkbenchStateMatrix
           @rows={{STATE_ROWS}}
-          @states={{FORM_STATES_NO_READONLY_NO_FOCUS}}
+          @states={{FORM_STATES_NO_READONLY}}
           @rowLabel="Size"
           as |size state cell|
         >
@@ -33,6 +33,7 @@ import { FORM_STATES_NO_READONLY_NO_FOCUS, STATE_ROWS } from './states';
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}
             @errors={{if cell.isInvalid (array "Required")}}
+            {{cell.force}}
           />
         </WorkbenchStateMatrix>
       </WorkbenchPanes>

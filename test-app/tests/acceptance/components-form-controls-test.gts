@@ -33,7 +33,7 @@ const FOCUS_TARGETS: Record<string, string | null> = {
   'checkbox-group': 'input[type="checkbox"]',
   radio: 'input[type="radio"]',
   'radio-group': 'input[type="radio"]',
-  switch: null,
+  switch: 'input[data-part="hidden-input"]',
   'input-otp': null
 };
 
@@ -95,6 +95,11 @@ module('Acceptance | components form controls', function (hooks) {
       headers('checkbox'),
       ALL_COLUMNS.filter((c) => c !== 'readonly'),
       'Checkbox has no readonly column'
+    );
+    assert.deepEqual(
+      headers('switch'),
+      ALL_COLUMNS.filter((c) => c !== 'readonly'),
+      'Switch has focus columns but no readonly column'
     );
     assert.deepEqual(
       headers('input-otp'),
@@ -242,10 +247,7 @@ module('Acceptance | components form controls', function (hooks) {
       'radio-group',
       'switch'
     ]) {
-      // Switch has no invalid-focus column (its focus cannot be forced).
-      const states =
-        card === 'switch' ? ['invalid'] : ['invalid', 'invalid-focus'];
-      for (const state of states) {
+      for (const state of ['invalid', 'invalid-focus']) {
         const cells = document.querySelectorAll(
           `#${card}-states td[data-state="${state}"]`
         );
