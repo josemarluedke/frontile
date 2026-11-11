@@ -1214,7 +1214,21 @@ module(
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'true');
     });
 
-    module('style classes', () => {
+    module('style classes', (hooks) => {
+      // Tests opt into the stub classes by calling
+      // `registerListboxItemStyles()`; put the previous ones back after each.
+      let previous: Pick<
+        ReturnType<typeof useStyles>,
+        'listbox' | 'listboxItem'
+      >;
+      hooks.beforeEach(function () {
+        const { listbox, listboxItem } = useStyles();
+        previous = { listbox, listboxItem };
+      });
+      hooks.afterEach(function () {
+        registerCustomStyles(previous);
+      });
+
       function registerListboxItemStyles() {
         registerCustomStyles({
           listbox: tv({

@@ -76,7 +76,13 @@ export default class ThemeSwitcher extends Component<ThemeSwitcherSignature> {
     );
   }
   <template>
-    <Button @class="transition" ...attributes {{on "click" this.toggleMode}}>
+    <Button
+      @size="sm"
+      @variant="outline"
+      @class="transition"
+      ...attributes
+      {{on "click" this.toggleMode}}
+    >
       {{#if this.prefersDark}}
         <VisuallyHidden>
           Switch to Light Mode

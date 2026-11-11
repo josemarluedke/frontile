@@ -1,12 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { Badge } from 'frontile';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { badgeStubStyles } from '../../../helpers/badge-stub-styles';
 import { realStyles } from '../../../helpers/real-theme-styles';
-
-registerCustomStyles({ badge: badgeStubStyles });
 
 const COLORS = [
   'neutral',
@@ -20,6 +18,7 @@ const SIZES = ['xs', 'sm', 'md', 'lg'] as const;
 
 module('Integration | Component | Badge | @frontile/status', function (hooks) {
   setupRenderingTest(hooks);
+  useCustomStyles(hooks, { badge: badgeStubStyles });
 
   test('it renders', async function (assert) {
     await render(

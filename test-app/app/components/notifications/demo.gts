@@ -54,34 +54,38 @@ export default class Demo extends Component<DemoArgs> {
     this.customActions = keys;
   };
 
-  handleForm = (data: FormResultData, eventType: 'input' | 'submit') => {
+  handleChange = ({ data }: FormResultData) => {
     if (data['placement']) {
       this.placement = data[
         'placement'
       ] as NotificationsContainerSignature['Args']['placement'];
     }
+  };
 
-    if (eventType === 'submit') {
-      this.notifications.add(
-        'Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna.',
-        {
-          status: data['status'] as NotificationOptions['status'],
-          preserve: data['preserve'] == 'on',
-          duration: parseInt(data['duration'] as string) || 5000,
-          allowClosing: data['allowClosing'] == 'on',
-          customActions: this.customActions.map(
-            (key) =>
-              customActionsOptions.find(
-                (action) => action.key === key
-              ) as CustomAction
-          )
-        }
-      );
-    }
+  handleSubmit = ({ data }: FormResultData) => {
+    this.notifications.add(
+      'Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna.',
+      {
+        status: data['status'] as NotificationOptions['status'],
+        preserve: data['preserve'] === true,
+        duration: parseInt(data['duration'] as string) || 5000,
+        allowClosing: data['allowClosing'] === true,
+        customActions: this.customActions.map(
+          (key) =>
+            customActionsOptions.find(
+              (action) => action.key === key
+            ) as CustomAction
+        )
+      }
+    );
   };
 
   <template>
-    <Form @onChange={{this.handleForm}} class="mt-4 flex flex-col gap-y-4">
+    <Form
+      @onChange={{this.handleChange}}
+      @onSubmit={{this.handleSubmit}}
+      class="mt-4 flex flex-col gap-y-4"
+    >
       <RadioGroup
         @orientation="horizontal"
         @label="Placement"
@@ -99,13 +103,13 @@ export default class Demo extends Component<DemoArgs> {
 
       <RadioGroup
         @orientation="horizontal"
-        @label="Intent"
+        @label="Status"
         @name="status"
-        @value="default"
+        @value="neutral"
         as |Radio|
       >
-        <Radio @value="default" @label="default" />
-        <Radio @value="info" @label="info" />
+        <Radio @value="neutral" @label="neutral" />
+        <Radio @value="primary" @label="primary" />
         <Radio @value="success" @label="success" />
         <Radio @value="warning" @label="warning" />
         <Radio @value="danger" @label="danger" />

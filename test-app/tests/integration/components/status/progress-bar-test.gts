@@ -1,13 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { ProgressBar } from 'frontile';
 import { hash } from '@ember/helper';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
-registerCustomStyles({
+const stubStyles = {
   progressBar: tv({
     slots: {
       base: ['pb-base'],
@@ -48,12 +48,13 @@ registerCustomStyles({
       radius: 'sm'
     }
   }) as never
-});
+};
 
 module(
   'Integration | Component | ProgressBar | @frontile/status',
   function (hooks) {
     setupRenderingTest(hooks);
+    useCustomStyles(hooks, stubStyles);
 
     test('it renders', async function (assert) {
       await render(

@@ -39,6 +39,7 @@
     "@glimmer/component": "^2.1.1",
     "@glimmer/tracking": "^1.1.2",
     "@glint/ember-tsc": "^1.11.6",
+    "@iconify-json/lucide": "^1.2.143",
     "@rollup/plugin-babel": "^7.0.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/htmlbars-inline-precompile": "^3.0.4",
@@ -70,6 +71,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2",
+    "unplugin-icons": "^24.0.0",
     "valibot": "^1.5.0",
     "vite": "^8.3.4"
   },

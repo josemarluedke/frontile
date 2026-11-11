@@ -1227,6 +1227,9 @@ importers:
       '@glint/ember-tsc':
         specifier: ^1.11.6
         version: 1.11.6(ember-source@7.3.0(@glimmer/component@2.1.1))(typescript@6.0.3)
+      '@iconify-json/lucide':
+        specifier: ^1.2.143
+        version: 1.2.143
       '@rollup/plugin-babel':
         specifier: ^7.0.0
         version: 7.1.0(@babel/core@7.29.7)(rollup@4.64.5)
@@ -1320,6 +1323,9 @@ importers:
       typescript-eslint:
         specifier: ^8.71.2
         version: 8.71.2(eslint@10.12.0(jiti@2.7.0))(typescript@6.0.3)
+      unplugin-icons:
+        specifier: ^24.0.0
+        version: 24.0.0(rolldown@1.2.13)(rollup@4.64.5)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.110.3)
       valibot:
         specifier: ^1.5.0
         version: 1.5.0(typescript@6.0.3)
@@ -25524,6 +25530,24 @@ snapshots:
       - vite
       - webpack
 
+  unplugin-icons@24.0.0(rolldown@1.2.13)(rollup@4.64.5)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.110.3):
+    dependencies:
+      '@antfu/install-pkg': 1.1.0
+      '@iconify/utils': 3.1.7
+      local-pkg: 1.2.1
+      obug: 2.2.1
+      unplugin: 3.3.0(rolldown@1.2.13)(rollup@4.64.5)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.110.3)
+    transitivePeerDependencies:
+      - '@farmfe/core'
+      - '@rspack/core'
+      - bun-types-no-globals
+      - esbuild
+      - rolldown
+      - rollup
+      - unloader
+      - vite
+      - webpack
+
   unplugin@3.3.0(rolldown@1.2.13)(rollup@4.64.5)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.110.3(postcss@8.5.30)):
     dependencies:
       '@jridgewell/remapping': 2.3.5
@@ -25534,6 +25558,17 @@ snapshots:
       rollup: 4.64.5
       vite: 8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       webpack: 5.110.3(postcss@8.5.30)
+
+  unplugin@3.3.0(rolldown@1.2.13)(rollup@4.64.5)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.110.3):
+    dependencies:
+      '@jridgewell/remapping': 2.3.5
+      picomatch: 4.0.7
+      webpack-virtual-modules: 0.6.2
+    optionalDependencies:
+      rolldown: 1.2.13
+      rollup: 4.64.5
+      vite: 8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
+      webpack: 5.110.3
 
   upath@2.0.1: {}
 

@@ -7,19 +7,19 @@ import {
   type NotificationsService
 } from 'frontile/notifications';
 import sinon from 'sinon';
-import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
 import { ownParts } from 'frontile/test-support';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
+import { realStyles } from '../../../helpers/real-theme-styles';
 
-// Captured before the `registerCustomStyles` call below replaces
-// `notificationCard` for the rest of this module — `notificationCard` itself
-// isn't part of the package's public value exports (only its type is), so
-// this is the one way to keep a handle on the *real* production tv() function
-// for the direct, unmocked assertions later in this file.
-const realNotificationCardStyles = useStyles().notificationCard;
+// The *real* production tv() function, for the direct, unmocked assertions
+// later in this file (this module swaps `notificationCard` for a stub via
+// `useCustomStyles`, and `notificationCard` itself isn't part of the
+// package's public value exports, only its type is).
+const realNotificationCardStyles = realStyles.notificationCard;
 
-registerCustomStyles({
+const stubStyles = {
   notificationCard: tv({
     slots: {
       base: '',
@@ -62,13 +62,14 @@ registerCustomStyles({
       variant: 'surface',
       hasDescription: false
     }
-  })
-});
+  }) as never
+};
 
 module(
   'Integration | Component | @frontile/notifications/NotificationCard',
   function (hooks) {
     setupRenderingTest(hooks);
+    useCustomStyles(hooks, stubStyles);
 
     const notification = cell<Notification>(new Notification({}, ''));
     const template = <template>
@@ -147,10 +148,8 @@ module(
     });
 
     test('the neutral status composes with all three variants', async function (assert) {
-      // This file's module-level `registerCustomStyles` replaces the real
-      // `notificationCard` theme classes with plain marker strings for the
-      // whole test run (see the comment in notifications-container-test.gts
-      // about module-level code running regardless of `--filter`), so this
+      // This module's `useCustomStyles` replaces the real
+      // `notificationCard` theme classes with plain marker strings, so this
       // exercises the `status`/`variant` plumbing rather than the actual
       // Tailwind color literals — those are reviewed directly in
       // packages/theme/src/components/notification-card.ts and verified by
@@ -284,7 +283,7 @@ module(
 
     test('the loading spinner uses a dim track distinct from its accent-coloured arc', async function (assert) {
       // This exercises the *real* Spinner theme (only `notificationCard` is
-      // overridden by this file's module-level `registerCustomStyles` above;
+      // overridden by this module's `useCustomStyles` above;
       // `spinner` is not), so the `fill-*`/`text-*` classes asserted here are
       // the actual Tailwind literals, not test marker strings. Regression
       // target: passing the card's `icon` slot classes to <Spinner> put an
@@ -328,7 +327,7 @@ module(
 
     test('the loading spinner is the same size as the settled status icon, in every variant', function (assert) {
       // This must be checked against the *real* theme, not through render:
-      // this file's module-level `registerCustomStyles` mock (needed by the
+      // this module's `useCustomStyles` mock (needed by the
       // rendering tests above, e.g. `.notification-card__icon`) replaces
       // both the `icon` and `spinner` slots with plain marker classes that
       // carry no size utility at all, so a render-based assertion here would
@@ -366,7 +365,7 @@ module(
       // the arc via the Spinner's own `fill-{status}`, which would make the
       // arc invisible against its own card. This is verified directly
       // against the real (unmocked) theme object, since this file's
-      // module-level `registerCustomStyles` replaces `notificationCard`'s
+      // module's `useCustomStyles` replaces `notificationCard`'s
       // classes with test markers for rendering tests.
       const cases: {
         status: 'neutral' | 'info' | 'success' | 'warning' | 'danger';

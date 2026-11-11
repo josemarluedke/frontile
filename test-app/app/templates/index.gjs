@@ -1,62 +1,100 @@
 import pageTitle from 'ember-page-title/helpers/page-title';
-import { concat } from '@ember/helper';
-<template>
-  {{pageTitle "Frontile Home"}}
-  <div
-    class="grid grid-flow-col justify-center gap-4 font-mono font-bold text-xs text-center"
-  >
-    <div
-      class="items-center justify-center text-surface-solid-11 bg-surface-overlay-subtle rounded-lg shadow-lg size-40 hidden md:grid"
-    >bg-surface-overlay-subtle</div>
-    <div
-      class="items-center justify-center text-surface-solid-11 bg-surface-overlay-soft rounded-lg shadow-lg size-40 hidden md:grid"
-    >bg-surface-overlay-soft</div>
-    <div
-      class="items-center justify-center text-surface-solid-11 bg-surface-overlay-medium rounded-lg shadow-lg size-40 hidden md:grid"
-    >bg-surface-overlay-medium</div>
-    <div
-      class="items-center justify-center text-surface-solid-0 bg-surface-overlay-strong rounded-lg shadow-lg size-40 hidden md:grid"
-    >bg-surface-overlay-strong</div>
-  </div>
+import { LinkTo } from '@ember/routing';
+import { array } from '@ember/helper';
+import WorkbenchCard from '../components/workbench/card';
 
-  <div
-    class="grid grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-x-2 gap-y-8 sm:grid-cols-1 mt-8"
+<template>
+  {{pageTitle "Frontile Workbench"}}
+  <h1 class="sr-only">Frontile workbench</h1>
+  <WorkbenchCard
+    @id="home"
+    @title="Frontile workbench"
+    @description="A working surface for checking every component, color and theme state in light, dark and inverse. Each card has a Copy link button for deep links."
+    @sections={{array}}
   >
-    {{#each @controller.model.groups as |group|}}
-      <div>
-        <div
-          class="text-sm font-semibold text-neutral-strong dark:text-slate-200 2xl:col-end-1 2xl:pt-2.5"
-        >
-          {{group.name}}
-        </div>
-        <div
-          class="grid mt-3 grid-cols-1 sm:grid-cols-11 gap-y-3 gap-x-2 sm:mt-2 2xl:mt-0"
-        >
-          {{#each-in group.colors as |key color|}}
-            <div
-              class="flex items-center gap-x-3 w-full sm:block sm:space-y-1.5"
-            >
-              <div
-                class="h-10 w-10 rounded dark:ring-1 dark:ring-inset dark:ring-white/10 sm:w-full"
-                style={{@controller.model.htmlSafe
-                  (concat "background-color:" color)
-                }}
-              >
-              </div>
-              <div class="px-0.5">
-                <div class="w-6 font-medium text-xs 2xl:w-full dark:text-white">
-                  {{key}}
-                </div>
-                <div
-                  class="text-slate-500 text-xs font-mono lowercase dark:text-slate-400 sm:text-[0.625rem] md:text-xs lg:text-[0.625rem] 2xl:text-xs"
-                >
-                  {{color}}
-                </div>
-              </div>
-            </div>
-          {{/each-in}}
-        </div>
-      </div>
-    {{/each}}
-  </div>
+    <div class="grid gap-6 text-sm sm:grid-cols-2" data-home-links>
+      <section data-home-section="foundations">
+        <h3 class="mb-2 font-semibold">Foundations</h3>
+        <ul class="grid gap-2">
+          <li><LinkTo
+              @route="foundations.theme"
+              class="text-primary underline"
+            >Theme</LinkTo>
+            &ndash; the semantic roles at each level, surfaces, overlays &amp;
+            lifts, utility colors</li>
+          <li><LinkTo
+              @route="foundations.palette"
+              class="text-primary underline"
+            >Palette</LinkTo>
+            &ndash; the raw color ramps from the theme source, theme-independent</li>
+          <li><LinkTo
+              @route="foundations.typography"
+              class="text-primary underline"
+            >Typography</LinkTo>
+            &ndash; type scale and text styles</li>
+          <li><LinkTo
+              @route="foundations.global"
+              class="text-primary underline"
+            >Global</LinkTo>
+            &ndash; radius, elevation, icon sizes, disabled opacity, breakpoints</li>
+        </ul>
+      </section>
+      <section data-home-section="components">
+        <h3 class="mb-2 font-semibold">Components</h3>
+        <ul class="grid gap-2">
+          <li><LinkTo
+              @route="component-pages.buttons"
+              class="text-primary underline"
+            >Buttons</LinkTo>
+            &ndash; buttons, groups, toggles, chips, close buttons, segmented
+            control</li>
+          <li><LinkTo
+              @route="component-pages.form-controls"
+              class="text-primary underline"
+            >Form controls</LinkTo>
+            &ndash; inputs, selects, textareas, checkboxes, radios, switches</li>
+          <li><LinkTo
+              @route="component-pages.status"
+              class="text-primary underline"
+            >Status</LinkTo>
+            &ndash; alerts and progress bars</li>
+        </ul>
+      </section>
+      <section data-home-section="demos">
+        <h3 class="mb-2 font-semibold">Demos</h3>
+        <ul class="grid gap-2">
+          <li><LinkTo
+              @route="overlays"
+              class="text-primary underline"
+            >Overlays</LinkTo>
+            &ndash; modals, drawers, popovers</li>
+          <li><LinkTo
+              @route="notifications"
+              class="text-primary underline"
+            >Notifications</LinkTo>
+            &ndash; live notification stack and placements</li>
+        </ul>
+      </section>
+      <section data-home-section="fixtures">
+        <h3 class="mb-2 font-semibold">Fixtures</h3>
+        <p class="mb-2 text-neutral-firm">Pages that acceptance tests visit.</p>
+        <ul class="grid gap-2">
+          <li><LinkTo
+              @route="sidebar-demo"
+              class="text-primary underline"
+            >Sidebar</LinkTo></li>
+          <li><LinkTo
+              @route="platform-demo"
+              class="text-primary underline"
+            >Platform shell</LinkTo></li>
+          <li><LinkTo
+              @route="breadcrumbs-demo"
+              class="text-primary underline"
+            >Breadcrumbs</LinkTo></li>
+          <li><LinkTo @route="tab-nav-demo" class="text-primary underline">Tab
+              nav</LinkTo></li>
+        </ul>
+      </section>
+    </div>
+  </WorkbenchCard>
 </template>

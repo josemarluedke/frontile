@@ -7,7 +7,6 @@ import {
   triggerKeyEvent,
   triggerEvent
 } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Dropdown } from 'frontile';
 import { tracked } from '@glimmer/tracking';
@@ -15,13 +14,14 @@ import { cell } from 'ember-resources';
 import { array } from '@ember/helper';
 import { settled } from '@ember/test-helpers';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 module(
   'Integration | Component | Dropdown | @frontile/collections',
   function (hooks) {
     setupRenderingTest(hooks);
 
-    registerCustomStyles({
+    useCustomStyles(hooks, {
       backdrop: tv({ base: 'overlay__backdrop' }) as never,
       overlay: tv({
         base: 'overlay__content',

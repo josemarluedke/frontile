@@ -7,8 +7,7 @@ import {
   triggerKeyEvent,
   fillIn,
   focus,
-  settled,
-  setupOnerror
+  settled
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import {
@@ -20,8 +19,9 @@ import {
 import { array, hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { selectOptionByKey, ownParts } from 'frontile/test-support';
-import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { chipStubStyles } from '../../../helpers/chip-stub-styles';
 import { closeButtonStubStyles } from '../../../helpers/close-button-stub-styles';
 
@@ -31,25 +31,10 @@ const eq = (a: unknown, b: unknown) => a === b;
 module('Integration | Component | Select | @frontile/forms', function (hooks) {
   // The Multiple-mode tests assert against the stub chip theme's class names
   // and its padding-free geometry; a chip's close button is stubbed the same
-  // way (it is part of the chip's width). Register both for this module rather
-  // than relying on chip-test.gts / close-button-test.gts having been loaded in
-  // the same run, and restore whatever was there afterwards.
-  let chipStyles: ReturnType<typeof useStyles>['chip'];
-  let closeButtonStyles: ReturnType<typeof useStyles>['closeButton'];
-
-  hooks.before(function () {
-    ({ chip: chipStyles, closeButton: closeButtonStyles } = useStyles());
-    registerCustomStyles({
-      chip: chipStubStyles,
-      closeButton: closeButtonStubStyles
-    });
-  });
-
-  hooks.after(function () {
-    registerCustomStyles({
-      chip: chipStyles,
-      closeButton: closeButtonStyles
-    });
+  // way (it is part of the chip's width).
+  useCustomStyles(hooks, {
+    chip: chipStubStyles,
+    closeButton: closeButtonStubStyles
   });
 
   setupRenderingTest(hooks);
@@ -4335,31 +4320,32 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     });
 
     test('it asserts on a limit without @isFilterable, or one that is not a positive integer', async function (assert) {
-      const errors: string[] = [];
-      setupOnerror((error: unknown) => {
-        errors.push((error as Error).message);
+      const failed = await collectAssertions(async () => {
+        await render(
+          <template><Select @items={{items}} @displayLimit={{3}} /></template>
+        );
+        await click(INPUT);
+        await render(
+          <template>
+            <Select
+              @items={{items}}
+              @isFilterable={{true}}
+              @displayLimit={{0}}
+            />
+          </template>
+        );
+        await click(INPUT);
       });
 
-      await render(
-        <template><Select @items={{items}} @displayLimit={{3}} /></template>
-      );
-      await click(INPUT);
-      await render(
-        <template>
-          <Select @items={{items}} @isFilterable={{true}} @displayLimit={{0}} />
-        </template>
-      );
-      await click(INPUT);
-
       assert.true(
-        errors.some((m) => m.includes('@displayLimit requires @isFilterable')),
-        `asserts without @isFilterable, got: ${errors.join(' | ')}`
+        failed.some((m) => m.includes('@displayLimit requires @isFilterable')),
+        `asserts without @isFilterable, got: ${failed.join(' | ')}`
       );
       assert.true(
-        errors.some((m) =>
+        failed.some((m) =>
           m.includes('@displayLimit must be a positive integer, received 0')
         ),
-        `asserts on 0, got: ${errors.join(' | ')}`
+        `asserts on 0, got: ${failed.join(' | ')}`
       );
     });
   });

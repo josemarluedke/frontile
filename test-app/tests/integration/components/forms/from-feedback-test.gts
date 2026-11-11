@@ -1,53 +1,41 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 import { FormFeedback, type FormFeedbackSignature } from 'frontile';
 import { cell } from 'ember-resources';
 import { trackDeprecations } from '../../../helpers/deprecations';
-import { realStyles } from '../../../helpers/real-theme-styles';
 
 module(
   'Integration | Component | @frontile/forms/FormFeedback',
   function (hooks) {
     setupRenderingTest(hooks);
 
-    // `registerCustomStyles` writes to a module-level slot shared by every
-    // test file (see `packages/theme/src/index.ts`), and `forms-legacy/
-    // form-field/feedback-test.gts` registers its own, incompatible
-    // `formFeedback` override. Which one is in effect for THIS module's tests
-    // would otherwise depend on load order between the two files -- scoping
-    // the override to this module's own before/after keeps it correct
-    // regardless of that order.
-    hooks.before(function () {
-      registerCustomStyles({
-        formFeedback: tv({
-          base: 'form-field-feedback' as never,
-          variants: {
-            status: {
-              primary: 'status-primary',
-              secondary: 'status-secondary',
-              success: 'status-success',
-              warning: 'status-warning',
-              danger: 'form-field-feedback--error'
-            },
-            size: {
-              sm: 'form-field-feedback--sm',
-              md: '',
-              lg: 'form-field-feedback--lg'
-            }
+    // Scoped to this module: the other `formFeedback` test file registers
+    // its own, incompatible stub.
+    useCustomStyles(hooks, {
+      formFeedback: tv({
+        base: 'form-field-feedback' as never,
+        variants: {
+          status: {
+            primary: 'status-primary',
+            secondary: 'status-secondary',
+            success: 'status-success',
+            warning: 'status-warning',
+            danger: 'form-field-feedback--error'
           },
-          defaultVariants: {
-            size: 'sm'
+          size: {
+            sm: 'form-field-feedback--sm',
+            md: '',
+            lg: 'form-field-feedback--lg'
           }
-        }) as never
-      });
-    });
-
-    hooks.after(function () {
-      registerCustomStyles({ formFeedback: realStyles.formFeedback });
+        },
+        defaultVariants: {
+          size: 'sm'
+        }
+      }) as never
     });
 
     const messages = cell<string[] | string>();

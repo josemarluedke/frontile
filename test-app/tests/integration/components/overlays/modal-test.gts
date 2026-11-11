@@ -7,7 +7,6 @@ import {
   triggerKeyEvent,
   settled
 } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Modal } from 'frontile/overlays';
 import { cell } from 'ember-resources';
@@ -16,11 +15,12 @@ import {
   observeWarningsBelowCapture
 } from 'test-app/tests/helpers/frontile-warnings';
 import { warn } from '@ember/debug';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 module('Integration | Component | @frontile/overlays/modal', function (hooks) {
   setupRenderingTest(hooks);
 
-  registerCustomStyles({
+  useCustomStyles(hooks, {
     backdrop: tv({ base: 'overlay__backdrop' }) as never,
     overlay: tv({
       base: 'overlay__content',

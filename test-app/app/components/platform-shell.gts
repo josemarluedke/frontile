@@ -3,99 +3,13 @@ import { tracked } from '@glimmer/tracking';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { AppLayout } from 'frontile';
-import type { TOC } from '@ember/component/template-only';
-
-// Placeholder icons: one outline path each, so the demo needs no icon package.
-const HomeIcon: TOC<{ Element: SVGSVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    width="20"
-    height="20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  ><path d="M3 11l9-8 9 8v10H3z" /></svg>
-</template>;
-
-const ServicesIcon: TOC<{ Element: SVGSVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    width="20"
-    height="20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  ><path d="M4 14h16v6H4zM8 17h.01M6 10a8 8 0 0 1 12 0" /></svg>
-</template>;
-
-const BillingIcon: TOC<{ Element: SVGSVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    width="20"
-    height="20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  ><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6" /></svg>
-</template>;
-
-const ShopIcon: TOC<{ Element: SVGSVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    width="20"
-    height="20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  ><path d="M4 9l1-5h14l1 5M5 9v11h14V9" /></svg>
-</template>;
-
-const ReferralIcon: TOC<{ Element: SVGSVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    width="20"
-    height="20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  ><path d="M12 20l-8-8a5 5 0 0 1 8-6 5 5 0 0 1 8 6z" /></svg>
-</template>;
-
-const SupportIcon: TOC<{ Element: SVGSVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    width="20"
-    height="20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  ><path d="M4 5h16v11H9l-5 4z" /></svg>
-</template>;
-
-const SearchIcon: TOC<{ Element: SVGSVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    width="20"
-    height="20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  ><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5" /></svg>
-</template>;
+import HomeIcon from '~icons/lucide/house';
+import ServicesIcon from '~icons/lucide/router';
+import BillingIcon from '~icons/lucide/receipt';
+import ShopIcon from '~icons/lucide/store';
+import ReferralIcon from '~icons/lucide/heart';
+import SupportIcon from '~icons/lucide/message-square';
+import SearchIcon from '~icons/lucide/search';
 
 /**
  * A stacked rail on desktop; a top bar and a bottom tab bar with a More sheet
@@ -127,7 +41,8 @@ export default class PlatformShell extends Component {
     <AppLayout
       @variant="attached"
       @mobileNav="bottom"
-      @scrollMode="page"
+      @scrollMode="content"
+      class="h-full"
       as |layout|
     >
       <layout.Sidebar
@@ -222,7 +137,7 @@ export default class PlatformShell extends Component {
           <span class="truncate text-sm font-medium">Sample Owner</span>
         </button>
         <button type="button" aria-label="Search" class="ms-auto">
-          <SearchIcon />
+          <SearchIcon class="size-5" aria-hidden="true" />
         </button>
         <button
           type="button"

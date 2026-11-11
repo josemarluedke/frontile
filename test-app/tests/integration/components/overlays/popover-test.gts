@@ -11,11 +11,11 @@ import {
   resetOnerror,
   waitUntil
 } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Popover } from 'frontile/overlays';
 import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 /**
  * `Popover` measures width inside a `requestAnimationFrame`, which does not
@@ -63,7 +63,7 @@ module(
       resetOnerror();
     });
 
-    registerCustomStyles({
+    useCustomStyles(hooks, {
       backdrop: tv({ base: 'overlay__backdrop' }) as never,
       overlay: tv({
         base: 'overlay__content',

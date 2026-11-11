@@ -6,56 +6,57 @@ import {
   triggerKeyEvent,
   click
 } from '@ember/test-helpers';
-import { registerCustomStyles, tv } from '@frontile/theme';
+import { tv } from '@frontile/theme';
 import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
-registerCustomStyles({
-  button: tv({
-    base: [],
-    variants: {
-      isInGroup: { true: ['in-group'] },
-      variant: {
-        solid: 'button-solid',
-        soft: 'button-soft',
-        subtle: 'button-subtle',
-        outline: 'button-outline',
-        ghost: 'button-ghost',
-        plain: 'button-plain',
-        custom: 'button-custom'
-      },
-      color: {
-        neutral: 'button-neutral',
-        primary: 'button-primary',
-        secondary: 'button-secondary',
-        tertiary: 'button-tertiary',
-        success: 'button-success',
-        warning: 'button-warning',
-        danger: 'button-danger'
-      },
-      size: {
-        xs: 'btn-xs',
-        sm: 'btn-sm',
-        md: 'btn-md',
-        lg: 'btn-lg',
-        xl: 'btn-xl'
-      }
+const BUTTON_STYLES = tv({
+  base: [],
+  variants: {
+    isInGroup: { true: ['in-group'] },
+    variant: {
+      solid: 'button-solid',
+      soft: 'button-soft',
+      subtle: 'button-subtle',
+      outline: 'button-outline',
+      ghost: 'button-ghost',
+      plain: 'button-plain',
+      custom: 'button-custom'
     },
-    defaultVariants: {
-      size: 'md',
-      color: 'neutral',
-      variant: 'solid'
+    color: {
+      neutral: 'button-neutral',
+      primary: 'button-primary',
+      secondary: 'button-secondary',
+      tertiary: 'button-tertiary',
+      success: 'button-success',
+      warning: 'button-warning',
+      danger: 'button-danger'
+    },
+    size: {
+      xs: 'btn-xs',
+      sm: 'btn-sm',
+      md: 'btn-md',
+      lg: 'btn-lg',
+      xl: 'btn-xl'
     }
-  }) as never
-});
+  },
+  defaultVariants: {
+    size: 'md',
+    color: 'neutral',
+    variant: 'solid'
+  }
+}) as never;
 
 module(
   'Integration | Component | Button | @frontile/buttons',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    useCustomStyles(hooks, { button: BUTTON_STYLES });
 
     test('it renders', async function (assert) {
       await render(
