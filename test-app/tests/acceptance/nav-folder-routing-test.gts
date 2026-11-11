@@ -15,7 +15,9 @@ import {
   type MatchMediaMock
 } from 'test-app/tests/helpers/match-media';
 
-const TRIGGER = '[data-part="nav-folder-trigger"]';
+// Scoped to `main`: the playground's own sidebar holds a Fixtures folder
+// (around these very routes) outside `main`, which must not be matched.
+const TRIGGER = 'main [data-part="nav-folder-trigger"]';
 const MENU = '[role="menu"]';
 
 module('Acceptance | NavFolder routing', function (hooks) {
@@ -48,7 +50,7 @@ module('Acceptance | NavFolder routing', function (hooks) {
     assert.dom(TRIGGER).doesNotHaveAttribute('aria-current');
 
     const panel = document.querySelector(
-      '[data-part="nav-folder-panel"]'
+      'main [data-part="nav-folder-panel"]'
     ) as HTMLElement;
     assert.strictEqual(
       panel.style.height,

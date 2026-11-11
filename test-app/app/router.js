@@ -18,10 +18,6 @@ Router.map(function () {
     this.route('form-controls');
     this.route('status');
   });
-  this.route('changeset-form');
-  this.route('forms-legacy', function () {
-    this.route('style-variants');
-  });
   this.route('notifications');
   this.route('overlays');
   this.route('tab-nav-demo', function () {
