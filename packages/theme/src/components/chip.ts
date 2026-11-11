@@ -4,7 +4,7 @@ const chip = tv({
   slots: {
     base: [
       'whitespace-nowrap',
-      'inline-flex items-center justify-between box-border'
+      'inline-flex items-center justify-between box-border rounded-full'
     ],
     // label text role (size set per size variant)
     content: ['flex-1 text-inherit font-label'],
@@ -15,7 +15,7 @@ const chip = tv({
       // The shared ring is drawn with a background-coloured offset, which
       // inside a chip reads as a hole punched in the chip.
       'focus-visible:ring-2 focus-visible:ring-offset-0',
-      'disabled:cursor-not-allowed'
+      'cursor-pointer disabled:cursor-not-allowed'
     ]
   },
   variants: {
@@ -92,12 +92,6 @@ const chip = tv({
         dot: 'size-2.5',
         closeButton: 'text-label-md'
       }
-    },
-    radius: {
-      none: 'rounded-none',
-      sm: 'rounded-sm',
-      lg: 'rounded-lg',
-      full: 'rounded-full'
     }
   },
   compoundVariants: [
@@ -292,8 +286,7 @@ const chip = tv({
   defaultVariants: {
     size: 'md',
     color: 'neutral',
-    variant: 'solid',
-    radius: 'full'
+    variant: 'solid'
   }
 });
 

@@ -35,7 +35,7 @@ frontile/
 │   │       │   ├── navigation/      #   Tabs, TabNav, Pagination, ExternalLink
 │   │       │   ├── overlays/        #   Modal, Drawer, Popover, Overlay, Portal
 │   │       │   ├── notifications/   #   NotificationCard, NotificationsContainer
-│   │       │   ├── status/          #   Alert, ProgressBar
+│   │       │   ├── status/          #   Alert, Badge, ProgressBar
 │   │       │   └── utilities/       #   Avatar, Collapsible, Divider, Spinner, VisuallyHidden
 │   │       ├── modifiers/  services/  utils/
 │   │       └── buttons.ts, collections.ts, …  # category barrel entry points

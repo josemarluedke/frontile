@@ -2725,7 +2725,6 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
             appearance="outlined"
             intent="danger"
             size="lg"
-            radius="full"
             withDot=true
           }}
           @selectedKeys={{selectedKeys.current}}
@@ -2735,7 +2734,6 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     const chip = '[data-part="chip"][data-key="apple"]';
-    assert.dom(chip).hasClass('radius-full', '@chip.radius applies');
     assert
       .dom(chip)
       .doesNotHaveClass(

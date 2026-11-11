@@ -2886,10 +2886,14 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The border radius of the chip',
-        tags: { defaultValue: { name: 'defaultValue', value: "'full'" } },
-        defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'full\'</span></span>',
+        description: '',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value:
+              'Ignored. Chip is always a pill; use `Badge` for a squared\nlabel.',
+          },
+        },
       },
       {
         identifier: 'size',
@@ -3266,24 +3270,6 @@ const data: ComponentDoc[] = [
       },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ChevronDownIcon',
-    fileName: 'packages/frontile/declarations/components/disclosure/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
     },
     description: '',
     tags: {},
@@ -5921,42 +5907,6 @@ const data: ComponentDoc[] = [
           '={{form.isLoading}}>\nSubmit\n<:loading>Submitting...</:loading>\n</Button>\n</Form>\n```',
       },
     },
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'IconChevronUpDown',
-    fileName: 'packages/frontile/declarations/components/forms/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'IconCalendar',
-    fileName: 'packages/frontile/declarations/components/forms/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
   },
   {
     package: 'unknown',
@@ -8697,6 +8647,27 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
+              tags: {},
+            },
+            {
               identifier: 'mobileNav',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -9056,6 +9027,27 @@ const data: ComponentDoc[] = [
               isInternal: false,
               description:
                 'Called by `Sidebar` so the layout can report its effective collapse.\nReturns the matching unregister function.',
+              tags: {},
+            },
+            {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
               tags: {},
             },
             {
@@ -9543,6 +9535,27 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
+              tags: {},
+            },
+            {
               identifier: 'mobileNav',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -9916,6 +9929,27 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
+              tags: {},
+            },
+            {
               identifier: 'mobileNav',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -10278,6 +10312,27 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
+              tags: {},
+            },
+            {
               identifier: 'mobileNav',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -10390,7 +10445,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
     },
     description:
-      '<p>The mobile menu button: opens the sidebar drawer. It is shown only below\nthe layout\'s <code>@breakpoint</code>, typically at the top-left of the navbar. A\n<code>SidebarToggle</code> also opens the drawer below the breakpoint, so a layout can\nuse either one there; with both in the navbar, both show on narrow\nscreens. Closing the drawer returns focus to the button that opened it.\nWith <code>@mobileNav="bottom"</code> there is no drawer, so below the breakpoint it\nrenders nothing.</p>',
+      '<p>The mobile menu button: opens the sidebar drawer. It is shown only below\nthe layout\'s <code>@breakpoint</code>, typically at the top-left of the navbar. A\n<code>SidebarToggle</code> also opens the drawer below the breakpoint, so a layout can\nuse either one there; with both in the navbar, both show on narrow\nscreens. Closing the drawer returns focus to the button that opened it.\nWith <code>@mobileNav="bottom"</code> there is no drawer, so below the breakpoint it\nrenders nothing; nor does it in a layout with no <code>Sidebar</code>.</p>',
     tags: {},
   },
   {
@@ -10613,7 +10668,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'A count or short status shown as a pill on the icon. Nothing is shown\nfor <code>undefined</code>, <code>null</code>, <code>0</code> or an empty string.',
+          "A count or short status shown as a pill: at the end of the row, or on\nthe icon's corner where only the icon shows (the collapsed rail, the\nstacked and icon layouts). Nothing is shown for <code>undefined</code>, <code>null</code>, <code>0</code>\nor an empty string.",
         tags: {},
       },
       {
@@ -11257,6 +11312,27 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
+              tags: {},
+            },
+            {
               identifier: 'mobileNav',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -11603,6 +11679,27 @@ const data: ComponentDoc[] = [
               isInternal: false,
               description:
                 'Called by `Sidebar` so the layout can report its effective collapse.\nReturns the matching unregister function.',
+              tags: {},
+            },
+            {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
               tags: {},
             },
             {
@@ -12092,6 +12189,27 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
+              tags: {},
+            },
+            {
               identifier: 'mobileNav',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -12205,7 +12323,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
     },
     description:
-      '<p>A button that collapses and expands the sidebar. <code>aria-expanded</code> is true\nwhile the sidebar is expanded. Inside an <code>AppLayout</code>, below its\n<code>@breakpoint</code> (where the sidebar is a drawer) it opens the drawer instead,\nlike <code>MenuToggle</code>, and <code>aria-expanded</code> follows the drawer. With\n<code>@mobileNav="bottom"</code> there is no sidebar below the breakpoint, so there it\nrenders nothing.</p>',
+      '<p>A button that collapses and expands the sidebar. <code>aria-expanded</code> is true\nwhile the sidebar is expanded. Inside an <code>AppLayout</code>, below its\n<code>@breakpoint</code> (where the sidebar is a drawer) it opens the drawer instead,\nlike <code>MenuToggle</code>, and <code>aria-expanded</code> follows the drawer. With\n<code>@mobileNav="bottom"</code> there is no sidebar below the breakpoint, so there it\nrenders nothing; nor does it in a layout with no <code>Sidebar</code>.</p>',
     tags: {},
   },
   {
@@ -12502,6 +12620,27 @@ const data: ComponentDoc[] = [
               isInternal: false,
               description:
                 'Called by `Sidebar` so the layout can report its effective collapse.\nReturns the matching unregister function.',
+              tags: {},
+            },
+            {
+              identifier: 'hasSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: 'Whether a `Sidebar` is registered (tracked).',
+              tags: {},
+            },
+            {
+              identifier: 'canToggleSidebar',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Whether `SidebarToggle` and `MenuToggle` render: there is a `Sidebar`,\nand the bottom bar is not standing in for it (tracked).',
               tags: {},
             },
             {
@@ -13079,25 +13218,6 @@ const data: ComponentDoc[] = [
     },
     description:
       '<p>A link to another site.</p>\n<p>It opens a new tab, marks itself with an external-link glyph, protects the\nopener with <code>rel="noopener noreferrer"</code>, and tells assistive technology that\na new tab is coming — so the four cannot drift apart. For in-app navigation\nuse <code>TabNav</code> or Ember\'s <code>LinkTo</code>.</p>',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'Component',
-    fileName:
-      'packages/frontile/declarations/components/notifications/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
     tags: {},
   },
   {
@@ -17113,6 +17233,163 @@ const data: ComponentDoc[] = [
     },
     description:
       '<p>Displays an important message inline in the page.</p>\n<p>The static counterpart to <code>NotificationCard</code>: same statuses and visual\nrecipes, but rendered as part of the page rather than pushed through the\nnotifications service.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'badge',
+    name: 'Badge',
+    fileName: 'packages/frontile/declarations/components/status/badge.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom class name, it will override the default ones using Tailwind Merge library.',
+        tags: {},
+      },
+      {
+        identifier: 'color',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: [
+            "'neutral'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The color of the badge.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'neutral'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span></span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'", "'xs'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The size of the badge',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+      },
+      {
+        identifier: 'unit',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'A unit shown after the value, such as <code>/mo</code>. Rendered only when set.',
+        tags: {},
+      },
+      {
+        identifier: 'value',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> number</span></span>',
+          items: ['string', 'number'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'A figure shown after the label, such as a price or a count. A number is\naccepted, and <code>0</code> still renders; only <code>undefined</code> or <code>null</code> leaves the\nvalue out. Rendered in its own part so the theme can give it a\ntabular, heavier treatment.',
+        tags: {},
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span></span>',
+          items: ["'soft'", "'outline'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The badge variant. There is no <code>solid</code>: a saturated block reads as a\nChip or Button.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'soft'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span></span>',
+      },
+      {
+        identifier: 'withDot',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Adds a dot before the content, colored by <code>@color</code>.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: 'The badge label.',
+        tags: {},
+      },
+      {
+        identifier: 'startIcon',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'An icon shown before the label. Using this block means the label must\ngo in the <code>&#x3C;:default></code> block.',
+        tags: {},
+      },
+      {
+        identifier: 'endIcon',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'An icon shown after the value and unit. Using this block means the label\nmust go in the <code>&#x3C;:default></code> block.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLSpanElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLSpanElement',
+    },
+    description:
+      '<p>A non-interactive label for status or metadata. Renders, in order: dot, start\nicon, label, value, unit, end icon.</p>\n<p>When you pass a named block (<code>&#x3C;:startIcon></code> or <code>&#x3C;:endIcon></code>), Glimmer no\nlonger treats loose content as the default block, so put the label in\n<code>&#x3C;:default></code>.</p>',
     tags: {},
   },
   {
@@ -27724,44 +28001,6 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
-    module: 'icons',
-    name: 'ChevronLeftIcon',
-    fileName:
-      'packages/frontile/declarations/components/collections/calendar/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ChevronRightIcon',
-    fileName:
-      'packages/frontile/declarations/components/collections/calendar/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
     module: 'month-grid',
     name: 'MonthGrid',
     fileName:
@@ -34965,63 +35204,6 @@ const data: ComponentDoc[] = [
       },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ChevronUpIcon',
-    fileName:
-      'packages/frontile/declarations/components/collections/table/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ChevronDownIcon',
-    fileName:
-      'packages/frontile/declarations/components/collections/table/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ColumnVisibilityIcon',
-    fileName:
-      'packages/frontile/declarations/components/collections/table/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
     },
     description: '',
     tags: {},
@@ -45648,6 +45830,23 @@ const data: ComponentDoc[] = [
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
           items: [
             {
+              identifier: 'radius',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'full\'</span></span>',
+                items: ["'sm'", "'lg'", "'none'", "'full'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {
+                deprecated: {
+                  name: 'deprecated',
+                  value: 'Ignored. Chip is always a pill.',
+                },
+              },
+            },
+            {
               identifier: 'variant',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
@@ -45740,20 +45939,6 @@ const data: ComponentDoc[] = [
                 '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span></span>',
             },
             {
-              identifier: 'radius',
-              type: {
-                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'full\'</span></span>',
-                items: ["'sm'", "'lg'", "'none'", "'full'"],
-              },
-              isRequired: false,
-              isInternal: false,
-              description: 'The border radius of the chip',
-              tags: { defaultValue: { name: 'defaultValue', value: "'full'" } },
-              defaultValue:
-                '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'full\'</span></span>',
-            },
-            {
               identifier: 'withDot',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
@@ -45771,14 +45956,13 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>Not applicable in single selection mode.\nVariant of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>variant</code>,\n<code>color</code>, <code>size</code>, <code>radius</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>variant</code> defaults to <code>'soft'</code></li>\n<li><code>color</code> defaults to the Select's own <code>@color</code>, so <code>@color=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'sm'</code></li>\n<li><code>radius</code> and <code>withDot</code> fall back to Chip's own defaults</li>\n</ul>",
+          "<p>Not applicable in single selection mode.\nVariant of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>variant</code>,\n<code>color</code>, <code>size</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>variant</code> defaults to <code>'soft'</code></li>\n<li><code>color</code> defaults to the Select's own <code>@color</code>, so <code>@color=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'sm'</code></li>\n<li><code>withDot</code> falls back to Chip's own default</li>\n</ul>",
         tags: {
           example: { name: 'example', value: '```gts\n<Select' },
           selectionMode: { name: 'selectionMode', value: '="multiple"' },
           chip: {
             name: 'chip',
-            value:
-              '={{hash variant="outline" size="md" radius="full"}}\n/>\n```',
+            value: '={{hash variant="outline" size="md"}}\n/>\n```',
           },
         },
       },
@@ -48365,82 +48549,6 @@ const data: ComponentDoc[] = [
     },
     description:
       "<p>The punctuation between two crumbs.</p>\n<p>Shared by <code>Item</code> and <code>Ellipsis</code>, which each render their own <code>&#x3C;li></code> and so\neach need one. The CSS that hides it on the last <code>&#x3C;li></code> only works while the\ntwo stay identical, which one definition guarantees and two copies don't.</p>\n<p>Always <code>aria-hidden</code>: the <code>&#x3C;ol></code> and <code>aria-current</code> carry the structure, so\nannouncing a chevron between every crumb would be reading decoration.</p>",
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ChevronLeftIcon',
-    fileName:
-      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ChevronRightIcon',
-    fileName:
-      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ChevronDoubleLeftIcon',
-    fileName:
-      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
-    module: 'icons',
-    name: 'ChevronDoubleRightIcon',
-    fileName:
-      'packages/frontile/declarations/components/navigation/pagination/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
     tags: {},
   },
   {

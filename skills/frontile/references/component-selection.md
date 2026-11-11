@@ -103,14 +103,18 @@ Overlapping visuals, different semantics, verified per component `.md`:
   mutually-exclusive choices is a real accessibility bug: `ToggleButton`s are independent toggles
   with no roving-tabindex/radiogroup semantics, so screen-reader users won't hear "1 of 3
   selected" and arrow-key navigation between options won't work.
-- **Chip** (`buttons/chip.md`) — "compact elements that represent an input, attribute, or
-  action — a filter that has been applied, a tag on a record, a value selected in a multi-select
-  field." Not an interactive control for choosing between options; it's a compact display/removal
-  unit (e.g. what `Select`'s multi-select mode renders per selected value).
+- **Chip** (`buttons/chip.md`) — "compact, pill-shaped tokens — a filter that has been applied,
+  a removable value in a multi-select field." The chip itself is not clickable: its close button
+  is the only interactive part. It is what `Select`'s multi-select mode renders per selected
+  value. A Chip without a close button is not a supported use: that is a Badge.
+- **Badge** (`status/badge.md`) — "a small, non-interactive label for status or metadata — a
+  state on a record, a plan name, a count next to a heading." Never clickable and never
+  removable; if the user should be able to remove it, it is a Chip.
 
 Rule: one-shot action → `Button`. Single independent on/off → `ToggleButton`. Mutually-exclusive
 choice among a small fixed set → `SegmentedControl` (never a row of `ToggleButton`s: that drops
-required radiogroup semantics). Representing an applied value/tag → `Chip`.
+required radiogroup semantics). A status, label or count that does nothing when clicked →
+`Badge`. An applied, removable value or filter → `Chip`.
 
 ## Listbox vs Dropdown
 

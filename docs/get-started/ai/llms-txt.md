@@ -53,7 +53,7 @@ Every page, grouped by section, each linking to its `.md` mirror:
 ## Buttons
 
 - [Button](/docs/components/buttons/button.md): The base pressable action, with colors, variants, and sizes.
-- [Chip](/docs/components/buttons/chip.md): A compact label for statuses, filters, and removable tags.
+- [Chip](/docs/components/buttons/chip.md): An interactive compact element: a clickable filter, link or value, optionally removable.
 ```
 
 Component entries carry a one-line description, so an agent can usually pick the right

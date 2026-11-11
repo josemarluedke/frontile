@@ -21,24 +21,6 @@ const Comp: TOC<null> = <template>
   </div>
 
   <h2 class="text-2xl mt-6">
-    Radius
-  </h2>
-  <div class="mt-6">
-    <Chip @radius="none">
-      None
-    </Chip>
-    <Chip @radius="sm">
-      Small
-    </Chip>
-    <Chip @radius="lg">
-      Large
-    </Chip>
-    <Chip @radius="full">
-      Full
-    </Chip>
-  </div>
-
-  <h2 class="text-2xl mt-6">
     Default
   </h2>
   <div class="mt-6">

@@ -173,7 +173,7 @@
       {
         "name": "Chip",
         "path": "/docs/components/buttons/chip",
-        "description": "A compact label for statuses, filters, and removable tags."
+        "description": "A compact pill for an applied filter or value, removable through its close button."
       }
     ]
   },
@@ -257,6 +257,11 @@
         "name": "Alert",
         "path": "/docs/components/status/alert",
         "description": "Displays an important message inline in the page until removed."
+      },
+      {
+        "name": "Badge",
+        "path": "/docs/components/status/badge",
+        "description": "A small, non-interactive status label for a state, plan name or count."
       },
       {
         "name": "ProgressBar",

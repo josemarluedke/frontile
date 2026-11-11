@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { deprecate } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
 import { CloseButton } from './close-button';
 import { renamedArgValue } from '../../-private/deprecated-args';
@@ -50,9 +51,8 @@ interface ChipSignature {
     size?: 'xs' | 'sm' | 'md' | 'lg';
 
     /**
-     * The border radius of the chip
-     *
-     * @defaultValue 'full'
+     * @deprecated Ignored. Chip is always a pill; use `Badge` for a squared
+     * label.
      */
     radius?: 'none' | 'sm' | 'lg' | 'full';
 
@@ -114,6 +114,19 @@ class Chip extends Component<ChipSignature> {
   get classNames() {
     const { chip } = useStyles();
 
+    if (this.args.radius !== undefined) {
+      deprecate(
+        'Chip: `@radius` is deprecated and ignored. Chip is always a pill; use `Badge` for a squared label.',
+        false,
+        {
+          id: 'frontile.chip.radius',
+          until: '0.19.0',
+          for: 'frontile',
+          since: { available: '0.18.0', enabled: '0.18.0' }
+        }
+      );
+    }
+
     const { base, content, dot, closeButton } = chip({
       color:
         renamedArgValue(
@@ -140,7 +153,6 @@ class Chip extends Component<ChipSignature> {
             id: 'frontile.chip.appearance'
           }
         ) || 'solid',
-      radius: this.args.radius,
       isDisabled: this.args.isDisabled
     });
 
