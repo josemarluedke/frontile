@@ -36,9 +36,9 @@ export default class FormLiveCard extends Component {
 
   /**
    * Bumped by Clear to remount the Form. A `type="reset"` button would not
-   * empty the fields after a successful submit: Form adopts the submitted
-   * data as its reset baseline, although form.md says a form without `@data`
-   * just clears. `tests/integration/workbench/form-reset-test.gts` pins that.
+   * empty the fields after a successful submit: by design, Form makes the
+   * submitted data its reset baseline (see "Resetting Forms" in form.md).
+   * `tests/integration/workbench/form-reset-test.gts` pins that.
    */
   @tracked generation = 0;
 
@@ -51,7 +51,7 @@ export default class FormLiveCard extends Component {
     <WorkbenchCard
       @id="form-live"
       @title="Live form"
-      @description="A real Form with required and email-format validation. Submit it empty, then with a bad email, then with valid values. Clear remounts the form: Form's own reset restores the last submitted values instead of emptying the fields."
+      @description="A real Form with required and email-format validation. Submit it empty, then with a bad email, then with valid values. Clear remounts the form, because Form's reset restores the last submitted values by design rather than emptying the fields."
       @sections={{array (hash id="form" label="Form")}}
     >
       <WorkbenchSection
