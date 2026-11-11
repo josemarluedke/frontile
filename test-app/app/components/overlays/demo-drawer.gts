@@ -157,7 +157,7 @@ export default class DemoDrawer extends Component {
       </Drawer>
 
       <div
-        class="relative h-64 mt-4 border border-neutral-subtle bg-surface-solid-1 rounded w-3xl"
+        class="relative h-64 mt-4 border border-neutral-subtle bg-surface-canvas rounded w-full max-w-3xl"
       >
         <Drawer
           @isOpen={{this.isInPlaceOpen}}
@@ -174,7 +174,7 @@ export default class DemoDrawer extends Component {
 
             <d.CloseButton
               @size="lg"
-              @class="relative inset-auto ml-6 text-blue-500 bg-gray-200 rounded-md hover:bg-gray-500"
+              @class="relative inset-auto ml-6 text-primary bg-neutral-soft rounded-md hover:bg-neutral-mild"
             />
           </d.Header>
           <d.Body>

@@ -28,7 +28,7 @@ import { FORM_STATES_NO_READONLY_NO_FOCUS, STATE_ROWS } from './states';
         >
           <Switch
             @size={{size}}
-            @label={{state}}
+            @label={{cell.label}}
             @defaultSelected={{cell.isFilled}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}

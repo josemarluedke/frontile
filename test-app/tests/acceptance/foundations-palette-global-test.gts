@@ -43,7 +43,9 @@ module('Acceptance | foundations palette and global', function (hooks) {
     assert
       .dom('#palette-gray [data-palette-step]')
       .exists({ count: 22 }, '11 steps x 2 panes');
-    assert.dom('#palette-gray [data-palette-step="500"] [data-step-value]');
+    assert
+      .dom('#palette-gray [data-palette-step="500"] [data-step-value]')
+      .exists({ count: 2 }, 'gray 500 value in both panes');
     const gray500 = document.querySelector(
       '#palette-gray [data-palette-step="500"] [data-step-value]'
     );
@@ -51,6 +53,13 @@ module('Acceptance | foundations palette and global', function (hooks) {
     assert
       .dom('#palette-absolute [data-palette-step]')
       .exists({ count: 4 }, 'black and white x 2 panes');
+    assert
+      .dom('#palette-absolute')
+      .includesText(
+        'copied from palette-absolute.ts',
+        'absolute says its values are copies'
+      )
+      .includesText('they are not live');
     assert.dom('#palette-gray').includesText('not emitted as CSS variables');
   });
 
@@ -85,6 +94,32 @@ module('Acceptance | foundations palette and global', function (hooks) {
     assert
       .dom('#global-radius [data-token-value="--radius-pill"]')
       .hasText('9999px');
+    // Computed tokens show the computed value; the tooltip names the token
+    // and carries its raw value, where the variable is emitted at all.
+    // (Tailwind emits only the theme variables something uses, so
+    // `--radius-none` and `--radius-default` have no raw value here.)
+    const radii = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        '#global-radius [data-token-value]'
+      )
+    );
+    let withRaw = 0;
+    for (const el of radii) {
+      const name = el.getAttribute('data-token-value')!;
+      const raw = getComputedStyle(el).getPropertyValue(name).trim();
+      if (raw) {
+        withRaw++;
+      }
+      assert.strictEqual(
+        el.getAttribute('title'),
+        raw ? `${name}: ${raw}` : name,
+        `${name} tooltip`
+      );
+    }
+    assert.strictEqual(withRaw, 18, '9 emitted radius tokens x 2 panes');
+    assert
+      .dom('#global-radius [data-token-value="--radius-pill"]')
+      .hasAttribute('title', /^--radius-pill: \S/);
     assert
       .dom('#global-opacity button[disabled]')
       .exists({ count: 2 }, 'a disabled button per pane');

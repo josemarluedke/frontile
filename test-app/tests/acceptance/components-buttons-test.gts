@@ -31,6 +31,34 @@ module('Acceptance | components buttons', function (hooks) {
     }
   });
 
+  test('ButtonGroup and ToggleButton sections run Sizes, matrix, Live', async function (assert) {
+    await visit('/components/buttons');
+
+    const expected: Record<string, string[]> = {
+      'button-group': ['sizes', 'variants'],
+      'toggle-button': ['sizes', 'off', 'on', 'live']
+    };
+    for (const [card, ids] of Object.entries(expected)) {
+      const root = document.getElementById(card)!;
+      const sections = Array.from(
+        root.querySelectorAll('[data-workbench-section]')
+      ).map((s) => s.id);
+      const chips = Array.from(
+        root.querySelectorAll('[data-workbench-chip]')
+      ).map((c) => c.getAttribute('href'));
+      assert.deepEqual(
+        sections,
+        ids.map((id) => `${card}-${id}`),
+        `${card} section order`
+      );
+      assert.deepEqual(
+        chips,
+        ids.map((id) => `#${card}-${id}`),
+        `${card} chip order matches`
+      );
+    }
+  });
+
   test('Button has one state matrix per color in each pane', async function (assert) {
     await visit('/components/buttons');
 

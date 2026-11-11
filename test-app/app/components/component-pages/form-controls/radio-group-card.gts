@@ -29,7 +29,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
           <RadioGroup
             @size={{size}}
             @name="radio-group-{{scheme}}-{{state}}"
-            @label={{state}}
+            @label={{cell.label}}
             @value={{if cell.isFilled "standard"}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}

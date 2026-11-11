@@ -15,10 +15,29 @@ import {
     @title="ButtonGroup"
     @description="Buttons joined into one control. The group passes variant, color and size to each button."
     @sections={{array
-      (hash id="variants" label="Variants")
       (hash id="sizes" label="Sizes")
+      (hash id="variants" label="Variants")
     }}
   >
+    <WorkbenchSection @id="button-group-sizes" @title="Sizes">
+      <div class="flex flex-col gap-4">
+        {{#each BUTTON_GROUP_SIZES as |size|}}
+          <WorkbenchSpecimen @label={{size}}>
+            <ButtonGroup
+              @size={{size}}
+              @variant="outline"
+              aria-label="{{size}} group"
+              as |g|
+            >
+              <g.Button>Day</g.Button>
+              <g.Button>Week</g.Button>
+              <g.Button>Month</g.Button>
+            </ButtonGroup>
+          </WorkbenchSpecimen>
+        {{/each}}
+      </div>
+    </WorkbenchSection>
+
     <WorkbenchSection @id="button-group-variants" @title="Variants">
       <WorkbenchPanes @inverse={{true}}>
         <div class="flex flex-col gap-4">
@@ -39,25 +58,6 @@ import {
           {{/each}}
         </div>
       </WorkbenchPanes>
-    </WorkbenchSection>
-
-    <WorkbenchSection @id="button-group-sizes" @title="Sizes">
-      <div class="flex flex-col gap-4">
-        {{#each BUTTON_GROUP_SIZES as |size|}}
-          <WorkbenchSpecimen @label={{size}}>
-            <ButtonGroup
-              @size={{size}}
-              @variant="outline"
-              aria-label="{{size}} group"
-              as |g|
-            >
-              <g.Button>Day</g.Button>
-              <g.Button>Week</g.Button>
-              <g.Button>Month</g.Button>
-            </ButtonGroup>
-          </WorkbenchSpecimen>
-        {{/each}}
-      </div>
     </WorkbenchSection>
   </WorkbenchCard>
 </template>

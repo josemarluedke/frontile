@@ -31,7 +31,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
             @name="radio-{{scheme}}-{{state}}"
             @value="on"
             @checkedValue={{if cell.isFilled "on"}}
-            @label={{state}}
+            @label={{cell.label}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}
             @errors={{if cell.isInvalid (array "Required")}}

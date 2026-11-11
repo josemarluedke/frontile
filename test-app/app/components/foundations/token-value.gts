@@ -12,8 +12,8 @@ export interface TokenValueSignature {
     name: string;
     /**
      * A computed property of the sibling `[data-token-shape]` to show instead
-     * of the raw variable, for tokens defined as `calc()` or `var()`. The raw
-     * variable moves to the tooltip.
+     * of the raw variable, for tokens defined as `calc()` or `var()`. The
+     * raw value then moves to the tooltip, as `--name: raw`.
      */
     property?: string;
   };
@@ -27,6 +27,15 @@ export interface TokenValueSignature {
 export default class TokenValue extends Component<TokenValueSignature> {
   @tracked value = '';
 
+  /** The variable's own value; shown in the tooltip when `@property` is set. */
+  @tracked raw = '';
+
+  get title(): string {
+    return this.args.property && this.raw
+      ? `${this.args.name}: ${this.raw}`
+      : this.args.name;
+  }
+
   read(el: HTMLElement): void {
     if (isDestroying(this)) {
       return;
@@ -35,6 +44,7 @@ export default class TokenValue extends Component<TokenValueSignature> {
     const shape = this.args.property
       ? el.closest('[data-token-item]')?.querySelector('[data-token-shape]')
       : null;
+    this.raw = raw;
     this.value =
       shape && this.args.property
         ? getComputedStyle(shape).getPropertyValue(this.args.property).trim()
@@ -54,7 +64,7 @@ export default class TokenValue extends Component<TokenValueSignature> {
   <template>
     <code
       data-token-value={{@name}}
-      title="{{@name}}"
+      title={{this.title}}
       class="text-neutral-firm font-mono text-xs break-all"
       {{this.measure @name @property}}
       ...attributes

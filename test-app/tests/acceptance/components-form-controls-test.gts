@@ -103,6 +103,32 @@ module('Acceptance | components form controls', function (hooks) {
     );
   });
 
+  test('choice controls are labelled with the column label, not the state id', async function (assert) {
+    await visit('/components/form-controls');
+
+    for (const card of ['checkbox', 'checkbox-group', 'radio', 'radio-group']) {
+      const cells = Array.from(
+        document.querySelectorAll(
+          `#${card} [data-workbench-state-matrix] td[data-state="invalid-focus"]`
+        )
+      );
+      // One row per size, in each of the two panes.
+      assert.true(cells.length >= 2, `${card} has invalid·focus cells`);
+      const labelled = cells.filter((td) =>
+        td.textContent!.includes('invalid·focus')
+      );
+      assert.strictEqual(
+        labelled.length,
+        cells.length,
+        `every ${card} invalid·focus cell is labelled invalid·focus`
+      );
+      assert.notOk(
+        cells.some((td) => td.textContent!.includes('invalid-focus')),
+        `no ${card} cell shows the raw state id`
+      );
+    }
+  });
+
   test("Input's invalid cell is aria-invalid, the default cell is not", async function (assert) {
     await visit('/components/form-controls');
 

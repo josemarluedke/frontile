@@ -48,7 +48,7 @@ const ABSOLUTE: PaletteStep[] = [
     <PaletteCard
       @name="absolute"
       @steps={{ABSOLUTE}}
-      @description="Constant across light and dark. Not emitted as CSS variables; read from palette-absolute.ts in the theme source."
+      @description="Constant across light and dark. Not emitted as CSS variables, and not exported by the theme, so these values are copied from palette-absolute.ts in the theme source; they are not live."
     />
   </div>
 </template>

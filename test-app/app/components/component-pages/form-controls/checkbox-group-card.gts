@@ -28,7 +28,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
         >
           <CheckboxGroup
             @size={{size}}
-            @label={{state}}
+            @label={{cell.label}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}
             @errors={{if cell.isInvalid (array "Required")}}

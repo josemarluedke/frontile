@@ -132,8 +132,8 @@ module('Acceptance | components status', function (hooks) {
   test('banner layout drops the radius and border', async function (assert) {
     await visit('/components/status');
 
-    // Other test files replace component styles process-wide, so compare the
-    // classes the recipe applies rather than computed values.
+    // The module's `before` hook swaps the shipped alert styles back in, so
+    // the computed radius and border below are the real theme's.
     const inline = document.querySelector(
       '#alert-layout [data-layout="inline"] [data-component="alert"]'
     )!;
@@ -229,6 +229,10 @@ module('Acceptance | components status', function (hooks) {
       ).includes('2 of 4'),
       'custom value label'
     );
+    assert
+      .dom('#progress-bar-labels [data-case="hidden"] [data-part="label"]')
+      .exists({ count: 1 }, 'hidden case still renders its label')
+      .hasText('Quiet', 'hidden case label is the text label alone');
     assert.false(
       text(
         '#progress-bar-labels [data-case="hidden"] [data-part="label"]'

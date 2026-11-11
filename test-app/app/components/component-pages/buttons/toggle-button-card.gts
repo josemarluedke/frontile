@@ -22,12 +22,25 @@ const SELECTION = [
     @title="ToggleButton"
     @description="A button that stays pressed. The theme styles only the outline variant, so the matrix varies color."
     @sections={{array
+      (hash id="sizes" label="Sizes")
       (hash id="off" label="Off")
       (hash id="on" label="On")
-      (hash id="sizes" label="Sizes")
       (hash id="live" label="Live")
     }}
   >
+    <WorkbenchSection @id="toggle-button-sizes" @title="Sizes">
+      <div class="flex flex-wrap items-start gap-6">
+        {{#each TOGGLE_BUTTON_SIZES as |size|}}
+          <WorkbenchSpecimen @label={{size}} @measure={{true}}>
+            <ToggleButton
+              @size={{size}}
+              @isSelected={{true}}
+            >Toggle</ToggleButton>
+          </WorkbenchSpecimen>
+        {{/each}}
+      </div>
+    </WorkbenchSection>
+
     {{#each SELECTION as |selection|}}
       <WorkbenchSection
         @id="toggle-button-{{selection.id}}"
@@ -53,19 +66,6 @@ const SELECTION = [
         </WorkbenchPanes>
       </WorkbenchSection>
     {{/each}}
-
-    <WorkbenchSection @id="toggle-button-sizes" @title="Sizes">
-      <div class="flex flex-wrap items-start gap-6">
-        {{#each TOGGLE_BUTTON_SIZES as |size|}}
-          <WorkbenchSpecimen @label={{size}} @measure={{true}}>
-            <ToggleButton
-              @size={{size}}
-              @isSelected={{true}}
-            >Toggle</ToggleButton>
-          </WorkbenchSpecimen>
-        {{/each}}
-      </div>
-    </WorkbenchSection>
 
     <WorkbenchSection
       @id="toggle-button-live"
