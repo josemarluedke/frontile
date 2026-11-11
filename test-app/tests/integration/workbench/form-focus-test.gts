@@ -123,10 +123,11 @@ module('Integration | Workbench | form focus', function (hooks) {
     }
   });
 
-  // Why the page omits Switch's focus columns. If this starts failing, the
-  // theme's ring colour follows the force attribute too, and the columns can
-  // come back (`FORM_STATES_NO_READONLY_NO_FOCUS` in the page's states.ts).
-  test('Switch: a forced ring is drawn, but not in the focus colour', async function (assert) {
+  // Forced on the hidden input; the track rings through the theme's
+  // `focusVisibleWithinRing`. Every utility in it, colour included, keys off
+  // the theme's `focus-visible` variant, so the force attribute draws the same
+  // ring real keyboard focus does.
+  test('Switch: a forced ring is drawn in the focus colour', async function (assert) {
     await render(
       <template>
         <div data-test-plain><Switch @label="Plain" /></div>
@@ -144,16 +145,15 @@ module('Integration | Workbench | form focus', function (hooks) {
       shadow(`[data-test-plain] ${wrapper}`),
       'the forced ring differs from rest'
     );
-    // The probe's shadow holds the `ring-focus` colour; the forced ring's
-    // colour comes from `has-[:focus-visible]:`, which only real focus meets.
+    // The probe's shadow holds the `ring-focus` colour.
     // The probe's only visible layer is its 3px ring: take that colour.
     const focusColor = /(oklch\([^)]*\)|rgba?\([^)]*\)) 0px 0px 0px 3px/.exec(
       shadow('[data-test-probe]')
     )?.[1];
     assert.ok(focusColor, 'the probe has a ring colour');
-    assert.false(
+    assert.true(
       forced.includes(focusColor!),
-      `the forced ring is not ${focusColor}`
+      `the forced ring is ${focusColor}`
     );
   });
 });

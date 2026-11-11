@@ -10,11 +10,12 @@ function value(): string {
 }
 
 // Why the Form controls page's Live form clears by remounting the Form rather
-// than with a reset button. `form.md` says a form with no `@data` "just
-// clears the fields" on reset, but after a successful submit Form adopts the
-// submitted data as its reset baseline (`initialDataSnapshot` in form.gts).
-// If this starts failing, the library matches its docs again and the page
-// can go back to a plain `type="reset"` button.
+// than with a reset button. By design, a successful submit makes the submitted
+// data Form's reset baseline (`initialDataSnapshot` in form.gts, documented
+// under "Resetting Forms" in form.md), so reset reverts unsaved edits rather
+// than emptying the form. Before any submit, a form with no `@data` clears.
+// If this starts failing, Form's reset semantics changed: update form.md and
+// the Live form card with it.
 module('Integration | Workbench | form reset', function (hooks) {
   setupRenderingTest(hooks);
 

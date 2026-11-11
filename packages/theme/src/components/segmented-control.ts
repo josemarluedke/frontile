@@ -31,7 +31,7 @@ const segmentedControl = tv({
     ],
 
     // Both focus rings, not one per rendering mode: in button mode the item is
-    // the focusable element and `has-[:focus-visible]` has no descendant to
+    // the focusable element and `has-focus-visible:` has no descendant to
     // match, while in form mode the label is not focusable and `focus-visible:`
     // never matches it. Only one set can ever apply, so a third rendering mode
     // needs no third branch.

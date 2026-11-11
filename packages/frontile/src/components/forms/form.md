@@ -555,7 +555,8 @@ Two limits: the field-level values (`change`, `blur`, `input`) need
 
 `form.dirty` is a `Set` of the fields whose value differs from the initial `@data`. Tracking
 covers only the keys present in that initial data, so a field you never seeded is never
-reported dirty. Submitting clears the set.
+reported dirty. A successful submit clears the set and makes the submitted values the new
+baseline, for dirty tracking and for [reset](#resetting-forms) alike.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
@@ -1160,10 +1161,15 @@ export default class MixedFieldsForm extends Component {
 
 ## Resetting Forms
 
-`form.reset` calls the native form reset, restores `@data`'s initial values, clears validation
-errors, and empties the dirty set. In a controlled form it reports the initial data back through
-`@onChange`; in an uncontrolled one it updates the internal state. With no `@data` at all it
-just clears the fields.
+`form.reset` calls the native form reset, restores the form's baseline values, clears validation
+errors, and empties the dirty set. The baseline is the data of the last successful submit. Before
+any successful submit it is the initial `@data`, and with no `@data` either, reset clears the
+fields. A submit that fails validation does not move the baseline. In a controlled form reset
+reports the restored data back through `@onChange`; in an uncontrolled one it updates the
+internal state.
+
+So once a form has been submitted, reset reverts unsaved edits; it does not empty the form. To
+clear a form after a successful submit, remount it or pass it new `@data`.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';

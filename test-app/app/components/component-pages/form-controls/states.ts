@@ -26,13 +26,3 @@ export const FORM_STATES_NO_FOCUS: readonly WorkbenchState[] =
   FORM_STATES.filter((state) => state !== 'focus' && state !== 'invalid-focus');
 
 export const SELECT_ITEMS = ['Apple', 'Banana', 'Cherry'];
-
-/**
- * For Switch. Its track rings through the theme's `focusVisibleWithinRing`,
- * which mixes `has-focus-visible:` (width, offset: matches the force
- * attribute) with `has-[:focus-visible]:` (the `ring-focus` colour: matches
- * only real `:focus-visible`). Forced, the ring is drawn in the wrong colour,
- * so the focus columns are left out rather than shown misleadingly.
- */
-export const FORM_STATES_NO_READONLY_NO_FOCUS: readonly WorkbenchState[] =
-  FORM_STATES_NO_FOCUS.filter((state) => state !== 'readonly');

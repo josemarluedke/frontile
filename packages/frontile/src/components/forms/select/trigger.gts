@@ -31,6 +31,16 @@ interface SelectTriggerSignature {
     }>;
 
     isDisabled?: boolean;
+
+    /**
+     * Whether the field is invalid, as FormControl resolves it from `@isInvalid`
+     * and `@errors`. The filterable trigger is a text input and takes
+     * `aria-invalid`. The button trigger cannot: `aria-invalid` is not
+     * supported on the button role, so it gets `data-invalid`, which the
+     * theme's `select` recipe keys the same invalid border off.
+     */
+    isInvalid?: boolean;
+
     showChips: boolean;
 
     /**
@@ -112,6 +122,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
       {{@triggerRef}}
       data-part="input"
       disabled={{@isDisabled}}
+      aria-invalid={{if @isInvalid "true"}}
       aria-label={{if @showChips @accessibleName}}
       placeholder={{valueUnless (and @showChips @hasSelection) @placeholder}}
       class={{@classes.input
@@ -132,6 +143,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
       {{@triggerRef}}
       data-part="input"
       disabled={{@isDisabled}}
+      data-invalid={{if @isInvalid "true" "false"}}
       aria-label={{if (or @showChips @hasCustomContent) @accessibleName}}
       class={{@classes.input
         class=@userClasses.input

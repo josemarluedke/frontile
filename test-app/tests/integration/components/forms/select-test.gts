@@ -28,6 +28,17 @@ import { closeButtonStubStyles } from '../../../helpers/close-button-stub-styles
 // Simple equality helper
 const eq = (a: unknown, b: unknown) => a === b;
 
+// Resolves a border-color utility to the color it computes to, so a test can
+// compare against the theme rather than hard-coding an rgb value.
+function getComputedStyleColor(className: 'border-danger'): string {
+  const probe = document.createElement('div');
+  probe.className = `border ${className}`;
+  document.querySelector('#ember-testing')!.appendChild(probe);
+  const color = getComputedStyle(probe).borderTopColor;
+  probe.remove();
+  return color;
+}
+
 module('Integration | Component | Select | @frontile/forms', function (hooks) {
   // The Multiple-mode tests assert against the stub chip theme's class names
   // and its padding-free geometry; a chip's close button is stubbed the same
@@ -2820,6 +2831,78 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert
       .dom('[data-test-id="chips-field"]')
       .hasAttribute('data-invalid', 'true');
+  });
+
+  // The single-mode trigger carries the field shell, so the invalid border has
+  // to land on the trigger itself. A `<button>` cannot take `aria-invalid`
+  // (unsupported on the button role), so it is marked with `data-invalid`; the
+  // filterable `<input>` trigger takes `aria-invalid`. The hidden native mirror
+  // `<select>` is also `data-part="input"`, so scope to the field.
+  const SINGLE_TRIGGER = '[data-part="chips-field"] > [data-part="input"]';
+
+  test('@isInvalid marks the single-mode trigger invalid and draws the invalid border', async function (assert) {
+    const isInvalid = cell<boolean>(false);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @isInvalid={{isInvalid.current}}
+        />
+      </template>
+    );
+
+    assert.dom(SINGLE_TRIGGER).hasTagName('button');
+    assert
+      .dom(SINGLE_TRIGGER)
+      .hasAttribute('data-invalid', 'false', 'valid by default');
+
+    isInvalid.current = true;
+    await settled();
+
+    assert.dom(SINGLE_TRIGGER).hasAttribute('data-invalid', 'true');
+    assert
+      .dom(SINGLE_TRIGGER)
+      .hasStyle(
+        { borderTopColor: getComputedStyleColor('border-danger') },
+        'the invalid border is drawn'
+      );
+
+    isInvalid.current = false;
+    await settled();
+
+    assert.dom(SINGLE_TRIGGER).hasAttribute('data-invalid', 'false');
+  });
+
+  test('@errors mark the single-mode trigger invalid', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @errors={{array "Pick something else"}}
+        />
+      </template>
+    );
+
+    assert.dom(SINGLE_TRIGGER).hasAttribute('data-invalid', 'true');
+    assert
+      .dom(SINGLE_TRIGGER)
+      .hasStyle({ borderTopColor: getComputedStyleColor('border-danger') });
+  });
+
+  test('@isInvalid sets aria-invalid on the filterable trigger input', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @isFilterable={{true}}
+          @isInvalid={{true}}
+        />
+      </template>
+    );
+
+    assert.dom(SINGLE_TRIGGER).hasTagName('input');
+    assert.dom(SINGLE_TRIGGER).hasAttribute('aria-invalid', 'true');
   });
 
   // --- `:selectedItem` block -------------------------------------------------

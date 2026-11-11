@@ -854,6 +854,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 @trigger={{p.trigger}}
                 @triggerRef={{this.triggerRef.setup}}
                 @isDisabled={{@isDisabled}}
+                @isInvalid={{c.isInvalid}}
                 @showChips={{this.showChips}}
                 @accessibleName={{this.triggerAccessibleName}}
                 @placeholder={{@placeholder}}
