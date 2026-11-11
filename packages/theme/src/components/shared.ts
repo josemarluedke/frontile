@@ -22,11 +22,19 @@ export const statusRowCloseButton = [
   ...focusVisibleRing
 ];
 
+/**
+ * `focusVisibleRing` for a container whose focusable element is a descendant
+ * (Switch's hidden input, a segmented control's radios). Every utility goes
+ * through the theme's own `focus-visible` variant, which matches
+ * `[data-focus-visible-added]` (see index.css). Spelling some of them with the
+ * native pseudo-class instead drew the ring at full width but left its color
+ * to whichever of the two focus states happened to agree.
+ */
 export const focusVisibleWithinRing = [
   'outline-hidden',
   'has-focus-visible:z-10',
   'has-focus-visible:ring-3',
-  'has-[:focus-visible]:ring-focus',
+  'has-focus-visible:ring-focus',
   'has-focus-visible:ring-offset-2',
-  'has-[:focus-visible]:ring-offset-background'
+  'has-focus-visible:ring-offset-background'
 ];
