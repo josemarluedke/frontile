@@ -6,17 +6,14 @@ import {
   triggerKeyEvent,
   click
 } from '@ember/test-helpers';
-import { registerCustomStyles, tv } from '@frontile/theme';
+import { tv } from '@frontile/theme';
 import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
-// ButtonGroup's test file also replaces `button`, without `defaultVariants`,
-// and test files load in no fixed order. Register at load, as before, and
-// again when this module starts so its default-size assertions hold
-// whichever file loaded last.
 const BUTTON_STYLES = tv({
   base: [],
   variants: {
@@ -54,16 +51,12 @@ const BUTTON_STYLES = tv({
   }
 }) as never;
 
-registerCustomStyles({ button: BUTTON_STYLES });
-
 module(
   'Integration | Component | Button | @frontile/buttons',
   function (hooks) {
     setupRenderingTest(hooks);
 
-    hooks.before(function () {
-      registerCustomStyles({ button: BUTTON_STYLES });
-    });
+    useCustomStyles(hooks, { button: BUTTON_STYLES });
 
     test('it renders', async function (assert) {
       await render(

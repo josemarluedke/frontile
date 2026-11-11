@@ -12,7 +12,7 @@ import { tracked } from '@glimmer/tracking';
 import { Command, CommandDialog } from 'frontile';
 import { filterAndRankItems } from 'frontile/utils/filter';
 import { cell } from 'ember-resources';
-import { registerCustomStyles } from '@frontile/theme';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { tv } from 'tailwind-variants';
 import { array } from '@ember/helper';
 
@@ -790,20 +790,16 @@ module(
     });
 
     module('dialog', function (hooks) {
-      hooks.before(function () {
-        // Other test modules register a bare `overlay` style, and that
-        // registration is process-wide, so the theme's Tailwind classes are not
-        // observable here. Register the variant we care about under a name we
-        // can assert on -- the same approach the Modal tests take.
-        registerCustomStyles({
-          overlay: tv({
-            base: 'overlay__content',
-            variants: {
-              enableFlexContent: { true: 'overlay--flex-content' },
-              inPlace: { true: 'overlay--in-place' }
-            }
-          }) as never
-        });
+      // Register the variant we care about under a name we can assert on --
+      // the same approach the Modal tests take.
+      useCustomStyles(hooks, {
+        overlay: tv({
+          base: 'overlay__content',
+          variants: {
+            enableFlexContent: { true: 'overlay--flex-content' },
+            inPlace: { true: 'overlay--in-place' }
+          }
+        }) as never
       });
 
       test('it renders as a positioned overlay with a styled panel', async function (assert) {

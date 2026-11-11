@@ -1,15 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerKeyEvent } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { Chip } from 'frontile';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { chipStubStyles } from '../../../helpers/chip-stub-styles';
-
-registerCustomStyles({ chip: chipStubStyles });
 
 module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
   setupRenderingTest(hooks);
+  useCustomStyles(hooks, { chip: chipStubStyles });
 
   test('it renders', async function (assert) {
     await render(

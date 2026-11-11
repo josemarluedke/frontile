@@ -1,19 +1,19 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { ToggleButton } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 module(
   'Integration | Component | ToggleButton | @frontile/buttons',
   function (hooks) {
     setupRenderingTest(hooks);
 
-    registerCustomStyles({
+    useCustomStyles(hooks, {
       toggleButton: tv({
         base: 'toggle-button',
         variants: {

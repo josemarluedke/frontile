@@ -1,18 +1,16 @@
 import { useStyles } from '@frontile/theme';
 
 // `@frontile/theme`'s `useStyles()`/`registerCustomStyles()` share a single
-// module-level mutable slot (see `packages/theme/src/index.ts`): once any
-// test file overrides a component's styles (as several files under
-// `tests/integration/components/` do, to get short, stable class markers to
-// assert against), that override replaces the shipped classes for every
-// other test file loaded in the same run -- there is no per-file isolation.
+// module-level mutable slot (see `packages/theme/src/index.ts`), so a test
+// that overrides a component's styles (to get short, stable class markers to
+// assert against) changes them for every test that runs after it. Tests scope
+// their overrides with `useCustomStyles`/`useRealStyles` from
+// `./scoped-styles`, and `test-helper.js` fails the run if a module leaves one
+// behind.
 //
-// `test-helper.js` imports this module before it calls `loadTests()` (which
-// is what actually evaluates every `*-test.gts` file's module-level code,
-// including their own `registerCustomStyles` calls), so the values captured
-// here at import time are guaranteed to be the real, shipped theme -- not
-// whichever mock happened to load first. Any test that needs to render
-// against the real classes (e.g. a real-CSS layout assertion that a mocked
-// marker class could not exercise) should import from here instead of
-// calling `useStyles()` itself.
+// `test-helper.js` imports this module before any test file loads, so the
+// values captured here are the real, shipped theme. Code that needs the real
+// classes outside a rendering test (e.g. asserting on a recipe's class
+// string) should read them from here rather than calling `useStyles()`, which
+// returns whatever the enclosing module registered.
 export const realStyles = useStyles();

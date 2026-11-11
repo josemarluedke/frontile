@@ -1,8 +1,7 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { click, visit } from '@ember/test-helpers';
-import { registerCustomStyles, useStyles } from '@frontile/theme';
-import { realStyles } from '../helpers/real-theme-styles';
+import { useRealStyles } from '../helpers/scoped-styles';
 import {
   ALERT_STATUSES,
   ALERT_VARIANTS,
@@ -15,24 +14,8 @@ import {
 module('Acceptance | components status', function (hooks) {
   setupApplicationTest(hooks);
 
-  // Other test files replace component styles process-wide; the style
-  // assertions below need the shipped classes. Restore afterwards.
-  let previous: ReturnType<typeof useStyles>;
-  hooks.before(function () {
-    previous = useStyles();
-    registerCustomStyles({
-      alert: realStyles.alert,
-      progressBar: realStyles.progressBar
-    });
-  });
-  hooks.after(function () {
-    if (previous) {
-      registerCustomStyles({
-        alert: previous.alert,
-        progressBar: previous.progressBar
-      });
-    }
-  });
+  // The style assertions below need the shipped classes.
+  useRealStyles(hooks, ['alert', 'progressBar']);
 
   test('renders the two status cards', async function (assert) {
     await visit('/components/status');
