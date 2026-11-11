@@ -1,8 +1,27 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
-import { standaloneStyles, type AppLayoutContext } from './context';
+import { useStyles } from '@frontile/theme';
+import { layoutVariants, type AppLayoutContext } from './context';
+import type { AppLayoutVariants } from '@frontile/theme';
 
 interface NavbarArgs {
+  /**
+   * The navbar's color, one of the theme's semantic categories. Inside an
+   * `AppLayout` it defaults to the layout's `@color`.
+   *
+   * @defaultValue 'neutral'
+   */
+  color?: AppLayoutVariants['color'];
+
+  /**
+   * How the navbar wears its color: `plain` keeps its ground; `solid` fills
+   * it with the color, with text and toggles in its contrast color. Inside an
+   * `AppLayout` it defaults to the layout's `@navbarSurface`.
+   *
+   * @defaultValue 'plain'
+   */
+  surface?: AppLayoutVariants['navbarSurface'];
+
   /**
    * Supplied by `AppLayout`. Not part of the public API.
    *
@@ -24,8 +43,23 @@ interface NavbarSignature {
 class Navbar extends Component<NavbarSignature> {
   @cached
   get classNames(): string {
-    const styles = this.args.layout?.styles ?? standaloneStyles();
-    return styles.navbar({ class: this.args.layout?.classes?.navbar });
+    return this.styles.navbar({ class: this.args.layout?.classes?.navbar });
+  }
+
+  /** Built from the layout's config, with the navbar's own color and surface. */
+  @cached
+  get styles() {
+    const { color, surface, layout } = this.args;
+    const config = layout?.config;
+    return useStyles().appLayout({
+      ...layoutVariants(config),
+      variant: config?.variant ?? 'attached',
+      color: color ?? config?.color,
+      // Inside a layout the navbar inherits the root's color unless it has
+      // its own; outside one there is no root to inherit from.
+      partColor: color ?? (layout ? undefined : 'neutral'),
+      navbarSurface: surface ?? config?.navbarSurface
+    });
   }
 
   <template>

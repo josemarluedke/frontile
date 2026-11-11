@@ -1,5 +1,12 @@
 import { tv } from '../tw';
 import { focusVisibleRing } from './shared';
+import {
+  layoutColor,
+  frameGradientStops,
+  navSolid,
+  navTint,
+  tintedColors
+} from './nav-color';
 import type { VariantProps } from '../tw';
 
 // The shell is one CSS grid. The parts (sidebar, navbar, main, aside) are
@@ -142,12 +149,27 @@ const edgeToEdgeVariants = (['sm', 'md', 'lg'] as const).flatMap(
 // The layout's icon buttons (sidebar, menu and aside toggles). Same radius and
 // hover fill as a navigation row, so a toggle in the sidebar header reads as
 // one of its rows. `neutral-muted` stays visible on the frame's ground as
-// well as on the content surface.
+// well as on the content surface. It reads the rows' color properties, so a
+// toggle in a colored sidebar or navbar takes its colors (see `nav-color.ts`).
 const iconButton = [
   ...focusVisibleRing,
   'inline-flex size-9 shrink-0 items-center justify-center rounded-lg',
-  'text-neutral-firm hover:bg-neutral-muted hover:text-neutral-strong'
+  'text-(--nav-item-fg,var(--color-neutral-firm))',
+  'hover:bg-(--nav-item-hover-bg,var(--color-neutral-muted))',
+  'hover:text-(--nav-item-hover-fg,var(--color-neutral-strong))'
 ];
+
+type LayoutColorName = keyof typeof layoutColor;
+
+// One variant entry per layout color, from the literal classes in
+// `nav-color.ts` (which is where Tailwind finds them).
+function perColor<T>(
+  entry: (classes: string) => T
+): Record<LayoutColorName, T> {
+  return Object.fromEntries(
+    Object.entries(layoutColor).map(([name, classes]) => [name, entry(classes)])
+  ) as Record<LayoutColorName, T>;
+}
 
 const appLayout = tv({
   slots: {
@@ -174,7 +196,20 @@ const appLayout = tv({
     base: [
       'relative grid w-full text-on-surface-app',
       'grid-cols-[auto_minmax(0,1fr)_auto]',
-      '[--app-navbar-height:3rem]'
+      '[--app-navbar-height:3rem]',
+      // The frame's gradient, painted over the variant's `bg-surface-*`
+      // color. Its two stop colors are properties (set per `frameGradient`
+      // below), so an app can swap a stop without rewriting the gradient:
+      // `@classes={{hash base='[--app-frame-gradient-from:...]'}}`.
+      // `--app-frame-gradient` itself takes any `<image>`, or `none`. The tint
+      // holds at full strength across the sidebar and fades across the content,
+      // so the first stop is the sidebar's edge (`--app-sidebar-width`). It
+      // runs away from the sidebar: `--app-frame-gradient-direction` flips for
+      // a right-to-left document and for `sidebarSide="end"` (a gradient has
+      // no logical direction of its own).
+      'bg-(image:--app-frame-gradient)',
+      '[--app-frame-gradient-direction:to_right] rtl:[--app-frame-gradient-direction:to_left]',
+      '[--app-frame-gradient:linear-gradient(var(--app-frame-gradient-direction),var(--app-frame-gradient-from)_var(--app-sidebar-width,0px),var(--app-frame-gradient-to)_100%)]'
     ],
 
     // `group/sidebar` plus `data-collapsed` on the element lets any descendant
@@ -267,7 +302,7 @@ const appLayout = tv({
     // in the rail like any other sidebar label.
     sidebarGroup: 'flex flex-col gap-1 py-2',
     sidebarGroupLabel: [
-      'truncate ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2_-_var(--sidebar-gutter,0.5rem))] pe-2 pb-1 font-label text-label-2xs text-neutral-firm',
+      'truncate ps-[calc((var(--sidebar-rail,4rem)_-_1.25rem)/2_-_var(--sidebar-gutter,0.5rem))] pe-2 pb-1 font-label text-label-2xs text-(--sidebar-group-label-fg,var(--color-neutral-firm))',
       'group-data-[collapsed=true]/sidebar:sr-only'
     ],
     sidebarToggle: iconButton,
@@ -319,17 +354,16 @@ const appLayout = tv({
     variant: {
       // The tinted frame shows through a gutter around the card. The content
       // is the lit surface in both schemes: on a `canvas` frame in light, and
-      // in dark, where `app` is black, `canvas` content on an `app` frame.
+      // in dark, where `app` is black, a `card` veil (white at 7%) on an `app`
+      // frame.
       inset: {
         base: 'bg-surface-canvas p-3 dark:bg-surface-app',
-        // Transparent, borderless: the sidebar floats on the tinted frame.
-        // The frame's own padding is the gutter, so rows start at the sidebar's
-        // edge. 0.375rem of clip room clears the 5px focus ring, which the
-        // scrolling body would otherwise clip at its edge.
-        sidebar:
-          'bg-transparent [--sidebar-clip:0.375rem] [--sidebar-gutter:0px]',
+        // 0.375rem of clip room clears the 5px focus ring, which the
+        // scrolling body would otherwise clip at its edge. The ground and
+        // gutter depend on the sidebar's surface (see the compound variants).
+        sidebar: '[--sidebar-clip:0.375rem]',
         mainCard:
-          'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted dark:bg-surface-canvas',
+          'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted dark:bg-surface-card',
         aside: 'border-s border-neutral-muted',
         // The bottom bar runs edge to edge: it pulls out over the frame's
         // side and bottom gutter (`p-3`).
@@ -414,6 +448,50 @@ const appLayout = tv({
       none: {}
     },
 
+    // The shell's color: one semantic category, published as the
+    // `--app-layout-color*` properties (see `nav-color.ts`). Declared on the
+    // root, which the parts inherit from, and on the drawer's sidebar, which
+    // is portalled out of the layout. It also picks the parts' tints below.
+    color: perColor((classes) => ({ base: classes, mobileSidebar: classes })),
+
+    // The color a sidebar or navbar declares on itself: its own `@color`, or
+    // the layout's when there is no layout around it to inherit from. Unset,
+    // the part inherits the root's.
+    partColor: perColor((classes) => ({ sidebar: classes, navbar: classes })),
+
+    // How the sidebar and the navbar wear the color. `plain` keeps the part's
+    // ground and tints its rows; `solid` fills it with the color. The classes
+    // are compound variants below, after the variant's own, so they win over
+    // the attached variant's background and border.
+    sidebarSurface: {
+      plain: {},
+      solid: {}
+    },
+    navbarSurface: {
+      plain: {},
+      solid: {}
+    },
+
+    // The frame's gradient: a left-to-right tint of the layout's color fading to a neutral grey,
+    // both at a low alpha, over the variant's own surface (black in dark
+    // mode). Both stops are theme colors, so none of it is hard-coded.
+    frameGradient: {
+      true: { base: frameGradientStops },
+      false: { base: '[--app-frame-gradient:none]' }
+    },
+
+    // `translucent` lets the frame (and its gradient) show through the inset
+    // card: the app surface at 50%, which is black at 50% in dark mode (the
+    // design's card) and white at 50% in light. `solid` keeps the opaque
+    // surface. The dark class is repeated because the variant's own `dark:`
+    // background would otherwise win.
+    cardSurface: {
+      solid: {},
+      translucent: {
+        mainCard: 'bg-surface-app/50 dark:bg-surface-app/50'
+      }
+    },
+
     // `end` moves the sidebar to the last column and the aside to the first,
     // so the two stay on opposite sides of the page. The grid is reordered,
     // not the DOM: aside and main take columns 1 and 2, with the navbar and
@@ -422,6 +500,7 @@ const appLayout = tv({
     sidebarSide: {
       start: {},
       end: {
+        base: '[--app-frame-gradient-direction:to_left] rtl:[--app-frame-gradient-direction:to_right]',
         sidebar: 'col-start-3',
         navbar: 'col-[1/-2]',
         main: 'col-start-2',
@@ -614,7 +693,54 @@ const appLayout = tv({
         main: 'rounded-b-xl'
       }
     },
-    ...edgeToEdgeVariants
+    ...edgeToEdgeVariants,
+    // Inset: a plain sidebar floats on the tinted frame, transparent, and the
+    // frame's own padding is its gutter, so rows start at its edge.
+    {
+      variant: 'inset',
+      sidebarSurface: 'plain',
+      class: { sidebar: 'bg-transparent [--sidebar-gutter:0px]' }
+    },
+    // Color. Last, so the solid fill wins over the attached variant's
+    // backgrounds and border.
+    {
+      color: tintedColors,
+      sidebarSurface: 'plain',
+      class: { sidebar: navTint }
+    },
+    {
+      color: tintedColors,
+      navbarSurface: 'plain',
+      class: { navbar: navTint }
+    },
+    // The phone drawer is a surface of its own (the drawer's), so its rows
+    // are tinted whatever the sidebar's surface: inverted rows would be
+    // unreadable on it. The bottom bar is the same.
+    {
+      color: tintedColors,
+      class: { mobileSidebar: navTint, bottomNav: navTint }
+    },
+    {
+      sidebarSurface: 'solid',
+      class: { sidebar: [...navSolid, 'border-transparent'] }
+    },
+    {
+      navbarSurface: 'solid',
+      class: { navbar: [...navSolid, 'border-transparent'] }
+    },
+    // On the inset frame a solid part is a panel of its own, with the card's
+    // corners. The sidebar keeps the default gutter, so its rows stay off the
+    // fill's edge.
+    {
+      sidebarSurface: 'solid',
+      variant: 'inset',
+      class: { sidebar: 'rounded-xl' }
+    },
+    {
+      navbarSurface: 'solid',
+      variant: 'inset',
+      class: { navbar: 'rounded-xl' }
+    }
   ],
 
   defaultVariants: {
@@ -627,6 +753,11 @@ const appLayout = tv({
     bottomNavRow: 'none',
     sidebarSide: 'start',
     sidebarSize: 'default',
+    color: 'neutral',
+    sidebarSurface: 'plain',
+    navbarSurface: 'plain',
+    frameGradient: false,
+    cardSurface: 'solid',
     standalone: false,
     inDrawer: false,
     scrollMode: 'content'

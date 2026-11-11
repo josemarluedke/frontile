@@ -16,6 +16,8 @@ import { globalDocument } from '../../utils/document-listener';
 import { AppLayoutState } from './app-layout-state';
 import {
   ControlledAppLayoutState,
+  layoutVariants,
+  type AppLayoutConfig,
   type AppLayoutContext,
   type RegisteredSidebar
 } from './context';
@@ -48,6 +50,54 @@ interface AppLayoutArgs {
    * @defaultValue 'frame'
    */
   navbarPlacement?: AppLayoutVariants['navbarPlacement'];
+
+  /**
+   * The shell's color, one of the theme's semantic categories. It tints the
+   * sidebar's rows (hover and the current page), colors a `solid` sidebar or
+   * navbar, and is the frame gradient's tint. `neutral` is the plain shell.
+   * A `Sidebar` or `Navbar` can take its own `@color`. Published as the
+   * `--app-layout-color`, `--app-layout-color-strong` and
+   * `--app-layout-on-color` properties on the root, which an app can set
+   * itself for a color outside the theme.
+   *
+   * @defaultValue 'neutral'
+   */
+  color?: AppLayoutVariants['color'];
+
+  /**
+   * How the sidebar wears `@color`: `plain` keeps its ground and tints its
+   * rows; `solid` fills it with the color, with rows in its contrast color.
+   * The phone drawer always tints. A `Sidebar`'s own `@surface` wins.
+   *
+   * @defaultValue 'plain'
+   */
+  sidebarSurface?: AppLayoutVariants['sidebarSurface'];
+
+  /**
+   * How the navbar wears `@color`: `plain` keeps its ground; `solid` fills
+   * it with the color. A `Navbar`'s own `@surface` wins.
+   *
+   * @defaultValue 'plain'
+   */
+  navbarSurface?: AppLayoutVariants['navbarSurface'];
+
+  /**
+   * Whether the frame carries a faint left-to-right tint of `@color`, fading
+   * to a neutral grey across the content. The stops are the
+   * `--app-frame-gradient-from` and `--app-frame-gradient-to` properties.
+   *
+   * @defaultValue false
+   */
+  frameGradient?: boolean;
+
+  /**
+   * Whether the `inset` card is opaque (`solid`) or lets the frame's gradient
+   * show through (`translucent`, `surface-app` at 50%). No effect on
+   * `attached`, which has no card.
+   *
+   * @defaultValue 'translucent' with `@frameGradient`, else 'solid'
+   */
+  cardSurface?: AppLayoutVariants['cardSurface'];
 
   /**
    * The viewport width (`sm` 40rem, `md` 48rem, `lg` 64rem) below which the
@@ -400,6 +450,29 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.args.navbarPlacement ?? 'frame';
   }
 
+  get color(): NonNullable<AppLayoutVariants['color']> {
+    return this.args.color ?? 'neutral';
+  }
+
+  get sidebarSurface(): NonNullable<AppLayoutVariants['sidebarSurface']> {
+    return this.args.sidebarSurface ?? 'plain';
+  }
+
+  get navbarSurface(): NonNullable<AppLayoutVariants['navbarSurface']> {
+    return this.args.navbarSurface ?? 'plain';
+  }
+
+  get frameGradient(): boolean {
+    return this.args.frameGradient ?? false;
+  }
+
+  get cardSurface(): NonNullable<AppLayoutVariants['cardSurface']> {
+    // A gradient pairs with a card it shows through; a flat frame keeps it solid.
+    return (
+      this.args.cardSurface ?? (this.frameGradient ? 'translucent' : 'solid')
+    );
+  }
+
   get breakpoint(): 'sm' | 'md' | 'lg' {
     return this.args.breakpoint ?? 'md';
   }
@@ -425,12 +498,26 @@ class AppLayout extends Component<AppLayoutSignature> {
     const { appLayout } = useStyles();
 
     return appLayout({
+      ...layoutVariants(this.config),
+      variant: this.variant,
+      cardSurface: this.cardSurface,
+      color: this.color
+    });
+  }
+
+  /** What the layout tells its parts, which build their own styles from it. */
+  @cached
+  get config(): AppLayoutConfig {
+    return {
       variant: this.variant,
       navbarPlacement: this.navbarPlacement,
       breakpoint: this.breakpoint,
       scrollMode: this.scrollMode,
-      sidebarSide: this.sidebarSide
-    });
+      sidebarSide: this.sidebarSide,
+      color: this.color,
+      sidebarSurface: this.sidebarSurface,
+      navbarSurface: this.navbarSurface
+    };
   }
 
   /**
@@ -442,10 +529,10 @@ class AppLayout extends Component<AppLayoutSignature> {
     const { appLayout } = useStyles();
 
     return appLayout({
+      ...layoutVariants(this.config),
       variant: this.variant,
-      navbarPlacement: this.navbarPlacement,
-      breakpoint: this.breakpoint,
-      scrollMode: this.scrollMode,
+      color: this.color,
+      frameGradient: this.frameGradient,
       sidebarColumn: this.sidebarColumn,
       sidebarSize: this.registeredSidebar?.size,
       bottomNavRow: this.bottomNavShown ? 'shown' : 'none'
@@ -484,13 +571,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       asideId: this.asideId,
       asideDrawerId: this.asideDrawerId,
       styles: this.styles,
-      config: {
-        variant: this.variant,
-        navbarPlacement: this.navbarPlacement,
-        breakpoint: this.breakpoint,
-        scrollMode: this.scrollMode,
-        sidebarSide: this.sidebarSide
-      },
+      config: this.config,
       classes: this.args.classes,
       get belowBreakpoint() {
         return layout.belowBreakpoint;
