@@ -347,5 +347,26 @@ module(
         'data-component="native-select" marks the root only, never a part'
       );
     });
+
+    test('@isDisabled disables the select element', async function (assert) {
+      const isDisabled = cell<boolean>(true);
+
+      await render(
+        <template>
+          <NativeSelect
+            @label="Fruit"
+            @items={{array "apple" "banana"}}
+            @isDisabled={{isDisabled.current}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="native-select"]').isDisabled();
+
+      isDisabled.current = false;
+      await settled();
+
+      assert.dom('[data-test-id="native-select"]').isNotDisabled();
+    });
   }
 );
