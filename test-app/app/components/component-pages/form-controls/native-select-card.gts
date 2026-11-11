@@ -12,7 +12,7 @@ import { FORM_STATES_NO_READONLY, SELECT_ITEMS, STATE_ROWS } from './states';
   <WorkbenchCard
     @id="native-select"
     @title="NativeSelect"
-    @description="The browser's own select with Input's field styles. A select has no read-only mode."
+    @description="The browser's own select with Input's field styles. A select has no read-only mode. The component ignores @isDisabled (library bug), so the disabled cell uses the native disabled attribute."
     @sections={{array
       (hash id="states" label="States")
       (hash id="sizes" label="Sizes")

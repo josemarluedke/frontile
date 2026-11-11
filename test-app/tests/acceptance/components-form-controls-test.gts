@@ -206,6 +206,68 @@ module('Acceptance | components form controls', function (hooks) {
       .includesText('Ada Lovelace', 'the submitted name is shown');
   });
 
+  test('invalid cells show visible feedback, default cells none', async function (assert) {
+    await visit('/components/form-controls');
+
+    for (const card of [
+      'checkbox',
+      'checkbox-group',
+      'radio',
+      'radio-group',
+      'switch'
+    ]) {
+      // Switch has no invalid-focus column (its focus cannot be forced).
+      const states =
+        card === 'switch' ? ['invalid'] : ['invalid', 'invalid-focus'];
+      for (const state of states) {
+        const cells = document.querySelectorAll(
+          `#${card}-states td[data-state="${state}"]`
+        );
+        assert.true(cells.length > 0, `${card} has ${state} cells`);
+        for (const cell of Array.from(cells)) {
+          const text = Array.from(
+            cell.querySelectorAll('[data-component="form-feedback"]')
+          )
+            .map((f) => f.textContent!.trim())
+            .join('');
+          assert.true(text.length > 0, `${card} ${state}: feedback has text`);
+        }
+      }
+      assert
+        .dom(
+          `#${card}-states td[data-state="default"] [data-component="form-feedback"]`
+        )
+        .doesNotExist(`${card} default: no feedback`);
+    }
+  });
+
+  test('Clear empties the Live form, its data, and the output', async function (assert) {
+    await visit('/components/form-controls');
+
+    const live = '#form-live';
+    await fillIn(`${live} input[name="name"]`, 'Ada Lovelace');
+    await fillIn(`${live} input[name="email"]`, 'ada@example.com');
+    await click(`${live} button[type="submit"]`);
+    assert
+      .dom(`${live} [data-form-live-output]`)
+      .exists('valid submit shows output');
+
+    await click(`${live} [data-form-live-clear]`);
+    assert.dom(`${live} input[name="name"]`).hasValue('', 'name is cleared');
+    assert.dom(`${live} input[name="email"]`).hasValue('', 'email is cleared');
+    assert
+      .dom(`${live} [data-form-live-output]`)
+      .doesNotExist('clear removes the output');
+
+    await click(`${live} button[type="submit"]`);
+    assert
+      .dom(`${live} [data-component="form-feedback"]`)
+      .exists('an empty submit right after clear shows feedback');
+    assert
+      .dom(`${live} [data-form-live-output]`)
+      .doesNotExist('and no stale output');
+  });
+
   test('the old /forms pages are gone', async function (assert) {
     for (const url of ['/forms', '/forms/style-variants']) {
       await assert.rejects(

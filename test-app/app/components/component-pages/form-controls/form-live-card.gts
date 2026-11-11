@@ -34,15 +34,24 @@ export default class FormLiveCard extends Component {
     this.submitted = null;
   };
 
-  reset = (): void => {
+  /**
+   * Bumped by Clear to remount the Form. A `type="reset"` button would not
+   * empty the fields after a successful submit: Form adopts the submitted
+   * data as its reset baseline, although form.md says a form without `@data`
+   * just clears. `tests/integration/workbench/form-reset-test.gts` pins that.
+   */
+  @tracked generation = 0;
+
+  clear = (): void => {
     this.submitted = null;
+    this.generation += 1;
   };
 
   <template>
     <WorkbenchCard
       @id="form-live"
       @title="Live form"
-      @description="A real Form with required and email-format validation. Submit it empty, then with a bad email, then with valid values."
+      @description="A real Form with required and email-format validation. Submit it empty, then with a bad email, then with valid values. Clear remounts the form: Form's own reset restores the last submitted values instead of emptying the fields."
       @sections={{array (hash id="form" label="Form")}}
     >
       <WorkbenchSection
@@ -51,35 +60,37 @@ export default class FormLiveCard extends Component {
         @subtitle="Validated on submit by a Valibot schema"
       >
         <div class="grid gap-6 lg:grid-cols-2">
-          <Form
-            @schema={{schema}}
-            @onSubmit={{this.submit}}
-            @onError={{this.reject}}
-            novalidate
-            as |form|
-          >
-            <div class="flex max-w-sm flex-col gap-4">
-              <form.Field @name="name" as |field|>
-                <field.Input @label="Name" @isRequired={{true}} />
-              </form.Field>
-              <form.Field @name="email" as |field|>
-                <field.Input
-                  @label="Email"
-                  @type="email"
-                  @isRequired={{true}}
-                  @description="Format is checked: name@domain"
-                />
-              </form.Field>
-              <div class="flex gap-2">
-                <Button type="submit" @color="primary">Submit</Button>
-                <Button
-                  type="reset"
-                  @variant="outline"
-                  @onPress={{this.reset}}
-                >Reset</Button>
+          {{#each (array this.generation)}}
+            <Form
+              @schema={{schema}}
+              @onSubmit={{this.submit}}
+              @onError={{this.reject}}
+              novalidate
+              as |form|
+            >
+              <div class="flex max-w-sm flex-col gap-4">
+                <form.Field @name="name" as |field|>
+                  <field.Input @label="Name" @isRequired={{true}} />
+                </form.Field>
+                <form.Field @name="email" as |field|>
+                  <field.Input
+                    @label="Email"
+                    @type="email"
+                    @isRequired={{true}}
+                    @description="Format is checked: name@domain"
+                  />
+                </form.Field>
+                <div class="flex gap-2">
+                  <Button type="submit" @color="primary">Submit</Button>
+                  <Button
+                    @variant="outline"
+                    @onPress={{this.clear}}
+                    data-form-live-clear
+                  >Clear</Button>
+                </div>
               </div>
-            </div>
-          </Form>
+            </Form>
+          {{/each}}
           <div class="flex flex-col gap-2">
             <p
               class="text-neutral-firm text-[11px] font-semibold tracking-wider uppercase"

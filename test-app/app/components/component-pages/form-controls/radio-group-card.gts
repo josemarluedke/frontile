@@ -12,7 +12,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
   <WorkbenchCard
     @id="radio-group"
     @title="RadioGroup"
-    @description="Radios under one label. Focus is forced on the first option; invalid marks the group."
+    @description="Radios under one label. Focus is forced on the first option. Invalid shows as the group's feedback message; the options themselves have no invalid styling."
     @sections={{array
       (hash id="states" label="States")
       (hash id="sizes" label="Sizes")
@@ -33,6 +33,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
             @value={{if cell.isFilled "standard"}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}
+            @errors={{if cell.isInvalid (array "Required")}}
             as |Radio|
           >
             <Radio @value="standard" @label="Standard" {{cell.force}} />

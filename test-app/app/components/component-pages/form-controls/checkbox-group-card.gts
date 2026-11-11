@@ -12,7 +12,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
   <WorkbenchCard
     @id="checkbox-group"
     @title="CheckboxGroup"
-    @description="Checkboxes under one label. Focus is forced on the first option; invalid marks the group."
+    @description="Checkboxes under one label. Focus is forced on the first option. Invalid shows as the group's feedback message; the options themselves have no invalid styling."
     @sections={{array
       (hash id="states" label="States")
       (hash id="sizes" label="Sizes")
@@ -31,6 +31,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
             @label={{state}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}
+            @errors={{if cell.isInvalid (array "Required")}}
             as |Checkbox|
           >
             <Checkbox

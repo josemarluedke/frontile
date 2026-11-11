@@ -12,7 +12,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
   <WorkbenchCard
     @id="radio"
     @title="Radio"
-    @description="A single radio. Filled is selected; a radio has no read-only mode. Each cell has its own name so the browser does not group them."
+    @description="A single radio. Filled is selected; a radio has no read-only mode. Each cell has its own name so the browser does not group them. The radio itself has no invalid styling: invalid shows only as the feedback message."
     @sections={{array
       (hash id="states" label="States")
       (hash id="sizes" label="Sizes")
@@ -34,6 +34,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
             @label={{state}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}
+            @errors={{if cell.isInvalid (array "Required")}}
             {{cell.force}}
           />
         </WorkbenchStateMatrix>

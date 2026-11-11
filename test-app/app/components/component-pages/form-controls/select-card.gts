@@ -19,7 +19,7 @@ const TRIGGER = '[data-part="chips-field"] > [data-part="input"]';
   <WorkbenchCard
     @id="select"
     @title="Select"
-    @description="A custom listbox select. Focus is forced on the trigger button, where the focus style lives."
+    @description="A custom listbox select. Focus is forced on the trigger button, where the focus style lives. Single-mode Select shows no invalid styling (library bug: the trigger never gets aria-invalid); the invalid columns show that as-is."
     @sections={{array
       (hash id="states" label="States")
       (hash id="sizes" label="Sizes")

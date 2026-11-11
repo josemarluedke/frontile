@@ -12,7 +12,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
   <WorkbenchCard
     @id="checkbox"
     @title="Checkbox"
-    @description="A single checkbox. Filled is checked; a checkbox has no read-only mode."
+    @description="A single checkbox. Filled is checked; a checkbox has no read-only mode. The box itself has no invalid styling: invalid shows only as the feedback message."
     @sections={{array
       (hash id="states" label="States")
       (hash id="sizes" label="Sizes")
@@ -32,6 +32,7 @@ import { FORM_STATES_NO_READONLY, STATE_ROWS } from './states';
             @checked={{cell.isFilled}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}
+            @errors={{if cell.isInvalid (array "Required")}}
             {{cell.force}}
           />
         </WorkbenchStateMatrix>

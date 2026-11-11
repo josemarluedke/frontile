@@ -12,7 +12,7 @@ import { FORM_STATES_NO_READONLY_NO_FOCUS, STATE_ROWS } from './states';
   <WorkbenchCard
     @id="switch"
     @title="Switch"
-    @description="An on/off toggle. Filled is on. The track's focus ring colour only follows real keyboard focus, so a frozen focus would be drawn wrong and the focus columns are omitted; tab to a switch to see it."
+    @description="An on/off toggle. Filled is on. The track's focus ring colour only follows real keyboard focus, so a frozen focus would be drawn wrong and the focus columns are omitted; tab to a switch to see it. The track has no invalid styling: invalid shows only as the feedback message."
     @sections={{array
       (hash id="states" label="States")
       (hash id="sizes" label="Sizes")
@@ -32,6 +32,7 @@ import { FORM_STATES_NO_READONLY_NO_FOCUS, STATE_ROWS } from './states';
             @defaultSelected={{cell.isFilled}}
             @isDisabled={{cell.isDisabled}}
             @isInvalid={{cell.isInvalid}}
+            @errors={{if cell.isInvalid (array "Required")}}
           />
         </WorkbenchStateMatrix>
       </WorkbenchPanes>
