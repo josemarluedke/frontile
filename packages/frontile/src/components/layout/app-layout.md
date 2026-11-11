@@ -309,7 +309,7 @@ A `Sidebar` or `Navbar` can also take its own `@color` and `@surface`, which
 win over the layout's. One way to tell environments apart is a solid navbar
 in a different color per environment:
 
-```gts preview
+```gts preview collapsible
 import { AppLayout } from 'frontile';
 import DemoFrame from 'site/components/demo-frame';
 import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';

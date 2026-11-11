@@ -666,7 +666,7 @@ the rows, while `solid` fills the sidebar with the color and draws the rows,
 group labels and toggle in its contrast color. Inside an `AppLayout` both
 default to the layout's `@color` and `@sidebarSurface`.
 
-```gts preview
+```gts preview collapsible
 import { Sidebar } from 'frontile';
 import { array } from '@ember/helper';
 import { ViewIcon, SettingsIcon, UserIcon } from 'site/components/icons';
