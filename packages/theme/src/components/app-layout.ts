@@ -174,7 +174,16 @@ const appLayout = tv({
     base: [
       'relative grid w-full text-on-surface-app',
       'grid-cols-[auto_minmax(0,1fr)_auto]',
-      '[--app-navbar-height:3rem]'
+      '[--app-navbar-height:3rem]',
+      // The frame's gradient, painted over the variant's `bg-surface-*`
+      // color. Its two stop colors are properties (set per `frameGradient`
+      // below), so an app can swap a stop without rewriting the gradient:
+      // `@classes={{hash base='[--app-frame-gradient-from:...]'}}`.
+      // `--app-frame-gradient` itself takes any `<image>`, or `none`. The tint
+      // holds at full strength across the sidebar and fades across the content,
+      // so the first stop is the sidebar's edge (`--app-sidebar-width`).
+      'bg-(image:--app-frame-gradient)',
+      '[--app-frame-gradient:linear-gradient(to_right,var(--app-frame-gradient-from)_var(--app-sidebar-width,0px),var(--app-frame-gradient-to)_100%)]'
     ],
 
     // `group/sidebar` plus `data-collapsed` on the element lets any descendant
@@ -319,7 +328,8 @@ const appLayout = tv({
     variant: {
       // The tinted frame shows through a gutter around the card. The content
       // is the lit surface in both schemes: on a `canvas` frame in light, and
-      // in dark, where `app` is black, `canvas` content on an `app` frame.
+      // in dark, where `app` is black, a `card` veil (white at 7%) on an `app`
+      // frame.
       inset: {
         base: 'bg-surface-canvas p-3 dark:bg-surface-app',
         // Transparent, borderless: the sidebar floats on the tinted frame.
@@ -329,7 +339,7 @@ const appLayout = tv({
         sidebar:
           'bg-transparent [--sidebar-clip:0.375rem] [--sidebar-gutter:0px]',
         mainCard:
-          'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted dark:bg-surface-canvas',
+          'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted dark:bg-surface-card',
         aside: 'border-s border-neutral-muted',
         // The bottom bar runs edge to edge: it pulls out over the frame's
         // side and bottom gutter (`p-3`).
@@ -412,6 +422,42 @@ const appLayout = tv({
         ]
       },
       none: {}
+    },
+
+    // The frame's gradient, after the Figma environment frames: a
+    // left-to-right tint fading to a neutral grey, both at a low alpha, over
+    // the variant's own surface (black in dark mode). The frames in the design
+    // differ only in the app's `primary`, so `primary` is the one tint and an
+    // app sets its own `primary` to change it. `neutral` is the same gradient
+    // from the `neutral` color, for an app that wants a neutral ground without
+    // redefining `primary`. `none` is the flat surface. All of it is built from
+    // the theme's own colors, so none of it is hard-coded.
+    frameGradient: {
+      primary: {
+        base: [
+          '[--app-frame-gradient-from:color-mix(in_oklab,var(--color-primary)_16%,transparent)]',
+          '[--app-frame-gradient-to:color-mix(in_oklab,var(--color-neutral-subtle)_16%,transparent)]'
+        ]
+      },
+      neutral: {
+        base: [
+          '[--app-frame-gradient-from:color-mix(in_oklab,var(--color-neutral)_16%,transparent)]',
+          '[--app-frame-gradient-to:color-mix(in_oklab,var(--color-neutral-subtle)_16%,transparent)]'
+        ]
+      },
+      none: { base: '[--app-frame-gradient:none]' }
+    },
+
+    // `translucent` lets the frame (and its gradient) show through the inset
+    // card: the app surface at 50%, which is black at 50% in dark mode (the
+    // design's card) and white at 50% in light. `solid` keeps the opaque
+    // surface. The dark class is repeated because the variant's own `dark:`
+    // background would otherwise win.
+    cardSurface: {
+      solid: {},
+      translucent: {
+        mainCard: 'bg-surface-app/50 dark:bg-surface-app/50'
+      }
     },
 
     // `end` moves the sidebar to the last column and the aside to the first,
@@ -627,6 +673,8 @@ const appLayout = tv({
     bottomNavRow: 'none',
     sidebarSide: 'start',
     sidebarSize: 'default',
+    frameGradient: 'none',
+    cardSurface: 'solid',
     standalone: false,
     inDrawer: false,
     scrollMode: 'content'

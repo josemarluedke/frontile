@@ -899,7 +899,11 @@ module(
           await render(
             <template>
               <div class={{scheme}}>
-                <AppLayout @variant={{variant}} as |layout|>
+                <AppLayout
+                  @variant={{variant}}
+                  @frameGradient="none"
+                  as |layout|
+                >
                   <layout.Sidebar as |sidebar|>
                     <sidebar.Body>Items</sidebar.Body>
                   </layout.Sidebar>
@@ -995,6 +999,135 @@ module(
         .dom('[data-component="app-layout"]')
         .hasClass('max-lg:p-0')
         .doesNotHaveClass('max-md:p-0');
+    });
+  }
+);
+
+module(
+  'Integration | Component | AppLayout frame gradient | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    let previous: Partial<ReturnType<typeof useStyles>>;
+
+    hooks.beforeEach(function () {
+      previous = { appLayout: useStyles().appLayout };
+      registerCustomStyles({ appLayout: realStyles.appLayout });
+    });
+
+    hooks.afterEach(function () {
+      registerCustomStyles(previous);
+    });
+
+    test('is flat with a solid card by default', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      assert.strictEqual(getComputedStyle(root).backgroundImage, 'none');
+      assert
+        .dom('[data-part="main-card"]')
+        .doesNotHaveClass('bg-surface-app/50');
+    });
+
+    test('frameGradient=neutral paints a gradient and a translucent card', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @frameGradient="neutral" as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      assert.true(
+        getComputedStyle(root).backgroundImage.includes('linear-gradient')
+      );
+      assert.dom('[data-part="main-card"]').hasClass('bg-surface-app/50');
+    });
+
+    test('frameGradient=primary paints a gradient and a translucent card', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @frameGradient="primary" as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      assert.true(
+        getComputedStyle(root).backgroundImage.includes('linear-gradient')
+      );
+      assert.dom('[data-part="main-card"]').hasClass('bg-surface-app/50');
+    });
+
+    test('frameGradient=none is flat and keeps the card solid', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @frameGradient="none" as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      assert.strictEqual(getComputedStyle(root).backgroundImage, 'none');
+      assert
+        .dom('[data-part="main-card"]')
+        .doesNotHaveClass('bg-surface-app/50');
+    });
+
+    test('a stop override through @classes wins over the default', async function (assert) {
+      const classes = { base: '[--app-frame-gradient-to:rgb(255,0,0)]' };
+
+      await render(
+        <template>
+          <AppLayout @frameGradient="primary" @classes={{classes}} as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      assert.true(
+        getComputedStyle(root).backgroundImage.includes('255, 0, 0'),
+        'the stop override wins'
+      );
+    });
+
+    test('cardSurface=solid keeps the card opaque on a gradient frame', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @frameGradient="primary" @cardSurface="solid" as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="main-card"]')
+        .doesNotHaveClass('bg-surface-app/50');
+    });
+
+    test('cardSurface=translucent swaps the card to the lift surface', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @cardSurface="translucent" as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="main-card"]')
+        .hasClass('bg-surface-app/50')
+        .doesNotHaveClass('bg-surface-app');
     });
   }
 );
