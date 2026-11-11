@@ -1,5 +1,7 @@
 import pageTitle from 'ember-page-title/helpers/page-title';
 import {
+  black,
+  white,
   gray,
   blue,
   green,
@@ -30,12 +32,7 @@ const RAMPS = Object.entries({
   yellow
 }).map(([name, ramp]) => ({ name, steps: steps(ramp) }));
 
-// `black` and `white` are not exported from `@frontile/theme/colors`. They are
-// defined in packages/theme/src/colors/palette-absolute.ts and repeated here.
-const ABSOLUTE: PaletteStep[] = [
-  { step: 'black', value: '#000000' },
-  { step: 'white', value: '#ffffff' }
-];
+const ABSOLUTE: PaletteStep[] = steps({ black, white });
 
 <template>
   {{pageTitle "Palette"}}
@@ -48,7 +45,7 @@ const ABSOLUTE: PaletteStep[] = [
     <PaletteCard
       @name="absolute"
       @steps={{ABSOLUTE}}
-      @description="Constant across light and dark. Not emitted as CSS variables, and not exported by the theme, so these values are copied from palette-absolute.ts in the theme source; they are not live."
+      @description="Constant across light and dark. Not emitted as CSS variables; the values are imported from @frontile/theme/colors, like the ramps above."
     />
   </div>
 </template>

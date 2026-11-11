@@ -9,7 +9,7 @@
   --size-icon-pico: var(--font-size-6); /* Icon size for pico scale. */
   --size-icon-nano: var(--font-size-7); /* Icon size for nano scale. */
   --size-icon-micro: var(--font-size-8); /* Icon size for micro scale. */
-  --size-icon-3xs: var(--font-size-7); /* Icon size for 3xs scale. */
+  --size-icon-3xs: var(--font-size-9); /* Icon size for 3xs scale. */
   --size-icon-2xs: var(--font-size-10); /* Icon size for 2xs scale. */
   --size-icon-xs: var(--font-size-12); /* Icon size for xs scale. */
   --size-icon-sm: var(--font-size-14); /* Icon size for sm scale. */
