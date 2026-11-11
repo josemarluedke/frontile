@@ -50,6 +50,15 @@ module('Acceptance | workbench nav', function (hooks) {
 
     // Workbench pages must render without console errors or warnings. The
     // demo and fixture pages are not held to that.
+    //
+    // One warning is exempt: once any test in the run has thrown during
+    // render (some do on purpose, e.g. Autocomplete's @displayLimit
+    // assertion), Ember warns "Attempted to rerender, but the Ember
+    // application has had an unrecoverable error" on every later render, in
+    // every test. It reports that earlier test, not the page visited here; a
+    // render error on this page would fail `visit` itself.
+    const STALE_RENDER_ERROR =
+      /^Attempted to rerender, but the Ember application has had an unrecoverable error/;
     const original = { error: console.error, warn: console.warn };
     const logged: string[] = [];
     try {
@@ -60,8 +69,12 @@ module('Acceptance | workbench nav', function (hooks) {
         if (strict) {
           console.error = (...args: unknown[]) =>
             logged.push(`error: ${args.map(String).join(' ')}`);
-          console.warn = (...args: unknown[]) =>
-            logged.push(`warn: ${args.map(String).join(' ')}`);
+          console.warn = (...args: unknown[]) => {
+            const text = args.map(String).join(' ');
+            if (!STALE_RENDER_ERROR.test(text)) {
+              logged.push(`warn: ${text}`);
+            }
+          };
         }
         await visit(href);
         console.error = original.error;
@@ -137,6 +150,21 @@ module('Acceptance | workbench nav', function (hooks) {
       'Fixtures comes after the groups'
     );
     assert.deepEqual(hrefsIn(folder), FIXTURES, 'Fixtures holds the fixtures');
+
+    // Every link, and the folder trigger, carries a lucide icon.
+    const links = Array.from(sidebar.querySelectorAll('a[href]'));
+    assert.strictEqual(
+      links.filter((a) => a.querySelector('[data-part="nav-item-icon"] svg'))
+        .length,
+      14,
+      'every sidebar link has an icon'
+    );
+    assert
+      .dom(
+        '[data-part="nav-folder-trigger"] [data-part="nav-item-icon"] svg',
+        folder
+      )
+      .exists({ count: 1 }, 'the Fixtures folder has an icon');
   });
 
   test('collapsed Fixtures links are reachable by opening the folder', async function (assert) {

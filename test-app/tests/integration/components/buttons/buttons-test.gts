@@ -13,49 +13,57 @@ import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { trackDeprecations } from '../../../helpers/deprecations';
 
-registerCustomStyles({
-  button: tv({
-    base: [],
-    variants: {
-      isInGroup: { true: ['in-group'] },
-      variant: {
-        solid: 'button-solid',
-        soft: 'button-soft',
-        subtle: 'button-subtle',
-        outline: 'button-outline',
-        ghost: 'button-ghost',
-        plain: 'button-plain',
-        custom: 'button-custom'
-      },
-      color: {
-        neutral: 'button-neutral',
-        primary: 'button-primary',
-        secondary: 'button-secondary',
-        tertiary: 'button-tertiary',
-        success: 'button-success',
-        warning: 'button-warning',
-        danger: 'button-danger'
-      },
-      size: {
-        xs: 'btn-xs',
-        sm: 'btn-sm',
-        md: 'btn-md',
-        lg: 'btn-lg',
-        xl: 'btn-xl'
-      }
+// ButtonGroup's test file also replaces `button`, without `defaultVariants`,
+// and test files load in no fixed order. Register at load, as before, and
+// again when this module starts so its default-size assertions hold
+// whichever file loaded last.
+const BUTTON_STYLES = tv({
+  base: [],
+  variants: {
+    isInGroup: { true: ['in-group'] },
+    variant: {
+      solid: 'button-solid',
+      soft: 'button-soft',
+      subtle: 'button-subtle',
+      outline: 'button-outline',
+      ghost: 'button-ghost',
+      plain: 'button-plain',
+      custom: 'button-custom'
     },
-    defaultVariants: {
-      size: 'md',
-      color: 'neutral',
-      variant: 'solid'
+    color: {
+      neutral: 'button-neutral',
+      primary: 'button-primary',
+      secondary: 'button-secondary',
+      tertiary: 'button-tertiary',
+      success: 'button-success',
+      warning: 'button-warning',
+      danger: 'button-danger'
+    },
+    size: {
+      xs: 'btn-xs',
+      sm: 'btn-sm',
+      md: 'btn-md',
+      lg: 'btn-lg',
+      xl: 'btn-xl'
     }
-  }) as never
-});
+  },
+  defaultVariants: {
+    size: 'md',
+    color: 'neutral',
+    variant: 'solid'
+  }
+}) as never;
+
+registerCustomStyles({ button: BUTTON_STYLES });
 
 module(
   'Integration | Component | Button | @frontile/buttons',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    hooks.before(function () {
+      registerCustomStyles({ button: BUTTON_STYLES });
+    });
 
     test('it renders', async function (assert) {
       await render(

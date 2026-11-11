@@ -5,6 +5,7 @@ import WorkbenchSection from 'test-app/components/workbench/section';
 import WorkbenchPanes from 'test-app/components/workbench/panes';
 import TokenValue from './token-value';
 import DisabledOpacity from './disabled-opacity';
+import IconShapes from '~icons/lucide/shapes';
 
 const RADII = [
   'none',
@@ -111,7 +112,7 @@ const LIST = 'flex flex-wrap items-end gap-4';
   <WorkbenchCard
     @id="global-icon-sizes"
     @title="Icon sizes"
-    @description="Squares at each icon size, with the resolved width."
+    @description="A lucide icon at each icon size, with the resolved width."
     @sections={{array (hash id="sizes" label="Sizes")}}
   >
     <WorkbenchSection @id="global-icon-sizes-sizes" @title="Sizes">
@@ -120,13 +121,14 @@ const LIST = 'flex flex-wrap items-end gap-4';
           {{#each ICON_SIZES as |s|}}
             <div data-token-item class={{ITEM}}>
               {{! template-lint-disable no-inline-styles }}
-              <div
+              <IconShapes
                 data-token-shape
-                class="bg-primary"
+                class="text-primary shrink-0"
+                aria-hidden="true"
                 style={{style
                   (concat "width: var(" s.token "); height: var(" s.token ")")
                 }}
-              ></div>
+              />
               <span class="text-xs font-medium">{{s.name}}</span>
               <TokenValue @name={{s.token}} @property="width" />
             </div>

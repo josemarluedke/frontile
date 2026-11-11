@@ -1,6 +1,21 @@
 import { AppLayout } from 'frontile';
 import { Button } from 'frontile/buttons';
 import ThemeSwitcher from '../components/theme-switcher';
+import IconHouse from '~icons/lucide/house';
+import IconPalette from '~icons/lucide/palette';
+import IconSwatchBook from '~icons/lucide/swatch-book';
+import IconType from '~icons/lucide/type';
+import IconRuler from '~icons/lucide/ruler';
+import IconMousePointerClick from '~icons/lucide/mouse-pointer-click';
+import IconTextCursorInput from '~icons/lucide/text-cursor-input';
+import IconActivity from '~icons/lucide/activity';
+import IconLayers from '~icons/lucide/layers';
+import IconBell from '~icons/lucide/bell';
+import IconFlaskConical from '~icons/lucide/flask-conical';
+import IconPanelLeft from '~icons/lucide/panel-left';
+import IconAppWindow from '~icons/lucide/app-window';
+import IconChevronsRight from '~icons/lucide/chevrons-right';
+import IconPanelsTopLeft from '~icons/lucide/panels-top-left';
 
 <template>
   <AppLayout @scrollMode="page" as |layout|>
@@ -11,33 +26,69 @@ import ThemeSwitcher from '../components/theme-switcher';
         </span>
       </sidebar.Header>
       <sidebar.Body>
-        <sidebar.Item @route="index">Home</sidebar.Item>
+        <sidebar.Item @route="index" @icon={{IconHouse}}>Home</sidebar.Item>
 
         <sidebar.Group @label="Foundations">
-          <sidebar.Item @route="foundations.theme">Theme</sidebar.Item>
-          <sidebar.Item @route="foundations.palette">Palette</sidebar.Item>
+          <sidebar.Item
+            @route="foundations.theme"
+            @icon={{IconPalette}}
+          >Theme</sidebar.Item>
+          <sidebar.Item
+            @route="foundations.palette"
+            @icon={{IconSwatchBook}}
+          >Palette</sidebar.Item>
           <sidebar.Item
             @route="foundations.typography"
+            @icon={{IconType}}
           >Typography</sidebar.Item>
-          <sidebar.Item @route="foundations.global">Global</sidebar.Item>
+          <sidebar.Item
+            @route="foundations.global"
+            @icon={{IconRuler}}
+          >Global</sidebar.Item>
         </sidebar.Group>
 
         <sidebar.Group @label="Components">
-          <sidebar.Item @route="component-pages.buttons">Buttons</sidebar.Item>
-          <sidebar.Item @route="component-pages.form-controls">Form controls</sidebar.Item>
-          <sidebar.Item @route="component-pages.status">Status</sidebar.Item>
+          <sidebar.Item
+            @route="component-pages.buttons"
+            @icon={{IconMousePointerClick}}
+          >Buttons</sidebar.Item>
+          <sidebar.Item
+            @route="component-pages.form-controls"
+            @icon={{IconTextCursorInput}}
+          >Form controls</sidebar.Item>
+          <sidebar.Item
+            @route="component-pages.status"
+            @icon={{IconActivity}}
+          >Status</sidebar.Item>
         </sidebar.Group>
 
         <sidebar.Group @label="Demos">
-          <sidebar.Item @route="overlays">Overlays</sidebar.Item>
-          <sidebar.Item @route="notifications">Notifications</sidebar.Item>
+          <sidebar.Item
+            @route="overlays"
+            @icon={{IconLayers}}
+          >Overlays</sidebar.Item>
+          <sidebar.Item
+            @route="notifications"
+            @icon={{IconBell}}
+          >Notifications</sidebar.Item>
         </sidebar.Group>
 
-        <sidebar.Folder @label="Fixtures" as |folder|>
-          <folder.Item @route="sidebar-demo">Sidebar</folder.Item>
-          <folder.Item @route="platform-demo">Platform shell</folder.Item>
-          <folder.Item @route="breadcrumbs-demo">Breadcrumbs</folder.Item>
-          <folder.Item @route="tab-nav-demo">Tab nav</folder.Item>
+        <sidebar.Folder
+          @label="Fixtures"
+          @icon={{IconFlaskConical}}
+          as |folder|
+        >
+          <folder.Item
+            @route="sidebar-demo"
+            @icon={{IconPanelLeft}}
+          >Sidebar</folder.Item>
+          <folder.Item @route="platform-demo" @icon={{IconAppWindow}}>Platform
+            shell</folder.Item>
+          <folder.Item
+            @route="breadcrumbs-demo"
+            @icon={{IconChevronsRight}}
+          >Breadcrumbs</folder.Item>
+          <folder.Item @route="tab-nav-demo" @icon={{IconPanelsTopLeft}}>Tab nav</folder.Item>
         </sidebar.Folder>
       </sidebar.Body>
     </layout.Sidebar>

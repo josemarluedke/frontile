@@ -95,9 +95,7 @@ module('Acceptance | foundations palette and global', function (hooks) {
       .dom('#global-radius [data-token-value="--radius-pill"]')
       .hasText('9999px');
     // Computed tokens show the computed value; the tooltip names the token
-    // and carries its raw value, where the variable is emitted at all.
-    // (Tailwind emits only the theme variables something uses, so
-    // `--radius-none` and `--radius-default` have no raw value here.)
+    // and carries its raw value.
     const radii = Array.from(
       document.querySelectorAll<HTMLElement>(
         '#global-radius [data-token-value]'
@@ -116,12 +114,78 @@ module('Acceptance | foundations palette and global', function (hooks) {
         `${name} tooltip`
       );
     }
-    assert.strictEqual(withRaw, 18, '9 emitted radius tokens x 2 panes');
+    assert.strictEqual(withRaw, 22, 'all 11 radius tokens x 2 panes');
+    // Names built at runtime: Tailwind scans this file too, and a literal
+    // token name here would get the variable emitted and hide the bug.
+    for (const name of ['3xl', '4xl'].map((n) => `--radius-${n}`)) {
+      for (const el of document.querySelectorAll(
+        `#global-radius [data-token-value="${name}"]`
+      )) {
+        assert.true(
+          parseFloat(el.textContent!) > 0,
+          `${name} is a real, non-zero radius (${el.textContent!.trim()})`
+        );
+      }
+    }
     assert
       .dom('#global-radius [data-token-value="--radius-pill"]')
       .hasAttribute('title', /^--radius-pill: \S/);
     assert
       .dom('#global-opacity button[disabled]')
       .exists({ count: 2 }, 'a disabled button per pane');
+  });
+
+  test('icon sizes resolve to real, increasing sizes with an icon each', async function (assert) {
+    await visit('/foundations/global');
+
+    // In theme.css order. `3xs` is declared as font-size-7, the same as
+    // `nano`, so it sits out of the strictly increasing run and is checked
+    // against `nano` instead.
+    const SCALE = [
+      'pico',
+      'nano',
+      'micro',
+      '2xs',
+      'xs',
+      'sm',
+      'md',
+      'lg',
+      'xl',
+      '2xl',
+      '3xl',
+      'kilo',
+      'mega'
+    ];
+    await settled('#global-icon-sizes [data-token-value]');
+
+    const panes = Array.from(
+      document.querySelectorAll('#global-icon-sizes [data-scheme]')
+    );
+    assert.strictEqual(panes.length, 2, 'light and dark panes');
+    for (const pane of panes) {
+      const scheme = pane.getAttribute('data-scheme');
+      assert
+        .dom('svg[data-token-shape]', pane)
+        .exists({ count: 14 }, `${scheme}: an icon at each size`);
+
+      const px = (name: string): number => {
+        const text =
+          pane
+            .querySelector(`[data-token-value="--size-icon-${name}"]`)
+            ?.textContent?.trim() ?? '';
+        assert.true(
+          /^[\d.]+px$/.test(text) && parseFloat(text) > 0,
+          `${scheme} ${name} is a non-zero px value (${text})`
+        );
+        return parseFloat(text);
+      };
+      const values = SCALE.map(px);
+      const increasing = values.every((v, i) => i === 0 || v > values[i - 1]!);
+      assert.true(
+        increasing,
+        `${scheme}: sizes strictly increase pico to mega (${values.join(', ')})`
+      );
+      assert.strictEqual(px('3xs'), px('nano'), `${scheme}: 3xs equals nano`);
+    }
   });
 });

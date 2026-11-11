@@ -2,6 +2,9 @@
   "extends": "@ember/app-tsconfig",
   "compilerOptions": {
     "skipLibCheck": true,
+    "types": [
+      "unplugin-icons/types/ember"
+    ],
     "paths": {
       "test-app/tests/*": [
         "./tests/*"

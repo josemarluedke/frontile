@@ -42,9 +42,27 @@
    the test app reads `--breakpoint-*` (responsive variants compile to literal
    media queries), and the Global page reads `--shadow-elevation-*` only from
    inline styles, which Tailwind does not scan. The Typography page reads
-   `--typescale-ratio` and `--font-size-*` the same way. The page shows these values
-   live, so reference each one here to have them emitted on :root. */
+   `--typescale-ratio` and `--font-size-*` the same way, and the Global page
+   `--size-icon-*` and the radii no component uses (`--radius-3xl`, `-4xl`).
+   The pages show these values live, so reference each one here to have them
+   emitted on :root. */
 :root {
+  --workbench-radius-3xl: var(--radius-3xl);
+  --workbench-radius-4xl: var(--radius-4xl);
+  --workbench-size-icon-pico: var(--size-icon-pico);
+  --workbench-size-icon-nano: var(--size-icon-nano);
+  --workbench-size-icon-micro: var(--size-icon-micro);
+  --workbench-size-icon-3xs: var(--size-icon-3xs);
+  --workbench-size-icon-2xs: var(--size-icon-2xs);
+  --workbench-size-icon-xs: var(--size-icon-xs);
+  --workbench-size-icon-sm: var(--size-icon-sm);
+  --workbench-size-icon-md: var(--size-icon-md);
+  --workbench-size-icon-lg: var(--size-icon-lg);
+  --workbench-size-icon-xl: var(--size-icon-xl);
+  --workbench-size-icon-2xl: var(--size-icon-2xl);
+  --workbench-size-icon-3xl: var(--size-icon-3xl);
+  --workbench-size-icon-kilo: var(--size-icon-kilo);
+  --workbench-size-icon-mega: var(--size-icon-mega);
   --workbench-breakpoint-sm: var(--breakpoint-sm);
   --workbench-breakpoint-md: var(--breakpoint-md);
   --workbench-breakpoint-lg: var(--breakpoint-lg);
