@@ -8,9 +8,22 @@
 import type {
   ButtonGroupSignature,
   ButtonSignature,
+  CheckboxGroupSignature,
+  CheckboxSignature,
   ChipSignature,
   CloseButtonSignature,
+  FormDescriptionSignature,
+  FormFeedbackSignature,
+  InputOtpSignature,
+  InputSignature,
+  LabelSignature,
+  NativeSelectSignature,
+  RadioGroupSignature,
+  RadioSignature,
   SegmentedControlSignature,
+  SelectSignature,
+  SwitchSignature,
+  TextareaSignature,
   ToggleButtonSignature
 } from 'frontile';
 
@@ -129,3 +142,70 @@ export const SEGMENTED_CONTROL_SIZES = [
   'md',
   'lg'
 ] as const satisfies ArgValues<SegmentedControlArgs['size']>;
+
+// Form controls ------------------------------------------------------------
+
+/** Every form control takes the same three sizes. */
+const FORM_SIZES = ['sm', 'md', 'lg'] as const;
+
+export const INPUT_SIZES = FORM_SIZES satisfies ArgValues<
+  InputSignature['Args']['size']
+>;
+
+export const TEXTAREA_SIZES = FORM_SIZES satisfies ArgValues<
+  TextareaSignature['Args']['size']
+>;
+
+/** Select sizes its field with `@inputSize`; `@size` is the popover's. */
+export const SELECT_SIZES = FORM_SIZES satisfies ArgValues<
+  SelectSignature<unknown>['Args']['inputSize']
+>;
+
+export const NATIVE_SELECT_SIZES = FORM_SIZES satisfies ArgValues<
+  NativeSelectSignature<unknown>['Args']['size']
+>;
+
+export const CHECKBOX_SIZES = FORM_SIZES satisfies ArgValues<
+  CheckboxSignature['Args']['size']
+>;
+
+export const CHECKBOX_GROUP_SIZES = FORM_SIZES satisfies ArgValues<
+  CheckboxGroupSignature['Args']['size']
+>;
+
+export const RADIO_SIZES = FORM_SIZES satisfies ArgValues<
+  RadioSignature<string>['Args']['size']
+>;
+
+export const RADIO_GROUP_SIZES = FORM_SIZES satisfies ArgValues<
+  RadioGroupSignature<string>['Args']['size']
+>;
+
+export const SWITCH_SIZES = FORM_SIZES satisfies ArgValues<
+  SwitchSignature['Args']['size']
+>;
+
+export const INPUT_OTP_SIZES = FORM_SIZES satisfies ArgValues<
+  InputOtpSignature['Args']['size']
+>;
+
+export const LABEL_SIZES = FORM_SIZES satisfies ArgValues<
+  LabelSignature['Args']['size']
+>;
+
+export const FORM_DESCRIPTION_SIZES = FORM_SIZES satisfies ArgValues<
+  FormDescriptionSignature['Args']['size']
+>;
+
+export const FORM_FEEDBACK_SIZES = FORM_SIZES satisfies ArgValues<
+  FormFeedbackSignature['Args']['size']
+>;
+
+export const FORM_FEEDBACK_STATUSES = [
+  'danger',
+  'warning',
+  'success',
+  'primary',
+  'secondary',
+  'tertiary'
+] as const satisfies ArgValues<FormFeedbackSignature['Args']['status']>;

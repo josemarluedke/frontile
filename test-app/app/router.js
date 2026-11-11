@@ -19,9 +19,6 @@ Router.map(function () {
     this.route('status');
   });
   this.route('changeset-form');
-  this.route('forms', function () {
-    this.route('style-variants');
-  });
   this.route('forms-legacy', function () {
     this.route('style-variants');
   });

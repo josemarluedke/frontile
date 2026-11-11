@@ -11,10 +11,27 @@ export const WORKBENCH_STATES = [
   'disabled'
 ] as const;
 
-export type WorkbenchState = (typeof WORKBENCH_STATES)[number];
+/**
+ * Columns for form controls. Only `focus` and `invalid-focus` are forced; the
+ * rest are real values or arguments the block binds from the cell's flags.
+ */
+export const FORM_STATES = [
+  'default',
+  'filled',
+  'focus',
+  'disabled',
+  'readonly',
+  'invalid',
+  'invalid-focus'
+] as const;
 
-/** The states that need no forcing, kept when frozen states are unsupported. */
-const UNFORCED: readonly WorkbenchState[] = ['rest', 'disabled'];
+export type WorkbenchState =
+  (typeof WORKBENCH_STATES)[number] | (typeof FORM_STATES)[number];
+
+/** Header text, where it differs from the state id. */
+const STATE_LABELS: Partial<Record<WorkbenchState, string>> = {
+  'invalid-focus': 'invalid·focus'
+};
 
 /** The `tw.css` attribute that freezes each state, if any. */
 export const FORCE_ATTRIBUTES: Record<WorkbenchState, string | null> = {
@@ -22,8 +39,15 @@ export const FORCE_ATTRIBUTES: Record<WorkbenchState, string | null> = {
   hover: 'data-force-hover',
   pressed: 'data-force-active',
   focus: 'data-focus-visible-added',
-  disabled: null
+  disabled: null,
+  default: null,
+  filled: null,
+  readonly: null,
+  invalid: null,
+  'invalid-focus': 'data-focus-visible-added'
 };
+
+const ALL_STATES = Object.keys(FORCE_ATTRIBUTES) as WorkbenchState[];
 
 interface ForceSignature {
   Element: Element;
@@ -44,19 +68,24 @@ function forceModifier(attribute: string | null): ForceModifier {
 
 // One definition per state, built once: the cells yield these as-is.
 const FORCE_MODIFIERS = Object.fromEntries(
-  WORKBENCH_STATES.map((state) => [
-    state,
-    forceModifier(FORCE_ATTRIBUTES[state])
-  ])
+  ALL_STATES.map((state) => [state, forceModifier(FORCE_ATTRIBUTES[state])])
 ) as Record<WorkbenchState, ForceModifier>;
 
 /** What each cell yields alongside its row and state. */
 export interface WorkbenchStateCell {
   state: WorkbenchState;
-  /** The force attribute this cell sets, or `null` for rest and disabled. */
+  /** The column header text: the state id, or e.g. `invalid·focus`. */
+  label: string;
+  /** The force attribute this cell sets, or `null` when nothing is forced. */
   attribute: string | null;
   /** True in the `disabled` column; bind it to the control's disabled API. */
   isDisabled: boolean;
+  /** True in the `filled` column; give the control a value or check it. */
+  isFilled: boolean;
+  /** True in the `readonly` column; bind it to `readonly`. */
+  isReadonly: boolean;
+  /** True in `invalid` and `invalid-focus`; bind it to `@isInvalid`/`@errors`. */
+  isInvalid: boolean;
   /**
    * Put this on the control itself (`<Button {{cell.force}}>`): it sets
    * `attribute` on that element. Modifiers on a component invocation land on
@@ -73,7 +102,7 @@ export interface WorkbenchStateMatrixSignature<T extends string> {
     states?: readonly WorkbenchState[];
     /**
      * Whether forced states render. Defaults to `FROZEN_STATES_SUPPORTED`;
-     * when false only `rest` and `disabled` columns remain.
+     * when false only the columns that force nothing remain.
      */
     frozen?: boolean;
     /** Accessible name for the row-header column. @defaultValue 'Variant' */
@@ -86,12 +115,16 @@ export interface WorkbenchStateMatrixSignature<T extends string> {
 }
 
 const CELLS = Object.fromEntries(
-  WORKBENCH_STATES.map((state) => [
+  ALL_STATES.map((state) => [
     state,
     {
       state,
+      label: STATE_LABELS[state] ?? state,
       attribute: FORCE_ATTRIBUTES[state],
       isDisabled: state === 'disabled',
+      isFilled: state === 'filled',
+      isReadonly: state === 'readonly',
+      isInvalid: state === 'invalid' || state === 'invalid-focus',
       force: FORCE_MODIFIERS[state]
     }
   ])
@@ -108,7 +141,7 @@ export default class WorkbenchStateMatrix<T extends string> extends Component<
     const states = this.args.states ?? WORKBENCH_STATES;
     const frozen = this.args.frozen ?? FROZEN_STATES_SUPPORTED;
     return states
-      .filter((state) => frozen || UNFORCED.includes(state))
+      .filter((state) => frozen || FORCE_ATTRIBUTES[state] === null)
       .map((state) => CELLS[state]);
   }
 
@@ -131,7 +164,7 @@ export default class WorkbenchStateMatrix<T extends string> extends Component<
                 scope="col"
                 data-state={{cell.state}}
                 class="text-neutral-firm text-left text-[11px] font-semibold tracking-wider"
-              >{{cell.state}}</th>
+              >{{cell.label}}</th>
             {{/each}}
           </tr>
         </thead>

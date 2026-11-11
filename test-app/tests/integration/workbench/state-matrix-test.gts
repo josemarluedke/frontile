@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import { array } from '@ember/helper';
 import WorkbenchStateMatrix, {
+  FORM_STATES,
   WORKBENCH_STATES
 } from 'test-app/components/workbench/state-matrix';
 
@@ -116,5 +117,96 @@ module('Integration | Workbench | state matrix', function (hooks) {
       );
     assert.deepEqual(cols('[data-test-some]'), ['rest', 'hover', 'disabled']);
     assert.deepEqual(cols('[data-test-unfrozen]'), ['rest', 'disabled']);
+  });
+
+  test('form states: labels, value flags, and focus forced twice', async function (assert) {
+    const rows = ['md'];
+    await render(
+      <template>
+        <WorkbenchStateMatrix
+          @rows={{rows}}
+          @states={{FORM_STATES}}
+          as |row state cell|
+        >
+          <input
+            data-test-control
+            data-filled={{if cell.isFilled "true"}}
+            aria-invalid={{if cell.isInvalid "true"}}
+            disabled={{cell.isDisabled}}
+            readonly={{cell.isReadonly}}
+            aria-label="{{row}} {{state}}"
+            {{cell.force}}
+          />
+        </WorkbenchStateMatrix>
+      </template>
+    );
+
+    const labels = findAll('thead th[data-state]').map((th) =>
+      th.textContent!.trim()
+    );
+    assert.deepEqual(labels, [
+      'default',
+      'filled',
+      'focus',
+      'disabled',
+      'readonly',
+      'invalid',
+      'invalid·focus'
+    ]);
+    const states = findAll('thead th[data-state]').map((th) =>
+      th.getAttribute('data-state')
+    );
+    assert.deepEqual(states, [...FORM_STATES], 'data-state is the state id');
+
+    const expected: Record<string, string[]> = {
+      default: [],
+      filled: ['filled'],
+      focus: ['focus'],
+      disabled: ['disabled'],
+      readonly: ['readonly'],
+      invalid: ['invalid'],
+      'invalid-focus': ['invalid', 'focus']
+    };
+    for (const [state, flags] of Object.entries(expected)) {
+      const controls = findAll(`td[data-state="${state}"] [data-test-control]`);
+      assert.strictEqual(controls.length, 1, `${state}: one control`);
+      const c = controls[0] as HTMLInputElement;
+      const actual = [
+        c.dataset['filled'] === 'true' ? 'filled' : null,
+        forced(c).length > 0 ? 'focus' : null,
+        c.disabled ? 'disabled' : null,
+        c.readOnly ? 'readonly' : null,
+        c.getAttribute('aria-invalid') === 'true' ? 'invalid' : null
+      ].filter(Boolean);
+      assert.deepEqual(actual.sort(), [...flags].sort(), `${state} flags`);
+    }
+  });
+
+  test('form states without frozen states drop both focus columns', async function (assert) {
+    const rows = ['md'];
+    await render(
+      <template>
+        <WorkbenchStateMatrix
+          @rows={{rows}}
+          @states={{FORM_STATES}}
+          @frozen={{false}}
+          as |row state|
+        >
+          {{row}}
+          {{state}}
+        </WorkbenchStateMatrix>
+      </template>
+    );
+
+    const states = findAll('thead th[data-state]').map((th) =>
+      th.getAttribute('data-state')
+    );
+    assert.deepEqual(states, [
+      'default',
+      'filled',
+      'disabled',
+      'readonly',
+      'invalid'
+    ]);
   });
 });
