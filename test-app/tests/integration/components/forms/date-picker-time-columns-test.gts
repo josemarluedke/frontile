@@ -10,6 +10,7 @@ import {
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { DatePicker, Form } from 'frontile';
+import { keylessKeydown } from '../../../helpers/keyless-keydown';
 
 /** Local `yyyy-MM-dd HH:mm`, or null. */
 function stamp(date: Date | null | undefined): string | null {
@@ -793,6 +794,27 @@ module(
         await triggerKeyEvent(find(':focus')!, 'keydown', 'ArrowRight');
         await triggerKeyEvent(find(':focus')!, 'keydown', '4');
         assert.dom(option('minute', 40)).isFocused('4 finds 40');
+      });
+
+      test('a keydown without a key does not type ahead', async function (assert) {
+        const value = new Date(2026, 0, 20, 8, 30);
+
+        await render(
+          <template>
+            <DatePicker
+              @label="Starts"
+              @locale="cs-CZ"
+              @granularity="minute"
+              @defaultValue={{value}}
+            />
+          </template>
+        );
+        await openAt('hour', 8);
+
+        // Chrome sends one when a browser autofill suggestion is picked.
+        await keylessKeydown(find(':focus')!);
+        assert.dom(option('hour', 8)).isFocused();
+        assert.deepEqual(selectedIn('hour'), ['08']);
       });
 
       test('typing a letter picks AM or PM', async function (assert) {

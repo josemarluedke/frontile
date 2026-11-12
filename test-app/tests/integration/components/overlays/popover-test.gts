@@ -16,6 +16,7 @@ import { Popover } from 'frontile/overlays';
 import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
+import { keylessKeydown } from '../../../helpers/keyless-keydown';
 
 /**
  * `Popover` measures width inside a `requestAnimationFrame`, which does not
@@ -520,6 +521,34 @@ module(
       // type-ahead altogether.
       await pressLetter('[data-test-id="trigger"]', 'r');
       assert.dom('[data-test-id="content"]').exists();
+    });
+
+    test('a keydown without a key leaves the popover closed', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+
+            <p.Content @disableTransitions={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      // Chrome sends one when a browser autofill suggestion is picked.
+      await keylessKeydown(find('[data-test-id="trigger"]')!);
+      assert.dom('[data-test-id="content"]').doesNotExist();
+
+      await pressLetter('[data-test-id="trigger"]', 'r');
+      assert.dom('[data-test-id="content"]').exists('a letter still opens it');
     });
 
     test('aria-expanded tracks the open state, including external @isOpen changes', async function (assert) {

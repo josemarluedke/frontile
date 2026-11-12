@@ -13,6 +13,7 @@ import { Command, CommandDialog } from 'frontile';
 import { filterAndRankItems } from 'frontile/utils/filter';
 import { cell } from 'ember-resources';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
+import { keylessKeydown } from '../../../helpers/keyless-keydown';
 import { tv } from 'tailwind-variants';
 import { array } from '@ember/helper';
 
@@ -903,6 +904,51 @@ module(
         );
 
         assert.strictEqual(isOpen.current, false, 'Escape closed it');
+      });
+
+      test('a keydown without a key does not open it', async function (assert) {
+        const isOpen = cell(false);
+        const open = () => (isOpen.current = true);
+        const close = () => (isOpen.current = false);
+
+        await render(
+          <template>
+            <CommandDialog
+              @isOpen={{isOpen.current}}
+              @onOpen={{open}}
+              @onClose={{close}}
+              @shortcut="mod+k"
+              @items={{DOCS}}
+              @disableTransitions={{true}}
+              as |c|
+            >
+              <c.Input />
+              <c.List>
+                <:item as |ctx|>
+                  <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+                </:item>
+              </c.List>
+            </CommandDialog>
+          </template>
+        );
+
+        // The shortcut listens on the document, so a keydown without a key
+        // anywhere on the page reaches it. Chrome sends one when a browser
+        // autofill suggestion is picked.
+        await keylessKeydown(document);
+        assert.false(isOpen.current);
+
+        const isApple = /Mac|iPhone|iPad|iPod/i.test(navigator.platform);
+        document.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'k',
+            metaKey: isApple,
+            ctrlKey: !isApple,
+            bubbles: true
+          })
+        );
+        await settled();
+        assert.true(isOpen.current, 'the shortcut still opens it');
       });
 
       test('it accepts more than one shortcut', async function (assert) {

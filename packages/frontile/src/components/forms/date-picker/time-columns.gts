@@ -6,6 +6,7 @@ import { htmlSafe } from '@ember/template';
 import { modifier } from 'ember-modifier';
 import { isSegment, seedFrom } from '../date-input/segments';
 import { revealWithin } from '../../../-private/reveal-within';
+import { hasKey } from '../../../utils/keyboard-event';
 import type { Part, Segment, SegmentType } from '../date-input/types';
 import type { DatePickerClasses } from './types';
 import type { SlotsToClasses, DatePickerSlots } from '@frontile/theme';
@@ -258,6 +259,7 @@ class DatePickerTimeColumns extends Component<DatePickerTimeColumnsSignature> {
   }
 
   handleKeydown = (column: TimeColumn, event: KeyboardEvent): void => {
+    if (!hasKey(event)) return;
     const list = event.currentTarget as HTMLElement;
     const options = optionsOf(list);
     const index = options.indexOf(event.target as HTMLElement);
