@@ -5,7 +5,8 @@ import {
   triggerKeyEvent,
   triggerEvent,
   find,
-  click
+  click,
+  settled
 } from '@ember/test-helpers';
 import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
@@ -1769,6 +1770,159 @@ module(
         1,
         'pointerup reaches the ancestor when continuePropagation is called'
       );
+    });
+  }
+);
+
+// A touch tap is pointerdown → pointerup, and only afterwards does the browser
+// dispatch the compatibility mousedown/mouseup/click for the same tap. Those are
+// hit-tested when they are dispatched, so if the pressed element has been
+// removed (or has gone `pointer-events: none` while it animates out) by then,
+// they land on whatever sits underneath it.
+module(
+  'Integration | Modifier | press | follow-up click after a touch press',
+  function (hooks) {
+    setupRenderingTest(hooks);
+
+    function pointer(
+      target: Element,
+      type: 'pointerdown' | 'pointerup',
+      pointerType: 'touch' | 'mouse' | 'pen'
+    ) {
+      target.dispatchEvent(
+        new PointerEvent(type, { bubbles: true, cancelable: true, pointerType })
+      );
+    }
+
+    function compatClick(target: Element) {
+      for (const type of ['mousedown', 'mouseup', 'click']) {
+        target.dispatchEvent(
+          new MouseEvent(type, { bubbles: true, cancelable: true })
+        );
+      }
+    }
+
+    class DismissOverTarget extends Component<{
+      Args: { onEvent: (type: string) => void; unmount?: boolean };
+    }> {
+      @tracked open = true;
+
+      dismiss = () => {
+        if (this.args.unmount === false) {
+          return;
+        }
+        this.open = false;
+      };
+
+      record = (event: Event) => this.args.onEvent(event.type);
+
+      <template>
+        <button
+          type="button"
+          data-test-underneath
+          {{on "mousedown" this.record}}
+          {{on "mouseup" this.record}}
+          {{on "click" this.record}}
+        >
+          Underneath
+        </button>
+        {{#if this.open}}
+          <button
+            type="button"
+            data-test-dismiss
+            {{press this.dismiss}}
+            {{on "mousedown" this.record}}
+            {{on "mouseup" this.record}}
+            {{on "click" this.record}}
+          >
+            Dismiss
+          </button>
+        {{/if}}
+      </template>
+    }
+
+    test('a touch press that removes its own element does not click the element underneath', async function (assert) {
+      const seen: string[] = [];
+      const record = (type: string) => seen.push(type);
+
+      await render(
+        <template><DismissOverTarget @onEvent={{record}} /></template>
+      );
+
+      const dismiss = find('[data-test-dismiss]') as HTMLElement;
+      pointer(dismiss, 'pointerdown', 'touch');
+      pointer(dismiss, 'pointerup', 'touch');
+      await settled();
+
+      assert.dom('[data-test-dismiss]').doesNotExist('the press removed it');
+
+      // The browser retargets the compatibility events to what is now there.
+      compatClick(find('[data-test-underneath]') as HTMLElement);
+
+      assert.deepEqual(seen, [], 'nothing underneath was activated');
+    });
+
+    test('a touch press on an element that stays does still deliver its click', async function (assert) {
+      const seen: string[] = [];
+      const record = (type: string) => seen.push(type);
+
+      await render(
+        <template>
+          <DismissOverTarget @onEvent={{record}} @unmount={{false}} />
+        </template>
+      );
+
+      const dismiss = find('[data-test-dismiss]') as HTMLElement;
+      pointer(dismiss, 'pointerdown', 'touch');
+      pointer(dismiss, 'pointerup', 'touch');
+      await settled();
+      compatClick(dismiss);
+
+      assert.deepEqual(
+        seen,
+        ['mousedown', 'mouseup', 'click'],
+        'the pressed element still receives its own follow-up events'
+      );
+    });
+
+    test('the suppression ends with the tap, so the next tap is not swallowed', async function (assert) {
+      const seen: string[] = [];
+      const record = (type: string) => seen.push(type);
+
+      await render(
+        <template><DismissOverTarget @onEvent={{record}} /></template>
+      );
+
+      const dismiss = find('[data-test-dismiss]') as HTMLElement;
+      pointer(dismiss, 'pointerdown', 'touch');
+      pointer(dismiss, 'pointerup', 'touch');
+      await settled();
+
+      // No compatibility events arrive (e.g. the browser cancelled the click).
+      // A new tap starts with a pointerdown on the page.
+      const target = find('[data-test-underneath]') as HTMLElement;
+      pointer(target, 'pointerdown', 'touch');
+      pointer(target, 'pointerup', 'touch');
+      compatClick(target);
+
+      assert.deepEqual(seen, ['mousedown', 'mouseup', 'click']);
+    });
+
+    test('a mouse press is left alone', async function (assert) {
+      const seen: string[] = [];
+      const record = (type: string) => seen.push(type);
+
+      await render(
+        <template><DismissOverTarget @onEvent={{record}} /></template>
+      );
+
+      const dismiss = find('[data-test-dismiss]') as HTMLElement;
+      pointer(dismiss, 'pointerdown', 'mouse');
+      pointer(dismiss, 'pointerup', 'mouse');
+      await settled();
+      compatClick(find('[data-test-underneath]') as HTMLElement);
+
+      assert.deepEqual(seen, ['mousedown', 'mouseup', 'click']);
     });
   }
 );

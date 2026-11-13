@@ -147,6 +147,64 @@ function shouldPreventDefaultKeyboard(target: Element, key: string): boolean {
   return shouldPreventDefaultUp(target);
 }
 
+/**
+ * A touch (or pen) tap is `pointerdown` → `pointerup`, and only *after* that
+ * does the browser dispatch the compatibility `mousedown`/`mouseup`/`click`
+ * for the same tap. Those events are hit-tested when they are dispatched, not
+ * when the finger went down. `onPress` runs from `pointerup`, so a handler that
+ * removes or hides its own element (a dismiss button, a menu item, a sheet
+ * closer) leaves nothing under the finger, and the follow-up events land on
+ * whatever was beneath it.
+ *
+ * After a touch/pen press ends on its element we therefore watch for that
+ * tap's follow-up events and drop any that no longer reach the pressed
+ * element. Events that still do reach it are left alone, so callers that stay
+ * mounted behave exactly as before, and keyboard and mouse presses never
+ * install the guard.
+ *
+ * The guard is not time based. It ends with the tap's `click`, or with the next
+ * `pointerdown` anywhere (a new interaction, which means the browser is not
+ * going to deliver a click for the previous one, e.g. a long press).
+ *
+ * It lives at module level because the pressed element's modifier is torn down
+ * when the element is removed, which is exactly when the guard is needed.
+ */
+let releaseFollowUpGuard: (() => void) | null = null;
+
+function guardFollowUpEvents(element: Element): void {
+  releaseFollowUpGuard?.();
+
+  const release = (): void => {
+    document.removeEventListener('mousedown', swallow, true);
+    document.removeEventListener('mouseup', swallow, true);
+    document.removeEventListener('click', swallow, true);
+    document.removeEventListener('pointerdown', release, true);
+    if (releaseFollowUpGuard === release) {
+      releaseFollowUpGuard = null;
+    }
+  };
+
+  function swallow(event: Event): void {
+    const stillOnPressedElement = element.contains(event.target as Node);
+
+    if (!stillOnPressedElement) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // `click` is the last event of a tap; once it has gone by, the tap is over.
+    if (event.type === 'click') {
+      release();
+    }
+  }
+
+  releaseFollowUpGuard = release;
+  document.addEventListener('mousedown', swallow, true);
+  document.addEventListener('mouseup', swallow, true);
+  document.addEventListener('click', swallow, true);
+  document.addEventListener('pointerdown', release, true);
+}
+
 export interface PressOptions {
   onPressStart?: (event: PressEvent) => void;
   onPressEnd?: (event: PressEvent) => void;
@@ -323,6 +381,12 @@ const press = modifier<PressSignature>(
 
       // `press` and `pressup` only describe a release on the element itself.
       if (onTarget) {
+        const pointerType = getPointerType(event);
+
+        if (pointerType === 'touch' || pointerType === 'pen') {
+          guardFollowUpEvents(element);
+        }
+
         const pressEvent = new PressEvent(
           'press',
           getPointerType(event),
