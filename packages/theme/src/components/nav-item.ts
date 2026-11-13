@@ -30,13 +30,24 @@ const railBadge = [
   'group-data-[collapsed=true]/sidebar:-translate-x-full rtl:group-data-[collapsed=true]/sidebar:translate-x-full'
 ];
 
+// A row's colors are custom properties, read with the neutral defaults as
+// fallbacks. Nothing sets them by default; a colored `Sidebar` or `Navbar`
+// (`@color`, `@surface`) sets them on its own element, and an app can set
+// them on any ancestor. See `navTint` and `navSolid` in `nav-color.ts`.
+//
+//   --nav-item-fg         (default `--color-neutral-firm`)
+//   --nav-item-hover-bg   (default `--color-neutral-muted`)
+//   --nav-item-hover-fg   (default `--color-neutral-strong`)
+//   --nav-item-active-bg  (default `--color-neutral-soft`), also while hovered
+//   --nav-item-active-fg  (default `--color-neutral-strong`)
+//   --nav-folder-border   (default `--color-neutral-muted`), a folder's guide
 const navRow = [
   ...focusVisibleRing,
   // 36px with a mouse; 44px where the pointer is coarse (touch).
   'flex min-h-9 w-full items-center gap-2 rounded-lg px-2 py-1.5 font-body text-body-sm pointer-coarse:min-h-11',
-  'text-neutral-firm',
-  'not-data-[disabled=true]:hover:bg-neutral-muted',
-  'not-data-[disabled=true]:hover:text-neutral-strong',
+  'text-(--nav-item-fg,var(--color-neutral-firm))',
+  'not-data-[disabled=true]:hover:bg-(--nav-item-hover-bg,var(--color-neutral-muted))',
+  'not-data-[disabled=true]:hover:text-(--nav-item-hover-fg,var(--color-neutral-strong))',
   'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
 ];
 
@@ -44,10 +55,11 @@ const navRow = [
 // current page, so its trigger takes `navRow` alone.
 const navItemRow = [
   ...navRow,
-  'data-[active=true]:bg-neutral-soft data-[active=true]:font-medium',
+  'data-[active=true]:bg-(--nav-item-active-bg,var(--color-neutral-soft)) data-[active=true]:font-medium',
   // Hovering the current page keeps its fill rather than lightening it.
-  'not-data-[disabled=true]:data-[active=true]:hover:bg-neutral-soft',
-  'data-[active=true]:text-neutral-strong'
+  'not-data-[disabled=true]:data-[active=true]:hover:bg-(--nav-item-active-bg,var(--color-neutral-soft))',
+  'data-[active=true]:text-(--nav-item-active-fg,var(--color-neutral-strong))',
+  'not-data-[disabled=true]:data-[active=true]:hover:text-(--nav-item-active-fg,var(--color-neutral-strong))'
 ];
 
 /**
@@ -92,7 +104,7 @@ const navItem = tv({
     // inside the panel because the collapsed panel clips it; a gap or
     // padding on the folder would show 4px while closed.
     navFolderPanel:
-      'ms-4 flex flex-col gap-1 border-s border-neutral-muted ps-2 *:first:mt-1'
+      'ms-4 flex flex-col gap-1 border-s border-(--nav-folder-border,var(--color-neutral-muted)) ps-2 *:first:mt-1'
   },
   variants: {
     layout: {
@@ -113,16 +125,17 @@ const navItem = tv({
           'not-data-[disabled=true]:data-[active=true]:hover:bg-transparent'
         ],
         // The pill is themable from the item or any ancestor, without
-        // reaching into the part with a descendant selector:
+        // reaching into the part with a descendant selector. Each falls back
+        // to the row's own property, so a colored sidebar colors the pill:
         //   --nav-item-pill-radius     (default `--radius-lg`)
-        //   --nav-item-pill-hover-bg   (default `--color-neutral-muted`)
-        //   --nav-item-pill-active-bg  (default `--color-neutral-soft`), also
+        //   --nav-item-pill-hover-bg   (default `--nav-item-hover-bg`)
+        //   --nav-item-pill-active-bg  (default `--nav-item-active-bg`), also
         //                              used while the current item is hovered
         navItemIcon: [
           'h-8 w-11 rounded-(--nav-item-pill-radius,var(--radius-lg))',
-          'group-data-[active=true]/nav-item:bg-(--nav-item-pill-active-bg,var(--color-neutral-soft))',
-          'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-(--nav-item-pill-hover-bg,var(--color-neutral-muted))',
-          'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-(--nav-item-pill-active-bg,var(--color-neutral-soft))'
+          'group-data-[active=true]/nav-item:bg-(--nav-item-pill-active-bg,var(--nav-item-active-bg,var(--color-neutral-soft)))',
+          'group-not-data-[disabled=true]/nav-item:group-hover/nav-item:bg-(--nav-item-pill-hover-bg,var(--nav-item-hover-bg,var(--color-neutral-muted)))',
+          'group-not-data-[disabled=true]/nav-item:group-data-[active=true]/nav-item:group-hover/nav-item:bg-(--nav-item-pill-active-bg,var(--nav-item-active-bg,var(--color-neutral-soft)))'
         ]
       },
       // Icon only; the label is screen-reader text and a tooltip.

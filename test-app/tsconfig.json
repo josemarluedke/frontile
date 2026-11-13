@@ -1,17 +1,19 @@
 {
   "extends": "@ember/app-tsconfig",
   "compilerOptions": {
-    "baseUrl": ".",
     "skipLibCheck": true,
+    "types": [
+      "unplugin-icons/types/ember"
+    ],
     "paths": {
       "test-app/tests/*": [
-        "tests/*"
+        "./tests/*"
       ],
       "test-app/*": [
-        "app/*"
+        "./app/*"
       ],
       "*": [
-        "types/*"
+        "./types/*"
       ]
     }
   },

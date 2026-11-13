@@ -5,7 +5,7 @@ import { registerDestructor } from '@ember/destroyable';
 import { useStyles } from '@frontile/theme';
 import Drawer from '../overlays/drawer';
 import { AppLayoutState } from './app-layout-state';
-import type { AppLayoutContext } from './context';
+import { layoutVariants, type AppLayoutContext } from './context';
 import type { AppLayoutVariants } from '@frontile/theme';
 import type Owner from '@ember/owner';
 
@@ -105,11 +105,8 @@ class Aside extends Component<AsideSignature> {
   get styles() {
     const layout = this.args.layout;
     return useStyles().appLayout({
+      ...layoutVariants(layout?.config),
       variant: layout?.config.variant ?? this.args.variant ?? 'attached',
-      navbarPlacement: layout?.config.navbarPlacement,
-      breakpoint: layout?.config.breakpoint,
-      scrollMode: layout?.config.scrollMode,
-      sidebarSide: layout?.config.sidebarSide,
       standalone: !layout
     });
   }

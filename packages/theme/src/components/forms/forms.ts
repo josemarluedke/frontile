@@ -457,7 +457,14 @@ const select = tv({
     listbox: 'scroll-py-6 max-h-64 overflow-y-auto',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
-    input: '[button]:cursor-default',
+    // The button trigger cannot carry `aria-invalid` (the button role does not
+    // support it), so the component sets `data-invalid` and the input slot's
+    // `aria-invalid:` treatment is restated against that.
+    input: [
+      '[button]:cursor-default',
+      'data-[invalid=true]:border-danger',
+      'data-[invalid=true]:focus:ring-danger-muted'
+    ],
     emptyContent: 'p-2',
     displayLimitContent: 'p-2 text-body-2xs text-neutral-firm',
     // The wrapper around the trigger. It is rendered in every mode; the

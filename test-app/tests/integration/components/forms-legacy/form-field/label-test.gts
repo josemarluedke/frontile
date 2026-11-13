@@ -1,12 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import Label from '@frontile/forms-legacy/components/form-field/label';
 import { cell } from 'ember-resources';
+import { useCustomStyles } from '../../../../helpers/scoped-styles';
 
-registerCustomStyles({
+const stubStyles = {
   label: tv({
     slots: {
       base: 'form-field-label',
@@ -23,11 +23,12 @@ registerCustomStyles({
       size: 'md'
     }
   }) as never
-});
+};
 module(
   'Integration | Component | @frontile/forms-legacy/FormField::Label',
   function (hooks) {
     setupRenderingTest(hooks);
+    useCustomStyles(hooks, stubStyles);
 
     test('it renders content, attributes and args', async function (assert) {
       await render(

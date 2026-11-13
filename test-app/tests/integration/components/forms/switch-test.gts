@@ -484,4 +484,50 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
       `toggling starts a background-color transition on the wrapper (running: ${wrapperRunning.join(', ') || 'none'})`
     );
   });
+  test('the focus ring takes its color from the same focus-visible state as its width', async function (assert) {
+    // The ring is assembled from several `has-…focus-visible` utilities. They
+    // must all key off the theme's `focus-visible` variant, which resolves to
+    // `[data-focus-visible-added]`: a mix with the native `:focus-visible`
+    // pseudo drew the ring at full width but in the default color whenever the
+    // two disagree.
+    await render(<template><Switch @label="Airplane mode" /></template>);
+
+    const wrapper = find(
+      '[data-component="switch-input"] [data-part="wrapper"]'
+    ) as HTMLElement;
+    const input = find(
+      '[data-component="switch-input"] [data-part="hidden-input"]'
+    ) as HTMLElement;
+
+    // The color the focus ring and its offset resolve to anywhere else.
+    const probe = document.createElement('div');
+    probe.className = 'ring-focus ring-offset-background';
+    wrapper.parentElement!.appendChild(probe);
+    const expected = getComputedStyle(probe);
+    const ringColor = expected.getPropertyValue('--tw-ring-color');
+    const offsetColor = expected.getPropertyValue('--tw-ring-offset-color');
+
+    const unfocusedRing =
+      getComputedStyle(wrapper).getPropertyValue('--tw-ring-shadow');
+    input.setAttribute('data-focus-visible-added', '');
+
+    const computed = getComputedStyle(wrapper);
+    assert.notStrictEqual(
+      computed.getPropertyValue('--tw-ring-shadow'),
+      unfocusedRing,
+      'the ring is drawn'
+    );
+    assert.strictEqual(
+      computed.getPropertyValue('--tw-ring-color'),
+      ringColor,
+      'ring color is the focus color'
+    );
+    assert.strictEqual(
+      computed.getPropertyValue('--tw-ring-offset-color'),
+      offsetColor,
+      'ring offset color is the background color'
+    );
+
+    probe.remove();
+  });
 });

@@ -8,7 +8,7 @@ module('Acceptance | tab-nav routing', function (hooks) {
   test('a TabNav.Item with @route derives its active state from the router', async function (assert) {
     await visit('/tab-nav-demo/second');
 
-    const links = document.querySelectorAll('nav a');
+    const links = document.querySelectorAll('main nav a');
     const first = links[0] as HTMLElement;
     const second = links[1] as HTMLElement;
 
@@ -37,12 +37,12 @@ module('Acceptance | tab-nav routing', function (hooks) {
     // correct. Only a transition proves the reactivity actually fires.
     await visit('/tab-nav-demo/second');
 
-    let links = document.querySelectorAll('nav a');
+    let links = document.querySelectorAll('main nav a');
     assert.dom(links[1] as HTMLElement).hasAttribute('data-selected', 'true');
 
     await click(links[0] as HTMLElement);
 
-    links = document.querySelectorAll('nav a');
+    links = document.querySelectorAll('main nav a');
     const first = links[0] as HTMLElement;
     const second = links[1] as HTMLElement;
 

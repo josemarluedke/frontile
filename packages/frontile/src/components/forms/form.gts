@@ -63,8 +63,9 @@ interface FormContext<T = FormDataCompiled> {
    */
   dirty: Set<string>;
   /**
-   * Resets the form to its initial state.
-   * Clears all form fields, validation errors, and dirty tracking.
+   * Resets the form to the data of its last successful submit, or to the
+   * initial `@data` before any submit (clearing the fields when there is
+   * none). Also clears validation errors and dirty tracking.
    */
   reset: () => void;
   /** The `Field` component, with args bound. */

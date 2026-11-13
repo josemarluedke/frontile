@@ -7,8 +7,7 @@ import {
   triggerKeyEvent,
   fillIn,
   focus,
-  settled,
-  setupOnerror
+  settled
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import {
@@ -20,36 +19,33 @@ import {
 import { array, hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { selectOptionByKey, ownParts } from 'frontile/test-support';
-import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { chipStubStyles } from '../../../helpers/chip-stub-styles';
 import { closeButtonStubStyles } from '../../../helpers/close-button-stub-styles';
 
 // Simple equality helper
 const eq = (a: unknown, b: unknown) => a === b;
 
+// Resolves a border-color utility to the color it computes to, so a test can
+// compare against the theme rather than hard-coding an rgb value.
+function getComputedStyleColor(className: 'border-danger'): string {
+  const probe = document.createElement('div');
+  probe.className = `border ${className}`;
+  document.querySelector('#ember-testing')!.appendChild(probe);
+  const color = getComputedStyle(probe).borderTopColor;
+  probe.remove();
+  return color;
+}
+
 module('Integration | Component | Select | @frontile/forms', function (hooks) {
   // The Multiple-mode tests assert against the stub chip theme's class names
   // and its padding-free geometry; a chip's close button is stubbed the same
-  // way (it is part of the chip's width). Register both for this module rather
-  // than relying on chip-test.gts / close-button-test.gts having been loaded in
-  // the same run, and restore whatever was there afterwards.
-  let chipStyles: ReturnType<typeof useStyles>['chip'];
-  let closeButtonStyles: ReturnType<typeof useStyles>['closeButton'];
-
-  hooks.before(function () {
-    ({ chip: chipStyles, closeButton: closeButtonStyles } = useStyles());
-    registerCustomStyles({
-      chip: chipStubStyles,
-      closeButton: closeButtonStubStyles
-    });
-  });
-
-  hooks.after(function () {
-    registerCustomStyles({
-      chip: chipStyles,
-      closeButton: closeButtonStyles
-    });
+  // way (it is part of the chip's width).
+  useCustomStyles(hooks, {
+    chip: chipStubStyles,
+    closeButton: closeButtonStubStyles
   });
 
   setupRenderingTest(hooks);
@@ -2725,7 +2721,6 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
             appearance="outlined"
             intent="danger"
             size="lg"
-            radius="full"
             withDot=true
           }}
           @selectedKeys={{selectedKeys.current}}
@@ -2735,7 +2730,6 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     const chip = '[data-part="chip"][data-key="apple"]';
-    assert.dom(chip).hasClass('radius-full', '@chip.radius applies');
     assert
       .dom(chip)
       .doesNotHaveClass(
@@ -2837,6 +2831,78 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert
       .dom('[data-test-id="chips-field"]')
       .hasAttribute('data-invalid', 'true');
+  });
+
+  // The single-mode trigger carries the field shell, so the invalid border has
+  // to land on the trigger itself. A `<button>` cannot take `aria-invalid`
+  // (unsupported on the button role), so it is marked with `data-invalid`; the
+  // filterable `<input>` trigger takes `aria-invalid`. The hidden native mirror
+  // `<select>` is also `data-part="input"`, so scope to the field.
+  const SINGLE_TRIGGER = '[data-part="chips-field"] > [data-part="input"]';
+
+  test('@isInvalid marks the single-mode trigger invalid and draws the invalid border', async function (assert) {
+    const isInvalid = cell<boolean>(false);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @isInvalid={{isInvalid.current}}
+        />
+      </template>
+    );
+
+    assert.dom(SINGLE_TRIGGER).hasTagName('button');
+    assert
+      .dom(SINGLE_TRIGGER)
+      .hasAttribute('data-invalid', 'false', 'valid by default');
+
+    isInvalid.current = true;
+    await settled();
+
+    assert.dom(SINGLE_TRIGGER).hasAttribute('data-invalid', 'true');
+    assert
+      .dom(SINGLE_TRIGGER)
+      .hasStyle(
+        { borderTopColor: getComputedStyleColor('border-danger') },
+        'the invalid border is drawn'
+      );
+
+    isInvalid.current = false;
+    await settled();
+
+    assert.dom(SINGLE_TRIGGER).hasAttribute('data-invalid', 'false');
+  });
+
+  test('@errors mark the single-mode trigger invalid', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @errors={{array "Pick something else"}}
+        />
+      </template>
+    );
+
+    assert.dom(SINGLE_TRIGGER).hasAttribute('data-invalid', 'true');
+    assert
+      .dom(SINGLE_TRIGGER)
+      .hasStyle({ borderTopColor: getComputedStyleColor('border-danger') });
+  });
+
+  test('@isInvalid sets aria-invalid on the filterable trigger input', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @isFilterable={{true}}
+          @isInvalid={{true}}
+        />
+      </template>
+    );
+
+    assert.dom(SINGLE_TRIGGER).hasTagName('input');
+    assert.dom(SINGLE_TRIGGER).hasAttribute('aria-invalid', 'true');
   });
 
   // --- `:selectedItem` block -------------------------------------------------
@@ -4337,31 +4403,32 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     });
 
     test('it asserts on a limit without @isFilterable, or one that is not a positive integer', async function (assert) {
-      const errors: string[] = [];
-      setupOnerror((error: unknown) => {
-        errors.push((error as Error).message);
+      const failed = await collectAssertions(async () => {
+        await render(
+          <template><Select @items={{items}} @displayLimit={{3}} /></template>
+        );
+        await click(INPUT);
+        await render(
+          <template>
+            <Select
+              @items={{items}}
+              @isFilterable={{true}}
+              @displayLimit={{0}}
+            />
+          </template>
+        );
+        await click(INPUT);
       });
 
-      await render(
-        <template><Select @items={{items}} @displayLimit={{3}} /></template>
-      );
-      await click(INPUT);
-      await render(
-        <template>
-          <Select @items={{items}} @isFilterable={{true}} @displayLimit={{0}} />
-        </template>
-      );
-      await click(INPUT);
-
       assert.true(
-        errors.some((m) => m.includes('@displayLimit requires @isFilterable')),
-        `asserts without @isFilterable, got: ${errors.join(' | ')}`
+        failed.some((m) => m.includes('@displayLimit requires @isFilterable')),
+        `asserts without @isFilterable, got: ${failed.join(' | ')}`
       );
       assert.true(
-        errors.some((m) =>
+        failed.some((m) =>
           m.includes('@displayLimit must be a positive integer, received 0')
         ),
-        `asserts on 0, got: ${errors.join(' | ')}`
+        `asserts on 0, got: ${failed.join(' | ')}`
       );
     });
   });

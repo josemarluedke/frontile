@@ -2,15 +2,16 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
 import { hash } from '@ember/helper';
-import { registerCustomStyles, useStyles } from '@frontile/theme';
+import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Alert } from 'frontile';
 import { ownParts } from 'frontile/test-support';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
+import { realStyles } from '../../../helpers/real-theme-styles';
 
-// Captured before the registerCustomStyles call below swaps the recipe
-// out for the placeholder these tests render against — this is the real
-// shipped recipe, and the icon-clamp test below asserts against it.
-const shippedAlert = useStyles().alert;
+// The real shipped recipe (this module swaps in a placeholder via
+// `useCustomStyles`); the icon-clamp test below asserts against it.
+const shippedAlert = realStyles.alert;
 
 /**
  * `iconSlot` is a parameter so the "icon slot sizing" test below can
@@ -77,12 +78,13 @@ function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
   }) as any;
 }
 
-registerCustomStyles({
+const stubStyles = {
   alert: customAlertStyles()
-});
+};
 
 module('Integration | Component | Alert | @frontile/status', function (hooks) {
   setupRenderingTest(hooks);
+  useCustomStyles(hooks, stubStyles);
 
   module('content', function () {
     test('it renders @title and @description', async function (assert) {
@@ -317,18 +319,10 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
       // `packages/theme/src/components/alert.ts` back to a plain
       // `shrink-0 size-5`, that test would keep passing — nothing in it
       // touches the shipped recipe. This test closes that gap by asserting
-      // against `shippedAlert`, the real `alert` recipe captured at module
-      // scope (above) before `registerCustomStyles` replaced it, and
-      // checking its generated `icon` class string still contains the
+      // against `shippedAlert`, the real `alert` recipe (from `realStyles`,
+      // not the placeholder `useStyles().alert` returns inside this module),
+      // and checking its generated `icon` class string still contains the
       // clamp.
-      //
-      // `shippedAlert` is captured via `useStyles().alert` at the top of
-      // this file, above the `registerCustomStyles({ alert:
-      // customAlertStyles() })` call. ES module imports are hoisted and
-      // module-scope statements then run in source order, so that capture
-      // happens before the placeholder recipe is registered — giving this
-      // test the real production recipe rather than the placeholder that
-      // `useStyles().alert` returns for the rest of this module's run.
       const classes = shippedAlert().icon();
 
       assert.true(

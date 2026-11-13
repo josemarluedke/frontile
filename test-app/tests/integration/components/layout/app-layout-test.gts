@@ -14,6 +14,8 @@ import { AppLayout, AppLayoutState, Sidebar } from 'frontile';
 import { mockMatchMedia } from 'test-app/tests/helpers/match-media';
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
+import type { TOC } from '@ember/component/template-only';
+import { useRealStyles } from 'test-app/tests/helpers/scoped-styles';
 
 // The navbar sits inside the card when its box lies within the card's box.
 function isWithin(inner: Element, outer: Element): boolean {
@@ -899,7 +901,11 @@ module(
           await render(
             <template>
               <div class={{scheme}}>
-                <AppLayout @variant={{variant}} as |layout|>
+                <AppLayout
+                  @variant={{variant}}
+                  @frameGradient={{false}}
+                  as |layout|
+                >
                   <layout.Sidebar as |sidebar|>
                     <sidebar.Body>Items</sidebar.Body>
                   </layout.Sidebar>
@@ -996,5 +1002,513 @@ module(
         .hasClass('max-lg:p-0')
         .doesNotHaveClass('max-md:p-0');
     });
+  }
+);
+
+module(
+  'Integration | Component | AppLayout frame gradient | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+    useRealStyles(hooks, ['appLayout']);
+
+    test('is flat with a solid card by default', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      assert.strictEqual(getComputedStyle(root).backgroundImage, 'none');
+      assert
+        .dom('[data-part="main-card"]')
+        .doesNotHaveClass('bg-surface-app/50');
+    });
+
+    for (const color of ['neutral', 'primary'] as const) {
+      test(`a ${color} frameGradient paints a gradient and a translucent card`, async function (assert) {
+        await render(
+          <template>
+            <AppLayout @color={{color}} @frameGradient={{true}} as |layout|>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+
+        const root = find('[data-component="app-layout"]')!;
+        assert.true(
+          getComputedStyle(root).backgroundImage.includes('linear-gradient')
+        );
+        assert.dom('[data-part="main-card"]').hasClass('bg-surface-app/50');
+      });
+    }
+
+    test('a stop override through @classes wins over the default', async function (assert) {
+      const classes = { base: '[--app-frame-gradient-to:rgb(255,0,0)]' };
+
+      await render(
+        <template>
+          <AppLayout
+            @color="primary"
+            @frameGradient={{true}}
+            @classes={{classes}}
+            as |layout|
+          >
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      assert.true(
+        getComputedStyle(root).backgroundImage.includes('255, 0, 0'),
+        'the stop override wins'
+      );
+    });
+
+    test('cardSurface=solid keeps the card opaque on a gradient frame', async function (assert) {
+      await render(
+        <template>
+          <AppLayout
+            @color="primary"
+            @frameGradient={{true}}
+            @cardSurface="solid"
+            as |layout|
+          >
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="main-card"]')
+        .doesNotHaveClass('bg-surface-app/50');
+    });
+
+    test('cardSurface=translucent makes the card see-through', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @cardSurface="translucent" as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert
+        .dom('[data-part="main-card"]')
+        .hasClass('bg-surface-app/50')
+        .doesNotHaveClass('bg-surface-app');
+    });
+  }
+);
+
+const ColorTestIcon: TOC<{ Element: SVGSVGElement }> = <template>
+  <svg viewBox="0 0 16 16" width="16" height="16" ...attributes>
+    <rect width="16" height="16" />
+  </svg>
+</template>;
+
+// Resolves a CSS color expression (a `var()` or `color-mix()`) to its computed
+// form, inside `scope` so the same light/dark tokens apply.
+function resolveColor(expression: string, scope: Element): string {
+  const probe = document.createElement('div');
+  probe.style.color = expression;
+  scope.appendChild(probe);
+  const value = getComputedStyle(probe).color;
+  probe.remove();
+  return value;
+}
+
+// The current row's fill on a tinted part: the color at 18% (`navTint`).
+function activeTint(color: string, scope: Element): string {
+  return resolveColor(`color-mix(in oklab, ${color} 18%, transparent)`, scope);
+}
+
+module(
+  'Integration | Component | AppLayout color | frontile/layout',
+  function (hooks) {
+    setupRenderingTest(hooks);
+    useRealStyles(hooks, ['appLayout', 'navItem']);
+
+    const activeRow = () =>
+      find('[data-part="sidebar"] [aria-current="page"]')!;
+
+    test('the default is neutral: rows keep their neutral fills', async function (assert) {
+      await render(
+        <template>
+          <AppLayout as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Item @href="#a" @isActive={{true}}>A</sidebar.Item>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const row = activeRow();
+      assert.strictEqual(
+        getComputedStyle(row).backgroundColor,
+        resolveColor('var(--color-neutral-soft)', row)
+      );
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="sidebar"]')!)
+          .getPropertyValue('--nav-item-active-bg')
+          .trim(),
+        '',
+        'a neutral sidebar sets no row colors, so the fallbacks apply'
+      );
+    });
+
+    test('@color tints the sidebar rows', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="primary" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Item @href="#a" @isActive={{true}}>A</sidebar.Item>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const row = activeRow();
+      assert.strictEqual(
+        getComputedStyle(row).backgroundColor,
+        activeTint('var(--color-primary)', row),
+        'the current row is filled with the color'
+      );
+      assert.strictEqual(
+        getComputedStyle(row).color,
+        resolveColor('var(--color-primary-strong)', row),
+        'and labelled in its strong level'
+      );
+    });
+
+    test("a Sidebar @color overrides the layout's", async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="primary" as |layout|>
+            <layout.Sidebar @color="success" as |sidebar|>
+              <sidebar.Item @href="#a" @isActive={{true}}>A</sidebar.Item>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const row = activeRow();
+      assert.strictEqual(
+        getComputedStyle(row).backgroundColor,
+        activeTint('var(--color-success)', row)
+      );
+    });
+
+    for (const scheme of ['light', 'dark'] as const) {
+      for (const variant of ['inset', 'attached'] as const) {
+        test(`@navbarSurface=solid fills the navbar (${variant}, ${scheme})`, async function (assert) {
+          await render(
+            <template>
+              <div class={{scheme}}>
+                <AppLayout
+                  @variant={{variant}}
+                  @color="primary"
+                  @navbarSurface="solid"
+                  as |layout|
+                >
+                  <layout.Navbar>Title</layout.Navbar>
+                  <layout.Main>Content</layout.Main>
+                </AppLayout>
+              </div>
+            </template>
+          );
+
+          const navbar = find('[data-part="navbar"]')!;
+          assert.strictEqual(
+            getComputedStyle(navbar).backgroundColor,
+            resolveColor('var(--color-primary)', navbar)
+          );
+          assert.strictEqual(
+            getComputedStyle(navbar).color,
+            resolveColor('var(--color-on-primary)', navbar)
+          );
+        });
+      }
+    }
+
+    test('a standalone solid Sidebar fills itself and inverts its rows', async function (assert) {
+      await render(
+        <template>
+          <Sidebar @color="danger" @surface="solid" as |sidebar|>
+            <sidebar.Item @href="#a" @isActive={{true}}>A</sidebar.Item>
+          </Sidebar>
+        </template>
+      );
+
+      const sidebar = find('[data-part="sidebar"]')!;
+      const row = activeRow();
+      assert.strictEqual(
+        getComputedStyle(sidebar).backgroundColor,
+        resolveColor('var(--color-danger)', sidebar)
+      );
+      assert.strictEqual(
+        getComputedStyle(row).color,
+        resolveColor('var(--color-on-danger)', row)
+      );
+    });
+
+    test('a solid sidebar in the drawer falls back to tinted rows', async function (assert) {
+      const media = mockMatchMedia(500);
+      try {
+        await render(
+          <template>
+            <AppLayout @color="primary" @sidebarSurface="solid" as |layout|>
+              <layout.Navbar><layout.MenuToggle /></layout.Navbar>
+              <layout.Sidebar as |sidebar|>
+                <sidebar.Item @href="#a" @isActive={{true}}>A</sidebar.Item>
+              </layout.Sidebar>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </template>
+        );
+        await click('[data-part="menu-toggle"]');
+
+        const row = document.querySelector(
+          '[data-part="mobile-sidebar"] [aria-current="page"]'
+        )!;
+        assert.ok(row, 'the drawer is open');
+        assert.strictEqual(
+          getComputedStyle(row).backgroundColor,
+          activeTint('var(--color-primary)', row),
+          'the drawer is its own surface, so the rows are tinted, not inverted'
+        );
+      } finally {
+        media.restore();
+      }
+    });
+
+    test('@frameGradient draws from the layout color', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="success" @frameGradient={{true}} as |layout|>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const root = find('[data-component="app-layout"]')!;
+      const style = getComputedStyle(root);
+      assert.true(style.backgroundImage.includes('linear-gradient'));
+      assert.strictEqual(
+        style.getPropertyValue('--app-layout-color').trim(),
+        style.getPropertyValue('--color-success').trim(),
+        'the layout color is the success color'
+      );
+      assert.true(
+        style
+          .getPropertyValue('--app-frame-gradient-from')
+          .includes(style.getPropertyValue('--color-success').trim()),
+        'the first stop is mixed from it'
+      );
+    });
+    test('a color set through @classes on the root reaches the sidebar rows', async function (assert) {
+      const classes = { base: '[--app-layout-color:rgb(255,0,0)]' };
+
+      await render(
+        <template>
+          <AppLayout @color="primary" @classes={{classes}} as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Item @href="#a" @isActive={{true}}>A</sidebar.Item>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const row = activeRow();
+      assert.strictEqual(
+        getComputedStyle(row).backgroundColor,
+        activeTint('rgb(255,0,0)', row)
+      );
+    });
+
+    test('a solid sidebar draws rows, group labels and its toggle in the contrast color', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="primary" @sidebarSurface="solid" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Header><sidebar.Toggle /></sidebar.Header>
+              <sidebar.Group @label="Workspace">
+                <sidebar.Item @href="#a" id="rest">A</sidebar.Item>
+              </sidebar.Group>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const sidebar = find('[data-part="sidebar"]')!;
+      const onColor = resolveColor('var(--color-on-primary)', sidebar);
+      assert.strictEqual(
+        getComputedStyle(find('#rest')!).color,
+        onColor,
+        'row'
+      );
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="sidebar-group-label"]')!).color,
+        onColor,
+        'group label'
+      );
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="sidebar-toggle"]')!).color,
+        onColor,
+        'toggle'
+      );
+    });
+
+    // The row's start, from the sidebar's edge.
+    const rowInset = () =>
+      find('[data-part="sidebar"] a')!.getBoundingClientRect().left -
+      find('[data-part="sidebar"]')!.getBoundingClientRect().left;
+
+    test('a plain sidebar on the inset frame runs its rows to its edge', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="primary" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body><sidebar.Item
+                  @href="#a"
+                >A</sidebar.Item></sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(rowInset(), 0, 'the frame is the gutter');
+    });
+
+    test('a solid sidebar on the inset frame keeps its rows off the edge', async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="primary" @sidebarSurface="solid" as |layout|>
+            <layout.Sidebar as |sidebar|>
+              <sidebar.Body><sidebar.Item
+                  @href="#a"
+                >A</sidebar.Item></sidebar.Body>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.true(rowInset() > 0, 'the row is inset from the fill');
+      assert.notStrictEqual(
+        getComputedStyle(find('[data-part="sidebar"]')!).borderTopLeftRadius,
+        '0px',
+        'rounded'
+      );
+    });
+
+    test("a row property set through a colored Sidebar's @class wins", async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="primary" as |layout|>
+            <layout.Sidebar
+              @class="[--nav-item-active-bg:rgb(0,0,255)]"
+              as |sidebar|
+            >
+              <sidebar.Item @href="#a" @isActive={{true}}>A</sidebar.Item>
+            </layout.Sidebar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      assert.strictEqual(
+        getComputedStyle(activeRow()).backgroundColor,
+        'rgb(0, 0, 255)'
+      );
+    });
+
+    test("a Navbar @color and @surface override the layout's", async function (assert) {
+      await render(
+        <template>
+          <AppLayout @color="primary" as |layout|>
+            <layout.Navbar
+              @color="warning"
+              @surface="solid"
+            >Title</layout.Navbar>
+            <layout.Main>Content</layout.Main>
+          </AppLayout>
+        </template>
+      );
+
+      const navbar = find('[data-part="navbar"]')!;
+      assert.strictEqual(
+        getComputedStyle(navbar).backgroundColor,
+        resolveColor('var(--color-warning)', navbar)
+      );
+    });
+
+    test('the bottom bar is tinted with the layout color', async function (assert) {
+      const media = mockMatchMedia(500);
+      try {
+        await render(
+          <template>
+            <AppLayout @color="primary" @mobileNav="bottom" as |layout|>
+              <layout.Sidebar />
+              <layout.Main>Content</layout.Main>
+              <layout.BottomNav as |bar|>
+                <bar.Item
+                  @href="#a"
+                  @icon={{ColorTestIcon}}
+                  @isActive={{true}}
+                >A</bar.Item>
+              </layout.BottomNav>
+            </AppLayout>
+          </template>
+        );
+
+        const item = find('[data-part="bottom-nav"] [aria-current="page"]')!;
+        assert.strictEqual(
+          getComputedStyle(item).backgroundColor,
+          activeTint('var(--color-primary)', item)
+        );
+      } finally {
+        media.restore();
+      }
+    });
+
+    for (const [side, dir, expected] of [
+      ['start', 'ltr', 'to right'],
+      ['end', 'ltr', 'to left'],
+      ['start', 'rtl', 'to left'],
+      ['end', 'rtl', 'to right']
+    ] as const) {
+      test(`the frame gradient starts behind the sidebar (${side}, ${dir})`, async function (assert) {
+        await render(
+          <template>
+            <div dir={{dir}}>
+              <AppLayout
+                @color="primary"
+                @frameGradient={{true}}
+                @sidebarSide={{side}}
+                as |layout|
+              >
+                <layout.Main>Content</layout.Main>
+              </AppLayout>
+            </div>
+          </template>
+        );
+
+        assert.true(
+          getComputedStyle(
+            find('[data-component="app-layout"]')!
+          ).backgroundImage.startsWith(`linear-gradient(${expected},`)
+        );
+      });
+    }
   }
 );

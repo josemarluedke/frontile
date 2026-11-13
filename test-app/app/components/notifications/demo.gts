@@ -44,9 +44,6 @@ const customActionsOptions = [
   }
 ];
 
-// Checkboxes report `'on'` or a boolean depending on how they are rendered.
-const isOn = (value: unknown): boolean => value === 'on' || value === true;
-
 export default class Demo extends Component<DemoArgs> {
   @service notifications!: NotificationsService;
   @tracked placement: NotificationsContainerSignature['Args']['placement'] =
@@ -57,7 +54,7 @@ export default class Demo extends Component<DemoArgs> {
     this.customActions = keys;
   };
 
-  handleChange = ({ data }: FormResultData): void => {
+  handleChange = ({ data }: FormResultData) => {
     if (data['placement']) {
       this.placement = data[
         'placement'
@@ -65,14 +62,14 @@ export default class Demo extends Component<DemoArgs> {
     }
   };
 
-  handleSubmit = ({ data }: FormResultData): void => {
+  handleSubmit = ({ data }: FormResultData) => {
     this.notifications.add(
       'Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna.',
       {
         status: data['status'] as NotificationOptions['status'],
-        preserve: isOn(data['preserve']),
+        preserve: data['preserve'] === true,
         duration: parseInt(data['duration'] as string) || 5000,
-        allowClosing: isOn(data['allowClosing']),
+        allowClosing: data['allowClosing'] === true,
         customActions: this.customActions.map(
           (key) =>
             customActionsOptions.find(

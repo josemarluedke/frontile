@@ -5,7 +5,7 @@ import {
   parse,
   wcagContrast
 } from '@frontile/theme/colors';
-import { useStyles } from '@frontile/theme';
+import { realStyles } from '../../helpers/real-theme-styles';
 
 /** Structurally compatible with `culori`'s `Color` (an opaque sRGB triple)
  * without importing the type from `culori` directly — `culori` isn't a
@@ -171,13 +171,7 @@ module('Unit | Notifications | notification-card contrast', function () {
         // notification-card.ts (not a hand-copied literal), so this catches
         // a regression to a translucent cut like the old `/80` — not just
         // the color math above, which can't see the class string at all.
-        // `useStyles()` may have been swapped for mock markers by another
-        // test file's module-level `registerCustomStyles` call by the time
-        // this runs (there is no way to unregister one) — that's fine here:
-        // it would just make this assertion fail loudly rather than
-        // silently check the wrong thing, since a mock slot never contains
-        // an opacity-modifier suffix either.
-        const { description } = useStyles().notificationCard({
+        const { description } = realStyles.notificationCard({
           status,
           variant: 'solid'
         });

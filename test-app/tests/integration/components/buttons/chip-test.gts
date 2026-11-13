@@ -1,15 +1,15 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerKeyEvent } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
 import { Chip } from 'frontile';
 import { trackDeprecations } from '../../../helpers/deprecations';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
+import { realStyles } from '../../../helpers/real-theme-styles';
 import { chipStubStyles } from '../../../helpers/chip-stub-styles';
-
-registerCustomStyles({ chip: chipStubStyles });
 
 module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
   setupRenderingTest(hooks);
+  useCustomStyles(hooks, { chip: chipStubStyles });
 
   test('it renders', async function (assert) {
     await render(
@@ -238,6 +238,77 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
           .dom('[data-test-id="named"] .chip-close-button')
           .hasText('Remove Beta');
       });
+    });
+  });
+
+  module('shape', function () {
+    test('it is always a pill', function (assert) {
+      const { base } = realStyles.chip({});
+      const classes = base();
+
+      assert.true(classes.includes('rounded-full'), 'base is rounded-full');
+      for (const other of ['rounded-none', 'rounded-sm', 'rounded-lg']) {
+        assert.false(classes.split(' ').includes(other), `no ${other}`);
+      }
+    });
+
+    test('@radius is ignored and deprecated', async function (assert) {
+      const { ids } = trackDeprecations();
+
+      await render(
+        <template>
+          <Chip @radius="none" data-test-id="chip">x</Chip>
+        </template>
+      );
+
+      assert.deepEqual(ids, ['frontile.chip.radius']);
+      assert.dom('[data-test-id="chip"]').doesNotHaveClass('radius-none');
+    });
+
+    test('no deprecation without @radius', async function (assert) {
+      const { ids } = trackDeprecations();
+
+      await render(
+        <template>
+          <Chip data-test-id="chip">x</Chip>
+        </template>
+      );
+
+      assert.deepEqual(ids, []);
+    });
+  });
+
+  module('close button', function () {
+    test('close button is a pointer', function (assert) {
+      const { closeButton } = realStyles.chip({});
+      const classes = closeButton();
+
+      assert.true(classes.includes('cursor-pointer'), 'cursor-pointer');
+      assert.true(
+        classes.includes('disabled:cursor-not-allowed'),
+        'disabled keeps not-allowed'
+      );
+    });
+
+    test('disabled chip keeps a disabled close button', async function (assert) {
+      const onClose = () => {};
+      await render(
+        <template>
+          <Chip @isDisabled={{true}} @onClose={{onClose}}>x</Chip>
+        </template>
+      );
+
+      assert.dom('[data-part="close-button"]').isDisabled();
+    });
+
+    test('no close button without @onClose', async function (assert) {
+      await render(
+        <template>
+          <Chip>x</Chip>
+        </template>
+      );
+
+      assert.dom('[data-part="close-button"]').doesNotExist();
     });
   });
 

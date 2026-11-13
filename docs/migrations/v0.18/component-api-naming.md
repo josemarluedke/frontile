@@ -112,6 +112,7 @@ frontile.button.appearance        frontile.button.intent
 frontile.button-group.appearance  frontile.button-group.intent
 frontile.toggle-button.appearance frontile.toggle-button.intent
 frontile.chip.appearance          frontile.chip.intent
+frontile.chip.radius
 frontile.listbox.appearance       frontile.listbox.intent
 frontile.dropdown.appearance      frontile.dropdown.intent
 frontile.select.appearance        frontile.select.intent
@@ -120,6 +121,22 @@ frontile.close-button.variant-values
 frontile.spinner.intent           frontile.progress-bar.intent
 frontile.switch.intent            frontile.form-feedback.intent
 ```
+
+### Chip `@radius`
+
+`@radius` on Chip is deprecated and ignored: a Chip is always a pill. If you used a
+smaller radius for a label that does nothing when clicked, use `Badge` instead. Chip
+is for elements that are pressable, selectable or closable.
+
+```gts
+{{! Before }}
+<Chip @radius='sm'>Draft</Chip>
+
+{{! After }}
+<Badge>Draft</Badge>
+```
+
+`@chip.radius` on Select is likewise ignored.
 
 ## Upgrading from a v0.18 pre-release
 

@@ -283,6 +283,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
+      @isDisabled={{@isDisabled}}
       @class={{this.classes.base class=@classes.base}}
       data-component="native-select"
       data-part="base"
@@ -325,6 +326,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
           }}
           id={{c.id}}
           name={{@name}}
+          disabled={{@isDisabled}}
           aria-invalid={{if c.isInvalid "true"}}
           aria-describedby={{c.describedBy @description c.isInvalid}}
           ...attributes

@@ -5,9 +5,10 @@ imports:
 
 # Chip
 
-Chips are compact elements that represent an input, attribute, or action — a
-filter that has been applied, a tag on a record, a value selected in a
-multi-select field.
+Chips are compact, pill-shaped tokens — a filter that has been applied, a
+removable value in a multi-select field, an input-like token. The only part that
+responds to a click is the close button. For a status, a tag or a count with no
+close button, use a [Badge](/docs/components/status/badge).
 
 ## Import
 
@@ -20,8 +21,10 @@ import { Chip } from 'frontile';
 ```gts preview
 import { Chip } from 'frontile';
 
+const noop = (): void => {};
+
 <template>
-  <Chip>Chip</Chip>
+  <Chip @onClose={{noop}} @closeButtonTitle='Remove Chip'>Chip</Chip>
 </template>
 ```
 
@@ -137,25 +140,18 @@ const noop = (): void => {};
 </template>
 ```
 
-## Chip Radius
+## Chip vs Badge
 
-`full` is the default. Use a smaller radius when chips sit alongside other
-squared-off controls.
+A Chip is a pill for a value the user can remove, and its close button is the only
+part that responds to a click. A chip that is not removable is a
+[Badge](/docs/components/status/badge): use Badge for a status, a count or any other
+label that does not respond to the user.
 
-```gts preview
-import { Chip } from 'frontile';
-import { array } from '@ember/helper';
+The variant, color and size demos on this page omit the close button only to isolate
+the property being shown.
 
-<template>
-  <div class='flex flex-wrap items-center gap-3'>
-    {{#each (array 'none' 'sm' 'lg' 'full') as |radius|}}
-      <Chip @variant='outline' @color='primary' @radius={{radius}}>
-        {{radius}}
-      </Chip>
-    {{/each}}
-  </div>
-</template>
-```
+A Chip is always a pill. Its close button shows a pointer cursor, since it is the one
+part of a Chip that responds to a click.
 
 ## Chip with Dots
 
@@ -403,10 +399,10 @@ A `Chip` is a `<div>` holding text — it has no role of its own, because a chip
 not one thing. What it means depends on what you are using it for, and that
 determines what you owe it:
 
-- **As a label or attribute** (a status, a tag, a count) it is ordinary text.
-  Nothing extra is needed. Do not rely on `@color` or `@withDot` alone to carry
-  the meaning: `@color='danger'` reads as "failed" to a sighted user and as
-  nothing at all to a screen reader, so keep the word in the content.
+- **Color and dots never carry meaning alone.** `@color='danger'` reads as
+  "failed" to a sighted user and as nothing at all to a screen reader, so keep
+  the word in the content. For a plain status label, use a
+  [Badge](/docs/components/status/badge).
 - **As a removable value** — with `@onClose` — the close button is the only
   interactive part. It is a real `<button>`, reached with `Tab` and activated
   with `Enter` or `Space`, and it needs a name that identifies the chip; see
