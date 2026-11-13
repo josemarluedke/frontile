@@ -153,6 +153,7 @@
     "type": "addon",
     "main": "addon-main.js",
     "app-js": {
+      "./services/app-layout.js": "./dist/_app_/services/app-layout.js",
       "./services/notifications.js": "./dist/_app_/services/notifications.js"
     }
   },

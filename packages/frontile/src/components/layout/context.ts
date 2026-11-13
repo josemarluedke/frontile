@@ -78,14 +78,20 @@ export interface AppLayoutContext {
   /**
    * Whether an `Aside` is rendered in the layout. `AsideToggle` renders
    * nothing without one. Settles after the first render, like the registered
-   * sidebar (tracked).
+   * sidebar (tracked). PROTOTYPE: false while a route-driven `Aside`
+   * (`@region`) is registered but empty.
    */
   readonly hasAside: boolean;
   /**
    * Called by `Aside` so the layout knows it has one. Returns the matching
    * unregister function.
    */
-  registerAside(aside: object): () => void;
+  registerAside(aside: RegisteredAside): () => void;
+}
+
+export interface RegisteredAside {
+  /** PROTOTYPE. Whether the aside has content; omitted means it does. */
+  readonly available?: boolean;
 }
 
 export interface RegisteredSidebar {

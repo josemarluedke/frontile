@@ -4,6 +4,7 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { guidFor } from '@ember/object/internals';
 import { schedule } from '@ember/runloop';
+import { service } from '@ember/service';
 import { isDestroying } from '@ember/destroyable';
 import { modifier } from 'ember-modifier';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
@@ -19,8 +20,12 @@ import {
   layoutVariants,
   type AppLayoutConfig,
   type AppLayoutContext,
+  type RegisteredAside,
   type RegisteredSidebar
 } from './context';
+import Region from './region';
+import LayoutBreadcrumbs from './layout-breadcrumbs';
+import type AppLayoutService from '../../services/app-layout';
 import Aside from './aside';
 import AsideToggle from './aside-toggle';
 import BottomNav from './bottom-nav';
@@ -217,6 +222,8 @@ interface AppLayoutSignature {
       {
         state: AppLayoutState;
         Aside: WithBoundArgs<typeof Aside, 'layout'>;
+        Breadcrumbs: WithBoundArgs<typeof LayoutBreadcrumbs, 'layout'>;
+        Region: WithBoundArgs<typeof Region, 'layout'>;
         AsideToggle: WithBoundArgs<typeof AsideToggle, 'layout'>;
         BottomNav: WithBoundArgs<typeof BottomNav, 'layout'>;
         Main: WithBoundArgs<typeof Main, 'layout'>;
@@ -265,7 +272,10 @@ class RegisteredPart<T extends object> {
  * themselves in, so they can be written in any order.
  */
 class AppLayout extends Component<AppLayoutSignature> {
+  @service('app-layout') declare appLayout: AppLayoutService;
+
   #controlled: ControlledAppLayoutState;
+  #unregisterFromService: () => void;
 
   constructor(owner: Owner, args: AppLayoutArgs) {
     super(owner, args);
@@ -275,10 +285,18 @@ class AppLayout extends Component<AppLayoutSignature> {
       asideOpen: args.defaultAsideOpen
     });
     this.#controlled = new ControlledAppLayoutState(own, () => this.args);
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const layout = this;
+    this.#unregisterFromService = this.appLayout.registerLayout({
+      get state() {
+        return layout.state;
+      }
+    });
   }
 
   willDestroy(): void {
     super.willDestroy();
+    this.#unregisterFromService();
     stopWatcher(watchers, this);
     stopWatcher(asideWatchers, this);
   }
@@ -351,7 +369,7 @@ class AppLayout extends Component<AppLayoutSignature> {
   // BottomNav for its bottom row.
   sidebarPart = new RegisteredPart<RegisteredSidebar>(this);
   bottomNavPart = new RegisteredPart<object>(this);
-  asidePart = new RegisteredPart<object>(this);
+  asidePart = new RegisteredPart<RegisteredAside>(this);
 
   registerSidebar = this.sidebarPart.register;
   registerBottomNav = this.bottomNavPart.register;
@@ -365,8 +383,17 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.bottomNavPart.current;
   }
 
-  get registeredAside(): object | undefined {
+  get registeredAside(): RegisteredAside | undefined {
     return this.asidePart.current;
+  }
+
+  /**
+   * An `Aside` is registered and has something to show. PROTOTYPE: a
+   * route-driven `Aside` (`@region`) reports `available: false` while empty.
+   */
+  get hasAside(): boolean {
+    const aside = this.registeredAside;
+    return aside !== undefined && (aside.available ?? true);
   }
 
   get mobileNav(): 'drawer' | 'bottom' {
@@ -598,7 +625,7 @@ class AppLayout extends Component<AppLayoutSignature> {
         return layout.registeredSidebar !== undefined && !layout.bottomNavMode;
       },
       get hasAside() {
-        return layout.registeredAside !== undefined;
+        return layout.hasAside;
       },
       isRtl: this.isRtl,
       registerSidebar: this.registerSidebar,
@@ -667,6 +694,8 @@ class AppLayout extends Component<AppLayoutSignature> {
           state=this.state
           Aside=(component Aside layout=this.context)
           AsideToggle=(component AsideToggle layout=this.context)
+          Breadcrumbs=(component LayoutBreadcrumbs layout=this.context)
+          Region=(component Region layout=this.context)
           BottomNav=(component BottomNav layout=this.context)
           Main=(component Main layout=this.context)
           MenuToggle=(component MenuToggle layout=this.context)
