@@ -1,7 +1,10 @@
 import { tv } from '../tw';
 
 const popover = tv({
-  base: 'bg-surface-input rounded-xl border border-neutral-subtle',
+  // `max-w` keeps a popover that is wider than a phone -- `lg`/`xl`, or
+  // `trigger` on a full-width trigger -- an inset card with a gutter on each
+  // side, instead of running edge to edge. Narrower sizes are unaffected.
+  base: 'bg-surface-input rounded-xl border border-neutral-subtle max-w-[calc(100vw-2rem)]',
   variants: {
     size: {
       sm: 'w-40',

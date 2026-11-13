@@ -51,6 +51,8 @@ interface PopoverSignature {
     /**
      * Options for the floating-ui shift middleware, which nudges the content
      * along its axis to keep it in view.
+     *
+     * @defaultValue { padding: 16 }
      */
     shiftOptions?: VelcroSignature['Args']['Named']['shiftOptions'];
 
@@ -149,6 +151,15 @@ interface PopoverSignature {
     ];
   };
 }
+
+/**
+ * Default `shiftOptions`: keeps the content a gutter away from the viewport
+ * edge, so a popover that is as wide as the screen reads as an inset card
+ * rather than running edge to edge. A module-level constant, not an inline
+ * object, so `Velcro` sees the same identity across re-renders and doesn't
+ * retrigger positioning (see the note on `middleware` below).
+ */
+const DEFAULT_SHIFT_OPTIONS = { padding: 16 };
 
 class Popover extends Component<PopoverSignature> {
   /**
@@ -638,7 +649,7 @@ class Popover extends Component<PopoverSignature> {
       @offsetOptions={{if @offsetOptions @offsetOptions 5}}
       @flipOptions={{@flipOptions}}
       @middleware={{this.middleware}}
-      @shiftOptions={{@shiftOptions}}
+      @shiftOptions={{if @shiftOptions @shiftOptions DEFAULT_SHIFT_OPTIONS}}
       as |velcro|
     >
       {{yield

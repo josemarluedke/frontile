@@ -272,6 +272,18 @@ const sizes = ['sm', 'md', 'lg', 'xl'];
 </template>
 ```
 
+### On small screens
+
+Content never grows wider than the viewport minus a 1rem gutter on each side
+(`max-w-[calc(100vw-2rem)]`), whatever the `@size`, and the popover keeps that
+gutter from the screen edge when it is positioned. A wide popover or a
+`@size='trigger'` popover on a full-width trigger therefore renders as an inset
+card on a phone, not edge to edge. Sizes that already fit are unchanged.
+
+Override the width with a Tailwind class on `Content` (for example
+`@class='max-w-none'`) and the gutter on the edge with `@shiftOptions`
+(`{ padding: 0 }`).
+
 ### Matching a different element's width
 
 `@size='trigger'` sizes the content from `--trigger-width`, which is the width of

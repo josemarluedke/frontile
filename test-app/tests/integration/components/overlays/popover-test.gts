@@ -15,7 +15,7 @@ import { tv } from 'tailwind-variants';
 import { Popover } from 'frontile/overlays';
 import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
-import { useCustomStyles } from '../../../helpers/scoped-styles';
+import { useCustomStyles, useRealStyles } from '../../../helpers/scoped-styles';
 
 /**
  * `Popover` measures width inside a `requestAnimationFrame`, which does not
@@ -1481,5 +1481,157 @@ module(
 
       assert.dom('[data-test-id="content"] [data-part="arrow"]').doesNotExist();
     });
+  }
+);
+
+module(
+  'Integration | Component | Popover mobile inset | @frontile/overlays',
+  function (hooks) {
+    setupRenderingTest(hooks);
+    useRealStyles(hooks, ['popover', 'overlay', 'backdrop']);
+
+    // The inset the popover keeps from each viewport edge, in px.
+    const GUTTER = 16;
+
+    test('content wider than the viewport is capped to the viewport minus a gutter on each side', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content" @size="auto">
+              <div style="width: 5000px">Wide content</div>
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      const content = find('[data-test-id="content"]') as HTMLElement;
+
+      assert.strictEqual(
+        content.offsetWidth,
+        document.documentElement.clientWidth - GUTTER * 2
+      );
+    });
+
+    for (const [size, width] of [
+      ['sm', 160],
+      ['md', 256],
+      ['lg', 384],
+      ['xl', 544]
+    ] as const) {
+      test(`@size="${size}" keeps its ${width}px width when the viewport has room`, async function (assert) {
+        // Skip on a runner window too narrow to hold the popover plus gutters.
+        if (document.documentElement.clientWidth < width + GUTTER * 2) {
+          assert.expect(0);
+          return;
+        }
+
+        await render(
+          <template>
+            <Popover as |p|>
+              <button
+                data-test-id="trigger"
+                type="button"
+                {{p.trigger}}
+                {{p.anchor}}
+              >
+                Trigger
+              </button>
+              <p.Content data-test-id="content" @size={{size}}>
+                Content
+              </p.Content>
+            </Popover>
+          </template>
+        );
+
+        await click('[data-test-id="trigger"]');
+
+        assert.strictEqual(
+          (find('[data-test-id="content"]') as HTMLElement).offsetWidth,
+          width
+        );
+      });
+    }
+
+    // QUnit docks the test container in a 640px panel and scales it to 50%,
+    // so a rect inside it is not a viewport coordinate. Pin it to the whole
+    // viewport at 1:1 for the positioning tests.
+    const containerIds = ['ember-testing-container', 'ember-testing'];
+    const pinned =
+      'position: fixed; inset: 0; width: 100%; height: 100%; transform: none; overflow: visible; z-index: 0';
+
+    const savedStyles = new Map<string, string | null>();
+
+    hooks.beforeEach(function () {
+      for (const id of containerIds) {
+        const el = document.getElementById(id)!;
+        savedStyles.set(id, el.getAttribute('style'));
+        el.style.cssText = pinned;
+      }
+    });
+
+    hooks.afterEach(function () {
+      for (const [id, saved] of savedStyles) {
+        const el = document.getElementById(id)!;
+        if (saved === null) {
+          el.removeAttribute('style');
+        } else {
+          el.setAttribute('style', saved);
+        }
+      }
+      savedStyles.clear();
+    });
+
+    for (const [side, placement, triggerClass] of [
+      ['left', 'bottom-start', 'mr-auto'],
+      ['right', 'bottom-end', 'ml-auto']
+    ] as const) {
+      test(`content keeps a gutter from the ${side} viewport edge when its trigger sits against it`, async function (assert) {
+        await render(
+          <template>
+            <div style="display: flex; width: 100%">
+              <Popover @placement={{placement}} as |p|>
+                <button
+                  class={{triggerClass}}
+                  data-test-id="trigger"
+                  type="button"
+                  {{p.trigger}}
+                  {{p.anchor}}
+                >
+                  Trigger
+                </button>
+                <p.Content data-test-id="content" @size="auto">
+                  <div style="width: 5000px">Wide content</div>
+                </p.Content>
+              </Popover>
+            </div>
+          </template>
+        );
+
+        await click('[data-test-id="trigger"]');
+
+        const content = find('[data-test-id="content"]') as HTMLElement;
+        const rect = content.getBoundingClientRect();
+        const viewport = document.documentElement.clientWidth;
+
+        assert.true(
+          rect.left >= GUTTER - 0.5,
+          `left edge ${rect.left}px is at least ${GUTTER}px in`
+        );
+        assert.true(
+          rect.right <= viewport - GUTTER + 0.5,
+          `right edge ${rect.right}px is at least ${GUTTER}px from ${viewport}px`
+        );
+      });
+    }
   }
 );
