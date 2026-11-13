@@ -21,6 +21,7 @@ import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import { trackDeprecations } from '../../../helpers/deprecations';
 import { realStyles } from '../../../helpers/real-theme-styles';
+import { keylessKeydown } from '../../../helpers/keyless-keydown';
 
 /**
  * Press a key the way a browser does.
@@ -464,6 +465,29 @@ module(
           'should have selected crocodile due to two keydown'
         );
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
+    });
+
+    test('a keydown without a key does not type ahead', async function (assert) {
+      const animals = ['cheetah', 'crocodile', 'elephant'];
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="none"
+            @items={{animals}}
+          />
+        </template>
+      );
+
+      // Chrome sends one when a browser autofill suggestion is picked.
+      await keylessKeydown(find('[data-component="listbox"]')!);
+      assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
+
+      await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'E');
+      assert
+        .dom('[data-key="elephant"]')
+        .hasAttribute('data-active', 'true', 'type-ahead still works');
     });
 
     test('an immediate Enter after type-ahead selects the matched item', async function (assert) {

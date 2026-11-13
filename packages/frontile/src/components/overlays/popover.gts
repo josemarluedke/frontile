@@ -14,6 +14,7 @@ import type { ModifierLike } from '@glint/template';
 import type { WithBoundArgs } from '@glint/template';
 import type { Signature as VelcroSignature } from 'ember-velcro/modifiers/velcro';
 import type { MiddlewareArguments } from '@floating-ui/dom';
+import { hasKey } from '../../utils/keyboard-event';
 
 interface PopoverSignature {
   Args: {
@@ -448,6 +449,8 @@ class Popover extends Component<PopoverSignature> {
       };
 
       const onKeydown = (event: KeyboardEvent) => {
+        if (!hasKey(event)) return;
+
         if (this.isOpen && event.key === 'Escape') {
           this.close();
           event.stopPropagation();

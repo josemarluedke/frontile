@@ -10,6 +10,7 @@ import {
   type SelectionMode,
   type ListItem
 } from '../../../utils/listManager';
+import { hasKey } from '../../../utils/keyboard-event';
 import { ListboxItem, type ListboxItemSignature } from './item';
 import { ListboxGroup, type ListboxGroupSignature } from './group';
 import { modifier } from 'ember-modifier';
@@ -158,7 +159,12 @@ const hasCommandModifier = (event: KeyboardEvent): boolean => {
  * composition belong to the input method, not to type-ahead.
  */
 const isTypeAheadKey = (event: KeyboardEvent): boolean => {
-  return event.key.length === 1 && !event.repeat && !event.isComposing;
+  return (
+    hasKey(event) &&
+    event.key.length === 1 &&
+    !event.repeat &&
+    !event.isComposing
+  );
 };
 
 class Listbox<T = unknown> extends Component<ListboxSignature<T>> {

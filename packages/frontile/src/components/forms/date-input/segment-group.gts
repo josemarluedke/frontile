@@ -13,6 +13,7 @@ import {
   displaySegment
 } from './segments';
 import { parsePasted, formatForClipboard, splitRange } from './clipboard';
+import { hasKey } from '../../../utils/keyboard-event';
 import type {
   Part,
   Segment,
@@ -209,6 +210,7 @@ class SegmentGroup extends Component<SegmentGroupSignature> {
   }
 
   handleKeyDown = (index: number, event: KeyboardEvent): void => {
+    if (!hasKey(event)) return;
     const part = this.args.parts[index];
     if (!part || !isSegment(part)) return;
 
