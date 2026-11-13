@@ -934,6 +934,64 @@ module(
       }
     }
 
+    // Reads a color as [r, g, b] through a 1px canvas.
+    function rgb(color: string): [number, number, number] {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 1;
+      const ctx = canvas.getContext('2d')!;
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, 1, 1);
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+      return [r!, g!, b!];
+    }
+
+    for (const variant of ['inset', 'attached'] as const) {
+      test(`in dark the frame is a warm near-black, not black (${variant})`, async function (assert) {
+        await render(
+          <template>
+            <div class="dark">
+              <AppLayout @variant={{variant}} as |layout|>
+                <layout.Sidebar as |sidebar|>
+                  <sidebar.Body>Items</sidebar.Body>
+                </layout.Sidebar>
+                <layout.Main>Content</layout.Main>
+              </AppLayout>
+            </div>
+          </template>
+        );
+
+        const frame = getComputedStyle(
+          find(
+            variant === 'inset'
+              ? '[data-component="app-layout"]'
+              : '[data-part="sidebar"]'
+          )!
+        ).backgroundColor;
+        const [r, g, b] = rgb(frame);
+
+        assert.notDeepEqual([r, g, b], [0, 0, 0], `${frame} is not black`);
+        assert.true(r > b, `${frame} leans warm`);
+      });
+    }
+
+    test('in dark the inset card is the warm canvas, not the card veil', async function (assert) {
+      await render(
+        <template>
+          <div class="dark">
+            <span id="canvas-probe" class="bg-surface-canvas"></span>
+            <AppLayout as |layout|>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </div>
+        </template>
+      );
+
+      assert.strictEqual(
+        getComputedStyle(find('[data-part="main-card"]')!).backgroundColor,
+        getComputedStyle(find('#canvas-probe')!).backgroundColor
+      );
+    });
+
     test('in frame placement the navbar row is the top gutter', async function (assert) {
       await render(
         <template>
@@ -1044,6 +1102,80 @@ module(
         assert.dom('[data-part="main-card"]').hasClass('bg-surface-app/50');
       });
     }
+
+    for (const [scheme, level] of [
+      ['light', 'muted'],
+      ['dark', 'subtle']
+    ] as const) {
+      test(`a neutral gradient fades a warm grey to nothing (${scheme})`, async function (assert) {
+        await render(
+          <template>
+            <div class={{scheme}}>
+              <AppLayout @frameGradient={{true}} as |layout|>
+                <layout.Main>Content</layout.Main>
+              </AppLayout>
+            </div>
+          </template>
+        );
+
+        const style = getComputedStyle(find('[data-component="app-layout"]')!);
+        assert.strictEqual(
+          style.getPropertyValue('--app-frame-gradient-from').trim(),
+          style.getPropertyValue(`--color-neutral-${level}`).trim(),
+          `the first stop is neutral-${level}`
+        );
+        assert.strictEqual(
+          style.getPropertyValue('--app-frame-gradient-to').trim(),
+          'transparent'
+        );
+      });
+    }
+
+    // The gradient's first color stop, as the browser resolved it.
+    const firstStop = (image: string) =>
+      image.replace(/^linear-gradient\(to (left|right), /, '');
+
+    for (const color of ['neutral', 'primary'] as const) {
+      test(`a ${color} gradient is painted behind the sidebar`, async function (assert) {
+        await render(
+          <template>
+            <div class="dark">
+              <AppLayout @color={{color}} @frameGradient={{true}} as |layout|>
+                <layout.Main>Content</layout.Main>
+              </AppLayout>
+            </div>
+          </template>
+        );
+
+        const image = getComputedStyle(
+          find('[data-component="app-layout"]')!
+        ).backgroundImage;
+        assert.false(
+          /^(transparent|rgba\(0, 0, 0, 0\))/.test(firstStop(image)),
+          `the gradient starts at the edge: ${image}`
+        );
+      });
+    }
+
+    test('in dark the translucent card is the canvas, see-through', async function (assert) {
+      await render(
+        <template>
+          <div class="dark">
+            <AppLayout @frameGradient={{true}} as |layout|>
+              <layout.Main>Content</layout.Main>
+            </AppLayout>
+          </div>
+        </template>
+      );
+
+      const [, , , alpha] = getComputedStyle(find('[data-part="main-card"]')!)
+        .backgroundColor.match(/[\d.]+/g)!
+        .map(Number);
+      assert
+        .dom('[data-part="main-card"]')
+        .hasClass('dark:bg-surface-canvas/70');
+      assert.true(alpha !== undefined && alpha < 1, 'the card is see-through');
+    });
 
     test('a stop override through @classes wins over the default', async function (assert) {
       const classes = { base: '[--app-frame-gradient-to:rgb(255,0,0)]' };
