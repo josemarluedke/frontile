@@ -13,6 +13,7 @@ import {
 } from '@ember/test-helpers';
 import { tv } from 'tailwind-variants';
 import { Popover } from 'frontile/overlays';
+import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
 import { useCustomStyles, useRealStyles } from '../../../helpers/scoped-styles';
@@ -1506,7 +1507,7 @@ module(
               Trigger
             </button>
             <p.Content data-test-id="content" @size="auto">
-              <div style="width: 5000px">Wide content</div>
+              <div class="w-[5000px]">Wide content</div>
             </p.Content>
           </Popover>
         </template>
@@ -1529,9 +1530,13 @@ module(
       ['xl', 544]
     ] as const) {
       test(`@size="${size}" keeps its ${width}px width when the viewport has room`, async function (assert) {
-        // Skip on a runner window too narrow to hold the popover plus gutters.
+        // A runner window too narrow to hold the popover plus gutters can't
+        // show this size at full width; say so rather than passing silently.
         if (document.documentElement.clientWidth < width + GUTTER * 2) {
-          assert.expect(0);
+          assert.true(
+            true,
+            'skipped: the test window is narrower than this size'
+          );
           return;
         }
 
@@ -1565,17 +1570,17 @@ module(
     // QUnit docks the test container in a 640px panel and scales it to 50%,
     // so a rect inside it is not a viewport coordinate. Pin it to the whole
     // viewport at 1:1 for the positioning tests.
-    const containerIds = ['ember-testing-container', 'ember-testing'];
-    const pinned =
+    const CONTAINER_IDS = ['ember-testing-container', 'ember-testing'];
+    const PINNED_CONTAINER_STYLE =
       'position: fixed; inset: 0; width: 100%; height: 100%; transform: none; overflow: visible; z-index: 0';
 
     const savedStyles = new Map<string, string | null>();
 
     hooks.beforeEach(function () {
-      for (const id of containerIds) {
+      for (const id of CONTAINER_IDS) {
         const el = document.getElementById(id)!;
         savedStyles.set(id, el.getAttribute('style'));
-        el.style.cssText = pinned;
+        el.style.cssText = PINNED_CONTAINER_STYLE;
       }
     });
 
@@ -1598,7 +1603,7 @@ module(
       test(`content keeps a gutter from the ${side} viewport edge when its trigger sits against it`, async function (assert) {
         await render(
           <template>
-            <div style="display: flex; width: 100%">
+            <div class="flex w-full">
               <Popover @placement={{placement}} as |p|>
                 <button
                   class={{triggerClass}}
@@ -1610,7 +1615,7 @@ module(
                   Trigger
                 </button>
                 <p.Content data-test-id="content" @size="auto">
-                  <div style="width: 5000px">Wide content</div>
+                  <div class="w-[5000px]">Wide content</div>
                 </p.Content>
               </Popover>
             </div>
@@ -1633,5 +1638,104 @@ module(
         );
       });
     }
+
+    test('content taller than the viewport stays inside it and scrolls', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content" @size="md">
+              <div class="h-[5000px]">Tall content</div>
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      const content = find('[data-test-id="content"]') as HTMLElement;
+      const rect = content.getBoundingClientRect();
+
+      assert.true(rect.top >= 0, `top edge ${rect.top}px is in the viewport`);
+      assert.true(
+        rect.bottom <= document.documentElement.clientHeight - GUTTER + 0.5,
+        `bottom edge ${rect.bottom}px is at least ${GUTTER}px above the viewport bottom`
+      );
+      assert.true(
+        content.scrollHeight > content.clientHeight,
+        'the overflow scrolls inside the popover'
+      );
+    });
+
+    test('content has rounded corners on all four sides', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content" @size="md">Content</p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      const style = getComputedStyle(
+        find('[data-test-id="content"]') as HTMLElement
+      );
+
+      for (const corner of [
+        style.borderTopLeftRadius,
+        style.borderTopRightRadius,
+        style.borderBottomLeftRadius,
+        style.borderBottomRightRadius
+      ]) {
+        assert.notStrictEqual(corner, '0px');
+      }
+    });
+
+    test('@shiftOptions overrides the default gutter', async function (assert) {
+      await render(
+        <template>
+          <div class="flex w-full">
+            <Popover @shiftOptions={{hash padding=0}} as |p|>
+              <button
+                class="mr-auto"
+                data-test-id="trigger"
+                type="button"
+                {{p.trigger}}
+                {{p.anchor}}
+              >
+                Trigger
+              </button>
+              <p.Content data-test-id="content" @size="md">Content</p.Content>
+            </Popover>
+          </div>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      assert.strictEqual(
+        (
+          find('[data-test-id="content"]') as HTMLElement
+        ).getBoundingClientRect().left,
+        0,
+        'with no padding the content sits against the viewport edge'
+      );
+    });
   }
 );

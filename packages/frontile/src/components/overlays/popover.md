@@ -274,15 +274,15 @@ const sizes = ['sm', 'md', 'lg', 'xl'];
 
 ### On small screens
 
-Content never grows wider than the viewport minus a 1rem gutter on each side
-(`max-w-[calc(100vw-2rem)]`), whatever the `@size`, and the popover keeps that
-gutter from the screen edge when it is positioned. A wide popover or a
-`@size='trigger'` popover on a full-width trigger therefore renders as an inset
-card on a phone, not edge to edge. Sizes that already fit are unchanged.
+Content stays inside the viewport with a 16px gutter on every side. A popover
+that is wider than the screen shrinks to fit, so a `@size='xl'` popover or a
+`@size='trigger'` popover on a full-width trigger is an inset card on a phone.
+Content taller than the space left scrolls inside the popover. Popovers that
+already fit are unaffected.
 
-Override the width with a Tailwind class on `Content` (for example
-`@class='max-w-none'`) and the gutter on the edge with `@shiftOptions`
-(`{ padding: 0 }`).
+Pass `@shiftOptions` to change the gutter from the screen edge, for example
+`@shiftOptions={{hash padding=0}}` to let the content touch it. A `max-h-*` or
+`max-w-*` class on `Content` replaces the default cap.
 
 ### Matching a different element's width
 

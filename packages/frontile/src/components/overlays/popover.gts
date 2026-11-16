@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { Overlay, type OverlaySignature } from './overlay';
 import { tracked, cached } from '@glimmer/tracking';
 import { Velcro } from 'ember-velcro';
-import { arrow as arrowMiddleware } from '@floating-ui/dom';
+import { arrow as arrowMiddleware, size } from '@floating-ui/dom';
 import { assert } from '@ember/debug';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
@@ -153,13 +153,40 @@ interface PopoverSignature {
 }
 
 /**
+ * The inset, in px, a popover keeps from the edge of the viewport. Used by the
+ * default `shiftOptions` and the `size` middleware below, so the gutter is one
+ * number.
+ */
+const VIEWPORT_GUTTER = 16;
+
+/**
  * Default `shiftOptions`: keeps the content a gutter away from the viewport
  * edge, so a popover that is as wide as the screen reads as an inset card
  * rather than running edge to edge. A module-level constant, not an inline
  * object, so `Velcro` sees the same identity across re-renders and doesn't
  * retrigger positioning (see the note on `middleware` below).
  */
-const DEFAULT_SHIFT_OPTIONS = { padding: 16 };
+const DEFAULT_SHIFT_OPTIONS = { padding: VIEWPORT_GUTTER };
+
+/**
+ * Publishes the room the content has -- the viewport minus the gutter, on the
+ * side it was placed -- as `--popover-available-width` and
+ * `--popover-available-height`, which the `popover` theme turns into
+ * `max-width` / `max-height`. Custom properties rather than inline
+ * `max-*` so a `max-h-*` class from the consumer still wins, and measured by
+ * floating-ui rather than written as `100vw`, which counts a classic
+ * scrollbar the content can't use. Module-level for the same identity reason
+ * as `DEFAULT_SHIFT_OPTIONS`.
+ */
+const availableSpace = size({
+  padding: VIEWPORT_GUTTER,
+  apply({ availableWidth, availableHeight, elements }) {
+    const style = elements.floating.style;
+
+    style.setProperty('--popover-available-width', `${availableWidth}px`);
+    style.setProperty('--popover-available-height', `${availableHeight}px`);
+  }
+});
 
 class Popover extends Component<PopoverSignature> {
   /**
@@ -227,13 +254,14 @@ class Popover extends Component<PopoverSignature> {
     const consumer = this.args.middleware ?? [];
 
     if (!this.arrowEl) {
-      return this.args.middleware;
+      return [...consumer, availableSpace];
     }
 
     // `padding` keeps the arrow off the content's rounded corners, where it
     // would poke out past the radius.
     return [
       ...consumer,
+      availableSpace,
       arrowMiddleware({ element: this.arrowEl, padding: 4 })
     ];
   }
