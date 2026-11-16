@@ -68,12 +68,12 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@standard-schema/spec": "^1.1.0",
     "babel-plugin-ember-template-compilation": "^4.0.1",
-    "concurrently": "^10.0.6",
+    "concurrently": "^10.0.7",
     "decorator-transforms": "^2.4.0",
     "ember-source": "^7.3.0",
     "rollup": "^4.64.5",
     "rollup-plugin-copy": "^3.5.0",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^4.3.5",
     "typescript": "^6.0.3"
   },
   "peerDependencies": {
