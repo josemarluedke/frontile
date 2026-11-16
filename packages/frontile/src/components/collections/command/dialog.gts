@@ -4,6 +4,7 @@ import { useStyles } from '@frontile/theme';
 import { Overlay } from '../../overlays/overlay';
 import { Command, type CommandSignature } from './command';
 import { resolveKbdPlatform } from '../../../utils/keys';
+import { hasKey } from '../../../utils/keyboard-event';
 import type { OverlaySignature } from '../../overlays/overlay';
 
 /**
@@ -24,7 +25,7 @@ function isApplePlatform(): boolean {
 function matchesShortcut(event: KeyboardEvent, shortcut: string): boolean {
   const parts = shortcut.toLowerCase().split('+');
 
-  if (event.key.toLowerCase() !== parts[parts.length - 1]) {
+  if (!hasKey(event) || event.key.toLowerCase() !== parts[parts.length - 1]) {
     return false;
   }
 

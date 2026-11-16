@@ -3,6 +3,7 @@ import { focusVisibleRing } from './shared';
 import {
   layoutColor,
   frameGradientStops,
+  neutralFrameGradientStops,
   navSolid,
   navTint,
   tintedColors
@@ -159,6 +160,13 @@ const iconButton = [
   'hover:text-(--nav-item-hover-fg,var(--color-neutral-strong))'
 ];
 
+// The frame's ground in dark mode: a warm near-black, `neutral-subtle` at 30%
+// over `surface-app` (black), rather than black itself. Near enough to black
+// that the `canvas` content stays the lit surface, warm enough that the shell
+// keeps the palette's tone. Written out: Tailwind only finds whole strings.
+const darkFrame =
+  'dark:bg-[color-mix(in_oklab,var(--color-neutral-subtle)_30%,var(--color-surface-app))]';
+
 type LayoutColorName = keyof typeof layoutColor;
 
 // One variant entry per layout color, from the literal classes in
@@ -197,9 +205,9 @@ const appLayout = tv({
       'relative grid w-full text-on-surface-app',
       'grid-cols-[auto_minmax(0,1fr)_auto]',
       '[--app-navbar-height:3rem]',
-      // The frame's gradient, painted over the variant's `bg-surface-*`
-      // color. Its two stop colors are properties (set per `frameGradient`
-      // below), so an app can swap a stop without rewriting the gradient:
+      // The frame's gradient, painted over the variant's own background
+      // color. Its two stop colors are properties (set per color when
+      // `frameGradient` is on, below), so an app can swap a stop without rewriting the gradient:
       // `@classes={{hash base='[--app-frame-gradient-from:...]'}}`.
       // `--app-frame-gradient` itself takes any `<image>`, or `none`. The tint
       // holds at full strength across the sidebar and fades across the content,
@@ -354,16 +362,17 @@ const appLayout = tv({
     variant: {
       // The tinted frame shows through a gutter around the card. The content
       // is the lit surface in both schemes: on a `canvas` frame in light, and
-      // in dark, where `app` is black, a `card` veil (white at 7%) on an `app`
-      // frame.
+      // in dark, `canvas` content on a near-black frame (`darkFrame`).
+      // `canvas`, not the `card` veil: the veil is white at 7%, a cool grey
+      // that drops the palette's warmth from the whole content area.
       inset: {
-        base: 'bg-surface-canvas p-3 dark:bg-surface-app',
+        base: ['bg-surface-canvas p-3', darkFrame],
         // 0.375rem of clip room clears the 5px focus ring, which the
         // scrolling body would otherwise clip at its edge. The ground and
         // gutter depend on the sidebar's surface (see the compound variants).
         sidebar: '[--sidebar-clip:0.375rem]',
         mainCard:
-          'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted dark:bg-surface-card',
+          'rounded-xl bg-surface-app shadow-sm ring-1 ring-neutral-muted dark:bg-surface-canvas',
         aside: 'border-s border-neutral-muted',
         // The bottom bar runs edge to edge: it pulls out over the frame's
         // side and bottom gutter (`p-3`).
@@ -472,23 +481,24 @@ const appLayout = tv({
       solid: {}
     },
 
-    // The frame's gradient: a left-to-right tint of the layout's color fading to a neutral grey,
-    // both at a low alpha, over the variant's own surface (black in dark
-    // mode). Both stops are theme colors, so none of it is hard-coded.
+    // The frame's gradient, painted over the variant's own surface. Off, the
+    // frame is flat. The stops depend on the color (compound variants below):
+    // a low-alpha tint of the layout color fading to a neutral grey, or, for
+    // neutral, a warm grey fading to nothing. Both are theme colors, so none
+    // of it is hard-coded.
     frameGradient: {
-      true: { base: frameGradientStops },
+      true: {},
       false: { base: '[--app-frame-gradient:none]' }
     },
 
     // `translucent` lets the frame (and its gradient) show through the inset
-    // card: the app surface at 50%, which is black at 50% in dark mode (the
-    // design's card) and white at 50% in light. `solid` keeps the opaque
-    // surface. The dark class is repeated because the variant's own `dark:`
-    // background would otherwise win.
+    // card: white at 50% in light, and the warm `canvas` at 70% in dark, so
+    // the card keeps the solid card's tone over the gradient. `solid` keeps
+    // the opaque surface.
     cardSurface: {
       solid: {},
       translucent: {
-        mainCard: 'bg-surface-app/50 dark:bg-surface-app/50'
+        mainCard: 'bg-surface-app/50 dark:bg-surface-canvas/70'
       }
     },
 
@@ -601,8 +611,7 @@ const appLayout = tv({
       variant: 'attached',
       standalone: false,
       class: {
-        sidebar:
-          'border-e border-neutral-muted bg-surface-canvas dark:bg-surface-app'
+        sidebar: ['border-e border-neutral-muted bg-surface-canvas', darkFrame]
       }
     },
     {
@@ -700,6 +709,17 @@ const appLayout = tv({
       variant: 'inset',
       sidebarSurface: 'plain',
       class: { sidebar: 'bg-transparent [--sidebar-gutter:0px]' }
+    },
+    // The frame gradient's stops (see `nav-color.ts`).
+    {
+      color: tintedColors,
+      frameGradient: true,
+      class: { base: frameGradientStops }
+    },
+    {
+      color: 'neutral',
+      frameGradient: true,
+      class: { base: neutralFrameGradientStops }
     },
     // Color. Last, so the solid fill wins over the attached variant's
     // backgrounds and border.

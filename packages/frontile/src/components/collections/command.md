@@ -426,6 +426,152 @@ const commands = [
 </template>
 ```
 
+## In a popover
+
+A searchable picker anchored to a button — an account or address switcher, say — is an inline
+`Command` inside a `Popover`. Not a `Dropdown`: a dropdown is a `role="menu"` of actions, with
+no search field and no selected state, whereas this is the combobox pattern `Command` already
+implements.
+
+Two things the `Popover` needs, or typing never reaches the search field:
+
+- `@disableFocusTrap={{false}}` — a popover skips the focus trap by default, and in that case
+  it focuses its own content box once it opens.
+- `@focusTrapOptions={{hash initialFocus='#address-switcher [role=combobox]'}}` — with the trap on, this sends
+  focus to the input instead. A string is looked up in the whole document, not inside the
+  popover, so scope it to the content (here by `id`) — a bare `[role=combobox]` finds the
+  first combobox on the page. Focus returns to the trigger when the popover closes.
+
+`Command` has no selected-state concept, so mark the current row yourself in `:end`. A header
+and a footer are plain markup before and after the `Command`; a footer action is a button that
+Tab reaches after the list rather than part of the arrow-key navigation.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { fn, hash } from '@ember/helper';
+import { on } from '@ember/modifier';
+import { Button, Command, Popover } from 'frontile';
+
+interface Address {
+  key: string;
+  name: string;
+  street: string;
+  services: string;
+  building: string;
+}
+
+const addresses: Address[] = [
+  {
+    key: 'studio',
+    name: 'Studio',
+    street: '301 S Tejon St, Colorado Springs, CO 80903',
+    services: 'Internet · Phone',
+    building: 'Tejon Building'
+  },
+  {
+    key: 'shop',
+    name: 'Shop',
+    street: '305 S Tejon St, Colorado Springs, CO 80903',
+    services: 'Internet',
+    building: 'Tejon Building'
+  },
+  {
+    key: 'office',
+    name: 'Office',
+    street: '18 N Cascade Ave, Colorado Springs, CO 80903',
+    services: 'Internet · WiFi',
+    building: 'Cascade Plaza'
+  },
+  {
+    key: 'warehouse',
+    name: 'Warehouse',
+    street: '4410 Austin Bluffs Pkwy, Colorado Springs, CO 80918',
+    services: 'Internet',
+    building: 'Cascade Plaza'
+  }
+];
+
+const eq = (a: unknown, b: unknown) => a === b;
+
+export default class AddressSwitcher extends Component {
+  @tracked selected = 'studio';
+
+  searchFields = (item: Address) => [item.name, item.street, item.building];
+
+  select = (close: () => void, key: string) => {
+    this.selected = key;
+    close();
+  };
+
+  get selectedName() {
+    return addresses.find((a) => a.key === this.selected)?.name;
+  }
+
+  <template>
+    <Popover @placement='bottom-start' as |p|>
+      <Button {{p.trigger}} {{p.anchor}}>
+        {{this.selectedName}}
+      </Button>
+
+      <p.Content
+        id='address-switcher'
+        @size='xl'
+        @class='p-0'
+        @disableFocusTrap={{false}}
+        @focusTrapOptions={{hash initialFocus='#address-switcher [role=combobox]'}}
+      >
+        <div class='flex items-baseline justify-between px-4 pt-4 pb-2'>
+          <h2 class='font-semibold'>Your addresses</h2>
+          <span class='text-sm text-neutral'>{{addresses.length}} total</span>
+        </div>
+
+        <Command
+          @items={{addresses}}
+          @groupBy='building'
+          @searchFields={{this.searchFields}}
+          @placeholder='Search name or address'
+          @label='Search addresses'
+          @onSelect={{fn this.select p.close}}
+          as |c|
+        >
+          <c.Input />
+          <c.List>
+            <:item as |ctx|>
+              <ctx.Item @key={{ctx.key}}>
+                <:default>
+                  <span class='block font-semibold'>{{ctx.item.name}}</span>
+                  <span class='block text-sm'>{{ctx.item.street}}</span>
+                  <span
+                    class='block text-sm text-neutral'
+                  >{{ctx.item.services}}</span>
+                </:default>
+                <:end>
+                  {{#if (eq ctx.key this.selected)}}✓{{/if}}
+                </:end>
+              </ctx.Item>
+            </:item>
+            <:empty>No addresses match.</:empty>
+          </c.List>
+        </Command>
+
+        <div class='border-t border-neutral-subtle p-2'>
+          <button
+            type='button'
+            class='w-full rounded-lg p-2 text-left hover:bg-neutral-subtle'
+            {{on 'click' p.close}}
+          >
+            <span class='block font-semibold'>Add an address</span>
+            <span class='block text-sm text-neutral'>Check for fiber, or shop
+              services that work anywhere</span>
+          </button>
+        </div>
+      </p.Content>
+    </Popover>
+  </template>
+}
+```
+
 ## Async search
 
 Pass `@onSearch` to fetch results instead of filtering `@items`. It is debounced, and stale

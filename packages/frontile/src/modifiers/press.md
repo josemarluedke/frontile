@@ -98,6 +98,13 @@ export default class PressExample extends Component {
   any handler to let it through. Only events on the pressed element itself are
   stopped - a release that happens outside of the element is left untouched, so
   other listeners on the page (including document-level ones) still receive it.
+- **Unmounting on press**: `onPress` runs on `pointerup`, before the browser sends
+  a touch or pen tap's follow-up `mousedown`, `mouseup` and `click`. If your handler
+  removes or hides the pressed element, those events would otherwise land on whatever
+  is underneath it. The modifier drops any of them that no longer reach the pressed
+  element, until that tap's `click` or the next `pointerdown`. Elements that stay
+  in place still receive their own `click`, and mouse and keyboard presses are
+  unaffected.
 
 > **Note:** `preventDefault()` on the keyboard event does not stop it propagating. An
 > ancestor `keydown` handler that also treats Enter or Space as activation will act on the

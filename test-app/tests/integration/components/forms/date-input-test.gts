@@ -14,6 +14,7 @@ import { hash } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { DateInput, DatePicker, Form } from 'frontile';
 import { fillDate } from 'frontile/test-support';
+import { keylessKeydown } from '../../../helpers/keyless-keydown';
 
 /** The segments, in document order. */
 function segments(): HTMLElement[] {
@@ -234,6 +235,20 @@ module(
       assert.strictEqual(document.activeElement, segment('year'));
 
       await triggerKeyEvent(segment('year'), 'keydown', 'Home');
+      assert.strictEqual(document.activeElement, segment('month'));
+    });
+
+    test('a keydown without a key leaves the segment alone', async function (assert) {
+      await render(
+        <template><DateInput @label="Start date" @locale="en-US" /></template>
+      );
+
+      await focus(segment('month'));
+      const before = segment('month').textContent;
+      // Chrome sends one when a browser autofill suggestion is picked.
+      await keylessKeydown(segment('month'));
+
+      assert.strictEqual(segment('month').textContent, before);
       assert.strictEqual(document.activeElement, segment('month'));
     });
 
