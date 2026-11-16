@@ -361,12 +361,14 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 
 `@frameGradient` adds a faint left-to-right tint of `@color` to the frame,
 strongest behind the sidebar and fading to a neutral grey across the content.
-It is off by default.
+It is off by default. With `neutral` it is a warm grey fading to nothing:
+`neutral-muted` in light mode, `neutral-subtle` in dark.
 
-The tint sits over the variant's `surface-app` or `surface-canvas` (black in
-dark mode). With a gradient the inset card defaults to `translucent`, so the
-tint shows through it, as black at 50% in dark mode. A flat frame keeps the
-card opaque. Set `@cardSurface` to override either.
+The tint sits over the frame's own ground: `surface-canvas` in light, and in
+dark a warm near-black (`neutral-subtle` at 30% over `surface-app`). Turning
+the gradient on changes nothing else about the sidebar. With a gradient the
+inset card defaults to `translucent`, so the tint shows through it. A flat
+frame keeps the card opaque. Set `@cardSurface` to override either.
 
 The two stops are the `--app-frame-gradient-from` and `--app-frame-gradient-to`
 custom properties on the layout root. Set them through `@classes` to swap a
@@ -436,7 +438,8 @@ import { ViewIcon, SettingsIcon, SparklesIcon } from 'site/components/icons';
 ```
 
 `@cardSurface` has no effect on `attached`, which has no card. The translucent
-card is `surface-app` at 50%: black at 50% in dark mode, white at 50% in light.
+card is white at 50% in light mode, and `surface-canvas` at 70% in dark, so it
+keeps the solid card's warm tone over the gradient.
 
 ```gts preview
 import { AppLayout } from 'frontile';

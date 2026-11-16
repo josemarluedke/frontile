@@ -90,4 +90,21 @@ const frameGradientStops = [
   '[--app-frame-gradient-to:color-mix(in_oklab,var(--color-neutral-subtle)_16%,transparent)]'
 ];
 
-export { layoutColor, tintedColors, navTint, navSolid, frameGradientStops };
+// Neutral's stops. Not a fraction of the layout color: neutral's is its
+// `bolder` level, near-white in dark mode, which tints the frame a cool grey.
+// The palette's warmth lives in its dark greys, so the gradient fades one of
+// them to nothing: `muted` on the light frame, `subtle` on the dark one. Like
+// a tint, it holds full strength behind the sidebar.
+const neutralFrameGradientStops = [
+  '[--app-frame-gradient-from:var(--color-neutral-muted)] dark:[--app-frame-gradient-from:var(--color-neutral-subtle)]',
+  '[--app-frame-gradient-to:transparent]'
+];
+
+export {
+  layoutColor,
+  tintedColors,
+  navTint,
+  navSolid,
+  frameGradientStops,
+  neutralFrameGradientStops
+};
