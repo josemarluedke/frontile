@@ -59,7 +59,7 @@
     "ember-resolver": "^13.2.0",
     "ember-resources": "7.1.0",
     "ember-source": "~7.4.0",
-    "ember-try": "^4.0.0",
+    "ember-try": "^5.0.0",
     "frontile": "workspace:0.18.10",
     "globals": "^17.14.0",
     "prettier": "^3.10.1",

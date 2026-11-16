@@ -1289,8 +1289,8 @@ importers:
         specifier: ~7.4.0
         version: 7.4.0(@glimmer/component@2.2.1)
       ember-try:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^5.0.0
+        version: 5.0.0
       frontile:
         specifier: workspace:0.18.10
         version: link:../packages/frontile
@@ -5493,9 +5493,9 @@ packages:
     resolution: {integrity: sha512-jAv7fqYJK7QYYekPc/8Nr7KOqDpv/asqM6F8xcRnbmf9UrD35BkSffY63qUuiD9e0aR5qiMNBIQzH8f65rGDqw==}
     engines: {node: 10.* || 12.* || >= 14}
 
-  ember-try@4.0.0:
-    resolution: {integrity: sha512-gWG1k8+hio1rndJXxzIYhayL7ITof3ebkZ7HwFzFDaz3NARb8MjcVloKj1PFCheu8ZbY8iP8QTRPqb+J+N+Izg==}
-    engines: {node: '>= 18'}
+  ember-try@5.0.0:
+    resolution: {integrity: sha512-isJANACInldOtQkyERQllo+EZ4KqsrYjK0bhtHhviQQx4lQZ6XD3xQ54Ud4fo2ENP6vNJtH2+kTuhLbLlnK1Tw==}
+    engines: {node: '>= 22.12.0'}
 
   ember-validators@5.0.0:
     resolution: {integrity: sha512-lvdPxRmHNqVvdG+AGq2b3NOe1etgbfkeYt//NSQZ/Ixmb0EBm3qUNzyyfBk3jlEH0kCcGbBzmGBaxehwUphZYg==}
@@ -5621,8 +5621,8 @@ packages:
     resolution: {integrity: sha512-yPDz7wqpg1/mmHLmS3tcfTfbw5f1eryXvyghYBffGdERwe+mV7ZcWzTR8LR17Kvqt3qfPurjlonmnq3MKXIOXw==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.52.0:
-    resolution: {integrity: sha512-XTNEJQh1tY1ZJVcf6ayP/2n4ZPyaHlW2FWs7xvw5ddPuhUVjLD3olQVQS7kf58JbAB48iL0uL/jerTrjtV3lDA==}
+  es-toolkit@1.53.2:
+    resolution: {integrity: sha512-iUqZ+NlwH4jUgRmXZUxFBsV/9762TQEa1O4IXLFBmDEjVHScBytKuseX23I0+v9ShZ5MYxEx6WKNzm6IPnex8g==}
 
   escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
@@ -15174,24 +15174,25 @@ snapshots:
       lodash: 4.18.1
       package-json: 6.5.0
       remote-git-tags: 3.0.0
-      semver: 7.8.5
+      semver: 7.8.6
     transitivePeerDependencies:
       - encoding
 
-  ember-try@4.0.0:
+  ember-try@5.0.0:
     dependencies:
       chalk: 4.1.2
       cli-table3: 0.6.5
       debug: 4.4.3
       ember-try-config: 4.0.0
-      es-toolkit: 1.52.0
+      es-toolkit: 1.53.2
       execa: 4.1.0
       fs-extra: 6.0.1
-      resolve: 1.22.12
+      resolve: 1.22.14
       rimraf: 3.0.2
-      semver: 7.8.5
+      semver: 7.8.6
       temp-dir: 2.0.0
       walk-sync: 2.2.0
+      yaml: 2.9.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -15376,7 +15377,7 @@ snapshots:
       is-date-object: 1.1.0
       is-symbol: 1.1.1
 
-  es-toolkit@1.52.0: {}
+  es-toolkit@1.53.2: {}
 
   escalade@3.2.0: {}
 
@@ -15938,7 +15939,7 @@ snapshots:
 
   fs-extra@6.0.1:
     dependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.12
       jsonfile: 4.0.0
       universalify: 0.1.2
 
