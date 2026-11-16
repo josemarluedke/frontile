@@ -1,5 +1,5 @@
 import { extendTailwindMerge } from 'tailwind-merge';
-import { createTV } from 'tailwind-variants';
+import { createTV } from 'tailwind-variants/config';
 import type { ClassValue } from 'tailwind-variants';
 export type { VariantProps } from 'tailwind-variants';
 
