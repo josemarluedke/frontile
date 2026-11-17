@@ -79,6 +79,10 @@ interface BadgeSignature {
  * When you pass a named block (`<:startIcon>` or `<:endIcon>`), Glimmer no
  * longer treats loose content as the default block, so put the label in
  * `<:default>`.
+ *
+ * Facet 2.0 content parts map one-to-one onto this API, so there are no extra
+ * slots: `leading` is the default block, `price` is `@value`, `unit` is
+ * `@unit`, `startGlyph` is `<:startIcon>` and `endGlyph` is `<:endIcon>`.
  */
 class Badge extends Component<BadgeSignature> {
   // `!= null` rather than truthiness, so a count of `0` is shown.
