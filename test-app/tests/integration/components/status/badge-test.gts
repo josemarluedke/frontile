@@ -319,5 +319,74 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
     test('md is 28px tall', function (assert) {
       assert.true(realStyles.badge({ size: 'md' }).base().includes('h-7'));
     });
+
+    test('heights map by height to Chip: 20, 24, 28, 32px', function (assert) {
+      const heights = { xs: 'h-5', sm: 'h-6', md: 'h-7', lg: 'h-8' } as const;
+      for (const size of SIZES) {
+        assert.true(
+          realStyles.badge({ size }).base().split(' ').includes(heights[size]),
+          `${size} is ${heights[size]}`
+        );
+      }
+    });
+
+    test('each size has the same height class as Chip at that size', function (assert) {
+      const heightOf = (classes: string) =>
+        classes.split(' ').find((c) => /^h-\d/.test(c));
+      for (const size of SIZES) {
+        const badgeHeight = heightOf(realStyles.badge({ size }).base());
+        const chipHeight = heightOf(realStyles.chip({ size }).base());
+        assert.ok(badgeHeight, `${size} badge has a height class`);
+        assert.strictEqual(
+          badgeHeight,
+          chipHeight,
+          `${size}: badge ${badgeHeight} matches chip ${chipHeight}`
+        );
+      }
+    });
+
+    test('label text uses the Facet 2.0 smaller sizes, picked by height', function (assert) {
+      const text = {
+        xs: 'text-body-4xs',
+        sm: 'text-body-4xs',
+        md: 'text-body-2xs',
+        lg: 'text-body-sm'
+      } as const;
+      for (const size of SIZES) {
+        const classes = realStyles.badge({ size }).base().split(' ');
+        assert.true(classes.includes(text[size]), `${size} is ${text[size]}`);
+        assert.false(
+          classes.some((c) => c.startsWith('text-label-')),
+          `${size} no longer uses a text-label-* size`
+        );
+      }
+    });
+
+    test('label keeps the font-label family and weight', function (assert) {
+      assert.true(
+        realStyles.badge({}).base().split(' ').includes('font-label')
+      );
+    });
+
+    test('value shares the label size and adds no price size', function (assert) {
+      const value = realStyles.badge({ size: 'lg' }).value().split(' ');
+      assert.false(
+        value.some((c) => /^text-(body|label|strong)/.test(c)),
+        'value inherits the label font size'
+      );
+    });
+
+    test('defaults to md soft neutral and offers no 2xs or xl', function (assert) {
+      assert.strictEqual(
+        realStyles.badge({}).base(),
+        realStyles
+          .badge({ size: 'md', variant: 'soft', color: 'neutral' })
+          .base()
+      );
+      const sizes = Object.keys(realStyles.badge.variants.size);
+      assert.deepEqual(sizes, ['xs', 'sm', 'md', 'lg']);
+      const variants = Object.keys(realStyles.badge.variants.variant);
+      assert.deepEqual(variants, ['soft', 'outline']);
+    });
   });
 });

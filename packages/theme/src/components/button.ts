@@ -26,12 +26,12 @@ const baseButton = tv({
       danger: 'focus-visible:ring-danger-soft'
     },
     size: {
-      xs: 'text-strong-sm px-4 py-1 gap-1 rounded-full',
-      sm: 'text-strong-md px-5 py-1.5 gap-1 rounded-full',
-      md: 'text-strong-lg px-6 py-2 gap-1.5 rounded-full',
-      lg: 'text-strong-xl px-8 py-2.5 gap-1.5 rounded-full',
-      xl: 'text-strong-2xl px-10 py-3 gap-2 rounded-full',
-      '2xl': 'text-strong-3xl px-12 py-3.5 gap-2.5 rounded-full'
+      xs: 'text-strong-xs px-3.5 py-0.5 gap-1 rounded-full',
+      sm: 'text-strong-sm px-4 py-1 gap-1 rounded-full',
+      md: 'text-strong-md px-5 py-1.5 gap-1.5 rounded-full',
+      lg: 'text-strong-lg px-6 py-2 gap-1.5 rounded-full',
+      xl: 'text-strong-xl px-8 py-2.5 gap-2 rounded-full',
+      '2xl': 'text-strong-2xl px-10 py-3 gap-2.5 rounded-full'
     },
     isInGroup: {
       true: [
@@ -46,7 +46,7 @@ const baseButton = tv({
       variant: 'outline',
       color: 'neutral',
       class:
-        'text-neutral-bolder border-neutral-bolder hover:bg-neutral-subtle hover:text-neutral-firm/80 hover:border-neutral-strong active:bg-neutral-muted active:text-neutral-firm active:border-neutral-firm'
+        'text-on-neutral-subtle border-on-neutral-subtle hover:bg-neutral-subtle hover:text-neutral-strong hover:border-neutral-strong active:bg-neutral-muted active:text-neutral-firm active:border-neutral-firm'
     },
     {
       variant: 'outline',
@@ -64,7 +64,7 @@ const baseButton = tv({
       variant: 'outline',
       color: 'tertiary',
       class:
-        'text-tertiary-strong border-tertiary-strong hover:text-tertiary-firm hover:border-tertiary-firm active:text-tertiary-bolder active:border-tertiary-bolder'
+        'text-tertiary-strong border-tertiary-strong hover:text-tertiary hover:border-tertiary-firm active:text-tertiary-bolder active:border-tertiary-bolder'
     },
     {
       variant: 'outline',
@@ -114,7 +114,7 @@ const button = tv({
       variant: 'solid',
       color: 'neutral',
       class:
-        'bg-neutral-bolder border-neutral-bolder text-on-neutral-bolder hover:bg-neutral-strong hover:border-neutral-strong hover:text-on-neutral-strong active:bg-neutral-firm active:border-neutral-firm active:text-on-neutral-firm'
+        'bg-on-neutral-subtle border-on-neutral-subtle text-on-neutral-bolder hover:bg-neutral-strong hover:border-neutral-strong hover:text-on-neutral-strong active:bg-neutral-firm active:border-neutral-firm active:text-on-neutral-firm'
     },
     {
       variant: 'solid',
@@ -157,7 +157,7 @@ const button = tv({
       variant: 'subtle',
       color: 'neutral',
       class:
-        'bg-neutral-soft border-neutral-bolder text-neutral-bolder hover:bg-neutral-subtle hover:border-neutral-strong hover:text-neutral-strong active:bg-neutral-muted active:border-neutral-firm active:text-neutral-firm'
+        'bg-neutral-muted border-on-neutral-subtle text-on-neutral-subtle hover:bg-neutral-soft hover:border-neutral-strong hover:text-neutral-strong active:bg-neutral-mild active:border-neutral-firm active:text-on-neutral-mild'
     },
     {
       variant: 'subtle',
@@ -169,13 +169,13 @@ const button = tv({
       variant: 'subtle',
       color: 'secondary',
       class:
-        'bg-secondary-soft border-secondary-strong text-secondary-strong hover:bg-secondary-subtle hover:border-secondary-firm hover:text-secondary-firm active:bg-secondary-muted active:border-secondary-bolder active:text-secondary-bolder'
+        'bg-secondary-soft border-secondary-strong text-secondary-strong hover:bg-secondary-subtle hover:border-secondary-firm hover:text-secondary-firm active:bg-secondary-mild active:border-secondary-bolder active:text-secondary-bolder'
     },
     {
       variant: 'subtle',
       color: 'tertiary',
       class:
-        'bg-tertiary-soft border-tertiary-strong text-tertiary-strong hover:bg-tertiary-subtle hover:border-tertiary-firm hover:text-tertiary-firm active:bg-tertiary-muted active:border-tertiary-bolder active:text-tertiary-bolder'
+        'bg-tertiary-soft border-tertiary-strong text-tertiary-strong hover:bg-tertiary-subtle hover:border-tertiary-firm hover:text-tertiary active:bg-tertiary-muted active:border-tertiary-bolder active:text-tertiary-bolder'
     },
     {
       variant: 'subtle',
@@ -200,7 +200,7 @@ const button = tv({
       variant: 'plain',
       color: 'neutral',
       class:
-        'text-neutral-bolder hover:text-neutral-firm/80 active:text-neutral-firm'
+        'text-on-neutral-subtle hover:text-neutral-strong active:text-neutral-firm'
     },
     {
       variant: 'plain',
@@ -211,13 +211,13 @@ const button = tv({
       variant: 'plain',
       color: 'secondary',
       class:
-        'text-secondary-strong hover:text-secondary-firm active:text-secondary-bolder'
+        'text-secondary-strong hover:text-secondary-firm active:bg-secondary-soft active:border-secondary-soft active:text-secondary-bolder'
     },
     {
       variant: 'plain',
       color: 'tertiary',
       class:
-        'text-tertiary-strong hover:text-tertiary-firm active:text-tertiary-bolder'
+        'text-tertiary-strong hover:text-tertiary active:text-tertiary-bolder'
     },
     {
       variant: 'plain',
@@ -285,7 +285,7 @@ const button = tv({
       variant: 'soft',
       color: 'neutral',
       class:
-        'bg-neutral-soft text-on-neutral-soft hover:bg-neutral-muted hover:text-on-neutral-muted active:bg-neutral-mild active:text-on-neutral-mild'
+        'bg-neutral-muted text-on-neutral-subtle hover:bg-neutral-soft hover:text-neutral-strong active:bg-neutral-mild active:text-on-neutral-mild'
     },
     {
       variant: 'soft',
@@ -297,19 +297,19 @@ const button = tv({
       variant: 'soft',
       color: 'secondary',
       class:
-        'bg-secondary-soft text-on-secondary-soft hover:bg-secondary-muted hover:text-on-secondary-muted active:bg-secondary-mild active:text-on-secondary-mild'
+        'bg-secondary-soft text-on-secondary-soft hover:bg-secondary-subtle hover:text-on-secondary-subtle active:bg-secondary-mild active:text-on-secondary-mild'
     },
     {
       variant: 'soft',
       color: 'tertiary',
       class:
-        'bg-tertiary-soft text-on-tertiary-soft hover:bg-tertiary-muted hover:text-on-tertiary-muted active:bg-tertiary-mild active:text-on-tertiary-mild'
+        'bg-tertiary-soft text-on-tertiary-soft hover:bg-tertiary-subtle hover:text-on-tertiary-subtle active:bg-tertiary-mild active:text-on-tertiary-mild'
     },
     {
       variant: 'soft',
       color: 'success',
       class:
-        'bg-success-soft text-on-success-soft hover:bg-success-muted hover:text-on-success-muted active:bg-success-mild active:text-on-success-mild'
+        'bg-success-soft text-on-success-soft hover:bg-success-subtle hover:text-on-success-subtle active:bg-success-mild active:text-on-success-mild'
     },
     {
       variant: 'soft',

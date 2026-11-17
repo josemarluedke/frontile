@@ -4,7 +4,10 @@ const chip = tv({
   slots: {
     base: [
       'whitespace-nowrap',
-      'inline-flex items-center justify-between box-border rounded-full'
+      'inline-flex items-center justify-between box-border rounded-full',
+      // Regular weight, matching Badge (the `text-label-*` sizes would set
+      // semibold). Heights are set per size below and match Badge's.
+      'font-normal'
     ],
     // label text role (size set per size variant)
     content: ['flex-1 text-inherit font-label'],

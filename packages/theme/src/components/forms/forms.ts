@@ -162,8 +162,10 @@ const input = tv({
   slots: {
     base: '',
     innerContainer: 'relative flex',
-    startContent: 'absolute inset-y-0 left-0 flex items-center',
-    endContent: 'absolute inset-y-0 right-0 flex items-center',
+    startContent:
+      'absolute inset-y-0 left-0 flex items-center text-neutral-soft',
+    endContent:
+      'absolute inset-y-0 right-0 flex items-center text-neutral-soft',
     input: [
       'appearance-none',
       'flex-1',
@@ -620,7 +622,8 @@ const datePicker = tv({
     // names from the variant type, and `isSegmented` below has to target
     // both of these.
     innerContainer: 'relative flex',
-    endContent: 'absolute inset-y-0 right-0 flex items-center',
+    endContent:
+      'absolute inset-y-0 right-0 flex items-center text-neutral-soft',
     // The calendar sits in the popover, which supplies its own surface and
     // padding, so this only reserves room around the grid.
     calendar: 'p-2',
@@ -785,7 +788,7 @@ const dateInput = tv({
     base: [],
     innerContainer: segmentedFieldShell,
     ...segmentRowSlots,
-    endContent: 'flex items-center gap-1 shrink-0',
+    endContent: 'flex items-center gap-1 shrink-0 text-neutral-soft',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     calendarButton: 'pointer-events-auto'
