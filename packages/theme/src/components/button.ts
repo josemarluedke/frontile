@@ -26,12 +26,12 @@ const baseButton = tv({
       danger: 'focus-visible:ring-danger-soft'
     },
     size: {
-      xs: 'text-strong-sm px-4 py-1 gap-1 rounded-full',
-      sm: 'text-strong-md px-5 py-1.5 gap-1 rounded-full',
-      md: 'text-strong-lg px-6 py-2 gap-1.5 rounded-full',
-      lg: 'text-strong-xl px-8 py-2.5 gap-1.5 rounded-full',
-      xl: 'text-strong-2xl px-10 py-3 gap-2 rounded-full',
-      '2xl': 'text-strong-3xl px-12 py-3.5 gap-2.5 rounded-full'
+      xs: 'text-strong-xs px-3.5 py-0.5 gap-1 rounded-full',
+      sm: 'text-strong-sm px-4 py-1 gap-1 rounded-full',
+      md: 'text-strong-md px-5 py-1.5 gap-1.5 rounded-full',
+      lg: 'text-strong-lg px-6 py-2 gap-1.5 rounded-full',
+      xl: 'text-strong-xl px-8 py-2.5 gap-2 rounded-full',
+      '2xl': 'text-strong-2xl px-10 py-3 gap-2.5 rounded-full'
     },
     isInGroup: {
       true: [

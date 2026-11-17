@@ -39,25 +39,27 @@ const badge = tv({
     // Value and unit share the label's font size so their baselines line up;
     // the value is set apart by weight only. Heights match Chip (20, 24, 28,
     // 32px). Radius steps with size and is never a pill: that shape belongs
-    // to Chip.
+    // to Chip. Facet 2.0 sizes map to these by height (spec 24/30/34 -> 20/24/28/32
+    // nearest), so radii are unchanged; only the text steps down, via the
+    // body scale (10.84, 12.34, 14.05px).
     size: {
       xs: {
-        base: 'text-label-2xs h-5 px-1.5 gap-1 rounded-sm',
+        base: 'text-body-4xs h-5 px-1.5 gap-1 rounded-sm',
         dot: 'size-1.5',
         icon: 'size-3'
       },
       sm: {
-        base: 'text-label-2xs h-6 px-2 gap-1 rounded-sm',
+        base: 'text-body-4xs h-6 px-2 gap-1 rounded-sm',
         dot: 'size-1.5',
         icon: 'size-3'
       },
       md: {
-        base: 'text-label-xs h-7 px-2.5 gap-1.5 rounded-md',
+        base: 'text-body-2xs h-7 px-2.5 gap-1.5 rounded-md',
         dot: 'size-2',
         icon: 'size-3.5'
       },
       lg: {
-        base: 'text-label-md h-8 px-3 gap-1.5 rounded-md',
+        base: 'text-body-sm h-8 px-3 gap-1.5 rounded-md',
         dot: 'size-2.5',
         icon: 'size-4'
       }
