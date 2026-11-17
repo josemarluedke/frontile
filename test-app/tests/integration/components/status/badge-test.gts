@@ -330,6 +330,21 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       }
     });
 
+    test('each size has the same height class as Chip at that size', function (assert) {
+      const heightOf = (classes: string) =>
+        classes.split(' ').find((c) => /^h-\d/.test(c));
+      for (const size of SIZES) {
+        const badgeHeight = heightOf(realStyles.badge({ size }).base());
+        const chipHeight = heightOf(realStyles.chip({ size }).base());
+        assert.ok(badgeHeight, `${size} badge has a height class`);
+        assert.strictEqual(
+          badgeHeight,
+          chipHeight,
+          `${size}: badge ${badgeHeight} matches chip ${chipHeight}`
+        );
+      }
+    });
+
     test('label text uses the Facet 2.0 smaller sizes, picked by height', function (assert) {
       const text = {
         xs: 'text-body-4xs',
