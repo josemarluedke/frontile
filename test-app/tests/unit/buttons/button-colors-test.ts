@@ -77,7 +77,7 @@ module('Unit | Theme | Button colors (DSYS-457)', function () {
             'hover:text-neutral-strong',
             'active:bg-neutral-mild',
             'active:border-neutral-firm',
-            'active:text-neutral-firm'
+            'active:text-on-neutral-mild'
           ],
           ['bg-neutral-soft', 'border-neutral-bolder', 'text-neutral-bolder']
         );
@@ -94,7 +94,7 @@ module('Unit | Theme | Button colors (DSYS-457)', function () {
             'hover:bg-neutral-soft',
             'hover:text-neutral-strong',
             'active:bg-neutral-mild',
-            'active:text-neutral-firm'
+            'active:text-on-neutral-mild'
           ],
           ['bg-neutral-soft', 'text-on-neutral-soft', 'hover:bg-neutral-muted']
         );
@@ -257,10 +257,10 @@ module('Unit | Theme | Button colors (DSYS-457)', function () {
   });
 
   module('contrast sanity for plain-ink ramps', function () {
-    // Known failure, deliberately NOT asserted: the spec's soft/subtle neutral
-    // pressed state is plain `neutral-firm` ink on a `neutral-mild` fill, which
-    // is 1.87:1 in dark mode (the old soft pressed used `on-neutral-mild`).
-    // Light mode passes. Restyling it is a design decision (DSYS-457 report).
+    // The spec's soft/subtle neutral pressed ink is plain `neutral-firm` on a
+    // `neutral-mild` fill, which is 1.87:1 in dark mode. We deliberately keep
+    // the generated `on-neutral-mild` ink there instead (see the soft/subtle
+    // neutral tests above).
     const pairs: [string, string, string][] = [
       ['soft hover: neutral-strong on neutral-soft', 'strong', 'soft'],
       ['outline hover: neutral-strong on neutral-subtle', 'strong', 'subtle'],

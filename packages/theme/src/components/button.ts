@@ -157,7 +157,7 @@ const button = tv({
       variant: 'subtle',
       color: 'neutral',
       class:
-        'bg-neutral-muted border-on-neutral-subtle text-on-neutral-subtle hover:bg-neutral-soft hover:border-neutral-strong hover:text-neutral-strong active:bg-neutral-mild active:border-neutral-firm active:text-neutral-firm'
+        'bg-neutral-muted border-on-neutral-subtle text-on-neutral-subtle hover:bg-neutral-soft hover:border-neutral-strong hover:text-neutral-strong active:bg-neutral-mild active:border-neutral-firm active:text-on-neutral-mild'
     },
     {
       variant: 'subtle',
@@ -285,7 +285,7 @@ const button = tv({
       variant: 'soft',
       color: 'neutral',
       class:
-        'bg-neutral-muted text-on-neutral-subtle hover:bg-neutral-soft hover:text-neutral-strong active:bg-neutral-mild active:text-neutral-firm'
+        'bg-neutral-muted text-on-neutral-subtle hover:bg-neutral-soft hover:text-neutral-strong active:bg-neutral-mild active:text-on-neutral-mild'
     },
     {
       variant: 'soft',
