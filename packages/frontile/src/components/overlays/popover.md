@@ -272,6 +272,18 @@ const sizes = ['sm', 'md', 'lg', 'xl'];
 </template>
 ```
 
+### On small screens
+
+Content stays inside the viewport with a 16px gutter on every side. A popover
+that is wider than the screen shrinks to fit, so a `@size='xl'` popover or a
+`@size='trigger'` popover on a full-width trigger is an inset card on a phone.
+Content taller than the space left scrolls inside the popover. Popovers that
+already fit are unaffected.
+
+Pass `@shiftOptions` to change the gutter from the screen edge, for example
+`@shiftOptions={{hash padding=0}}` to let the content touch it. A `max-h-*` or
+`max-w-*` class on `Content` replaces the default cap.
+
 ### Matching a different element's width
 
 `@size='trigger'` sizes the content from `--trigger-width`, which is the width of

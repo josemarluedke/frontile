@@ -1,7 +1,13 @@
 import { tv } from '../tw';
 
 const popover = tv({
-  base: 'bg-surface-input rounded-xl border border-neutral-subtle',
+  // The `--popover-available-*` properties are set by `Popover` once it has
+  // positioned the content: the room left in the viewport minus a gutter. They
+  // keep a wide popover -- `lg`/`xl`, or `trigger` on a full-width trigger -- an
+  // inset card on a phone, and make a tall one scroll instead of running off
+  // the screen. Before they are set, or outside `Popover`, the width falls back
+  // to the viewport minus a gutter and the height is uncapped.
+  base: 'bg-surface-input rounded-xl border border-neutral-subtle max-w-[var(--popover-available-width,calc(100vw-2rem))] max-h-[var(--popover-available-height,none)]',
   variants: {
     size: {
       sm: 'w-40',
