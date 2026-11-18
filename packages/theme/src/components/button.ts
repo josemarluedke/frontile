@@ -1,4 +1,4 @@
-import { tv } from '../tw';
+import { tv, type VariantProps } from '../tw';
 import { focusVisibleRing } from './shared.ts';
 
 const baseButton = tv({
@@ -449,4 +449,28 @@ const buttonSpinner = tv({
   base: 'size-[1em] text-current/25 fill-current'
 });
 
-export { button, toggleButton, buttonGroup, buttonSpinner };
+// Icon-only padding. Button's own padding (px-3.5 .. px-10) is sized for a
+// label next to an icon and would make an icon-only button a wide pill, so
+// IconButton passes this recipe's classes as Button's `class`, where
+// tailwind-merge lets them replace Button's `px-*`/`py-*`. Colors, variants,
+// focus ring, loading and the text ramp all stay Button's. The ends are the
+// designer's table (xs 2/6, 2xl 10/24, in px); the steps between are
+// interpolated.
+const iconButton = tv({
+  variants: {
+    size: {
+      xs: 'py-0.5 px-1.5',
+      sm: 'py-1 px-2.5',
+      md: 'py-1.5 px-3.5',
+      lg: 'py-2 px-4.5',
+      xl: 'py-2 px-5',
+      '2xl': 'py-2.5 px-6'
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
+export type IconButtonVariants = VariantProps<typeof iconButton>;
+export { button, toggleButton, buttonGroup, buttonSpinner, iconButton };

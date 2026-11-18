@@ -171,6 +171,11 @@
         "description": "A row of mutually exclusive options with an indicator that slides between them."
       },
       {
+        "name": "IconButton",
+        "path": "/docs/components/buttons/icon-button",
+        "description": "A button that shows only an icon, with an accessible name."
+      },
+      {
         "name": "CloseButton",
         "path": "/docs/components/buttons/close-button",
         "description": "A dedicated icon button for dismissing dialogs, tags, and banners."

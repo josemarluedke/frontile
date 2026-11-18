@@ -2899,15 +2899,16 @@ const data: ComponentDoc[] = [
         identifier: 'size',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span></span>',
-          items: ["'sm'", "'md'", "'lg'", "'xs'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xs\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'", "'xs'", "'xl'", "'2xl'", "'2xs'"],
         },
         isRequired: false,
         isInternal: false,
-        description: 'The size of the chip',
-        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        description:
+          "The size of the chip. Uses Button's size names and text size: the same\n<code>@size</code> gives the same label text size on Chip, Badge and Button.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'xs'" } },
         defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'xs\'</span></span>',
       },
       {
         identifier: 'variant',
@@ -3081,6 +3082,149 @@ const data: ComponentDoc[] = [
         tags: {},
       },
     ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLButtonElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'icon-button',
+    name: 'IconButton',
+    fileName:
+      'packages/frontile/declarations/components/buttons/icon-button.d.ts',
+    Args: [
+      {
+        identifier: 'icon',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'The icon to draw, passed to Glyph as its <code>@name</code>: <code>trash</code> becomes\n<code>icon-trash</code>, a class your icon font defines.',
+        tags: {},
+      },
+      {
+        identifier: 'label',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "The accessible name. An icon-only button has no text, so this is\nrequired; it becomes the button's <code>aria-label</code>.",
+        tags: {},
+      },
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom class name, it will override the default ones using Tailwind\nMerge library.',
+        tags: {},
+      },
+      {
+        identifier: 'color',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'secondary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'tertiary\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'success\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'warning\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'danger\'</span></span>',
+          items: [
+            "'neutral'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The color of the button. Same values as Button.',
+        tags: {},
+      },
+      {
+        identifier: 'isLoading',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders a spinner in place of the icon and disables the button.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'onPress',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">event</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> PressEvent</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback for when the button is pressed.',
+        tags: {},
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'", "'xs'", "'xl'", "'2xl'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The size of the button. Same names as Button.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+      },
+      {
+        identifier: 'type',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'button\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'submit\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'reset\'</span></span>',
+          items: ["'button'", "'submit'", "'reset'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The HTML type of the button.',
+        tags: {},
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'solid\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'subtle\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'ghost\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'plain\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'custom\'</span></span>',
+          items: [
+            "'solid'",
+            "'soft'",
+            "'subtle'",
+            "'outline'",
+            "'ghost'",
+            "'plain'",
+            "'custom'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The button variant. Same values as Button.',
+        tags: {},
+      },
+    ],
+    Blocks: [],
     Element: {
       identifier: 'Element',
       type: {
@@ -17843,15 +17987,16 @@ const data: ComponentDoc[] = [
         identifier: 'size',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span></span>',
-          items: ["'sm'", "'md'", "'lg'", "'xs'"],
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xs\'</span></span>',
+          items: ["'sm'", "'md'", "'lg'", "'xs'", "'xl'", "'2xl'", "'2xs'"],
         },
         isRequired: false,
         isInternal: false,
-        description: 'The size of the badge',
-        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        description:
+          "The size of the badge. Uses Button's size names and text size: the same\n<code>@size</code> gives the same label text size on Badge, Chip and Button.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'xs'" } },
         defaultValue:
-          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'xs\'</span></span>',
       },
       {
         identifier: 'unit',
@@ -18605,7 +18750,7 @@ const data: ComponentDoc[] = [
         identifier: 'size',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'4xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'3xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'3xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'4xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'3xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'3xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'inherit\'</span></span>',
           items: [
             "'sm'",
             "'md'",
@@ -18613,9 +18758,9 @@ const data: ComponentDoc[] = [
             "'xs'",
             "'xl'",
             "'2xl'",
+            "'2xs'",
             "'4xs'",
             "'3xs'",
-            "'2xs'",
             "'3xl'",
             "'inherit'",
           ],
@@ -46586,8 +46731,16 @@ const data: ComponentDoc[] = [
               identifier: 'size',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span></span>',
-                items: ["'sm'", "'md'", "'lg'", "'xs'"],
+                raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xs\'</span></span>',
+                items: [
+                  "'sm'",
+                  "'md'",
+                  "'lg'",
+                  "'xs'",
+                  "'xl'",
+                  "'2xl'",
+                  "'2xs'",
+                ],
               },
               isRequired: false,
               isInternal: false,
@@ -46614,7 +46767,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>Not applicable in single selection mode.\nVariant of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>variant</code>,\n<code>color</code>, <code>size</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>variant</code> defaults to <code>'soft'</code></li>\n<li><code>color</code> defaults to the Select's own <code>@color</code>, so <code>@color=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'sm'</code></li>\n<li><code>withDot</code> falls back to Chip's own default</li>\n</ul>",
+          "<p>Not applicable in single selection mode.\nVariant of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>variant</code>,\n<code>color</code>, <code>size</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>variant</code> defaults to <code>'soft'</code></li>\n<li><code>color</code> defaults to the Select's own <code>@color</code>, so <code>@color=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'xs'</code></li>\n<li><code>withDot</code> falls back to Chip's own default</li>\n</ul>",
         tags: {
           example: { name: 'example', value: '```gts\n<Select' },
           selectionMode: { name: 'selectionMode', value: '="multiple"' },
@@ -47956,8 +48109,16 @@ const data: ComponentDoc[] = [
               identifier: 'size',
               type: {
                 type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
-                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">NonNullable</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
-                items: ["'sm'", "'md'", "'lg'", "'xs'"],
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">NonNullable</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'sm\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'md\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'lg\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xl\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'2xs\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+                items: [
+                  "'sm'",
+                  "'md'",
+                  "'lg'",
+                  "'xs'",
+                  "'xl'",
+                  "'2xl'",
+                  "'2xs'",
+                ],
               },
               isRequired: true,
               isInternal: false,
