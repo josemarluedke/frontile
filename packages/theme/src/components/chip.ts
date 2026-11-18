@@ -68,44 +68,45 @@ const chip = tv({
     // Text follows Button's ramp: the same `@size` gives the same
     // `text-strong-*` token on Chip, Badge and Button. `xs`, the default, keeps
     // the geometry of the old `md` for dense UI (table cells, list rows,
-    // multi-select fields). The close button takes the label's size so its
-    // circle (icon plus `p-0.5`) always fits the chip.
+    // multi-select fields). The close button takes only the label's font size
+    // (not the weight or line-height that `text-strong-*` bundles), so its
+    // circle (icon plus `p-0.5`) stays round and fits the chip.
     size: {
       xs: {
         base: 'text-strong-xs px-1 h-7',
         content: 'px-2 leading-5',
         dot: 'size-2',
-        closeButton: 'text-strong-xs'
+        closeButton: 'text-(length:--text-strong-xs)'
       },
       sm: {
         base: 'text-strong-sm px-1 h-8',
         content: 'px-2 leading-5',
         dot: 'size-2',
-        closeButton: 'text-strong-sm'
+        closeButton: 'text-(length:--text-strong-sm)'
       },
       md: {
         base: 'text-strong-md px-1.5 h-9',
         content: 'px-2.5 leading-6',
         dot: 'size-2.5',
-        closeButton: 'text-strong-md'
+        closeButton: 'text-(length:--text-strong-md)'
       },
       lg: {
         base: 'text-strong-lg px-2 h-11',
         content: 'px-3 leading-7',
         dot: 'size-3',
-        closeButton: 'text-strong-lg'
+        closeButton: 'text-(length:--text-strong-lg)'
       },
       xl: {
         base: 'text-strong-xl px-2 h-12',
         content: 'px-4 leading-8',
         dot: 'size-3.5',
-        closeButton: 'text-strong-xl'
+        closeButton: 'text-(length:--text-strong-xl)'
       },
       '2xl': {
         base: 'text-strong-2xl px-3 h-14',
         content: 'px-5 leading-9',
         dot: 'size-4',
-        closeButton: 'text-strong-2xl'
+        closeButton: 'text-(length:--text-strong-2xl)'
       }
     }
   },
