@@ -175,7 +175,7 @@ const button = tv({
       variant: 'subtle',
       color: 'tertiary',
       class:
-        'bg-tertiary-soft border-tertiary-strong text-tertiary-strong hover:bg-tertiary-subtle hover:border-tertiary-firm hover:text-tertiary active:bg-tertiary-muted active:border-tertiary-bolder active:text-tertiary-bolder'
+        'bg-tertiary-soft border-tertiary-strong text-tertiary-strong hover:bg-tertiary-subtle hover:border-tertiary-firm hover:text-tertiary-firm active:bg-tertiary-muted active:border-tertiary-bolder active:text-tertiary-bolder'
     },
     {
       variant: 'subtle',
@@ -217,7 +217,7 @@ const button = tv({
       variant: 'plain',
       color: 'tertiary',
       class:
-        'text-tertiary-strong hover:text-tertiary active:text-tertiary-bolder'
+        'text-tertiary-strong hover:text-tertiary-firm active:text-tertiary-bolder'
     },
     {
       variant: 'plain',
@@ -242,7 +242,7 @@ const button = tv({
       variant: 'ghost',
       color: 'neutral',
       class:
-        'text-neutral-bolder hover:bg-neutral-subtle hover:text-neutral-firm/80 active:bg-neutral-muted active:text-neutral-firm'
+        'text-neutral-bolder hover:bg-neutral-subtle hover:text-neutral-strong active:bg-neutral-muted active:text-neutral-firm'
     },
     {
       variant: 'ghost',

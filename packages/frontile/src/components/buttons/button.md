@@ -168,7 +168,7 @@ import { StarIcon } from 'site/components/icons';
     <Button @color='primary'>
       <span class='inline-flex items-center gap-1'>
         Upgrade
-        <span class='font-body text-body-xs'>/mo</span>
+        <span class='font-body text-body-2xs'>/mo</span>
       </span>
     </Button>
 
@@ -176,7 +176,7 @@ import { StarIcon } from 'site/components/icons';
       <StarIcon />
       <span class='inline-flex items-center gap-1'>
         Button
-        <span class='font-body text-body-xs'>/mo</span>
+        <span class='font-body text-body-2xs'>/mo</span>
       </span>
       <StarIcon />
     </Button>
@@ -189,12 +189,12 @@ change with `@size`:
 
 | `@size` | label (automatic) | unit            | wrapper gap |
 | ------- | ----------------- | --------------- | ----------- |
-| `xs`    | `text-strong-sm`  | `text-body-3xs` | `gap-0.5`   |
-| `sm`    | `text-strong-md`  | `text-body-2xs` | `gap-0.5`   |
-| `md`    | `text-strong-lg`  | `text-body-xs`  | `gap-1`     |
-| `lg`    | `text-strong-xl`  | `text-body-sm`  | `gap-1`     |
-| `xl`    | `text-strong-2xl` | `text-body-md`  | `gap-1`     |
-| `2xl`   | `text-strong-3xl` | `text-body-lg`  | `gap-1.5`   |
+| `xs`    | `text-strong-xs`  | `text-body-4xs` | `gap-0.5`   |
+| `sm`    | `text-strong-sm`  | `text-body-3xs` | `gap-0.5`   |
+| `md`    | `text-strong-md`  | `text-body-2xs` | `gap-1`     |
+| `lg`    | `text-strong-lg`  | `text-body-xs`  | `gap-1`     |
+| `xl`    | `text-strong-xl`  | `text-body-sm`  | `gap-1`     |
+| `2xl`   | `text-strong-2xl` | `text-body-md`  | `gap-1.5`   |
 
 ```gts preview
 import { Button } from 'frontile';
@@ -204,25 +204,25 @@ import { Button } from 'frontile';
     <Button @size='sm' @color='primary'>
       <span class='inline-flex items-center gap-0.5'>
         $9
-        <span class='font-body text-body-2xs'>/mo</span>
+        <span class='font-body text-body-3xs'>/mo</span>
       </span>
     </Button>
     <Button @color='primary'>
       <span class='inline-flex items-center gap-1'>
         $19
-        <span class='font-body text-body-xs'>/mo</span>
+        <span class='font-body text-body-2xs'>/mo</span>
       </span>
     </Button>
     <Button @size='lg' @color='primary'>
       <span class='inline-flex items-center gap-1'>
         $29
-        <span class='font-body text-body-sm'>/mo</span>
+        <span class='font-body text-body-xs'>/mo</span>
       </span>
     </Button>
     <Button @size='2xl' @color='primary'>
       <span class='inline-flex items-center gap-1.5'>
         $99
-        <span class='font-body text-body-lg'>/mo</span>
+        <span class='font-body text-body-md'>/mo</span>
       </span>
     </Button>
   </div>
