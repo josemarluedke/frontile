@@ -44,6 +44,51 @@ import { Button } from 'frontile';
 The `custom` variant is available for the cases where you might want to fully customize the appearance of the button.
 The default styles are mainly structural. Colors are applied as `color`.
 
+## Glass
+
+`glass` is a translucent fill with a soft backdrop blur, for buttons that sit on a
+colored surface, a gradient or an image. It has no hue of its own: the fill is a
+`surface-overlay` tint, so it reads as a lighter or darker patch of whatever is behind
+it. `@color` is ignored.
+
+The button does not choose its own theme. The overlay tints follow the surrounding
+theme scope, so put the `dark` class on the container when the surface should stay
+dark in both app themes.
+
+```gts preview
+import { Button } from 'frontile';
+import { DownloadIcon, ShareIcon } from 'site/components/icons';
+
+<template>
+  <div
+    class='dark flex flex-col gap-4 rounded-2xl p-6 text-on-neutral-subtle'
+    style='background: linear-gradient(120deg, #0f4c4a 0%, #2a7f62 40%, #d8e85a 100%)'
+  >
+    <span class='text-strong-xl'>Good afternoon, Aslan.</span>
+    <div class='flex flex-wrap items-center gap-2'>
+      <Button @variant='glass'>Pay bill</Button>
+      <Button @variant='glass'><DownloadIcon /> Download</Button>
+      <Button @variant='glass'>Share <ShareIcon /></Button>
+      <Button @variant='glass' disabled>Disabled</Button>
+    </div>
+  </div>
+</template>
+```
+
+On a flat brand color the blur has nothing to soften, so it looks like a plain tint:
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <div class='dark flex flex-wrap gap-2 rounded-2xl p-6' style='background: #0f4c4a'>
+    <Button @variant='glass' @size='sm'>Small</Button>
+    <Button @variant='glass'>Medium</Button>
+    <Button @variant='glass' @size='lg'>Large</Button>
+  </div>
+</template>
+```
+
 ## Button Colors
 
 Every color is available in every variant. The label on each row is the

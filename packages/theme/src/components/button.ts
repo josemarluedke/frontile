@@ -92,6 +92,16 @@ const baseButton = tv({
   }
 });
 
+const glassColors = [
+  'neutral',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+] as const;
+
 const button = tv({
   extend: baseButton,
   base: [''],
@@ -103,7 +113,8 @@ const button = tv({
       outline: '',
       ghost: '',
       plain: '',
-      custom: ''
+      custom: '',
+      glass: ''
     },
     isLoading: {
       true: 'disabled:cursor-progress'
@@ -360,7 +371,22 @@ const button = tv({
       variant: 'custom',
       color: 'danger',
       class: 'text-danger-strong'
-    }
+    },
+
+    // VARIANT: glass — a translucent, hue-free fill for use over a colored or
+    // imaged surface. The overlay tokens follow the surrounding theme scope, so
+    // the button never sets its own. `color` is ignored: every color gets the
+    // same classes, and the non-neutral ones also reset the focus ring that
+    // `baseButton` tints per color.
+    ...glassColors.map((color) => ({
+      variant: 'glass' as const,
+      color,
+      class: [
+        'bg-surface-overlay-soft text-on-neutral-subtle backdrop-blur-md',
+        'hover:bg-surface-overlay-mild active:bg-surface-overlay-firm',
+        color === 'neutral' ? '' : 'focus-visible:ring-focus'
+      ]
+    }))
   ],
   defaultVariants: {
     size: 'md',
