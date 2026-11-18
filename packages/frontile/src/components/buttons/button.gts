@@ -5,7 +5,8 @@ import type { TOC } from '@ember/component/template-only';
 import { useStyles } from '@frontile/theme';
 import { press, type PressEvent } from '../../modifiers/press';
 import { Spinner } from '../utilities/spinner';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
+import type Owner from '@ember/owner';
 
 /**
  * Sets `disabled` on the element while `loading` is true, restoring whatever
@@ -93,28 +94,10 @@ export interface ButtonArgs {
     'solid' | 'soft' | 'subtle' | 'outline' | 'ghost' | 'plain' | 'custom';
 
   /**
-   * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
-   * `outline`, and `minimal` is `plain`.
-   */
-  appearance?: 'default' | 'soft' | 'outlined' | 'minimal' | 'tonal' | 'custom';
-
-  /**
    * The color of the button
    */
   color?:
     | 'neutral'
-    | 'primary'
-    | 'secondary'
-    | 'tertiary'
-    | 'success'
-    | 'warning'
-    | 'danger';
-
-  /**
-   * @deprecated Use `color`. `default` is now `neutral`.
-   */
-  intent?:
-    | 'default'
     | 'primary'
     | 'secondary'
     | 'tertiary'
@@ -177,6 +160,13 @@ interface ButtonSignature {
 class Button extends Component<ButtonSignature> {
   @tracked isPressed = false;
 
+  constructor(owner: Owner, args: ButtonSignature['Args']) {
+    super(owner, args);
+
+    assertRemovedArg('Button', args, 'appearance', 'variant');
+    assertRemovedArg('Button', args, 'intent', 'color');
+  }
+
   get type(): string {
     if (this.args.type) {
       return this.args.type;
@@ -201,37 +191,9 @@ class Button extends Component<ButtonSignature> {
     const { button } = useStyles();
 
     return button({
-      color:
-        renamedArgValue(
-          this.args.color,
-          this.args.intent,
-          { default: 'neutral' } as const,
-          {
-            component: 'Button',
-            from: 'intent',
-            to: 'color',
-            id: 'frontile.button.intent'
-          }
-        ) || 'neutral',
+      color: this.args.color || 'neutral',
       size: this.args.size,
-      variant:
-        renamedArgValue(
-          this.args.variant,
-          this.args.appearance,
-          {
-            default: 'solid',
-            outlined: 'outline',
-            minimal: 'plain',
-            soft: 'subtle',
-            tonal: 'soft'
-          } as const,
-          {
-            component: 'Button',
-            from: 'appearance',
-            to: 'variant',
-            id: 'frontile.button.appearance'
-          }
-        ) || 'solid',
+      variant: this.args.variant || 'solid',
       isInGroup: this.args.isInGroup,
       isLoading: this.isLoading,
       class: this.args.class
