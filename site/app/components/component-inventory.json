@@ -110,11 +110,6 @@
         "description": "Renders keyboard keys and shortcuts, correct on every platform."
       },
       {
-        "name": "Glyph",
-        "path": "/docs/components/utilities/glyph",
-        "description": "A single icon drawn from an icon font you supply, sized to match Button text."
-      },
-      {
         "name": "Press",
         "path": "/docs/components/utilities/press",
         "description": "A modifier that normalizes press interactions across mouse, touch, keyboard, and screen readers."

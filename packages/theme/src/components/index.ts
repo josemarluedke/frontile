@@ -7,7 +7,6 @@ export * from './chip';
 export * from './progress-bar';
 export * from './close-button';
 export * from './command';
-export * from './glyph';
 export * from './kbd';
 export * from './listbox';
 export * from './dropdown';
