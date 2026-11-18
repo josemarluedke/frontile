@@ -3176,7 +3176,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The size of the button. Same names as Button. Diameters run from 24px\n(<code>xs</code>) to 80px (<code>2xl</code>).',
+          'The size of the button. Same names as Button, and the same height, so\nan IconButton lines up with a Button of that size.',
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',

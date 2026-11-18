@@ -451,23 +451,24 @@ const buttonSpinner = tv({
 });
 
 // An icon-only button is a circle. IconButton passes this recipe's classes as
-// Button's `class`, where tailwind-merge lets them replace Button's padding and
-// text size. Each size sets the diameter and the icon size (the button's font
-// size, which the icon and the loading spinner take as 1em) from the design
-// artifact's icon button spec: xs 24px / 10px icon, sm 34 / 12, md 42 / 16,
-// lg 52 / 20, xl 68 / 28, 2xl 80 / 32. There is no label, so none of this
-// follows Button's text ramp. Colors, variants, focus ring and loading stay
-// Button's. Written out in full so Tailwind sees each class.
+// Button's `class`, where tailwind-merge lets `px-0` replace Button's
+// horizontal padding. Without text there is no line to give the height, and CSS cannot derive a width from an auto height, so each
+// size sets both dimensions to Button's own height at that size: one line, plus the
+// two vertical paddings (Button's `py-*` times two, in spacing units), plus the
+// 1px borders. The height is therefore Button's, and an IconButton lines up
+// with a Button of the same size. If Button's vertical padding changes, change
+// the multipliers here; the "as tall as a Button" test catches a mismatch.
+// Written out in full so Tailwind sees each class.
 const iconButton = tv({
-  base: 'p-0',
+  base: 'px-0',
   variants: {
     size: {
-      xs: 'size-[24px] text-[10px]',
-      sm: 'size-[34px] text-[12px]',
-      md: 'size-[42px] text-[16px]',
-      lg: 'size-[52px] text-[20px]',
-      xl: 'size-[68px] text-[28px]',
-      '2xl': 'size-[80px] text-[32px]'
+      xs: 'size-[calc(1lh+var(--spacing)*1+2px)]',
+      sm: 'size-[calc(1lh+var(--spacing)*2+2px)]',
+      md: 'size-[calc(1lh+var(--spacing)*3+2px)]',
+      lg: 'size-[calc(1lh+var(--spacing)*4+2px)]',
+      xl: 'size-[calc(1lh+var(--spacing)*5+2px)]',
+      '2xl': 'size-[calc(1lh+var(--spacing)*6+2px)]'
     }
   },
   defaultVariants: {
