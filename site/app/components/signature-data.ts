@@ -18572,6 +18572,163 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'card',
+    name: 'Card',
+    fileName: 'packages/frontile/declarations/components/utilities/card.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom class name, it will override the default ones using Tailwind\nMerge library.',
+        tags: {},
+      },
+      {
+        identifier: 'color',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'primary\'</span></span>',
+          items: ["'neutral'", "'primary'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Colours the hover and selected border. The resting border is neutral\neither way. The border is 1px in every state; hover and selected add a\nsecond 1px inset layer in the same colour so they read as 2px without a\nlayout shift.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'neutral'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'neutral\'</span></span>',
+      },
+      {
+        identifier: 'density',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'compact\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'comfortable\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'spacious\'</span></span>',
+          items: ["'compact'", "'comfortable'", "'spacious'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'How much padding surrounds the contents.',
+        tags: {
+          defaultValue: { name: 'defaultValue', value: "'comfortable'" },
+        },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'comfortable\'</span></span>',
+      },
+      {
+        identifier: 'elevation',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'none\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'raised\'</span></span>',
+          items: ["'none'", "'raised'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<code>raised</code> gives an <code>outline</code> card its shadow, and lifts it on hover when\nthe card is interactive. <code>none</code> removes both. <code>flat</code> and <code>soft</code> never\nhave a shadow, so this changes nothing for them.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'raised'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'raised\'</span></span>',
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Dims the card and removes its hover and pressed styles. Disabled and\nselected can be combined: the selected border and its inset layer stay\nvisible.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isInteractive',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Adds the hover, pressed, focus-visible and pointer styles for a card\nthat can be clicked. It does not make the card focusable or add an\nevent handler; use a <code>button</code>, a link, or <code>role</code> and <code>tabindex</code> through\n<code>...attributes</code> for that.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isSelected',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Shows the card as selected. This is appearance only: Card holds no\nselection state, and does not set <code>role</code> or <code>aria-*</code> for you. Pair it\nwith whatever provides the selection behaviour and semantics. A selected\ncard also shows the <code>indicator</code> block, if one is passed.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'soft\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'outline\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'flat\'</span></span>',
+          items: ["'soft'", "'outline'", "'flat'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The surface treatment. <code>outline</code> is a bordered card, <code>flat</code> has no\nvisible border, and <code>soft</code> swaps the fill for a faint tint with no\nborder.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'outline'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'outline\'</span></span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "The card's contents. Card has no regions of its own; lay them out here.\nWhen the <code>indicator</code> block is also used, the contents go in\n<code>&#x3C;:default></code>, because named blocks cannot sit beside loose content.",
+        tags: {},
+      },
+      {
+        identifier: 'indicator',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[]</span></span>',
+          items: [],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>Opts in to a selection indicator: a small circle at the card's top-right\ncorner holding whatever you pass, usually a check icon from your own\nicon library. It is shown only while the card is selected, is hidden\nfrom assistive technology, and takes its fill from <code>@color</code>. Card never\nsupplies the icon, so it depends on no icon set.</p>\n<p>A parent with <code>overflow: hidden</code> clips the part that overhangs the\ncorner.</p>",
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLDivElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'collapsible',
     name: 'Collapsible',
     fileName:
