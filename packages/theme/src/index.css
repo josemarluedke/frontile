@@ -28,7 +28,7 @@
    same compound variants as it did.
 
    `plugin/theme-context.ts` repeats the `dark` enumeration for the plugin's
-   `.dark <selector>` component rules (radio icon, power-select surfaces);
+   `.dark <selector>` component rules (radio icon);
    change both together. */
 @custom-variant dark (&:not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *):where(
   :is(.dark *):not(:is(.light, .dark, .theme-inverse) :is(.light, .dark, .theme-inverse) *),

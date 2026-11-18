@@ -65,8 +65,7 @@
     "lodash.mapkeys": "^4.6.0",
     "mini-svg-data-uri": "^1.4.4",
     "tailwind-merge": "^3.7.0",
-    "tailwind-variants": "^4.0.2",
-    "tailwindcss-ember-power-select": "^0.4.3"
+    "tailwind-variants": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",

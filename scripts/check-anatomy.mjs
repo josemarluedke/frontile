@@ -19,14 +19,8 @@ import { join, extname, basename, dirname } from 'node:path';
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
 // Files that hold no component anatomy of interest.
-// - forms-legacy.ts: the legacy form package is out of scope for the whole
-//   anatomy-attributes plan (it is not being migrated).
 // - index.ts / shared.ts: barrels / shared helpers, not component configs.
-const EXCLUDED_BASENAMES = new Set([
-  'forms-legacy.ts',
-  'index.ts',
-  'shared.ts'
-]);
+const EXCLUDED_BASENAMES = new Set(['index.ts', 'shared.ts']);
 
 function walk(dir, ext, out = []) {
   for (const name of readdirSync(dir)) {
