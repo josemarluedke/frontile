@@ -45,6 +45,13 @@ const badge = tv({
     // fits. Radius steps with size and is never a pill: that shape belongs
     // to Chip.
     size: {
+      // Smaller than Button's smallest size: the next `text-strong-*` step
+      // down (12.3px), 20px tall.
+      '2xs': {
+        base: 'text-strong-2xs h-5 px-1.5 gap-1 rounded-sm',
+        dot: 'size-1.5',
+        icon: 'size-3'
+      },
       xs: {
         base: 'text-strong-xs h-6 px-2 gap-1 rounded-sm',
         dot: 'size-2',

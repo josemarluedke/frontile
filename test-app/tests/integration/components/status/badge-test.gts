@@ -14,7 +14,7 @@ const COLORS = [
   'success',
   'danger'
 ] as const;
-const SIZES = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
+const SIZES = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
 
 module('Integration | Component | Badge | @frontile/status', function (hooks) {
   setupRenderingTest(hooks);
@@ -263,6 +263,7 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
   module('Shipped theme', () => {
     test('radius tiers by size, never a pill', function (assert) {
       const radius = {
+        '2xs': 'rounded-sm',
         xs: 'rounded-sm',
         sm: 'rounded-sm',
         md: 'rounded-md',
@@ -316,6 +317,7 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
 
     test('heights grow with size', function (assert) {
       const heights = {
+        '2xs': 'h-5',
         xs: 'h-6',
         sm: 'h-7',
         md: 'h-8',
@@ -359,7 +361,7 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       );
     });
 
-    test('defaults to xs soft neutral and offers Button sizes, no 2xs', function (assert) {
+    test('defaults to xs soft neutral and offers 2xs plus Button sizes', function (assert) {
       assert.strictEqual(
         realStyles.badge({}).base(),
         realStyles
@@ -367,7 +369,7 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
           .base()
       );
       const sizes = Object.keys(realStyles.badge.variants.size);
-      assert.deepEqual(sizes, ['xs', 'sm', 'md', 'lg', 'xl', '2xl']);
+      assert.deepEqual(sizes, ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']);
       const variants = Object.keys(realStyles.badge.variants.variant);
       assert.deepEqual(variants, ['soft', 'outline']);
     });

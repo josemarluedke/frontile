@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import { Badge, Chip, Select } from 'frontile';
 import { array } from '@ember/helper';
 
-const SIZES = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
+const SIZES = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
 
 // Renders with the shipped theme and reads computed styles, since class-string
 // tests can't show which utility wins in the compiled CSS.
@@ -28,7 +28,7 @@ module('Integration | Rendered | Chip and Badge sizes', function (hooks) {
       assert.true(weight('[data-part="value"]') >= 700, 'badge value');
     });
 
-    test(`${size}: Chip and Badge label size matches Button's`, async function (assert) {
+    test(`${size}: Chip and Badge label size matches Badge's`, async function (assert) {
       await render(
         <template>
           <Chip @size={{size}} data-test-id="chip">x</Chip>

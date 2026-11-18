@@ -25,7 +25,7 @@ interface BadgeSignature {
      *
      * @defaultValue 'xs'
      */
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    size?: '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
     /**
      * Adds a dot before the content, colored by `@color`.

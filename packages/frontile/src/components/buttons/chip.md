@@ -91,6 +91,7 @@ import { Chip } from 'frontile';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
+    <Chip @size='2xs'>Chip 2xs</Chip>
     <Chip @size='xs'>Chip xs</Chip>
     <Chip @size='sm'>Chip sm</Chip>
     <Chip @size='md'>Chip md</Chip>
@@ -104,7 +105,9 @@ import { Chip } from 'frontile';
 Chip takes the same size names as [Button](./button) and [Badge](../status/badge), and the
 same `@size` gives the same label text size on all three. Heights and padding belong
 to each component. The default is `xs`, which suits dense layouts such as table cells,
-list rows, and chips inside a form field.
+list rows, and chips inside a form field. `2xs` is smaller than any Button size,
+for the densest rows: it is 20px tall with 12.3px text, and its close button is
+small, so prefer `xs` or larger when removing the chip is the main action.
 
 The dot and the close button scale with the chip, so a size change does not need
 any other adjustment.
@@ -123,7 +126,7 @@ const noop = (): void => {};
           @variant='{{variant}}'
         </p>
         <div class='flex flex-wrap items-center gap-3'>
-          {{#each (array 'xs' 'sm' 'md' 'lg' 'xl' '2xl') as |size|}}
+          {{#each (array '2xs' 'xs' 'sm' 'md' 'lg' 'xl' '2xl') as |size|}}
             <Chip
               @variant={{variant}}
               @color='primary'

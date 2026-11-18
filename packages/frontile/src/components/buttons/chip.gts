@@ -49,7 +49,7 @@ interface ChipSignature {
      *
      * @defaultValue 'xs'
      */
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    size?: '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
     /**
      * @deprecated Ignored. Chip is always a pill; use `Badge` for a squared

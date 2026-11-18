@@ -214,24 +214,26 @@ for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
 
 ### 8. Badge and Chip share Button's sizes — default is now `xs`
 
-`Badge` and `Chip` now use Button's size names, `xs` through `2xl`, and the same
-`@size` gives the same label text size on all three. Both default to `xs`
-(previously `md`), and neither has a `2xs`. Heights and padding are set per
+`Badge` and `Chip` now use Button's size names, `xs` through `2xl`, plus a `2xs` that Button doesn't have. The same
+`@size` gives the same label text size on all three (`2xs` aside). Both default to `xs`
+(previously `md`). Heights and padding are set per
 component, so a Badge and a Chip of one size can differ in height.
 
 Chip's old text was smaller than Button's. To keep Chip's dense text, move
 each old size to the one that matches it:
 
-| Was                     | Use                                          |
-| ----------------------- | -------------------------------------------- |
-| `@size="sm"` (12.3px)   | `@size="xs"` (14.1px: text grows slightly)   |
-| default or `@size="md"` | default or `@size="xs"` (same 14.1px text)   |
-| `@size="lg"`            | `@size="lg"` (text is larger, Button's `lg`) |
+| Was                     | Use                                              |
+| ----------------------- | ------------------------------------------------ |
+| `@size="xs"` (20px)     | `@size="2xs"` (same 12.3px text and 20px height) |
+| `@size="sm"` (12.3px)   | `@size="xs"` (14.1px: text grows slightly)       |
+| default or `@size="md"` | default or `@size="xs"` (same 14.1px text)       |
+| `@size="lg"`            | `@size="lg"` (text is larger, Button's `lg`)     |
 
 `Select` chips in multiple mode now default to `xs` instead of `sm`.
 
-`Badge` has no matching table: its text now follows Button at every size and its
-heights grew (`xs` is 24px, `md` is 32px), so check each `@size` by eye. No
+`Badge`'s old `xs` is now `2xs` (same 20px height and 12.3px text). Its other
+sizes follow Button's text and their heights grew (`xs` is 24px, `md` is 32px),
+so check each `@size` by eye. No
 Frontile product uses Badge.
 
 **Impact:** visual only. **Time:** a few minutes; search for `<Chip` and

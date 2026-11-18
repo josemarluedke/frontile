@@ -65,13 +65,21 @@ const chip = tv({
         closeButton: 'bg-danger-muted text-on-danger-muted'
       }
     },
-    // Text follows Button's ramp: the same `@size` gives the same
+    // Text follows Button's ramp (`2xs` extends it one step below Button's `xs`): the same `@size` gives the same
     // `text-strong-*` token on Chip, Badge and Button. `xs`, the default, keeps
     // the geometry of the old `md` for dense UI (table cells, list rows,
     // multi-select fields). The close button takes only the label's font size
     // (not the weight or line-height that `text-strong-*` bundles), so its
     // circle (icon plus `p-0.5`) stays round and fits the chip.
     size: {
+      // Smaller than Button's smallest size, for the densest UI. Text is the
+      // next `text-strong-*` step down (12.3px) and the chip is 20px tall.
+      '2xs': {
+        base: 'text-strong-2xs px-0.5 h-5',
+        content: 'px-1 leading-4',
+        dot: 'size-1.5',
+        closeButton: 'text-(length:--text-strong-3xs)'
+      },
       xs: {
         base: 'text-strong-xs px-1 h-7',
         content: 'px-2 leading-5',

@@ -8,6 +8,7 @@ import { realStyles } from 'test-app/tests/helpers/real-theme-styles';
  * strings out of `realStyles`.
  */
 const SIZES = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
+const SMALL_SIZES = ['2xs', ...SIZES] as const;
 
 const tokens = (classes: string) => classes.split(/\s+/);
 const textOf = (classes: string) =>
@@ -32,7 +33,7 @@ module('Unit | Theme | Badge, Chip and Button text ramp', function () {
   }
 
   test('Chip and Badge are regular weight', function (assert) {
-    for (const size of SIZES) {
+    for (const size of SMALL_SIZES) {
       for (const [name, classes] of [
         ['chip', realStyles.chip({ size }).base()],
         ['badge', realStyles.badge({ size }).base()]
@@ -51,9 +52,28 @@ module('Unit | Theme | Badge, Chip and Button text ramp', function () {
     assert.false(value.some((c) => /^text-/.test(c)));
   });
 
-  test('Badge and Chip offer Button sizes, with no 2xs', function (assert) {
-    assert.deepEqual(Object.keys(realStyles.badge.variants.size), [...SIZES]);
-    assert.deepEqual(Object.keys(realStyles.chip.variants.size), [...SIZES]);
+  test('Badge and Chip offer Button sizes plus 2xs; Button has no 2xs', function (assert) {
+    assert.deepEqual(Object.keys(realStyles.badge.variants.size), [
+      '2xs',
+      ...SIZES
+    ]);
+    assert.deepEqual(Object.keys(realStyles.chip.variants.size), [
+      '2xs',
+      ...SIZES
+    ]);
+    assert.false('2xs' in realStyles.button.variants.size);
+  });
+
+  test('2xs sits one step below xs on the same ramp, at 20px', function (assert) {
+    for (const [name, classes] of [
+      ['chip', realStyles.chip({ size: '2xs' }).base()],
+      ['badge', realStyles.badge({ size: '2xs' }).base()]
+    ] as const) {
+      const t = tokens(classes);
+      assert.true(t.includes('text-strong-2xs'), `${name} text`);
+      assert.true(t.includes('h-5'), `${name} height`);
+      assert.true(t.includes('font-normal'), `${name} weight`);
+    }
   });
 
   test('Badge and Chip default to xs; Button keeps md', function (assert) {
@@ -79,10 +99,10 @@ module('Unit | Theme | Badge, Chip and Button text ramp', function () {
           ?.slice(2)
       );
     for (const recipe of [
-      (size: (typeof SIZES)[number]) => realStyles.chip({ size }).base(),
-      (size: (typeof SIZES)[number]) => realStyles.badge({ size }).base()
+      (size: (typeof SMALL_SIZES)[number]) => realStyles.chip({ size }).base(),
+      (size: (typeof SMALL_SIZES)[number]) => realStyles.badge({ size }).base()
     ]) {
-      const heights = SIZES.map((s) => px(recipe(s)));
+      const heights = SMALL_SIZES.map((s) => px(recipe(s)));
       assert.ok(
         heights.every((h) => h > 0),
         'every size has a height'
