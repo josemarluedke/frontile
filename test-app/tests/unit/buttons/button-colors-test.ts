@@ -160,17 +160,23 @@ module('Unit | Theme | Button colors (DSYS-457)', function () {
   });
 
   module('tertiary hover ink', function () {
-    for (const variant of ['subtle', 'plain', 'outline'] as const) {
-      test(`${variant} tertiary hover ink is tertiary`, function (assert) {
+    // DSYS-462: `hover:text-tertiary` (#f17bad) is 2.26:1 on the subtle hover
+    // fill, so subtle and plain go back to `tertiary-firm`. Outline is unchanged.
+    for (const variant of ['subtle', 'plain'] as const) {
+      test(`${variant} tertiary hover ink is tertiary-firm`, function (assert) {
         assertHas(
           assert,
           variant,
           'tertiary',
-          ['hover:text-tertiary'],
-          ['hover:text-tertiary-firm']
+          ['hover:text-tertiary-firm'],
+          ['hover:text-tertiary']
         );
       });
     }
+
+    test('outline tertiary hover ink is unchanged', function (assert) {
+      assertHas(assert, 'outline', 'tertiary', ['hover:text-tertiary']);
+    });
 
     test('subtle and outline tertiary keep their firm hover border', function (assert) {
       assertHas(assert, 'subtle', 'tertiary', ['hover:border-tertiary-firm']);
@@ -219,14 +225,20 @@ module('Unit | Theme | Button colors (DSYS-457)', function () {
       assertHas(assert, 'solid', 'neutral', ['shadow-elevation-2']);
     });
 
-    test('ghost neutral is unchanged', function (assert) {
-      assertHas(assert, 'ghost', 'neutral', [
-        'text-neutral-bolder',
-        'hover:bg-neutral-subtle',
-        'hover:text-neutral-firm/80',
-        'active:bg-neutral-muted',
-        'active:text-neutral-firm'
-      ]);
+    test('ghost neutral hover ink is neutral-strong (DSYS-462)', function (assert) {
+      assertHas(
+        assert,
+        'ghost',
+        'neutral',
+        [
+          'text-neutral-bolder',
+          'hover:bg-neutral-subtle',
+          'hover:text-neutral-strong',
+          'active:bg-neutral-muted',
+          'active:text-neutral-firm'
+        ],
+        ['hover:text-neutral-firm/80']
+      );
     });
 
     test('ghost tertiary keeps its firm hover ink', function (assert) {
@@ -284,6 +296,28 @@ module('Unit | Theme | Button colors (DSYS-457)', function () {
           ).neutral;
           const ratio = wcagContrast(neutral[ink]!, neutral[bg]!);
           assert.true(ratio >= 4.5, `${ratio.toFixed(2)}:1`);
+        });
+      }
+    }
+  });
+
+  module('DSYS-462 hover ink contrast', function () {
+    // tertiary-firm is the designer-approved interim ink (3.4:1 in light); a
+    // passing tertiary is pending from the designer, so the floor is 3:1.
+    const pairs: [string, string, string, string, number][] = [
+      ['subtle tertiary hover', 'tertiary', 'firm', 'subtle', 3],
+      ['ghost neutral hover', 'neutral', 'strong', 'subtle', 4.5]
+    ];
+    for (const theme of ['light', 'dark'] as const) {
+      for (const [name, color, ink, bg, min] of pairs) {
+        test(`${theme} ${name}: ${color}-${ink} on ${color}-${bg} is >= ${min}:1`, function (assert) {
+          const c = (
+            semanticColors[theme] as unknown as {
+              [k: string]: Record<string, string>;
+            }
+          )[color]!;
+          const ratio = wcagContrast(c[ink]!, c[bg]!);
+          assert.true(ratio >= min, `${ratio.toFixed(2)}:1`);
         });
       }
     }
