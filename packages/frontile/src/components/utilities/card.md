@@ -158,7 +158,13 @@ no `role` or `aria-*`. Whatever provides the behaviour must also provide the
 semantics and the keyboard support. The simplest way is a native control: here each
 card wraps a visually hidden radio input, so Tab, the arrow keys and the screen
 reader announcement all come from the browser, and the card only mirrors the checked
-state. `@color` picks the border colour. Selected keeps the 1px border and adds a
+state. The label is stretched over the whole card with `after:absolute after:inset-0`
+(Card is already `position: relative`), so a click anywhere on the card, padding
+included, reaches the radio. Without that, only the text is a label and a click in
+the padding hits the plain `div`. Card does not do this for you: it is a surface, so
+the hit area is the call site's job. Keep the label itself unpositioned, or the
+overlay will size to the label instead of the card.
+`@color` picks the border colour. Selected keeps the 1px border and adds a
 second 1px layer inside it in the same colour, so it reads as 2px without changing
 the card's size. In Windows High Contrast (forced colors) the browser draws no
 shadow, so a selected card gets a real 3px border there instead.
@@ -189,7 +195,7 @@ export default class Example extends Component {
           @isSelected={{this.isSelected id}}
           @class='has-focus-visible:ring-3 has-focus-visible:ring-focus has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-background'
         >
-          <label class='block cursor-pointer'>
+          <label class='block cursor-pointer after:absolute after:inset-0'>
             <input
               type='radio'
               name='plan'
@@ -213,6 +219,9 @@ A selected card can show a check badge at its top-right corner. It is opt-in: pa
 an `<:indicator>` block and Card draws the circle and shows it only while
 `@isSelected` is true. The icon is yours, so Card depends on no icon library; use
 whichever one your app already has. The circle takes its fill from `@color`.
+
+The label uses the same stretched overlay as the Selected example, so the whole card
+is the click target. The indicator ignores pointer events and does not block it.
 
 Once you use a named block, the card's own contents go in `<:default>`, because
 Ember does not allow loose content beside named blocks.
@@ -245,7 +254,7 @@ export default class Example extends Component {
           @class='has-focus-visible:ring-3 has-focus-visible:ring-focus has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-background'
         >
           <:default>
-            <label class='block cursor-pointer'>
+            <label class='block cursor-pointer after:absolute after:inset-0'>
               <input
                 type='radio'
                 name='speed'
@@ -326,7 +335,9 @@ link inside it, or set `role` and `tabindex` through `...attributes` and add the
 handling but not the role or the focus stop. `@isInteractive` only styles the card.
 A selectable card needs the semantics and keyboard behaviour of the pattern it is
 part of. A native radio input inside the card, as in the Selected example, supplies
-both; a hand-built `role='radio'` also needs `aria-checked`, a roving `tabindex` and
+both, as long as its label covers the whole card (`after:absolute after:inset-0`),
+because Card does not forward clicks on its padding to a control inside it. A
+hand-built `role='radio'` also needs `aria-checked`, a roving `tabindex` and
 arrow-key handling.
 
 The selection indicator is decorative: it is hidden from assistive technology with
