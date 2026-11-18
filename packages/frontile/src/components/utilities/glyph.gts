@@ -11,8 +11,7 @@ export interface GlyphSignature {
 
     /**
      * The size of the icon. Each step matches the text size of the same name
-     * on Button, Badge and Chip. `inherit` takes the size of the surrounding
-     * text instead.
+     * on Button, Badge and Chip.
      *
      * @defaultValue 'md'
      */
