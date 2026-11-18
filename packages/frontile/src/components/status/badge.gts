@@ -20,11 +20,12 @@ interface BadgeSignature {
       'neutral' | 'primary' | 'secondary' | 'tertiary' | 'success' | 'danger';
 
     /**
-     * The size of the badge
+     * The size of the badge. Uses Button's size names and text size: the same
+     * `@size` gives the same label text size on Badge, Chip and Button.
      *
-     * @defaultValue 'md'
+     * @defaultValue 'xs'
      */
-    size?: 'xs' | 'sm' | 'md' | 'lg';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
     /**
      * Adds a dot before the content, colored by `@color`.

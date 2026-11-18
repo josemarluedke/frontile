@@ -28,6 +28,7 @@ them is optional for the whole 0.18 line.
 | Filtered lists are ranked                                                 | `Autocomplete`/`Select` list the closest match first instead of source order | Visual only — nothing to fix                                    |
 | `text-body-pico`/`-nano`/`-micro`                                         | Those elements render unstyled                                               | **Silently**                                                    |
 | Body text-scale font sizes corrected                                      | Body text (`xs` through `xl`) renders larger than intended                   | Visual only — nothing to fix                                    |
+| Badge and Chip share Button's sizes, default `xs`                         | Chips and badges render at different sizes than before                       | Visual only — nothing to fix                                    |
 | `data-fr-*` / mismatched `data-component` / most `data-test-id` selectors | Those selectors stop matching                                                | **Silently**, if you select Frontile-rendered elements yourself |
 
 **The silent ones are the reason to take this in order.** A class Tailwind can't
@@ -211,6 +212,31 @@ for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
 
 **See:** [Typography](../../theming/design-tokens/typography.md)
 
+### 8. Badge and Chip share Button's sizes — default is now `xs`
+
+`Badge` and `Chip` now use Button's size names, `xs` through `2xl`, and the same
+`@size` gives the same label text size on all three. Both default to `xs`
+(previously `md`), and neither has a `2xs`. Heights and padding are set per
+component, so a Badge and a Chip of one size can differ in height.
+
+Chip's old text was smaller than Button's. To keep Chip's dense text, move
+each old size to the one that matches it:
+
+| Was                     | Use                                          |
+| ----------------------- | -------------------------------------------- |
+| `@size="sm"` (12.3px)   | `@size="xs"` (14.1px: text grows slightly)   |
+| default or `@size="md"` | default or `@size="xs"` (same 14.1px text)   |
+| `@size="lg"`            | `@size="lg"` (text is larger, Button's `lg`) |
+
+`Select` chips in multiple mode now default to `xs` instead of `sm`.
+
+`Badge` has no matching table: its text now follows Button at every size and its
+heights grew (`xs` is 24px, `md` is 32px), so check each `@size` by eye. No
+Frontile product uses Badge.
+
+**Impact:** visual only. **Time:** a few minutes; search for `<Chip` and
+`<Badge` with an `@size`.
+
 ## Checklist
 
 - [ ] `@import "@frontile/theme"` added to `app.css`
@@ -224,6 +250,7 @@ for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
 - [ ] Imports moved to `frontile` (optional until 0.19)
 - [ ] Migrated off `@frontile/forms-legacy` / `@frontile/changeset-form`, if used (required before 0.19)
 - [ ] Looked at any multi-selects — they now render chips and are taller
+- [ ] Checked `Chip` and `Badge` `@size` values: old `sm` is now `xs`, and the default is `xs`
 - [ ] Replaced `text-body-pico`/`-nano`/`-micro` with `text-body-4xs`/`-3xs`/`-2xs`
 - [ ] Replaced any `data-fr-*`, mismatched `data-component`, or retired
       `data-test-id` selectors with the new `data-component`/`data-part`

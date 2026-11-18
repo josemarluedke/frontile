@@ -14,7 +14,7 @@ const COLORS = [
   'success',
   'danger'
 ] as const;
-const SIZES = ['xs', 'sm', 'md', 'lg'] as const;
+const SIZES = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
 
 module('Integration | Component | Badge | @frontile/status', function (hooks) {
   setupRenderingTest(hooks);
@@ -226,14 +226,14 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       });
     }
 
-    test('size defaults to md', async function (assert) {
+    test('size defaults to xs', async function (assert) {
       await render(
         <template>
           <Badge data-test-id="badge">Paid</Badge>
         </template>
       );
 
-      assert.dom('[data-test-id="badge"]').hasClass('badge-md');
+      assert.dom('[data-test-id="badge"]').hasClass('badge-xs');
     });
 
     for (const size of SIZES) {
@@ -262,23 +262,21 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
 
   module('Shipped theme', () => {
     test('radius tiers by size, never a pill', function (assert) {
-      for (const size of ['xs', 'sm'] as const) {
-        assert.true(
-          realStyles.badge({ size }).base().includes('rounded-sm'),
-          `${size} is rounded-sm`
-        );
-      }
-      for (const size of ['md', 'lg'] as const) {
-        assert.true(
-          realStyles.badge({ size }).base().includes('rounded-md'),
-          `${size} is rounded-md`
-        );
-      }
+      const radius = {
+        xs: 'rounded-sm',
+        sm: 'rounded-sm',
+        md: 'rounded-md',
+        lg: 'rounded-md',
+        xl: 'rounded-lg',
+        '2xl': 'rounded-lg'
+      } as const;
       for (const size of SIZES) {
-        assert.false(
-          realStyles.badge({ size }).base().includes('rounded-full'),
-          `${size} is not rounded-full`
+        const classes = realStyles.badge({ size }).base().split(' ');
+        assert.true(
+          classes.includes(radius[size]),
+          `${size} is ${radius[size]}`
         );
+        assert.false(classes.includes('rounded-full'), `${size} is not a pill`);
       }
     });
 
@@ -316,12 +314,15 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       assert.true(realStyles.badge({ size: 'lg' }).dot().includes('size-2.5'));
     });
 
-    test('md is 28px tall', function (assert) {
-      assert.true(realStyles.badge({ size: 'md' }).base().includes('h-7'));
-    });
-
-    test('heights map by height to Chip: 20, 24, 28, 32px', function (assert) {
-      const heights = { xs: 'h-5', sm: 'h-6', md: 'h-7', lg: 'h-8' } as const;
+    test('heights grow with size', function (assert) {
+      const heights = {
+        xs: 'h-6',
+        sm: 'h-7',
+        md: 'h-8',
+        lg: 'h-10',
+        xl: 'h-11',
+        '2xl': 'h-14'
+      } as const;
       for (const size of SIZES) {
         assert.true(
           realStyles.badge({ size }).base().split(' ').includes(heights[size]),
@@ -330,34 +331,16 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       }
     });
 
-    test('each size has the same height class as Chip at that size', function (assert) {
-      const heightOf = (classes: string) =>
-        classes.split(' ').find((c) => /^h-\d/.test(c));
-      for (const size of SIZES) {
-        const badgeHeight = heightOf(realStyles.badge({ size }).base());
-        const chipHeight = heightOf(realStyles.chip({ size }).base());
-        assert.ok(badgeHeight, `${size} badge has a height class`);
-        assert.strictEqual(
-          badgeHeight,
-          chipHeight,
-          `${size}: badge ${badgeHeight} matches chip ${chipHeight}`
-        );
-      }
-    });
-
-    test('label text uses the Facet 2.0 smaller sizes, picked by height', function (assert) {
-      const text = {
-        xs: 'text-body-4xs',
-        sm: 'text-body-4xs',
-        md: 'text-body-2xs',
-        lg: 'text-body-sm'
-      } as const;
+    test('label text follows the Button ramp', function (assert) {
       for (const size of SIZES) {
         const classes = realStyles.badge({ size }).base().split(' ');
-        assert.true(classes.includes(text[size]), `${size} is ${text[size]}`);
+        assert.true(
+          classes.includes(`text-strong-${size}`),
+          `${size} is text-strong-${size}`
+        );
         assert.false(
-          classes.some((c) => c.startsWith('text-label-')),
-          `${size} no longer uses a text-label-* size`
+          classes.some((c) => /^text-(label|body)-/.test(c)),
+          `${size} no longer uses a label or body size`
         );
       }
     });
@@ -376,15 +359,15 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       );
     });
 
-    test('defaults to md soft neutral and offers no 2xs or xl', function (assert) {
+    test('defaults to xs soft neutral and offers Button sizes, no 2xs', function (assert) {
       assert.strictEqual(
         realStyles.badge({}).base(),
         realStyles
-          .badge({ size: 'md', variant: 'soft', color: 'neutral' })
+          .badge({ size: 'xs', variant: 'soft', color: 'neutral' })
           .base()
       );
       const sizes = Object.keys(realStyles.badge.variants.size);
-      assert.deepEqual(sizes, ['xs', 'sm', 'md', 'lg']);
+      assert.deepEqual(sizes, ['xs', 'sm', 'md', 'lg', 'xl', '2xl']);
       const variants = Object.keys(realStyles.badge.variants.variant);
       assert.deepEqual(variants, ['soft', 'outline']);
     });

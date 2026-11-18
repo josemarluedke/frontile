@@ -2,7 +2,9 @@ import { tv } from '../tw';
 
 const badge = tv({
   slots: {
-    base: 'inline-flex items-center whitespace-nowrap font-label leading-none',
+    // Regular weight; the `text-strong-*` size tokens would set bold, so the
+    // weight is pinned here and only `value` is heavier.
+    base: 'inline-flex items-center whitespace-nowrap font-label font-normal leading-none',
     // emphasized value, e.g. a price
     value: 'font-bold tabular-nums leading-none',
     // unit following the value, e.g. "/mo"
@@ -36,32 +38,42 @@ const badge = tv({
         dot: 'bg-danger'
       }
     },
-    // Value and unit share the label's font size so their baselines line up;
-    // the value is set apart by weight only. Heights match Chip (20, 24, 28,
-    // 32px). Radius steps with size and is never a pill: that shape belongs
-    // to Chip. Facet 2.0 sizes map to these by height (spec 21/24/30/34 -> 20/24/28/32
-    // nearest), so radii are unchanged; only the text steps down, via the
-    // body scale (10.84, 12.34, 14.05px).
+    // Text follows Button's ramp: the same `@size` gives the same
+    // `text-strong-*` token on Badge, Chip and Button. Value and unit share
+    // the label's font size so their baselines line up; the value is set apart
+    // by weight only. Heights and padding are Badge's own, chosen so the text
+    // fits. Radius steps with size and is never a pill: that shape belongs
+    // to Chip.
     size: {
       xs: {
-        base: 'text-body-4xs h-5 px-1.5 gap-1 rounded-sm',
-        dot: 'size-1.5',
-        icon: 'size-3'
-      },
-      sm: {
-        base: 'text-body-4xs h-6 px-2 gap-1 rounded-sm',
-        dot: 'size-1.5',
-        icon: 'size-3'
-      },
-      md: {
-        base: 'text-body-2xs h-7 px-2.5 gap-1.5 rounded-md',
+        base: 'text-strong-xs h-6 px-2 gap-1 rounded-sm',
         dot: 'size-2',
         icon: 'size-3.5'
       },
-      lg: {
-        base: 'text-body-sm h-8 px-3 gap-1.5 rounded-md',
-        dot: 'size-2.5',
+      sm: {
+        base: 'text-strong-sm h-7 px-2.5 gap-1.5 rounded-sm',
+        dot: 'size-2',
         icon: 'size-4'
+      },
+      md: {
+        base: 'text-strong-md h-8 px-3 gap-1.5 rounded-md',
+        dot: 'size-2',
+        icon: 'size-4'
+      },
+      lg: {
+        base: 'text-strong-lg h-10 px-4 gap-2 rounded-md',
+        dot: 'size-2.5',
+        icon: 'size-5'
+      },
+      xl: {
+        base: 'text-strong-xl h-11 px-5 gap-2 rounded-lg',
+        dot: 'size-3',
+        icon: 'size-6'
+      },
+      '2xl': {
+        base: 'text-strong-2xl h-14 px-6 gap-2.5 rounded-lg',
+        dot: 'size-3.5',
+        icon: 'size-8'
       }
     }
   },
@@ -155,7 +167,7 @@ const badge = tv({
     }
   ],
   defaultVariants: {
-    size: 'md',
+    size: 'xs',
     color: 'neutral',
     variant: 'soft'
   }

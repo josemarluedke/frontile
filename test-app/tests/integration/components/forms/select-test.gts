@@ -2747,7 +2747,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom(chip).hasClass('chip-lg', '@chip.size applies');
     assert
       .dom(chip)
-      .doesNotHaveClass('chip-sm', '@chip.size overrides the sm default');
+      .doesNotHaveClass('chip-xs', '@chip.size overrides the xs default');
     // `span:first-child` would pass regardless of @withDot, because
     // chip.gts renders the content span as the first child when there is no
     // dot. Target the dot's own stub class instead (the stub chip theme

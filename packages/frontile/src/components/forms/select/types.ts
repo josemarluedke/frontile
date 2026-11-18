@@ -248,7 +248,7 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * - `variant` defaults to `'soft'`
    * - `color` defaults to the Select's own `@color`, so `@color="primary"`
    *   colors the listbox items and the chips together
-   * - `size` defaults to `'sm'`
+   * - `size` defaults to `'xs'`
    * - `withDot` falls back to Chip's own default
    *
    * @example

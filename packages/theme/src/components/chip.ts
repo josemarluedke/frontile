@@ -5,8 +5,8 @@ const chip = tv({
     base: [
       'whitespace-nowrap',
       'inline-flex items-center justify-between box-border rounded-full',
-      // Regular weight, matching Badge (the `text-label-*` sizes would set
-      // semibold). Heights are set per size below and match Badge's.
+      // Regular weight, matching Badge (the `text-strong-*` sizes would set
+      // bold). Text size follows Button's ramp; heights are Chip's own.
       'font-normal'
     ],
     // label text role (size set per size variant)
@@ -65,35 +65,47 @@ const chip = tv({
         closeButton: 'bg-danger-muted text-on-danger-muted'
       }
     },
+    // Text follows Button's ramp: the same `@size` gives the same
+    // `text-strong-*` token on Chip, Badge and Button. `xs`, the default, keeps
+    // the geometry of the old `md` for dense UI (table cells, list rows,
+    // multi-select fields). The close button takes the label's size so its
+    // circle (icon plus `p-0.5`) always fits the chip.
     size: {
-      // For dense UI — table cells, list rows, multi-select fields. It keeps
-      // `sm`'s text size and loses height and padding instead: 12px is about
-      // as small as a label stays readable. The close button drops to
-      // `label-micro` so its circle (icon plus `p-0.5`) still fits the 20px
-      // chip.
       xs: {
-        base: 'text-label-2xs px-0.5 h-5',
-        content: 'px-1 leading-4',
-        dot: 'size-1.5',
-        closeButton: 'text-label-micro'
-      },
-      sm: {
-        base: 'text-label-2xs px-1 h-6',
-        content: 'px-1 leading-4',
-        dot: 'size-1.5',
-        closeButton: 'text-label-2xs'
-      },
-      md: {
-        base: 'text-label-xs px-1 h-7',
+        base: 'text-strong-xs px-1 h-7',
         content: 'px-2 leading-5',
         dot: 'size-2',
-        closeButton: 'text-label-xs'
+        closeButton: 'text-strong-xs'
+      },
+      sm: {
+        base: 'text-strong-sm px-1 h-8',
+        content: 'px-2 leading-5',
+        dot: 'size-2',
+        closeButton: 'text-strong-sm'
+      },
+      md: {
+        base: 'text-strong-md px-1.5 h-9',
+        content: 'px-2.5 leading-6',
+        dot: 'size-2.5',
+        closeButton: 'text-strong-md'
       },
       lg: {
-        base: 'text-label-md px-2 h-8',
-        content: 'px-2 leading-6',
-        dot: 'size-2.5',
-        closeButton: 'text-label-md'
+        base: 'text-strong-lg px-2 h-11',
+        content: 'px-3 leading-7',
+        dot: 'size-3',
+        closeButton: 'text-strong-lg'
+      },
+      xl: {
+        base: 'text-strong-xl px-2 h-12',
+        content: 'px-4 leading-8',
+        dot: 'size-3.5',
+        closeButton: 'text-strong-xl'
+      },
+      '2xl': {
+        base: 'text-strong-2xl px-3 h-14',
+        content: 'px-5 leading-9',
+        dot: 'size-4',
+        closeButton: 'text-strong-2xl'
       }
     }
   },
@@ -287,7 +299,7 @@ const chip = tv({
     }
   ],
   defaultVariants: {
-    size: 'md',
+    size: 'xs',
     color: 'neutral',
     variant: 'solid'
   }
