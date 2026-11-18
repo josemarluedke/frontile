@@ -48,10 +48,10 @@ The default styles are mainly structural. Colors are applied as `color`.
 
 `glass` is a translucent fill with a soft backdrop blur, for buttons that sit on a
 colored surface, a gradient or an image. It has no hue of its own: the fill is a
-`surface-overlay` tint, so it reads as a lighter or darker patch of whatever is behind
-it. `@color` is ignored.
+`surface-lift` tint (20% black in a dark scope, 50% white in a light one), so it stays
+legible over a mid-tone or fairly light surface. `@color` is ignored.
 
-The button does not choose its own theme. The overlay tints follow the surrounding
+The button does not choose its own theme. The lift tints follow the surrounding
 theme scope, so put the `dark` class on the container when the surface should stay
 dark in both app themes.
 
@@ -61,8 +61,7 @@ import { DownloadIcon, ShareIcon } from 'site/components/icons';
 
 <template>
   <div
-    class='dark flex flex-col gap-4 rounded-2xl p-6 text-on-neutral-subtle'
-    style='background: linear-gradient(120deg, #0f4c4a 0%, #2a7f62 40%, #d8e85a 100%)'
+    class='theme-inverse flex flex-col gap-4 rounded-2xl bg-linear-to-b from-primary via-secondary to-tertiary p-6 text-on-neutral-subtle'
   >
     <span class='text-strong-xl'>Good afternoon, Aslan.</span>
     <div class='flex flex-wrap items-center gap-2'>
@@ -81,10 +80,44 @@ On a flat brand color the blur has nothing to soften, so it looks like a plain t
 import { Button } from 'frontile';
 
 <template>
-  <div class='dark flex flex-wrap gap-2 rounded-2xl p-6' style='background: #0f4c4a'>
+  <div class='flex flex-wrap gap-2 rounded-2xl bg-primary p-6'>
     <Button @variant='glass' @size='sm'>Small</Button>
     <Button @variant='glass'>Medium</Button>
     <Button @variant='glass' @size='lg'>Large</Button>
+  </div>
+</template>
+```
+
+It works over any of the theme's colors, because the fill only darkens or frosts
+whatever is behind it. This demo follows the app theme, so switch between light and
+dark to see both:
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <div class='grid grid-cols-2 gap-3 sm:grid-cols-4'>
+    <div class='flex items-center justify-center rounded-2xl bg-neutral p-6'>
+      <Button @variant='glass'>Neutral</Button>
+    </div>
+    <div class='flex items-center justify-center rounded-2xl bg-primary p-6'>
+      <Button @variant='glass'>Primary</Button>
+    </div>
+    <div class='flex items-center justify-center rounded-2xl bg-secondary p-6'>
+      <Button @variant='glass'>Secondary</Button>
+    </div>
+    <div class='flex items-center justify-center rounded-2xl bg-tertiary p-6'>
+      <Button @variant='glass'>Tertiary</Button>
+    </div>
+    <div class='flex items-center justify-center rounded-2xl bg-success p-6'>
+      <Button @variant='glass'>Success</Button>
+    </div>
+    <div class='flex items-center justify-center rounded-2xl bg-warning p-6'>
+      <Button @variant='glass'>Warning</Button>
+    </div>
+    <div class='flex items-center justify-center rounded-2xl bg-danger p-6'>
+      <Button @variant='glass'>Danger</Button>
+    </div>
   </div>
 </template>
 ```

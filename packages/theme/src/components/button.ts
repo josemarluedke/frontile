@@ -413,7 +413,7 @@ const button = tv({
     })),
 
     // VARIANT: glass — a translucent, hue-free fill for use over a colored or
-    // imaged surface. The overlay tokens follow the surrounding theme scope, so
+    // imaged surface. The lift tokens follow the surrounding theme scope, so
     // the button never sets its own. `color` is ignored: every color gets the
     // same classes, and the non-neutral ones also reset the focus ring that
     // `baseButton` tints per color.
@@ -421,8 +421,8 @@ const button = tv({
       variant: 'glass' as const,
       color,
       class: [
-        'bg-surface-overlay-soft text-on-neutral-subtle backdrop-blur-md',
-        'hover:bg-surface-overlay-mild active:bg-surface-overlay-firm',
+        'bg-surface-lift-soft text-on-neutral-subtle backdrop-blur-md',
+        'hover:bg-surface-lift-mild active:bg-surface-lift-firm',
         color === 'neutral' ? '' : 'focus-visible:ring-focus'
       ]
     }))

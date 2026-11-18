@@ -88,12 +88,12 @@ module('Unit | Theme | Button link', function () {
 });
 
 module('Unit | Theme | Button glass', function () {
-  test('glass uses the overlay fills', function (assert) {
+  test('glass uses the lift fills', function (assert) {
     const got = tokens({ variant: 'glass' });
     for (const cls of [
-      'bg-surface-overlay-soft',
-      'hover:bg-surface-overlay-mild',
-      'active:bg-surface-overlay-firm',
+      'bg-surface-lift-soft',
+      'hover:bg-surface-lift-mild',
+      'active:bg-surface-lift-firm',
       'backdrop-blur-md',
       'text-on-neutral-subtle'
     ]) {
