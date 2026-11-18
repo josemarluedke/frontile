@@ -114,7 +114,8 @@ const button = tv({
       ghost: '',
       plain: '',
       custom: '',
-      glass: ''
+      glass: '',
+      link: ''
     },
     isLoading: {
       true: 'disabled:cursor-progress'
@@ -372,6 +373,41 @@ const button = tv({
       color: 'danger',
       class: 'text-danger-strong'
     },
+
+    // VARIANT: link — ink only, no side padding, underline on hover, so it sits
+    // inline with text. Ink steps follow `plain`; neutral keeps its ink on hover
+    // and only underlines. `px-0` comes after the size's `px-*`, so
+    // tailwind-merge drops the size padding.
+    ...(
+      [
+        ['neutral', 'text-on-neutral-subtle active:text-neutral-firm'],
+        ['primary', 'text-primary hover:text-primary-mild active:text-primary-firm'],
+        [
+          'secondary',
+          'text-secondary-strong hover:text-secondary-firm active:text-secondary-bolder'
+        ],
+        [
+          'tertiary',
+          'text-tertiary-strong hover:text-tertiary-firm active:text-tertiary-bolder'
+        ],
+        [
+          'success',
+          'text-success-strong hover:text-success-firm active:text-success-bolder'
+        ],
+        [
+          'warning',
+          'text-warning-strong hover:text-warning-firm active:text-warning-bolder'
+        ],
+        ['danger', 'text-danger hover:text-danger-mild active:text-danger-firm']
+      ] as const
+    ).map(([color, ink]) => ({
+      variant: 'link' as const,
+      color,
+      class: [
+        ink,
+        'px-0 hover:underline underline-offset-4 disabled:no-underline'
+      ]
+    })),
 
     // VARIANT: glass — a translucent, hue-free fill for use over a colored or
     // imaged surface. The overlay tokens follow the surrounding theme scope, so

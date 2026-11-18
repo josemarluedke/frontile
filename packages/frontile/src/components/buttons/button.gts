@@ -86,7 +86,8 @@ export interface ButtonArgs {
 
   /**
    * The button variant. `glass` is a translucent, color-less fill (it ignores
-   * `color`) for use over a colored or imaged surface.
+   * `color`) for use over a colored or imaged surface. `link` is inline, with
+   * no fill or side padding, and underlines on hover.
    *
    * @defaultValue 'solid'
    */
@@ -98,7 +99,8 @@ export interface ButtonArgs {
     | 'ghost'
     | 'plain'
     | 'custom'
-    | 'glass';
+    | 'glass'
+    | 'link';
 
   /**
    * @deprecated Use `variant`. `default` is now `solid`, `outlined` is

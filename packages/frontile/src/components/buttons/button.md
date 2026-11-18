@@ -89,6 +89,45 @@ import { Button } from 'frontile';
 </template>
 ```
 
+## Link
+
+`link` is ink only: no fill, no border and no side padding, so it lines up with the text
+around it. It underlines on hover. Unlike `glass`, it honors `@color`. Use `plain` instead
+when you want a padded, no-fill button that doesn't underline.
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <div class='flex flex-col gap-3'>
+    <p>
+      You have two active services.
+      <Button @variant='link' @size='sm'>Manage services →</Button>
+    </p>
+    <p>
+      Your bill is ready.
+      <Button @variant='link' @size='sm' @color='primary'>View bill</Button>
+    </p>
+  </div>
+</template>
+```
+
+It works on a dark brand surface the same way. Put the `dark` class on the container:
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <p
+    class='dark rounded-2xl p-6 text-on-neutral-subtle'
+    style='background: #0f4c4a'
+  >
+    You have two active services.
+    <Button @variant='link' @size='sm'>Manage services →</Button>
+  </p>
+</template>
+```
+
 ## Button Colors
 
 Every color is available in every variant. The label on each row is the

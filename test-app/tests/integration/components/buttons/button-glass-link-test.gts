@@ -13,6 +13,27 @@ module(
     // than the stub markers other Button tests register.
     useRealStyles(hooks, ['button']);
 
+    module('link', function () {
+      test('link sits inline with text', async function (assert) {
+        await render(
+          <template>
+            <p>Some text
+              <Button @variant="link" data-test-id="b">Manage</Button></p>
+          </template>
+        );
+
+        const el = document.querySelector('[data-test-id="b"]') as HTMLElement;
+        const style = window.getComputedStyle(el);
+        assert.strictEqual(style.paddingLeft, '0px', 'no left padding');
+        assert.strictEqual(style.paddingRight, '0px', 'no right padding');
+        assert.strictEqual(
+          style.backgroundColor,
+          'rgba(0, 0, 0, 0)',
+          'no fill'
+        );
+      });
+    });
+
     module('glass', function () {
       test('glass renders and blurs what is behind it', async function (assert) {
         await render(
