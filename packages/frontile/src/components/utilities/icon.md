@@ -38,8 +38,16 @@ import { StarIcon } from 'site/components/icons';
 
 `@size` takes `4xs`, `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl` and `3xl`.
 The default is `md`. The size sets the diameter of the circle, and the icon
-inside scales with it. Every variant has the same box at a given size, so
-switching variants does not move anything.
+inside scales with it:
+
+| Size      | 4xs | 3xs | 2xs | xs  | sm  | md  | lg  | xl  | 2xl | 3xl |
+| --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Circle    | 16  | 20  | 24  | 32  | 40  | 48  | 64  | 64  | 80  | 96  |
+| Plain box | 12  | 14  | 16  | 20  | 24  | 32  | 40  | 40  | 48  | 56  |
+| Icon      | 8   | 10  | 12  | 16  | 20  | 28  | 32  | 40  | 48  | 56  |
+
+All values are in pixels. These sizes are fixed and do not follow the text
+size, unlike the icon inside a Button.
 
 ```gts preview
 import { Icon } from 'frontile';
@@ -63,8 +71,9 @@ import { CheckIcon } from 'site/components/icons';
 
 ## Variants
 
-`@variant` defaults to `plain`, which draws no circle. `solid`, `soft` and
-`subtle` fill the circle at decreasing strength, and `outline` draws a ring.
+`@variant` defaults to `plain`, which draws no circle and has a tighter box.
+`solid`, `soft` and `subtle` fill the circle at decreasing strength, and
+`outline` draws a ring in the icon color, thicker at larger sizes.
 
 ```gts preview
 import { Icon } from 'frontile';

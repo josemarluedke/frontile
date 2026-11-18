@@ -19043,7 +19043,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How the circle is drawn. <code>plain</code> has no circle, only the icon. <code>solid</code>,\n<code>soft</code> and <code>subtle</code> fill it at decreasing strength, and <code>outline</code> draws\na ring. Every variant occupies the same box.',
+          "How the circle is drawn. <code>plain</code> has no circle, only the icon. <code>solid</code>,\n<code>soft</code> and <code>subtle</code> fill it at decreasing strength, and <code>outline</code> draws\na ring. A plain icon's box is tighter than the circle of the other\nvariants at the same size.",
         tags: { defaultValue: { name: 'defaultValue', value: "'plain'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'plain\'</span></span>',

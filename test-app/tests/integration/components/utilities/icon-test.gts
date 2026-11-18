@@ -12,6 +12,75 @@ const style = (selector: string) =>
   getComputedStyle(document.querySelector(selector) as HTMLElement);
 const px = (value: string) => parseFloat(value);
 
+// The values below are the design artifact's Icon spec (Product Design System,
+// Glyph & Icon), transcribed. Classes are written out in full so Tailwind
+// generates each reference for the test build.
+
+type Role =
+  | 'neutral'
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'success'
+  | 'warning'
+  | 'danger';
+
+// [size, circle px, plain box px, icon px, ring px]
+const SIZES = [
+  ['4xs', 16, 12, 8, 0.5],
+  ['3xs', 20, 14, 10, 0.5],
+  ['2xs', 24, 16, 12, 1],
+  ['xs', 32, 20, 16, 1],
+  ['sm', 40, 24, 20, 1.5],
+  ['md', 48, 32, 28, 2],
+  ['lg', 64, 40, 32, 2],
+  ['xl', 64, 40, 40, 2],
+  ['2xl', 80, 48, 48, 2],
+  ['3xl', 96, 56, 56, 2.5]
+] as const;
+
+// [role, fill + ink classes]
+const SOLID: [Role, string][] = [
+  ['primary', 'bg-primary text-on-primary'],
+  ['neutral', 'bg-on-neutral-subtle text-on-neutral'],
+  ['secondary', 'bg-secondary text-on-secondary'],
+  ['tertiary', 'bg-tertiary text-on-tertiary'],
+  ['success', 'bg-success text-on-success'],
+  ['warning', 'bg-warning text-on-warning'],
+  ['danger', 'bg-danger text-on-danger']
+];
+
+const SOFT: [Role, string][] = [
+  ['primary', 'bg-primary-soft text-on-primary-soft'],
+  ['neutral', 'bg-neutral-muted text-on-neutral-muted'],
+  ['secondary', 'bg-secondary-soft text-on-secondary-soft'],
+  ['tertiary', 'bg-tertiary-soft text-on-tertiary-soft'],
+  ['success', 'bg-success-soft text-on-success-soft'],
+  ['warning', 'bg-warning-muted text-on-warning-muted'],
+  ['danger', 'bg-danger-soft text-on-danger-soft']
+];
+
+const SUBTLE: [Role, string][] = [
+  ['primary', 'bg-primary-soft text-primary'],
+  ['neutral', 'bg-neutral-subtle text-neutral-strong'],
+  ['secondary', 'bg-secondary-soft text-secondary'],
+  ['tertiary', 'bg-tertiary-muted text-tertiary-strong'],
+  ['success', 'bg-success-muted text-success-strong'],
+  ['warning', 'bg-warning-subtle text-warning'],
+  ['danger', 'bg-danger-muted text-danger']
+];
+
+// Ink for the variants with no fill behind the icon.
+const INK: [Role, string][] = [
+  ['primary', 'text-primary'],
+  ['neutral', 'text-on-neutral-subtle'],
+  ['secondary', 'text-secondary'],
+  ['tertiary', 'text-tertiary-strong'],
+  ['success', 'text-success-strong'],
+  ['warning', 'text-warning'],
+  ['danger', 'text-danger']
+];
+
 module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
   setupRenderingTest(hooks);
 
@@ -31,7 +100,7 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
         'rgba(0, 0, 0, 0)',
         'no background'
       );
-      assert.strictEqual(icon.borderTopWidth, '0px', 'no border');
+      assert.strictEqual(icon.boxShadow, 'none', 'no ring');
       assert.strictEqual(
         icon.color,
         style('[data-test-parent]').color,
@@ -50,28 +119,11 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
   });
 
   module('size', function () {
-    // [size, circle px, reference class]. The icon is as large as the
-    // shipped `size-icon-*` utility of the same name, written out in full so
-    // Tailwind generates it.
-    const sizes = [
-      ['4xs', 16, 'size-icon-4xs'],
-      ['3xs', 20, 'size-icon-3xs'],
-      ['2xs', 24, 'size-icon-2xs'],
-      ['xs', 32, 'size-icon-xs'],
-      ['sm', 40, 'size-icon-sm'],
-      ['md', 48, 'size-icon-md'],
-      ['lg', 64, 'size-icon-lg'],
-      ['xl', 72, 'size-icon-xl'],
-      ['2xl', 80, 'size-icon-2xl'],
-      ['3xl', 96, 'size-icon-3xl']
-    ] as const;
-
-    for (const [size, circle, ref] of sizes) {
-      test(`@size="${size}" is a ${circle}px circle with a size-icon-${size} icon`, async function (assert) {
+    for (const [size, circle, , glyph] of SIZES) {
+      test(`@size="${size}" filled is a ${circle}px circle with a ${glyph}px icon`, async function (assert) {
         await render(
           <template>
-            <Icon @size={{size}} data-test-icon><Mark /></Icon>
-            <span class="inline-block {{ref}}" data-test-ref></span>
+            <Icon @variant="solid" @size={{size}} data-test-icon><Mark /></Icon>
           </template>
         );
 
@@ -81,16 +133,49 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
         assert.strictEqual(icon.flexShrink, '0', 'does not shrink');
 
         const mark = style('[data-test-svg]');
-        const expected = style('[data-test-ref]');
-        assert.strictEqual(mark.width, expected.width, 'icon width');
-        assert.strictEqual(mark.height, expected.height, 'icon height');
+        assert.strictEqual(px(mark.width), glyph, 'icon width');
+        assert.strictEqual(px(mark.height), glyph, 'icon height');
+      });
+    }
+
+    for (const [size, , box, glyph] of SIZES) {
+      test(`@size="${size}" plain has a tighter ${box}px box and a ${glyph}px icon`, async function (assert) {
+        await render(
+          <template>
+            <Icon @size={{size}} data-test-icon><Mark /></Icon>
+          </template>
+        );
+
+        const icon = style('[data-test-icon]');
+        assert.strictEqual(px(icon.width), box, 'width');
+        assert.strictEqual(px(icon.height), box, 'height');
+        assert.strictEqual(px(style('[data-test-svg]').width), glyph, 'icon');
+      });
+    }
+
+    for (const [size, circle, , , ring] of SIZES) {
+      test(`@size="${size}" outline keeps the ${circle}px circle and draws a ${ring}px inset ring`, async function (assert) {
+        await render(
+          <template>
+            <Icon @variant="outline" @size={{size}} data-test-icon><Mark
+              /></Icon>
+          </template>
+        );
+
+        const icon = style('[data-test-icon]');
+        assert.strictEqual(px(icon.width), circle, 'width');
+        assert.true(icon.boxShadow.includes('inset'), icon.boxShadow);
+        assert.true(
+          new RegExp(`0px 0px 0px ${ring}px`).test(icon.boxShadow),
+          `ring ${ring}px in ${icon.boxShadow}`
+        );
       });
     }
 
     test('it defaults to md', async function (assert) {
       await render(
         <template>
-          <Icon data-test-icon><Mark /></Icon>
+          <Icon @variant="solid" data-test-icon><Mark /></Icon>
         </template>
       );
       assert.strictEqual(px(style('[data-test-icon]').width), 48);
@@ -98,97 +183,101 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
   });
 
   module('variant and color', function () {
-    // Each reference is written out in full so Tailwind generates it. The
-    // reference is the shipped utility for the token the variant should use.
-    test('@variant="solid" fills with the color and sets the contrast text', async function (assert) {
-      await render(
-        <template>
-          <Icon @variant="solid" @color="primary" data-test-icon><Mark /></Icon>
-          <span class="bg-primary text-on-primary" data-test-ref></span>
-        </template>
-      );
-      const icon = style('[data-test-icon]');
-      const ref = style('[data-test-ref]');
-      assert.strictEqual(icon.backgroundColor, ref.backgroundColor, 'fill');
-      assert.strictEqual(icon.color, ref.color, 'icon color');
-    });
+    for (const [role, classes] of SOLID) {
+      test(`solid ${role}`, async function (assert) {
+        await render(
+          <template>
+            <Icon @variant="solid" @color={{role}} data-test-icon><Mark
+              /></Icon>
+            <span class={{classes}} data-test-ref></span>
+          </template>
+        );
+        const icon = style('[data-test-icon]');
+        const ref = style('[data-test-ref]');
+        assert.strictEqual(icon.backgroundColor, ref.backgroundColor, 'fill');
+        assert.strictEqual(icon.color, ref.color, 'icon color');
+      });
+    }
 
-    test('@variant="soft" uses the muted fill', async function (assert) {
-      await render(
-        <template>
-          <Icon @variant="soft" @color="success" data-test-icon><Mark /></Icon>
-          <span
-            class="bg-success-muted text-on-success-muted"
-            data-test-ref
-          ></span>
-        </template>
-      );
-      const icon = style('[data-test-icon]');
-      const ref = style('[data-test-ref]');
-      assert.strictEqual(icon.backgroundColor, ref.backgroundColor, 'fill');
-      assert.strictEqual(icon.color, ref.color, 'icon color');
-    });
+    for (const [role, classes] of SOFT) {
+      test(`soft ${role}`, async function (assert) {
+        await render(
+          <template>
+            <Icon @variant="soft" @color={{role}} data-test-icon><Mark /></Icon>
+            <span class={{classes}} data-test-ref></span>
+          </template>
+        );
+        const icon = style('[data-test-icon]');
+        const ref = style('[data-test-ref]');
+        assert.strictEqual(icon.backgroundColor, ref.backgroundColor, 'fill');
+        assert.strictEqual(icon.color, ref.color, 'icon color');
+      });
+    }
 
-    test('@variant="subtle" uses the subtle fill', async function (assert) {
+    for (const [role, classes] of SUBTLE) {
+      test(`subtle ${role}`, async function (assert) {
+        await render(
+          <template>
+            <Icon @variant="subtle" @color={{role}} data-test-icon><Mark
+              /></Icon>
+            <span class={{classes}} data-test-ref></span>
+          </template>
+        );
+        const icon = style('[data-test-icon]');
+        const ref = style('[data-test-ref]');
+        assert.strictEqual(icon.backgroundColor, ref.backgroundColor, 'fill');
+        assert.strictEqual(icon.color, ref.color, 'icon color');
+      });
+    }
+
+    for (const [role, classes] of INK) {
+      test(`outline ${role} has no fill and inks the icon`, async function (assert) {
+        await render(
+          <template>
+            <Icon @variant="outline" @color={{role}} data-test-icon><Mark
+              /></Icon>
+            <span class={{classes}} data-test-ref></span>
+          </template>
+        );
+        const icon = style('[data-test-icon]');
+        assert.strictEqual(icon.backgroundColor, 'rgba(0, 0, 0, 0)', 'no fill');
+        assert.strictEqual(icon.color, style('[data-test-ref]').color, 'ink');
+      });
+
+      test(`plain ${role} has no fill and inks the icon`, async function (assert) {
+        await render(
+          <template>
+            <Icon @variant="plain" @color={{role}} data-test-icon><Mark
+              /></Icon>
+            <span class={{classes}} data-test-ref></span>
+          </template>
+        );
+        const icon = style('[data-test-icon]');
+        assert.strictEqual(icon.backgroundColor, 'rgba(0, 0, 0, 0)', 'no fill');
+        assert.strictEqual(icon.boxShadow, 'none', 'no ring');
+        assert.strictEqual(icon.color, style('[data-test-ref]').color, 'ink');
+      });
+    }
+
+    test('the ring is drawn in the ink color', async function (assert) {
       await render(
         <template>
-          <Icon @variant="subtle" @color="warning" data-test-icon><Mark
+          <Icon @variant="outline" @color="success" data-test-icon><Mark
             /></Icon>
-          <span
-            class="bg-warning-subtle text-on-warning-subtle"
-            data-test-ref
-          ></span>
         </template>
       );
       const icon = style('[data-test-icon]');
-      const ref = style('[data-test-ref]');
-      assert.strictEqual(icon.backgroundColor, ref.backgroundColor, 'fill');
-      assert.strictEqual(icon.color, ref.color, 'icon color');
-    });
-
-    test('@variant="outline" draws a ring and no fill, inside the same box', async function (assert) {
-      await render(
-        <template>
-          <Icon @variant="outline" @color="danger" data-test-icon><Mark
-            /></Icon>
-          <Icon @variant="solid" @color="danger" data-test-solid><Mark /></Icon>
-          <span
-            class="border border-danger text-danger-strong"
-            data-test-ref
-          ></span>
-        </template>
+      assert.true(
+        icon.boxShadow.includes(`${icon.color} 0px 0px 0px 2px inset`),
+        `${icon.boxShadow} has a 2px inset ring in ${icon.color}`
       );
-      const icon = style('[data-test-icon]');
-      const ref = style('[data-test-ref]');
-      assert.strictEqual(icon.backgroundColor, 'rgba(0, 0, 0, 0)', 'no fill');
-      assert.strictEqual(icon.borderTopColor, ref.borderTopColor, 'ring color');
-      assert.true(px(icon.borderTopWidth) > 0, 'ring is drawn');
-      assert.strictEqual(icon.color, ref.color, 'icon color');
-      assert.strictEqual(
-        icon.width,
-        style('[data-test-solid]').width,
-        'same box as a filled icon'
-      );
-    });
-
-    test('@variant="plain" with a color tints only the icon', async function (assert) {
-      await render(
-        <template>
-          <Icon @variant="plain" @color="success" data-test-icon><Mark /></Icon>
-          <span class="text-success-strong" data-test-ref></span>
-        </template>
-      );
-      const icon = style('[data-test-icon]');
-      assert.strictEqual(icon.backgroundColor, 'rgba(0, 0, 0, 0)', 'no fill');
-      assert.strictEqual(icon.borderTopWidth, '0px', 'no ring');
-      assert.strictEqual(icon.color, style('[data-test-ref]').color);
     });
 
     test('a filled variant with no @color is neutral', async function (assert) {
       await render(
         <template>
           <Icon @variant="solid" data-test-icon><Mark /></Icon>
-          <span class="bg-neutral" data-test-ref></span>
+          <span class="bg-on-neutral-subtle" data-test-ref></span>
         </template>
       );
       assert.strictEqual(
@@ -198,20 +287,27 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
     });
 
     test('each color gives a different fill', async function (assert) {
+      // `secondary` is left out: its fill is the same as `warning`'s today.
+      const colors = [
+        'neutral',
+        'primary',
+        'tertiary',
+        'success',
+        'warning',
+        'danger'
+      ] as const;
       await render(
         <template>
-          <Icon @variant="solid" @color="neutral" data-test-neutral><Mark
-            /></Icon>
-          <Icon @variant="solid" @color="primary" data-test-primary><Mark
-            /></Icon>
-          <Icon @variant="solid" @color="danger" data-test-danger><Mark
-            /></Icon>
+          {{#each colors as |c|}}
+            <Icon @variant="solid" @color={{c}} data-test-color={{c}}><Mark
+              /></Icon>
+          {{/each}}
         </template>
       );
-      const fills = ['neutral', 'primary', 'danger'].map(
-        (c) => style(`[data-test-${c}]`).backgroundColor
+      const fills = colors.map(
+        (c) => style(`[data-test-color="${c}"]`).backgroundColor
       );
-      assert.strictEqual(new Set(fills).size, 3, fills.join(' | '));
+      assert.strictEqual(new Set(fills).size, 6, fills.join(' | '));
     });
   });
 

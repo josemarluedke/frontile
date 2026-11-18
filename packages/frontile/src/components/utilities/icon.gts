@@ -19,7 +19,8 @@ export interface IconSignature {
     /**
      * How the circle is drawn. `plain` has no circle, only the icon. `solid`,
      * `soft` and `subtle` fill it at decreasing strength, and `outline` draws
-     * a ring. Every variant occupies the same box.
+     * a ring. A plain icon's box is tighter than the circle of the other
+     * variants at the same size.
      *
      * @defaultValue 'plain'
      */

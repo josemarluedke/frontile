@@ -11,9 +11,12 @@ const ROLES = [
 ] as const;
 type Role = (typeof ROLES)[number];
 
-// Every class is written out in full so Tailwind can find it in source.
+// Fill and ink per color and variant, from the design artifact's Icon spec.
+// The artifact picks a different level per role (soft is `*-soft` for most and
+// `*-muted` for neutral and warning), so these are tables, not a rule. Every
+// class is written out in full so Tailwind can find it in source.
 const SOLID: Record<Role, string> = {
-  neutral: 'bg-neutral text-on-neutral',
+  neutral: 'bg-on-neutral-subtle text-on-neutral',
   primary: 'bg-primary text-on-primary',
   secondary: 'bg-secondary text-on-secondary',
   tertiary: 'bg-tertiary text-on-tertiary',
@@ -24,72 +27,64 @@ const SOLID: Record<Role, string> = {
 
 const SOFT: Record<Role, string> = {
   neutral: 'bg-neutral-muted text-on-neutral-muted',
-  primary: 'bg-primary-muted text-on-primary-muted',
-  secondary: 'bg-secondary-muted text-on-secondary-muted',
-  tertiary: 'bg-tertiary-muted text-on-tertiary-muted',
-  success: 'bg-success-muted text-on-success-muted',
+  primary: 'bg-primary-soft text-on-primary-soft',
+  secondary: 'bg-secondary-soft text-on-secondary-soft',
+  tertiary: 'bg-tertiary-soft text-on-tertiary-soft',
+  success: 'bg-success-soft text-on-success-soft',
   warning: 'bg-warning-muted text-on-warning-muted',
-  danger: 'bg-danger-muted text-on-danger-muted'
+  danger: 'bg-danger-soft text-on-danger-soft'
 };
 
 const SUBTLE: Record<Role, string> = {
-  neutral: 'bg-neutral-subtle text-on-neutral-subtle',
-  primary: 'bg-primary-subtle text-on-primary-subtle',
-  secondary: 'bg-secondary-subtle text-on-secondary-subtle',
-  tertiary: 'bg-tertiary-subtle text-on-tertiary-subtle',
-  success: 'bg-success-subtle text-on-success-subtle',
-  warning: 'bg-warning-subtle text-on-warning-subtle',
-  danger: 'bg-danger-subtle text-on-danger-subtle'
+  neutral: 'bg-neutral-subtle text-neutral-strong',
+  primary: 'bg-primary-soft text-primary',
+  secondary: 'bg-secondary-soft text-secondary',
+  tertiary: 'bg-tertiary-muted text-tertiary-strong',
+  success: 'bg-success-muted text-success-strong',
+  warning: 'bg-warning-subtle text-warning',
+  danger: 'bg-danger-muted text-danger'
 };
 
-// The ring is an inset border on a `box-border` circle, so the outer size and
-// the icon position match the filled variants.
-const OUTLINE: Record<Role, string> = {
-  neutral: 'border border-neutral text-neutral-strong',
-  primary: 'border border-primary text-primary-strong',
-  secondary: 'border border-secondary text-secondary-strong',
-  tertiary: 'border border-tertiary text-tertiary-strong',
-  success: 'border border-success text-success-strong',
-  warning: 'border border-warning text-warning-strong',
-  danger: 'border border-danger text-danger-strong'
-};
-
-const PLAIN: Record<Role, string> = {
-  neutral: 'text-neutral-strong',
-  primary: 'text-primary-strong',
-  secondary: 'text-secondary-strong',
+// The icon color for the variants with no fill behind it. The outline ring
+// takes the same color.
+const INK: Record<Role, string> = {
+  neutral: 'text-on-neutral-subtle',
+  primary: 'text-primary',
+  secondary: 'text-secondary',
   tertiary: 'text-tertiary-strong',
   success: 'text-success-strong',
-  warning: 'text-warning-strong',
-  danger: 'text-danger-strong'
+  warning: 'text-warning',
+  danger: 'text-danger'
 };
 
 const BY_VARIANT = {
   solid: SOLID,
   soft: SOFT,
   subtle: SUBTLE,
-  outline: OUTLINE,
-  plain: PLAIN
+  outline: INK,
+  plain: INK
 } as const;
 
-// A circle that centers an icon. The circle diameters are Tailwind spacing
-// steps. The icon is sized by the `svg` it contains, to the `size-icon-*` step
-// of the same name, which is the label text size at that step: an Icon at a
-// size matches the icon inside a Button, Badge or Chip at that size.
+// A circle that centers an icon, sized from the design artifact: the circle
+// diameter, the icon inside it, and for `plain` a tighter box with no circle.
+// The icon is the `svg` the block contains, so it needs no size class of its
+// own. These are the artifact's pixel values, not the `size-icon-*` ramp, which
+// follows the label text. Outline draws its ring as an inset shadow in the
+// icon color, 0.5px at 4xs up to 2.5px at 3xl.
 const icon = tv({
   base: 'box-border inline-flex shrink-0 items-center justify-center rounded-full align-middle',
   variants: {
     size: {
-      '4xs': 'size-4 [&_svg]:size-icon-4xs',
-      '3xs': 'size-5 [&_svg]:size-icon-3xs',
-      '2xs': 'size-6 [&_svg]:size-icon-2xs',
-      xs: 'size-8 [&_svg]:size-icon-xs',
-      sm: 'size-10 [&_svg]:size-icon-sm',
-      md: 'size-12 [&_svg]:size-icon-md',
-      lg: 'size-16 [&_svg]:size-icon-lg',
-      xl: 'size-18 [&_svg]:size-icon-xl',
-      '2xl': 'size-20 [&_svg]:size-icon-2xl',
-      '3xl': 'size-24 [&_svg]:size-icon-3xl'
+      '4xs': 'size-4 [&_svg]:size-[8px]',
+      '3xs': 'size-5 [&_svg]:size-[10px]',
+      '2xs': 'size-6 [&_svg]:size-[12px]',
+      xs: 'size-8 [&_svg]:size-[16px]',
+      sm: 'size-10 [&_svg]:size-[20px]',
+      md: 'size-12 [&_svg]:size-[28px]',
+      lg: 'size-16 [&_svg]:size-[32px]',
+      xl: 'size-16 [&_svg]:size-[40px]',
+      '2xl': 'size-20 [&_svg]:size-[48px]',
+      '3xl': 'size-24 [&_svg]:size-[56px]'
     },
     color: {
       neutral: '',
@@ -112,13 +107,50 @@ const icon = tv({
       true: 'theme-inverse'
     }
   },
-  compoundVariants: ROLES.flatMap((color) =>
-    (Object.keys(BY_VARIANT) as (keyof typeof BY_VARIANT)[]).map((variant) => ({
-      color,
-      variant,
-      class: BY_VARIANT[variant][color]
-    }))
-  ),
+  compoundVariants: [
+    ...ROLES.flatMap((color) =>
+      (Object.keys(BY_VARIANT) as (keyof typeof BY_VARIANT)[]).map(
+        (variant) => ({ color, variant, class: BY_VARIANT[variant][color] })
+      )
+    ),
+    // Plain has no circle, so its box is tighter. The icon size is unchanged.
+    { variant: 'plain', size: '4xs', class: 'size-3' },
+    { variant: 'plain', size: '3xs', class: 'size-3.5' },
+    { variant: 'plain', size: '2xs', class: 'size-4' },
+    { variant: 'plain', size: 'xs', class: 'size-5' },
+    { variant: 'plain', size: 'sm', class: 'size-6' },
+    { variant: 'plain', size: 'md', class: 'size-8' },
+    { variant: 'plain', size: 'lg', class: 'size-10' },
+    { variant: 'plain', size: 'xl', class: 'size-10' },
+    { variant: 'plain', size: '2xl', class: 'size-12' },
+    { variant: 'plain', size: '3xl', class: 'size-14' },
+    // The ring, in the icon color.
+    {
+      variant: 'outline',
+      size: ['4xs', '3xs'],
+      class: 'shadow-[inset_0_0_0_0.5px_currentColor]'
+    },
+    {
+      variant: 'outline',
+      size: ['2xs', 'xs'],
+      class: 'shadow-[inset_0_0_0_1px_currentColor]'
+    },
+    {
+      variant: 'outline',
+      size: 'sm',
+      class: 'shadow-[inset_0_0_0_1.5px_currentColor]'
+    },
+    {
+      variant: 'outline',
+      size: ['md', 'lg', 'xl', '2xl'],
+      class: 'shadow-[inset_0_0_0_2px_currentColor]'
+    },
+    {
+      variant: 'outline',
+      size: '3xl',
+      class: 'shadow-[inset_0_0_0_2.5px_currentColor]'
+    }
+  ],
   // `color` has no default: a plain icon without one inherits the text color.
   defaultVariants: {
     size: 'md',
