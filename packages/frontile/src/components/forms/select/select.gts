@@ -412,7 +412,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
         this.args.color ??
         ((chip?.intent ?? this.args.intent) ? undefined : 'neutral'),
       intent: chip?.intent ?? this.args.intent,
-      size: chip?.size ?? 'sm',
+      size: chip?.size ?? 'xs',
       radius: chip?.radius,
       withDot: chip?.withDot ?? false
     };

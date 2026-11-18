@@ -31,14 +31,17 @@ export const badgeStubStyles: ReturnType<typeof useStyles>['badge'] = tv({
       danger: 'badge-danger'
     },
     size: {
+      '2xs': 'badge-2xs',
       xs: 'badge-xs',
       sm: 'badge-sm',
       md: 'badge-md',
-      lg: 'badge-lg'
+      lg: 'badge-lg',
+      xl: 'badge-xl',
+      '2xl': 'badge-2xl'
     }
   },
   defaultVariants: {
-    size: 'md',
+    size: 'xs',
     color: 'neutral',
     variant: 'soft'
   }

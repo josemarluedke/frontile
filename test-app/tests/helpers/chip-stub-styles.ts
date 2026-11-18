@@ -34,14 +34,17 @@ export const chipStubStyles: ReturnType<typeof useStyles>['chip'] = tv({
       danger: 'chip-danger'
     },
     size: {
+      '2xs': 'chip-2xs',
       xs: 'chip-xs',
       sm: 'chip-sm',
       md: 'chip-md',
-      lg: 'chip-lg'
+      lg: 'chip-lg',
+      xl: 'chip-xl',
+      '2xl': 'chip-2xl'
     }
   },
   defaultVariants: {
-    size: 'md',
+    size: 'xs',
     color: 'primary'
   }
 }) as never;
