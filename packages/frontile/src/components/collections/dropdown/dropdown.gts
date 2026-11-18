@@ -22,7 +22,8 @@ import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from '../listbox/item';
 import type { WithBoundArgs } from '@glint/template';
 import { cached } from '@glimmer/tracking';
-import { renamedArgValue } from '../../../-private/deprecated-args';
+import type Owner from '@ember/owner';
+import { assertRemovedArg } from '../../../-private/removed-args';
 
 interface DropdownArgs extends Pick<
   PopoverSignature['Args'],
@@ -315,7 +316,7 @@ class TriggerBehavior extends Modifier<TriggerBehaviorSignature> {
 
 interface TriggerArgs extends Pick<
   ButtonSignature['Args'],
-  'variant' | 'appearance' | 'color' | 'intent' | 'size' | 'isInGroup' | 'class'
+  'variant' | 'color' | 'size' | 'isInGroup' | 'class'
 > {
   /**
    * @internal
@@ -338,14 +339,19 @@ export interface TriggerSignature {
  * on it, so all of the open/close behaviour lives in one place.
  */
 class Trigger extends Component<TriggerSignature> {
+  constructor(owner: Owner, args: TriggerSignature['Args']) {
+    super(owner, args);
+
+    assertRemovedArg('Dropdown Trigger', this.args, 'appearance', 'variant');
+    assertRemovedArg('Dropdown Trigger', this.args, 'intent', 'color');
+  }
+
   <template>
     <Button
       {{@triggerModifier}}
       @type="button"
       @variant={{@variant}}
-      @appearance={{@appearance}}
       @color={{@color}}
-      @intent={{@intent}}
       @size={{@size}}
       @class={{@class}}
       @isInGroup={{@isInGroup}}
@@ -362,9 +368,7 @@ interface MenuArgs
     Pick<
       ListboxSignature<unknown>['Args'],
       | 'variant'
-      | 'appearance'
       | 'color'
-      | 'intent'
       | 'class'
       | 'selectionMode'
       | 'selectedKeys'
@@ -485,47 +489,15 @@ class Menu extends Component<MenuSignature> {
    */
   #subs = new Map<string, SubHandle>();
 
+  constructor(owner: Owner, args: MenuSignature['Args']) {
+    super(owner, args);
+
+    assertRemovedArg('Dropdown Menu', this.args, 'appearance', 'variant');
+    assertRemovedArg('Dropdown Menu', this.args, 'intent', 'color');
+  }
+
   get depth(): number {
     return this.args.depth ?? 0;
-  }
-
-  /**
-   * Resolved once (`@cached`): `context` is read many times per render, and
-   * without caching each read would re-run the deprecation.
-   */
-  @cached
-  get variant() {
-    return renamedArgValue(
-      this.args.variant,
-      this.args.appearance,
-      { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
-      {
-        component: 'Dropdown',
-        from: 'appearance',
-        to: 'variant',
-        id: 'frontile.dropdown.appearance'
-      }
-    );
-  }
-
-  /**
-   * Resolved once (`@cached`) and forwarded to the internal `Listbox` as
-   * `@color` only -- never `@intent` as well, which would make the inner
-   * `Listbox` raise its own deprecation for the same usage.
-   */
-  @cached
-  get color() {
-    return renamedArgValue(
-      this.args.color,
-      this.args.intent,
-      { default: 'neutral' } as const,
-      {
-        component: 'Dropdown',
-        from: 'intent',
-        to: 'color',
-        id: 'frontile.dropdown.intent'
-      }
-    );
   }
 
   /**
@@ -539,8 +511,8 @@ class Menu extends Component<MenuSignature> {
    * declares nothing keeps using the root's settings, and is handed the
    * parent's own context object back untouched.
    *
-   * Resolved once (`@cached`) for the same reason `variant` is: `context` is
-   * read a dozen times per render, and the overriding branch below builds a
+   * Resolved once (`@cached`) because `context` is read a dozen times per
+   * render, and the overriding branch below builds a
    * new object each time it runs. Without the cache every read produced a
    * fresh identity, which `Sub` then turned into a fresh child context for
    * the level beneath it.
@@ -560,8 +532,8 @@ class Menu extends Component<MenuSignature> {
       allowEmpty: this.args.allowEmpty,
       onAction: this.args.onAction,
       onSelectionChange: this.args.onSelectionChange,
-      variant: this.variant,
-      color: this.color,
+      variant: this.args.variant,
+      color: this.args.color,
       shortcutVariant: this.args.shortcutVariant,
       closeOnItemSelect: this.args.closeOnItemSelect,
       disableTransitions: this.args.disableTransitions,

@@ -17,7 +17,7 @@ import { Dropdown } from 'frontile';
 
 ### Basic Dropdown
 
-A feature-rich action menu showcasing icons, descriptions, shortcuts, dividers, and color intents.
+A feature-rich action menu showcasing icons, descriptions, shortcuts, dividers, and colors.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
@@ -847,7 +847,7 @@ nest to any depth.
 
 The arguments declared once on the root `d.Menu` (`@onAction`, `@selectionMode`,
 `@selectedKeys`, `@disabledKeys`, `@allowEmpty`, `@onSelectionChange`, `@variant`,
-`@intent`, `@shortcutVariant`, `@closeOnItemSelect`, `@disableTransitions`,
+`@color`, `@shortcutVariant`, `@closeOnItemSelect`, `@disableTransitions`,
 `@transitionDuration`) apply at every depth, so a nested `s.Menu` only needs its own items.
 Passing one of these same arguments to a nested `s.Menu` instead of the root has no effect —
 the root's value always wins, silently — so declare them once, on `d.Menu`.

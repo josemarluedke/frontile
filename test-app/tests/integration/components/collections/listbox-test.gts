@@ -10,12 +10,7 @@ import {
 import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { modifier } from 'ember-modifier';
-import {
-  Listbox,
-  Select,
-  setKbdPlatform,
-  type ListboxSignature
-} from 'frontile';
+import { Listbox, setKbdPlatform, type ListboxSignature } from 'frontile';
 import { array, get } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
@@ -1412,16 +1407,6 @@ module(
         assert.deepEqual(ids, ['frontile.listbox.appearance']);
       });
 
-      test('Select forwards @variant to its items without double-deprecating', async function (assert) {
-        registerListboxItemStyles();
-
-        const { ids } = trackDeprecations();
-
-        await render(<template><Select @appearance="faded" /></template>);
-
-        assert.deepEqual(ids, ['frontile.select.appearance']);
-      });
-
       test('@color renders the new class', async function (assert) {
         registerListboxItemStyles();
 
@@ -1502,18 +1487,6 @@ module(
         // together, which the migration guide says to do.
         assert.dom('[data-test-id="item"]').hasClass('listbox-primary');
         assert.dom('[data-test-id="item"]').doesNotHaveClass('listbox-danger');
-      });
-
-      test('Select forwards @color without double-deprecating', async function (assert) {
-        registerListboxItemStyles();
-
-        const { ids } = trackDeprecations();
-
-        await render(
-          <template><Select @intent="danger" data-test-id="select" /></template>
-        );
-
-        assert.deepEqual(ids, ['frontile.select.intent']);
       });
     });
 

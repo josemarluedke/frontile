@@ -15,6 +15,8 @@ import { collectAssertions } from '../../../helpers/collect-assertions';
 import { array } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { ownParts } from 'frontile/test-support';
+import { useCustomStyles } from '../../../helpers/scoped-styles';
+import { listboxItemStubStyles } from '../../../helpers/listbox-item-stub-styles';
 
 module(
   'Integration | Component | Autocomplete | @frontile/forms',
@@ -1242,6 +1244,74 @@ module(
         .dom('[data-component="close-button"]')
         .exists('the clear button renders');
       assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
+    });
+
+    module('removed @appearance / @intent', function (nested) {
+      useCustomStyles(nested, { listboxItem: listboxItemStubStyles });
+
+      test('@appearance fails in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- @appearance was removed in 0.19.0 }}
+              <Autocomplete @appearance="faded" />
+            </template>
+          )
+        );
+
+        assert.true(
+          failed.some((m) =>
+            m.includes(
+              'Autocomplete: @appearance was removed in 0.19.0. Use @variant.'
+            )
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+      });
+
+      test('@intent fails in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- @intent was removed in 0.19.0 }}
+              <Autocomplete @intent="danger" />
+            </template>
+          )
+        );
+
+        assert.true(
+          failed.some((m) =>
+            m.includes(
+              'Autocomplete: @intent was removed in 0.19.0. Use @color.'
+            )
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+      });
+
+      test('@variant and @color reach the listbox items', async function (assert) {
+        const items = ['Apple', 'Banana'];
+
+        const failed = await collectAssertions(async () => {
+          await render(
+            <template>
+              <Autocomplete
+                @items={{items}}
+                @variant="outline"
+                @color="danger"
+              />
+            </template>
+          );
+          await click(
+            '[data-component="autocomplete"] [data-part="input"]:not(select)'
+          );
+        });
+
+        assert.deepEqual(failed, [], 'no assertion fires for the new args');
+        const item = '[data-component="listbox-item"][data-key="Apple"]';
+        assert.dom(item).hasClass('item-variant-outline');
+        assert.dom(item).hasClass('item-danger');
+      });
     });
 
     module('@displayLimit', function () {

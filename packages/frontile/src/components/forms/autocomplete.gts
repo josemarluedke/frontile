@@ -32,7 +32,7 @@ import {
 } from '../../utils/filter';
 import { debounce, cancel } from '@ember/runloop';
 import { assert } from '@ember/debug';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
 
 import { modifier } from 'ember-modifier';
 
@@ -50,14 +50,7 @@ interface AutocompleteArgs<T>
     >,
     Pick<
       ListboxSignature<T>['Args'],
-      | 'variant'
-      | 'appearance'
-      | 'color'
-      | 'intent'
-      | 'disabledKeys'
-      | 'allowEmpty'
-      | 'items'
-      | 'onAction'
+      'variant' | 'color' | 'disabledKeys' | 'allowEmpty' | 'items' | 'onAction'
     >,
     Pick<
       ContentSignature['Args'],
@@ -407,6 +400,10 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
 
   constructor(owner: Owner, args: AutocompleteArgs<T>) {
     super(owner, args);
+
+    assertRemovedArg('Autocomplete', this.args, 'appearance', 'variant');
+    assertRemovedArg('Autocomplete', this.args, 'intent', 'color');
+
     this._selectedKey = this.args.selectedKey || null;
   }
 
@@ -618,55 +615,9 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   @cached
   get classes() {
     const { autocomplete } = useStyles();
-    // Referenced here, on the always-rendered root, so `@appearance`/
-    // `@variant` (and `@intent`/`@color`) raises its deprecation regardless
-    // of whether the popover content (and so the internal `Listbox`) is
-    // currently mounted.
-    void this.variant;
-    void this.color;
     return autocomplete({
       size: this.args.inputSize
     });
-  }
-
-  /**
-   * Resolved once (`@cached`) and forwarded to the internal `Listbox` as
-   * `@variant` only -- never `@appearance` as well, which would make the
-   * inner `Listbox` raise its own deprecation for the same usage.
-   */
-  @cached
-  get variant() {
-    return renamedArgValue(
-      this.args.variant,
-      this.args.appearance,
-      { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
-      {
-        component: 'Autocomplete',
-        from: 'appearance',
-        to: 'variant',
-        id: 'frontile.autocomplete.appearance'
-      }
-    );
-  }
-
-  /**
-   * Resolved once (`@cached`) and forwarded to the internal `Listbox` as
-   * `@color` only -- never `@intent` as well, which would make the inner
-   * `Listbox` raise its own deprecation for the same usage.
-   */
-  @cached
-  get color() {
-    return renamedArgValue(
-      this.args.color,
-      this.args.intent,
-      { default: 'neutral' } as const,
-      {
-        component: 'Autocomplete',
-        from: 'intent',
-        to: 'color',
-        id: 'frontile.autocomplete.intent'
-      }
-    );
   }
 
   /**
@@ -939,9 +890,9 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
             <Listbox
               @items={{this.displayedItems}}
               @allowEmpty={{@allowEmpty}}
-              @variant={{this.variant}}
+              @variant={{@variant}}
               @disabledKeys={{@disabledKeys}}
-              @color={{this.color}}
+              @color={{@color}}
               @isKeyboardEventsEnabled={{true}}
               @onAction={{this.onAction}}
               @onSelectionChange={{this.onSelectionChange}}
@@ -960,8 +911,8 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
                 {{else}}
                   <l.Item
                     @key={{l.key}}
-                    @variant={{this.variant}}
-                    @color={{this.color}}
+                    @variant={{@variant}}
+                    @color={{@color}}
                   >
                     {{l.label}}
                   </l.Item>
