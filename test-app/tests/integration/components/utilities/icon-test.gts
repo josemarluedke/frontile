@@ -50,26 +50,28 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
   });
 
   module('size', function () {
-    // [size, circle px, glyph px]. The glyph px are what platform-web's
-    // icon-canvas renders today, so swapping it for Icon changes nothing.
+    // [size, circle px, reference class]. The icon is as large as the
+    // shipped `size-icon-*` utility of the same name, written out in full so
+    // Tailwind generates it.
     const sizes = [
-      ['4xs', 16, 12.3],
-      ['3xs', 20, 14.06],
-      ['2xs', 24, 16],
-      ['xs', 32, 20.7],
-      ['sm', 40, 23.6],
-      ['md', 48, 32.6],
-      ['lg', 64, 39.7],
-      ['xl', 72, 39.7],
-      ['2xl', 80, 48.1],
-      ['3xl', 96, 54.9]
+      ['4xs', 16, 'size-icon-4xs'],
+      ['3xs', 20, 'size-icon-3xs'],
+      ['2xs', 24, 'size-icon-2xs'],
+      ['xs', 32, 'size-icon-xs'],
+      ['sm', 40, 'size-icon-sm'],
+      ['md', 48, 'size-icon-md'],
+      ['lg', 64, 'size-icon-lg'],
+      ['xl', 72, 'size-icon-xl'],
+      ['2xl', 80, 'size-icon-2xl'],
+      ['3xl', 96, 'size-icon-3xl']
     ] as const;
 
-    for (const [size, circle, glyph] of sizes) {
-      test(`@size="${size}" is a ${circle}px circle with a ${glyph}px icon`, async function (assert) {
+    for (const [size, circle, ref] of sizes) {
+      test(`@size="${size}" is a ${circle}px circle with a size-icon-${size} icon`, async function (assert) {
         await render(
           <template>
             <Icon @size={{size}} data-test-icon><Mark /></Icon>
+            <span class="inline-block {{ref}}" data-test-ref></span>
           </template>
         );
 
@@ -79,14 +81,9 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
         assert.strictEqual(icon.flexShrink, '0', 'does not shrink');
 
         const mark = style('[data-test-svg]');
-        assert.true(
-          Math.abs(px(mark.width) - glyph) < 0.5,
-          `icon width ${mark.width} is about ${glyph}px`
-        );
-        assert.true(
-          Math.abs(px(mark.height) - glyph) < 0.5,
-          `icon height ${mark.height} is about ${glyph}px`
-        );
+        const expected = style('[data-test-ref]');
+        assert.strictEqual(mark.width, expected.width, 'icon width');
+        assert.strictEqual(mark.height, expected.height, 'icon height');
       });
     }
 

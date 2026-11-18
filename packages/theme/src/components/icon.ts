@@ -73,23 +73,23 @@ const BY_VARIANT = {
 } as const;
 
 // A circle that centers an icon. The circle diameters are Tailwind spacing
-// steps; the icon is sized by the `svg` it contains, from the font-size scale,
-// so it needs no size class of its own. The icon sizes are the ones
-// platform-web's icon canvas renders, so replacing it changes nothing.
+// steps. The icon is sized by the `svg` it contains, to the `size-icon-*` step
+// of the same name, which is the label text size at that step: an Icon at a
+// size matches the icon inside a Button, Badge or Chip at that size.
 const icon = tv({
   base: 'box-border inline-flex shrink-0 items-center justify-center rounded-full align-middle',
   variants: {
     size: {
-      '4xs': 'size-4 [&_svg]:size-[var(--font-size-8)]',
-      '3xs': 'size-5 [&_svg]:size-[var(--font-size-10)]',
-      '2xs': 'size-6 [&_svg]:size-[var(--font-size-12)]',
-      xs: 'size-8 [&_svg]:size-[var(--font-size-16)]',
-      sm: 'size-10 [&_svg]:size-[var(--font-size-18)]',
-      md: 'size-12 [&_svg]:size-[var(--font-size-23)]',
-      lg: 'size-16 [&_svg]:size-[var(--font-size-26)]',
-      xl: 'size-18 [&_svg]:size-[var(--font-size-26)]',
-      '2xl': 'size-20 [&_svg]:size-[var(--font-size-29)]',
-      '3xl': 'size-24 [&_svg]:size-[var(--font-size-31)]'
+      '4xs': 'size-4 [&_svg]:size-icon-4xs',
+      '3xs': 'size-5 [&_svg]:size-icon-3xs',
+      '2xs': 'size-6 [&_svg]:size-icon-2xs',
+      xs: 'size-8 [&_svg]:size-icon-xs',
+      sm: 'size-10 [&_svg]:size-icon-sm',
+      md: 'size-12 [&_svg]:size-icon-md',
+      lg: 'size-16 [&_svg]:size-icon-lg',
+      xl: 'size-18 [&_svg]:size-icon-xl',
+      '2xl': 'size-20 [&_svg]:size-icon-2xl',
+      '3xl': 'size-24 [&_svg]:size-icon-3xl'
     },
     color: {
       neutral: '',
