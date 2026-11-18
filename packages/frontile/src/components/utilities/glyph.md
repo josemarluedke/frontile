@@ -74,6 +74,21 @@ import { Glyph } from 'frontile';
 </template>
 ```
 
+Use `@size='inherit'` to take the size of the surrounding text instead of a
+step. A glyph inside a Button, Chip or Badge then matches that component's label
+at whatever size it is.
+
+```gts
+import { Button, Glyph } from 'frontile';
+
+<template>
+  <Button @size='xs'>
+    <Glyph @name='check' @size='inherit' />
+    Save
+  </Button>
+</template>
+```
+
 ## Color
 
 A glyph uses the current text color. Set it with `@class`.

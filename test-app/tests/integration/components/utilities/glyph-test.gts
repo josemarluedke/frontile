@@ -89,6 +89,21 @@ module('Integration | Component | @frontile/utilities/Glyph', function (hooks) {
       });
     }
 
+    test('inherit follows the surrounding text instead of a ramp step', async function (assert) {
+      await render(
+        <template>
+          <span style="font-size: 40px">
+            <Glyph @name="check" @size="inherit" data-test-glyph />
+          </span>
+        </template>
+      );
+
+      assert.dom('[data-test-glyph]').hasClass('text-[1em]');
+      assert
+        .dom('[data-test-glyph]')
+        .doesNotHaveClass('text-(length:--text-strong-md)');
+    });
+
     test('md is the default size', async function (assert) {
       await render(
         <template><Glyph @name="check" data-test-glyph /></template>

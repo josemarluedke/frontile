@@ -25,7 +25,10 @@ const glyph = tv({
       lg: 'text-(length:--text-strong-lg)',
       xl: 'text-(length:--text-strong-xl)',
       '2xl': 'text-(length:--text-strong-2xl)',
-      '3xl': 'text-(length:--text-strong-3xl)'
+      '3xl': 'text-(length:--text-strong-3xl)',
+      // Takes the size of the text around it, for a glyph inside a Button,
+      // Chip or Badge whose own size should drive it.
+      inherit: 'text-[1em]'
     }
   },
   defaultVariants: {
