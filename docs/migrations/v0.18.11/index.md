@@ -7,9 +7,9 @@ subcategory: v0.18.11
 
 # Upgrading to v0.18.11
 
-v0.18.11 is a patch release, but it is **not passive**. It adopts the Facet 2.0
-default theme values, and the first of those changes the size of every
-`<Button>` in your app, whether or not you pass `@size`. No code change is
+v0.18.11 is a patch release, but it is **not passive**. It updates the default theme
+values, and the first of those changes the size of every `<Button>` in your
+app, whether or not you pass `@size`. No code change is
 required, but look at your buttons before you ship.
 
 Packages affected: `frontile` and `@frontile/theme`.
@@ -67,9 +67,8 @@ Badge text steps down to the body scale: `xs` and `sm` use `text-body-4xs`,
 `md` uses `text-body-2xs`, `lg` uses `text-body-sm`. Heights, padding and radii
 are unchanged, so layout does not move.
 
-Facet 2.0's content parts map onto the existing API, so Badge gained **no new
-slots or arguments**: `leading` is the default block, `price` is `@value`,
-`unit` is `@unit`, `startGlyph` is `<:startIcon>` and `endGlyph` is `<:endIcon>`.
+Badge gained **no new slots or arguments**. Its content is the default block,
+`@value`, `@unit`, `<:startIcon>` and `<:endIcon>`, as before.
 
 Chip now uses regular weight, matching Badge.
 
@@ -88,8 +87,7 @@ something different.
 
 ## What was deliberately not changed
 
-These are part of the wider Facet 2.0 work but are **not** in 0.18.11. Don't
-expect them yet:
+These are **not** in 0.18.11, so don't expect them:
 
 - Generated on-colors (`on-{category}-{level}`) keep their current values.
 - Divider keeps its current default style.
