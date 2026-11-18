@@ -36,7 +36,8 @@ import { Card } from 'frontile';
 ## Variants
 
 `outline` is the default, a bordered card. `flat` keeps the card fill but hides the
-border. `soft` swaps the fill for a faint tint, also without a border.
+border. `soft` swaps the fill for a faint tint, also without a border. The border is
+1px in every variant and state.
 
 ```gts preview
 import { Card } from 'frontile';
@@ -87,30 +88,23 @@ import { Card } from 'frontile';
 
 `@isInteractive` adds the hover, pressed, focus and pointer styles for a card that
 can be clicked. It does not add behaviour: Card stays a `div`, and you supply the
-click handler, the role, the focus stop and the keyboard handling. A card with
-`role='button'` has to answer Enter and Space as well as clicks, as below. An
-`outline` card takes `@color` for its hover border.
+handler, the role and the focus stop. Use the [`press`](/docs/components/utilities/press)
+modifier for the handler. It answers mouse, touch, Enter and Space, so a card with
+`role='button'` is operable from the keyboard without a separate `keydown` handler.
+An `outline` card takes `@color` for its hover border. Hover keeps the 1px border and
+draws a second 1px layer inside it in the same colour, so the edge reads as 2px
+without moving the contents.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import { Card } from 'frontile';
+import { Card, press } from 'frontile';
 
 export default class Example extends Component {
-  @tracked clicks = 0;
+  @tracked presses = 0;
 
-  count = (): void => {
-    this.clicks += 1;
-  };
-
-  // A `role='button'` has to be operable from the keyboard: Enter and Space
-  // activate it, the way a native button does.
-  onKeydown = (event: KeyboardEvent): void => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      this.count();
-    }
+  onPress = (): void => {
+    this.presses += 1;
   };
 
   <template>
@@ -119,11 +113,10 @@ export default class Example extends Component {
         @isInteractive={{true}}
         role='button'
         tabindex='0'
-        {{on 'click' this.count}}
-        {{on 'keydown' this.onKeydown}}
+        {{press this.onPress}}
       >
-        Clicked
-        {{this.clicks}}
+        Pressed
+        {{this.presses}}
         times
       </Card>
       <Card
@@ -131,8 +124,7 @@ export default class Example extends Component {
         @color='primary'
         role='button'
         tabindex='0'
-        {{on 'click' this.count}}
-        {{on 'keydown' this.onKeydown}}
+        {{press this.onPress}}
       >
         Primary hover border
       </Card>
@@ -141,8 +133,7 @@ export default class Example extends Component {
         @isInteractive={{true}}
         role='button'
         tabindex='0'
-        {{on 'click' this.count}}
-        {{on 'keydown' this.onKeydown}}
+        {{press this.onPress}}
       >
         Flat
       </Card>
@@ -151,8 +142,7 @@ export default class Example extends Component {
         @isInteractive={{true}}
         role='button'
         tabindex='0'
-        {{on 'click' this.count}}
-        {{on 'keydown' this.onKeydown}}
+        {{press this.onPress}}
       >
         Soft
       </Card>
@@ -168,7 +158,10 @@ no `role` or `aria-*`. Whatever provides the behaviour must also provide the
 semantics and the keyboard support. The simplest way is a native control: here each
 card wraps a visually hidden radio input, so Tab, the arrow keys and the screen
 reader announcement all come from the browser, and the card only mirrors the checked
-state. `@color` picks the border colour.
+state. `@color` picks the border colour. Selected keeps the 1px border and adds a
+second 1px layer inside it in the same colour, so it reads as 2px without changing
+the card's size. In Windows High Contrast (forced colors) the browser draws no
+shadow, so a selected card gets a real 3px border there instead.
 
 ```gts preview collapsible
 import Component from '@glimmer/component';
@@ -213,6 +206,68 @@ export default class Example extends Component {
   </template>
 }
 ```
+
+## Selection indicator
+
+A selected card can show a check badge at its top-right corner. It is opt-in: pass
+an `<:indicator>` block and Card draws the circle and shows it only while
+`@isSelected` is true. The icon is yours, so Card depends on no icon library; use
+whichever one your app already has. The circle takes its fill from `@color`.
+
+Once you use a named block, the card's own contents go in `<:default>`, because
+Ember does not allow loose content beside named blocks.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { array, fn } from '@ember/helper';
+import { on } from '@ember/modifier';
+import { Card } from 'frontile';
+import { CheckIcon } from 'site/components/icons';
+
+export default class Example extends Component {
+  @tracked selected = 'a';
+
+  choose = (id: string): void => {
+    this.selected = id;
+  };
+
+  isSelected = (id: string): boolean => this.selected === id;
+
+  <template>
+    <fieldset class='demo-stack'>
+      <legend class='sr-only'>Speed</legend>
+      {{#each (array 'a' 'b' 'c') as |id|}}
+        <Card
+          @isInteractive={{true}}
+          @color='primary'
+          @isSelected={{this.isSelected id}}
+          @class='has-focus-visible:ring-3 has-focus-visible:ring-focus has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-background'
+        >
+          <:default>
+            <label class='block cursor-pointer'>
+              <input
+                type='radio'
+                name='speed'
+                class='sr-only'
+                checked={{this.isSelected id}}
+                {{on 'change' (fn this.choose id)}}
+              />
+              Option
+              {{id}}
+            </label>
+          </:default>
+          <:indicator><CheckIcon /></:indicator>
+        </Card>
+      {{/each}}
+    </fieldset>
+  </template>
+}
+```
+
+The circle overhangs the corner by a few pixels, so a parent with
+`overflow: hidden` will clip it. Leave room around the card, or avoid clipping
+ancestors.
 
 ## Disabled
 
@@ -266,12 +321,17 @@ Card renders a plain `div` and adds no `role`, `tabindex` or `aria-*`. It is a
 surface, not a control.
 
 If the card is clickable, give it an interactive element or a role: put a `button` or
-link inside it, or set `role` and `tabindex` through `...attributes` and handle Enter
-and Space yourself, as in the Interactive example. `@isInteractive` only styles it.
+link inside it, or set `role` and `tabindex` through `...attributes` and add the
+`press` modifier, as in the Interactive example. `press` supplies the Enter and Space
+handling but not the role or the focus stop. `@isInteractive` only styles the card.
 A selectable card needs the semantics and keyboard behaviour of the pattern it is
 part of. A native radio input inside the card, as in the Selected example, supplies
 both; a hand-built `role='radio'` also needs `aria-checked`, a roving `tabindex` and
 arrow-key handling.
+
+The selection indicator is decorative: it is hidden from assistive technology with
+`aria-hidden`, so it never replaces the selected state the radio, checkbox or
+`aria-checked` already reports.
 
 Selected and disabled are shown through `data-selected` and `data-disabled`. Neither
 is announced by assistive technology, so mirror them with `aria-checked` or

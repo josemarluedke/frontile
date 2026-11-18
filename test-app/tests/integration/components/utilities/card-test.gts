@@ -15,17 +15,104 @@ const tokens = (cls: string) => cls.split(/\s+/);
 module('Integration | Component | Card | @frontile/utilities', function () {
   module('recipe', function () {
     test('defaults are outline, neutral, comfortable, raised', function (assert) {
-      const cls = base();
+      const t = tokens(base());
       for (const c of [
-        'border-2',
+        'border',
         'rounded-[20px]',
         'bg-surface-card',
         'border-neutral-muted',
         'p-5',
         'shadow-elevation-2'
       ]) {
-        assert.true(cls.includes(c), `has ${c}`);
+        assert.true(t.includes(c), `has ${c}`);
       }
+      assert.false(t.includes('border-2'), 'the border is never 2px');
+    });
+
+    // The border is 1px in every variant and state, so states never shift the
+    // layout. Only selected has a thicker border, and only under forced-colors.
+    test('no variant or state sets a border wider than 1px outside forced-colors', function (assert) {
+      for (const variant of ['outline', 'flat', 'soft'] as const) {
+        for (const isSelected of [false, true]) {
+          for (const isInteractive of [false, true]) {
+            const t = tokens(base({ variant, isSelected, isInteractive }));
+            const widths = t.filter(
+              (c) =>
+                /^(\w+:)*border(-\d+|-\[\d+px\])$/.test(c) &&
+                !c.startsWith('forced-colors:')
+            );
+            assert.deepEqual(
+              widths,
+              [],
+              `${variant} selected=${isSelected} interactive=${isInteractive}`
+            );
+            assert.true(t.includes('border'), 'has the 1px border');
+          }
+        }
+      }
+    });
+
+    test('hover adds a 1px inset layer in the hover border colour, unselected only', function (assert) {
+      const primary = tokens(base({ isInteractive: true, color: 'primary' }));
+      assert.true(
+        primary.includes(
+          'hover:inset-shadow-[0_0_0_1px_var(--color-primary-muted)]'
+        )
+      );
+      const neutral = tokens(base({ isInteractive: true }));
+      assert.true(
+        neutral.includes(
+          'hover:inset-shadow-[0_0_0_1px_var(--color-neutral-soft)]'
+        )
+      );
+      const selected = tokens(
+        base({ isInteractive: true, isSelected: true, color: 'primary' })
+      );
+      assert.false(selected.some((c) => c.startsWith('hover:inset-shadow')));
+      assert.false(
+        tokens(base({ isInteractive: true, isDisabled: true })).some((c) =>
+          c.includes('inset-shadow')
+        )
+      );
+      assert.false(tokens(base()).some((c) => c.includes('inset-shadow')));
+    });
+
+    test('hover inset layer is kept when elevation is none', function (assert) {
+      const t = tokens(base({ isInteractive: true, elevation: 'none' }));
+      assert.true(
+        t.includes('hover:inset-shadow-[0_0_0_1px_var(--color-neutral-soft)]')
+      );
+    });
+
+    test('selected adds a 1px inset layer in the border colour, and no ring or outline', function (assert) {
+      const primary = tokens(base({ isSelected: true, color: 'primary' }));
+      assert.true(
+        primary.includes('inset-shadow-[0_0_0_1px_var(--color-primary)]')
+      );
+      const neutral = tokens(base({ isSelected: true }));
+      assert.true(
+        neutral.includes('inset-shadow-[0_0_0_1px_var(--color-neutral-bolder)]')
+      );
+      for (const t of [primary, neutral]) {
+        assert.false(t.some((c) => /^(ring-(?!offset)|ring$|outline)/.test(c)));
+        assert.true(t.includes('shadow-elevation-2'), 'elevation is kept');
+      }
+    });
+
+    test('selected and disabled keeps the inset layer', function (assert) {
+      const t = tokens(
+        base({ isSelected: true, isDisabled: true, color: 'primary' })
+      );
+      assert.true(t.includes('inset-shadow-[0_0_0_1px_var(--color-primary)]'));
+    });
+
+    test('selected thickens the border under forced-colors, where box-shadow is not drawn', function (assert) {
+      assert.true(
+        tokens(base({ isSelected: true })).includes(
+          'forced-colors:border-[3px]'
+        )
+      );
+      assert.false(tokens(base()).some((c) => c.startsWith('forced-colors:')));
     });
 
     test('flat has a transparent border and no shadow', function (assert) {
@@ -157,6 +244,35 @@ module('Integration | Component | Card | @frontile/utilities', function () {
       assert.true(cls.includes('border-primary'));
       assert.true(cls.includes('opacity-disabled'));
     });
+
+    test('card is a positioning context for its indicator', function (assert) {
+      assert.true(tokens(base()).includes('relative'));
+    });
+
+    // Offsets are measured from the padding box, inside the 1px border, so
+    // -top-1.25 (5px) puts the circle 4px past the card's outer edge.
+    test('indicator is a small circle overhanging the top-right corner', function (assert) {
+      const t = tokens(realStyles.cardIndicator());
+      for (const c of [
+        'absolute',
+        '-top-1.25',
+        '-right-1.25',
+        'size-5',
+        'rounded-full',
+        'motion-reduce:transition-none'
+      ]) {
+        assert.true(t.includes(c), `has ${c}`);
+      }
+    });
+
+    test('indicator fill follows color', function (assert) {
+      const primary = tokens(realStyles.cardIndicator({ color: 'primary' }));
+      assert.true(primary.includes('bg-primary'));
+      assert.true(primary.includes('text-on-primary'));
+      const neutral = tokens(realStyles.cardIndicator({ color: 'neutral' }));
+      assert.true(neutral.includes('bg-neutral-bolder'));
+      assert.true(neutral.includes('text-on-neutral-bolder'));
+    });
   });
 
   module('component', function (hooks) {
@@ -206,7 +322,8 @@ module('Integration | Component | Card | @frontile/utilities', function () {
       assert.dom('[data-test-card]').hasAttribute('role', 'radio');
       assert.dom('[data-test-card]').hasAttribute('tabindex', '0');
       assert.dom('[data-test-card]').hasClass('custom');
-      assert.dom('[data-test-card]').hasClass('border-2');
+      assert.dom('[data-test-card]').hasClass('border');
+      assert.dom('[data-test-card]').doesNotHaveClass('border-2');
     });
 
     test('it adds no ARIA or focusability by itself', async function (assert) {
@@ -241,6 +358,62 @@ module('Integration | Component | Card | @frontile/utilities', function () {
       assert.dom('[data-test-card]').hasClass('bg-surface-overlay-soft');
       assert.dom('[data-test-card]').hasClass('p-8');
       assert.dom('[data-test-card]').hasClass('opacity-disabled');
+    });
+
+    test('no indicator block means no indicator, even when selected', async function (assert) {
+      await render(
+        <template>
+          <Card @isSelected={{true}} data-test-card>x</Card>
+        </template>
+      );
+
+      assert.dom('[data-part="indicator"]').doesNotExist();
+    });
+
+    test('an indicator block is hidden while the card is not selected', async function (assert) {
+      await render(
+        <template>
+          <Card data-test-card>
+            <:default>Plan</:default>
+            <:indicator>✓</:indicator>
+          </Card>
+        </template>
+      );
+
+      assert.dom('[data-test-card]').hasText('Plan');
+      assert.dom('[data-part="indicator"]').doesNotExist();
+    });
+
+    test('a selected card with an indicator block shows it, decoratively', async function (assert) {
+      await render(
+        <template>
+          <Card @isSelected={{true}} data-test-card>
+            <:default>Plan</:default>
+            <:indicator><svg data-test-icon></svg></:indicator>
+          </Card>
+        </template>
+      );
+
+      assert.dom('[data-test-card]').containsText('Plan');
+      assert
+        .dom('[data-test-card] [data-part="indicator"]')
+        .hasAttribute('aria-hidden', 'true');
+      assert
+        .dom('[data-part="indicator"] [data-test-icon]')
+        .exists('the call site supplies the icon');
+    });
+
+    test('the indicator takes its fill from @color', async function (assert) {
+      await render(
+        <template>
+          <Card @isSelected={{true}} @color="primary">
+            <:default>Plan</:default>
+            <:indicator>✓</:indicator>
+          </Card>
+        </template>
+      );
+
+      assert.dom('[data-part="indicator"]').hasClass('bg-primary');
     });
   });
 });

@@ -7,9 +7,21 @@ import { focusVisibleRing } from './shared';
  * site's business, and so is selection behaviour — `isSelected` only changes
  * how the surface looks.
  *
- * The border is `border-2` in every variant and state, so moving between
+ * The border is `border` (1px) in every variant and state, so moving between
  * states never shifts the contents. `flat` and `soft` keep the same border
- * width but make it transparent.
+ * width but make it transparent. Hover and selected add weight without
+ * changing that width: a second 1px layer, drawn inside the border in the same
+ * colour with `inset-shadow-[0_0_0_1px_…]`, so the edge reads as 2px.
+ *
+ * That layer is an `inset-shadow`, not a `ring` or an `outline`. `ring-*`
+ * shares its `--tw-ring-*` variables with the focus ring (`focusVisibleRing`),
+ * so a focused selected card would get an inset focus ring; `outline` is the
+ * focus indicator in forced-colors (`outline-hidden`). `inset-shadow` has its
+ * own variable and stacks with `shadow-elevation-*` and the focus ring.
+ *
+ * `box-shadow` is not drawn in forced-colors, so a selected card widens its
+ * border to 3px in that mode instead (`forced-colors:border-[3px]`). A layout
+ * shift is acceptable there; losing the selected cue is not.
  *
  * Everything that depends on more than one variant lives in
  * `compoundVariants`. tv() applies those after the plain variants and
@@ -18,7 +30,9 @@ import { focusVisibleRing } from './shared';
  */
 const card = tv({
   base: [
-    'border-2 rounded-[20px]',
+    // A positioning context for the selection indicator.
+    'relative',
+    'border rounded-[20px]',
     'transition-[color,background-color,border-color,box-shadow] duration-200',
     'motion-reduce:transition-none'
   ],
@@ -75,16 +89,26 @@ const card = tv({
       class: 'shadow-elevation-2'
     },
 
-    // SELECTED. The fill is unchanged; only the border takes the colour.
+    // SELECTED. The fill is unchanged; the border takes the colour and a
+    // second 1px layer inside it makes the edge read as 2px. Forced-colors
+    // draws no box-shadow, so it gets a real, thicker border instead.
     {
       isSelected: true,
       color: 'primary',
-      class: 'border-primary'
+      class: [
+        'border-primary',
+        'inset-shadow-[0_0_0_1px_var(--color-primary)]',
+        'forced-colors:border-[3px]'
+      ]
     },
     {
       isSelected: true,
       color: 'neutral',
-      class: 'border-neutral-bolder'
+      class: [
+        'border-neutral-bolder',
+        'inset-shadow-[0_0_0_1px_var(--color-neutral-bolder)]',
+        'forced-colors:border-[3px]'
+      ]
     },
 
     // INTERACTIVE. Disabled wins: no hover, pressed, focus ring or pointer.
@@ -117,14 +141,18 @@ const card = tv({
     },
 
     // HOVER, unselected. Hover is scoped to the unselected state so it never
-    // ties on specificity with the selected border.
+    // ties on specificity with the selected border. The border colour is
+    // joined by a 1px inset layer in the same colour, so it reads as 2px.
     {
       variant: 'outline',
       isInteractive: true,
       isDisabled: false,
       isSelected: false,
       color: 'primary',
-      class: 'hover:border-primary-muted'
+      class: [
+        'hover:border-primary-muted',
+        'hover:inset-shadow-[0_0_0_1px_var(--color-primary-muted)]'
+      ]
     },
     {
       variant: 'outline',
@@ -132,7 +160,10 @@ const card = tv({
       isDisabled: false,
       isSelected: false,
       color: 'neutral',
-      class: 'hover:border-neutral-soft'
+      class: [
+        'hover:border-neutral-soft',
+        'hover:inset-shadow-[0_0_0_1px_var(--color-neutral-soft)]'
+      ]
     },
     {
       variant: 'flat',
@@ -170,4 +201,35 @@ const card = tv({
   }
 });
 
-export { card };
+/**
+ * The selection indicator: a small solid circle overhanging a card's top-right
+ * corner, holding whatever icon the call site passes in the `indicator` block.
+ * Card renders it only while selected, so it has no state of its own. The
+ * overhang is why `card` is `relative` and has no `overflow-hidden`.
+ *
+ * `starting:` gives it a short fade and scale in when it mounts; reduced
+ * motion drops the transition.
+ */
+const cardIndicator = tv({
+  base: [
+    // Offsets are measured from the padding box, inside the 1px border, so
+    // 1.25 (5px) leaves the circle 4px past the card's outer edge.
+    'pointer-events-none absolute -top-1.25 -right-1.25 z-10',
+    'inline-flex size-5 items-center justify-center rounded-full',
+    '[&>svg]:size-3',
+    'transition-[opacity,scale] duration-200',
+    'starting:opacity-0 starting:scale-75',
+    'motion-reduce:transition-none'
+  ],
+  variants: {
+    color: {
+      neutral: 'bg-neutral-bolder text-on-neutral-bolder',
+      primary: 'bg-primary text-on-primary'
+    }
+  },
+  defaultVariants: {
+    color: 'neutral'
+  }
+});
+
+export { card, cardIndicator };

@@ -14,7 +14,9 @@ interface CardSignature {
 
     /**
      * Colours the hover and selected border. The resting border is neutral
-     * either way.
+     * either way. The border is 1px in every state; hover and selected add a
+     * second 1px inset layer in the same colour so they read as 2px without a
+     * layout shift.
      *
      * @defaultValue 'neutral'
      */
@@ -39,7 +41,8 @@ interface CardSignature {
     /**
      * Shows the card as selected. This is appearance only: Card holds no
      * selection state, and does not set `role` or `aria-*` for you. Pair it
-     * with whatever provides the selection behaviour and semantics.
+     * with whatever provides the selection behaviour and semantics. A selected
+     * card also shows the `indicator` block, if one is passed.
      *
      * @defaultValue false
      */
@@ -57,7 +60,8 @@ interface CardSignature {
 
     /**
      * Dims the card and removes its hover and pressed styles. Disabled and
-     * selected can be combined: the selected border stays visible.
+     * selected can be combined: the selected border and its inset layer stay
+     * visible.
      *
      * @defaultValue false
      */
@@ -72,8 +76,22 @@ interface CardSignature {
   Blocks: {
     /**
      * The card's contents. Card has no regions of its own; lay them out here.
+     * When the `indicator` block is also used, the contents go in
+     * `<:default>`, because named blocks cannot sit beside loose content.
      */
     default: [];
+
+    /**
+     * Opts in to a selection indicator: a small circle at the card's top-right
+     * corner holding whatever you pass, usually a check icon from your own
+     * icon library. It is shown only while the card is selected, is hidden
+     * from assistive technology, and takes its fill from `@color`. Card never
+     * supplies the icon, so it depends on no icon set.
+     *
+     * A parent with `overflow: hidden` clips the part that overhangs the
+     * corner.
+     */
+    indicator?: [];
   };
   Element: HTMLDivElement;
 }
@@ -94,6 +112,12 @@ class Card extends Component<CardSignature> {
     });
   }
 
+  get indicatorClassNames() {
+    const { cardIndicator } = useStyles();
+
+    return cardIndicator({ color: this.args.color });
+  }
+
   <template>
     <div
       class={{this.classNames}}
@@ -104,6 +128,17 @@ class Card extends Component<CardSignature> {
       ...attributes
     >
       {{yield}}
+      {{#if @isSelected}}
+        {{#if (has-block "indicator")}}
+          <span
+            class={{this.indicatorClassNames}}
+            data-part="indicator"
+            aria-hidden="true"
+          >
+            {{yield to="indicator"}}
+          </span>
+        {{/if}}
+      {{/if}}
     </div>
   </template>
 }
