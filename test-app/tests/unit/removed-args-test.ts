@@ -1,4 +1,6 @@
 import { module, test } from 'qunit';
+// Relative source import on purpose: private modules are emitted as hashed
+// chunks, so `frontile/-private/...` does not resolve.
 import { assertRemovedArg } from '../../../packages/frontile/src/-private/removed-args';
 import { collectAssertions } from '../helpers/collect-assertions';
 

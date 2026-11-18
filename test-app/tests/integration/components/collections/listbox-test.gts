@@ -14,7 +14,7 @@ import { Listbox, setKbdPlatform, type ListboxSignature } from 'frontile';
 import { array, get } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 import { realStyles } from '../../../helpers/real-theme-styles';
 import { keylessKeydown } from '../../../helpers/keyless-keydown';
 
@@ -141,8 +141,8 @@ module(
               @key="item-1"
               @shortcut="⌘⇧E"
               @description="The description of the item"
-              @intent="warning"
-              @appearance="faded"
+              @color="warning"
+              @variant="subtle"
             >
               <:default>
                 Item 1
@@ -154,8 +154,8 @@ module(
             <l.Item
               @key="item-5"
               @shortcut="⌘⇧B"
-              @intent="danger"
-              @appearance="faded"
+              @color="danger"
+              @variant="subtle"
               @class="text-danger"
             >
               Item 5
@@ -1120,8 +1120,8 @@ module(
               @key="item-1"
               @shortcut="⌘⇧E"
               @description="The description of the item"
-              @intent="warning"
-              @appearance="faded"
+              @color="warning"
+              @variant="subtle"
             >
               <:start>
                 <div data-test-id="start">Start content</div>
@@ -1395,18 +1395,6 @@ module(
         assert.dom('[data-test-id="listbox-item"]').hasClass('variant-subtle');
       });
 
-      test('@appearance="faded" maps to subtle and deprecates once', async function (assert) {
-        const { ids } = trackDeprecations();
-
-        await render(
-          <template>
-            <Listbox @appearance="faded" data-test-id="listbox" />
-          </template>
-        );
-
-        assert.deepEqual(ids, ['frontile.listbox.appearance']);
-      });
-
       test('@color renders the new class', async function (assert) {
         registerListboxItemStyles();
 
@@ -1417,21 +1405,6 @@ module(
         );
 
         assert.dom('[data-test-id="listbox"]').hasClass('listbox-danger');
-      });
-
-      test('@intent="default" maps to neutral and deprecates once', async function (assert) {
-        registerListboxItemStyles();
-
-        const { ids } = trackDeprecations();
-
-        await render(
-          <template>
-            <Listbox @intent="default" data-test-id="listbox" />
-          </template>
-        );
-
-        assert.dom('[data-test-id="listbox"]').hasClass('listbox-neutral');
-        assert.deepEqual(ids, ['frontile.listbox.intent']);
       });
 
       test('a per-item @color overrides the listbox default', async function (assert) {
@@ -1451,42 +1424,143 @@ module(
         assert.dom('[data-test-id="item"]').hasClass('listbox-danger');
       });
 
-      test('a per-item @intent overrides a listbox-level @intent', async function (assert) {
+      test('a per-item @variant overrides the listbox default', async function (assert) {
         registerListboxItemStyles();
 
         await render(
           <template>
-            <Listbox @intent="primary" as |l|>
-              <l.Item @key="a" @intent="danger" data-test-id="item">A</l.Item>
+            <Listbox @variant="subtle" as |l|>
+              <l.Item @key="a" @variant="outline" data-test-id="a">A</l.Item>
+              <l.Item @key="b" data-test-id="b">B</l.Item>
             </Listbox>
           </template>
         );
 
-        assert.dom('[data-test-id="item"]').hasClass('listbox-danger');
+        assert.dom('[data-test-id="a"]').hasClass('variant-outline');
+        assert.dom('[data-test-id="b"]').hasClass('variant-subtle');
       });
 
-      test('known limitation: a listbox-level @color beats a per-item @intent', async function (assert) {
+      test('the listbox @color and @variant reach items, groups and the yielded Item', async function (assert) {
         registerListboxItemStyles();
 
         await render(
           <template>
-            <Listbox @color="primary" as |l|>
-              <l.Item @key="a" @intent="danger" data-test-id="item">A</l.Item>
+            <Listbox
+              @color="danger"
+              @variant="outline"
+              @items={{array "a"}}
+              as |l|
+            >
+              <l.Group @title="G" as |g|>
+                <g.Item @key="g" data-test-id="grouped">G</g.Item>
+              </l.Group>
+              <l.Item @key="b" data-test-id="plain">B</l.Item>
             </Listbox>
           </template>
         );
 
-        // Mixing the two APIs across levels does NOT behave as you would hope.
-        // Listbox binds its value as `color`, and `renamedArgValue` lets the
-        // new arg win over the legacy one -- so the INHERITED default beats the
-        // item's explicit override. The same is true of @variant/@appearance,
-        // which Phase A shipped with this behaviour; this test pins it so the
-        // limitation is deliberate rather than accidental.
-        //
-        // The fix for a consumer is to migrate a Listbox and its items
-        // together, which the migration guide says to do.
-        assert.dom('[data-test-id="item"]').hasClass('listbox-primary');
-        assert.dom('[data-test-id="item"]').doesNotHaveClass('listbox-danger');
+        assert.dom('[data-test-id="grouped"]').hasClass('listbox-danger');
+        assert.dom('[data-test-id="grouped"]').hasClass('variant-outline');
+        assert.dom('[data-test-id="plain"]').hasClass('listbox-danger');
+        assert.dom('[data-test-id="plain"]').hasClass('variant-outline');
+        assert.dom('[data-key="a"]').hasClass('listbox-danger');
+      });
+    });
+
+    module('removed @appearance / @intent', function () {
+      const REMOVED = 'was removed in 0.19.0';
+
+      test('Listbox @appearance and @intent fail in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <Listbox @appearance="faded" @intent="danger" />
+            </template>
+          )
+        );
+
+        assert.true(
+          failed.includes(
+            'Listbox: @appearance was removed in 0.19.0. Use @variant.'
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+        assert.true(
+          failed.includes(
+            'Listbox: @intent was removed in 0.19.0. Use @color.'
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+      });
+
+      test('Listbox.Item @appearance and @intent fail in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              <Listbox as |l|>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <l.Item @key="a" @appearance="faded" @intent="danger">A</l.Item>
+              </Listbox>
+            </template>
+          )
+        );
+
+        assert.true(
+          failed.includes(
+            'Listbox.Item: @appearance was removed in 0.19.0. Use @variant.'
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+        assert.true(
+          failed.includes(
+            'Listbox.Item: @intent was removed in 0.19.0. Use @color.'
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+      });
+
+      test('Listbox.Group @appearance and @intent fail in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              <Listbox as |l|>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <l.Group @appearance="faded" @intent="danger" />
+              </Listbox>
+            </template>
+          )
+        );
+
+        assert.true(
+          failed.includes(
+            'Listbox.Group: @appearance was removed in 0.19.0. Use @variant.'
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+        assert.true(
+          failed.includes(
+            'Listbox.Group: @intent was removed in 0.19.0. Use @color.'
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+      });
+
+      test('an explicitly undefined @intent stays silent through the args proxy', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <Listbox @intent={{undefined}} @appearance={{undefined}} />
+            </template>
+          )
+        );
+
+        assert.deepEqual(
+          failed.filter((m) => m.includes(REMOVED)),
+          [],
+          'an undefined value is not a use of the removed arg'
+        );
       });
     });
 

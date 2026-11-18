@@ -1,7 +1,9 @@
 import Component from '@glimmer/component';
+import type Owner from '@ember/owner';
 import { hash } from '@ember/helper';
 import { guidFor } from '@ember/object/internals';
 import { useStyles } from '@frontile/theme';
+import { assertRemovedArg } from '../../../-private/removed-args';
 import { Divider } from '../../utilities/divider';
 import { ListboxItem } from './item';
 import type { ListManager } from '../../../utils/listManager';
@@ -10,13 +12,7 @@ import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<
   typeof ListboxItem,
-  | 'manager'
-  | 'type'
-  | 'variant'
-  | 'appearance'
-  | 'color'
-  | 'intent'
-  | 'shortcutVariant'
+  'manager' | 'type' | 'variant' | 'color' | 'shortcutVariant'
 >;
 
 export interface ListboxGroupSignature {
@@ -46,12 +42,7 @@ export interface ListboxGroupSignature {
 
     type?: ListboxItemSignature['Args']['type'];
     variant?: ListboxItemSignature['Args']['variant'];
-    /**
-     * @deprecated Use `variant`.
-     */
-    appearance?: ListboxItemSignature['Args']['appearance'];
     color?: ListboxItemSignature['Args']['color'];
-    intent?: ListboxItemSignature['Args']['intent'];
     shortcutVariant?: ListboxItemSignature['Args']['shortcutVariant'];
   };
   Element: HTMLLIElement;
@@ -74,6 +65,12 @@ export interface ListboxGroupSignature {
  */
 class ListboxGroup extends Component<ListboxGroupSignature> {
   titleId = `${guidFor(this)}-title`;
+
+  constructor(owner: Owner, args: ListboxGroupSignature['Args']) {
+    super(owner, args);
+    assertRemovedArg('Listbox.Group', args, 'appearance', 'variant');
+    assertRemovedArg('Listbox.Group', args, 'intent', 'color');
+  }
 
   get classNames() {
     const { listboxGroup } = useStyles();
@@ -111,9 +108,7 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
               ListboxItem
               manager=@manager
               variant=@variant
-              appearance=@appearance
               color=@color
-              intent=@intent
               shortcutVariant=@shortcutVariant
               type=@type
             )
