@@ -56,11 +56,6 @@ const expectedSourceInventory = [
     pattern: 'docs/**/*.md',
     ignore: [],
   },
-  {
-    root: 'packages/forms-legacy',
-    pattern: '(docs|src)/**/**/*.md',
-    ignore: [],
-  },
 ];
 
 /** @returns {Array<{ root: string, pattern: string, ignore: string[] }>} */

@@ -58,7 +58,6 @@
     "@embroider/router": "3.0.6",
     "@embroider/vite": "^1.8.0",
     "@eslint/js": "^10.0.1",
-    "@frontile/forms-legacy": "workspace:*",
     "@frontile/theme": "workspace:*",
     "@glimmer/component": "^2.2.1",
     "@glint/ember-tsc": "^1.14.3",

@@ -28,7 +28,6 @@ module.exports = async function (defaults) {
       'docs.components.buttons',
       'docs.components.collections',
       'docs.components.forms',
-      'docs.components.forms-legacy',
       'docs.components.notifications',
       'docs.components.overlays',
       'docs.components.status',
