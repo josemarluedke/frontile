@@ -42,8 +42,8 @@ inside scales with it:
 
 | Size      | 4xs | 3xs | 2xs | xs  | sm  | md  | lg  | xl  | 2xl | 3xl |
 | --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Circle    | 16  | 20  | 24  | 32  | 40  | 48  | 64  | 64  | 80  | 96  |
-| Plain box | 12  | 14  | 16  | 20  | 24  | 32  | 40  | 40  | 48  | 56  |
+| Circle    | 16  | 20  | 24  | 32  | 40  | 48  | 64  | 72  | 80  | 96  |
+| Plain box | 12  | 14  | 16  | 20  | 24  | 32  | 40  | 44  | 48  | 56  |
 | Icon      | 8   | 10  | 12  | 16  | 20  | 28  | 32  | 40  | 48  | 56  |
 
 All values are in pixels. These sizes are fixed and do not follow the text

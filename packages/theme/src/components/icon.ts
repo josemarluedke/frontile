@@ -74,6 +74,10 @@ const BY_VARIANT = {
 // own. These are the artifact's pixel values, not the `size-icon-*` ramp, which
 // follows the label text. Outline draws its ring as an inset shadow in the
 // icon color, 0.5px at 4xs up to 2.5px at 3xl.
+//
+// One deliberate difference from the artifact: it has `xl` the same as `lg`
+// (64px circle, 40px plain box), which looks like a Figma slip, so `xl` is 72px
+// and 44px, between `lg` and `2xl`. Confirm with the designer.
 const icon = tv({
   base: 'box-border inline-flex shrink-0 items-center justify-center rounded-full align-middle',
   variants: {
@@ -85,7 +89,7 @@ const icon = tv({
       sm: 'size-10 [&_svg]:size-[20px]',
       md: 'size-12 [&_svg]:size-[28px]',
       lg: 'size-16 [&_svg]:size-[32px]',
-      xl: 'size-16 [&_svg]:size-[40px]',
+      xl: 'size-18 [&_svg]:size-[40px]',
       '2xl': 'size-20 [&_svg]:size-[48px]',
       '3xl': 'size-24 [&_svg]:size-[56px]'
     },
@@ -158,7 +162,7 @@ const icon = tv({
     { variant: 'plain', size: 'sm', class: 'size-6' },
     { variant: 'plain', size: 'md', class: 'size-8' },
     { variant: 'plain', size: 'lg', class: 'size-10' },
-    { variant: 'plain', size: 'xl', class: 'size-10' },
+    { variant: 'plain', size: 'xl', class: 'size-11' },
     { variant: 'plain', size: '2xl', class: 'size-12' },
     { variant: 'plain', size: '3xl', class: 'size-14' },
     // The ring, in the icon color.

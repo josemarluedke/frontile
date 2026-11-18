@@ -25,7 +25,9 @@ type Role =
   | 'warning'
   | 'danger';
 
-// [size, circle px, plain box px, icon px, ring px]
+// [size, circle px, plain box px, icon px, ring px]. `xl` differs from the
+// artifact on purpose: it has the same circle and plain box as `lg`, which
+// looks like a Figma slip, so `xl` sits between `lg` and `2xl`.
 const SIZES = [
   ['4xs', 16, 12, 8, 0.5],
   ['3xs', 20, 14, 10, 0.5],
@@ -34,7 +36,7 @@ const SIZES = [
   ['sm', 40, 24, 20, 1.5],
   ['md', 48, 32, 28, 2],
   ['lg', 64, 40, 32, 2],
-  ['xl', 64, 40, 40, 2],
+  ['xl', 72, 44, 40, 2],
   ['2xl', 80, 48, 48, 2],
   ['3xl', 96, 56, 56, 2.5]
 ] as const;
