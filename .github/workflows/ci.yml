@@ -31,6 +31,8 @@ jobs:
         run: pnpm build
       - name: Test site (node:test)
         run: pnpm --filter site test:node
+      - name: Test scripts (node:test)
+        run: pnpm test:scripts
 
   # The ember suite runs as parallel ember-exam partitions. Each job builds the
   # packages and test-app itself, then runs only its slice of the test modules.
