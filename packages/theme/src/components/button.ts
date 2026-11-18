@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from '../tw';
+import { tv } from '../tw';
 import { focusVisibleRing } from './shared.ts';
 
 const baseButton = tv({
@@ -450,22 +450,25 @@ const buttonSpinner = tv({
   base: 'size-[1em] text-current/25 fill-current'
 });
 
-// Icon-only padding. Button's own padding (px-3.5 .. px-10) is sized for a
-// label next to an icon and would make an icon-only button a wide pill, so
-// IconButton passes this recipe's classes as Button's `class`, where
-// tailwind-merge lets them replace Button's `px-*`/`py-*`. Colors, variants,
-// focus ring, loading and the text ramp all stay Button's. The ends are the
-// designer's table (xs 2/6, 2xl 10/24, in px); the steps between are
-// interpolated.
+// An icon-only button is a circle. IconButton passes this recipe's classes as
+// Button's `class`, where tailwind-merge lets `px-0` replace Button's
+// horizontal padding. Without text there is no line to give the height, and CSS cannot derive a width from an auto height, so each
+// size sets both dimensions to Button's own height at that size: one line, plus the
+// two vertical paddings (Button's `py-*` times two, in spacing units), plus the
+// 1px borders. The height is therefore Button's, and an IconButton lines up
+// with a Button of the same size. If Button's vertical padding changes, change
+// the multipliers here; the "as tall as a Button" test catches a mismatch.
+// Written out in full so Tailwind sees each class.
 const iconButton = tv({
+  base: 'px-0',
   variants: {
     size: {
-      xs: 'py-0.5 px-1.5',
-      sm: 'py-1 px-2.5',
-      md: 'py-1.5 px-3.5',
-      lg: 'py-2 px-4.5',
-      xl: 'py-2 px-5',
-      '2xl': 'py-2.5 px-6'
+      xs: 'size-[calc(1lh+var(--spacing)*1+2px)]',
+      sm: 'size-[calc(1lh+var(--spacing)*2+2px)]',
+      md: 'size-[calc(1lh+var(--spacing)*3+2px)]',
+      lg: 'size-[calc(1lh+var(--spacing)*4+2px)]',
+      xl: 'size-[calc(1lh+var(--spacing)*5+2px)]',
+      '2xl': 'size-[calc(1lh+var(--spacing)*6+2px)]'
     }
   },
   defaultVariants: {
@@ -473,5 +476,4 @@ const iconButton = tv({
   }
 });
 
-export type IconButtonVariants = VariantProps<typeof iconButton>;
 export { button, toggleButton, buttonGroup, buttonSpinner, iconButton };

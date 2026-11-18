@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerKeyEvent } from '@ember/test-helpers';
-import { IconButton } from 'frontile';
+import { Button, IconButton } from 'frontile';
 import { collectAssertions } from '../../../helpers/collect-assertions';
 
 module(
@@ -10,59 +10,66 @@ module(
     setupRenderingTest(hooks);
 
     module('size', function () {
-      // Vertical / horizontal padding in px. The ends (xs 2/6, 2xl 10/24) are the
-      // ticket's table; the middle steps are interpolated. Literals on purpose,
-      // so the test does not recompute what the recipe does.
-      const padding: Record<
-        'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl',
-        readonly [number, number]
-      > = {
-        xs: [2, 6],
-        sm: [4, 10],
-        md: [6, 14],
-        lg: [8, 18],
-        xl: [8, 20],
-        '2xl': [10, 24]
-      };
+      const sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
+      const box = (id: string) =>
+        (
+          document.querySelector(`[data-test-id="${id}"]`) as HTMLElement
+        ).getBoundingClientRect();
 
-      for (const [size, [y, x]] of Object.entries(padding) as [
-        'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl',
-        readonly [number, number]
-      ][]) {
-        test(`@size="${size}" pads ${y}px / ${x}px, not Button's text padding`, async function (assert) {
+      for (const size of sizes) {
+        test(`@size="${size}" is a circle as tall as a Button of that size`, async function (assert) {
           await render(
             <template>
-              <IconButton @label="Delete" @size={{size}} data-test-id="btn"><svg
-                  data-test-icon
-                  viewBox="0 0 24 24"
-                ><path d="M0 0h24v24H0z" /></svg></IconButton>
+              <IconButton
+                @label="Delete"
+                @size={{size}}
+                data-test-id="icon"
+              ><svg viewBox="0 0 24 24"><path
+                    d="M0 0h24v24H0z"
+                  /></svg></IconButton>
+              <Button @size={{size}} data-test-id="text">Delete</Button>
             </template>
           );
 
-          const style = getComputedStyle(
-            document.querySelector('[data-test-id="btn"]') as HTMLElement
+          const icon = box('icon');
+          assert.true(
+            Math.abs(icon.width - icon.height) < 0.5,
+            `square: ${icon.width} x ${icon.height}`
           );
-          assert.strictEqual(style.paddingTop, `${y}px`);
-          assert.strictEqual(style.paddingBottom, `${y}px`);
-          assert.strictEqual(style.paddingLeft, `${x}px`);
-          assert.strictEqual(style.paddingRight, `${x}px`);
+          assert.true(
+            Math.abs(icon.height - box('text').height) < 0.5,
+            'same height as Button'
+          );
+          assert.strictEqual(
+            getComputedStyle(
+              document.querySelector('[data-test-id="icon"]')!
+            ).borderRadius.endsWith('px'),
+            true
+          );
         });
       }
 
-      test('defaults to md', async function (assert) {
+      test('it grows with the size, defaulting to md', async function (assert) {
         await render(
           <template>
-            <IconButton @label="Delete" data-test-id="btn"><svg
-                data-test-icon
+            <IconButton @label="a" @size="xs" data-test-id="xs"><svg
+                viewBox="0 0 24 24"
+              ><path d="M0 0h24v24H0z" /></svg></IconButton>
+            <IconButton @label="a" data-test-id="def"><svg
+                viewBox="0 0 24 24"
+              ><path d="M0 0h24v24H0z" /></svg></IconButton>
+            <IconButton @label="a" @size="md" data-test-id="md"><svg
+                viewBox="0 0 24 24"
+              ><path d="M0 0h24v24H0z" /></svg></IconButton>
+            <IconButton @label="a" @size="2xl" data-test-id="2xl"><svg
                 viewBox="0 0 24 24"
               ><path d="M0 0h24v24H0z" /></svg></IconButton>
           </template>
         );
 
-        const style = getComputedStyle(
-          document.querySelector('[data-test-id="btn"]') as HTMLElement
-        );
-        assert.strictEqual(style.paddingLeft, '14px');
+        assert.true(box('xs').width < box('md').width);
+        assert.true(box('md').width < box('2xl').width);
+        assert.strictEqual(box('def').width, box('md').width);
       });
 
       test('the icon takes the button size', async function (assert) {

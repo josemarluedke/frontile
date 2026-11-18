@@ -13,7 +13,8 @@ export interface IconButtonSignature {
     label: string;
 
     /**
-     * The size of the button. Same names as Button.
+     * The size of the button. Same names as Button, and the same height, so
+     * an IconButton lines up with a Button of that size.
      *
      * @defaultValue 'md'
      */
