@@ -195,12 +195,6 @@ During the **0.18.x** cycle, you can migrate at your own pace. Both old and new 
 
 ## For .hbs Template Users
 
-If you use `.hbs` templates (not `.gts`/`.gjs`), components remain auto-importable through the deprecated wrapper packages during the 0.18.x cycle. However, you should plan to migrate to `.gts` explicit imports before 0.19.0, as the wrapper packages will be removed.
+Of the wrapper packages, only `@frontile/overlays` made components resolvable by name from `.hbs` templates (not `.gts`/`.gjs`): `Modal` and `Drawer` with their `Body`, `Header` and `Footer`, plus `Backdrop`, `Overlay`, `Popover`, `Portal` and `PortalTarget`. The other wrappers registered no components, so there is nothing for `.hbs` users to keep them installed for.
 
-During 0.18.x, `.hbs` users should:
-
-1. Keep the deprecated `@frontile/*` packages installed so that auto-imports continue to work.
-2. Plan migration to `.gts`/`.gjs` template format for new code.
-3. Use explicit imports in any new `.gts`/`.gjs` files.
-
-Once you have migrated all templates to `.gts`/`.gjs`, you can remove the deprecated wrapper packages and use the new `frontile` imports exclusively.
+`@frontile/overlays` was removed in 0.19.0. If a `.hbs` template still renders one of those components, either move the template to `.gts`/`.gjs` and import from `frontile`, or re-export the component from your app, as described in the [v0.19 release notes](../../releases/v0.19.md#hbs-templates).

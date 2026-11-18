@@ -24,14 +24,14 @@ Available subpaths: `buttons`, `forms`, `overlays`, `collections`, `notification
 `utilities`, `navigation`, `disclosure`, `layout`.
 
 **Do not confuse `frontile/buttons` with `@frontile/buttons`.** The first is a current entry
-point of the `frontile` package. The second is a separate, deprecated package. They differ only
+point of the `frontile` package. The second is an old, separate package that was removed in 0.19.0. They differ only
 by the `@` and the slash, and rewriting the former into the barrel import because it looks
 deprecated is a pointless diff. Match whichever style the file already uses.
 
 The old scoped packages (`@frontile/buttons`, `@frontile/collections`, `@frontile/forms`,
-`@frontile/overlays`, `@frontile/notifications`, `@frontile/status`, `@frontile/utilities`) are
-deprecated re-export shims and are **removed in 0.19.0**. `@frontile/changeset-form` and
-`@frontile/forms-legacy` are likewise deprecated, so migrate to `frontile`'s own form components.
+`@frontile/overlays`, `@frontile/notifications`, `@frontile/status`, `@frontile/utilities`) were
+re-export shims: deprecated in 0.18.x and **removed in 0.19.0**. `@frontile/changeset-form` and
+`@frontile/forms-legacy` were removed in 0.19.0 too; use `frontile`'s own form components.
 `@frontile/theme` is a separate, still-current package: it supplies styling (Tailwind Variants,
 color tokens, the Tailwind plugin), not components. Never import a component from it.
 

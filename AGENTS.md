@@ -14,12 +14,11 @@ Frontile is a modern, accessible component library for Ember.js built with:
 
 ## Project Structure
 
-**Important — source is consolidated.** All component source now lives in the single
-`packages/frontile` package, grouped by category under `packages/frontile/src/components/`.
-The old per-feature packages (`buttons`, `collections`, `forms`, `overlays`, `notifications`,
-`status`, `utilities`) are now thin **deprecation/re-export wrappers** — their `src/` contains
-only `index.ts` + `template-registry.ts` and re-exports from `frontile`. **Do not add or edit
-component source in those wrapper packages**; work in `packages/frontile/src/`.
+**Two packages.** All component source lives in `packages/frontile`, grouped by category
+under `packages/frontile/src/components/`; styling lives in `packages/theme`
+(`@frontile/theme`). The old per-feature `@frontile/*` packages, `forms-legacy` and
+`changeset-form` were removed in v0.19.0. Old docs, issues and consumer apps may still
+mention them.
 
 ```
 frontile/
@@ -39,13 +38,8 @@ frontile/
 │   │       │   └── utilities/       #   Avatar, Collapsible, Divider, Spinner, VisuallyHidden
 │   │       ├── modifiers/  services/  utils/
 │   │       └── buttons.ts, collections.ts, …  # category barrel entry points
-│   ├── theme/                       # Styling system (Tailwind Variants + semantic colors)
-│   ├── core/                        # Shared low-level primitives
-│   ├── tailwindcss-plugin-helpers/  # Helpers for the Tailwind plugin
-│   ├── changeset-form/              # Form components integrated with ember-changeset
-│   ├── forms-legacy/                # Legacy form components (still maintained)
-│   └── buttons/ collections/ forms/ overlays/ notifications/ status/ utilities/
-│                                    # Deprecation wrappers re-exporting from `frontile`
+│   └── theme/                       # Styling system (Tailwind Variants + semantic colors)
+├── scripts/              # Repo lint scripts (check-anatomy, check-css) + their node tests
 ├── test-app/             # Test application (integration/unit tests for all components)
 ├── site/                 # Documentation site (frontile.dev), built with Docfy
 └── docs/                 # Markdown docs (theming, migrations) rendered by the site
@@ -86,7 +80,10 @@ pnpm build && cd site && pnpm test
 
 Two things differ from the test-app suite:
 
-- It needs the **full** `pnpm build`, not just theme + `frontile` — see Building Packages.
+- A checkout that built the site before v0.19 may still hold generated Docfy output for the
+  removed `forms-legacy` package in `site/app/templates/docs/components/forms-legacy/`. It is
+  gitignored, so `git status` won't show it, but its stale demos break the site's Vite build.
+  Delete that directory if the build fails resolving a `form-*` component.
 - Each run leaves an orphaned browser holding testem's port 7357, so a second run fails
   with `listen EADDRINUSE :::7357`. Testem reports that as a single `not ok 1 - Error`
   with `# tests 1`, which looks like a catastrophic suite failure but is only a port
@@ -122,9 +119,7 @@ rather than at the real cause (`Module '@frontile/theme' has no exported member
 merely stale). Nothing is wrong with the source in that case — the dependency had simply not
 been built. This bites hardest in a fresh clone or worktree, where nothing has been built yet.
 
-Build `frontile` before running tests when you are working on a component. The legacy
-per-feature packages (`collections`, `buttons`, …) are wrappers — you rarely build them
-directly.
+Build `frontile` before running tests when you are working on a component.
 
 ### Linting
 
@@ -218,9 +213,9 @@ import { on } from '@ember/modifier';
 - Follow existing patterns in theme package
 - **Use `@color` and `@variant`, not `@intent` and `@appearance`.** v0.18 renamed them and
   their values: `intent="default"` → `color="neutral"`, `appearance="default"` → `variant="solid"`,
-  `outlined` → `outline`, `minimal` → `plain`. The old names still resolve and remain all over
-  the repo, so copying a nearby call site will give you the deprecated form. Feedback
-  surfaces (Alert, form feedback) take `@status` rather than `@color`.
+  `outlined` → `outline`, `minimal` → `plain`. v0.19 removed the old names: passing one fails a
+  development assertion through `assertRemovedArg` (`packages/frontile/src/-private/removed-args.ts`).
+  Feedback surfaces (Alert, form feedback) take `@status` rather than `@color`.
 
 ### Semantic Color System
 
@@ -261,21 +256,13 @@ Common dependency/build order (build in this order if modifying multiple):
 
 1. `@frontile/theme` - Base styling system (colors, Tailwind Variants)
 2. `frontile` - The main package containing all component source
-3. Legacy wrapper packages (`buttons`, `collections`, …) only if you specifically need them
 
-In practice, most work is just: build `@frontile/theme` (if styles changed), then `frontile`.
+Those are the only two packages, so `pnpm build` and `pnpm --filter "frontile..." build`
+build the same thing.
 
-**Except for the site test suite, which needs a full `pnpm build`.** The docs render live
-demos from every package, including `forms-legacy` and `changeset-form`, so a theme +
-`frontile` build is not enough. A partial build fails during `site`'s Vite build with
-
-```
-Rolldown failed to resolve import "@embroider/virtual/components/form-checkbox"
-  from ".../forms-legacy/form-checkbox_gen/docfy-demo-src-components-form-checkbox-usage.hbs"
-```
-
-which names a demo template rather than the missing build, so it reads as a broken site
-rather than an incomplete one.
+**Script tests:** `pnpm test:scripts` runs the node tests for the repo lint scripts in
+`scripts/__tests__/` (CI runs it after the build, since one test reads the built theme
+plugin).
 
 ## Testing Guidelines
 

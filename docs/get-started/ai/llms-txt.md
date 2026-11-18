@@ -59,8 +59,7 @@ Every page, grouped by section, each linking to its `.md` mirror:
 Component entries carry a one-line description, so an agent can usually pick the right
 component without fetching anything. Guide pages are listed without one.
 
-The file opens with a preamble covering the conventions most often got wrong, and marks
-deprecated sections so `Forms (Legacy)` is not mistaken for current `Forms`.
+The file opens with a preamble covering the conventions most often got wrong.
 
 ## Using it with your tools
 

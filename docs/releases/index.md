@@ -10,6 +10,8 @@ This section covers notable Frontile releases: what changed, what it means for
 your app, and where to look for the details. Each page favors highlights and,
 where it helps, live demos over an exhaustive PR list.
 
+- **[v0.19](./v0.19.md)** — the cleanup release: removes the packages and argument
+  names v0.18 deprecated, so there is one package and one name for everything.
 - **[v0.18](./v0.18.md)** — the largest release in the project's history: fourteen
   new components, a rebuilt OKLCH-based design system, and a single consolidated
   `frontile` package.

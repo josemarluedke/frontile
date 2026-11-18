@@ -11,7 +11,7 @@ This guide covers migrating from the deprecated `@frontile/changeset-form` packa
 
 ## Overview
 
-The `@frontile/changeset-form` package is deprecated and will be removed in 0.19.0. This guide presents three migration paths based on your project's constraints and goals.
+The `@frontile/changeset-form` package was deprecated in 0.18 and removed in 0.19.0. This guide presents three migration paths based on your project's constraints and goals.
 
 ## Key Architectural Patterns
 
