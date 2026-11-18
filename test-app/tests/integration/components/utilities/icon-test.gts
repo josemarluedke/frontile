@@ -42,7 +42,7 @@ const SIZES = [
 // [role, fill + ink classes]
 const SOLID: [Role, string][] = [
   ['primary', 'bg-primary text-on-primary'],
-  ['neutral', 'bg-on-neutral-subtle text-on-neutral'],
+  ['neutral', 'bg-on-neutral-subtle text-on-neutral-strong'],
   ['secondary', 'bg-secondary text-on-secondary'],
   ['tertiary', 'bg-tertiary text-on-tertiary'],
   ['success', 'bg-success text-on-success'],
@@ -56,7 +56,7 @@ const SOFT: [Role, string][] = [
   ['secondary', 'bg-secondary-soft text-on-secondary-soft'],
   ['tertiary', 'bg-tertiary-soft text-on-tertiary-soft'],
   ['success', 'bg-success-soft text-on-success-soft'],
-  ['warning', 'bg-warning-muted text-on-warning-muted'],
+  ['warning', 'bg-warning-muted text-on-warning-soft'],
   ['danger', 'bg-danger-soft text-on-danger-soft']
 ];
 
@@ -311,6 +311,136 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
     });
   });
 
+  module('ink against the artifact', function () {
+    // The artifact's contrast ink (themes.css), which is not always what
+    // Frontile's auto-generated `on-*` tokens give: on a mid-gray neutral fill
+    // Frontile picks black where the artifact has white. These are the
+    // artifact's values, so a fill that passes the token tests above but is
+    // unreadable still fails here.
+    const BLACK = 'oklch(0 0 0)';
+    const WHITE = 'oklch(1 0 0)';
+    const SOLID_INK_LIGHT: Record<string, string> = {
+      primary: WHITE,
+      neutral: WHITE,
+      secondary: BLACK,
+      tertiary: BLACK,
+      success: BLACK,
+      warning: BLACK,
+      danger: WHITE
+    };
+
+    for (const [role, light] of Object.entries(SOLID_INK_LIGHT)) {
+      test(`solid ${role}: ink is ${light === WHITE ? 'white' : 'black'} in light and black in dark`, async function (assert) {
+        await render(
+          <template>
+            <div class="light">
+              <Icon @variant="solid" @color={{role}} data-test-light><Mark
+                /></Icon>
+            </div>
+            <div class="dark">
+              <Icon @variant="solid" @color={{role}} data-test-dark><Mark
+                /></Icon>
+            </div>
+          </template>
+        );
+        assert.strictEqual(style('[data-test-light]').color, light, 'light');
+        assert.strictEqual(style('[data-test-dark]').color, BLACK, 'dark');
+      });
+    }
+
+    for (const role of Object.keys(SOLID_INK_LIGHT)) {
+      test(`soft ${role}: ink is black in light and white in dark`, async function (assert) {
+        await render(
+          <template>
+            <div class="light">
+              <Icon @variant="soft" @color={{role}} data-test-light><Mark
+                /></Icon>
+            </div>
+            <div class="dark">
+              <Icon @variant="soft" @color={{role}} data-test-dark><Mark
+                /></Icon>
+            </div>
+          </template>
+        );
+        assert.strictEqual(style('[data-test-light]').color, BLACK, 'light');
+        assert.strictEqual(style('[data-test-dark]').color, WHITE, 'dark');
+      });
+    }
+
+    test('solid neutral: the fill is black in light and white in dark', async function (assert) {
+      await render(
+        <template>
+          <div class="light">
+            <Icon @variant="solid" @color="neutral" data-test-light><Mark
+              /></Icon>
+          </div>
+          <div class="dark">
+            <Icon @variant="solid" @color="neutral" data-test-dark><Mark
+              /></Icon>
+          </div>
+        </template>
+      );
+      assert.strictEqual(style('[data-test-light]').backgroundColor, BLACK);
+      assert.strictEqual(style('[data-test-dark]').backgroundColor, WHITE);
+    });
+
+    test('inverse neutral solid: the fill and the icon swap, and stay readable', async function (assert) {
+      await render(
+        <template>
+          <div class="light">
+            <Icon
+              @variant="solid"
+              @color="neutral"
+              @inverse={{true}}
+              data-test-light
+            ><Mark /></Icon>
+          </div>
+          <div class="dark">
+            <Icon
+              @variant="solid"
+              @color="neutral"
+              @inverse={{true}}
+              data-test-dark
+            ><Mark /></Icon>
+          </div>
+        </template>
+      );
+      const light = style('[data-test-light]');
+      assert.strictEqual(light.backgroundColor, WHITE, 'light fill');
+      assert.strictEqual(light.color, BLACK, 'light icon');
+      const dark = style('[data-test-dark]');
+      assert.strictEqual(dark.backgroundColor, BLACK, 'dark fill');
+      assert.strictEqual(dark.color, WHITE, 'dark icon');
+    });
+
+    for (const variant of ['outline', 'plain']) {
+      test(`inverse neutral ${variant}: the icon is white in light and black in dark`, async function (assert) {
+        await render(
+          <template>
+            <div class="light">
+              <Icon
+                @variant={{variant}}
+                @color="neutral"
+                @inverse={{true}}
+                data-test-light
+              ><Mark /></Icon>
+            </div>
+            <div class="dark">
+              <Icon
+                @variant={{variant}}
+                @color="neutral"
+                @inverse={{true}}
+                data-test-dark
+              ><Mark /></Icon>
+            </div>
+          </template>
+        );
+        assert.strictEqual(style('[data-test-light]').color, WHITE, 'light');
+        assert.strictEqual(style('[data-test-dark]').color, BLACK, 'dark');
+      });
+    }
+  });
+
   module('@inverse', function () {
     test('it resolves its colors in the opposite scheme', async function (assert) {
       await render(
@@ -331,8 +461,125 @@ module('Integration | Component | @frontile/utilities/Icon', function (hooks) {
         style('[data-test-inverse]').backgroundColor,
         style('[data-test-plain]').backgroundColor
       );
+    });
+
+    test('neutral solid swaps fill and icon, as in the artifact', async function (assert) {
+      await render(
+        <template>
+          <Icon
+            @variant="solid"
+            @color="neutral"
+            @inverse={{true}}
+            data-test-icon
+          ><Mark /></Icon>
+          <span
+            class="bg-on-neutral-strong text-on-neutral-subtle"
+            data-test-ref
+          ></span>
+        </template>
+      );
+      const icon = style('[data-test-icon]');
+      const ref = style('[data-test-ref]');
+      assert.strictEqual(icon.backgroundColor, ref.backgroundColor, 'fill');
+      assert.strictEqual(icon.color, ref.color, 'icon color');
+    });
+
+    for (const variant of ['outline', 'plain']) {
+      test(`neutral ${variant} takes on-neutral, as in the artifact`, async function (assert) {
+        await render(
+          <template>
+            <Icon
+              @variant={{variant}}
+              @color="neutral"
+              @inverse={{true}}
+              data-test-icon
+            ><Mark /></Icon>
+            <span class="text-on-neutral-strong" data-test-ref></span>
+          </template>
+        );
+        assert.strictEqual(
+          style('[data-test-icon]').color,
+          style('[data-test-ref]').color
+        );
+      });
+    }
+
+    test('other colors re-resolve in the opposite scheme', async function (assert) {
+      await render(
+        <template>
+          <div class="light">
+            <Icon @variant="solid" @color="primary" data-test-normal><Mark
+              /></Icon>
+            <Icon
+              @variant="solid"
+              @color="primary"
+              @inverse={{true}}
+              data-test-inverse
+            ><Mark /></Icon>
+          </div>
+        </template>
+      );
       assert.dom('[data-test-inverse]').hasClass('theme-inverse');
-      assert.dom('[data-test-plain]').doesNotHaveClass('theme-inverse');
+      assert.notStrictEqual(
+        style('[data-test-inverse]').backgroundColor,
+        style('[data-test-normal]').backgroundColor
+      );
+    });
+
+    for (const variant of ['solid', 'soft', 'subtle', 'outline', 'plain']) {
+      test(`${variant}: the icon color inverts too`, async function (assert) {
+        await render(
+          <template>
+            <div class="light">
+              <Icon @variant={{variant}} @color="neutral" data-test-normal><Mark
+                /></Icon>
+              <Icon
+                @variant={{variant}}
+                @color="neutral"
+                @inverse={{true}}
+                data-test-inverse
+              ><Mark /></Icon>
+            </div>
+          </template>
+        );
+        assert.notStrictEqual(
+          style('[data-test-inverse]').color,
+          style('[data-test-normal]').color,
+          'icon color differs from the non-inverse icon'
+        );
+      });
+    }
+
+    test('a plain icon with no @color inverts its inherited color', async function (assert) {
+      await render(
+        <template>
+          <div class="light text-neutral-strong">
+            <Icon data-test-normal><Mark /></Icon>
+            <Icon @inverse={{true}} data-test-inverse><Mark /></Icon>
+          </div>
+        </template>
+      );
+      assert.notStrictEqual(
+        style('[data-test-inverse]').color,
+        style('[data-test-normal]').color
+      );
+    });
+
+    test('the inverse icon reads against the inverse background', async function (assert) {
+      await render(
+        <template>
+          <div class="light">
+            <Icon
+              @variant="solid"
+              @color="neutral"
+              @inverse={{true}}
+              data-test-inverse
+            ><Mark /></Icon>
+          </div>
+        </template>
+      );
+      const icon = style('[data-test-inverse]');
+      assert.notStrictEqual(icon.color, icon.backgroundColor);
     });
   });
 

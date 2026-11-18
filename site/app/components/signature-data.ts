@@ -18992,7 +18992,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Resolves the colors in the opposite light or dark scheme, for an icon\non a surface of the other scheme.',
+          'Draws the icon, its fill and its ring in the opposite light or dark\nscheme, for an icon on a surface of the other scheme. An inverse plain\nicon with no <code>@color</code> is neutral.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',

@@ -13,10 +13,13 @@ type Role = (typeof ROLES)[number];
 
 // Fill and ink per color and variant, from the design artifact's Icon spec.
 // The artifact picks a different level per role (soft is `*-soft` for most and
-// `*-muted` for neutral and warning), so these are tables, not a rule. Every
-// class is written out in full so Tailwind can find it in source.
+// `*-muted` for neutral and warning), so these are tables, not a rule. Where
+// Frontile's auto-generated `on-*` token differs from the artifact's ink (the
+// artifact has `on-neutral` white on its mid-gray fill, Frontile black), the
+// level that gives the artifact's ink is used instead, and the tests check the
+// ink itself. Every class is written out in full so Tailwind can find it.
 const SOLID: Record<Role, string> = {
-  neutral: 'bg-on-neutral-subtle text-on-neutral',
+  neutral: 'bg-on-neutral-subtle text-on-neutral-strong',
   primary: 'bg-primary text-on-primary',
   secondary: 'bg-secondary text-on-secondary',
   tertiary: 'bg-tertiary text-on-tertiary',
@@ -31,7 +34,7 @@ const SOFT: Record<Role, string> = {
   secondary: 'bg-secondary-soft text-on-secondary-soft',
   tertiary: 'bg-tertiary-soft text-on-tertiary-soft',
   success: 'bg-success-soft text-on-success-soft',
-  warning: 'bg-warning-muted text-on-warning-muted',
+  warning: 'bg-warning-muted text-on-warning-soft',
   danger: 'bg-danger-soft text-on-danger-soft'
 };
 
@@ -102,9 +105,9 @@ const icon = tv({
       outline: '',
       plain: ''
     },
-    // Re-resolves every color token to the opposite scheme for this icon.
+    // For an icon on a surface of the other scheme. See the compound variants.
     inverse: {
-      true: 'theme-inverse'
+      true: ''
     }
   },
   compoundVariants: [
@@ -113,6 +116,40 @@ const icon = tv({
         (variant) => ({ color, variant, class: BY_VARIANT[variant][color] })
       )
     ),
+    // Inverse. Neutral solid, outline and plain swap their tokens, as the
+    // artifact does: the fill and the icon change places, and the ink takes
+    // `on-neutral`. Everything else re-resolves its tokens to the opposite
+    // scheme with `theme-inverse`.
+    {
+      inverse: true,
+      color: 'neutral',
+      variant: 'solid',
+      class: 'bg-on-neutral-strong text-on-neutral-subtle'
+    },
+    {
+      inverse: true,
+      color: 'neutral',
+      variant: ['outline', 'plain'],
+      class: 'text-on-neutral-strong'
+    },
+    {
+      inverse: true,
+      color: 'neutral',
+      variant: ['soft', 'subtle'],
+      class: 'theme-inverse'
+    },
+    {
+      inverse: true,
+      color: [
+        'primary',
+        'secondary',
+        'tertiary',
+        'success',
+        'warning',
+        'danger'
+      ],
+      class: 'theme-inverse'
+    },
     // Plain has no circle, so its box is tighter. The icon size is unchanged.
     { variant: 'plain', size: '4xs', class: 'size-3' },
     { variant: 'plain', size: '3xs', class: 'size-3.5' },

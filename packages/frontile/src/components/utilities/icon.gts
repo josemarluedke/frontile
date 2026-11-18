@@ -27,8 +27,9 @@ export interface IconSignature {
     variant?: IconVariants['variant'];
 
     /**
-     * Resolves the colors in the opposite light or dark scheme, for an icon
-     * on a surface of the other scheme.
+     * Draws the icon, its fill and its ring in the opposite light or dark
+     * scheme, for an icon on a surface of the other scheme. An inverse plain
+     * icon with no `@color` is neutral.
      *
      * @defaultValue false
      */
@@ -53,6 +54,12 @@ export interface IconSignature {
 }
 
 class Icon extends Component<IconSignature> {
+  // A plain icon takes the surrounding text color, unless it is inverse: an
+  // inherited color cannot be inverted, so it becomes neutral.
+  defaultColor(variant: string): 'neutral' | undefined {
+    return variant === 'plain' && !this.args.inverse ? undefined : 'neutral';
+  }
+
   get classNames(): string {
     const { icon } = useStyles();
     const variant = this.args.variant ?? 'plain';
@@ -60,7 +67,7 @@ class Icon extends Component<IconSignature> {
     return icon({
       size: this.args.size,
       variant,
-      color: this.args.color ?? (variant === 'plain' ? undefined : 'neutral'),
+      color: this.args.color ?? this.defaultColor(variant),
       inverse: this.args.inverse,
       class: this.args.classes?.base
     });
