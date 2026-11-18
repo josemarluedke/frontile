@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import { deprecate } from '@ember/debug';
+import { assert } from '@ember/debug';
 import { VisuallyHidden } from '../utilities/visually-hidden';
 import { press, type PressEvent } from '../../modifiers/press';
 import { useStyles, type CloseButtonVariants } from '@frontile/theme';
+import { assertRemovedArg } from '../../-private/removed-args';
 import type Owner from '@ember/owner';
 
 interface CloseButtonSignature {
@@ -25,22 +25,13 @@ interface CloseButtonSignature {
 
     /**
      * @defaultValue 'ghost'
-     *
-     * `transparent` and `subtle` are @deprecated — use `ghost` and `soft` instead.
      */
-    variant?: 'ghost' | 'soft' | 'transparent' | 'subtle';
+    variant?: 'ghost' | 'soft';
 
     /**
      * The function to call when button is pressed
      */
     onPress?: (event: PressEvent) => void;
-
-    /**
-     * Deprecated: The function to call when button is clicked
-     *
-     * @deprecated Use onPress instead for better cross-platform support
-     */
-    onClick?: (event: Event) => void;
 
     /**
      * Additional class for close button element
@@ -59,39 +50,18 @@ class CloseButton extends Component<CloseButtonSignature> {
   constructor(owner: Owner, args: CloseButtonSignature['Args']) {
     super(owner, args);
 
-    if (args.onClick) {
-      deprecate(
-        'CloseButton: onClick is deprecated. Use onPress instead for better cross-platform support including touch, keyboard, and screen reader interactions.',
-        false,
-        {
-          id: 'frontile.close-button.onClick',
-          until: '0.18.0',
-          for: 'frontile',
-          since: { available: '0.17.0', enabled: '0.17.0' }
-        }
-      );
-    }
-  }
+    assertRemovedArg('CloseButton', args, 'onClick', 'onPress');
 
-  get variant(): 'ghost' | 'soft' {
-    const legacy = this.args.variant;
-
-    if (legacy === 'transparent' || legacy === 'subtle') {
-      deprecate(
-        `CloseButton: \`@variant="${legacy}"\` is deprecated. Use \`@variant="${legacy === 'transparent' ? 'ghost' : 'soft'}"\`.`,
-        false,
-        {
-          id: 'frontile.close-button.variant-values',
-          until: '0.19.0',
-          for: 'frontile',
-          since: { available: '0.18.0', enabled: '0.18.0' }
-        }
-      );
-
-      return legacy === 'transparent' ? 'ghost' : 'soft';
-    }
-
-    return legacy ?? 'ghost';
+    // The type no longer admits these, but untyped consumers still can.
+    const variant = args.variant as string | undefined;
+    assert(
+      'CloseButton: @variant="transparent" was removed in 0.19.0. Use @variant="ghost".',
+      variant !== 'transparent'
+    );
+    assert(
+      'CloseButton: @variant="subtle" was removed in 0.19.0. Use @variant="soft".',
+      variant !== 'subtle'
+    );
   }
 
   get classes() {
@@ -99,7 +69,7 @@ class CloseButton extends Component<CloseButtonSignature> {
 
     const { base, icon } = closeButton({
       size: this.args.size || 'md',
-      variant: this.variant
+      variant: this.args.variant ?? 'ghost'
     });
 
     return {
@@ -118,12 +88,6 @@ class CloseButton extends Component<CloseButtonSignature> {
     }
   };
 
-  handleClick = (event: Event): void => {
-    if (typeof this.args.onClick === 'function') {
-      this.args.onClick(event);
-    }
-  };
-
   <template>
     <button
       type="button"
@@ -133,7 +97,6 @@ class CloseButton extends Component<CloseButtonSignature> {
       data-part="base"
       ...attributes
       {{press this.handlePress onPressChange=this.handlePressChange}}
-      {{on "click" this.handleClick}}
     >
 
       {{#if (has-block)}}

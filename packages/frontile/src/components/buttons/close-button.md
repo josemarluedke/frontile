@@ -101,8 +101,7 @@ button always has a name, defaulting to "Close", without any visible text.
 
 Because the `press` modifier calls `preventDefault()` on Enter and Space, the
 browser never synthesises a `click` — so use `@onPress` rather than a
-`{{on "click"}}` handler, or keyboard users get nothing. This is the same reason
-`@onClick` is deprecated.
+`{{on "click"}}` handler, or keyboard users get nothing.
 
 ### Set `@title` when there is more than one
 
@@ -161,27 +160,6 @@ import { DeleteIcon } from 'site/components/icons';
 Removing something on press leaves focus on a button that no longer exists, which
 drops it back to the top of the document. Move focus to the next item or to the
 container that held the removed one.
-
-## Migration from onClick
-
-If you're currently using `@onClick`, you should migrate to `@onPress` for better cross-platform support:
-
-```js
-// ❌ Deprecated - will show a deprecation warning
-<CloseButton @onClick={{this.handleClick}} />
-
-// ✅ Recommended - better cross-platform support
-<CloseButton @onPress={{this.handlePress}} />
-```
-
-The `@onClick` argument is still supported, but has been deprecated since v0.17
-and will be removed in a future release. `@onPress` covers the same cases and
-more:
-
-- Better touch device support
-- Automatic keyboard accessibility
-- Consistent behavior across all input methods
-- Enhanced pointer event handling
 
 ## API
 
