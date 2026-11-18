@@ -4,6 +4,7 @@ export * from './avatar';
 export * from './visually-hidden';
 export * from './collapsible';
 export * from './divider';
+export * from './card';
 export * from './kbd';
 export * from '../../utils/keys';
 export * from './skeleton';
