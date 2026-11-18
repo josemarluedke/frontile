@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerKeyEvent } from '@ember/test-helpers';
-import { Button, IconButton } from 'frontile';
+import { IconButton } from 'frontile';
 import { collectAssertions } from '../../../helpers/collect-assertions';
 
 module(
@@ -10,107 +10,60 @@ module(
     setupRenderingTest(hooks);
 
     module('size', function () {
-      const sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
-      const box = (id: string) =>
-        (
-          document.querySelector(`[data-test-id="${id}"]`) as HTMLElement
-        ).getBoundingClientRect();
+      // Diameter and icon size in px, from the design artifact's icon button
+      // spec (button width; glyph size). Literals on purpose.
+      const spec = {
+        xs: [24, 10],
+        sm: [34, 12],
+        md: [42, 16],
+        lg: [52, 20],
+        xl: [68, 28],
+        '2xl': [80, 32]
+      } as const;
 
-      for (const size of sizes) {
-        test(`@size="${size}" is a circle as tall as a Button of that size`, async function (assert) {
+      for (const [size, [diameter, glyph]] of Object.entries(spec) as [
+        keyof typeof spec,
+        readonly [number, number]
+      ][]) {
+        test(`@size="${size}" is a ${diameter}px circle with a ${glyph}px icon`, async function (assert) {
           await render(
             <template>
-              <IconButton
-                @label="Delete"
-                @size={{size}}
-                data-test-id="icon"
-              ><svg viewBox="0 0 24 24"><path
-                    d="M0 0h24v24H0z"
-                  /></svg></IconButton>
-              <Button @size={{size}} data-test-id="text">Delete</Button>
-            </template>
-          );
-
-          const icon = box('icon');
-          assert.true(
-            Math.abs(icon.width - icon.height) < 0.5,
-            `square: ${icon.width} x ${icon.height}`
-          );
-          assert.true(
-            Math.abs(icon.height - box('text').height) < 0.5,
-            'same height as Button'
-          );
-          assert.strictEqual(
-            getComputedStyle(
-              document.querySelector('[data-test-id="icon"]')!
-            ).borderRadius.endsWith('px'),
-            true
-          );
-        });
-      }
-
-      test('it grows with the size, defaulting to md', async function (assert) {
-        await render(
-          <template>
-            <IconButton @label="a" @size="xs" data-test-id="xs"><svg
-                viewBox="0 0 24 24"
-              ><path d="M0 0h24v24H0z" /></svg></IconButton>
-            <IconButton @label="a" data-test-id="def"><svg
-                viewBox="0 0 24 24"
-              ><path d="M0 0h24v24H0z" /></svg></IconButton>
-            <IconButton @label="a" @size="md" data-test-id="md"><svg
-                viewBox="0 0 24 24"
-              ><path d="M0 0h24v24H0z" /></svg></IconButton>
-            <IconButton @label="a" @size="2xl" data-test-id="2xl"><svg
-                viewBox="0 0 24 24"
-              ><path d="M0 0h24v24H0z" /></svg></IconButton>
-          </template>
-        );
-
-        assert.true(box('xs').width < box('md').width);
-        assert.true(box('md').width < box('2xl').width);
-        assert.strictEqual(box('def').width, box('md').width);
-      });
-
-      test('the icon takes the button size', async function (assert) {
-        const sizes = ['xs', 'md', '2xl'] as const;
-        const widths: number[] = [];
-
-        for (const size of sizes) {
-          await render(
-            <template>
-              <IconButton @label="Delete" @size={{size}} data-test-id="btn">
-                <svg data-test-icon viewBox="0 0 24 24"><path
-                    d="M0 0h24v24H0z"
-                  /></svg>
-              </IconButton>
+              <IconButton @label="Delete" @size={{size}} data-test-id="btn"><svg
+                  data-test-icon
+                  viewBox="0 0 24 24"
+                ><path d="M0 0h24v24H0z" /></svg></IconButton>
             </template>
           );
 
           const btn = document.querySelector(
             '[data-test-id="btn"]'
           ) as HTMLElement;
-          const icon = btn.querySelector('[data-test-icon]') as SVGElement;
-          const px = getComputedStyle(btn).fontSize;
-          // 1em can differ from the button's font size by a sub-pixel.
+          assert.strictEqual(btn.offsetWidth, diameter, 'width');
+          assert.strictEqual(btn.offsetHeight, diameter, 'height');
           assert.true(
-            Math.abs(
-              parseFloat(getComputedStyle(icon).width) - parseFloat(px)
-            ) < 0.5,
-            `${size}: icon width is the button's font size`
+            parseFloat(getComputedStyle(btn).borderRadius) >= diameter / 2,
+            'fully rounded'
           );
-          assert.true(
-            Math.abs(
-              parseFloat(getComputedStyle(icon).height) - parseFloat(px)
-            ) < 0.5
-          );
-          widths.push(parseFloat(px));
-        }
 
-        assert.true(
-          widths[0]! < widths[1]! && widths[1]! < widths[2]!,
-          'it grows with the size'
+          const icon = btn.querySelector('[data-test-icon]') as SVGElement;
+          assert.strictEqual(getComputedStyle(icon).width, `${glyph}px`);
+          assert.strictEqual(getComputedStyle(icon).height, `${glyph}px`);
+        });
+      }
+
+      test('it defaults to md', async function (assert) {
+        await render(
+          <template>
+            <IconButton @label="a" data-test-id="def"><svg
+                viewBox="0 0 24 24"
+              ><path d="M0 0h24v24H0z" /></svg></IconButton>
+          </template>
         );
+
+        const btn = document.querySelector(
+          '[data-test-id="def"]'
+        ) as HTMLElement;
+        assert.strictEqual(btn.offsetWidth, 42);
       });
     });
 

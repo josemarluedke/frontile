@@ -11,8 +11,7 @@ A button that shows only an icon.
 The icon is the block you pass in, so it works with whatever icon source you
 use: inline SVGs, ember-fontawesome's `FaIcon`, or your own components. It
 takes the same sizes, colors and variants as
-[Button](/docs/components/buttons/button). It is a circle, as tall as a Button of
-the same size.
+[Button](/docs/components/buttons/button). It is a circle.
 
 ## Import
 
@@ -37,8 +36,16 @@ import { DeleteIcon } from 'site/components/icons';
 ## Sizes
 
 `@size` takes `xs`, `sm`, `md`, `lg`, `xl` and `2xl`, the same names as Button.
-The default is `md`. An IconButton lines up with a Button of the same size, and
-its icon is sized to the button's text, so it grows with the button.
+The default is `md`. The icon grows with the button.
+
+| Size | Button | Icon |
+| ---- | ------ | ---- |
+| `xs` | 24px | 10px |
+| `sm` | 34px | 12px |
+| `md` | 42px | 16px |
+| `lg` | 52px | 20px |
+| `xl` | 68px | 28px |
+| `2xl` | 80px | 32px |
 
 ```gts preview
 import { IconButton } from 'frontile';
