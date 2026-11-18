@@ -4020,13 +4020,13 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
       assert.true(
         failed.includes(
-          'Select @chip: @appearance was removed in 0.19.0. Use @variant.'
+          'Select @chip: appearance was removed in 0.19.0. Use variant.'
         ),
         `got: ${failed.join(' | ')}`
       );
       assert.true(
         failed.includes(
-          'Select @chip: @intent was removed in 0.19.0. Use @color.'
+          'Select @chip: intent was removed in 0.19.0. Use color.'
         ),
         `got: ${failed.join(' | ')}`
       );
@@ -4036,6 +4036,19 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         ),
         `got: ${failed.join(' | ')}`
       );
+    });
+
+    test('an explicitly undefined @appearance and @intent stay silent', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <Select @appearance={{undefined}} @intent={{undefined}} />
+          </template>
+        )
+      );
+
+      assert.deepEqual(failed, []);
     });
 
     test('@chip with only current keys stays silent', async function (assert) {

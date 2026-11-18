@@ -102,9 +102,9 @@ class Chip extends Component<ChipSignature> {
     const { chip } = useStyles();
 
     const { base, content, dot, closeButton } = chip({
-      color: this.args.color ?? 'neutral',
+      color: this.args.color || 'neutral',
       size: this.args.size,
-      variant: this.args.variant ?? 'solid',
+      variant: this.args.variant || 'solid',
       isDisabled: this.args.isDisabled
     });
 

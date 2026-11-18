@@ -7,7 +7,9 @@ import { assert } from '@ember/debug';
  * An explicitly `undefined` value does not fail: a parent that forwards
  * `@x={{@x}}` passes the name even when the caller never wrote it.
  *
- * `assert` is stripped from production builds, so this costs nothing there.
+ * `assert` is stripped from production builds, so this costs nearly nothing
+ * there: the call, the message string and an `in` check remain unless the
+ * consumer's build strips `assert`.
  * Call it once per instance (e.g. from the constructor), not from a getter
  * that re-runs.
  */

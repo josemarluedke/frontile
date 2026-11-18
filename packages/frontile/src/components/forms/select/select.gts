@@ -88,8 +88,14 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     // `@chip` keys are not args, so they never reach `assertRemovedArg` through
     // the args proxy above. Check them here, once per instance.
     const chip = (this.args.chip ?? {}) as Record<string, unknown>;
-    assertRemovedArg('Select @chip', chip, 'appearance', 'variant');
-    assertRemovedArg('Select @chip', chip, 'intent', 'color');
+    assert(
+      'Select @chip: appearance was removed in 0.19.0. Use variant.',
+      chip['appearance'] === undefined
+    );
+    assert(
+      'Select @chip: intent was removed in 0.19.0. Use color.',
+      chip['intent'] === undefined
+    );
     assert(
       'Select @chip: radius was removed in 0.19.0. Chip is always a pill; use Badge for a squared label.',
       chip['radius'] === undefined

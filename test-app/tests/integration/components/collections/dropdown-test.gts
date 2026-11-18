@@ -140,6 +140,46 @@ module(
         );
       });
 
+      test('an explicitly undefined Trigger @appearance and @intent stay silent', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              <Dropdown as |d|>
+                <d.Trigger
+                  {{! @glint-expect-error -- removed in 0.19.0 }}
+                  @appearance={{undefined}}
+                  @intent={{undefined}}
+                >Open</d.Trigger>
+              </Dropdown>
+            </template>
+          )
+        );
+
+        assert.deepEqual(failed, []);
+      });
+
+      test('an explicitly undefined Menu @appearance and @intent stay silent', async function (assert) {
+        const failed = await collectAssertions(async () => {
+          await render(
+            <template>
+              <Dropdown as |d|>
+                <d.Trigger>Open</d.Trigger>
+                <d.Menu
+                  @disableTransitions={{true}}
+                  {{! @glint-expect-error -- removed in 0.19.0 }}
+                  @appearance={{undefined}}
+                  @intent={{undefined}}
+                  as |Item|
+                ><Item @key="a">A</Item></d.Menu>
+              </Dropdown>
+            </template>
+          );
+          await click('[data-test-id="dropdown-trigger"]');
+        });
+
+        assert.deepEqual(failed, []);
+      });
+
       test('@variant and @color reach the trigger and the menu items', async function (assert) {
         const failed = await collectAssertions(async () => {
           await render(

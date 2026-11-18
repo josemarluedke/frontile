@@ -1289,6 +1289,19 @@ module(
         );
       });
 
+      test('an explicitly undefined @appearance and @intent stay silent', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <Autocomplete @appearance={{undefined}} @intent={{undefined}} />
+            </template>
+          )
+        );
+
+        assert.deepEqual(failed, []);
+      });
+
       test('@variant and @color reach the listbox items', async function (assert) {
         const items = ['Apple', 'Banana'];
 

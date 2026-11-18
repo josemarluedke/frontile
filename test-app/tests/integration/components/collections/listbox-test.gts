@@ -1556,6 +1556,40 @@ module(
 
         assert.deepEqual(failed, []);
       });
+
+      test('an explicitly undefined Listbox.Item @appearance and @intent stay silent', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              <Listbox as |l|>
+                <l.Item
+                  @key="a"
+                  {{! @glint-expect-error -- removed in 0.19.0 }}
+                  @appearance={{undefined}}
+                  @intent={{undefined}}
+                >A</l.Item>
+              </Listbox>
+            </template>
+          )
+        );
+
+        assert.deepEqual(failed, []);
+      });
+
+      test('an explicitly undefined Listbox.Group @appearance and @intent stay silent', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              <Listbox as |l|>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <l.Group @appearance={{undefined}} @intent={{undefined}} />
+              </Listbox>
+            </template>
+          )
+        );
+
+        assert.deepEqual(failed, []);
+      });
     });
 
     module('aria selection state', function () {

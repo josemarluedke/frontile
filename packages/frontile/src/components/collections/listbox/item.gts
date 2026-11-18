@@ -246,11 +246,11 @@ class ListboxItem extends Component<ListboxItemSignature> {
   }
 
   get variant(): 'solid' | 'outline' | 'subtle' {
-    return this.args.variant ?? 'solid';
+    return this.args.variant || 'solid';
   }
 
   get color(): NonNullable<ListboxItemSignature['Args']['color']> {
-    return this.args.color ?? 'neutral';
+    return this.args.color || 'neutral';
   }
 
   get classNames() {

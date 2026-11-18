@@ -69,7 +69,7 @@ class CloseButton extends Component<CloseButtonSignature> {
 
     const { base, icon } = closeButton({
       size: this.args.size || 'md',
-      variant: this.args.variant ?? 'ghost'
+      variant: this.args.variant === 'soft' ? 'soft' : 'ghost'
     });
 
     return {
