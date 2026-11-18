@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import { tv } from 'tailwind-variants';
 import { ProgressBar } from 'frontile';
 import { hash } from '@ember/helper';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 const stubStyles = {
@@ -100,50 +100,35 @@ module(
             .hasClass('color-neutral');
         });
 
-        test('@intent still renders, and deprecates exactly once', async function (assert) {
-          const { ids } = trackDeprecations();
-
-          await render(
-            <template>
-              <ProgressBar @intent="danger" data-test-id="progress-bar" />
-            </template>
+        test('@intent fails in development', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ProgressBar @intent="danger" data-test-id="progress-bar" />
+              </template>
+            )
           );
 
-          assert
-            .dom('[data-test-id="progress-bar"] > div.pb-base')
-            .hasClass('color-danger');
-          assert.deepEqual(ids, ['frontile.progress-bar.intent']);
+          assert.true(
+            failed.includes(
+              'ProgressBar: @intent was removed in 0.19.0. Use @color.'
+            ),
+            `got: ${failed.join(' | ')}`
+          );
         });
 
-        test('@intent="default" maps to neutral', async function (assert) {
-          await render(
-            <template>
-              <ProgressBar @intent="default" data-test-id="progress-bar" />
-            </template>
+        test('an explicitly undefined @intent stays silent', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ProgressBar @intent={{undefined}} />
+              </template>
+            )
           );
 
-          assert
-            .dom('[data-test-id="progress-bar"] > div.pb-base')
-            .hasClass('color-neutral');
-        });
-
-        test('@color wins when both are passed', async function (assert) {
-          await render(
-            <template>
-              <ProgressBar
-                @color="success"
-                @intent="danger"
-                data-test-id="progress-bar"
-              />
-            </template>
-          );
-
-          assert
-            .dom('[data-test-id="progress-bar"] > div.pb-base')
-            .hasClass('color-success');
-          assert
-            .dom('[data-test-id="progress-bar"] > div.pb-base')
-            .doesNotHaveClass('color-danger');
+          assert.deepEqual(failed, []);
         });
 
         test('ARIA does not depend on @color', async function (assert) {

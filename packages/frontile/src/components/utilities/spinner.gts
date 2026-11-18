@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
+import type Owner from '@ember/owner';
 import { useStyles, type SpinnerVariants } from '@frontile/theme';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
 
 interface SpinnerSignature {
   Args: {
@@ -23,41 +24,24 @@ interface SpinnerSignature {
      * @defaultValue 'neutral'
      */
     color?: SpinnerVariants['color'];
-
-    /**
-     * @deprecated Use `color`. `default` is now `neutral`.
-     */
-    intent?:
-      | 'default'
-      | 'primary'
-      | 'secondary'
-      | 'tertiary'
-      | 'success'
-      | 'warning'
-      | 'danger';
   };
   Element: SVGElement;
 }
 
 class Spinner extends Component<SpinnerSignature> {
+  constructor(owner: Owner, args: SpinnerSignature['Args']) {
+    super(owner, args);
+
+    assertRemovedArg('Spinner', args, 'intent', 'color');
+  }
+
   get classNames() {
     const { spinner } = useStyles();
 
     return spinner({
       class: this.args.class,
       size: this.args.size,
-      color:
-        renamedArgValue(
-          this.args.color,
-          this.args.intent,
-          { default: 'neutral' } as const,
-          {
-            component: 'Spinner',
-            from: 'intent',
-            to: 'color',
-            id: 'frontile.spinner.intent'
-          }
-        ) || 'neutral'
+      color: this.args.color || 'neutral'
     });
   }
 

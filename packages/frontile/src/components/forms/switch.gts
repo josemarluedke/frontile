@@ -10,7 +10,7 @@ import {
 import { tracked } from '@ember/-internals/metal';
 import type Owner from '@ember/owner';
 import { hash } from '@ember/helper';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
 
 interface Args extends FormControlSharedArgs {
   /**
@@ -41,18 +41,6 @@ interface Args extends FormControlSharedArgs {
    * @defaultValue 'primary'
    */
   color?: SwitchVariants['color'];
-
-  /**
-   * @deprecated Use `color`. `default` is now `neutral`.
-   */
-  intent?:
-    | 'default'
-    | 'primary'
-    | 'secondary'
-    | 'tertiary'
-    | 'success'
-    | 'warning'
-    | 'danger';
 
   /**
    * Custom classes to style different slots of the Switch component.
@@ -95,6 +83,8 @@ class Switch extends Component<SwitchSignature> {
   constructor(owner: Owner, args: Args) {
     super(owner, args);
 
+    assertRemovedArg('Switch', args, 'intent', 'color');
+
     this._isSelected = this.args.defaultSelected ? true : false;
   }
 
@@ -128,17 +118,7 @@ class Switch extends Component<SwitchSignature> {
     const { switchInput } = useStyles();
     return switchInput({
       size: this.args.size,
-      color: renamedArgValue(
-        this.args.color,
-        this.args.intent,
-        { default: 'neutral' } as const,
-        {
-          component: 'Switch',
-          from: 'intent',
-          to: 'color',
-          id: 'frontile.switch.intent'
-        }
-      ),
+      color: this.args.color,
       isDisabled: this.args.isDisabled
     });
   }
