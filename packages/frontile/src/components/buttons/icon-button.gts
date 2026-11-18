@@ -1,5 +1,5 @@
 import { Button, type ButtonArgs } from './button';
-import { Glyph } from '../utilities/glyph';
+import { assert } from '@ember/debug';
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import type { PressEvent } from '../../modifiers/press';
@@ -7,14 +7,8 @@ import type { PressEvent } from '../../modifiers/press';
 export interface IconButtonSignature {
   Args: {
     /**
-     * The icon to draw, passed to Glyph as its `@name`: `trash` becomes
-     * `icon-trash`, a class your icon font defines.
-     */
-    icon: string;
-
-    /**
      * The accessible name. An icon-only button has no text, so this is
-     * required; it becomes the button's `aria-label`.
+     * required and must not be empty; it becomes the button's `aria-label`.
      */
     label: string;
 
@@ -50,10 +44,23 @@ export interface IconButtonSignature {
      */
     class?: string;
   };
+  Blocks: {
+    /** The icon, for example an inline `<svg>`. Sized to the button's text. */
+    default: [];
+  };
   Element: HTMLButtonElement;
 }
 
 class IconButton extends Component<IconButtonSignature> {
+  get label(): string {
+    assert(
+      'IconButton: @label is required, an icon-only button has no other accessible name.',
+      typeof this.args.label === 'string' && this.args.label.trim() !== ''
+    );
+
+    return this.args.label;
+  }
+
   get classNames(): string {
     const { iconButton } = useStyles();
 
@@ -69,11 +76,11 @@ class IconButton extends Component<IconButtonSignature> {
       @type={{@type}}
       @onPress={{@onPress}}
       @class={{this.classNames}}
-      aria-label={{@label}}
+      aria-label={{this.label}}
       data-component="icon-button"
       ...attributes
     >
-      <:icon><Glyph @name={{@icon}} @size="inherit" /></:icon>
+      <:icon>{{yield}}</:icon>
     </Button>
   </template>
 }
