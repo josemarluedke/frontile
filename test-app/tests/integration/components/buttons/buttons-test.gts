@@ -174,10 +174,7 @@ module(
             render(
               <template>
                 {{! @glint-expect-error -- removed in 0.19.0 }}
-                <Button
-                  @appearance={{undefined}}
-                  data-test-id="button"
-                >x</Button>
+                <Button @appearance={{undefined}}>x</Button>
               </template>
             )
           );

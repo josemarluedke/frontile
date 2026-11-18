@@ -210,20 +210,24 @@ module(
         });
 
         test('explicitly undefined @intent and @appearance stay silent', async function (assert) {
-          const failed = await collectAssertions(() =>
-            render(
+          const failed = await collectAssertions(async () => {
+            await render(
               <template>
                 {{! @glint-expect-error -- removed in 0.19.0 }}
-                <ButtonGroup
-                  @intent={{undefined}}
-                  @appearance={{undefined}}
-                  as |g|
-                >
-                  <g.Button data-test-id="button">x</g.Button>
+                <ButtonGroup @intent={{undefined}} as |g|>
+                  <g.Button>x</g.Button>
                 </ButtonGroup>
               </template>
-            )
-          );
+            );
+            await render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ButtonGroup @appearance={{undefined}} as |g|>
+                  <g.Button>x</g.Button>
+                </ButtonGroup>
+              </template>
+            );
+          });
 
           assert.deepEqual(failed, []);
         });
