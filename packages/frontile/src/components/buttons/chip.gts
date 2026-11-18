@@ -1,8 +1,9 @@
 import Component from '@glimmer/component';
-import { deprecate } from '@ember/debug';
+import type Owner from '@ember/owner';
+import { assert } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
 import { CloseButton } from './close-button';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
 
 interface ChipSignature {
   Args: {
@@ -12,12 +13,6 @@ interface ChipSignature {
      * @defaultValue 'solid'
      */
     variant?: 'solid' | 'outline' | 'soft';
-
-    /**
-     * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
-     * `outline`, and `faded` is `soft`.
-     */
-    appearance?: 'default' | 'outlined' | 'faded';
 
     /**
      * The color of the chip.
@@ -32,29 +27,11 @@ interface ChipSignature {
       | 'danger';
 
     /**
-     * @deprecated Use `color`. `default` is now `neutral`.
-     */
-    intent?:
-      | 'default'
-      | 'primary'
-      | 'secondary'
-      | 'tertiary'
-      | 'success'
-      | 'warning'
-      | 'danger';
-
-    /**
      * The size of the chip
      *
      * @defaultValue 'md'
      */
     size?: 'xs' | 'sm' | 'md' | 'lg';
-
-    /**
-     * @deprecated Ignored. Chip is always a pill; use `Badge` for a squared
-     * label.
-     */
-    radius?: 'none' | 'sm' | 'lg' | 'full';
 
     /**
      * Adds a dot before the content, colored by `@color`. On the `solid`
@@ -111,48 +88,23 @@ interface ChipSignature {
 }
 
 class Chip extends Component<ChipSignature> {
+  constructor(owner: Owner, args: ChipSignature['Args']) {
+    super(owner, args);
+    assertRemovedArg('Chip', args, 'appearance', 'variant');
+    assertRemovedArg('Chip', args, 'intent', 'color');
+    assert(
+      'Chip: @radius was removed in 0.19.0. Chip is always a pill; use Badge for a squared label.',
+      (args as Record<string, unknown>)['radius'] === undefined
+    );
+  }
+
   get classNames() {
     const { chip } = useStyles();
 
-    if (this.args.radius !== undefined) {
-      deprecate(
-        'Chip: `@radius` is deprecated and ignored. Chip is always a pill; use `Badge` for a squared label.',
-        false,
-        {
-          id: 'frontile.chip.radius',
-          until: '0.19.0',
-          for: 'frontile',
-          since: { available: '0.18.0', enabled: '0.18.0' }
-        }
-      );
-    }
-
     const { base, content, dot, closeButton } = chip({
-      color:
-        renamedArgValue(
-          this.args.color,
-          this.args.intent,
-          { default: 'neutral' } as const,
-          {
-            component: 'Chip',
-            from: 'intent',
-            to: 'color',
-            id: 'frontile.chip.intent'
-          }
-        ) || 'neutral',
+      color: this.args.color ?? 'neutral',
       size: this.args.size,
-      variant:
-        renamedArgValue(
-          this.args.variant,
-          this.args.appearance,
-          { default: 'solid', outlined: 'outline', faded: 'soft' } as const,
-          {
-            component: 'Chip',
-            from: 'appearance',
-            to: 'variant',
-            id: 'frontile.chip.appearance'
-          }
-        ) || 'solid',
+      variant: this.args.variant ?? 'solid',
       isDisabled: this.args.isDisabled
     });
 

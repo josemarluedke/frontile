@@ -4005,6 +4005,52 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       );
     });
 
+    test('@chip appearance, intent and radius fail in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            <Select
+              @selectionMode="multiple"
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              @chip={{hash appearance="faded" intent="danger" radius="none"}}
+            />
+          </template>
+        )
+      );
+
+      assert.true(
+        failed.includes(
+          'Select @chip: @appearance was removed in 0.19.0. Use @variant.'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+      assert.true(
+        failed.includes(
+          'Select @chip: @intent was removed in 0.19.0. Use @color.'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+      assert.true(
+        failed.some((m) => m.includes('Chip: @radius was removed in 0.19.0.')),
+        `got: ${failed.join(' | ')}`
+      );
+    });
+
+    test('@chip with only current keys stays silent', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            <Select
+              @selectionMode="multiple"
+              @chip={{hash variant="outline" color="danger" size="md"}}
+            />
+          </template>
+        )
+      );
+
+      assert.deepEqual(failed, []);
+    });
+
     test('@variant and @color reach the listbox items', async function (assert) {
       const failed = await collectAssertions(async () => {
         await render(

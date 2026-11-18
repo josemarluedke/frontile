@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerKeyEvent } from '@ember/test-helpers';
 import { Chip } from 'frontile';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { realStyles } from '../../../helpers/real-theme-styles';
 import { chipStubStyles } from '../../../helpers/chip-stub-styles';
@@ -69,17 +69,22 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
         assert.dom('[data-test-id="chip"]').hasClass('chip-soft');
       });
 
-      test('@appearance="faded" maps to soft and deprecates once', async function (assert) {
-        const { ids } = trackDeprecations();
-
-        await render(
-          <template>
-            <Chip @appearance="faded" data-test-id="chip">x</Chip>
-          </template>
+      test('@appearance fails in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <Chip @appearance="faded" data-test-id="chip">x</Chip>
+            </template>
+          )
         );
 
-        assert.dom('[data-test-id="chip"]').hasClass('chip-soft');
-        assert.deepEqual(ids, ['frontile.chip.appearance']);
+        assert.true(
+          failed.includes(
+            'Chip: @appearance was removed in 0.19.0. Use @variant.'
+          ),
+          `got: ${failed.join(' | ')}`
+        );
       });
     });
 
@@ -104,38 +109,33 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
         assert.dom('[data-test-id="chip"]').hasClass('chip-danger');
       });
 
-      test('@intent still renders, and deprecates exactly once', async function (assert) {
-        const { ids } = trackDeprecations();
-
-        await render(
-          <template>
-            <Chip @intent="danger" data-test-id="chip">x</Chip>
-          </template>
+      test('@intent fails in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <Chip @intent="danger" data-test-id="chip">x</Chip>
+            </template>
+          )
         );
 
-        assert.dom('[data-test-id="chip"]').hasClass('chip-danger');
-        assert.deepEqual(ids, ['frontile.chip.intent']);
+        assert.true(
+          failed.includes('Chip: @intent was removed in 0.19.0. Use @color.'),
+          `got: ${failed.join(' | ')}`
+        );
       });
 
-      test('@intent="default" maps to neutral', async function (assert) {
-        await render(
-          <template>
-            <Chip @intent="default" data-test-id="chip">x</Chip>
-          </template>
+      test('an explicitly undefined @intent and @appearance stay silent', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <Chip @intent={{undefined}} @appearance={{undefined}}>x</Chip>
+            </template>
+          )
         );
 
-        assert.dom('[data-test-id="chip"]').hasClass('chip-neutral');
-      });
-
-      test('@color wins when both are passed', async function (assert) {
-        await render(
-          <template>
-            <Chip @color="success" @intent="danger" data-test-id="chip">x</Chip>
-          </template>
-        );
-
-        assert.dom('[data-test-id="chip"]').hasClass('chip-success');
-        assert.dom('[data-test-id="chip"]').doesNotHaveClass('chip-danger');
+        assert.deepEqual(failed, []);
       });
     });
 
@@ -252,29 +252,34 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
       }
     });
 
-    test('@radius is ignored and deprecated', async function (assert) {
-      const { ids } = trackDeprecations();
-
-      await render(
-        <template>
-          <Chip @radius="none" data-test-id="chip">x</Chip>
-        </template>
+    test('@radius fails in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <Chip @radius="none" data-test-id="chip">x</Chip>
+          </template>
+        )
       );
 
-      assert.deepEqual(ids, ['frontile.chip.radius']);
-      assert.dom('[data-test-id="chip"]').doesNotHaveClass('radius-none');
+      assert.true(
+        failed.includes(
+          'Chip: @radius was removed in 0.19.0. Chip is always a pill; use Badge for a squared label.'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
     });
 
-    test('no deprecation without @radius', async function (assert) {
-      const { ids } = trackDeprecations();
-
-      await render(
-        <template>
-          <Chip data-test-id="chip">x</Chip>
-        </template>
+    test('no assertion fires without the removed args', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            <Chip data-test-id="chip">x</Chip>
+          </template>
+        )
       );
 
-      assert.deepEqual(ids, []);
+      assert.deepEqual(failed, []);
     });
   });
 
