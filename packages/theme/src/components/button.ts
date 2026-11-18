@@ -381,7 +381,10 @@ const button = tv({
     ...(
       [
         ['neutral', 'text-on-neutral-subtle active:text-neutral-firm'],
-        ['primary', 'text-primary hover:text-primary-mild active:text-primary-firm'],
+        [
+          'primary',
+          'text-primary hover:text-primary-mild active:text-primary-firm'
+        ],
         [
           'secondary',
           'text-secondary-strong hover:text-secondary-firm active:text-secondary-bolder'
