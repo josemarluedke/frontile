@@ -8,6 +8,7 @@ const baseButton = tv({
     'font-header',
     'border',
     'border-transparent',
+    'cursor-pointer',
     'disabled:cursor-not-allowed',
     'disabled:opacity-disabled',
     ...focusVisibleRing

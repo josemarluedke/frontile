@@ -207,6 +207,27 @@ module(
       });
     });
 
+    module('cursor', function () {
+      test('it shows a pointer, and not-allowed once disabled', async function (assert) {
+        await render(
+          <template>
+            <IconButton @label="Delete" data-test-id="on"><svg
+                viewBox="0 0 24 24"
+              ><path d="M0 0h24v24H0z" /></svg></IconButton>
+            <IconButton @label="Delete" disabled data-test-id="off"><svg
+                viewBox="0 0 24 24"
+              ><path d="M0 0h24v24H0z" /></svg></IconButton>
+          </template>
+        );
+
+        const cursor = (id: string) =>
+          getComputedStyle(document.querySelector(`[data-test-id="${id}"]`)!)
+            .cursor;
+        assert.strictEqual(cursor('on'), 'pointer');
+        assert.strictEqual(cursor('off'), 'not-allowed');
+      });
+    });
+
     module('accessible name and icon', function () {
       test('an empty @label is refused', async function (assert) {
         const failed = await collectAssertions(() =>
