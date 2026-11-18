@@ -35,12 +35,6 @@ export interface FrontileColumnOptions {
   skeleton?: SkeletonVariants['shape'];
 }
 
-/**
- * @deprecated Renamed to `FrontileColumnOptions`, which now carries more than
- * sticky configuration. This alias will be removed in a future major.
- */
-export type FrontileStickyOptions = FrontileColumnOptions;
-
 export type FrontilePluginOption = [string, () => FrontileColumnOptions];
 
 export interface ColumnConfig<T = unknown> {

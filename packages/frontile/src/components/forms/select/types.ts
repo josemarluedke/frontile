@@ -147,7 +147,7 @@ interface BaseSingleSelectArgs<T> extends BaseSelectArgs<T> {
   selectedKey?: string | null;
 
   /**
-   * @deprecated Use selectedKey for single selection mode
+   * Not available in single selection mode. Use `selectedKey` instead.
    */
   selectedKeys?: never;
 
@@ -239,7 +239,7 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
   chip?: SelectChipOptions;
 
   /**
-   * @deprecated Use selectedKeys for multiple selection mode
+   * Not available in multiple selection mode. Use `selectedKeys` instead.
    */
   selectedKey?: never;
 
