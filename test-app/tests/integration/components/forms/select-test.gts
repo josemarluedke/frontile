@@ -4031,7 +4031,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         `got: ${failed.join(' | ')}`
       );
       assert.true(
-        failed.some((m) => m.includes('Chip: @radius was removed in 0.19.0.')),
+        failed.includes(
+          'Select @chip: radius was removed in 0.19.0. Chip is always a pill; use Badge for a squared label.'
+        ),
         `got: ${failed.join(' | ')}`
       );
     });

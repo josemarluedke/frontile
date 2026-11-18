@@ -137,6 +137,19 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
 
         assert.deepEqual(failed, []);
       });
+
+      test('an explicitly undefined @radius stays silent', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <Chip @radius={{undefined}}>x</Chip>
+            </template>
+          )
+        );
+
+        assert.deepEqual(failed, []);
+      });
     });
 
     module('@size', () => {

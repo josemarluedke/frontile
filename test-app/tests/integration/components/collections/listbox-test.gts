@@ -1468,8 +1468,6 @@ module(
     });
 
     module('removed @appearance / @intent', function () {
-      const REMOVED = 'was removed in 0.19.0';
-
       test('Listbox @appearance and @intent fail in development', async function (assert) {
         const failed = await collectAssertions(() =>
           render(
@@ -1556,11 +1554,7 @@ module(
           )
         );
 
-        assert.deepEqual(
-          failed.filter((m) => m.includes(REMOVED)),
-          [],
-          'an undefined value is not a use of the removed arg'
-        );
+        assert.deepEqual(failed, []);
       });
     });
 

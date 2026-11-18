@@ -91,7 +91,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     assertRemovedArg('Select @chip', chip, 'appearance', 'variant');
     assertRemovedArg('Select @chip', chip, 'intent', 'color');
     assert(
-      'Chip: @radius was removed in 0.19.0. Chip is always a pill; use Badge for a squared label.',
+      'Select @chip: radius was removed in 0.19.0. Chip is always a pill; use Badge for a squared label.',
       chip['radius'] === undefined
     );
 
