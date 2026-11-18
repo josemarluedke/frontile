@@ -21,11 +21,6 @@ export interface CustomAction {
 export type NotificationStatus =
   'neutral' | 'primary' | 'success' | 'warning' | 'danger';
 
-/**
- * The deprecated status names. `error` maps onto `danger`.
- */
-export type NotificationAppearance = 'info' | 'success' | 'warning' | 'error';
-
 export interface NotificationContent {
   /**
    * The heading line of the notification.
@@ -92,14 +87,6 @@ export interface NotificationOptions<
    * @defaultValue 'neutral'
    */
   status?: NotificationStatus;
-
-  /**
-   * The appearance of the notification.
-   *
-   * @deprecated Use `status` instead. `error` maps onto `danger`.
-   * @defaultValue undefined
-   */
-  appearance?: NotificationAppearance;
 
   /**
    * Hide the leading icon.

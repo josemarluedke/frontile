@@ -127,8 +127,6 @@ export default class StatusExample extends Component {
 }
 ```
 
-> **Note**: `appearance` still works but is deprecated — see [Migrating from `appearance`](#migrating-from-appearance) below.
-
 ## Title and Description
 
 `add` takes the title as a string, with an optional `description` alongside it, or a single content object with both fields.
@@ -782,8 +780,8 @@ const notification = this.notifications.add<UserActionMetadata>(
 
 The notification API was redesigned in 0.18: `message` became the title with a new sibling
 `description`, `appearance` was renamed `status` (`'error'` became `'danger'`, `'info'` became `'primary'`), the container
-gained a collapsible stack, and the theme slots changed to match. `appearance` keeps working
-until 0.19, emitting a deprecation warning.
+gained a collapsible stack, and the theme slots changed to match. `appearance` was removed in
+0.19: passing it fails a development assert, so use `status`.
 
 **The default status changed from `'info'` to `'neutral'`**
 
@@ -808,32 +806,6 @@ this.notifications.add('Something went wrong', { appearance: 'error' });
 
 // After
 this.notifications.add('Something went wrong', { status: 'danger' });
-```
-
-**Reading `notification.appearance` back can now yield `'neutral'`**
-
-The deprecated `appearance` getter on a `Notification` instance mirrors `status`, and since
-`default` is now the status a bare `add()` call resolves to, `appearance` can return `'neutral'`
-for it — a value that isn't part of the exported `NotificationAppearance` type (`'info' |
-'success' | 'warning' | 'error'`). Code that still reads this getter should account for it:
-assigning it to a `NotificationAppearance`-typed variable is a compile error, and a `switch`
-over the four old names silently falls through for every notification created without an
-explicit `appearance`/`status`. Add a `'neutral'` case (or switch to `status`, which is typed
-to include it):
-
-```ts
-// Reading the deprecated getter still compiles, but 'default' needs handling
-switch (notification.appearance) {
-  case 'default':
-    // new: bare add() calls land here now
-    break;
-  case 'info':
-  case 'success':
-  case 'warning':
-  case 'error':
-    // ...
-    break;
-}
 ```
 
 **`notificationTransitions` removed**
@@ -951,7 +923,6 @@ All options available when creating notifications with `add`:
 | Option               | Type                                                        | Default     | Description                                                                                                                                                         |
 | -------------------- | ----------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `status`             | `'default' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | The status of the notification                                                                                                                                      |
-| `appearance`         | `'info' \| 'success' \| 'warning' \| 'error'`               | `undefined` | **Deprecated** — use `status` instead. `'error'` maps to `'danger'`. Removed in 0.19                                                                                |
 | `description`        | `string`                                                    | `undefined` | Supporting text rendered below the title (string content form only)                                                                                                 |
 | `duration`           | `number`                                                    | `5000`      | Auto-dismiss time in milliseconds                                                                                                                                   |
 | `preserve`           | `boolean`                                                   | `false`     | Prevent auto-dismissal                                                                                                                                              |

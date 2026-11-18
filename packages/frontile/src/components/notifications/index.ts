@@ -6,7 +6,6 @@ import type {
   NotificationOptions,
   NotificationContent,
   NotificationStatus,
-  NotificationAppearance,
   NotificationUpdate,
   CustomAction,
   PromiseMessage,
@@ -31,7 +30,6 @@ export type {
   CustomAction,
   NotificationContent,
   NotificationStatus,
-  NotificationAppearance,
   NotificationUpdate,
   PromiseMessage,
   PromiseNotificationOptions

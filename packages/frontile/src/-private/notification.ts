@@ -1,12 +1,11 @@
 import { tracked } from '@glimmer/tracking';
-import { deprecate } from '@ember/debug';
+import { assert } from '@ember/debug';
 import Timer from './timer';
 import { getConfigOption } from './get-config';
 import type {
   NotificationOptions,
   NotificationContent,
   NotificationStatus,
-  NotificationAppearance,
   NotificationUpdate,
   CustomAction,
   DefaultConfig
@@ -20,56 +19,25 @@ function toContent(content: string | NotificationContent): NotificationContent {
 }
 
 /**
- * Emit the shared deprecation notice and remap `error` onto `danger`. Used
- * for both the option-level and config-level `appearance` fallbacks in
- * `resolveStatus`, which must apply the same remap.
+ * Fail in development when the `appearance` option, removed in 0.19.0, is
+ * still passed, either per notification or in the app config. An explicitly
+ * `undefined` value does not fail.
  */
-function mapAppearance(appearance: NotificationAppearance): NotificationStatus {
-  deprecate(
-    'The `appearance` option for notifications is deprecated. Use `status` instead, and `danger` in place of `error`.',
-    false,
-    {
-      id: 'frontile.notification-appearance',
-      until: '0.19.0',
-      for: 'frontile',
-      since: { available: '0.18.0', enabled: '0.18.0' }
-    }
+function assertNoAppearance(source: object): void {
+  assert(
+    'Notifications: the "appearance" option was removed in 0.19.0. Use "status".',
+    (source as Record<string, unknown>)['appearance'] === undefined
   );
-
-  if (appearance === 'error') return 'danger';
-  // `info` folded into `primary` when the axis became `status`.
-  if (appearance === 'info') return 'primary';
-
-  return appearance;
 }
 
 /**
- * Resolve the notification status from the current option, the deprecated
- * `appearance` option, and the app config, in that order.
+ * Resolve the notification status from the option, then the app config.
  */
 function resolveStatus(
   config: DefaultConfig,
   options: NotificationOptions
 ): NotificationStatus {
-  if (options.status) {
-    return options.status;
-  }
-
-  if (options.appearance) {
-    return mapAppearance(options.appearance);
-  }
-
-  if (config.status) {
-    return config.status;
-  }
-
-  if (config.appearance) {
-    return mapAppearance(config.appearance);
-  }
-
-  // `config.status`/`config.appearance` were already read directly above, so
-  // there is no distinct config lookup left to fall back to.
-  return 'neutral';
+  return options.status ?? config.status ?? 'neutral';
 }
 
 export default class Notification<
@@ -98,6 +66,9 @@ export default class Notification<
     content: string | NotificationContent,
     options: NotificationOptions<TMetadata> = {}
   ) {
+    assertNoAppearance(config);
+    assertNoAppearance(options);
+
     const { title, description } = toContent(content);
 
     this.message = title;
@@ -122,23 +93,6 @@ export default class Notification<
   /** Read-only alias of `message` — do not add a setter. */
   get title(): string {
     return this.message;
-  }
-
-  /**
-   * @deprecated Read `status` instead.
-   *
-   * The return type is widened to include `'default'` because `default` is
-   * new vocabulary introduced alongside this getter's deprecation — it has
-   * no equivalent in the old `NotificationAppearance` names, so mapping it
-   * onto `'info'` here would silently lie about the notification's status.
-   * Everything else keeps the old four-value shape.
-   */
-  get appearance(): 'default' | 'info' | 'success' | 'warning' | 'error' {
-    if (this.status === 'danger') return 'error';
-    if (this.status === 'neutral') return 'default';
-    if (this.status === 'primary') return 'info';
-
-    return this.status;
   }
 
   /**

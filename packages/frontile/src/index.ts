@@ -15,7 +15,6 @@ export {
   type NotificationOptions,
   type NotificationContent,
   type NotificationStatus,
-  type NotificationAppearance,
   type NotificationUpdate,
   type CustomAction,
   type PromiseMessage,

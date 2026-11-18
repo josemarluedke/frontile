@@ -73,7 +73,7 @@ module(
       assert.equal(service.notifications.length, 0);
 
       const notification = service.add('My Notification', {
-        appearance: 'error',
+        status: 'danger',
         duration: 1,
         transitionDuration: 0,
         allowClosing: false,
@@ -87,7 +87,7 @@ module(
         ]
       });
       assert.equal(notification.message, 'My Notification');
-      assert.equal(notification.appearance, 'error');
+      assert.equal(notification.status, 'danger');
       assert.equal(notification.transitionDuration, 0);
       assert.equal(notification.allowClosing, false);
       assert.equal(notification.customActions?.length, 1);
