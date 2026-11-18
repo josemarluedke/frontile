@@ -91,7 +91,7 @@ click handler, the role, the focus stop and the keyboard handling. A card with
 `role='button'` has to answer Enter and Space as well as clicks, as below. An
 `outline` card takes `@color` for its hover border.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
@@ -170,7 +170,7 @@ card wraps a visually hidden radio input, so Tab, the arrow keys and the screen
 reader announcement all come from the browser, and the card only mirrors the checked
 state. `@color` picks the border colour.
 
-```gts preview
+```gts preview collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array, fn } from '@ember/helper';
