@@ -371,9 +371,11 @@ module('Integration | Component | Regions | frontile/layout', function (hooks) {
       </template>
     );
 
+    const swapping = countRenderPasses(this.owner);
     which.current = 'b';
     await settled();
 
+    assert.strictEqual(swapping(), 1, 'the swap took one pass');
     assert.true(state.asideOpen);
     assert.strictEqual(visibleText('[data-part="aside"]'), 'Aside B');
   });

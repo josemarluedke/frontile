@@ -52,6 +52,12 @@ function precedes(
   b: RegionSource,
   fallback: boolean
 ): boolean {
+  // A source being replaced is still listed while its replacement renders:
+  // its marker has left the document but its destructor has not run. It
+  // covers nothing and is covered by nothing.
+  if (a.marker?.isConnected === false || b.marker?.isConnected === false) {
+    return false;
+  }
   if (
     a.marker &&
     b.marker &&

@@ -23,8 +23,9 @@ renders its block into that element with `{{in-element}}`. A display site
 puts the element in the page by rendering it as content: `{{this.element}}`.
 The two sides never register with each other. "Does this region have
 content" is answered by CSS `:has()`, reading a `<script>` marker each
-source leaves where it is written. No tracked state, no service, nothing
-scheduled.
+source leaves where it is written. No service and nothing scheduled. The only
+tracked state is each source's `covered` flag and a region's `multiple`
+mode, both added by the combined design.
 
 | Piece | File |
 | --- | --- |
@@ -64,7 +65,7 @@ both sides.
 
 | | Prototype 1 | Prototype 2 |
 | --- | --- | --- |
-| Writes during render | every register/unregister, deferred with `schedule('afterRender')` | none |
+| Writes during render | every register/unregister, deferred with `schedule('afterRender')` | a source's `covered` flag, written by an earlier source before the later one reads it; never deferred |
 | Render passes to fill a region | 2 | 1 |
 | `AsideToggle` on first pass | hidden, shown after | shown |
 
@@ -72,7 +73,8 @@ Measured:
 
 - `grep` of the three new files for `schedule`, `afterRender`,
   `queueMicrotask`, `MutationObserver`, `requestAnimationFrame`,
-  `setTimeout`, `@tracked` and `modifier` finds only a comment.
+  `setTimeout` and `modifier` finds only a comment. `@tracked` appears three
+  times in `regions.ts`, for the flags described above.
 - The test `the fill is complete in the first render pass, and nothing
   changes after it` renders a probe last in the template. During the first
   pass it reads the navbar region, the aside and the toggle's computed
@@ -156,10 +158,8 @@ Different from the first prototype:
 
 ## What this design costs
 
-- **Stacking hides, it does not unrender.** Every source of a region stays in
-  the DOM; CSS shows the last one. A covered parent keeps its state, which is
-  useful, but its elements, ids and form fields still exist, and a test's
-  `querySelector` finds them. `@multiple` just drops the CSS rule.
+- ~~Stacking hides, it does not unrender.~~ No longer true: see the combined
+  design. A covered source is not rendered.
 - **A fallback block is always rendered**, and hidden while the region is
   filled.
 - **Each source has a wrapper element** (`display: contents`). CSS needs an
@@ -174,8 +174,9 @@ Different from the first prototype:
   when there is no aside. Two existing tests changed from `doesNotExist` to
   `isNotVisible`. `layout.hasAside` and `registerAside` are no longer read by
   the toggle and could be removed.
-- **Stacking is still render order.** A parent's source must come before
-  `{{outlet}}`. Unchanged from the first prototype.
+- **Stacking is document order, and the rule is the reverse of the first
+  prototype's.** The first source in the document wins, so a parent's source
+  must come **after** `{{outlet}}`.
 - **Aside content is rendered while the aside is closed**, into a detached
   element.
 - **A region is one element**, so a name can be displayed in one place at a
@@ -225,8 +226,9 @@ Measured (render passes are counted by wrapping Ember's
 | Case | Passes | Notes |
 | --- | --- | --- |
 | Deep render, child and parent together | 1 | The parent's block never renders. Zero mutations after the pass. |
-| A child source arriving later (navigating in) | 1 | The parent is unrendered in the same pass. |
-| The child leaving (navigating out) | 2 | The child is removed in a destructor, after the render; the parent renders in the next pass. |
+| A child source arriving later | 1 | The parent is unrendered in the same pass. Measured with an `{{#if}}`, not a route transition. |
+| One source swapped for another (`{{#if}}`/`{{else}}`) | 1 | Was 2 until detached markers were ignored when ordering sources. |
+| The child leaving | 2 | The child is removed in a destructor, after the render; the parent renders in the next pass. |
 
 Also still true, re-run on this design: serialized HTML has the regions
 filled, static HTML is right before any script, and rehydration adopts the
@@ -244,8 +246,9 @@ What it costs, compared with the hide-by-CSS version:
   from the code, not tested). A
   development warning could detect it (a covered source that is deeper in the
   DOM than the one covering it), but I did not build one.
-- **`@multiple` has an order rule too.** A region with `@multiple` must be
-  rendered before its sources, because it is a tracked flag the sources read.
+- **`@multiple` has an order rule too** (read from the code, not tested). A
+  region with `@multiple` must be rendered before its sources, because it is
+  a tracked flag the sources read.
   The navbar case satisfies it. A plain region has no such rule.
 - **Unchanged:** `AsideToggle` and fallback blocks are still hidden by CSS
   rather than unrendered, each source still has a wrapper element, there is
