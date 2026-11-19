@@ -4,7 +4,6 @@ import svgToDataUri from 'mini-svg-data-uri';
 
 import { resolveThemes, resolveConfig } from './plugin/resolve';
 import { modalSizes, drawerSizes } from './plugin/overlays';
-import { registerPowerSelectComponents } from './plugin/power-select';
 import { addTransitions } from './plugin/transitions';
 import { inDarkContext } from './plugin/theme-context';
 import type { PluginConfig } from './types';
@@ -62,8 +61,6 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
           maskRepeat: 'no-repeat'
         }
       });
-
-      registerPowerSelectComponents(addComponents);
     },
     {
       theme: {

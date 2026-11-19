@@ -10,6 +10,7 @@
   "scripts": {
     "build": "pnpm -r --filter \"./packages/*\" build",
     "lint:hbs": "ember-template-lint .",
+    "test:scripts": "node --test scripts/__tests__/*.mjs",
     "lint:anatomy": "node scripts/check-anatomy.mjs",
     "lint:css": "node scripts/check-css.mjs",
     "lint:js": "eslint .",

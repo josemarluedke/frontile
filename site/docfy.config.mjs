@@ -91,12 +91,6 @@ export default {
       urlPrefix: 'docs/components/notifications',
       urlSchema: 'manual',
     },
-    {
-      root: path.resolve(__dirname, '../packages/forms-legacy'),
-      pattern: '(docs|src)/**/**/*.md',
-      urlPrefix: 'docs/components/forms-legacy',
-      urlSchema: 'manual',
-    },
   ],
   sections: {
     // Top-level sections
@@ -125,12 +119,10 @@ export default {
     status: { label: 'Status', order: 3 },
     collections: { label: 'Collections', order: 4 },
     forms: { label: 'Forms', order: 5 },
-    'forms-legacy': { label: 'Forms (Legacy)', order: 6 },
     notifications: { label: 'Notifications', order: 7 },
     overlays: { label: 'Overlays', order: 8 },
     navigation: { label: 'Navigation', order: 9 },
     disclosure: { label: 'Disclosure', order: 10 },
-    'changeset-form': { label: 'Changeset Form', order: 11 },
     layout: { label: 'Layout', order: 12 },
   },
 };

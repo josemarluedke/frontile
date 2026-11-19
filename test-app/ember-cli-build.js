@@ -11,16 +11,7 @@ module.exports = async function (defaults) {
       enableTypeScriptTransform: true
     },
     autoImport: {
-      watchDependencies: [
-        '@frontile/buttons',
-        '@frontile/theme',
-        '@frontile/utilities',
-        '@frontile/notifications',
-        '@frontile/overlays',
-        '@frontile/forms',
-        '@frontile/changeset-form',
-        ['@frontile/forms', '@frontile/changeset-form']
-      ]
+      watchDependencies: ['@frontile/theme', 'frontile']
     }
   });
 

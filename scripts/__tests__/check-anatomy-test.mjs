@@ -80,19 +80,6 @@ test('reports a part that is not a slot', () => {
   assert.equal(r.orphan[0].part, 'sparkle');
 });
 
-test('ignores forms-legacy', () => {
-  const { themeDir, componentsDir } = fixture(
-    THEME,
-    '<div data-component="accordion" data-part="base"></div>'
-  );
-  writeFileSync(
-    join(themeDir, 'forms-legacy.ts'),
-    `const legacy = tv({ slots: { base: '', ghost: '' } });`
-  );
-  const r = checkAnatomy({ themeDir, componentsDir });
-  assert.ok(!r.missing.some((m) => m.config === 'legacy'));
-});
-
 // --- Finding 1: extend-chain resolution -------------------------------------
 
 test('a config that extends a slotted base with no own slots: key is discovered and checked (Finding 1)', () => {

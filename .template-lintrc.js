@@ -22,9 +22,9 @@ module.exports = {
     // The curlies half is not merely noisy, it is lossy: to change a quote the
     // fixer reprints the surrounding attribute through ember-template-recast,
     // which drops whitespace-only text nodes between mustaches. That silently
-    // turned `aria-describedby="{{a}} {{b}}"` into `"{{a}}{{b}}"` in
-    // forms-legacy/src/components/form-select.gts, joining id lists and class
-    // lists into single run-together tokens.
+    // turned `aria-describedby="{{a}} {{b}}"` into `"{{a}}{{b}}"` in a
+    // component template, joining id lists and class lists into single
+    // run-together tokens.
     //
     // Note that the `templateSingleQuote: false` override in .prettierrc.js
     // does not currently take effect (its `*.{js,ts,gjs,gts}` glob has no
@@ -38,17 +38,5 @@ module.exports = {
     'require-input-label': false,
     'no-positive-tabindex': false,
     'table-groups': false
-  },
-  overrides: [
-    {
-      // forms-legacy is excluded from the whole anatomy-attributes plan
-      // (see the project CLAUDE.md): it is not being migrated, so its
-      // templates carry no data-component/data-part and never will.
-      files: ['packages/forms-legacy/**'],
-      rules: {
-        'frontile/require-data-part': false,
-        'frontile/require-root-data-component': false
-      }
-    }
-  ]
+  }
 };
