@@ -7,6 +7,13 @@ symbol is marked `PROTOTYPE`. Breadcrumbs are out of scope.
 The first prototype is `proto/layout-regions` (PR #650) and its write-up is
 `PROTOTYPE-layout-regions.md` on that branch.
 
+> **Update: the branch now holds the combined design ("prototype 3").** It
+> keeps everything below except stacking. Covered sources are no longer
+> rendered and hidden; only the first source of a region in the document
+> renders its block. See [Combined design](#combined-design-prototype-3) at
+> the end for what changed and what was measured. Statements below about
+> stacking by CSS describe the earlier commit `4cd7c591`.
+
 ## The design in one paragraph
 
 A region is **a DOM element the layout owns**, one per name, created the
@@ -196,20 +203,69 @@ Different from the first prototype:
 - **CSS-only with a rendered target.** Covered by the `Portal` experiment
   above: the ordering problem is in finding the target, not in `hasContent`.
 
+## Combined design (prototype 3)
+
+The goal was prototype 1's "only the visible content is rendered" together
+with prototype 2's single pass and server rendering.
+
+**How it works.** Each `InRegion` registers with its region when it renders,
+identified by its `<script>` marker. A source is *covered* while another
+source of the same region comes before it in the document, and a covered
+source does not render its block. Each source has its own tracked `covered`
+flag, and that flag is only ever written by a source that comes earlier in
+the document. The reader comes later in render order, so within one pass the
+write is always before the read.
+
+**The convention flips.** A parent route writes its `InRegion` **after**
+`{{outlet}}`. The child's source is then first in the document and covers it.
+
+Measured (render passes are counted by wrapping Ember's
+`RendererState#renderRoots`):
+
+| Case | Passes | Notes |
+| --- | --- | --- |
+| Deep render, child and parent together | 1 | The parent's block never renders. Zero mutations after the pass. |
+| A child source arriving later (navigating in) | 1 | The parent is unrendered in the same pass. |
+| The child leaving (navigating out) | 2 | The child is removed in a destructor, after the render; the parent renders in the next pass. |
+
+Also still true, re-run on this design: serialized HTML has the regions
+filled, static HTML is right before any script, and rehydration adopts the
+server's nodes and stays live. The acceptance test confirms a covered parent
+is not in the DOM and is rendered again when the child route exits.
+
+What it costs, compared with the hide-by-CSS version:
+
+- **Leaving a child route takes a second pass.** First paint and server HTML
+  are not affected.
+- **A covered parent loses its state.** It is rebuilt when the child leaves,
+  as in prototype 1.
+- **The order rule is silent when broken.** A parent `InRegion` written
+  before `{{outlet}}` simply wins over the child, with no assertion (read
+  from the code, not tested). A
+  development warning could detect it (a covered source that is deeper in the
+  DOM than the one covering it), but I did not build one.
+- **`@multiple` has an order rule too.** A region with `@multiple` must be
+  rendered before its sources, because it is a tracked flag the sources read.
+  The navbar case satisfies it. A plain region has no such rule.
+- **Unchanged:** `AsideToggle` and fallback blocks are still hidden by CSS
+  rather than unrendered, each source still has a wrapper element, there is
+  still no JavaScript `hasContent`, and the empty-drawer gap below `lg` is
+  still open.
+
 ## Test results
 
-- `regions-test.gts`: 13 integration tests, one of them the `KNOWN GAP`.
+- `regions-test.gts`: 14 integration tests, one of them the `KNOWN GAP`.
 - `layout-regions-routing-test.gts`: 3 acceptance tests over nested and
   sibling routes.
 - `layout-regions-rehydration-experiment-test.gts`: 1.
 - `regions-portal-experiment-test.gts`: 4.
-- Full `test-app` suite at the final commit: 3239 tests, 3236 pass, 3
+- Full `test-app` suite at the final commit: 3240 tests, 3237 pass, 3
   skipped, 0 fail.
-- Mutation run (before the last three tests were added): removing the four
-  CSS rules, the close-on-empty and the server-element adoption turned 10
-  tests red.
-- `frontile` and `@frontile/theme` type-check clean. `test-app` type-check
-  has one new error, a missing declaration for the `test-app/app` import in
-  the rehydration experiment.
+- Mutation run, on the earlier commit `4cd7c591` only: removing the four CSS
+  rules, the close-on-empty and the server-element adoption turned 10 tests
+  red. Not repeated for the combined design.
+- `frontile` type-checks clean. `test-app` type-check has one new error, a
+  missing declaration for the `test-app/app` import in the rehydration
+  experiment.
 - `pnpm lint:hbs` reports `no-forbidden-elements` for the two new `<script>`
   markers. `portal.gts` on `main` has the same error for its marker.

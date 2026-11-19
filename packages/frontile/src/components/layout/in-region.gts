@@ -4,7 +4,11 @@ import { registerDestructor } from '@ember/destroyable';
 import { warn } from '@ember/debug';
 import { getDOM, getElementById } from '../../-private/dom';
 import { standaloneStyles } from './context';
-import { findLayoutRegions } from './regions';
+import {
+  findLayoutRegions,
+  type LayoutRegions,
+  type RegionSource
+} from './regions';
 
 interface InRegionSignature {
   Args: {
@@ -26,8 +30,12 @@ interface InRegionSignature {
  * ```
  *
  * It leaves a `script` marker where it is written. The marker is how it finds
- * its layout (it walks up from it), and what the layout's CSS reads to know a
- * region has content.
+ * its layout (it walks up from it), what the layout's CSS reads to know a
+ * region has content, and what orders the sources of one region.
+ *
+ * Only the first source of a region in the document renders its block. A
+ * parent route therefore writes its `InRegion` **after** `{{outlet}}`, so a
+ * child route's comes first and covers it.
  */
 class InRegion extends Component<InRegionSignature> {
   id = `${guidFor(this)}-region-source`;
@@ -48,8 +56,26 @@ class InRegion extends Component<InRegionSignature> {
     if (!regions) {
       return null;
     }
-    registerDestructor(this, regions.addSource(this.args.name));
+    const { source, remove } = regions.addSource(this.args.name, marker);
+    registerDestructor(this, remove);
+    this.source = source;
+    this.regions = regions;
     return regions.element(this.args.name);
+  };
+
+  source?: RegionSource;
+  regions?: LayoutRegions;
+
+  /**
+   * Whether the block is rendered: this is the first source of its region in
+   * the document, or the region shows them all. Read after `resolveTarget`.
+   */
+  isShown = (): boolean => {
+    const { source, regions } = this;
+    if (!source || !regions) {
+      return false;
+    }
+    return regions.isMultiple(this.args.name) || !source.covered;
   };
 
   get className(): string {
@@ -64,13 +90,15 @@ class InRegion extends Component<InRegionSignature> {
     ></script>
     {{#let (this.resolveTarget) as |target|}}
       {{#if target}}
-        {{#in-element target insertBefore=null}}
-          <div
-            data-part="region-content"
-            class={{this.className}}
-            ...attributes
-          >{{yield}}</div>
-        {{/in-element}}
+        {{#if (this.isShown)}}
+          {{#in-element target insertBefore=null}}
+            <div
+              data-part="region-content"
+              class={{this.className}}
+              ...attributes
+            >{{yield}}</div>
+          {{/in-element}}
+        {{/if}}
       {{/if}}
     {{/let}}
   </template>

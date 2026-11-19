@@ -358,13 +358,8 @@ const appLayout = tv({
     asideToggle: iconButton,
 
     // PROTOTYPE (layout regions). A region is an element the layout owns;
-    // sources render into it and it takes no box of its own. Without
-    // `data-multiple` only the newest source shows: older ones stay rendered
-    // (and keep their state) but are not displayed. `last-of-type`, not
-    // `last-child`, so the `script` markers Glimmer leaves when serializing
-    // do not count.
-    region:
-      'contents [&:not([data-multiple])>[data-part=region-content]:not(:last-of-type)]:hidden',
+    // sources render into it and it takes no box of its own.
+    region: 'contents',
     regionContent: 'contents',
     // A `Region`'s own block, shown while nothing fills the region.
     regionFallback:

@@ -3,6 +3,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, findAll, click, settled } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
+import type Owner from '@ember/owner';
 import { AppLayout, AppLayoutState, InRegion } from 'frontile';
 import {
   mockMatchMedia,
@@ -25,6 +26,29 @@ function visibleText(selector: string): string {
   return ((find(selector) as HTMLElement | null)?.innerText ?? '')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/**
+ * Counts Glimmer render transactions from now on, by wrapping Ember's
+ * `RendererState#renderRoots` (private to Ember; fine for a measurement).
+ * Returns a function that stops counting and gives the count.
+ */
+function countRenderPasses(owner: Owner): () => number {
+  // Patched on the prototype: test templates render through their own
+  // renderer, which shares the class with `renderer:-dom`.
+  const proto = Object.getPrototypeOf(
+    (owner.lookup('renderer:-dom') as unknown as { state: object }).state
+  ) as { renderRoots(...args: unknown[]): unknown };
+  const original = proto.renderRoots;
+  let passes = 0;
+  proto.renderRoots = function (this: unknown, ...args: unknown[]) {
+    passes += 1;
+    return original.apply(this, args);
+  };
+  return () => {
+    proto.renderRoots = original;
+    return passes;
+  };
 }
 
 module('Integration | Component | Regions | frontile/layout', function (hooks) {
@@ -132,39 +156,82 @@ module('Integration | Component | Regions | frontile/layout', function (hooks) {
     assert.dom(`header ${REGION}`).hasText('Late region');
   });
 
-  test('the newest source wins, and the older one comes back when it leaves', async function (assert) {
+  test('only the first source in the template is rendered; a later one comes back when it leaves', async function (assert) {
     const child = cell(false);
     await render(
       <template>
         <AppLayout as |layout|>
           <layout.Navbar><layout.Region @name="actions" /></layout.Navbar>
           <layout.Main>
-            <InRegion @name="actions"><input
-                data-test-parent
-                aria-label="parent"
-              /></InRegion>
+            {{! Where an outlet would be: the child comes first. }}
             {{#if child.current}}
               <InRegion @name="actions">Child</InRegion>
             {{/if}}
+            <InRegion @name="actions"><span
+                data-test-parent
+              >Parent</span></InRegion>
           </layout.Main>
         </AppLayout>
       </template>
     );
 
-    (find('[data-test-parent]') as HTMLInputElement).value = 'typed';
-    assert.dom('[data-test-parent]').isVisible();
+    assert.strictEqual(visibleText('header'), 'Parent');
 
+    const entering = countRenderPasses(this.owner);
     child.current = true;
     await settled();
+    assert.strictEqual(entering(), 1, 'covering the parent took one pass');
     assert.strictEqual(visibleText('header'), 'Child');
-    assert.dom('[data-test-parent]').isNotVisible('the parent is covered');
-
-    child.current = false;
-    await settled();
-    assert.dom('[data-test-parent]').isVisible('the parent is back');
     assert
       .dom('[data-test-parent]')
-      .hasValue('typed', 'and it was never torn down');
+      .doesNotExist('the covered source is not in the DOM at all');
+
+    const leaving = countRenderPasses(this.owner);
+    child.current = false;
+    await settled();
+    assert.strictEqual(visibleText('header'), 'Parent', 'the parent is back');
+    assert.strictEqual(
+      leaving(),
+      2,
+      'uncovering it took two: the child is removed, then the parent renders'
+    );
+  });
+
+  test('a deep render with both levels fills once: only the first source, in the first pass', async function (assert) {
+    const firstPass: Record<string, string | boolean> = {};
+    const mutations: MutationRecord[] = [];
+    let observer: MutationObserver | undefined;
+    const probe = (): void => {
+      firstPass['actions'] = visibleText('header');
+      firstPass['parentRendered'] = find('[data-test-parent]') !== null;
+      observer = new MutationObserver((records) => mutations.push(...records));
+      observer.observe(find('[data-component="app-layout"]')!, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        characterData: true
+      });
+    };
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Navbar><layout.Region @name="actions" /></layout.Navbar>
+          <layout.Main>
+            <InRegion @name="actions">Child</InRegion>
+            <InRegion @name="actions"><span
+                data-test-parent
+              >Parent</span></InRegion>
+          </layout.Main>
+        </AppLayout>
+        {{(probe)}}
+      </template>
+    );
+    mutations.push(...(observer?.takeRecords() ?? []));
+    observer?.disconnect();
+
+    assert.strictEqual(firstPass['actions'], 'Child');
+    assert.false(firstPass['parentRendered'], 'the parent never rendered');
+    assert.strictEqual(mutations.length, 0, 'nothing changed after the pass');
   });
 
   test('@multiple shows every source, in render order', async function (assert) {

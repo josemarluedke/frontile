@@ -1,4 +1,67 @@
+import { tracked } from '@glimmer/tracking';
 import { escapeAttributeValue, getDOM } from '../../-private/dom';
+
+/**
+ * PROTOTYPE. One `InRegion`, as its region sees it. `covered` is true while
+ * another source of the same region comes before it in the document; a
+ * covered source does not render its block.
+ *
+ * `covered` is only ever written by a source that comes *earlier* in the
+ * document, arriving or leaving. The source that reads it comes later in
+ * render order, so within one render pass the write is before the read.
+ */
+export class RegionSource {
+  readonly marker: Element | null;
+  @tracked covered: boolean;
+  #covered: boolean;
+
+  constructor(marker: Element | null, covered: boolean) {
+    this.marker = marker;
+    this.#covered = covered;
+    this.covered = covered;
+  }
+
+  /** Writes without reading the tracked value, and only on a change. */
+  setCovered(covered: boolean): void {
+    if (covered !== this.#covered) {
+      this.#covered = covered;
+      this.covered = covered;
+    }
+  }
+}
+
+class RegionMode {
+  @tracked multiple = false;
+  #multiple = false;
+
+  set(multiple: boolean): void {
+    if (multiple !== this.#multiple) {
+      this.#multiple = multiple;
+      this.multiple = multiple;
+    }
+  }
+}
+
+/**
+ * Whether `a` comes before `b` in the document. A server document has no
+ * `compareDocumentPosition`; there everything renders in one pass, so the
+ * order the sources arrived in (`fallback`) is the document order.
+ */
+function precedes(
+  a: RegionSource,
+  b: RegionSource,
+  fallback: boolean
+): boolean {
+  if (
+    a.marker &&
+    b.marker &&
+    typeof a.marker.compareDocumentPosition === 'function'
+  ) {
+    // 4 is Node.DOCUMENT_POSITION_FOLLOWING: `b` follows `a`.
+    return (a.marker.compareDocumentPosition(b.marker) & 4) !== 0;
+  }
+  return fallback;
+}
 
 /**
  * PROTOTYPE (layout regions, second attempt).
@@ -10,10 +73,11 @@ import { escapeAttributeValue, getDOM } from '../../-private/dom';
  * - a display site (`layout.Region`, or a blockless `layout.Aside`) puts the
  *   element in the page by rendering it as content: `{{element}}`.
  *
- * Nothing here is tracked and nothing is scheduled. The element exists before
- * either side renders, so it does not matter which renders first, and it can
- * be displayed somewhere else later (the aside moving into a drawer) without
- * the content being rebuilt.
+ * Nothing is scheduled. The element exists before either side renders, so it
+ * does not matter which renders first, and it can be displayed somewhere
+ * else later (the aside moving into a drawer) without the content being
+ * rebuilt. The only tracked state is each source's `covered` flag (see
+ * `RegionSource`) and a region's `multiple` mode.
  */
 export class LayoutRegions {
   #doc: Document | null;
@@ -21,7 +85,8 @@ export class LayoutRegions {
   #className: () => string;
   #onEmpty: (name: string) => void;
   #elements = new Map<string, Element>();
-  #sources = new Map<string, number>();
+  #sources = new Map<string, RegionSource[]>();
+  #modes = new Map<string, RegionMode>();
 
   constructor(
     context: object,
@@ -66,20 +131,71 @@ export class LayoutRegions {
     );
   }
 
+  #mode(name: string): RegionMode {
+    let mode = this.#modes.get(name);
+    if (!mode) {
+      mode = new RegionMode();
+      this.#modes.set(name, mode);
+    }
+    return mode;
+  }
+
+  /** Whether the region shows every source (tracked). */
+  isMultiple(name: string): boolean {
+    return this.#mode(name).multiple;
+  }
+
   /**
-   * A plain count of the sources rendered for `name`, for behaviour that
-   * cannot be CSS (closing the aside when it empties). Not tracked: nothing
-   * renders from it. Returns the function that takes the source out again.
+   * Set by the display site. Only a change to `true` (or back) is a write,
+   * so a plain region never writes. A `@multiple` region has to render
+   * before its sources read this.
    */
-  addSource(name: string): () => void {
-    this.#sources.set(name, (this.#sources.get(name) ?? 0) + 1);
-    return () => {
-      const left = (this.#sources.get(name) ?? 1) - 1;
-      this.#sources.set(name, left);
-      if (left === 0) {
+  setMultiple(name: string, multiple: boolean): void {
+    this.#mode(name).set(multiple);
+  }
+
+  /**
+   * Adds a source, identified by the marker it left in the document. It
+   * starts covered if a source already known comes before it, and it covers
+   * every known source that comes after it. Returns the source and the
+   * function that takes it out again.
+   */
+  addSource(
+    name: string,
+    marker: Element | null
+  ): { source: RegionSource; remove: () => void } {
+    let list = this.#sources.get(name);
+    if (!list) {
+      list = [];
+      this.#sources.set(name, list);
+    }
+    const sources = list;
+    const source = new RegionSource(marker, false);
+    const covered = sources.some((other) => precedes(other, source, true));
+    source.setCovered(covered);
+    for (const other of sources) {
+      if (precedes(source, other, false)) {
+        other.setCovered(true);
+      }
+    }
+    sources.push(source);
+
+    const remove = (): void => {
+      sources.splice(sources.indexOf(source), 1);
+      sources.forEach((other, index) => {
+        other.setCovered(
+          sources.some(
+            (earlier, earlierIndex) =>
+              earlier !== other &&
+              precedes(earlier, other, earlierIndex < index)
+          )
+        );
+      });
+      if (sources.length === 0) {
         this.#onEmpty(name);
       }
     };
+    return { source, remove };
   }
 }
 

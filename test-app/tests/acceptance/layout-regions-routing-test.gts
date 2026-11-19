@@ -47,8 +47,6 @@ module('Acceptance | layout regions routing', function (hooks) {
 
     await click(TOGGLE);
     assert.strictEqual(visibleText('[data-part="aside"]'), 'Orders summary');
-    const filter = find('[data-test-orders-filter]') as HTMLInputElement;
-    filter.value = 'open';
 
     await click('[data-test-link="order-1"]');
     assert.strictEqual(visibleText('[data-test-actions]'), 'Refund order 1');
@@ -57,6 +55,10 @@ module('Acceptance | layout regions routing', function (hooks) {
       'Order 1 details',
       'the child covers the parent, and the aside stays open'
     );
+    assert
+      .dom('[data-test-orders-filter]')
+      .doesNotExist('the covered parent content is not rendered');
+    assert.dom('[data-test-action="new-order"]').doesNotExist();
 
     await click('[data-test-link="order-2"]');
     assert.strictEqual(visibleText('[data-test-actions]'), 'Refund order 2');
@@ -66,12 +68,9 @@ module('Acceptance | layout regions routing', function (hooks) {
     await click('[data-test-link="orders"]');
     assert.strictEqual(visibleText('[data-test-actions]'), 'New order');
     assert.strictEqual(visibleText('[data-part="aside"]'), 'Orders summary');
-    assert.strictEqual(
-      find('[data-test-orders-filter]'),
-      filter,
-      'the parent content is the same DOM'
-    );
-    assert.dom(filter).hasValue('open', 'with its state');
+    assert
+      .dom('[data-test-orders-filter]')
+      .exists('the parent is rendered again');
 
     await click('[data-test-link="home"]');
     assert.strictEqual(visibleText('[data-test-actions]'), 'No actions');

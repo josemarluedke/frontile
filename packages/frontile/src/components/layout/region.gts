@@ -7,7 +7,9 @@ interface RegionSignature {
     name: string;
 
     /**
-     * Show every source, in render order, instead of only the newest.
+     * Show every source, in render order, instead of only the first one in
+     * the document. A region with this set has to be rendered before its
+     * sources.
      *
      * @defaultValue false
      */
@@ -42,15 +44,9 @@ interface RegionSignature {
  */
 class Region extends Component<RegionSignature> {
   get element(): Element | null {
-    const element = this.args.layout?.regions.element(this.args.name) ?? null;
-    if (element) {
-      if (this.args.multiple) {
-        element.setAttribute('data-multiple', '');
-      } else {
-        element.removeAttribute('data-multiple');
-      }
-    }
-    return element;
+    const regions = this.args.layout?.regions;
+    regions?.setMultiple(this.args.name, this.args.multiple === true);
+    return regions?.element(this.args.name) ?? null;
   }
 
   get fallbackClass(): string | undefined {
