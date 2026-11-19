@@ -1,6 +1,7 @@
 import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { schedule } from '@ember/runloop';
+import { warn } from '@ember/debug';
 
 /** One named region: where it renders (the target) and who fills it. */
 export class LayoutRegionState {
@@ -46,6 +47,7 @@ export class LayoutRegionState {
 export default class FrontileLayoutRegionsService extends Service {
   #regions = new Map<string, LayoutRegionState>();
   #emptyListeners = new Map<string, Set<() => void>>();
+  #warnedUndeclared = new Set<string>();
 
   #write(fn: () => void): void {
     schedule('afterRender', () => {
@@ -86,6 +88,14 @@ export default class FrontileLayoutRegionsService extends Service {
   ): () => void {
     const region = this.region(name);
     this.#write(() => {
+      // A target that has left the document (the aside moving between its
+      // column and its drawer) is being replaced, not duplicated.
+      const current = region.target;
+      warn(
+        `frontile: two targets render the layout region "${name}" at once; sources follow the newest. Region names are global to the app.`,
+        !current || current === element || !current.isConnected,
+        { id: 'frontile.layout-region.duplicate-target' }
+      );
       region.multiple = options.multiple ?? false;
       region.target = element;
     });
@@ -105,6 +115,17 @@ export default class FrontileLayoutRegionsService extends Service {
   addSource(name: string, source: object): () => void {
     const region = this.region(name);
     this.#write(() => {
+      // Targets declare their name while rendering, so by now every target
+      // of this render has. An undeclared name is a typo or a missing
+      // `layout.Region`.
+      if (!region.declared && !this.#warnedUndeclared.has(name)) {
+        this.#warnedUndeclared.add(name);
+        warn(
+          `frontile: <InLayoutRegion @name="${name}"> rendered, but no layout.Region or layout.Aside @region uses the name "${name}", so its content is not shown.`,
+          false,
+          { id: 'frontile.layout-region.undeclared' }
+        );
+      }
       region.sources = [...region.sources, source];
     });
     return () =>

@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { run } from '@ember/runloop';
+import { registerWarnHandler } from '@ember/debug';
 import { AppLayout, InLayoutRegion } from 'frontile';
 import {
   mockMatchMedia,
@@ -32,13 +33,29 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
 
   let media: MatchMediaMock | undefined;
 
+  let warnings: string[] = [];
+  let collecting = false;
+
+  // Handlers cannot be unregistered, so this one is installed once and
+  // only records while a test of this module runs.
+  registerWarnHandler((message, options, next) => {
+    if (collecting && options?.id?.startsWith('frontile.layout-region.')) {
+      warnings.push(`${options.id}: ${message}`);
+      return;
+    }
+    next(message, options);
+  });
+
   hooks.beforeEach(function () {
     media = mockMatchMedia(DESKTOP);
+    warnings = [];
+    collecting = true;
   });
 
   hooks.afterEach(function () {
     media?.restore();
     media = undefined;
+    collecting = false;
   });
 
   test('a source renders its block into the target with no wrapper', async function (assert) {
@@ -310,5 +327,83 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
     assert
       .dom('[data-region="actions"] [data-test-a]')
       .exists({ count: 1 }, 'and a fresh mount fills again');
+  });
+
+  test('warns once when a source names a region nothing declares', async function (assert) {
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Navbar><layout.Region @name="actions" /></layout.Navbar>
+          <layout.Main>
+            <InLayoutRegion @name="actoins"><b>A</b></InLayoutRegion>
+            <InLayoutRegion @name="actoins"><b>B</b></InLayoutRegion>
+          </layout.Main>
+        </AppLayout>
+      </template>
+    );
+    assert.strictEqual(warnings.length, 1, 'one warning for the name');
+    assert.ok(
+      warnings[0]?.startsWith('frontile.layout-region.undeclared:'),
+      warnings[0]
+    );
+    assert.ok(warnings[0]?.includes('"actoins"'), 'it names the region');
+  });
+
+  test('does not warn when the target is declared in the same render, in any order', async function (assert) {
+    await render(
+      <template>
+        <InLayoutRegion @name="actions"><b>Early</b></InLayoutRegion>
+        <AppLayout as |layout|>
+          <layout.Navbar><layout.Region @name="actions" /></layout.Navbar>
+          <layout.Main>Content</layout.Main>
+        </AppLayout>
+      </template>
+    );
+    assert.deepEqual(warnings, []);
+  });
+
+  test('warns when a second live target registers for the same name', async function (assert) {
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Navbar>
+            <layout.Region @name="actions" data-test-first />
+            <layout.Region @name="actions" data-test-second />
+          </layout.Navbar>
+          <layout.Main>
+            <InLayoutRegion @name="actions"><b
+                data-test-a
+              >A</b></InLayoutRegion>
+          </layout.Main>
+        </AppLayout>
+      </template>
+    );
+    assert.strictEqual(warnings.length, 1);
+    assert.ok(
+      warnings[0]?.startsWith('frontile.layout-region.duplicate-target:'),
+      warnings[0]
+    );
+    assert.dom('[data-test-second] [data-test-a]').exists('the newest wins');
+  });
+
+  test('a remounted target raises no duplicate-target warning', async function (assert) {
+    const flags = new Flags();
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Navbar>
+            {{#if flags.target}}<layout.Region @name="actions" />{{/if}}
+          </layout.Navbar>
+          <layout.Main>
+            <InLayoutRegion @name="actions"><b>A</b></InLayoutRegion>
+          </layout.Main>
+        </AppLayout>
+      </template>
+    );
+    flags.target = false;
+    await settled();
+    flags.target = true;
+    await settled();
+    assert.deepEqual(warnings, []);
   });
 });
