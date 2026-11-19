@@ -1,0 +1,115 @@
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
+import { Button, ButtonGroup } from 'frontile';
+import { useRealStyles } from '../../../helpers/scoped-styles';
+
+const isDark = (scope: string) => scope === 'dark';
+
+module('Integration | Component | Button | glass and link', function (hooks) {
+  setupRenderingTest(hooks);
+
+  // These assert on real CSS, so they run against the shipped theme rather
+  // than the stub markers other Button tests register.
+  useRealStyles(hooks, ['button']);
+
+  module('link', function () {
+    test('link sits inline with text', async function (assert) {
+      await render(
+        <template>
+          <p>Some text
+            <Button @variant="link" data-test-id="b">Manage</Button></p>
+        </template>
+      );
+
+      const el = document.querySelector('[data-test-id="b"]') as HTMLElement;
+      const style = window.getComputedStyle(el);
+      assert.strictEqual(style.paddingLeft, '0px', 'no left padding');
+      assert.strictEqual(style.paddingRight, '0px', 'no right padding');
+      assert.strictEqual(style.backgroundColor, 'rgba(0, 0, 0, 0)', 'no fill');
+    });
+  });
+
+  module('glass', function () {
+    test('glass renders and blurs what is behind it', async function (assert) {
+      await render(
+        <template>
+          <div
+            class="dark"
+            style="background: linear-gradient(red, blue); padding: 16px"
+          >
+            <Button @variant="glass" data-test-id="b">x</Button>
+          </div>
+        </template>
+      );
+
+      const el = document.querySelector('[data-test-id="b"]') as HTMLElement;
+      const style = window.getComputedStyle(el) as unknown as Record<
+        string,
+        string
+      >;
+      const backdrop = style['backdropFilter'] ?? style['webkitBackdropFilter'];
+      assert.true(
+        String(backdrop).includes('blur(12px)'),
+        `backdrop-filter is a 12px blur (got "${backdrop}")`
+      );
+    });
+
+    test('glass in a ButtonGroup renders', async function (assert) {
+      await render(
+        <template>
+          <ButtonGroup @variant="glass" as |group|>
+            <group.Button data-test-id="first">One</group.Button>
+            <group.Button data-test-id="second">Two</group.Button>
+          </ButtonGroup>
+        </template>
+      );
+
+      const first = document.querySelector('[data-test-id="first"]');
+      assert.dom(first).exists();
+      assert.true(
+        first!.className.includes('first-of-type:rounded-s-full'),
+        'first button keeps the group start rounding'
+      );
+    });
+
+    test('loading glass is disabled and the spinner inherits ink', async function (assert) {
+      // The spinner is the button's ink at 25% alpha (`text-current/25`), so
+      // it is the ink's color, not exact-equal to it and not `none`.
+      const lightnessOf = (fill: string): number | undefined => {
+        const m = /^ok(?:lab|lch)\(([\d.]+)/.exec(fill);
+        return m ? Number(m[1]) : undefined;
+      };
+
+      for (const [scope, ink] of [
+        ['light', 'white'],
+        ['dark', 'black']
+      ] as const) {
+        await render(
+          <template>
+            <div class={{if (isDark scope) "dark"}}>
+              <Button
+                @variant="glass"
+                @isLoading={{true}}
+                data-test-id="b"
+              >x</Button>
+            </div>
+          </template>
+        );
+
+        const el = document.querySelector('[data-test-id="b"]') as HTMLElement;
+        assert.dom(el).isDisabled();
+        const spinner = el.querySelector('svg') as SVGElement;
+        assert.dom(spinner).exists(`${scope}: a spinner is rendered`);
+        const fill = window.getComputedStyle(spinner).fill;
+        assert.notStrictEqual(fill, 'none', `${scope}: spinner has a fill`);
+        const lightness = lightnessOf(fill);
+        assert.true(
+          lightness !== undefined &&
+            (ink === 'white' ? lightness > 0.99 : lightness < 0.01),
+          `${scope}: spinner fill derives from the ${ink} glass ink (got "${fill}")`
+        );
+      }
+    });
+  });
+});

@@ -369,7 +369,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return {
       variant: chip?.variant ?? 'soft',
       color: chip?.color ?? this.args.color ?? 'neutral',
-      size: chip?.size ?? 'sm',
+      size: chip?.size ?? 'xs',
       withDot: chip?.withDot ?? false
     };
   }

@@ -83,7 +83,10 @@ const colors = [
 
 ## Badge Sizes
 
-The second row shows each size with an icon and a value.
+Badge takes the same size names as [Button](../buttons/button) and [Chip](../buttons/chip),
+and the same `@size` gives the same label text size on all three. Heights and padding
+belong to each component, so a Badge and a Button of one size are not the same height.
+The default is `xs`. `2xs` is smaller than any Button size, for dense rows (20px tall, 12.3px text). The second row shows each size with an icon and a value.
 
 ```gts preview
 import { Badge } from 'frontile';
@@ -93,12 +96,12 @@ import { StarIcon } from 'site/components/icons';
 <template>
   <div class='flex flex-col gap-4'>
     <div class='flex flex-wrap items-center gap-3'>
-      {{#each (array 'xs' 'sm' 'md' 'lg') as |size|}}
+      {{#each (array '2xs' 'xs' 'sm' 'md' 'lg' 'xl' '2xl') as |size|}}
         <Badge @size={{size}}>Badge {{size}}</Badge>
       {{/each}}
     </div>
     <div class='flex flex-wrap items-center gap-3'>
-      {{#each (array 'xs' 'sm' 'md' 'lg') as |size|}}
+      {{#each (array '2xs' 'xs' 'sm' 'md' 'lg' 'xl' '2xl') as |size|}}
         <Badge @size={{size}} @color='primary' @value='4.8'>
           <:startIcon><StarIcon /></:startIcon>
           <:default>Rating {{size}}</:default>
