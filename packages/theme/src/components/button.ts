@@ -412,17 +412,20 @@ const button = tv({
       ]
     })),
 
-    // VARIANT: glass — a translucent, hue-free fill for use over a colored or
-    // imaged surface. The lift tokens follow the surrounding theme scope, so
-    // the button never sets its own. `color` is ignored: every color gets the
-    // same classes, and the non-neutral ones also reset the focus ring that
-    // `baseButton` tints per color.
+    // VARIANT: glass — a translucent scrim for use over a colored or imaged
+    // surface: black with white ink in light mode, white with black ink in
+    // dark mode. It flips with the app theme, but deliberately not through the
+    // scope tokens: brand fills go dark in light mode and light in dark mode,
+    // so the page's own ink (`on-surface`) would be the wrong pairing for them. `color` is ignored: every
+    // color gets the same classes, and the non-neutral ones also reset the
+    // focus ring that `baseButton` tints per color.
     ...glassColors.map((color) => ({
       variant: 'glass' as const,
       color,
       class: [
-        'bg-surface-lift-soft text-on-neutral-subtle backdrop-blur-md',
-        'hover:bg-surface-lift-mild active:bg-surface-lift-firm',
+        'bg-black/20 text-white backdrop-blur-md',
+        'hover:bg-black/30 active:bg-black/40',
+        'dark:bg-white/20 dark:text-black dark:hover:bg-white/30 dark:active:bg-white/40',
         color === 'neutral' ? '' : 'focus-visible:ring-focus'
       ]
     }))

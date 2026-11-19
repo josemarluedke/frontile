@@ -4,6 +4,8 @@ import { render } from '@ember/test-helpers';
 import { Button, ButtonGroup } from 'frontile';
 import { useRealStyles } from '../../../helpers/scoped-styles';
 
+const isDark = (scope: string) => scope === 'dark';
+
 module('Integration | Component | Button | glass and link', function (hooks) {
   setupRenderingTest(hooks);
 
@@ -72,30 +74,42 @@ module('Integration | Component | Button | glass and link', function (hooks) {
     });
 
     test('loading glass is disabled and the spinner inherits ink', async function (assert) {
-      await render(
-        <template>
-          <div class="dark">
-            <Button
-              @variant="glass"
-              @isLoading={{true}}
-              data-test-id="b"
-            >x</Button>
-          </div>
-        </template>
-      );
-
-      const el = document.querySelector('[data-test-id="b"]') as HTMLElement;
-      assert.dom(el).isDisabled();
-      const spinner = el.querySelector('svg') as SVGElement;
-      assert.dom(spinner).exists('a spinner is rendered');
       // The spinner is the button's ink at 25% alpha (`text-current/25`), so
-      // it is white-based here, not exact-equal to the ink and not `none`.
-      const fill = window.getComputedStyle(spinner).fill;
-      assert.notStrictEqual(fill, 'none', 'spinner has a fill');
-      assert.true(
-        /^(oklab|oklch|rgb)a?\(1 0 0|rgba?\(255, 255, 255/.test(fill),
-        `spinner fill derives from the white glass ink (got "${fill}")`
-      );
+      // it is the ink's color, not exact-equal to it and not `none`.
+      const lightnessOf = (fill: string): number | undefined => {
+        const m = /^ok(?:lab|lch)\(([\d.]+)/.exec(fill);
+        return m ? Number(m[1]) : undefined;
+      };
+
+      for (const [scope, ink] of [
+        ['light', 'white'],
+        ['dark', 'black']
+      ] as const) {
+        await render(
+          <template>
+            <div class={{if (isDark scope) "dark"}}>
+              <Button
+                @variant="glass"
+                @isLoading={{true}}
+                data-test-id="b"
+              >x</Button>
+            </div>
+          </template>
+        );
+
+        const el = document.querySelector('[data-test-id="b"]') as HTMLElement;
+        assert.dom(el).isDisabled();
+        const spinner = el.querySelector('svg') as SVGElement;
+        assert.dom(spinner).exists(`${scope}: a spinner is rendered`);
+        const fill = window.getComputedStyle(spinner).fill;
+        assert.notStrictEqual(fill, 'none', `${scope}: spinner has a fill`);
+        const lightness = lightnessOf(fill);
+        assert.true(
+          lightness !== undefined &&
+            (ink === 'white' ? lightness > 0.99 : lightness < 0.01),
+          `${scope}: spinner fill derives from the ${ink} glass ink (got "${fill}")`
+        );
+      }
     });
   });
 });

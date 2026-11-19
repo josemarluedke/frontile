@@ -88,14 +88,18 @@ module('Unit | Theme | Button link', function () {
 });
 
 module('Unit | Theme | Button glass', function () {
-  test('glass uses the lift fills', function (assert) {
+  test('glass is a black scrim with white ink, flipped in dark mode', function (assert) {
     const got = tokens({ variant: 'glass' });
     for (const cls of [
-      'bg-surface-lift-soft',
-      'hover:bg-surface-lift-mild',
-      'active:bg-surface-lift-firm',
+      'bg-black/20',
+      'hover:bg-black/30',
+      'active:bg-black/40',
       'backdrop-blur-md',
-      'text-on-neutral-subtle'
+      'text-white',
+      'dark:bg-white/20',
+      'dark:hover:bg-white/30',
+      'dark:active:bg-white/40',
+      'dark:text-black'
     ]) {
       assert.true(got.includes(cls), `glass has ${cls}`);
     }

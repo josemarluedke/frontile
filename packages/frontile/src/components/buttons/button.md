@@ -37,6 +37,7 @@ import { Button } from 'frontile';
     <Button @variant='soft'>Soft</Button>
     <Button @variant='plain'>Plain</Button>
     <Button @variant='custom'>Custom</Button>
+    <Button @variant='glass'>Glass</Button>
   </div>
 </template>
 ```
@@ -44,83 +45,11 @@ import { Button } from 'frontile';
 The `custom` variant is available for the cases where you might want to fully customize the appearance of the button.
 The default styles are mainly structural. Colors are applied as `color`.
 
-## Glass
-
-`glass` is a translucent fill with a soft backdrop blur, for buttons that sit on a
-colored surface, a gradient or an image. It has no hue of its own: the fill is a
-`surface-lift` tint (20% black in a dark scope, 50% white in a light one), so it stays
-legible over a mid-tone or fairly light surface. `@color` is ignored.
-
-The button does not choose its own theme. The lift tints follow the surrounding
-theme scope, so put the `dark` class on the container when the surface should stay
-dark in both app themes.
-
-```gts preview
-import { Button } from 'frontile';
-import { DownloadIcon, ShareIcon } from 'site/components/icons';
-
-<template>
-  <div
-    class='theme-inverse flex flex-col gap-4 rounded-2xl bg-linear-to-b from-primary via-secondary to-tertiary p-6 text-on-neutral-subtle'
-  >
-    <span class='text-strong-xl'>Good afternoon, Aslan.</span>
-    <div class='flex flex-wrap items-center gap-2'>
-      <Button @variant='glass'>Pay bill</Button>
-      <Button @variant='glass'><DownloadIcon /> Download</Button>
-      <Button @variant='glass'>Share <ShareIcon /></Button>
-      <Button @variant='glass' disabled>Disabled</Button>
-    </div>
-  </div>
-</template>
-```
-
-On a flat brand color the blur has nothing to soften, so it looks like a plain tint:
-
-```gts preview
-import { Button } from 'frontile';
-
-<template>
-  <div class='flex flex-wrap gap-2 rounded-2xl bg-primary p-6'>
-    <Button @variant='glass' @size='sm'>Small</Button>
-    <Button @variant='glass'>Medium</Button>
-    <Button @variant='glass' @size='lg'>Large</Button>
-  </div>
-</template>
-```
-
-It works over any of the theme's colors, because the fill only darkens or frosts
-whatever is behind it. This demo follows the app theme, so switch between light and
-dark to see both:
-
-```gts preview
-import { Button } from 'frontile';
-
-<template>
-  <div class='grid grid-cols-2 gap-3 sm:grid-cols-4'>
-    <div class='flex items-center justify-center rounded-2xl bg-neutral p-6'>
-      <Button @variant='glass'>Neutral</Button>
-    </div>
-    <div class='flex items-center justify-center rounded-2xl bg-primary p-6'>
-      <Button @variant='glass'>Primary</Button>
-    </div>
-    <div class='flex items-center justify-center rounded-2xl bg-secondary p-6'>
-      <Button @variant='glass'>Secondary</Button>
-    </div>
-    <div class='flex items-center justify-center rounded-2xl bg-tertiary p-6'>
-      <Button @variant='glass'>Tertiary</Button>
-    </div>
-    <div class='flex items-center justify-center rounded-2xl bg-success p-6'>
-      <Button @variant='glass'>Success</Button>
-    </div>
-    <div class='flex items-center justify-center rounded-2xl bg-warning p-6'>
-      <Button @variant='glass'>Warning</Button>
-    </div>
-    <div class='flex items-center justify-center rounded-2xl bg-danger p-6'>
-      <Button @variant='glass'>Danger</Button>
-    </div>
-  </div>
-</template>
-```
+`glass` is a translucent scrim with a soft backdrop blur, for buttons that sit on a colored
+surface, a gradient or an image. It has no hue of
+its own and ignores `@color`: it is a black tint with white ink in light mode, and a white tint
+with black ink in dark mode, which contrasts with brand fills (they go dark in light mode and
+light in dark mode). It follows the app theme through the `dark` class.
 
 ## Link
 
@@ -163,12 +92,14 @@ import { Button } from 'frontile';
 
 ## Button Colors
 
-Every color is available in every variant. The label on each row is the
-`@variant` value; the button labels are the `@color` values.
+Every color is available in every variant except `glass`, which has no hue of its own and
+ignores `@color`. The label on each row is the `@variant` value; the button labels are the
+`@color` values. The `glass` row shows the same button over each theme color instead, since
+glass ignores `@color`.
 
 ```gts preview collapsible
 import { Button } from 'frontile';
-import { array } from '@ember/helper';
+import { array, get } from '@ember/helper';
 
 const colors = [
   'neutral',
@@ -179,6 +110,16 @@ const colors = [
   'warning',
   'danger'
 ];
+
+const fills = {
+  neutral: 'bg-neutral',
+  primary: 'bg-primary',
+  secondary: 'bg-secondary',
+  tertiary: 'bg-tertiary',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  danger: 'bg-danger'
+};
 
 <template>
   <div class='flex flex-col gap-6'>
@@ -196,6 +137,20 @@ const colors = [
         </div>
       </div>
     {{/each}}
+    <div>
+      <p class='font-code text-code-sm text-neutral-strong mb-2'>
+        @variant='glass'
+      </p>
+      <div class='flex flex-wrap items-center gap-3'>
+        {{#each colors as |color|}}
+          <div class='rounded-xl p-2 {{get fills color}}'>
+            <Button @variant='glass'>
+              {{color}}
+            </Button>
+          </div>
+        {{/each}}
+      </div>
+    </div>
   </div>
 </template>
 ```
