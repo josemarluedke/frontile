@@ -29,6 +29,7 @@ them is optional for the whole 0.18 line.
 | `text-body-pico`/`-nano`/`-micro`                                         | Those elements render unstyled                                               | **Silently**                                                    |
 | Body text-scale font sizes corrected                                      | Body text (`xs` through `xl`) renders larger than intended                   | Visual only — nothing to fix                                    |
 | Badge and Chip share Button's sizes, default `xs`                         | Chips and badges render at different sizes than before                       | Visual only — nothing to fix                                    |
+| `size-icon-*` icons follow the label text sizes                           | Icons using `size-icon-3xs` through `-3xl` render smaller than before        | Visual only — nothing to fix                                    |
 | `data-fr-*` / mismatched `data-component` / most `data-test-id` selectors | Those selectors stop matching                                                | **Silently**, if you select Frontile-rendered elements yourself |
 
 **The silent ones are the reason to take this in order.** A class Tailwind can't
@@ -239,6 +240,35 @@ Frontile product uses Badge.
 **Impact:** visual only. **Time:** a few minutes; search for `<Chip` and
 `<Badge` with an `@size`.
 
+### 9. `size-icon-*` icons follow the label text sizes
+
+The ten icon sizes, `size-icon-4xs` through `size-icon-3xl`, now match the label
+text at the step of the same name on Button, Badge and Chip. An icon at a step
+is as large as text at that step, so an icon beside a label lines up without
+adjustment. `4xs` is new.
+
+The icons are smaller than before at every step that existed (sizes are
+approximate):
+
+| Utility         | Was  | Now  |
+| --------------- | ---- | ---- |
+| `size-icon-3xs` | 13px | 10px |
+| `size-icon-2xs` | 14px | 12px |
+| `size-icon-xs`  | 16px | 14px |
+| `size-icon-sm`  | 18px | 15px |
+| `size-icon-md`  | 21px | 17px |
+| `size-icon-lg`  | 24px | 21px |
+| `size-icon-xl`  | 29px | 24px |
+| `size-icon-2xl` | 33px | 31px |
+| `size-icon-3xl` | 40px | 37px |
+
+`size-icon-pico`, `-nano`, `-micro`, `-kilo` and `-mega` are unchanged. Inline
+icons that take their size from the surrounding text (`size-[1em]`) are not
+affected.
+
+**Impact:** visual only. **Time:** a few minutes; search for `size-icon-` and
+look at each icon. To stay close to an icon's old size, move it up one step.
+
 ## Checklist
 
 - [ ] `@import "@frontile/theme"` added to `app.css`
@@ -254,6 +284,7 @@ Frontile product uses Badge.
 - [ ] Looked at any multi-selects — they now render chips and are taller
 - [ ] Checked `Chip` and `Badge` `@size` values: old `sm` is now `xs`, and the default is `xs`
 - [ ] Replaced `text-body-pico`/`-nano`/`-micro` with `text-body-4xs`/`-3xs`/`-2xs`
+- [ ] Looked at icons sized with `size-icon-*` — they are smaller at every step
 - [ ] Replaced any `data-fr-*`, mismatched `data-component`, or retired
       `data-test-id` selectors with the new `data-component`/`data-part`
       attributes (see [DOM Anatomy Attributes Migration](./anatomy-attributes.md))

@@ -37,6 +37,7 @@ import { Button } from 'frontile';
     <Button @variant='soft'>Soft</Button>
     <Button @variant='plain'>Plain</Button>
     <Button @variant='custom'>Custom</Button>
+    <Button @variant='glass'>Glass</Button>
   </div>
 </template>
 ```
@@ -44,14 +45,61 @@ import { Button } from 'frontile';
 The `custom` variant is available for the cases where you might want to fully customize the appearance of the button.
 The default styles are mainly structural. Colors are applied as `color`.
 
+`glass` is a translucent scrim with a soft backdrop blur, for buttons that sit on a colored
+surface, a gradient or an image. It has no hue of
+its own and ignores `@color`: it is a black tint with white ink in light mode, and a white tint
+with black ink in dark mode, which contrasts with brand fills (they go dark in light mode and
+light in dark mode). It follows the app theme through the `dark` class.
+
+## Link
+
+`link` is ink only: no fill, no border and no side padding, so it lines up with the text
+around it. It underlines on hover. Unlike `glass`, it honors `@color`. Use `plain` instead
+when you want a padded, no-fill button that doesn't underline.
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <div class='flex flex-col gap-3'>
+    <p>
+      You have two active services.
+      <Button @variant='link' @size='sm'>Manage services →</Button>
+    </p>
+    <p>
+      Your bill is ready.
+      <Button @variant='link' @size='sm' @color='primary'>View bill</Button>
+    </p>
+  </div>
+</template>
+```
+
+It works on a dark brand surface the same way. Put the `dark` class on the container:
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <p
+    class='dark rounded-2xl p-6 text-on-neutral-subtle'
+    style='background: #0f4c4a'
+  >
+    You have two active services.
+    <Button @variant='link' @size='sm'>Manage services →</Button>
+  </p>
+</template>
+```
+
 ## Button Colors
 
-Every color is available in every variant. The label on each row is the
-`@variant` value; the button labels are the `@color` values.
+Every color is available in every variant except `glass`, which has no hue of its own and
+ignores `@color`. The label on each row is the `@variant` value; the button labels are the
+`@color` values. The `glass` row shows the same button over each theme color instead, since
+glass ignores `@color`.
 
 ```gts preview collapsible
 import { Button } from 'frontile';
-import { array } from '@ember/helper';
+import { array, get } from '@ember/helper';
 
 const colors = [
   'neutral',
@@ -62,6 +110,16 @@ const colors = [
   'warning',
   'danger'
 ];
+
+const fills = {
+  neutral: 'bg-neutral',
+  primary: 'bg-primary',
+  secondary: 'bg-secondary',
+  tertiary: 'bg-tertiary',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  danger: 'bg-danger'
+};
 
 <template>
   <div class='flex flex-col gap-6'>
@@ -79,6 +137,20 @@ const colors = [
         </div>
       </div>
     {{/each}}
+    <div>
+      <p class='font-code text-code-sm text-neutral-strong mb-2'>
+        @variant='glass'
+      </p>
+      <div class='flex flex-wrap items-center gap-3'>
+        {{#each colors as |color|}}
+          <div class='rounded-xl p-2 {{get fills color}}'>
+            <Button @variant='glass'>
+              {{color}}
+            </Button>
+          </div>
+        {{/each}}
+      </div>
+    </div>
   </div>
 </template>
 ```

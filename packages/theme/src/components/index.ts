@@ -4,6 +4,7 @@ export * from './badge';
 export * from './breadcrumbs';
 export * from './button';
 export * from './chip';
+export * from './icon';
 export * from './progress-bar';
 export * from './close-button';
 export * from './command';

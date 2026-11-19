@@ -85,12 +85,22 @@ export interface ButtonArgs {
   type?: 'button' | 'submit' | 'reset';
 
   /**
-   * The button variant.
+   * The button variant. `glass` is a translucent, color-less fill (it ignores
+   * `color`) for use over a colored or imaged surface. `link` is inline, with
+   * no fill or side padding, and underlines on hover.
    *
    * @defaultValue 'solid'
    */
   variant?:
-    'solid' | 'soft' | 'subtle' | 'outline' | 'ghost' | 'plain' | 'custom';
+    | 'solid'
+    | 'soft'
+    | 'subtle'
+    | 'outline'
+    | 'ghost'
+    | 'plain'
+    | 'custom'
+    | 'glass'
+    | 'link';
 
   /**
    * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
