@@ -19,6 +19,7 @@ import {
   layoutVariants,
   type AppLayoutConfig,
   type AppLayoutContext,
+  type RegisteredAside,
   type RegisteredSidebar
 } from './context';
 import Aside from './aside';
@@ -353,7 +354,7 @@ class AppLayout extends Component<AppLayoutSignature> {
   // BottomNav for its bottom row.
   sidebarPart = new RegisteredPart<RegisteredSidebar>(this);
   bottomNavPart = new RegisteredPart<object>(this);
-  asidePart = new RegisteredPart<object>(this);
+  asidePart = new RegisteredPart<RegisteredAside>(this);
 
   registerSidebar = this.sidebarPart.register;
   registerBottomNav = this.bottomNavPart.register;
@@ -367,8 +368,14 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.bottomNavPart.current;
   }
 
-  get registeredAside(): object | undefined {
+  get registeredAside(): RegisteredAside | undefined {
     return this.asidePart.current;
+  }
+
+  /** An `Aside` is registered and has something to show. */
+  get hasAside(): boolean {
+    const aside = this.registeredAside;
+    return aside !== undefined && (aside.available ?? true);
   }
 
   get mobileNav(): 'drawer' | 'bottom' {
@@ -600,7 +607,7 @@ class AppLayout extends Component<AppLayoutSignature> {
         return layout.registeredSidebar !== undefined && !layout.bottomNavMode;
       },
       get hasAside() {
-        return layout.registeredAside !== undefined;
+        return layout.hasAside;
       },
       isRtl: this.isRtl,
       registerSidebar: this.registerSidebar,

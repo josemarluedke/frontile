@@ -76,16 +76,25 @@ export interface AppLayoutContext {
    */
   registerBottomNav(nav: object): () => void;
   /**
-   * Whether an `Aside` is rendered in the layout. `AsideToggle` renders
-   * nothing without one. Settles after the first render, like the registered
-   * sidebar (tracked).
+   * Whether an `Aside` is rendered in the layout and has something to show.
+   * `AsideToggle` renders nothing without one. False while an `Aside` with
+   * `@region` has no source. Settles after the first render, like the
+   * registered sidebar (tracked).
    */
   readonly hasAside: boolean;
   /**
    * Called by `Aside` so the layout knows it has one. Returns the matching
    * unregister function.
    */
-  registerAside(aside: object): () => void;
+  registerAside(aside: RegisteredAside): () => void;
+}
+
+export interface RegisteredAside {
+  /**
+   * Whether the aside has content to show. Omitted means it does; an
+   * `Aside` with `@region` reports false while no source fills it.
+   */
+  readonly available?: boolean;
 }
 
 export interface RegisteredSidebar {

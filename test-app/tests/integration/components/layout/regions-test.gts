@@ -1,16 +1,17 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { render, settled, click } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { run } from '@ember/runloop';
 import { registerWarnHandler } from '@ember/debug';
-import { AppLayout, InLayoutRegion } from 'frontile';
+import { AppLayout, AppLayoutState, Aside, InLayoutRegion } from 'frontile';
 import {
   mockMatchMedia,
   type MatchMediaMock
 } from 'test-app/tests/helpers/match-media';
 
 const DESKTOP = 1200;
+const MOBILE = 500;
 
 class Flags {
   @tracked layout = true;
@@ -405,5 +406,164 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
     flags.target = true;
     await settled();
     assert.deepEqual(warnings, []);
+  });
+
+  test('a route-driven aside: no column or toggle while nothing fills it', async function (assert) {
+    const flags = new Flags();
+    flags.first = false;
+    await render(
+      <template>
+        <AppLayout @defaultAsideOpen={{true}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p
+                  data-test-aside-body
+                >Order</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    assert.dom('[data-part="aside-toggle"]').doesNotExist('no toggle');
+    assert.dom('aside').doesNotExist('no column');
+
+    flags.first = true;
+    await settled();
+    assert.dom('[data-part="aside-toggle"]').exists('a filled aside has one');
+    assert.dom('[data-part="aside"]').exists('and its column');
+    assert.strictEqual(
+      document.querySelector('[data-test-aside-body]')?.parentElement,
+      document.querySelector('[data-part="aside"]'),
+      'the content sits directly in the aside element'
+    );
+  });
+
+  test('the aside stays open when another source replaces the current one', async function (assert) {
+    const flags = new Flags();
+    const state = new AppLayoutState({ asideOpen: true });
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p>First</p></InLayoutRegion>
+            {{/if}}
+            {{#if flags.second}}
+              <InLayoutRegion @name="aside"><p>Second</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    assert.dom('aside').hasText('First');
+
+    flags.first = false;
+    flags.second = true;
+    await settled();
+    assert.true(state.asideOpen, 'a swap in one render does not close it');
+    assert.dom('aside').hasText('Second');
+  });
+
+  test('below lg the content follows the target into the drawer', async function (assert) {
+    const state = new AppLayoutState({ asideOpen: true });
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>
+            <InLayoutRegion @name="aside"><p
+                data-test-aside-body
+              >Order</p></InLayoutRegion>
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    assert.dom('[data-part="aside"] [data-test-aside-body]').exists();
+    assert
+      .dom('[data-test-aside-body]', document.body)
+      .exists({ count: 1 }, 'once, in the column');
+
+    media?.setWidth(MOBILE);
+    await settled();
+    state.asideOpen = true;
+    await settled();
+    assert
+      .dom(
+        '[role="dialog"] [data-part="mobile-aside"] [data-test-aside-body]',
+        document.body
+      )
+      .exists('rendered inside the drawer');
+    assert
+      .dom('[data-test-aside-body]', document.body)
+      .exists({ count: 1 }, 'once, in the drawer');
+
+    state.asideOpen = false;
+    await settled();
+    media?.setWidth(DESKTOP);
+    await settled();
+    state.asideOpen = true;
+    await settled();
+    assert
+      .dom('[data-part="aside"] [data-test-aside-body]')
+      .exists('and back into the column from lg up');
+    assert
+      .dom('[data-test-aside-body]', document.body)
+      .exists({ count: 1 }, 'never twice');
+    assert.deepEqual(warnings, [], 'the move is not a duplicate target');
+  });
+
+  test('below lg an empty route-driven aside renders no drawer', async function (assert) {
+    media?.setWidth(MOBILE);
+    await render(
+      <template>
+        <AppLayout @defaultAsideOpen={{true}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>Content</layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    assert.dom('[role="dialog"]', document.body).doesNotExist();
+    assert.dom('[data-part="aside-toggle"]').doesNotExist();
+  });
+
+  test('an Aside without @region is unchanged, with or without a block', async function (assert) {
+    await render(
+      <template>
+        <AppLayout @defaultAsideOpen={{true}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>
+            <InLayoutRegion @name="aside"><p
+                data-test-stray
+              >Stray</p></InLayoutRegion>
+          </layout.Main>
+          <layout.Aside />
+        </AppLayout>
+      </template>
+    );
+    assert.dom('[data-part="aside"]').exists('an empty panel, as before');
+    assert.dom('[data-part="aside"]').hasText('');
+    assert.dom('[data-part="aside-toggle"]').exists();
+    assert.dom('[data-test-stray]').doesNotExist('it is not a region target');
+  });
+
+  test('a standalone Aside with @region and @state is filled by a source', async function (assert) {
+    const state = new AppLayoutState({ asideOpen: true });
+    await render(
+      <template>
+        <InLayoutRegion @name="details"><p
+            data-test-aside-body
+          >Order</p></InLayoutRegion>
+        <Aside @state={{state}} @region="details" />
+      </template>
+    );
+    assert.strictEqual(
+      document.querySelector('[data-test-aside-body]')?.parentElement,
+      document.querySelector('[data-part="aside"]')
+    );
   });
 });
