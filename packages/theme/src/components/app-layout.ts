@@ -205,6 +205,14 @@ const appLayout = tv({
       'relative grid w-full text-on-surface-app',
       'grid-cols-[auto_minmax(0,1fr)_auto]',
       '[--app-navbar-height:3rem]',
+      // PROTOTYPE (layout regions). "Has the aside any content" is answered
+      // by CSS, from markers the sources leave where they are written, so no
+      // state is involved and it is right in the first render pass. A
+      // region-driven aside (`data-aside-region`) is hidden while no
+      // `InRegion @name="aside"` is rendered; the toggle is hidden while
+      // there is neither one of those nor an `Aside` with its own block.
+      '[&:not(:has([data-region-source=aside]))_[data-aside-region]]:hidden',
+      '[&:not(:has([data-aside-static])):not(:has([data-region-source=aside]))_[data-part=aside-toggle]]:hidden',
       // The frame's gradient, painted over the variant's own background
       // color. Its two stop colors are properties (set per color when
       // `frameGradient` is on, below), so an app can swap a stop without rewriting the gradient:
@@ -348,6 +356,19 @@ const appLayout = tv({
     // The aside's `aside` element inside the drawer: as tall as the drawer.
     mobileAside: 'min-h-0 flex-1 overflow-y-auto p-4 font-body text-body-sm',
     asideToggle: iconButton,
+
+    // PROTOTYPE (layout regions). A region is an element the layout owns;
+    // sources render into it and it takes no box of its own. Without
+    // `data-multiple` only the newest source shows: older ones stay rendered
+    // (and keep their state) but are not displayed. `last-of-type`, not
+    // `last-child`, so the `script` markers Glimmer leaves when serializing
+    // do not count.
+    region:
+      'contents [&:not([data-multiple])>[data-part=region-content]:not(:last-of-type)]:hidden',
+    regionContent: 'contents',
+    // A `Region`'s own block, shown while nothing fills the region.
+    regionFallback:
+      'contents [[data-part=region]:has(>[data-part=region-content])+&]:hidden',
 
     skipLink: [
       ...focusVisibleRing,

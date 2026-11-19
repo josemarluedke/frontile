@@ -336,7 +336,7 @@ module('Integration | Component | Aside | frontile/layout', function (hooks) {
     );
   });
 
-  test('AsideToggle renders nothing in a layout with no Aside', async function (assert) {
+  test('AsideToggle is hidden in a layout with no Aside', async function (assert) {
     await render(
       <template>
         <AppLayout as |layout|>
@@ -346,7 +346,8 @@ module('Integration | Component | Aside | frontile/layout', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-part="aside-toggle"]').doesNotExist();
+    // PROTOTYPE (layout regions): hidden by the layout's CSS, not unrendered.
+    assert.dom('[data-part="aside-toggle"]').isNotVisible();
   });
 
   test('AsideToggle follows the Aside as it comes and goes', async function (assert) {
@@ -363,15 +364,15 @@ module('Integration | Component | Aside | frontile/layout', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-part="aside-toggle"]').exists('shown with an Aside');
+    assert.dom('[data-part="aside-toggle"]').isVisible('shown with an Aside');
 
     shown.current = false;
     await settled();
-    assert.dom('[data-part="aside-toggle"]').doesNotExist('gone without one');
+    assert.dom('[data-part="aside-toggle"]').isNotVisible('gone without one');
 
     shown.current = true;
     await settled();
-    assert.dom('[data-part="aside-toggle"]').exists('back with it');
+    assert.dom('[data-part="aside-toggle"]').isVisible('back with it');
   });
 
   test('a standalone AsideToggle still renders', async function (assert) {

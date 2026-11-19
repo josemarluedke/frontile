@@ -77,11 +77,13 @@ class AsideToggle extends Component<AsideToggleSignature> {
     this.state.toggleAside();
   };
 
-  /** Inside a layout, only while it has an `Aside` to open. */
-  get shown(): boolean {
-    const layout = this.args.layout;
-    return layout ? layout.hasAside : true;
-  }
+  /**
+   * PROTOTYPE (layout regions). Always rendered. Inside a layout with no
+   * aside to open it is hidden by the layout's CSS (see the `base` slot),
+   * which is right in the first render pass; `layout.hasAside` only settles
+   * after it.
+   */
+  shown = true;
 
   <template>
     {{#if this.shown}}

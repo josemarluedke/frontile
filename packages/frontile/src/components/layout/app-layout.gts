@@ -4,7 +4,7 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { guidFor } from '@ember/object/internals';
 import { schedule } from '@ember/runloop';
-import { isDestroying } from '@ember/destroyable';
+import { isDestroying, registerDestructor } from '@ember/destroyable';
 import { modifier } from 'ember-modifier';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import {
@@ -28,6 +28,8 @@ import Main from './main';
 import MenuToggle from './menu-toggle';
 import Navbar from './navbar';
 import PageHeader from './page-header';
+import Region from './region';
+import { LayoutRegions, registerLayoutRegions } from './regions';
 import Sidebar from './sidebar';
 import SidebarToggle from './sidebar-toggle';
 import type { AppLayoutSlots, AppLayoutVariants } from '@frontile/theme';
@@ -223,6 +225,7 @@ interface AppLayoutSignature {
         MenuToggle: WithBoundArgs<typeof MenuToggle, 'layout'>;
         Navbar: WithBoundArgs<typeof Navbar, 'layout'>;
         PageHeader: WithBoundArgs<typeof PageHeader, 'layout'>;
+        Region: WithBoundArgs<typeof Region, 'layout'>;
         Sidebar: WithBoundArgs<typeof Sidebar, 'layout'>;
         SidebarToggle: WithBoundArgs<typeof SidebarToggle, 'layout'>;
       }
@@ -275,6 +278,37 @@ class AppLayout extends Component<AppLayoutSignature> {
       asideOpen: args.defaultAsideOpen
     });
     this.#controlled = new ControlledAppLayoutState(own, () => this.args);
+    registerDestructor(
+      this,
+      registerLayoutRegions(this.layoutId, this.regions)
+    );
+  }
+
+  /**
+   * PROTOTYPE (layout regions). On the root, so a source below it can find
+   * this layout's regions by walking up the DOM.
+   */
+  layoutId = guidFor(this);
+
+  regions = new LayoutRegions(
+    this,
+    this.layoutId,
+    () => this.styles.region({ class: this.args.classes?.region }),
+    (name) => this.regionEmptied(name)
+  );
+
+  /**
+   * The last source of a region was destroyed. An aside with nothing in it
+   * closes, so it does not reopen by itself when a later route fills it, and
+   * so its drawer below `lg` is never open and empty. Destructors run after
+   * the render that removed the source, so this is a plain state change, not
+   * a write during render; and a route that replaces the source rendered its
+   * own before this ran, so a swap never gets here.
+   */
+  regionEmptied(name: string): void {
+    if (name === 'aside' && !isDestroying(this) && this.state.asideOpen) {
+      this.state.closeAside();
+    }
   }
 
   willDestroy(): void {
@@ -570,6 +604,7 @@ class AppLayout extends Component<AppLayoutSignature> {
       drawerId: this.drawerId,
       asideId: this.asideId,
       asideDrawerId: this.asideDrawerId,
+      regions: this.regions,
       styles: this.styles,
       config: this.config,
       classes: this.args.classes,
@@ -626,6 +661,7 @@ class AppLayout extends Component<AppLayoutSignature> {
   <template>
     <div
       data-component="app-layout"
+      data-app-layout-id={{this.layoutId}}
       data-part="base"
       data-variant={{this.variant}}
       data-navbar-placement={{this.navbarPlacement}}
@@ -672,6 +708,7 @@ class AppLayout extends Component<AppLayoutSignature> {
           MenuToggle=(component MenuToggle layout=this.context)
           Navbar=(component Navbar layout=this.context)
           PageHeader=(component PageHeader layout=this.context)
+          Region=(component Region layout=this.context)
           Sidebar=(component Sidebar layout=this.context)
           SidebarToggle=(component SidebarToggle layout=this.context)
         )

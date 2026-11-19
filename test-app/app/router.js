@@ -28,6 +28,12 @@ Router.map(function () {
     this.route('second');
   });
   this.route('platform-demo');
+  // PROTOTYPE: layout regions.
+  this.route('regions-demo', function () {
+    this.route('orders', function () {
+      this.route('order', { path: '/:order_id' });
+    });
+  });
   this.route('breadcrumbs-demo', function () {
     this.route('second');
     this.route('item', { path: '/item/:item_id' });

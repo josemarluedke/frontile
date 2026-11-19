@@ -97,6 +97,16 @@ class Aside extends Component<AsideSignature> {
     return atStart !== rtl ? 'left' : 'right';
   }
 
+  /**
+   * PROTOTYPE (layout regions). An `Aside` written without a block shows the
+   * layout's `aside` region, which `InRegion @name="aside"` fills. The same
+   * element is rendered inline or inside the drawer, so its content moves
+   * with it instead of being rebuilt.
+   */
+  get regionElement(): Element | null {
+    return this.args.layout?.regions.element('aside') ?? null;
+  }
+
   closeDrawer = (): void => {
     this.state.closeAside();
   };
@@ -124,6 +134,10 @@ class Aside extends Component<AsideSignature> {
   }
 
   <template>
+    {{#if (has-block)}}
+      {{! Tells the layout's CSS there is an aside for AsideToggle to open. }}
+      <script type="x/aside" data-aside-static></script>
+    {{/if}}
     {{#if this.inDrawer}}
       <Drawer
         @isOpen={{this.state.asideOpen}}
@@ -139,9 +153,14 @@ class Aside extends Component<AsideSignature> {
           aria-label={{this.label}}
           data-part="mobile-aside"
           class={{this.mobileClassNames}}
+          data-aside-region={{unless (has-block) ""}}
           ...attributes
         >
-          {{yield}}
+          {{#if (has-block)}}
+            {{yield}}
+          {{else}}
+            {{this.regionElement}}
+          {{/if}}
         </aside>
       </Drawer>
     {{else if this.state.asideOpen}}
@@ -150,9 +169,14 @@ class Aside extends Component<AsideSignature> {
         aria-label={{this.label}}
         data-part="aside"
         class={{this.classNames}}
+        data-aside-region={{unless (has-block) ""}}
         ...attributes
       >
-        {{yield}}
+        {{#if (has-block)}}
+          {{yield}}
+        {{else}}
+          {{this.regionElement}}
+        {{/if}}
       </aside>
     {{/if}}
   </template>

@@ -1,6 +1,7 @@
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import type { AppLayoutSlots, AppLayoutVariants } from '@frontile/theme';
 import type { AppLayoutState } from './app-layout-state';
+import type { LayoutRegions } from './regions';
 
 export type AppLayoutStyles = ReturnType<
   ReturnType<typeof useStyles>['appLayout']
@@ -75,6 +76,11 @@ export interface AppLayoutContext {
    * `--app-bottomnav-height`. Returns the matching unregister function.
    */
   registerBottomNav(nav: object): () => void;
+  /**
+   * PROTOTYPE (layout regions). The layout's regions: one element per name,
+   * made on first use by whichever side asks first.
+   */
+  regions: LayoutRegions;
   /**
    * Whether an `Aside` is rendered in the layout. `AsideToggle` renders
    * nothing without one. Settles after the first render, like the registered

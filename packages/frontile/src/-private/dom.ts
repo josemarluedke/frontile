@@ -65,7 +65,7 @@ const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/g;
  *   a different character for them (a space, say) would silently query for a
  *   *different* value and match the wrong element, or none, with no error.
  */
-function escapeAttributeValue(value: string): string {
+export function escapeAttributeValue(value: string): string {
   return value
     .replace(/["\\]/g, '\\$&')
     .replace(
