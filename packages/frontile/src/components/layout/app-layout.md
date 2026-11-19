@@ -81,6 +81,7 @@ import {
 | `Main`                         | The page content, the `main` landmark                                        |
 | `PageHeader`                   | A title row with actions, placed inside `Main`                               |
 | `Aside`                        | An optional panel beside `Main` for details or filters                       |
+| `Region`                       | A named place that other templates fill; see [Regions](#regions)             |
 | `BottomNav`                    | A tab bar that replaces the sidebar on phones; see [BottomNav](./bottom-nav) |
 | `MenuToggle`                   | Opens the sidebar's drawer on small screens                                  |
 | `SidebarToggle`, `AsideToggle` | Collapse the sidebar, open the aside, from outside them                      |
@@ -695,6 +696,152 @@ import DemoFrame from 'site/components/demo-frame';
 </template>
 ```
 
+### Filled from a route
+
+Give `Aside` a `@region` name instead of a block, and any template fills it
+with `InLayoutRegion`, including a route template rendered in `{{outlet}}`.
+While nothing fills it there is no panel and no `AsideToggle`, so only the
+pages that have details show the toggle.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { AppLayout, Button, InLayoutRegion } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+
+export default class RouteAsideExample extends Component {
+  @tracked onOrder = true;
+
+  toggle = () => {
+    this.onOrder = !this.onOrder;
+  };
+
+  <template>
+    <DemoFrame @id='aside-region' @label='Aside filled from a region'>
+      <AppLayout @defaultAsideOpen={{true}} as |layout|>
+        <layout.Navbar>
+          <span class='text-sm font-medium'>Orders</span>
+          <layout.AsideToggle class='ms-auto' />
+        </layout.Navbar>
+        <layout.Main>
+          <Button @size='xs' @variant='outline' @onPress={{this.toggle}}>
+            {{if this.onOrder 'Leave the order page' 'Open the order page'}}
+          </Button>
+          {{#if this.onOrder}}
+            <InLayoutRegion @name='demo-aside'>
+              <h2 class='font-semibold'>Order 1042</h2>
+              <p class='mt-1 text-sm text-neutral-firm'>Paid, not shipped.</p>
+            </InLayoutRegion>
+          {{/if}}
+        </layout.Main>
+        <layout.Aside @region='demo-aside' @label='Order details' />
+      </AppLayout>
+    </DemoFrame>
+  </template>
+}
+```
+
+The open state belongs to the layout, so it carries over from one page to the
+next:
+
+- Moving between pages that both fill the aside swaps the content and leaves
+  the panel as it was.
+- From `lg` up, a page that does not fill the aside hides the panel. It is
+  open again on the next page that fills it, if it was open before.
+- Below `lg`, a page that does not fill the aside closes the drawer, and it
+  stays closed until the toggle is pressed again.
+- `@defaultAsideOpen` opens the panel the first time a page fills it.
+
+Below `lg`, a loading state between two sibling pages that each fill the
+aside counts as a page that does not fill it, and closes the drawer. Fill the
+aside from the route they share to keep it open.
+
+## Regions
+
+A `layout.Region` is a named place in the layout. `InLayoutRegion` renders
+its block there from any template, including a route template rendered in
+`{{outlet}}`, so a page can put its own buttons in the navbar. Nothing
+renders where `InLayoutRegion` is written, and its content is not wrapped in
+an element.
+
+```js
+import { InLayoutRegion } from 'frontile';
+```
+
+The region's own block is shown while nothing fills it.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { AppLayout, Button, InLayoutRegion } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+
+export default class RegionExample extends Component {
+  @tracked onOrder = true;
+
+  toggle = () => {
+    this.onOrder = !this.onOrder;
+  };
+
+  <template>
+    <DemoFrame @id='regions' @label='Regions'>
+      <AppLayout as |layout|>
+        <layout.Navbar>
+          <span class='text-sm font-medium'>Orders</span>
+          <div class='ms-auto flex items-center gap-2'>
+            <layout.Region @name='demo-actions'>
+              <span class='text-sm text-neutral-firm'>No actions</span>
+            </layout.Region>
+          </div>
+        </layout.Navbar>
+        <layout.Main>
+          <Button @size='xs' @variant='outline' @onPress={{this.toggle}}>
+            {{if this.onOrder 'Leave the order page' 'Open the order page'}}
+          </Button>
+          {{#if this.onOrder}}
+            <InLayoutRegion @name='demo-actions'>
+              <Button @size='xs' @variant='outline'>Refund</Button>
+              <Button @size='xs'>Ship order</Button>
+            </InLayoutRegion>
+          {{/if}}
+        </layout.Main>
+      </AppLayout>
+    </DemoFrame>
+  </template>
+}
+```
+
+When several `InLayoutRegion`s name the same region, the one that rendered
+last is shown, and the previous one comes back when it goes away. A child
+route therefore replaces its parent's content while it is active. In the
+parent's template, write `InLayoutRegion` before `{{outlet}}`:
+
+```hbs
+<InLayoutRegion @name='actions'>
+  <Button>New order</Button>
+</InLayoutRegion>
+{{outlet}}
+```
+
+Written after `{{outlet}}`, the parent's content covers the child's. The same
+happens when a parent's `InLayoutRegion` sits in an `{{#if}}` that turns on
+while a child route is active.
+
+Pass `@multiple={{true}}` to the region to show every `InLayoutRegion`, in
+the order they rendered.
+
+Things to know:
+
+- Region names are shared by the whole app, and one `AppLayout` is expected
+  at a time. In development, a name that no region uses and a name used by
+  two regions each log a warning.
+- `@name` on both components, and `@region` on `Aside`, are read once.
+- Content is rendered again from scratch when its region moves, as the aside
+  does when the window crosses `lg`. Keep state you need to survive that
+  outside the content.
+- Region content is rendered in the browser only. In a page rendered on the
+  server, a filled region and a filled aside are empty until the app starts.
+
 ## Page header
 
 `PageHeader` is the title row at the top of `Main`: a `@title`, a
@@ -1228,6 +1375,14 @@ export default class RailAppExample extends Component {
 ### AsideToggle
 
 <Signature @component="AsideToggle" />
+
+### Region
+
+<Signature @component="Region" />
+
+### InLayoutRegion
+
+<Signature @component="InLayoutRegion" />
 
 ### MenuToggle
 
