@@ -58,14 +58,6 @@ export default defineConfig(({ isSsrBuild }) => ({
                 projectDescription:
                   'A modern, accessible, and extensible component library for Ember.js applications, built with Tailwind CSS and Tailwind Variants.',
                 projectPreamble: llmsPreamble,
-                sectionNotes: {
-                  // These pages are still published because apps on 0.17 need
-                  // them, but an agent reading the index has no other way to
-                  // tell them apart from the current Forms components, which
-                  // sit directly above them under a near-identical heading.
-                  'Forms (Legacy)':
-                    'Deprecated, removed in 0.19.0. New code should use the Forms components above.',
-                },
                 // llms-full.txt is ~1.2 MB, past what most agents will load in
                 // one go. These are the same content sliced by topic, so an
                 // agent working on a component never has to pull the theming

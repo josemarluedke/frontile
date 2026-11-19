@@ -77,12 +77,12 @@ export default class Example extends Component {
 }
 ```
 
-### Legacy Packages
+### Upgrading from older packages
 
-> **Note:** The following packages are deprecated and will be removed in 0.19.0. See the [migration guides](/docs/migrations/v0-18/) for details:
->
-> - [`@frontile/changeset-form`](/docs/migrations/v0-18/changeset-form) - Use `frontile` forms instead
-> - [`@frontile/forms-legacy`](/docs/migrations/v0-18/forms-legacy) - Migrate to the new `frontile` forms
+v0.19 removed `@frontile/changeset-form`, `@frontile/forms-legacy` and the
+separate `@frontile/*` packages; everything now ships in `frontile`. If you are
+upgrading an app that still uses them, start with
+[Upgrading to v0.19](../migrations/v0.19/index.md).
 
 ## Architecture Philosophy
 

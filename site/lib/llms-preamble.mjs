@@ -53,16 +53,17 @@ the latest release.
 import { Button, Input, Modal, Table } from 'frontile';
 \`\`\`
 
-The scoped packages (\`@frontile/buttons\`, \`@frontile/forms\`, and the rest) are
-deprecated re-export shims, removed in 0.19.0. \`@frontile/theme\` is a separate and
+The scoped packages (\`@frontile/buttons\`, \`@frontile/forms\`, and the rest) were
+re-export shims, removed in 0.19.0 along with \`@frontile/forms-legacy\` and
+\`@frontile/changeset-form\`. \`@frontile/theme\` is a separate and
 current package, but it supplies styling, not components.
 
 **Conventions that are easy to get wrong:**
 
 - Styling arguments are \`@color\` and \`@variant\`. \`@intent\` and \`@appearance\` are the
-  pre-0.18 names. They still resolve, and they still appear in older examples, so
-  copying a nearby call site will often reproduce the deprecated form. They are
-  removed in 0.19.0. The values were renamed too: \`default\` became \`neutral\` for
+  pre-0.18 names, removed in 0.19.0. They still appear in older examples, so
+  copying a nearby call site can reproduce them; passing one fails a development
+  assertion and is silently ignored in production. The values were renamed too: \`default\` became \`neutral\` for
   colors and \`solid\` for variants, \`outlined\` became \`outline\`, \`minimal\` became
   \`plain\`.
 - \`faded\` does not map to one thing. On Chip it became \`soft\`, a borderless tint; on

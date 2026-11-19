@@ -9,6 +9,12 @@ subcategory: v0.18
 
 Frontile v0.18 is a major release with several breaking changes to theming, colors, DOM anatomy, and component APIs. This guide gives an overview of all of them and links to a detailed migration guide for each.
 
+> **Upgrading straight to v0.19 or later?** The steps marked optional below
+> (package consolidation, leaving `forms-legacy`/`changeset-form`, and the
+> argument renames) are required there, because v0.19 removed the old
+> packages and names. Finish this guide on the latest 0.18.x, then follow
+> [Upgrading to v0.19](../v0.19/index.md).
+
 ## What breaks, and how loudly
 
 Two of these changes stop your app from working. The rest are cleanup, and one of

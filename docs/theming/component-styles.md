@@ -101,9 +101,6 @@ familiar but the attribute name differs — those use `data-slot`, Frontile uses
 `data-part`. In Ember, "slot" already means a named block (`{{yield to="title"}}`),
 which is a different thing from a styleable piece of the DOM.
 
-`@frontile/forms-legacy` predates this convention and does not carry these
-attributes.
-
 ## Customizing Styles
 
 ### Setting Up Global Customization

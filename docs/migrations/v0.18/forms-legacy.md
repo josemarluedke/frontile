@@ -9,7 +9,7 @@ subcategory: v0.18
 
 This guide covers migrating from the legacy `@frontile/forms-legacy` package to the modern `frontile` forms: a smaller API surface, better ARIA/keyboard support, slot-based customization, and no dependency on `ember-power-select` or `ember-basic-dropdown`.
 
-`@frontile/forms-legacy` is deprecated and will be removed in 0.19.0.
+`@frontile/forms-legacy` was deprecated in 0.18 and removed in 0.19.0.
 
 ## Overview
 

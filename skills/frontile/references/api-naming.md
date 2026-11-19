@@ -1,9 +1,16 @@
 # Frontile v0.18 API Naming
 
-Frontile v0.18 renamed two styling axes across most components. Both old spellings still
-resolve at runtime in 0.18.x. They log a deprecation warning (`console.warn`, once per
-component/arg pair) and are **removed in 0.19.0**. Nothing fails to build or render, so a
-stale example keeps "working" and reproduces the deprecated form. Always write the new names.
+Frontile v0.18 renamed two styling axes across most components. What an old spelling does
+depends on the installed version (check `node_modules/frontile/package.json`):
+
+- **0.18.x:** it still resolves, maps to the new value, and logs a deprecation warning once per
+  component/arg pair. Nothing fails, so a stale example keeps "working".
+- **0.19.0 and later:** it is **removed**. In a development or test build it fails an assertion
+  that names the replacement (`Button: @appearance was removed in 0.19.0. Use @variant.`). In a
+  production build the assertion is stripped and the old arg is silently ignored.
+
+Either way, always write the new names. The mapping tables below are what you need to convert
+old call sites.
 
 ## The two axes
 
@@ -48,15 +55,14 @@ Calendar, Pagination, SegmentedControl, Tabs, Tooltip) takes `@color`.
 Alert and NotificationCard were added during the 0.18 pre-release cycle and shipped with only
 `@status`. There is no deprecated `@intent`/`@color` alias for them, so nothing warns if you
 get this wrong; Glint will only catch it if you also pass an invalid variant value. FormFeedback
-does carry a deprecated `@intent` alias that warns (`frontile.form-feedback.intent`, no id
-suffix, see the JSDoc in `form-feedback.gts`), because that component's prop already existed
-pre-0.18.
+carried a deprecated `@intent` alias through 0.18.x, because that component's prop already
+existed pre-0.18; it was removed in 0.19.0. A FormFeedback whose `@intent` is ignored falls back
+to its default status, `danger`, so a stale `@intent="success"` renders as an error.
 
 ## Per-component value rename table
 
 Verified against `docs/migrations/v0.18/component-api-naming.md` and cross-checked against the
-`tv()` variant definitions in `packages/theme/src/components/*.ts` and the deprecation code in
-each component's `.gts` file.
+`tv()` variant definitions in `packages/theme/src/components/*.ts`.
 
 | Component                                  | `@appearance` → `@variant`                                                                           | `@intent` → `@color`/`@status` |
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------------- | ------------------------------ |
@@ -68,14 +74,14 @@ each component's `.gts` file.
 | Alert, NotificationCard                    | — (see note below)                                                                                   | `@status`                      |
 | FormFeedback                               | —                                                                                                    | `@status`                      |
 
-### Ignored arguments
+### Other removed arguments
 
-Some arguments are still accepted but no longer do anything. They warn once and are removed in
-0.19.0. Drop them, or switch to the component that has the behaviour:
+These warned in 0.18.x and were removed in 0.19.0. Drop them, or switch to the replacement:
 
-| Component | Old prop  | Replacement                                                                           |
-| --------- | --------- | ------------------------------------------------------------------------------------- |
-| Chip      | `@radius` | none: Chip is always a pill (`frontile.chip.radius`). Use `Badge` for a squared label |
+| Component   | Old prop   | Replacement                                                  |
+| ----------- | ---------- | ------------------------------------------------------------ |
+| Chip        | `@radius`  | none: Chip is always a pill. Use `Badge` for a squared label |
+| CloseButton | `@onClick` | `@onPress`                                                   |
 
 ### The `faded` trap — same old name, different new value per component
 
@@ -93,20 +99,15 @@ Verified in `packages/theme/src/components/chip.ts` (`variant: solid | outline |
 
 ### Button's full appearance union is wider than the migration table shows
 
-The migration doc's table only lists `default | outlined | minimal | custom`, but the actual
-`appearance` union in `button.gts` is:
+The migration doc's table only lists `default | outlined | minimal | custom`, but the 0.18.x
+`appearance` union on Button was:
 
 ```ts
 appearance?: 'default' | 'soft' | 'outlined' | 'minimal' | 'tonal' | 'custom';
 ```
 
-`soft` and `tonal` are also live, deprecated values, and they warn under the _same_
-deprecation id as the rest (`frontile.button.appearance`), contrary to what
-`docs/migrations/v0.18/index.md` implies (it describes `@appearance="soft"`/`"tonal"` as
-pre-release-only renames that produce **no** runtime warning). The code is authoritative here:
-all six old `appearance` values, including `soft` and `tonal`, go through the same
-`renamedArgValue()` call and do warn. Full Button mapping, verified against the
-`renamedArgValue` call in `button.gts`:
+`soft` and `tonal` were deprecated values too, and in 0.18.x they warned under the same
+deprecation id as the rest. Full Button mapping:
 
 | `@appearance` | `@variant` |
 | ------------- | ---------- |
@@ -122,9 +123,8 @@ new `@variant="soft"` is a tint _without_ one. If you used `@appearance="soft"`,
 want is `@variant="subtle"`, not `@variant="soft"`. Nothing catches this automatically since
 `soft` is a valid value on both sides.
 
-`@appearance="custom"` on Button keeps its name and passes through unchanged (confirmed: `custom`
-appears as a variant key producing empty classes, same as before, and is not touched by
-`renamedArgValue`'s mapping table).
+`@appearance="custom"` on Button becomes `@variant="custom"`: the value keeps its name and still
+produces empty variant classes.
 
 ### `default` → `neutral`, `info` → `primary`
 
@@ -164,37 +164,24 @@ never named `intent` on notifications, so do not go looking for it:
 this.notifications.add('Saved', { status: 'success' });
 ```
 
-The deprecated option is `appearance:`, typed `NotificationAppearance` (`info | success |
-warning | error`) and mapped onto `NotificationStatus` (`neutral | primary | success | warning
-| danger`). Two values change rather than passing through:
+The old option was `appearance:` (`info | success | warning | error`), deprecated in 0.18.x and
+removed in 0.19.0, along with its `NotificationAppearance` type. It applied both to `add()` options
+and to the `'@frontile/notifications'` defaults in `config/environment.js`. Convert it to `status:`
+(`neutral | primary | success | warning | danger`). Two values change rather than passing
+through:
 
 | `appearance:` | becomes `status:` |
 | ------------- | ----------------- |
 | `error`       | `danger`          |
 | `info`        | `primary`         |
 
-Using it warns under the deprecation id `frontile.notification-appearance`, removed in 0.19.0.
+From 0.19.0, a stale `appearance:` fails a development assertion, and in production it is
+ignored, so the notification renders with the default `neutral` status.
 
-Verified against `packages/frontile/src/-private/notification.ts` (`mapAppearance`) and
-`-private/types.ts` (`NotificationStatus`, `NotificationAppearance`).
+## Listbox and its items
 
-## Cross-level mixing (Listbox and its items)
-
-`Listbox` forwards its color/variant down to its items, and an item's own arg wins, but an
-**inherited new-name value beats an item's own old-name value**:
-
-```hbs
-{{! the listbox-level @color wins — the item renders primary, not danger }}
-<Listbox @color='primary' as |l|>
-  <l.Item @intent='danger'>…</l.Item>
-</Listbox>
-```
-
-This is because the inherited value already arrives as the new arg (`@color`), and the new arg
-always takes precedence over the deprecated one (`@intent`) at the same component instance. It
-doesn't matter that the listbox's own author wrote `@color` while the item's author wrote
-`@intent`. `@variant`/`@appearance` behaves the same way. Migrate a Listbox and all its items
-together to avoid this.
+`Listbox` forwards its `@color`/`@variant` down to its items, and an item's own arg wins over the
+inherited one. When converting old call sites, migrate a Listbox and all of its items together.
 
 ## Quick reference: is a call site correct?
 

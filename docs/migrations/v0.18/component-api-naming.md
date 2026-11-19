@@ -124,7 +124,7 @@ frontile.switch.intent            frontile.form-feedback.intent
 
 ### Chip `@radius`
 
-`@radius` on Chip is deprecated and ignored: a Chip is always a pill. If you used a
+`@radius` on Chip was deprecated and ignored in 0.18, and removed in 0.19.0: a Chip is always a pill. If you used a
 smaller radius for a label that does nothing when clicked, use `Badge` instead. Chip
 is for elements that are pressable, selectable or closable.
 

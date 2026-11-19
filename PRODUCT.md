@@ -59,10 +59,8 @@ The combination a neighboring Ember library cannot truthfully claim wholesale:
   classes get purged. This `@source` step is the single most common setup failure and belongs
   anywhere setup is taught.
 - Component source is consolidated in `packages/frontile`, grouped by category. The old
-  per-feature packages (`buttons`, `collections`, `forms`, `overlays`, `notifications`,
-  `status`, `utilities`) are now deprecation wrappers that re-export from `frontile`.
-- `@frontile/changeset-form` and `@frontile/forms-legacy` are deprecated and will be removed
-  before v1.
+  per-feature `@frontile/*` packages, `@frontile/changeset-form` and `@frontile/forms-legacy`
+  were removed in v0.19; `frontile` and `@frontile/theme` are the only packages.
 - Docs are Docfy-rendered: each component has a co-located `.md` beside its `.gts`, and the
   code fences in those files render as live interactive demos, highlighted through Docfy's
   Shiki pipeline. Guide docs live in `docs/`.

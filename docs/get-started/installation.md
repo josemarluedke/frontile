@@ -36,12 +36,7 @@ import { Button, Input, Modal, Table } from 'frontile';
 
 With modern build tools and explicit imports (`.gts`/`.gjs`), only the components you import will be included in your application bundle through tree-shaking.
 
-> **Note:** The following packages are deprecated and will be removed in 0.19.0. See the [migration guides](/docs/migrations/v0-18/) for details:
->
-> - [`@frontile/changeset-form`](/docs/migrations/v0-18/changeset-form) - Use `frontile` forms instead
-> - [`@frontile/forms-legacy`](/docs/migrations/v0-18/forms-legacy) - Migrate to the new `frontile` forms
->
-> If you're currently using the separate scoped packages (`@frontile/buttons`, `@frontile/forms`, etc.), you can migrate to the consolidated `frontile` package by updating your imports:
+> **Note:** v0.19 removed the separate scoped packages (`@frontile/buttons`, `@frontile/forms`, etc.), `@frontile/forms-legacy` and `@frontile/changeset-form`. If you are upgrading an app that still imports from them, see [Upgrading to v0.19](../migrations/v0.19/index.md). The import change itself is:
 >
 > ```diff
 > - import { Button } from '@frontile/buttons';
