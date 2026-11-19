@@ -43,3 +43,9 @@ export {
   type SidebarToggleSignature,
   type SidebarToggleArgs
 } from './sidebar-toggle';
+export { Region, type RegionSignature, type RegionArgs } from './region';
+export {
+  InLayoutRegion,
+  type InLayoutRegionSignature,
+  type InLayoutRegionArgs
+} from './in-layout-region';

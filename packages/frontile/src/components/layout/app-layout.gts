@@ -22,6 +22,7 @@ import {
   type RegisteredSidebar
 } from './context';
 import Aside from './aside';
+import Region from './region';
 import AsideToggle from './aside-toggle';
 import BottomNav from './bottom-nav';
 import Main from './main';
@@ -217,6 +218,7 @@ interface AppLayoutSignature {
       {
         state: AppLayoutState;
         Aside: WithBoundArgs<typeof Aside, 'layout'>;
+        Region: WithBoundArgs<typeof Region, 'layout'>;
         AsideToggle: WithBoundArgs<typeof AsideToggle, 'layout'>;
         BottomNav: WithBoundArgs<typeof BottomNav, 'layout'>;
         Main: WithBoundArgs<typeof Main, 'layout'>;
@@ -666,6 +668,7 @@ class AppLayout extends Component<AppLayoutSignature> {
         (hash
           state=this.state
           Aside=(component Aside layout=this.context)
+          Region=(component Region layout=this.context)
           AsideToggle=(component AsideToggle layout=this.context)
           BottomNav=(component BottomNav layout=this.context)
           Main=(component Main layout=this.context)
