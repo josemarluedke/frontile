@@ -30,6 +30,7 @@ const ICON_SIZES = [
   'pico',
   'nano',
   'micro',
+  '4xs',
   '3xs',
   '2xs',
   'xs',

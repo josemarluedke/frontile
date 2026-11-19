@@ -575,7 +575,7 @@ importers:
         specifier: ^1.8.0
         version: 1.8.0(@babel/core@7.29.7)(@embroider/core@4.6.10(@glint/template@1.11.1))(@glint/template@1.11.1)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
       '@frontile/theme':
-        specifier: workspace:0.18.11
+        specifier: workspace:0.18.12
         version: link:../packages/theme
       '@glimmer/component':
         specifier: ^2.2.1
@@ -650,7 +650,7 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       frontile:
-        specifier: workspace:0.18.11
+        specifier: workspace:0.18.12
         version: link:../packages/frontile
       globals:
         specifier: ^17.14.0

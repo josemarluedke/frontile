@@ -2647,12 +2647,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Chip's own defaults are solid/neutral/md; a Select's chips are tuned to
-    // sit inside a field, so every one of these must come from Select.
+    // Chip's own defaults are solid/neutral/xs; a Select's chips are tuned to
+    // sit inside a field, so the variant and color must come from Select.
     const chip = '[data-part="chip"][data-key="apple"]';
     assert.dom(chip).hasClass('chip-soft', 'variant defaults to soft');
     assert.dom(chip).hasClass('chip-neutral', 'color defaults to neutral');
-    assert.dom(chip).hasClass('chip-sm', 'size defaults to sm');
+    assert.dom(chip).hasClass('chip-xs', 'size defaults to xs');
     assert.dom(`${chip} .chip-dot`).doesNotExist('no dot by default');
   });
 
@@ -2713,7 +2713,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom(chip).hasClass('chip-lg', '@chip.size applies');
     assert
       .dom(chip)
-      .doesNotHaveClass('chip-sm', '@chip.size overrides the sm default');
+      .doesNotHaveClass('chip-xs', '@chip.size overrides the xs default');
     // `span:first-child` would pass regardless of @withDot, because
     // chip.gts renders the content span as the first child when there is no
     // dot. Target the dot's own stub class instead (the stub chip theme

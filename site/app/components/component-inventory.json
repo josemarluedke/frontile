@@ -80,6 +80,11 @@
         "description": "Displays a person or entity as an image, initials, or icon."
       },
       {
+        "name": "Icon",
+        "path": "/docs/components/utilities/icon",
+        "description": "Sizes an icon, and can put it in a filled, soft, subtle or outlined circle."
+      },
+      {
         "name": "Collapsible",
         "path": "/docs/components/utilities/collapsible",
         "description": "Shows and hides content with an animated, accessible disclosure."
@@ -164,6 +169,11 @@
         "name": "SegmentedControl",
         "path": "/docs/components/buttons/segmented-control",
         "description": "A row of mutually exclusive options with an indicator that slides between them."
+      },
+      {
+        "name": "IconButton",
+        "path": "/docs/components/buttons/icon-button",
+        "description": "A button that shows only an icon, with an accessible name."
       },
       {
         "name": "CloseButton",

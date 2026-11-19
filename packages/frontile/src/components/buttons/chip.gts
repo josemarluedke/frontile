@@ -27,11 +27,12 @@ interface ChipSignature {
       | 'danger';
 
     /**
-     * The size of the chip
+     * The size of the chip. Uses Button's size names and text size: the same
+     * `@size` gives the same label text size on Chip, Badge and Button.
      *
-     * @defaultValue 'md'
+     * @defaultValue 'xs'
      */
-    size?: 'xs' | 'sm' | 'md' | 'lg';
+    size?: '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
     /**
      * Adds a dot before the content, colored by `@color`. On the `solid`
