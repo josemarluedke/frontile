@@ -710,4 +710,34 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
     await settled();
     assert.deepEqual(calls, [false]);
   });
+
+  test('below lg a swap of sources in one render keeps the drawer open', async function (assert) {
+    media?.setWidth(MOBILE);
+    const flags = new Flags();
+    const state = new AppLayoutState({ asideOpen: true });
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p>First</p></InLayoutRegion>
+            {{/if}}
+            {{#if flags.second}}
+              <InLayoutRegion @name="aside"><p>Second</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    assert.dom('[role="dialog"] aside', document.body).hasText('First');
+
+    // The outgoing source is torn down in the same render that creates the
+    // incoming one, so the region is never seen empty.
+    flags.first = false;
+    flags.second = true;
+    await settled();
+    assert.true(state.asideOpen, 'the drawer was not closed by the swap');
+    assert.dom('[role="dialog"] aside', document.body).hasText('Second');
+  });
 });

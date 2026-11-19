@@ -121,7 +121,7 @@ export default class FrontileLayoutRegionsService extends Service {
       if (!region.declared && !this.#warnedUndeclared.has(name)) {
         this.#warnedUndeclared.add(name);
         warn(
-          `frontile: <InLayoutRegion @name="${name}"> rendered, but no layout.Region or layout.Aside @region uses the name "${name}", so its content is not shown.`,
+          `frontile: <InLayoutRegion @name="${name}"> rendered, but no layout.Region or layout.Aside @region with the name "${name}" has rendered yet, so its content is not shown. Check the name, or ignore this if that region renders later.`,
           false,
           { id: 'frontile.layout-region.undeclared' }
         );

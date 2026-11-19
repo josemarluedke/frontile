@@ -823,9 +823,11 @@ parent's template, write `InLayoutRegion` before `{{outlet}}`:
 {{outlet}}
 ```
 
-Written after `{{outlet}}`, the parent's content covers the child's. The same
-happens when a parent's `InLayoutRegion` sits in an `{{#if}}` that turns on
-while a child route is active.
+Written after `{{outlet}}`, the result depends on how the page was reached:
+opening the child's URL directly shows the parent's content, and navigating
+to the child from the parent shows the child's. A parent's `InLayoutRegion`
+in an `{{#if}}` that turns on while a child route is active also covers the
+child's.
 
 Pass `@multiple={{true}}` to the region to show every `InLayoutRegion`, in
 the order they rendered.
@@ -833,8 +835,9 @@ the order they rendered.
 Things to know:
 
 - Region names are shared by the whole app, and one `AppLayout` is expected
-  at a time. In development, a name that no region uses and a name used by
-  two regions each log a warning.
+  at a time. In development, a warning is logged for a name that no region
+  has rendered yet, which is usually a typo, and for a name used by two
+  regions at once.
 - `@name` on both components, and `@region` on `Aside`, are read once.
 - Content is rendered again from scratch when its region moves, as the aside
   does when the window crosses `lg`. Keep state you need to survive that
