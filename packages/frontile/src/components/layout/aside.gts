@@ -81,6 +81,17 @@ class Aside extends Component<AsideSignature> {
       // The inline element only exists while the aside is open, so the
       // name is claimed here rather than by the element.
       this.regions.declare(args.region);
+      // A drawer with nothing in it closes, so that content coming back
+      // never opens a modal by itself. The inline column is only hidden
+      // while empty and keeps its open state.
+      registerDestructor(
+        this,
+        this.regions.onEmpty(args.region, () => {
+          if (this.inDrawer) {
+            this.state.closeAside();
+          }
+        })
+      );
     }
   }
 

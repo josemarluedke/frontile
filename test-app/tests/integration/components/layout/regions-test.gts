@@ -566,4 +566,148 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
       document.querySelector('[data-part="aside"]')
     );
   });
+
+  test('at lg and up an emptied aside keeps asideOpen and is open again when refilled', async function (assert) {
+    const flags = new Flags();
+    const state = new AppLayoutState();
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p>Order</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    await click('[data-part="aside-toggle"]');
+    assert.dom('[data-part="aside"]').exists();
+
+    flags.first = false;
+    await settled();
+    assert.dom('[data-part="aside"]').doesNotExist('hidden while empty');
+    assert.true(state.asideOpen, 'the open state is left alone');
+
+    flags.first = true;
+    await settled();
+    assert.dom('[data-part="aside"]').exists('open again without a click');
+  });
+
+  test('at lg and up a pass through empty between two sources leaves the panel open', async function (assert) {
+    const flags = new Flags();
+    const state = new AppLayoutState({ asideOpen: true });
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p>First</p></InLayoutRegion>
+            {{/if}}
+            {{#if flags.second}}
+              <InLayoutRegion @name="aside"><p>Second</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    // A loading state between two routes that each fill the aside.
+    flags.first = false;
+    await settled();
+    flags.second = true;
+    await settled();
+    assert.dom('[data-part="aside"]').hasText('Second');
+  });
+
+  test('below lg an emptied aside closes and stays closed', async function (assert) {
+    media?.setWidth(MOBILE);
+    const flags = new Flags();
+    const state = new AppLayoutState();
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p
+                  data-test-aside-body
+                >Order</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    await click('[data-part="aside-toggle"]');
+    assert
+      .dom('[role="dialog"] [data-test-aside-body]', document.body)
+      .exists();
+
+    flags.first = false;
+    await settled();
+    assert.false(state.asideOpen, 'emptying the drawer closes it');
+
+    flags.first = true;
+    await settled();
+    assert
+      .dom('[data-test-aside-body]', document.body)
+      .doesNotExist('no drawer opens when content returns');
+    assert.dom('[data-part="aside-toggle"]').exists('the toggle is back');
+  });
+
+  test('at lg and up a controlled @asideOpen is not told to close when emptied', async function (assert) {
+    const flags = new Flags();
+    const calls: boolean[] = [];
+    const record = (value: boolean) => calls.push(value);
+    await render(
+      <template>
+        <AppLayout
+          @asideOpen={{true}}
+          @onAsideOpenChange={{record}}
+          as |layout|
+        >
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p>Order</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    flags.first = false;
+    await settled();
+    assert.deepEqual(calls, []);
+  });
+
+  test('below lg a controlled @asideOpen is told to close when emptied', async function (assert) {
+    media?.setWidth(MOBILE);
+    const flags = new Flags();
+    const calls: boolean[] = [];
+    const record = (value: boolean) => calls.push(value);
+    await render(
+      <template>
+        <AppLayout
+          @asideOpen={{true}}
+          @onAsideOpenChange={{record}}
+          as |layout|
+        >
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p>Order</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    assert.deepEqual(calls, [], 'nothing before it empties');
+
+    flags.first = false;
+    await settled();
+    assert.deepEqual(calls, [false]);
+  });
 });
