@@ -85,6 +85,21 @@ module('Acceptance | layout regions routing', function (hooks) {
     assert.notStrictEqual(display(TOGGLE), 'none');
   });
 
+  test('a sibling route that fills the aside takes it over without closing it', async function (assert) {
+    await visit('/regions-demo/orders');
+    await click(TOGGLE);
+    assert.strictEqual(visibleText('[data-part="aside"]'), 'Orders summary');
+
+    // A different route: the orders source is destroyed, the customers one
+    // is created in the same render.
+    await click('[data-test-link="customers"]');
+    assert.strictEqual(currentURL(), '/regions-demo/customers');
+    assert.dom('[data-part="aside"]').isVisible('the aside stayed open');
+    assert.strictEqual(visibleText('[data-part="aside"]'), 'Customers summary');
+    assert.dom('[data-test-aside="orders"]').doesNotExist();
+    assert.strictEqual(visibleText('[data-test-actions]'), 'No actions');
+  });
+
   test('a deep link fills both levels at once', async function (assert) {
     await visit('/regions-demo/orders/7');
 

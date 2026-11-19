@@ -71,14 +71,17 @@ Measured:
   pass it reads the navbar region, the aside and the toggle's computed
   `display`: all correct. It then starts a `MutationObserver` on the layout
   root. After settling, the observer has recorded **zero** mutations.
+  Positive control: with `AsideToggle` put back on `layout.hasAside` (the
+  `afterRender` registration on `main`), the same observer records 14.
 - All tests run in a debug build, where the backtracking assertion is live.
 - One write remains, on purpose. When the last `aside` source is destroyed,
   the layout sets `asideOpen = false`. It happens in a destructor, which
   runs after the render that removed the source, so it does not assert
   (tested). It costs one extra render when leaving a route with the aside
   open. A route swap does not reach it: the incoming source is constructed
-  before the outgoing one is destroyed, so the count goes 1 → 2 → 1 (tested
-  with an `{{#if}}` swap and with sibling routes).
+  before the outgoing one is destroyed, so the count goes 1 → 2 → 1. Tested
+  with an `{{#if}}` swap, and with two sibling routes that each fill the
+  aside (orders → customers keeps it open).
 
 ### SSR first-pass output
 
@@ -125,9 +128,14 @@ Different from the first prototype:
   parent, and the move into the `Drawer` below `lg` all keep the same DOM
   nodes, so input values are kept (tested by node identity). The first
   prototype rebuilt the content on the drawer move.
-- **A stale `asideOpen` shows no empty column.** With `@defaultAsideOpen` and
-  nothing filling the aside, CSS hides the column. It still opens on the
-  first fill, as before.
+- **A stale `asideOpen` shows no empty column, from `lg` up.** With
+  `@defaultAsideOpen` and nothing filling the aside, CSS hides the column. It
+  still opens on the first fill, as before.
+- **Known gap below `lg`:** the same stale `asideOpen` opens an **empty
+  drawer**. The drawer is portalled out of the layout root, so the root's
+  CSS cannot hide it, and no source is destroyed to close it. Pinned by a
+  test named `KNOWN GAP`. Closing it needs either a write after the first
+  render or a rule that the drawer never starts open.
 - Still not implemented: closing the drawer on route change below `lg`.
 
 ### Naming
@@ -149,7 +157,9 @@ Different from the first prototype:
   filled.
 - **Each source has a wrapper element** (`display: contents`). CSS needs an
   element to select. The first prototype had no wrapper.
-- **It needs `:has()`** (Chrome 105, Safari 15.4, Firefox 121).
+- **It needs `:has()`.** The repo's targets are the last version of Chrome,
+  Firefox and Safari, which all have it. From memory, unverified, the first
+  versions were Chrome 105, Safari 15.4 and Firefox 121.
 - **There is no JavaScript `hasContent`.** A consumer cannot write
   `{{#if region.hasContent}}`. Any tracked version of it is a write against
   render order, which needs deferral in some form. This is the real trade.
@@ -188,13 +198,18 @@ Different from the first prototype:
 
 ## Test results
 
-- `regions-test.gts`: 12 integration tests.
-- `layout-regions-routing-test.gts`: 2 acceptance tests over nested routes.
+- `regions-test.gts`: 13 integration tests, one of them the `KNOWN GAP`.
+- `layout-regions-routing-test.gts`: 3 acceptance tests over nested and
+  sibling routes.
 - `layout-regions-rehydration-experiment-test.gts`: 1.
 - `regions-portal-experiment-test.gts`: 4.
-- Full `test-app` suite: 3237 tests, 3234 pass, 3 skipped, 0 fail.
-- Mutation run: removing the four CSS rules, the close-on-empty and the
-  server-element adoption turned 10 tests red.
+- Full `test-app` suite at the final commit: 3239 tests, 3236 pass, 3
+  skipped, 0 fail.
+- Mutation run (before the last three tests were added): removing the four
+  CSS rules, the close-on-empty and the server-element adoption turned 10
+  tests red.
 - `frontile` and `@frontile/theme` type-check clean. `test-app` type-check
   has one new error, a missing declaration for the `test-app/app` import in
   the rehydration experiment.
+- `pnpm lint:hbs` reports `no-forbidden-elements` for the two new `<script>`
+  markers. `portal.gts` on `main` has the same error for its marker.

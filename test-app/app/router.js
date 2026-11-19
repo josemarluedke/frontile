@@ -30,6 +30,7 @@ Router.map(function () {
   this.route('platform-demo');
   // PROTOTYPE: layout regions.
   this.route('regions-demo', function () {
+    this.route('customers');
     this.route('orders', function () {
       this.route('order', { path: '/:order_id' });
     });

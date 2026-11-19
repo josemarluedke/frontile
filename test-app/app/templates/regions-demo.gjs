@@ -26,6 +26,10 @@ import { AppLayout } from 'frontile';
             @route="regions-demo.orders"
             data-test-link="orders"
           >Orders</LinkTo>
+          <LinkTo
+            @route="regions-demo.customers"
+            data-test-link="customers"
+          >Customers</LinkTo>
         </nav>
         {{outlet}}
       </layout.Main>

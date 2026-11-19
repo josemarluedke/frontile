@@ -300,7 +300,8 @@ class AppLayout extends Component<AppLayoutSignature> {
   /**
    * The last source of a region was destroyed. An aside with nothing in it
    * closes, so it does not reopen by itself when a later route fills it, and
-   * so its drawer below `lg` is never open and empty. Destructors run after
+   * so its drawer below `lg` does not stay open and empty. (A drawer that
+   * starts open with nothing in it is not covered.) Destructors run after
    * the render that removed the source, so this is a plain state change, not
    * a write during render; and a route that replaces the source rendered its
    * own before this ran, so a swap never gets here.

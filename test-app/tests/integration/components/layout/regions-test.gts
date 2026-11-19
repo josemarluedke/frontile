@@ -266,6 +266,24 @@ module('Integration | Component | Regions | frontile/layout', function (hooks) {
     assert.strictEqual(display('[data-part="aside"]'), 'none');
   });
 
+  test('KNOWN GAP: below lg, a stale asideOpen with nothing filling the aside opens an empty drawer', async function (assert) {
+    media = mockMatchMedia(MOBILE);
+    await render(
+      <template>
+        <AppLayout @defaultAsideOpen={{true}} as |layout|>
+          <layout.Main>Page</layout.Main>
+          <layout.Aside />
+        </AppLayout>
+      </template>
+    );
+
+    // The drawer is portalled out of the layout root, so the root's CSS
+    // cannot hide it, and no source is ever destroyed to close it. Pinned
+    // here so the gap is visible; it is not the behaviour to keep.
+    assert.dom('[role="dialog"]').exists('an empty drawer is open');
+    assert.dom('[role="dialog"] [data-part="mobile-aside"]').hasText('');
+  });
+
   test('swapping one aside source for another does not close the aside', async function (assert) {
     media = mockMatchMedia(DESKTOP);
     const which = cell('a');
