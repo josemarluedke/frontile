@@ -7,13 +7,13 @@ subcategory: design-tokens
 
 # Icon Sizes
 
-Frontile provides an icon sizing scale that pairs with typography for consistent visual alignment.
+Frontile provides an icon sizing scale that matches the text sizes on Button, Badge and Chip.
 
 ## Overview
 
-Icon sizes ensure visual consistency between icons and text throughout your interface. They use the same modular scale as typography, making it easy to pair icons with text styles.
+Icon sizes ensure visual consistency between icons and text throughout your interface. Ten steps, `4xs` through `3xl`, are the same size as the label text at the step of the same name: a `size-icon-md` icon is as large as a `md` Button label, so an icon beside text at a step lines up without adjustment.
 
-The scale ranges from `pico` (smallest) to `mega` (largest), providing 14 distinct sizes for different UI contexts.
+Five older sizes remain. `pico`, `nano` and `micro` fall between `3xs` and `2xs` (`micro` is the same size as `2xs`), so prefer the steps; `kilo` and `mega` are larger than `3xl`.
 
 ## Using Icon Sizes
 
@@ -34,22 +34,26 @@ import { StarIcon } from 'site/components/icons';
 
 ## Available Sizes
 
-| Size | Utility | Usage Context |
-|------|---------|---------------|
-| Pico | `size-icon-pico` | Extremely small UI elements |
-| Nano | `size-icon-nano` | Tiny decorative icons |
-| Micro | `size-icon-micro` | Very small inline icons |
-| 3XS | `size-icon-3xs` | Extra extra small icons |
-| 2XS | `size-icon-2xs` | Extra small icons |
-| XS | `size-icon-xs` | Small inline icons |
-| SM | `size-icon-sm` | Small UI icons |
-| MD | `size-icon-md` | Default icon size |
-| LG | `size-icon-lg` | Large prominent icons |
-| XL | `size-icon-xl` | Extra large icons |
-| 2XL | `size-icon-2xl` | Double extra large icons |
-| 3XL | `size-icon-3xl` | Triple extra large icons |
-| Kilo | `size-icon-kilo` | Very large decorative icons |
-| Mega | `size-icon-mega` | Largest decorative icons |
+| Size | Utility | Matches label text | Usage Context |
+|------|---------|--------------------|---------------|
+| Pico | `size-icon-pico` | | Between 3XS and 2XS |
+| Nano | `size-icon-nano` | | Between 3XS and 2XS |
+| Micro | `size-icon-micro` | | Same size as 2XS |
+| 4XS | `size-icon-4xs` | `text-strong-4xs` | Smallest icon that stays legible |
+| 3XS | `size-icon-3xs` | `text-strong-3xs` | Extra extra small icons |
+| 2XS | `size-icon-2xs` | `text-strong-2xs` | Extra small icons |
+| XS | `size-icon-xs` | `text-strong-xs` | Small inline icons |
+| SM | `size-icon-sm` | `text-strong-sm` | Small UI icons |
+| MD | `size-icon-md` | `text-strong-md` | Default icon size |
+| LG | `size-icon-lg` | `text-strong-lg` | Large prominent icons |
+| XL | `size-icon-xl` | `text-strong-xl` | Extra large icons |
+| 2XL | `size-icon-2xl` | `text-strong-2xl` | Double extra large icons |
+| 3XL | `size-icon-3xl` | `text-strong-3xl` | Triple extra large icons |
+| Kilo | `size-icon-kilo` | | Very large decorative icons |
+| Mega | `size-icon-mega` | | Largest decorative icons |
+
+The ten matching steps read the label text tokens, so they follow those sizes if
+you change them.
 
 ## All Icon Sizes
 
@@ -79,6 +83,13 @@ import { CheckIcon } from 'site/components/icons';
       <div>
         <div class='font-medium'>Micro</div>
         <code class='text-xs'>size-icon-micro</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-4xs text-primary' />
+      <div>
+        <div class='font-medium'>4XS</div>
+        <code class='text-xs'>size-icon-4xs</code>
       </div>
     </div>
     <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
@@ -162,46 +173,40 @@ import { CheckIcon } from 'site/components/icons';
 </template>
 ```
 
-## Pairing with Typography
+## Pairing with Text
 
-Icon sizes are designed to pair harmoniously with text styles. Use these recommended pairings for visual alignment:
+Match the step of the text next to the icon. The label text at a step
+(`text-strong-<step>`, the text on Button, Badge and Chip) is the same size as the
+icon at that step.
 
 ```gts preview
-import { CheckIcon, ViewIcon, StarIcon } from 'site/components/icons';
+import { StarIcon } from 'site/components/icons';
 
 <template>
-  <div class='flex flex-col gap-4'>
-    {{! Small icon pairing }}
-    <div class='flex items-center gap-2'>
-      <CheckIcon class='size-icon-xs text-success' />
-      <span>Small text with size-icon-xs</span>
+  <div class='flex flex-col gap-3'>
+    <div class='flex items-center gap-2 text-strong-xs'>
+      <StarIcon class='size-icon-xs' />
+      Extra small
     </div>
-
-    {{! Medium icon pairing }}
-    <div class='flex items-center gap-2'>
-      <ViewIcon class='size-icon-md text-primary' />
-      <span>Default text with size-icon-md</span>
+    <div class='flex items-center gap-2 text-strong-md'>
+      <StarIcon class='size-icon-md' />
+      Medium
     </div>
-
-    {{! Large icon pairing }}
-    <div class='flex items-center gap-2'>
-      <StarIcon class='size-icon-lg text-warning' />
-      <span>Larger text with size-icon-lg</span>
-    </div>
-
-    {{! Extra large icon pairing }}
-    <div class='flex items-center gap-3'>
-      <CheckIcon class='size-icon-xl text-danger' />
-      <h2>Header with size-icon-xl</h2>
+    <div class='flex items-center gap-2 text-strong-xl'>
+      <StarIcon class='size-icon-xl' />
+      Extra large
     </div>
   </div>
 </template>
 ```
 
-### Recommended Pairings
+Inside a Button you don't need a size class: it sizes an icon placed in it to
+match its own label.
 
-| Text Style | Recommended Icon Size |
-|------------|----------------------|
+For text that is not a Button label, pick the step whose label size is closest:
+
+| Text Style | Closest Icon Size |
+|------------|-------------------|
 | `text-body-sm` | `size-icon-xs` or `size-icon-sm` |
 | `text-body-md` | `size-icon-sm` or `size-icon-md` |
 | `text-body-lg` | `size-icon-md` or `size-icon-lg` |
@@ -209,6 +214,8 @@ import { CheckIcon, ViewIcon, StarIcon } from 'site/components/icons';
 | `text-header-md` | `size-icon-md` or `size-icon-lg` |
 | `text-header-lg` | `size-icon-lg` or `size-icon-xl` |
 | `text-header-xl` | `size-icon-xl` or `size-icon-2xl` |
+
+To follow whatever text surrounds the icon, use Tailwind's `size-[1em]`.
 
 ## Customization
 

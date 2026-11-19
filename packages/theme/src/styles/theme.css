@@ -9,15 +9,20 @@
   --size-icon-pico: var(--font-size-6); /* Icon size for pico scale. */
   --size-icon-nano: var(--font-size-7); /* Icon size for nano scale. */
   --size-icon-micro: var(--font-size-8); /* Icon size for micro scale. */
-  --size-icon-3xs: var(--font-size-9); /* Icon size for 3xs scale. */
-  --size-icon-2xs: var(--font-size-10); /* Icon size for 2xs scale. */
-  --size-icon-xs: var(--font-size-12); /* Icon size for xs scale. */
-  --size-icon-sm: var(--font-size-14); /* Icon size for sm scale. */
-  --size-icon-md: var(--font-size-16); /* Icon size for md scale. */
-  --size-icon-lg: var(--font-size-18); /* Icon size for lg scale. */
-  --size-icon-xl: var(--font-size-21); /* Icon size for xl scale. */
-  --size-icon-2xl: var(--font-size-23); /* Icon size for 2xl scale. */
-  --size-icon-3xl: var(--font-size-26); /* Icon size for 3xl scale. */
+  /* The ten steps below follow the label ramp Button, Badge and Chip share
+     (`--text-strong-*`), so an icon at a step is the same size as text at that
+     step. They reference the ramp rather than copy a font-size, so they follow
+     it if it is retuned. */
+  --size-icon-4xs: var(--text-strong-4xs); /* Icon size for 4xs scale. */
+  --size-icon-3xs: var(--text-strong-3xs); /* Icon size for 3xs scale. */
+  --size-icon-2xs: var(--text-strong-2xs); /* Icon size for 2xs scale. */
+  --size-icon-xs: var(--text-strong-xs); /* Icon size for xs scale. */
+  --size-icon-sm: var(--text-strong-sm); /* Icon size for sm scale. */
+  --size-icon-md: var(--text-strong-md); /* Icon size for md scale. */
+  --size-icon-lg: var(--text-strong-lg); /* Icon size for lg scale. */
+  --size-icon-xl: var(--text-strong-xl); /* Icon size for xl scale. */
+  --size-icon-2xl: var(--text-strong-2xl); /* Icon size for 2xl scale. */
+  --size-icon-3xl: var(--text-strong-3xl); /* Icon size for 3xl scale. */
   --size-icon-kilo: var(--font-size-29); /* Icon size for kilo scale. */
   --size-icon-mega: var(--font-size-31); /* Icon size for mega scale. */
 

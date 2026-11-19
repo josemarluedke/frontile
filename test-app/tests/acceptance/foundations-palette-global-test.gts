@@ -79,7 +79,7 @@ module('Acceptance | foundations palette and global', function (hooks) {
     const counts: Record<string, number> = {
       'global-radius': 22,
       'global-elevation': 12,
-      'global-icon-sizes': 28,
+      'global-icon-sizes': 30,
       'global-opacity': 2,
       'global-breakpoints': 10
     };
@@ -148,11 +148,12 @@ module('Acceptance | foundations palette and global', function (hooks) {
   test('icon sizes resolve to real, increasing sizes with an icon each', async function (assert) {
     await visit('/foundations/global');
 
-    // In theme.css order; every step is strictly larger than the last.
-    const SCALE = [
-      'pico',
-      'nano',
-      'micro',
+    // The ten steps follow the label text ramp and strictly increase. The
+    // older pico/nano/micro sit between 3xs and 2xs (micro equals 2xs), so
+    // they are checked against each other, not against the steps. kilo and
+    // mega sit above 3xl.
+    const STEPS = [
+      '4xs',
       '3xs',
       '2xs',
       'xs',
@@ -161,10 +162,11 @@ module('Acceptance | foundations palette and global', function (hooks) {
       'lg',
       'xl',
       '2xl',
-      '3xl',
-      'kilo',
-      'mega'
+      '3xl'
     ];
+    const SMALL = ['pico', 'nano', 'micro'];
+    const LARGE = ['kilo', 'mega'];
+    const ALL = [...SMALL, ...STEPS, ...LARGE];
     await settled('#global-icon-sizes [data-token-value]');
 
     const panes = Array.from(
@@ -175,7 +177,7 @@ module('Acceptance | foundations palette and global', function (hooks) {
       const scheme = pane.getAttribute('data-scheme');
       assert
         .dom('svg[data-token-shape]', pane)
-        .exists({ count: 14 }, `${scheme}: an icon at each size`);
+        .exists({ count: 15 }, `${scheme}: an icon at each size`);
 
       const px = (name: string): number => {
         const text =
@@ -188,12 +190,19 @@ module('Acceptance | foundations palette and global', function (hooks) {
         );
         return parseFloat(text);
       };
-      const values = SCALE.map(px);
-      assert.strictEqual(values.length, 14, `${scheme}: all 14 sizes checked`);
-      const increasing = values.every((v, i) => i === 0 || v > values[i - 1]!);
+      const increasing = (names: string[]): boolean => {
+        const values = names.map(px);
+        return values.every((v, i) => i === 0 || v > values[i - 1]!);
+      };
+      assert.strictEqual(ALL.length, 15, `${scheme}: all 15 sizes checked`);
       assert.true(
-        increasing,
-        `${scheme}: sizes strictly increase pico to mega (${values.join(', ')})`
+        increasing(STEPS),
+        `${scheme}: the ten steps strictly increase`
+      );
+      assert.true(increasing(SMALL), `${scheme}: pico < nano < micro`);
+      assert.true(
+        increasing(['3xl', ...LARGE]),
+        `${scheme}: kilo and mega are larger than 3xl`
       );
     }
   });

@@ -1,5 +1,5 @@
 {
-  "version": "0.18.11",
+  "version": "0.18.12",
   "packages": ["packages/*", "test-app"],
   "npmClient": "pnpm"
 }

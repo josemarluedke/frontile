@@ -8,6 +8,7 @@ const baseButton = tv({
     'font-header',
     'border',
     'border-transparent',
+    'cursor-pointer',
     'disabled:cursor-not-allowed',
     'disabled:opacity-disabled',
     ...focusVisibleRing
@@ -91,6 +92,16 @@ const baseButton = tv({
   }
 });
 
+const glassColors = [
+  'neutral',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+] as const;
+
 const button = tv({
   extend: baseButton,
   base: [''],
@@ -102,7 +113,9 @@ const button = tv({
       outline: '',
       ghost: '',
       plain: '',
-      custom: ''
+      custom: '',
+      glass: '',
+      link: ''
     },
     isLoading: {
       true: 'disabled:cursor-progress'
@@ -359,7 +372,63 @@ const button = tv({
       variant: 'custom',
       color: 'danger',
       class: 'text-danger-strong'
-    }
+    },
+
+    // VARIANT: link — ink only, no side padding, underline on hover, so it sits
+    // inline with text. Ink steps follow `plain`; neutral keeps its ink on hover
+    // and only underlines. `px-0` comes after the size's `px-*`, so
+    // tailwind-merge drops the size padding.
+    ...(
+      [
+        ['neutral', 'text-on-neutral-subtle active:text-neutral-firm'],
+        [
+          'primary',
+          'text-primary hover:text-primary-mild active:text-primary-firm'
+        ],
+        [
+          'secondary',
+          'text-secondary-strong hover:text-secondary-firm active:text-secondary-bolder'
+        ],
+        [
+          'tertiary',
+          'text-tertiary-strong hover:text-tertiary-firm active:text-tertiary-bolder'
+        ],
+        [
+          'success',
+          'text-success-strong hover:text-success-firm active:text-success-bolder'
+        ],
+        [
+          'warning',
+          'text-warning-strong hover:text-warning-firm active:text-warning-bolder'
+        ],
+        ['danger', 'text-danger hover:text-danger-mild active:text-danger-firm']
+      ] as const
+    ).map(([color, ink]) => ({
+      variant: 'link' as const,
+      color,
+      class: [
+        ink,
+        'px-0 hover:underline underline-offset-4 disabled:no-underline'
+      ]
+    })),
+
+    // VARIANT: glass — a translucent scrim for use over a colored or imaged
+    // surface: black with white ink in light mode, white with black ink in
+    // dark mode. It flips with the app theme, but deliberately not through the
+    // scope tokens: brand fills go dark in light mode and light in dark mode,
+    // so the page's own ink (`on-surface`) would be the wrong pairing for them. `color` is ignored: every
+    // color gets the same classes, and the non-neutral ones also reset the
+    // focus ring that `baseButton` tints per color.
+    ...glassColors.map((color) => ({
+      variant: 'glass' as const,
+      color,
+      class: [
+        'bg-black/20 text-white backdrop-blur-md',
+        'hover:bg-black/30 active:bg-black/40',
+        'dark:bg-white/20 dark:text-black dark:hover:bg-white/30 dark:active:bg-white/40',
+        color === 'neutral' ? '' : 'focus-visible:ring-focus'
+      ]
+    }))
   ],
   defaultVariants: {
     size: 'md',
@@ -449,4 +518,30 @@ const buttonSpinner = tv({
   base: 'size-[1em] text-current/25 fill-current'
 });
 
-export { button, toggleButton, buttonGroup, buttonSpinner };
+// An icon-only button is a circle. IconButton passes this recipe's classes as
+// Button's `class`, where tailwind-merge lets `px-0` replace Button's
+// horizontal padding. Without text there is no line to give the height, and CSS cannot derive a width from an auto height, so each
+// size sets both dimensions to Button's own height at that size: one line, plus the
+// two vertical paddings (Button's `py-*` times two, in spacing units), plus the
+// 1px borders. The height is therefore Button's, and an IconButton lines up
+// with a Button of the same size. If Button's vertical padding changes, change
+// the multipliers here; the "as tall as a Button" test catches a mismatch.
+// Written out in full so Tailwind sees each class.
+const iconButton = tv({
+  base: 'px-0',
+  variants: {
+    size: {
+      xs: 'size-[calc(1lh+var(--spacing)*1+2px)]',
+      sm: 'size-[calc(1lh+var(--spacing)*2+2px)]',
+      md: 'size-[calc(1lh+var(--spacing)*3+2px)]',
+      lg: 'size-[calc(1lh+var(--spacing)*4+2px)]',
+      xl: 'size-[calc(1lh+var(--spacing)*5+2px)]',
+      '2xl': 'size-[calc(1lh+var(--spacing)*6+2px)]'
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
+export { button, toggleButton, buttonGroup, buttonSpinner, iconButton };
