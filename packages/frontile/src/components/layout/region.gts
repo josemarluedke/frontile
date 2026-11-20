@@ -47,14 +47,22 @@ class Region extends Component<RegionSignature> {
   @service('frontile-layout-regions')
   declare regions: FrontileLayoutRegionsService;
 
+  /** `@name`, read once. */
+  name: string;
+  /** `@multiple`, read once. */
+  multiple: boolean;
+
   constructor(owner: Owner, args: RegionArgs) {
     super(owner, args);
-    this.regions.declare(args.name);
+    this.name = args.name;
+    this.multiple = args.multiple ?? false;
+    this.regions.declare(this.name);
   }
 
-  register = modifier(
-    (element: HTMLElement, [name, multiple]: [string, boolean | undefined]) =>
-      this.regions.registerTarget(name, element, { multiple })
+  register = modifier((element: HTMLElement) =>
+    this.regions.registerTarget(this.name, element, {
+      multiple: this.multiple
+    })
   );
 
   get classNames(): string {
@@ -63,7 +71,7 @@ class Region extends Component<RegionSignature> {
   }
 
   get hasContent(): boolean {
-    return this.regions.hasContent(this.args.name);
+    return this.regions.hasContent(this.name);
   }
 
   get hasContentString(): 'true' | 'false' {
@@ -73,10 +81,10 @@ class Region extends Component<RegionSignature> {
   <template>
     <div
       data-part="region"
-      data-region={{@name}}
+      data-region={{this.name}}
       data-has-content={{this.hasContentString}}
       class={{this.classNames}}
-      {{this.register @name @multiple}}
+      {{this.register}}
       ...attributes
     >
       {{#unless this.hasContent}}{{yield}}{{/unless}}

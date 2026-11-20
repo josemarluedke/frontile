@@ -666,10 +666,9 @@ renders nothing while the layout has no `Aside`, so a page without one shows
 no toggle. From `lg` (64rem) up it is a column and `Main` narrows; below `lg`
 the same block opens as a drawer.
 
-If the window narrows while the aside is open, it closes rather than popping
-up as a drawer. A layout that starts with the aside open on a narrow screen
-does open the drawer, so set `@defaultAsideOpen` only where the window is
-wide.
+The drawer only opens when asked to. If the window narrows while the aside is
+open, it closes, and `@defaultAsideOpen` applies from `lg` up, so a page loaded
+on a narrow screen starts with the drawer closed.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
@@ -750,7 +749,7 @@ next:
   open again on the next page that fills it, if it was open before.
 - Below `lg`, a page that does not fill the aside closes the drawer, and it
   stays closed until the toggle is pressed again.
-- `@defaultAsideOpen` opens the panel the first time a page fills it.
+- From `lg` up, `@defaultAsideOpen` opens the panel the first time a page fills it.
 
 Below `lg`, a loading state between two sibling pages that each fill the
 aside counts as a page that does not fill it, and closes the drawer. Fill the
@@ -836,8 +835,9 @@ Things to know:
 
 - Region names are shared by the whole app, and one `AppLayout` is expected
   at a time. In development, a warning is logged for a name that no region
-  has rendered yet, which is usually a typo, and for a name used by two
-  regions at once.
+  has rendered yet, and for a name used by two regions at once. When two
+  regions share a name, content goes to the newer one, and back to the
+  older one when the newer one is removed.
 - `@name` on both components, and `@region` on `Aside`, are read once.
 - Content is rendered again from scratch when its region moves, as the aside
   does when the window crosses `lg`. Keep state you need to survive that
@@ -1342,9 +1342,13 @@ export default class RailAppExample extends Component {
   sidebar") and `AsideToggle` (default "Toggle details") are buttons named by
   `@label`, with `aria-expanded`. `aria-controls` names what they open while
   it is on the page, so a drawer is named only while it is open. Without a
-  `Sidebar` (or an `Aside`) in the layout, its toggles render nothing.
+  `Sidebar` (or an `Aside`) in the layout, its toggles render nothing, and
+  `AsideToggle` also renders nothing while an `Aside` with `@region` has no
+  content.
 - `Aside` is an `aside` landmark named by `@label` (default `Details`); as a
   drawer, the dialog has the same name.
+- Content passed to `InLayoutRegion` is read and tabbed through where its
+  region sits, not where `InLayoutRegion` is written.
 - `PageHeader` renders `@title` as an `h1`.
 - With `@mobileNav='bottom'` on a phone, the `BottomNav` is the page's
   navigation; see [BottomNav](./bottom-nav#accessibility).

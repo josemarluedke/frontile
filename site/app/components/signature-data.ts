@@ -8248,7 +8248,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The initial <code>asideOpen</code> when uncontrolled.',
+        description:
+          'The initial <code>asideOpen</code> when uncontrolled. Applies from <code>lg</code> up, where\nthe aside is a column; below <code>lg</code> the aside starts closed.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',

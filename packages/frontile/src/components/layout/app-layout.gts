@@ -192,7 +192,8 @@ interface AppLayoutArgs {
   asideOpen?: boolean;
 
   /**
-   * The initial `asideOpen` when uncontrolled.
+   * The initial `asideOpen` when uncontrolled. Applies from `lg` up, where
+   * the aside is a column; below `lg` the aside starts closed.
    *
    * @defaultValue false
    */
@@ -275,7 +276,8 @@ class AppLayout extends Component<AppLayoutSignature> {
     const own = new AppLayoutState({
       sidebarCollapsed: args.defaultSidebarCollapsed,
       mobileSidebarOpen: args.defaultMobileSidebarOpen,
-      asideOpen: args.defaultAsideOpen
+      // Below `lg` the aside is a modal drawer, which never opens by itself.
+      asideOpen: (args.defaultAsideOpen ?? false) && !isBelowBreakpoint('lg')
     });
     this.#controlled = new ControlledAppLayoutState(own, () => this.args);
   }
@@ -375,7 +377,7 @@ class AppLayout extends Component<AppLayoutSignature> {
   /** An `Aside` is registered and has something to show. */
   get hasAside(): boolean {
     const aside = this.registeredAside;
-    return aside !== undefined && (aside.available ?? true);
+    return aside?.available ?? false;
   }
 
   get mobileNav(): 'drawer' | 'bottom' {

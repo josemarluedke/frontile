@@ -35,14 +35,17 @@ class InLayoutRegion extends Component<InLayoutRegionSignature> {
   declare regions: FrontileLayoutRegionsService;
 
   token = {};
+  /** `@name`, read once: the source stays in the region it joined. */
+  name: string;
 
   constructor(owner: Owner, args: InLayoutRegionArgs) {
     super(owner, args);
-    registerDestructor(this, this.regions.addSource(args.name, this.token));
+    this.name = args.name;
+    registerDestructor(this, this.regions.addSource(this.name, this.token));
   }
 
   get target(): Element | null {
-    return this.regions.region(this.args.name).targetFor(this.token);
+    return this.regions.targetFor(this.name, this.token);
   }
 
   <template>

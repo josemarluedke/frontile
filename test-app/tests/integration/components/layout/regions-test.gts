@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click } from '@ember/test-helpers';
+import { render, settled, click, waitUntil } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { run } from '@ember/runloop';
 import { registerWarnHandler } from '@ember/debug';
@@ -387,6 +387,64 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
     assert.dom('[data-test-second] [data-test-a]').exists('the newest wins');
   });
 
+  test('removing the newer of two targets moves the content back to the older', async function (assert) {
+    const flags = new Flags();
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Navbar>
+            <layout.Region @name="actions" data-test-first />
+            {{#if flags.target}}
+              <layout.Region @name="actions" data-test-second />
+            {{/if}}
+          </layout.Navbar>
+          <layout.Main>
+            <InLayoutRegion @name="actions"><b
+                data-test-a
+              >A</b></InLayoutRegion>
+          </layout.Main>
+        </AppLayout>
+      </template>
+    );
+    assert.dom('[data-test-second] [data-test-a]').exists('the newest wins');
+
+    flags.target = false;
+    await settled();
+    assert
+      .dom('[data-test-first] [data-test-a]')
+      .exists('the older target, still mounted, shows the content again');
+  });
+
+  test('each target keeps its own @multiple', async function (assert) {
+    const flags = new Flags();
+    flags.second = true;
+    await render(
+      <template>
+        <AppLayout as |layout|>
+          <layout.Navbar>
+            <layout.Region @name="actions" @multiple={{true}} data-test-multi />
+            {{#if flags.target}}
+              <layout.Region @name="actions" data-test-single />
+            {{/if}}
+          </layout.Navbar>
+          <layout.Main>
+            <InLayoutRegion @name="actions"><b>A</b></InLayoutRegion>
+            <InLayoutRegion @name="actions"><b>B</b></InLayoutRegion>
+          </layout.Main>
+        </AppLayout>
+      </template>
+    );
+    assert
+      .dom('[data-test-single]')
+      .hasText('B', 'the single target shows the newest');
+
+    flags.target = false;
+    await settled();
+    assert
+      .dom('[data-test-multi]')
+      .hasText('AB', 'the @multiple target shows every source again');
+  });
+
   test('a remounted target raises no duplicate-target warning', async function (assert) {
     const flags = new Flags();
     await render(
@@ -514,6 +572,38 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
       .dom('[data-test-aside-body]', document.body)
       .exists({ count: 1 }, 'never twice');
     assert.deepEqual(warnings, [], 'the move is not a duplicate target');
+  });
+
+  test('below lg opening a filled drawer moves focus into it, with the content inside the trap', async function (assert) {
+    media?.setWidth(MOBILE);
+    const state = new AppLayoutState();
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
+          <layout.Main>
+            <InLayoutRegion @name="aside">
+              <button type="button" data-test-in-aside>Refund</button>
+            </InLayoutRegion>
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    state.asideOpen = true;
+    await settled();
+    // focus-trap moves focus on a timer that settled() does not track.
+    await waitUntil(
+      () =>
+        document.activeElement?.closest('[role="dialog"]') !== null &&
+        document.activeElement !== document.body
+    );
+    // The same as a block aside: Drawer focuses its own container.
+    assert
+      .dom('[role="dialog"]', document.body)
+      .isFocused('focus moves into the drawer');
+    assert
+      .dom('[role="dialog"] [data-test-in-aside]', document.body)
+      .exists('the region content is inside the focus trap');
   });
 
   test('below lg an empty route-driven aside renders no drawer', async function (assert) {

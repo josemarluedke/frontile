@@ -3,12 +3,21 @@ import { tracked } from '@glimmer/tracking';
 import { schedule } from '@ember/runloop';
 import { warn } from '@ember/debug';
 
+/** A mounted target: the element sources render into, and how. */
+interface RegionTarget {
+  readonly element: Element;
+  /** Whether every source renders (`true`) or only the newest. */
+  readonly multiple: boolean;
+}
+
 /** One named region: where it renders (the target) and who fills it. */
 export class LayoutRegionState {
-  /** The element sources render into, once a target has mounted. */
-  @tracked target: Element | null = null;
-  /** Whether every source renders (`true`) or only the newest. */
-  @tracked multiple = false;
+  /**
+   * Mounted targets in registration order. The newest is the one sources
+   * render into; when it goes away, the previous one takes over again.
+   * Reassigned, never mutated.
+   */
+  @tracked targets: readonly RegionTarget[] = [];
   /** Sources in registration (render) order. Reassigned, never mutated. */
   @tracked sources: readonly object[] = [];
   /**
@@ -21,15 +30,21 @@ export class LayoutRegionState {
     return this.sources.length > 0;
   }
 
+  /** The target sources render into: the newest mounted one. */
+  get target(): RegionTarget | undefined {
+    return this.targets[this.targets.length - 1];
+  }
+
   /** Where `source` should render, or `null` when it is not shown. */
   targetFor(source: object): Element | null {
-    if (!this.target) {
+    const target = this.target;
+    if (!target) {
       return null;
     }
-    const shown = this.multiple
+    const shown = target.multiple
       ? this.sources.includes(source)
       : this.sources[this.sources.length - 1] === source;
-    return shown ? this.target : null;
+    return shown ? target.element : null;
   }
 }
 
@@ -72,6 +87,11 @@ export default class FrontileLayoutRegionsService extends Service {
     return this.region(name).hasContent;
   }
 
+  /** Where `source` renders in the named region, or `null` (tracked). */
+  targetFor(name: string, source: object): Element | null {
+    return this.region(name).targetFor(source);
+  }
+
   /**
    * Marks the name as one a target renders, even while that target has no
    * element (a closed aside). Synchronous, and safe during render.
@@ -80,30 +100,36 @@ export default class FrontileLayoutRegionsService extends Service {
     this.region(name).declared = true;
   }
 
-  /** Sets the element sources render into. Returns the undo function. */
+  /**
+   * Adds an element sources render into. The newest target wins; removing
+   * it hands the sources back to the previous one. Returns the undo
+   * function, which removes only this registration.
+   */
   registerTarget(
     name: string,
     element: Element,
     options: { multiple?: boolean } = {}
   ): () => void {
     const region = this.region(name);
+    const target: RegionTarget = {
+      element,
+      multiple: options.multiple ?? false
+    };
     this.#write(() => {
       // A target that has left the document (the aside moving between its
       // column and its drawer) is being replaced, not duplicated.
-      const current = region.target;
       warn(
         `frontile: two targets render the layout region "${name}" at once; sources follow the newest. Region names are global to the app.`,
-        !current || current === element || !current.isConnected,
+        !region.targets.some(
+          (other) => other.element !== element && other.element.isConnected
+        ),
         { id: 'frontile.layout-region.duplicate-target' }
       );
-      region.multiple = options.multiple ?? false;
-      region.target = element;
+      region.targets = [...region.targets, target];
     });
     return () =>
       this.#write(() => {
-        if (region.target === element) {
-          region.target = null;
-        }
+        region.targets = region.targets.filter((t) => t !== target);
       });
   }
 

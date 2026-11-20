@@ -91,10 +91,10 @@ export interface AppLayoutContext {
 
 export interface RegisteredAside {
   /**
-   * Whether the aside has content to show. Omitted means it does; an
-   * `Aside` with `@region` reports false while no source fills it.
+   * Whether the aside has content to show. An `Aside` with `@region`
+   * reports false while no source fills it.
    */
-  readonly available?: boolean;
+  readonly available: boolean;
 }
 
 export interface RegisteredSidebar {

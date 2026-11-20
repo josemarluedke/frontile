@@ -235,11 +235,29 @@ module('Integration | Component | Aside | frontile/layout', function (hooks) {
     assert.dom('aside').hasAria('label', 'Filters');
   });
 
-  test('the drawer has an aside landmark and a name', async function (assert) {
+  test('below lg @defaultAsideOpen does not open the drawer on load', async function (assert) {
     media = mockMatchMedia(MOBILE);
     await render(
       <template>
         <AppLayout @defaultAsideOpen={{true}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>Content</layout.Main>
+          <layout.Aside>Details</layout.Aside>
+        </AppLayout>
+      </template>
+    );
+    assert
+      .dom('[role="dialog"]', document.body)
+      .doesNotExist('no modal drawer opens by itself');
+    assert.dom('[data-part="aside-toggle"]').hasAria('expanded', 'false');
+  });
+
+  test('the drawer has an aside landmark and a name', async function (assert) {
+    media = mockMatchMedia(MOBILE);
+    const state = new AppLayoutState({ asideOpen: true });
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
           <layout.Main>Content</layout.Main>
           <layout.Aside @label="Filters">Details</layout.Aside>
         </AppLayout>

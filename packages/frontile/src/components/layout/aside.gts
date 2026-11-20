@@ -70,6 +70,8 @@ class Aside extends Component<AsideSignature> {
   declare regions: FrontileLayoutRegionsService;
 
   fallbackState = new AppLayoutState();
+  /** `@region`, read once. */
+  region: string | undefined;
 
   constructor(owner: Owner, args: AsideArgs) {
     super(owner, args);
@@ -77,6 +79,7 @@ class Aside extends Component<AsideSignature> {
     if (unregister) {
       registerDestructor(this, unregister);
     }
+    this.region = args.region;
     if (args.region !== undefined) {
       // The inline element only exists while the aside is open, so the
       // name is claimed here rather than by the element.
@@ -95,20 +98,22 @@ class Aside extends Component<AsideSignature> {
     }
   }
 
-  /** Always true for a block aside; one with `@region` needs a source. */
-  get hasContent(): boolean {
-    const region = this.args.region;
+  /**
+   * Always true for a block aside; one with `@region` needs a source. Also
+   * read by the layout's `hasAside` (`RegisteredAside`).
+   */
+  get available(): boolean {
+    const region = this.region;
     return region === undefined || this.regions.hasContent(region);
   }
 
-  /** Read by the layout's `hasAside` (`RegisteredAside`). */
-  get available(): boolean {
-    return this.hasContent;
-  }
-
-  registerTarget = modifier((element: HTMLElement, [region]: [string]) =>
-    this.regions.registerTarget(region, element)
-  );
+  /** Makes the `aside` element the region's target. Nothing without `@region`. */
+  registerTarget = modifier((element: HTMLElement) => {
+    const region = this.region;
+    return region === undefined
+      ? undefined
+      : this.regions.registerTarget(region, element);
+  });
 
   get state(): AppLayoutState {
     return this.args.layout?.state ?? this.args.state ?? this.fallbackState;
@@ -169,7 +174,7 @@ class Aside extends Component<AsideSignature> {
   }
 
   <template>
-    {{#if this.hasContent}}
+    {{#if this.available}}
       {{#if this.inDrawer}}
         <Drawer
           @isOpen={{this.state.asideOpen}}
@@ -180,48 +185,28 @@ class Aside extends Component<AsideSignature> {
           id={{@layout.asideDrawerId}}
           aria-label={{this.label}}
         >
-          {{#if @region}}
-            <aside
-              id={{this.id}}
-              aria-label={{this.label}}
-              data-part="mobile-aside"
-              class={{this.mobileClassNames}}
-              {{this.registerTarget @region}}
-              ...attributes
-            ></aside>
-          {{else}}
-            <aside
-              id={{this.id}}
-              aria-label={{this.label}}
-              data-part="mobile-aside"
-              class={{this.mobileClassNames}}
-              ...attributes
-            >
-              {{yield}}
-            </aside>
-          {{/if}}
-        </Drawer>
-      {{else if this.state.asideOpen}}
-        {{#if @region}}
           <aside
             id={{this.id}}
             aria-label={{this.label}}
-            data-part="aside"
-            class={{this.classNames}}
-            {{this.registerTarget @region}}
-            ...attributes
-          ></aside>
-        {{else}}
-          <aside
-            id={{this.id}}
-            aria-label={{this.label}}
-            data-part="aside"
-            class={{this.classNames}}
+            data-part="mobile-aside"
+            class={{this.mobileClassNames}}
+            {{this.registerTarget}}
             ...attributes
           >
-            {{yield}}
+            {{#unless this.region}}{{yield}}{{/unless}}
           </aside>
-        {{/if}}
+        </Drawer>
+      {{else if this.state.asideOpen}}
+        <aside
+          id={{this.id}}
+          aria-label={{this.label}}
+          data-part="aside"
+          class={{this.classNames}}
+          {{this.registerTarget}}
+          ...attributes
+        >
+          {{#unless this.region}}{{yield}}{{/unless}}
+        </aside>
       {{/if}}
     {{/if}}
   </template>
