@@ -12893,7 +12893,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Render every source, in the order they rendered, instead of only the\nnewest. Read once, when the region renders.',
+          'Render every source, in the order they rendered, instead of only the\nnewest. After the region renders again, sources follow template order.\nRead once, when the region renders.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',

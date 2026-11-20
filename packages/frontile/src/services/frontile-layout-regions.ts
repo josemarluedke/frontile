@@ -20,12 +20,6 @@ export class LayoutRegionState {
   @tracked targets: readonly RegionTarget[] = [];
   /** Sources in registration (render) order. Reassigned, never mutated. */
   @tracked sources: readonly object[] = [];
-  /**
-   * Whether a `Region` or an `Aside` has ever claimed this name. Not
-   * tracked: it is only read after render, to warn about a typo.
-   */
-  declared = false;
-
   get hasContent(): boolean {
     return this.sources.length > 0;
   }
@@ -62,7 +56,6 @@ export class LayoutRegionState {
 export default class FrontileLayoutRegionsService extends Service {
   #regions = new Map<string, LayoutRegionState>();
   #emptyListeners = new Map<string, Set<() => void>>();
-  #warnedUndeclared = new Set<string>();
 
   #write(fn: () => void): void {
     schedule('afterRender', () => {
@@ -90,14 +83,6 @@ export default class FrontileLayoutRegionsService extends Service {
   /** Where `source` renders in the named region, or `null` (tracked). */
   targetFor(name: string, source: object): Element | null {
     return this.region(name).targetFor(source);
-  }
-
-  /**
-   * Marks the name as one a target renders, even while that target has no
-   * element (a closed aside). Synchronous, and safe during render.
-   */
-  declare(name: string): void {
-    this.region(name).declared = true;
   }
 
   /**
@@ -141,17 +126,6 @@ export default class FrontileLayoutRegionsService extends Service {
   addSource(name: string, source: object): () => void {
     const region = this.region(name);
     this.#write(() => {
-      // Targets declare their name while rendering, so by now every target
-      // of this render has. An undeclared name is a typo or a missing
-      // `layout.Region`.
-      if (!region.declared && !this.#warnedUndeclared.has(name)) {
-        this.#warnedUndeclared.add(name);
-        warn(
-          `frontile: <InLayoutRegion @name="${name}"> rendered, but no layout.Region or layout.Aside @region with the name "${name}" has rendered yet, so its content is not shown. Check the name, or ignore this if that region renders later.`,
-          false,
-          { id: 'frontile.layout-region.undeclared' }
-        );
-      }
       region.sources = [...region.sources, source];
     });
     return () =>

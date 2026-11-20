@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, waitUntil } from '@ember/test-helpers';
+import { render, settled, click, focus, waitUntil } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { run } from '@ember/runloop';
 import { registerWarnHandler } from '@ember/debug';
@@ -330,36 +330,20 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
       .exists({ count: 1 }, 'and a fresh mount fills again');
   });
 
-  test('warns once when a source names a region nothing declares', async function (assert) {
+  test('a source for a name no region renders shows nothing and does not warn', async function (assert) {
     await render(
       <template>
         <AppLayout as |layout|>
           <layout.Navbar><layout.Region @name="actions" /></layout.Navbar>
           <layout.Main>
-            <InLayoutRegion @name="actoins"><b>A</b></InLayoutRegion>
-            <InLayoutRegion @name="actoins"><b>B</b></InLayoutRegion>
+            <InLayoutRegion @name="actoins"><b
+                data-test-a
+              >A</b></InLayoutRegion>
           </layout.Main>
         </AppLayout>
       </template>
     );
-    assert.strictEqual(warnings.length, 1, 'one warning for the name');
-    assert.ok(
-      warnings[0]?.startsWith('frontile.layout-region.undeclared:'),
-      warnings[0]
-    );
-    assert.ok(warnings[0]?.includes('"actoins"'), 'it names the region');
-  });
-
-  test('does not warn when the target is declared in the same render, in any order', async function (assert) {
-    await render(
-      <template>
-        <InLayoutRegion @name="actions"><b>Early</b></InLayoutRegion>
-        <AppLayout as |layout|>
-          <layout.Navbar><layout.Region @name="actions" /></layout.Navbar>
-          <layout.Main>Content</layout.Main>
-        </AppLayout>
-      </template>
-    );
+    assert.dom('[data-test-a]', document.body).doesNotExist();
     assert.deepEqual(warnings, []);
   });
 
@@ -746,6 +730,89 @@ module('Integration | Layout regions | frontile/layout', function (hooks) {
       .dom('[data-test-aside-body]', document.body)
       .doesNotExist('no drawer opens when content returns');
     assert.dom('[data-part="aside-toggle"]').exists('the toggle is back');
+  });
+
+  test('below lg emptying an open drawer moves focus to Main', async function (assert) {
+    media?.setWidth(MOBILE);
+    const flags = new Flags();
+    const state = new AppLayoutState();
+    await render(
+      <template>
+        <AppLayout @state={{state}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><button
+                  type="button"
+                  data-test-in-aside
+                >Refund</button></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    await click('[data-part="aside-toggle"]');
+    await focus('[data-test-in-aside]');
+
+    flags.first = false;
+    await settled();
+    assert.dom('[role="dialog"]', document.body).doesNotExist('closed');
+    assert
+      .dom('[data-part="main"]')
+      .isFocused('focus goes to Main, not the page body');
+  });
+
+  test('below lg an emptied drawer kept open by a controlled @asideOpen shows nothing', async function (assert) {
+    media?.setWidth(MOBILE);
+    const flags = new Flags();
+    await render(
+      <template>
+        <AppLayout @asideOpen={{true}} as |layout|>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p>Order</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    assert.dom('[role="dialog"]', document.body).exists('open while filled');
+
+    flags.first = false;
+    await settled();
+    assert
+      .dom('[role="dialog"]', document.body)
+      .doesNotExist('no empty drawer stays open');
+  });
+
+  test('at lg and up @defaultAsideOpen opens the panel the first time a page fills it', async function (assert) {
+    const flags = new Flags();
+    flags.first = false;
+    await render(
+      <template>
+        <AppLayout @defaultAsideOpen={{true}} as |layout|>
+          <layout.Navbar><layout.AsideToggle /></layout.Navbar>
+          <layout.Main>
+            {{#if flags.first}}
+              <InLayoutRegion @name="aside"><p
+                  data-test-aside-body
+                >Order</p></InLayoutRegion>
+            {{/if}}
+          </layout.Main>
+          <layout.Aside @region="aside" />
+        </AppLayout>
+      </template>
+    );
+    assert.dom('[data-part="aside"]').doesNotExist('nothing to show yet');
+
+    flags.first = true;
+    await settled();
+    assert
+      .dom('[data-part="aside"] [data-test-aside-body]')
+      .exists('the first fill shows the panel open');
+    assert.dom('[data-part="aside-toggle"]').hasAria('expanded', 'true');
   });
 
   test('at lg and up a controlled @asideOpen is not told to close when emptied', async function (assert) {

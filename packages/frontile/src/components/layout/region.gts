@@ -14,7 +14,8 @@ interface RegionArgs {
 
   /**
    * Render every source, in the order they rendered, instead of only the
-   * newest. Read once, when the region renders.
+   * newest. After the region renders again, sources follow template order.
+   * Read once, when the region renders.
    *
    * @defaultValue false
    */
@@ -56,7 +57,6 @@ class Region extends Component<RegionSignature> {
     super(owner, args);
     this.name = args.name;
     this.multiple = args.multiple ?? false;
-    this.regions.declare(this.name);
   }
 
   register = modifier((element: HTMLElement) =>

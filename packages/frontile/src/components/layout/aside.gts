@@ -81,9 +81,6 @@ class Aside extends Component<AsideSignature> {
     }
     this.region = args.region;
     if (args.region !== undefined) {
-      // The inline element only exists while the aside is open, so the
-      // name is claimed here rather than by the element.
-      this.regions.declare(args.region);
       // A drawer with nothing in it closes, so that content coming back
       // never opens a modal by itself. The inline column is only hidden
       // while empty and keeps its open state.
@@ -151,6 +148,30 @@ class Aside extends Component<AsideSignature> {
     this.state.closeAside();
   };
 
+  /**
+   * Open only while there is something to show. The drawer stays mounted
+   * while empty, so emptying it plays the close transition instead of
+   * removing it at once.
+   */
+  get isOpen(): boolean {
+    return this.state.asideOpen && this.available;
+  }
+
+  /**
+   * A drawer closed because it emptied has no toggle to return focus to
+   * (`AsideToggle` is hidden too), so focus goes to `Main` instead of the
+   * page body.
+   */
+  didCloseDrawer = (): void => {
+    const active = document.activeElement;
+    if (this.available || (active && active !== document.body)) {
+      return;
+    }
+    const mainId = this.args.layout?.mainId;
+    const main = mainId ? document.getElementById(mainId) : null;
+    main?.focus();
+  };
+
   @cached
   get styles() {
     const layout = this.args.layout;
@@ -174,40 +195,39 @@ class Aside extends Component<AsideSignature> {
   }
 
   <template>
-    {{#if this.available}}
-      {{#if this.inDrawer}}
-        <Drawer
-          @isOpen={{this.state.asideOpen}}
-          @onClose={{this.closeDrawer}}
-          @placement={{this.placement}}
-          @size="xs"
-          @variant="flat"
-          id={{@layout.asideDrawerId}}
-          aria-label={{this.label}}
-        >
-          <aside
-            id={{this.id}}
-            aria-label={{this.label}}
-            data-part="mobile-aside"
-            class={{this.mobileClassNames}}
-            {{this.registerTarget}}
-            ...attributes
-          >
-            {{#unless this.region}}{{yield}}{{/unless}}
-          </aside>
-        </Drawer>
-      {{else if this.state.asideOpen}}
+    {{#if this.inDrawer}}
+      <Drawer
+        @isOpen={{this.isOpen}}
+        @onClose={{this.closeDrawer}}
+        @didClose={{this.didCloseDrawer}}
+        @placement={{this.placement}}
+        @size="xs"
+        @variant="flat"
+        id={{@layout.asideDrawerId}}
+        aria-label={{this.label}}
+      >
         <aside
           id={{this.id}}
           aria-label={{this.label}}
-          data-part="aside"
-          class={{this.classNames}}
+          data-part="mobile-aside"
+          class={{this.mobileClassNames}}
           {{this.registerTarget}}
           ...attributes
         >
           {{#unless this.region}}{{yield}}{{/unless}}
         </aside>
-      {{/if}}
+      </Drawer>
+    {{else if this.isOpen}}
+      <aside
+        id={{this.id}}
+        aria-label={{this.label}}
+        data-part="aside"
+        class={{this.classNames}}
+        {{this.registerTarget}}
+        ...attributes
+      >
+        {{#unless this.region}}{{yield}}{{/unless}}
+      </aside>
     {{/if}}
   </template>
 }

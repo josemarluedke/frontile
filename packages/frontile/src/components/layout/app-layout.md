@@ -829,15 +829,17 @@ in an `{{#if}}` that turns on while a child route is active also covers the
 child's.
 
 Pass `@multiple={{true}}` to the region to show every `InLayoutRegion`, in
-the order they rendered.
+the order they rendered. When the region itself renders again, for example
+inside an aside that moves into its drawer, they come back in the order they
+are written in the templates.
 
 Things to know:
 
 - Region names are shared by the whole app, and one `AppLayout` is expected
-  at a time. In development, a warning is logged for a name that no region
-  has rendered yet, and for a name used by two regions at once. When two
-  regions share a name, content goes to the newer one, and back to the
-  older one when the newer one is removed.
+  at a time. Content for a name that no region renders is not shown. In
+  development, a warning is logged for a name used by two regions at once:
+  content goes to the newer one, and back to the older one when the newer
+  one is removed.
 - `@name` on both components, and `@region` on `Aside`, are read once.
 - Content is rendered again from scratch when its region moves, as the aside
   does when the window crosses `lg`. Keep state you need to survive that
