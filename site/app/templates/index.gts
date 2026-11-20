@@ -97,7 +97,7 @@ const tableMembers: Member[] = [
 ];
 
 const toast = new Notification({}, 'Invitation sent to ada@example.com', {
-  appearance: 'success',
+  status: 'success',
   transitionDuration: 0,
 });
 

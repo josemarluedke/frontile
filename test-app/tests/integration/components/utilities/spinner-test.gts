@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { Spinner } from 'frontile';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 
 module(
   'Integration | Component | Spinner | @frontile/utilities',
@@ -38,36 +38,39 @@ module(
       assert.dom('[data-test-id="spinner"]').hasClass('fill-secondary');
     });
 
-    test('@intent still renders, and deprecates exactly once', async function (assert) {
-      const { ids } = trackDeprecations();
-
-      await render(
-        <template><Spinner @intent="danger" data-test-id="spinner" /></template>
+    test('@intent fails in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <Spinner @intent="danger" data-test-id="spinner" />
+          </template>
+        )
       );
 
-      assert.dom('[data-test-id="spinner"]').hasClass('fill-danger');
-      assert.deepEqual(ids, ['frontile.spinner.intent']);
+      assert.true(
+        failed.includes('Spinner: @intent was removed in 0.19.0. Use @color.'),
+        `got: ${failed.join(' | ')}`
+      );
     });
 
-    test('@intent="default" maps to neutral', async function (assert) {
-      await render(
-        <template>
-          <Spinner @intent="default" data-test-id="spinner" />
-        </template>
+    test('an explicitly undefined @intent stays silent', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <Spinner @intent={{undefined}} data-test-id="spinner" />
+          </template>
+        )
       );
+
+      assert.deepEqual(failed, []);
+    });
+
+    test('the color defaults to neutral', async function (assert) {
+      await render(<template><Spinner data-test-id="spinner" /></template>);
 
       assert.dom('[data-test-id="spinner"]').hasClass('fill-neutral-strong');
-    });
-
-    test('@color wins when both are passed', async function (assert) {
-      await render(
-        <template>
-          <Spinner @color="success" @intent="danger" data-test-id="spinner" />
-        </template>
-      );
-
-      assert.dom('[data-test-id="spinner"]').hasClass('fill-success');
-      assert.dom('[data-test-id="spinner"]').doesNotHaveClass('fill-danger');
     });
 
     test('renders data-component="spinner" on the root only, with data-part="base"', async function (assert) {

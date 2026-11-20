@@ -5,7 +5,7 @@ import { tv } from 'tailwind-variants';
 import { ToggleButton } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 module(
@@ -108,19 +108,59 @@ module(
           assert.dom('[data-test-id="button"]').hasClass('button-primary');
         });
 
-        test('@intent deprecates exactly once', async function (assert) {
-          const { ids } = trackDeprecations();
-
-          await render(
-            <template>
-              <ToggleButton @intent="danger" data-test-id="button">
-                My ToggleButton
-              </ToggleButton>
-            </template>
+        test('@intent fails in development', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ToggleButton @intent="danger" data-test-id="button">
+                  My ToggleButton
+                </ToggleButton>
+              </template>
+            )
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('button-danger');
-          assert.deepEqual(ids, ['frontile.toggle-button.intent']);
+          assert.true(
+            failed.includes(
+              'ToggleButton: @intent was removed in 0.19.0. Use @color.'
+            ),
+            `got: ${failed.join(' | ')}`
+          );
+        });
+
+        test('@appearance fails in development', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ToggleButton @appearance="outlined" data-test-id="button">
+                  My ToggleButton
+                </ToggleButton>
+              </template>
+            )
+          );
+
+          assert.true(
+            failed.includes(
+              'ToggleButton: @appearance was removed in 0.19.0. Use @variant.'
+            ),
+            `got: ${failed.join(' | ')}`
+          );
+        });
+
+        test('explicitly undefined @intent and @appearance stay silent', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ToggleButton @intent={{undefined}} @appearance={{undefined}}>
+                  My ToggleButton
+                </ToggleButton>
+              </template>
+            )
+          );
+
+          assert.deepEqual(failed, []);
         });
       });
 

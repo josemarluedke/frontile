@@ -2,11 +2,12 @@ import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import { press } from '../../modifiers/press';
 import type { ButtonArgs } from './button';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
+import type Owner from '@ember/owner';
 
 interface ToggleButtonArgs extends Pick<
   ButtonArgs,
-  'variant' | 'appearance' | 'color' | 'intent' | 'size' | 'class' | 'isInGroup'
+  'variant' | 'color' | 'size' | 'class' | 'isInGroup'
 > {
   /**
    * If the button is currently selected
@@ -30,54 +31,19 @@ interface ToggleButtonSignature {
 }
 
 class ToggleButton extends Component<ToggleButtonSignature> {
-  /**
-   * ToggleButton's theme only ever renders the `outline` variant — reading
-   * this getter resolves (and, when needed, deprecates) `@appearance` /
-   * `@variant` so a consumer still migrating gets the warning, even though
-   * the resolved value itself has nowhere else to go.
-   */
-  get variant() {
-    return renamedArgValue(
-      this.args.variant,
-      this.args.appearance,
-      {
-        default: 'solid',
-        outlined: 'outline',
-        minimal: 'plain',
-        soft: 'subtle',
-        tonal: 'soft'
-      } as const,
-      {
-        component: 'ToggleButton',
-        from: 'appearance',
-        to: 'variant',
-        id: 'frontile.toggle-button.appearance'
-      }
-    );
-  }
+  constructor(owner: Owner, args: ToggleButtonSignature['Args']) {
+    super(owner, args);
 
-  get color() {
-    return renamedArgValue(
-      this.args.color,
-      this.args.intent,
-      { default: 'neutral' } as const,
-      {
-        component: 'ToggleButton',
-        from: 'intent',
-        to: 'color',
-        id: 'frontile.toggle-button.intent'
-      }
-    );
+    assertRemovedArg('ToggleButton', args, 'appearance', 'variant');
+    assertRemovedArg('ToggleButton', args, 'intent', 'color');
   }
 
   get classNames(): string {
     const { toggleButton } = useStyles();
-    // Resolve (and deprecate) `@appearance`/`@variant` for their side effect;
-    // the theme itself only defines the `outline` variant for ToggleButton.
-    void this.variant;
 
     return toggleButton({
-      color: this.color || 'neutral',
+      // The theme only defines the `outline` variant for ToggleButton.
+      color: this.args.color || 'neutral',
       size: this.args.size,
       variant: 'outline',
       isSelected: this.isSelected,

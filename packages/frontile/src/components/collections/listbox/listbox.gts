@@ -1,9 +1,9 @@
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
+import type Owner from '@ember/owner';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
-import { renamedArgValue } from '../../../-private/deprecated-args';
+import { assertRemovedArg } from '../../../-private/removed-args';
 import {
   ListManager,
   keyAndLabelForItem,
@@ -61,28 +61,10 @@ interface ListboxSignature<T> {
     variant?: 'solid' | 'outline' | 'subtle';
 
     /**
-     * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
-     * `outline`, and `faded` is `subtle`.
-     */
-    appearance?: 'default' | 'outlined' | 'faded';
-
-    /**
      * The color of each item
      */
     color?:
       | 'neutral'
-      | 'primary'
-      | 'secondary'
-      | 'tertiary'
-      | 'success'
-      | 'warning'
-      | 'danger';
-
-    /**
-     * @deprecated Use `color`. `default` is now `neutral`.
-     */
-    intent?:
-      | 'default'
       | 'primary'
       | 'secondary'
       | 'tertiary'
@@ -180,6 +162,12 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
       ? 'first'
       : this.args.autoActivateMode
   });
+
+  constructor(owner: Owner, args: ListboxSignature<T>['Args']) {
+    super(owner, args);
+    assertRemovedArg('Listbox', args, 'appearance', 'variant');
+    assertRemovedArg('Listbox', args, 'intent', 'color');
+  }
 
   /**
    * All keyboard behaviour lands on `keydown`.
@@ -286,58 +274,9 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
     }
   );
 
-  /**
-   * Resolved once (`@cached`) purely to raise Listbox's own deprecation when
-   * `@appearance` is used directly on `<Listbox>` -- independent of whether
-   * any items are rendered to inherit it. The resolved value is not itself
-   * forwarded to items: `@variant`/`@appearance` are passed down unchanged
-   * (see the template below) so a per-item override using either name still
-   * takes effect, and only actual uses of the deprecated arg -- at whichever
-   * level they occur -- raise a warning.
-   */
-  @cached
-  get variant() {
-    return renamedArgValue(
-      this.args.variant,
-      this.args.appearance,
-      { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
-      {
-        component: 'Listbox',
-        from: 'appearance',
-        to: 'variant',
-        id: 'frontile.listbox.appearance'
-      }
-    );
-  }
-
-  /**
-   * Resolved once (`@cached`) purely to raise Listbox's own deprecation when
-   * `@color`/`@intent` is used directly on `<Listbox>` -- independent of whether any
-   * items are rendered to inherit it. Unlike `variant`, the resolved value is
-   * also forwarded to `classNames` below, so a bare `<Listbox @color="danger">`
-   * with no items renders its own color-dependent classes.
-   */
-  @cached
-  get color() {
-    return renamedArgValue(
-      this.args.color,
-      this.args.intent,
-      { default: 'neutral' } as const,
-      {
-        component: 'Listbox',
-        from: 'intent',
-        to: 'color',
-        id: 'frontile.listbox.intent'
-      }
-    );
-  }
-
   get classNames() {
     const { listbox } = useStyles();
-    // Referenced only to trigger the deprecation above when appropriate;
-    // Listbox itself has no styling of its own that varies by variant.
-    void this.variant;
-    return listbox({ class: this.args.class, color: this.color });
+    return listbox({ class: this.args.class, color: this.args.color });
   }
 
   get role() {
@@ -400,9 +339,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
                   ListboxItem
                   manager=this.listManager
                   variant=@variant
-                  appearance=@appearance
                   color=@color
-                  intent=@intent
                   shortcutVariant=@shortcutVariant
                   type=this.role
                   key=keyLabel.key
@@ -417,9 +354,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
               @key={{keyLabel.key}}
               @item={{item}}
               @variant={{@variant}}
-              @appearance={{@appearance}}
               @color={{@color}}
-              @intent={{@intent}}
               @shortcutVariant={{@shortcutVariant}}
               @type={{this.role}}
             >
@@ -435,9 +370,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             ListboxItem
             manager=this.listManager
             variant=@variant
-            appearance=@appearance
             color=@color
-            intent=@intent
             shortcutVariant=@shortcutVariant
             type=this.role
           )
@@ -445,9 +378,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             ListboxGroup
             manager=this.listManager
             variant=@variant
-            appearance=@appearance
             color=@color
-            intent=@intent
             shortcutVariant=@shortcutVariant
             type=this.role
           )

@@ -5,7 +5,7 @@ import { tv } from 'tailwind-variants';
 import { ButtonGroup } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 module(
@@ -147,19 +147,24 @@ module(
           assert.dom('[data-test-id="button"]').hasClass('button-outline');
         });
 
-        test('ButtonGroup @appearance deprecates exactly once', async function (assert) {
-          const { ids } = trackDeprecations();
-
-          await render(
-            <template>
-              <ButtonGroup @appearance="outlined" as |g|>
-                <g.Button data-test-id="button">x</g.Button>
-              </ButtonGroup>
-            </template>
+        test('ButtonGroup @appearance fails in development', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ButtonGroup @appearance="outlined" as |g|>
+                  <g.Button data-test-id="button">x</g.Button>
+                </ButtonGroup>
+              </template>
+            )
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('button-outline');
-          assert.deepEqual(ids, ['frontile.button-group.appearance']);
+          assert.true(
+            failed.includes(
+              'ButtonGroup: @appearance was removed in 0.19.0. Use @variant.'
+            ),
+            `got: ${failed.join(' | ')}`
+          );
         });
       });
 
@@ -183,21 +188,48 @@ module(
           assert.dom('[data-test-id="toggle"]').hasClass('button-danger');
         });
 
-        test('ButtonGroup @intent deprecates exactly once', async function (assert) {
-          const { ids } = trackDeprecations();
-
-          await render(
-            <template>
-              <ButtonGroup @intent="danger" as |g|>
-                <g.Button data-test-id="button">x</g.Button>
-                <g.ToggleButton data-test-id="toggle">x</g.ToggleButton>
-              </ButtonGroup>
-            </template>
+        test('ButtonGroup @intent fails in development', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ButtonGroup @intent="danger" as |g|>
+                  <g.Button data-test-id="button">x</g.Button>
+                  <g.ToggleButton data-test-id="toggle">x</g.ToggleButton>
+                </ButtonGroup>
+              </template>
+            )
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('button-danger');
-          assert.dom('[data-test-id="toggle"]').hasClass('button-danger');
-          assert.deepEqual(ids, ['frontile.button-group.intent']);
+          assert.true(
+            failed.includes(
+              'ButtonGroup: @intent was removed in 0.19.0. Use @color.'
+            ),
+            `got: ${failed.join(' | ')}`
+          );
+        });
+
+        test('explicitly undefined @intent and @appearance stay silent', async function (assert) {
+          const failed = await collectAssertions(async () => {
+            await render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ButtonGroup @intent={{undefined}} as |g|>
+                  <g.Button>x</g.Button>
+                </ButtonGroup>
+              </template>
+            );
+            await render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <ButtonGroup @appearance={{undefined}} as |g|>
+                  <g.Button>x</g.Button>
+                </ButtonGroup>
+              </template>
+            );
+          });
+
+          assert.deepEqual(failed, []);
         });
       });
 

@@ -1,7 +1,8 @@
 import Component from '@glimmer/component';
+import type Owner from '@ember/owner';
 import { cached } from '@glimmer/tracking';
 import { useStyles, type FormFeedbackVariants } from '@frontile/theme';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
 
 interface FormFeedbackSignature {
   Args: {
@@ -23,12 +24,6 @@ interface FormFeedbackSignature {
      * @defaultValue 'danger'
      */
     status?: FormFeedbackVariants['status'];
-
-    /**
-     * @deprecated Use `status`. The name changed because this value also
-     * decides whether the message is announced assertively.
-     */
-    intent?: FormFeedbackVariants['status'];
 
     /**
      * The size of the feedback text.
@@ -74,18 +69,18 @@ function feedbackMessageText(messages: string[] | string | undefined): string {
 }
 
 class FormFeedback extends Component<FormFeedbackSignature> {
+  constructor(owner: Owner, args: FormFeedbackSignature['Args']) {
+    super(owner, args);
+
+    assertRemovedArg('FormFeedback', args, 'intent', 'status');
+  }
+
   /**
-   * Resolved once so `isError` and `classes` agree, and so the deprecation
-   * fires once per render rather than per reader.
+   * Read once so `isError` and `classes` agree.
    */
   @cached
   get status(): FormFeedbackVariants['status'] {
-    return renamedArgValue(this.args.status, this.args.intent, {} as const, {
-      component: 'FormFeedback',
-      from: 'intent',
-      to: 'status',
-      id: 'frontile.form-feedback.intent'
-    });
+    return this.args.status;
   }
 
   /**

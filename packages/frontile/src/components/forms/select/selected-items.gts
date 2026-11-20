@@ -141,11 +141,8 @@ const SelectedChips: TOC<SelectedChipsSignature> = <template>
         data-key={{item.key}}
         @class={{@classes.chip class=@userClasses.chip}}
         @variant={{@chipOptions.variant}}
-        @appearance={{@chipOptions.appearance}}
         @color={{@chipOptions.color}}
-        @intent={{@chipOptions.intent}}
         @size={{@chipOptions.size}}
-        @radius={{@chipOptions.radius}}
         @withDot={{@chipOptions.withDot}}
         @isDisabled={{@isDisabled}}
         @closeButtonTitle={{concat "Remove " item.textValue}}

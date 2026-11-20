@@ -5,11 +5,12 @@ import Button, { type ButtonSignature } from './button';
 import type { ButtonArgs } from './button';
 import ToggleButton, { type ToggleButtonSignature } from './toggle-button';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
+import type Owner from '@ember/owner';
 
 interface ButtonGroupArgs extends Pick<
   ButtonArgs,
-  'variant' | 'appearance' | 'color' | 'intent' | 'size' | 'class'
+  'variant' | 'color' | 'size' | 'class'
 > {}
 
 interface ButtonGroupSignature {
@@ -29,38 +30,11 @@ interface ButtonGroupSignature {
 }
 
 class ButtonGroup extends Component<ButtonGroupSignature> {
-  get variant() {
-    return renamedArgValue(
-      this.args.variant,
-      this.args.appearance,
-      {
-        default: 'solid',
-        outlined: 'outline',
-        minimal: 'plain',
-        soft: 'subtle',
-        tonal: 'soft'
-      } as const,
-      {
-        component: 'ButtonGroup',
-        from: 'appearance',
-        to: 'variant',
-        id: 'frontile.button-group.appearance'
-      }
-    );
-  }
+  constructor(owner: Owner, args: ButtonGroupSignature['Args']) {
+    super(owner, args);
 
-  get color() {
-    return renamedArgValue(
-      this.args.color,
-      this.args.intent,
-      { default: 'neutral' } as const,
-      {
-        component: 'ButtonGroup',
-        from: 'intent',
-        to: 'color',
-        id: 'frontile.button-group.intent'
-      }
-    );
+    assertRemovedArg('ButtonGroup', args, 'appearance', 'variant');
+    assertRemovedArg('ButtonGroup', args, 'intent', 'color');
   }
 
   get classNames(): string {
@@ -82,14 +56,10 @@ class ButtonGroup extends Component<ButtonGroupSignature> {
       {{yield
         (hash
           Button=(component
-            Button
-            isInGroup=true
-            variant=this.variant
-            color=this.color
-            size=@size
+            Button isInGroup=true variant=@variant color=@color size=@size
           )
           ToggleButton=(component
-            ToggleButton isInGroup=true color=this.color size=@size
+            ToggleButton isInGroup=true color=@color size=@size
           )
         )
       }}

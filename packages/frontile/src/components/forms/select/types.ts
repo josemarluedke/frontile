@@ -64,11 +64,6 @@ interface SelectedItemBlockArg<T = unknown> {
  */
 interface SelectChipOptions extends Pick<ChipSignature['Args'], 'withDot'> {
   /**
-   * @deprecated Ignored. Chip is always a pill.
-   */
-  radius?: ChipSignature['Args']['radius'];
-
-  /**
    * The chip variant.
    *
    * @defaultValue 'soft'
@@ -76,25 +71,14 @@ interface SelectChipOptions extends Pick<ChipSignature['Args'], 'withDot'> {
   variant?: ChipSignature['Args']['variant'];
 
   /**
-   * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
-   * `outline`, and `faded` is `soft`.
-   */
-  appearance?: ChipSignature['Args']['appearance'];
-
-  /**
    * The color of the chip. Defaults to the Select's own `@color`.
    */
   color?: ChipSignature['Args']['color'];
 
   /**
-   * @deprecated Use `color`. Defaults to the Select's own `@intent`.
-   */
-  intent?: ChipSignature['Args']['intent'];
-
-  /**
    * The size of the chip.
    *
-   * @defaultValue 'sm'
+   * @defaultValue 'xs'
    */
   size?: ChipSignature['Args']['size'];
 }
@@ -113,14 +97,7 @@ interface BaseSelectArgs<T>
     >,
     Pick<
       ListboxSignature<T>['Args'],
-      | 'variant'
-      | 'appearance'
-      | 'color'
-      | 'intent'
-      | 'disabledKeys'
-      | 'allowEmpty'
-      | 'items'
-      | 'onAction'
+      'variant' | 'color' | 'disabledKeys' | 'allowEmpty' | 'items' | 'onAction'
     >,
     Pick<
       ContentSignature['Args'],
@@ -170,7 +147,7 @@ interface BaseSingleSelectArgs<T> extends BaseSelectArgs<T> {
   selectedKey?: string | null;
 
   /**
-   * @deprecated Use selectedKey for single selection mode
+   * Not available in single selection mode. Use `selectedKey` instead.
    */
   selectedKeys?: never;
 
@@ -262,7 +239,7 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
   chip?: SelectChipOptions;
 
   /**
-   * @deprecated Use selectedKeys for multiple selection mode
+   * Not available in multiple selection mode. Use `selectedKeys` instead.
    */
   selectedKey?: never;
 
@@ -570,31 +547,9 @@ type SelectClasses = ReturnType<ReturnType<typeof useStyles>['select']>;
  * so the chips do not have to restate them.
  */
 interface ResolvedSelectChipOptions {
-  /**
-   * Always set unless the consumer used the deprecated `appearance`, in which
-   * case it is left undefined so Chip resolves from `appearance` instead.
-   */
-  variant: SelectChipOptions['variant'];
-  /**
-   * Passed through only when the consumer actually wrote it. Defaulting this
-   * would fire Chip's `appearance` deprecation on every chip render, for a
-   * prop the consumer never used.
-   */
-  appearance: SelectChipOptions['appearance'];
-  /**
-   * Always set unless the consumer used the deprecated `intent` (or Select's
-   * own deprecated `@intent`), in which case it is left undefined so Chip
-   * resolves from `intent` instead.
-   */
-  color: SelectChipOptions['color'];
-  /**
-   * Passed through only when the consumer (or Select's own deprecated
-   * `@intent`) actually set it. Defaulting this would fire Chip's `intent`
-   * deprecation on every chip render, for a prop nobody wrote.
-   */
-  intent: SelectChipOptions['intent'];
+  variant: NonNullable<SelectChipOptions['variant']>;
+  color: NonNullable<SelectChipOptions['color']>;
   size: NonNullable<SelectChipOptions['size']>;
-  radius: SelectChipOptions['radius'];
   withDot: boolean;
 }
 

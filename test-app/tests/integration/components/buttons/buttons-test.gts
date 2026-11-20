@@ -11,7 +11,7 @@ import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 const BUTTON_STYLES = tv({
@@ -95,8 +95,8 @@ module(
     });
 
     module('Style classes', () => {
-      module('@appearance', () => {
-        test('it adds class for default appearance', async function (assert) {
+      module('@variant', () => {
+        test('it adds class for default variant', async function (assert) {
           await render(
             <template>
               <Button data-test-id="button">My Button</Button>
@@ -115,65 +115,6 @@ module(
           assert.dom('[data-test-id="button"]').hasClass('button-solid');
         });
 
-        test('it adds class for outlined appearance', async function (assert) {
-          await render(
-            <template>
-              <Button @appearance="outlined" data-test-id="button">My Button</Button>
-            </template>
-          );
-
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-solid');
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-plain');
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-custom');
-          assert.dom('[data-test-id="button"]').hasClass('button-outline');
-        });
-
-        test('it adds class for minimal appearance', async function (assert) {
-          await render(
-            <template>
-              <Button @appearance="minimal" data-test-id="button">My Button</Button>
-            </template>
-          );
-
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-solid');
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-outline');
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-custom');
-          assert.dom('[data-test-id="button"]').hasClass('button-plain');
-        });
-
-        test('it adds class for custom appearance', async function (assert) {
-          await render(
-            <template>
-              <Button @appearance="custom" data-test-id="button">My Button</Button>
-            </template>
-          );
-
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-solid');
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-outline');
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-plain');
-          assert.dom('[data-test-id="button"]').hasClass('button-custom');
-        });
-      });
-
-      module('@variant', () => {
         test('@variant renders the new class', async function (assert) {
           await render(
             <template>
@@ -181,63 +122,64 @@ module(
             </template>
           );
 
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('button-solid');
           assert.dom('[data-test-id="button"]').hasClass('button-outline');
         });
 
-        test('@appearance still renders, and deprecates exactly once', async function (assert) {
-          const { ids } = trackDeprecations();
-
+        test('@variant="plain" renders the plain class', async function (assert) {
           await render(
             <template>
-              <Button @appearance="outlined" data-test-id="button">x</Button>
-            </template>
-          );
-
-          assert.dom('[data-test-id="button"]').hasClass('button-outline');
-          assert.deepEqual(ids, ['frontile.button.appearance']);
-        });
-
-        test('@appearance="minimal" maps to plain', async function (assert) {
-          await render(
-            <template>
-              <Button @appearance="minimal" data-test-id="button">x</Button>
+              <Button @variant="plain" data-test-id="button">x</Button>
             </template>
           );
 
           assert.dom('[data-test-id="button"]').hasClass('button-plain');
         });
 
-        test('@variant wins when both are passed', async function (assert) {
+        test('@variant="custom" still passes through', async function (assert) {
           await render(
             <template>
-              <Button
-                @variant="solid"
-                @appearance="outlined"
-                data-test-id="button"
-              >x</Button>
+              <Button @variant="custom" data-test-id="button">x</Button>
             </template>
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('button-solid');
           assert
             .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-outline');
+            .doesNotHaveClass('button-solid');
+          assert.dom('[data-test-id="button"]').hasClass('button-custom');
         });
 
-        test('@appearance="custom" passes through unmapped', async function (assert) {
-          const { ids } = trackDeprecations();
-
-          await render(
-            <template>
-              <Button @appearance="custom" data-test-id="button">x</Button>
-            </template>
+        test('@appearance fails in development', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <Button @appearance="outlined" data-test-id="button">x</Button>
+              </template>
+            )
           );
 
-          // `custom` keeps its name, so it is absent from the value map and
-          // must pass through untouched rather than falling back to the
-          // default.
-          assert.dom('[data-test-id="button"]').hasClass('button-custom');
-          assert.deepEqual(ids, ['frontile.button.appearance']);
+          assert.true(
+            failed.includes(
+              'Button: @appearance was removed in 0.19.0. Use @variant.'
+            ),
+            `got: ${failed.join(' | ')}`
+          );
+        });
+
+        test('an explicitly undefined @appearance stays silent', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <Button @appearance={{undefined}}>x</Button>
+              </template>
+            )
+          );
+
+          assert.deepEqual(failed, []);
         });
 
         test('ghost carries a hover fill and plain does not', async function (assert) {
@@ -274,44 +216,35 @@ module(
           assert.dom('[data-test-id="button"]').hasClass('button-danger');
         });
 
-        test('@intent still renders, and deprecates exactly once', async function (assert) {
-          const { ids } = trackDeprecations();
-
-          await render(
-            <template>
-              <Button @intent="danger" data-test-id="button">x</Button>
-            </template>
+        test('@intent fails in development', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <Button @intent="danger" data-test-id="button">x</Button>
+              </template>
+            )
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('button-danger');
-          assert.deepEqual(ids, ['frontile.button.intent']);
+          assert.true(
+            failed.includes(
+              'Button: @intent was removed in 0.19.0. Use @color.'
+            ),
+            `got: ${failed.join(' | ')}`
+          );
         });
 
-        test('@intent="default" maps to neutral', async function (assert) {
-          await render(
-            <template>
-              <Button @intent="default" data-test-id="button">x</Button>
-            </template>
+        test('an explicitly undefined @intent stays silent', async function (assert) {
+          const failed = await collectAssertions(() =>
+            render(
+              <template>
+                {{! @glint-expect-error -- removed in 0.19.0 }}
+                <Button @intent={{undefined}} data-test-id="button">x</Button>
+              </template>
+            )
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('button-neutral');
-        });
-
-        test('@color wins when both are passed', async function (assert) {
-          await render(
-            <template>
-              <Button
-                @color="success"
-                @intent="danger"
-                data-test-id="button"
-              >x</Button>
-            </template>
-          );
-
-          assert.dom('[data-test-id="button"]').hasClass('button-success');
-          assert
-            .dom('[data-test-id="button"]')
-            .doesNotHaveClass('button-danger');
+          assert.deepEqual(failed, []);
         });
       });
 

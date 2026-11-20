@@ -4,7 +4,7 @@ import { render, click, find, settled } from '@ember/test-helpers';
 
 import { Switch } from 'frontile';
 import { cell } from 'ember-resources';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 
 module('Integration | Component | @frontile/forms/Switch', function (hooks) {
   setupRenderingTest(hooks);
@@ -248,62 +248,33 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
       .hasClass('group-data-[selected=true]:bg-danger');
   });
 
-  test('@intent still renders, and deprecates exactly once', async function (assert) {
-    const { ids } = trackDeprecations();
-
-    await render(
-      <template>
-        <Switch
-          @label="Name"
-          @intent="danger"
-          @isSelected={{true}}
-          data-test-input
-        />
-      </template>
+  test('@intent fails in development', async function (assert) {
+    const failed = await collectAssertions(() =>
+      render(
+        <template>
+          {{! @glint-expect-error -- removed in 0.19.0 }}
+          <Switch @label="Name" @intent="danger" data-test-input />
+        </template>
+      )
     );
 
-    assert
-      .dom('[data-component="switch-input"] [data-part="wrapper"]')
-      .hasClass('group-data-[selected=true]:bg-danger');
-    assert.deepEqual(ids, ['frontile.switch.intent']);
+    assert.true(
+      failed.includes('Switch: @intent was removed in 0.19.0. Use @color.'),
+      `got: ${failed.join(' | ')}`
+    );
   });
 
-  test('@intent="default" maps to neutral', async function (assert) {
-    await render(
-      <template>
-        <Switch
-          @label="Name"
-          @intent="default"
-          @isSelected={{true}}
-          data-test-input
-        />
-      </template>
+  test('an explicitly undefined @intent stays silent', async function (assert) {
+    const failed = await collectAssertions(() =>
+      render(
+        <template>
+          {{! @glint-expect-error -- removed in 0.19.0 }}
+          <Switch @label="Name" @intent={{undefined}} data-test-input />
+        </template>
+      )
     );
 
-    assert
-      .dom('[data-component="switch-input"] [data-part="wrapper"]')
-      .hasClass('group-data-[selected=true]:bg-neutral-firm');
-  });
-
-  test('@color wins when both are passed', async function (assert) {
-    await render(
-      <template>
-        <Switch
-          @label="Name"
-          @color="success"
-          @intent="danger"
-          @isSelected={{true}}
-          data-test-input
-        />
-      </template>
-    );
-
-    assert
-      .dom('[data-component="switch-input"] [data-part="wrapper"]')
-      .hasClass('group-data-[selected=true]:bg-success');
-    assert
-      .dom('[data-component="switch-input"] [data-part="wrapper"]')
-      .doesNotHaveClass('group-data-[selected=true]:bg-danger');
+    assert.deepEqual(failed, []);
   });
 
   test('it add classes to all slots', async function (assert) {

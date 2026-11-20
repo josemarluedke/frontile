@@ -15,6 +15,8 @@ import { array } from '@ember/helper';
 import { settled } from '@ember/test-helpers';
 import { trackDeprecations } from '../../../helpers/deprecations';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
+import { collectAssertions } from '../../../helpers/collect-assertions';
+import { listboxItemStubStyles } from '../../../helpers/listbox-item-stub-styles';
 
 module(
   'Integration | Component | Dropdown | @frontile/collections',
@@ -55,6 +57,159 @@ module(
       assert.deepEqual(ids, [], 'no deprecation for the new arg');
     });
 
+    module('removed @appearance / @intent', function (nested) {
+      useCustomStyles(nested, {
+        listboxItem: listboxItemStubStyles,
+        button: tv({
+          base: [],
+          variants: {
+            variant: { solid: 'button-solid', outline: 'button-outline' },
+            color: { neutral: 'button-neutral', danger: 'button-danger' }
+          },
+          defaultVariants: { color: 'neutral', variant: 'solid' }
+        }) as never
+      });
+
+      test('Trigger @appearance and @intent fail in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              <Dropdown as |d|>
+                <d.Trigger
+                  {{! @glint-expect-error -- @appearance and @intent were removed in 0.19.0 }}
+                  @appearance="outlined"
+                  @intent="danger"
+                >Open</d.Trigger>
+              </Dropdown>
+            </template>
+          )
+        );
+
+        assert.true(
+          failed.some((m) =>
+            m.includes(
+              'Dropdown Trigger: @appearance was removed in 0.19.0. Use @variant.'
+            )
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+        assert.true(
+          failed.some((m) =>
+            m.includes(
+              'Dropdown Trigger: @intent was removed in 0.19.0. Use @color.'
+            )
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+      });
+
+      test('Menu @appearance and @intent fail in development', async function (assert) {
+        const failed = await collectAssertions(async () => {
+          await render(
+            <template>
+              <Dropdown as |d|>
+                <d.Trigger>Open</d.Trigger>
+                <d.Menu
+                  @disableTransitions={{true}}
+                  {{! @glint-expect-error -- @appearance and @intent were removed in 0.19.0 }}
+                  @appearance="faded"
+                  @intent="danger"
+                  as |Item|
+                ><Item @key="a">A</Item></d.Menu>
+              </Dropdown>
+            </template>
+          );
+          await click('[data-test-id="dropdown-trigger"]');
+        });
+
+        assert.true(
+          failed.some((m) =>
+            m.includes(
+              'Dropdown Menu: @appearance was removed in 0.19.0. Use @variant.'
+            )
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+        assert.true(
+          failed.some((m) =>
+            m.includes(
+              'Dropdown Menu: @intent was removed in 0.19.0. Use @color.'
+            )
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+      });
+
+      test('an explicitly undefined Trigger @appearance and @intent stay silent', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              <Dropdown as |d|>
+                <d.Trigger
+                  {{! @glint-expect-error -- removed in 0.19.0 }}
+                  @appearance={{undefined}}
+                  @intent={{undefined}}
+                >Open</d.Trigger>
+              </Dropdown>
+            </template>
+          )
+        );
+
+        assert.deepEqual(failed, []);
+      });
+
+      test('an explicitly undefined Menu @appearance and @intent stay silent', async function (assert) {
+        const failed = await collectAssertions(async () => {
+          await render(
+            <template>
+              <Dropdown as |d|>
+                <d.Trigger>Open</d.Trigger>
+                <d.Menu
+                  @disableTransitions={{true}}
+                  {{! @glint-expect-error -- removed in 0.19.0 }}
+                  @appearance={{undefined}}
+                  @intent={{undefined}}
+                  as |Item|
+                ><Item @key="a">A</Item></d.Menu>
+              </Dropdown>
+            </template>
+          );
+          await click('[data-test-id="dropdown-trigger"]');
+        });
+
+        assert.deepEqual(failed, []);
+      });
+
+      test('@variant and @color reach the trigger and the menu items', async function (assert) {
+        const failed = await collectAssertions(async () => {
+          await render(
+            <template>
+              <Dropdown as |d|>
+                <d.Trigger @variant="outline" @color="danger">Open</d.Trigger>
+                <d.Menu
+                  @variant="outline"
+                  @color="danger"
+                  @disableTransitions={{true}}
+                  as |Item|
+                ><Item @key="a">A</Item></d.Menu>
+              </Dropdown>
+            </template>
+          );
+          await click('[data-test-id="dropdown-trigger"]');
+        });
+
+        assert.deepEqual(failed, [], 'no assertion fires for the new args');
+        assert
+          .dom('[data-test-id="dropdown-trigger"]')
+          .hasClass('button-outline')
+          .hasClass('button-danger');
+        assert
+          .dom('[data-component="listbox-item"][data-key="a"]')
+          .hasClass('item-variant-outline')
+          .hasClass('item-danger');
+      });
+    });
+
     test('it renders the trigger and menu when opened', async function (assert) {
       const clickedOn: string[] = [];
       const onAction = (key: string) => {
@@ -64,11 +219,11 @@ module(
       await render(
         <template>
           <Dropdown as |d|>
-            <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
+            <d.Trigger @color="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @onAction={{onAction}}
-              @intent="primary"
+              @color="primary"
               @disableTransitions={{true}}
               as |Item|
             >
@@ -96,7 +251,7 @@ module(
       await render(
         <template>
           <Dropdown as |d|>
-            <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
+            <d.Trigger @color="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
@@ -129,7 +284,7 @@ module(
       await render(
         <template>
           <Dropdown as |d|>
-            <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
+            <d.Trigger @color="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @backdrop={{backdrop.current}}
@@ -162,7 +317,7 @@ module(
       await render(
         <template>
           <Dropdown @didClose={{didClose}} as |d|>
-            <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
+            <d.Trigger @color="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
@@ -185,7 +340,7 @@ module(
       await render(
         <template>
           <Dropdown @closeOnItemSelect={{false}} as |d|>
-            <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
+            <d.Trigger @color="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
@@ -213,7 +368,7 @@ module(
         <template>
           <div id="outside" tabindex="0"></div>
           <Dropdown @didClose={{didClose}} as |d|>
-            <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
+            <d.Trigger @color="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
@@ -267,7 +422,7 @@ module(
       await render(
         <template>
           <Dropdown as |d|>
-            <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
+            <d.Trigger @color="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>

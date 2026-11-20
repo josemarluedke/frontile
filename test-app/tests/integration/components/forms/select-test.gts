@@ -23,6 +23,7 @@ import { trackDeprecations } from '../../../helpers/deprecations';
 import { collectAssertions } from '../../../helpers/collect-assertions';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { chipStubStyles } from '../../../helpers/chip-stub-styles';
+import { listboxItemStubStyles } from '../../../helpers/listbox-item-stub-styles';
 import { closeButtonStubStyles } from '../../../helpers/close-button-stub-styles';
 
 // Simple equality helper
@@ -2582,7 +2583,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     });
   });
 
-  test('Multiple mode: chips default to the faded appearance and inherit @intent', async function (assert) {
+  test('Multiple mode: chips default to soft/neutral and inherit @color', async function (assert) {
     const selectedKeys = cell<string[]>(['apple', 'banana']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 
@@ -2591,7 +2592,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         <Select
           @items={{array "apple" "banana"}}
           @selectionMode="multiple"
-          @intent="primary"
+          @color="primary"
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
         />
@@ -2607,7 +2608,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     // by chip-test.gts / buttons-test.gts elsewhere in this suite.
     const chip = '[data-part="chip"][data-key="apple"]';
     assert.dom(chip).hasClass('chip-soft', 'defaults to variant soft');
-    assert.dom(chip).hasClass('chip-primary', 'inherits @intent="primary"');
+    assert.dom(chip).hasClass('chip-primary', 'inherits @color="primary"');
   });
 
   test('Multiple mode: chips inherit @color', async function (assert) {
@@ -2630,10 +2631,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom(chip).hasClass('chip-primary', 'inherits @color="primary"');
   });
 
-  test('Multiple mode: chips raise no deprecation when @chip.appearance is unused', async function (assert) {
+  test('Multiple mode: chips get the Select defaults when no chip options are given', async function (assert) {
     const selectedKeys = cell<string[]>(['apple']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
-    const { ids } = trackDeprecations();
 
     await render(
       <template>
@@ -2647,15 +2647,13 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-part="chip"][data-key="apple"]').exists('renders a chip');
-    // Select defaults the chip's variant, never its deprecated `appearance`.
-    // Defaulting `appearance` would fire Chip's deprecation on every chip
-    // render, warning consumers about a prop they never wrote.
-    assert.deepEqual(
-      ids.filter((id) => id === 'frontile.chip.appearance'),
-      [],
-      'no chip appearance deprecation for internal defaults'
-    );
+    // Chip's own defaults are solid/neutral/xs; a Select's chips are tuned to
+    // sit inside a field, so the variant and color must come from Select.
+    const chip = '[data-part="chip"][data-key="apple"]';
+    assert.dom(chip).hasClass('chip-soft', 'variant defaults to soft');
+    assert.dom(chip).hasClass('chip-neutral', 'color defaults to neutral');
+    assert.dom(chip).hasClass('chip-xs', 'size defaults to xs');
+    assert.dom(`${chip} .chip-dot`).doesNotExist('no dot by default');
   });
 
   test('Multiple mode: Select @color reaches the chips', async function (assert) {
@@ -2676,37 +2674,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
 
     // chipOptions must consult Select's own `@color`, not just `@chip.color`.
-    // Without it `@color` would silently fail to tint the chips while the
-    // deprecated `@intent` still worked.
     assert.dom('[data-part="chip"][data-key="apple"]').hasClass('chip-primary');
   });
 
-  test('Multiple mode: chips raise no deprecation when @intent is unused', async function (assert) {
-    const selectedKeys = cell<string[]>(['apple']);
-    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
-    const { ids } = trackDeprecations();
-
-    await render(
-      <template>
-        <Select
-          @items={{array "apple" "banana"}}
-          @selectionMode="multiple"
-          @allowEmpty={{true}}
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-        />
-      </template>
-    );
-
-    assert.dom('[data-part="chip"][data-key="apple"]').exists('renders a chip');
-    assert.deepEqual(
-      ids.filter((id) => id === 'frontile.chip.intent'),
-      [],
-      'no chip intent deprecation for internal defaults'
-    );
-  });
-
-  test('Multiple mode: @chip overrides appearance, intent, size and dot', async function (assert) {
+  test('Multiple mode: @chip overrides variant, color, size and dot', async function (assert) {
     const selectedKeys = cell<string[]>(['apple']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 
@@ -2716,13 +2687,8 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
           @items={{array "apple" "banana"}}
           @selectionMode="multiple"
           @allowEmpty={{true}}
-          @intent="primary"
-          @chip={{hash
-            appearance="outlined"
-            intent="danger"
-            size="lg"
-            withDot=true
-          }}
+          @color="primary"
+          @chip={{hash variant="outline" color="danger" size="lg" withDot=true}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
         />
@@ -2734,15 +2700,15 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom(chip)
       .doesNotHaveClass(
         'chip-primary',
-        '@chip.intent overrides the inherited @intent'
+        '@chip.color overrides the inherited @color'
       );
-    assert.dom(chip).hasClass('chip-danger', '@chip.intent applies');
-    assert.dom(chip).hasClass('chip-outline', '@chip.appearance applies');
+    assert.dom(chip).hasClass('chip-danger', '@chip.color applies');
+    assert.dom(chip).hasClass('chip-outline', '@chip.variant applies');
     assert
       .dom(chip)
       .doesNotHaveClass(
         'chip-soft',
-        '@chip.appearance overrides the faded default'
+        '@chip.variant overrides the soft default'
       );
     assert.dom(chip).hasClass('chip-lg', '@chip.size applies');
     assert
@@ -3998,6 +3964,129 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-component="close-button"]')
       .exists('the clear button renders');
     assert.deepEqual(ids, [], `no deprecations, got: ${ids.join(', ')}`);
+  });
+
+  module('removed @appearance / @intent', function (nested) {
+    useCustomStyles(nested, { listboxItem: listboxItemStubStyles });
+
+    test('@appearance fails in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- @appearance was removed in 0.19.0 }}
+            <Select @appearance="faded" />
+          </template>
+        )
+      );
+
+      assert.true(
+        failed.some((m) =>
+          m.includes('Select: @appearance was removed in 0.19.0. Use @variant.')
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+    });
+
+    test('@intent fails in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- @intent was removed in 0.19.0 }}
+            <Select @intent="danger" />
+          </template>
+        )
+      );
+
+      assert.true(
+        failed.some((m) =>
+          m.includes('Select: @intent was removed in 0.19.0. Use @color.')
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+    });
+
+    test('@chip appearance, intent and radius fail in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            <Select
+              @selectionMode="multiple"
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              @chip={{hash appearance="faded" intent="danger" radius="none"}}
+            />
+          </template>
+        )
+      );
+
+      assert.true(
+        failed.includes(
+          'Select @chip: appearance was removed in 0.19.0. Use variant.'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+      assert.true(
+        failed.includes(
+          'Select @chip: intent was removed in 0.19.0. Use color.'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+      assert.true(
+        failed.includes(
+          'Select @chip: radius was removed in 0.19.0. Chip is always a pill; use Badge for a squared label.'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+    });
+
+    test('an explicitly undefined @appearance and @intent stay silent', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <Select @appearance={{undefined}} @intent={{undefined}} />
+          </template>
+        )
+      );
+
+      assert.deepEqual(failed, []);
+    });
+
+    test('@chip with only current keys stays silent', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            <Select
+              @selectionMode="multiple"
+              @chip={{hash variant="outline" color="danger" size="md"}}
+            />
+          </template>
+        )
+      );
+
+      assert.deepEqual(failed, []);
+    });
+
+    test('@variant and @color reach the listbox items', async function (assert) {
+      const failed = await collectAssertions(async () => {
+        await render(
+          <template>
+            <Select
+              @items={{array "apple" "banana"}}
+              @variant="outline"
+              @color="danger"
+            />
+          </template>
+        );
+        await click(
+          '[data-component="select"] [data-part="input"]:not(select)'
+        );
+      });
+
+      assert.deepEqual(failed, [], 'no assertion fires for the new args');
+      const item = '[data-component="listbox-item"][data-key="apple"]';
+      assert.dom(item).hasClass('item-variant-outline');
+      assert.dom(item).hasClass('item-danger');
+    });
   });
 
   module('@displayLimit', function () {

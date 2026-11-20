@@ -192,16 +192,6 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
           'WARNING: selectedKey is not supported in multiple selection mode. Use selectedKeys instead.'
         );
       }
-    } else {
-      if (
-        typeof (this.args as unknown as Record<string, unknown>)[
-          'selectedKeys'
-        ] !== 'undefined'
-      ) {
-        console.warn(
-          'WARNING: selectedKeys is deprecated for single selection mode. Use selectedKey instead.'
-        );
-      }
     }
   }
 

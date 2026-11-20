@@ -364,7 +364,7 @@ in an `aria-live` region to compensate — a bar ticking from 1% to 100% would
 interrupt the screen reader on every step. Announce the outcome instead, once,
 when the work finishes.
 
-Colour alone should not carry the meaning of `@intent`. A `danger` bar reads as
+Colour alone should not carry the meaning of `@color`. A `danger` bar reads as
 a problem to a sighted user and as an ordinary bar to everyone else, so put the
 state in the `@label` or `@description` as well.
 

@@ -5,9 +5,11 @@ import { CloseButton } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 import Component from '@glimmer/component';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 import { useCustomStyles } from '../../../helpers/scoped-styles';
 import { closeButtonStubStyles } from '../../../helpers/close-button-stub-styles';
+
+const noop = () => {};
 
 module(
   'Integration | Component | @frontile/utilities/CloseButton',
@@ -95,17 +97,71 @@ module(
       assert.dom('[data-test-id="close-button"]').hasClass('close-button-soft');
     });
 
-    test('@variant="subtle" maps to soft and deprecates once', async function (assert) {
-      const { ids } = trackDeprecations();
-
-      await render(
-        <template>
-          <CloseButton @variant="subtle" data-test-id="close-button" />
-        </template>
+    test('@variant="subtle" fails in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <CloseButton @variant="subtle" data-test-id="close-button" />
+          </template>
+        )
       );
 
-      assert.dom('[data-test-id="close-button"]').hasClass('close-button-soft');
-      assert.deepEqual(ids, ['frontile.close-button.variant-values']);
+      assert.true(
+        failed.includes(
+          'CloseButton: @variant="subtle" was removed in 0.19.0. Use @variant="soft".'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+    });
+
+    test('@variant="transparent" fails in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <CloseButton @variant="transparent" data-test-id="close-button" />
+          </template>
+        )
+      );
+
+      assert.true(
+        failed.includes(
+          'CloseButton: @variant="transparent" was removed in 0.19.0. Use @variant="ghost".'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+    });
+
+    test('@onClick fails in development', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <CloseButton @onClick={{noop}} data-test-id="close-button" />
+          </template>
+        )
+      );
+
+      assert.true(
+        failed.includes(
+          'CloseButton: @onClick was removed in 0.19.0. Use @onPress.'
+        ),
+        `got: ${failed.join(' | ')}`
+      );
+    });
+
+    test('explicitly undefined @onClick stays silent', async function (assert) {
+      const failed = await collectAssertions(() =>
+        render(
+          <template>
+            {{! @glint-expect-error -- removed in 0.19.0 }}
+            <CloseButton @onClick={{undefined}} data-test-id="close-button" />
+          </template>
+        )
+      );
+
+      assert.deepEqual(failed, []);
     });
 
     module('Press functionality', () => {
@@ -155,96 +211,6 @@ module(
         assert
           .dom('[data-test-id="close-button"]')
           .doesNotHaveAttribute('data-pressed');
-      });
-
-      test('it supports deprecated onClick callback', async function (assert) {
-        let clickEventCount = 0;
-
-        class TestComponent extends Component {
-          handleClick = () => {
-            clickEventCount++;
-          };
-
-          <template>
-            <CloseButton
-              @onClick={{this.handleClick}}
-              data-test-id="close-button"
-            />
-          </template>
-        }
-
-        await render(<template><TestComponent /></template>);
-
-        await triggerEvent('[data-test-id="close-button"]', 'click');
-
-        assert.strictEqual(
-          clickEventCount,
-          1,
-          'onClick callback was called once'
-        );
-      });
-
-      test('it prefers onPress over onClick when both are provided', async function (assert) {
-        let pressEventCount = 0;
-        let clickEventCount = 0;
-
-        class TestComponent extends Component {
-          handlePress = () => {
-            pressEventCount++;
-          };
-
-          handleClick = () => {
-            clickEventCount++;
-          };
-
-          <template>
-            <CloseButton
-              @onPress={{this.handlePress}}
-              @onClick={{this.handleClick}}
-              data-test-id="close-button"
-            />
-          </template>
-        }
-
-        await render(<template><TestComponent /></template>);
-
-        await triggerEvent('[data-test-id="close-button"]', 'pointerdown');
-        await triggerEvent('[data-test-id="close-button"]', 'pointerup');
-
-        assert.strictEqual(
-          pressEventCount,
-          1,
-          'onPress callback was called once'
-        );
-        // onClick should still work for backwards compatibility
-        assert.strictEqual(
-          clickEventCount,
-          0,
-          'onClick should not be called from press events'
-        );
-      });
-
-      test('onClick only adds click event listener when provided', async function (assert) {
-        await render(
-          <template>
-            <CloseButton data-test-id="close-button-no-onclick" />
-          </template>
-        );
-
-        // This should not throw an error and should not have a click listener
-        await triggerEvent('[data-test-id="close-button-no-onclick"]', 'click');
-
-        // Test that the button still works with press events
-        await triggerEvent(
-          '[data-test-id="close-button-no-onclick"]',
-          'pointerdown'
-        );
-        await triggerEvent(
-          '[data-test-id="close-button-no-onclick"]',
-          'pointerup'
-        );
-
-        assert.ok(true, 'Component works without onClick');
       });
     });
 

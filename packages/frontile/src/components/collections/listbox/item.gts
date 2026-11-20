@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
-import { tracked, cached } from '@glimmer/tracking';
+import type Owner from '@ember/owner';
+import { tracked } from '@glimmer/tracking';
 import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
@@ -9,7 +10,7 @@ import type { KbdSignature } from '../../utilities/kbd';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, ListItem } from '../../../utils/listManager';
-import { renamedArgValue } from '../../../-private/deprecated-args';
+import { assertRemovedArg } from '../../../-private/removed-args';
 import { NavLink } from '../../layout/nav-link';
 
 export interface ListboxItemSignature {
@@ -52,28 +53,10 @@ export interface ListboxItemSignature {
     variant?: 'solid' | 'outline' | 'subtle';
 
     /**
-     * @deprecated Use `variant`. `default` is now `solid`, `outlined` is
-     * `outline`, and `faded` is `subtle`.
-     */
-    appearance?: 'default' | 'outlined' | 'faded';
-
-    /**
      * The color of each item
      */
     color?:
       | 'neutral'
-      | 'primary'
-      | 'secondary'
-      | 'tertiary'
-      | 'success'
-      | 'warning'
-      | 'danger';
-
-    /**
-     * @deprecated Use `color`. `default` is now `neutral`.
-     */
-    intent?:
-      | 'default'
       | 'primary'
       | 'secondary'
       | 'tertiary'
@@ -167,6 +150,12 @@ class ListboxItem extends Component<ListboxItemSignature> {
   labelId = guidFor(this);
   @tracked listItem?: ListItem;
 
+  constructor(owner: Owner, args: ListboxItemSignature['Args']) {
+    super(owner, args);
+    assertRemovedArg('Listbox.Item', args, 'appearance', 'variant');
+    assertRemovedArg('Listbox.Item', args, 'intent', 'color');
+  }
+
   get manager(): ListManager {
     assert(
       `ListboxItem does not have a listManager; Missing argument @manager`,
@@ -256,48 +245,12 @@ class ListboxItem extends Component<ListboxItemSignature> {
     return this.manager.isTabStop(this.key) ? 0 : -1;
   }
 
-  /**
-   * Resolved once per render (`@cached`) so referencing it from both
-   * `classNames` and `submenuIndicatorClass` does not fire the deprecation
-   * twice for the same item.
-   */
-  @cached
   get variant(): 'solid' | 'outline' | 'subtle' {
-    return (
-      renamedArgValue(
-        this.args.variant,
-        this.args.appearance,
-        { default: 'solid', outlined: 'outline', faded: 'subtle' } as const,
-        {
-          component: 'Listbox',
-          from: 'appearance',
-          to: 'variant',
-          id: 'frontile.listbox.appearance'
-        }
-      ) || 'solid'
-    );
+    return this.args.variant || 'solid';
   }
 
-  /**
-   * Resolved once per render (`@cached`) so referencing it from both
-   * `classNames` and `submenuIndicatorClass` does not fire the deprecation
-   * twice for the same item.
-   */
-  @cached
   get color(): NonNullable<ListboxItemSignature['Args']['color']> {
-    return (
-      renamedArgValue(
-        this.args.color,
-        this.args.intent,
-        { default: 'neutral' } as const,
-        {
-          component: 'Listbox',
-          from: 'intent',
-          to: 'color',
-          id: 'frontile.listbox.intent'
-        }
-      ) || 'neutral'
-    );
+    return this.args.color || 'neutral';
   }
 
   get classNames() {

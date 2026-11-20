@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
+import type Owner from '@ember/owner';
 import { useStyles } from '@frontile/theme';
 import { htmlSafe } from '@ember/template';
 import type { SafeString } from '@ember/template';
 import { guidFor } from '@ember/object/internals';
-import { renamedArgValue } from '../../-private/deprecated-args';
+import { assertRemovedArg } from '../../-private/removed-args';
 
 interface ProgressBarSignature {
   Args: {
@@ -12,18 +13,6 @@ interface ProgressBarSignature {
      */
     color?:
       | 'neutral'
-      | 'primary'
-      | 'secondary'
-      | 'tertiary'
-      | 'success'
-      | 'warning'
-      | 'danger';
-
-    /**
-     * @deprecated Use `color`. `default` is now `neutral`.
-     */
-    intent?:
-      | 'default'
       | 'primary'
       | 'secondary'
       | 'tertiary'
@@ -113,22 +102,17 @@ interface ProgressBarSignature {
 class ProgressBar extends Component<ProgressBarSignature> {
   id = guidFor(this);
 
+  constructor(owner: Owner, args: ProgressBarSignature['Args']) {
+    super(owner, args);
+
+    assertRemovedArg('ProgressBar', args, 'intent', 'color');
+  }
+
   get classNames() {
     const { progressBar } = useStyles();
 
     const { base, progress, label, description } = progressBar({
-      color:
-        renamedArgValue(
-          this.args.color,
-          this.args.intent,
-          { default: 'neutral' } as const,
-          {
-            component: 'ProgressBar',
-            from: 'intent',
-            to: 'color',
-            id: 'frontile.progress-bar.intent'
-          }
-        ) || 'neutral',
+      color: this.args.color || 'neutral',
       size: this.args.size,
       radius: this.args.radius,
       isIndeterminate: this.args.isIndeterminate

@@ -6,7 +6,7 @@ import { useCustomStyles } from '../../../helpers/scoped-styles';
 
 import { FormFeedback, type FormFeedbackSignature } from 'frontile';
 import { cell } from 'ember-resources';
-import { trackDeprecations } from '../../../helpers/deprecations';
+import { collectAssertions } from '../../../helpers/collect-assertions';
 
 module(
   'Integration | Component | @frontile/forms/FormFeedback',
@@ -134,17 +134,35 @@ module(
         assert.dom('[data-test-id="f"]').hasAttribute('aria-live', 'polite');
       });
 
-      test('deprecated @intent="danger" still announces assertively', async function (assert) {
-        const { ids } = trackDeprecations();
-
-        await render(
-          <template>
-            <FormFeedback @intent="danger" @messages="bad" data-test-id="f" />
-          </template>
+      test('@intent fails in development', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <FormFeedback @intent="danger" @messages="bad" data-test-id="f" />
+            </template>
+          )
         );
 
-        assert.dom('[data-test-id="f"]').hasAttribute('aria-live', 'assertive');
-        assert.deepEqual(ids, ['frontile.form-feedback.intent']);
+        assert.true(
+          failed.includes(
+            'FormFeedback: @intent was removed in 0.19.0. Use @status.'
+          ),
+          `got: ${failed.join(' | ')}`
+        );
+      });
+
+      test('an explicitly undefined @intent stays silent', async function (assert) {
+        const failed = await collectAssertions(() =>
+          render(
+            <template>
+              {{! @glint-expect-error -- removed in 0.19.0 }}
+              <FormFeedback @intent={{undefined}} />
+            </template>
+          )
+        );
+
+        assert.deepEqual(failed, []);
       });
     });
   }
