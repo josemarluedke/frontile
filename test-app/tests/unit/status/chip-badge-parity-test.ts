@@ -32,17 +32,16 @@ module('Unit | Theme | Badge, Chip and Button text ramp', function () {
     });
   }
 
-  test('Chip and Badge are regular weight', function (assert) {
+  test('Chip is regular weight and Badge is semibold', function (assert) {
     for (const size of SMALL_SIZES) {
-      for (const [name, classes] of [
-        ['chip', realStyles.chip({ size }).base()],
-        ['badge', realStyles.badge({ size }).base()]
-      ] as const) {
-        assert.true(
-          tokens(classes).includes('font-normal'),
-          `${size} ${name} is font-normal`
-        );
-      }
+      const chip = tokens(realStyles.chip({ size }).base());
+      const badge = tokens(realStyles.badge({ size }).base());
+      assert.true(chip.includes('font-normal'), `${size} chip is font-normal`);
+      assert.true(
+        badge.includes('font-semibold'),
+        `${size} badge is font-semibold`
+      );
+      assert.false(badge.includes('font-normal'), `${size} badge not normal`);
     }
   });
 
@@ -72,7 +71,10 @@ module('Unit | Theme | Badge, Chip and Button text ramp', function () {
       const t = tokens(classes);
       assert.true(t.includes('text-strong-2xs'), `${name} text`);
       assert.true(t.includes('h-5'), `${name} height`);
-      assert.true(t.includes('font-normal'), `${name} weight`);
+      assert.true(
+        t.includes(name === 'badge' ? 'font-semibold' : 'font-normal'),
+        `${name} weight`
+      );
     }
   });
 

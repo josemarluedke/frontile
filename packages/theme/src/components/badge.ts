@@ -2,9 +2,9 @@ import { tv } from '../tw';
 
 const badge = tv({
   slots: {
-    // Regular weight; the `text-strong-*` size tokens would set bold, so the
+    // Semibold; the `text-strong-*` size tokens would set bold, so the
     // weight is pinned here and only `value` is heavier.
-    base: 'inline-flex items-center whitespace-nowrap font-label font-normal leading-none',
+    base: 'inline-flex items-center whitespace-nowrap font-label font-semibold leading-none',
     // emphasized value, e.g. a price
     value: 'font-bold tabular-nums leading-none',
     // unit following the value, e.g. "/mo"
@@ -15,6 +15,7 @@ const badge = tv({
   },
   variants: {
     variant: {
+      solid: '',
       soft: '',
       outline: ''
     },
@@ -85,6 +86,58 @@ const badge = tv({
     }
   },
   compoundVariants: [
+    // VARIANT: solid (filled). The fill is the color's DEFAULT level, as on
+    // Chip; neutral steps up to `-bolder` because its DEFAULT is too light to
+    // read as a fill. The dot follows the text color so it stays visible.
+    {
+      variant: 'solid',
+      class: {
+        dot: 'bg-current'
+      }
+    },
+    {
+      variant: 'solid',
+      color: 'neutral',
+      class: {
+        base: 'bg-neutral-bolder text-on-neutral-bolder'
+      }
+    },
+    {
+      variant: 'solid',
+      color: 'primary',
+      class: {
+        base: 'bg-primary text-on-primary'
+      }
+    },
+    {
+      variant: 'solid',
+      color: 'secondary',
+      class: {
+        base: 'bg-secondary text-on-secondary'
+      }
+    },
+    {
+      variant: 'solid',
+      color: 'tertiary',
+      class: {
+        base: 'bg-tertiary text-on-tertiary'
+      }
+    },
+    {
+      variant: 'solid',
+      color: 'success',
+      class: {
+        base: 'bg-success text-on-success'
+      }
+    },
+    {
+      variant: 'solid',
+      color: 'danger',
+      class: {
+        base: 'bg-danger text-on-danger'
+      }
+    },
+
     // VARIANT: soft (tonal). One level above Chip's `soft` (`-subtle`).
     {
       variant: 'soft',
@@ -176,7 +229,7 @@ const badge = tv({
   defaultVariants: {
     size: 'xs',
     color: 'neutral',
-    variant: 'soft'
+    variant: 'solid'
   }
 });
 
