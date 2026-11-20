@@ -331,7 +331,10 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
 
     test('the dot is a colored circle that scales with size', function (assert) {
       assert.true(
-        realStyles.badge({ color: 'success' }).dot().includes('bg-success')
+        realStyles
+          .badge({ variant: 'soft', color: 'success' })
+          .dot()
+          .includes('bg-success')
       );
       assert.true(realStyles.badge({}).dot().includes('rounded-full'));
       assert.true(realStyles.badge({ size: 'md' }).dot().includes('size-2'));

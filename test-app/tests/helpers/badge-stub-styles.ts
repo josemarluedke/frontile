@@ -19,6 +19,7 @@ export const badgeStubStyles: ReturnType<typeof useStyles>['badge'] = tv({
   },
   variants: {
     variant: {
+      solid: 'badge-solid',
       soft: 'badge-soft',
       outline: 'badge-outline'
     },
@@ -43,6 +44,6 @@ export const badgeStubStyles: ReturnType<typeof useStyles>['badge'] = tv({
   defaultVariants: {
     size: 'xs',
     color: 'neutral',
-    variant: 'soft'
+    variant: 'solid'
   }
 }) as never;
