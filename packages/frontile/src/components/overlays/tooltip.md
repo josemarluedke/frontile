@@ -101,7 +101,7 @@ import { Tooltip } from 'frontile';
 import { Button } from 'frontile';
 
 const intents = [
-  'default',
+  'neutral',
   'primary',
   'secondary',
   'tertiary',
