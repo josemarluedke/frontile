@@ -263,7 +263,8 @@ module(
       await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
 
       assert.dom('[role="tooltip"]').hasClass('bg-danger');
-      assert.dom('[role="tooltip"]').hasClass('px-3');
+      assert.dom('[role="tooltip"]').hasClass('px-2.5');
+      assert.dom('[role="tooltip"]').hasClass('text-body-sm');
     });
 
     test('@classes.arrow lands on the arrow element', async function (assert) {

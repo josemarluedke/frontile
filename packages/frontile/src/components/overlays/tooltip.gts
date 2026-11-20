@@ -109,7 +109,7 @@ interface TooltipSignature {
     arrow?: boolean;
 
     /**
-     * The tooltip's size, which scales its padding and label text.
+     * The tooltip's size, which scales its padding and text.
      *
      * @defaultValue 'md'
      */
