@@ -27,16 +27,16 @@ import { Badge } from 'frontile';
 
 ## Badge Variants
 
-`soft` is a tinted surface with color-tinted text, and is the default. `outline`
-draws the color as a border on the page background. There is no `solid` variant; a
-filled, saturated block reads as a button, so use a [Chip](/docs/components/buttons/chip)
-if you need one.
+`solid` fills the badge with the color's default level and is the default. `soft` is a
+tinted surface with color-tinted text, and `outline` draws the color as a border on
+the page background.
 
 ```gts preview
 import { Badge } from 'frontile';
 
 <template>
   <div class='flex flex-wrap items-center gap-3'>
+    <Badge @variant='solid' @color='primary'>Solid</Badge>
     <Badge @variant='soft' @color='primary'>Soft</Badge>
     <Badge @variant='outline' @color='primary'>Outline</Badge>
   </div>
@@ -45,7 +45,7 @@ import { Badge } from 'frontile';
 
 ## Badge Colors
 
-Every color is available in both variants. The label on each row is the `@variant`
+Every color is available in every variant. The label on each row is the `@variant`
 value; the badge labels are the `@color` values.
 
 ```gts preview collapsible
@@ -63,7 +63,7 @@ const colors = [
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each (array 'soft' 'outline') as |variant|}}
+    {{#each (array 'solid' 'soft' 'outline') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
           @variant='{{variant}}'
@@ -173,7 +173,7 @@ const colors = [
 
 <template>
   <div class='flex flex-col gap-6'>
-    {{#each (array 'soft' 'outline') as |variant|}}
+    {{#each (array 'solid' 'soft' 'outline') as |variant|}}
       <div>
         <p class='font-code text-code-sm text-neutral-strong mb-2'>
           @variant='{{variant}}'

@@ -12,7 +12,7 @@ module('Integration | Rendered | Chip and Badge sizes', function (hooks) {
   setupRenderingTest(hooks);
 
   for (const size of SIZES) {
-    test(`${size}: Chip and Badge render regular weight, Badge value bold`, async function (assert) {
+    test(`${size}: Chip renders regular weight, Badge semibold, Badge value bold`, async function (assert) {
       await render(
         <template>
           <Chip @size={{size}} data-test-id="chip">x</Chip>
@@ -24,7 +24,7 @@ module('Integration | Rendered | Chip and Badge sizes', function (hooks) {
         Number(getComputedStyle(document.querySelector(selector)!).fontWeight);
 
       assert.strictEqual(weight('[data-test-id="chip"]'), 400, 'chip');
-      assert.strictEqual(weight('[data-test-id="badge"]'), 400, 'badge');
+      assert.strictEqual(weight('[data-test-id="badge"]'), 600, 'badge');
       assert.true(weight('[data-part="value"]') >= 700, 'badge value');
     });
 

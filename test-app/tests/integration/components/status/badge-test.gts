@@ -182,14 +182,14 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
   });
 
   module('Style classes', () => {
-    test('variant defaults to soft', async function (assert) {
+    test('variant defaults to solid', async function (assert) {
       await render(
         <template>
           <Badge data-test-id="badge">Paid</Badge>
         </template>
       );
 
-      assert.dom('[data-test-id="badge"]').hasClass('badge-soft');
+      assert.dom('[data-test-id="badge"]').hasClass('badge-solid');
       assert.dom('[data-test-id="badge"]').doesNotHaveClass('badge-outline');
     });
 
@@ -201,7 +201,7 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       );
 
       assert.dom('[data-test-id="badge"]').hasClass('badge-outline');
-      assert.dom('[data-test-id="badge"]').doesNotHaveClass('badge-soft');
+      assert.dom('[data-test-id="badge"]').doesNotHaveClass('badge-solid');
     });
 
     test('color defaults to neutral', async function (assert) {
@@ -281,6 +281,29 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       }
     });
 
+    test('solid fills with the DEFAULT level; neutral steps up to -bolder', function (assert) {
+      const primary = realStyles
+        .badge({ variant: 'solid', color: 'primary' })
+        .base();
+      assert.true(primary.includes('bg-primary'));
+      assert.true(primary.includes('text-on-primary'));
+      assert.false(primary.includes('bg-primary-muted'));
+
+      const neutral = realStyles
+        .badge({ variant: 'solid', color: 'neutral' })
+        .base();
+      assert.true(neutral.includes('bg-neutral-bolder'));
+      assert.true(neutral.includes('text-on-neutral-bolder'));
+    });
+
+    test('solid dot follows the text color', function (assert) {
+      const dot = realStyles
+        .badge({ variant: 'solid', color: 'success' })
+        .dot();
+      assert.true(dot.includes('bg-current'));
+      assert.false(dot.includes('bg-success'));
+    });
+
     test('soft fill is -muted with on-muted text', function (assert) {
       const base = realStyles
         .badge({ variant: 'soft', color: 'primary' })
@@ -308,7 +331,10 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
 
     test('the dot is a colored circle that scales with size', function (assert) {
       assert.true(
-        realStyles.badge({ color: 'success' }).dot().includes('bg-success')
+        realStyles
+          .badge({ variant: 'soft', color: 'success' })
+          .dot()
+          .includes('bg-success')
       );
       assert.true(realStyles.badge({}).dot().includes('rounded-full'));
       assert.true(realStyles.badge({ size: 'md' }).dot().includes('size-2'));
@@ -361,17 +387,17 @@ module('Integration | Component | Badge | @frontile/status', function (hooks) {
       );
     });
 
-    test('defaults to xs soft neutral and offers 2xs plus Button sizes', function (assert) {
+    test('defaults to xs solid neutral and offers 2xs plus Button sizes', function (assert) {
       assert.strictEqual(
         realStyles.badge({}).base(),
         realStyles
-          .badge({ size: 'xs', variant: 'soft', color: 'neutral' })
+          .badge({ size: 'xs', variant: 'solid', color: 'neutral' })
           .base()
       );
       const sizes = Object.keys(realStyles.badge.variants.size);
       assert.deepEqual(sizes, ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']);
       const variants = Object.keys(realStyles.badge.variants.variant);
-      assert.deepEqual(variants, ['soft', 'outline']);
+      assert.deepEqual(variants, ['solid', 'soft', 'outline']);
     });
   });
 });

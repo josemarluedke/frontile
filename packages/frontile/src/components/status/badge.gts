@@ -4,12 +4,12 @@ import { useStyles } from '@frontile/theme';
 interface BadgeSignature {
   Args: {
     /**
-     * The badge variant. There is no `solid`: a saturated block reads as a
-     * Chip or Button.
+     * The badge variant. `solid` fills with the color's default level, `soft`
+     * is a tinted surface, and `outline` draws the color as a border.
      *
-     * @defaultValue 'soft'
+     * @defaultValue 'solid'
      */
-    variant?: 'soft' | 'outline';
+    variant?: 'solid' | 'soft' | 'outline';
 
     /**
      * The color of the badge.
