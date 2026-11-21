@@ -19,9 +19,11 @@ import {
   layoutVariants,
   type AppLayoutConfig,
   type AppLayoutContext,
+  type RegisteredAside,
   type RegisteredSidebar
 } from './context';
 import Aside from './aside';
+import Region from './region';
 import AsideToggle from './aside-toggle';
 import BottomNav from './bottom-nav';
 import Main from './main';
@@ -190,7 +192,8 @@ interface AppLayoutArgs {
   asideOpen?: boolean;
 
   /**
-   * The initial `asideOpen` when uncontrolled.
+   * The initial `asideOpen` when uncontrolled. Applies from `lg` up, where
+   * the aside is a column; below `lg` the aside starts closed.
    *
    * @defaultValue false
    */
@@ -217,6 +220,7 @@ interface AppLayoutSignature {
       {
         state: AppLayoutState;
         Aside: WithBoundArgs<typeof Aside, 'layout'>;
+        Region: WithBoundArgs<typeof Region, 'layout'>;
         AsideToggle: WithBoundArgs<typeof AsideToggle, 'layout'>;
         BottomNav: WithBoundArgs<typeof BottomNav, 'layout'>;
         Main: WithBoundArgs<typeof Main, 'layout'>;
@@ -272,7 +276,8 @@ class AppLayout extends Component<AppLayoutSignature> {
     const own = new AppLayoutState({
       sidebarCollapsed: args.defaultSidebarCollapsed,
       mobileSidebarOpen: args.defaultMobileSidebarOpen,
-      asideOpen: args.defaultAsideOpen
+      // Below `lg` the aside is a modal drawer, which never opens by itself.
+      asideOpen: (args.defaultAsideOpen ?? false) && !isBelowBreakpoint('lg')
     });
     this.#controlled = new ControlledAppLayoutState(own, () => this.args);
   }
@@ -351,7 +356,7 @@ class AppLayout extends Component<AppLayoutSignature> {
   // BottomNav for its bottom row.
   sidebarPart = new RegisteredPart<RegisteredSidebar>(this);
   bottomNavPart = new RegisteredPart<object>(this);
-  asidePart = new RegisteredPart<object>(this);
+  asidePart = new RegisteredPart<RegisteredAside>(this);
 
   registerSidebar = this.sidebarPart.register;
   registerBottomNav = this.bottomNavPart.register;
@@ -365,8 +370,14 @@ class AppLayout extends Component<AppLayoutSignature> {
     return this.bottomNavPart.current;
   }
 
-  get registeredAside(): object | undefined {
+  get registeredAside(): RegisteredAside | undefined {
     return this.asidePart.current;
+  }
+
+  /** An `Aside` is registered and has something to show. */
+  get hasAside(): boolean {
+    const aside = this.registeredAside;
+    return aside?.available ?? false;
   }
 
   get mobileNav(): 'drawer' | 'bottom' {
@@ -598,7 +609,7 @@ class AppLayout extends Component<AppLayoutSignature> {
         return layout.registeredSidebar !== undefined && !layout.bottomNavMode;
       },
       get hasAside() {
-        return layout.registeredAside !== undefined;
+        return layout.hasAside;
       },
       isRtl: this.isRtl,
       registerSidebar: this.registerSidebar,
@@ -666,6 +677,7 @@ class AppLayout extends Component<AppLayoutSignature> {
         (hash
           state=this.state
           Aside=(component Aside layout=this.context)
+          Region=(component Region layout=this.context)
           AsideToggle=(component AsideToggle layout=this.context)
           BottomNav=(component BottomNav layout=this.context)
           Main=(component Main layout=this.context)

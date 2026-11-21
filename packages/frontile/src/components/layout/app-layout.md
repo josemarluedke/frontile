@@ -81,6 +81,7 @@ import {
 | `Main`                         | The page content, the `main` landmark                                        |
 | `PageHeader`                   | A title row with actions, placed inside `Main`                               |
 | `Aside`                        | An optional panel beside `Main` for details or filters                       |
+| `Region`                       | A named place that other templates fill; see [Regions](#regions)             |
 | `BottomNav`                    | A tab bar that replaces the sidebar on phones; see [BottomNav](./bottom-nav) |
 | `MenuToggle`                   | Opens the sidebar's drawer on small screens                                  |
 | `SidebarToggle`, `AsideToggle` | Collapse the sidebar, open the aside, from outside them                      |
@@ -665,10 +666,9 @@ renders nothing while the layout has no `Aside`, so a page without one shows
 no toggle. From `lg` (64rem) up it is a column and `Main` narrows; below `lg`
 the same block opens as a drawer.
 
-If the window narrows while the aside is open, it closes rather than popping
-up as a drawer. A layout that starts with the aside open on a narrow screen
-does open the drawer, so set `@defaultAsideOpen` only where the window is
-wide.
+The drawer only opens when asked to. If the window narrows while the aside is
+open, it closes, and `@defaultAsideOpen` applies from `lg` up, so a page loaded
+on a narrow screen starts with the drawer closed.
 
 ```gts preview collapsible
 import { AppLayout } from 'frontile';
@@ -694,6 +694,158 @@ import DemoFrame from 'site/components/demo-frame';
   </DemoFrame>
 </template>
 ```
+
+### Filled from a route
+
+Give `Aside` a `@region` name instead of a block, and any template fills it
+with `InLayoutRegion`, including a route template rendered in `{{outlet}}`.
+While nothing fills it there is no panel and no `AsideToggle`, so only the
+pages that have details show the toggle.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { AppLayout, Button, InLayoutRegion } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+
+export default class RouteAsideExample extends Component {
+  @tracked onOrder = true;
+
+  toggle = () => {
+    this.onOrder = !this.onOrder;
+  };
+
+  <template>
+    <DemoFrame @id='aside-region' @label='Aside filled from a region'>
+      <AppLayout @defaultAsideOpen={{true}} as |layout|>
+        <layout.Navbar>
+          <span class='text-sm font-medium'>Orders</span>
+          <layout.AsideToggle class='ms-auto' />
+        </layout.Navbar>
+        <layout.Main>
+          <Button @size='xs' @variant='outline' @onPress={{this.toggle}}>
+            {{if this.onOrder 'Leave the order page' 'Open the order page'}}
+          </Button>
+          {{#if this.onOrder}}
+            <InLayoutRegion @name='demo-aside'>
+              <h2 class='font-semibold'>Order 1042</h2>
+              <p class='mt-1 text-sm text-neutral-firm'>Paid, not shipped.</p>
+            </InLayoutRegion>
+          {{/if}}
+        </layout.Main>
+        <layout.Aside @region='demo-aside' @label='Order details' />
+      </AppLayout>
+    </DemoFrame>
+  </template>
+}
+```
+
+The open state belongs to the layout, so it carries over from one page to the
+next:
+
+- Moving between pages that both fill the aside swaps the content and leaves
+  the panel as it was.
+- From `lg` up, a page that does not fill the aside hides the panel. It is
+  open again on the next page that fills it, if it was open before.
+- Below `lg`, a page that does not fill the aside closes the drawer, and it
+  stays closed until the toggle is pressed again.
+- From `lg` up, `@defaultAsideOpen` opens the panel the first time a page fills it.
+
+Below `lg`, a loading state between two sibling pages that each fill the
+aside counts as a page that does not fill it, and closes the drawer. Fill the
+aside from the route they share to keep it open.
+
+## Regions
+
+A `layout.Region` is a named place in the layout. `InLayoutRegion` renders
+its block there from any template, including a route template rendered in
+`{{outlet}}`, so a page can put its own buttons in the navbar. Nothing
+renders where `InLayoutRegion` is written, and its content is not wrapped in
+an element.
+
+```js
+import { InLayoutRegion } from 'frontile';
+```
+
+The region's own block is shown while nothing fills it.
+
+```gts preview collapsible
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { AppLayout, Button, InLayoutRegion } from 'frontile';
+import DemoFrame from 'site/components/demo-frame';
+
+export default class RegionExample extends Component {
+  @tracked onOrder = true;
+
+  toggle = () => {
+    this.onOrder = !this.onOrder;
+  };
+
+  <template>
+    <DemoFrame @id='regions' @label='Regions'>
+      <AppLayout as |layout|>
+        <layout.Navbar>
+          <span class='text-sm font-medium'>Orders</span>
+          <div class='ms-auto flex items-center gap-2'>
+            <layout.Region @name='demo-actions'>
+              <span class='text-sm text-neutral-firm'>No actions</span>
+            </layout.Region>
+          </div>
+        </layout.Navbar>
+        <layout.Main>
+          <Button @size='xs' @variant='outline' @onPress={{this.toggle}}>
+            {{if this.onOrder 'Leave the order page' 'Open the order page'}}
+          </Button>
+          {{#if this.onOrder}}
+            <InLayoutRegion @name='demo-actions'>
+              <Button @size='xs' @variant='outline'>Refund</Button>
+              <Button @size='xs'>Ship order</Button>
+            </InLayoutRegion>
+          {{/if}}
+        </layout.Main>
+      </AppLayout>
+    </DemoFrame>
+  </template>
+}
+```
+
+When several `InLayoutRegion`s name the same region, the one that rendered
+last is shown, and the previous one comes back when it goes away. A child
+route therefore replaces its parent's content while it is active. In the
+parent's template, write `InLayoutRegion` before `{{outlet}}`:
+
+```hbs
+<InLayoutRegion @name='actions'>
+  <Button>New order</Button>
+</InLayoutRegion>
+{{outlet}}
+```
+
+Written after `{{outlet}}`, the result depends on how the page was reached:
+opening the child's URL directly shows the parent's content, and navigating
+to the child from the parent shows the child's. A parent's `InLayoutRegion`
+in an `{{#if}}` that turns on while a child route is active also covers the
+child's.
+
+Pass `@multiple={{true}}` to the region to show every `InLayoutRegion`, in
+the order they rendered. When the region itself renders again, for example
+inside an aside that moves into its drawer, they come back in the order they
+are written in the templates.
+
+Things to know:
+
+- Region names are shared by the whole app, and one `AppLayout` is expected
+  at a time. Content for a name that no region renders is not shown. In
+  development, a warning is logged for a name used by two regions at once:
+  content goes to the newer one, and back to the older one when the newer
+  one is removed.
+- `@name` on both components, and `@region` on `Aside`, are read once.
+- Content is rendered again from scratch when its region moves, as the aside
+  does when the window crosses `lg`. Keep state you need to survive that
+  outside the content.
+- Region content is rendered in the browser only. In a page rendered on the
+  server, a filled region and a filled aside are empty until the app starts.
 
 ## Page header
 
@@ -1192,9 +1344,13 @@ export default class RailAppExample extends Component {
   sidebar") and `AsideToggle` (default "Toggle details") are buttons named by
   `@label`, with `aria-expanded`. `aria-controls` names what they open while
   it is on the page, so a drawer is named only while it is open. Without a
-  `Sidebar` (or an `Aside`) in the layout, its toggles render nothing.
+  `Sidebar` (or an `Aside`) in the layout, its toggles render nothing, and
+  `AsideToggle` also renders nothing while an `Aside` with `@region` has no
+  content.
 - `Aside` is an `aside` landmark named by `@label` (default `Details`); as a
   drawer, the dialog has the same name.
+- Content passed to `InLayoutRegion` is read and tabbed through where its
+  region sits, not where `InLayoutRegion` is written.
 - `PageHeader` renders `@title` as an `h1`.
 - With `@mobileNav='bottom'` on a phone, the `BottomNav` is the page's
   navigation; see [BottomNav](./bottom-nav#accessibility).
@@ -1228,6 +1384,14 @@ export default class RailAppExample extends Component {
 ### AsideToggle
 
 <Signature @component="AsideToggle" />
+
+### Region
+
+<Signature @component="Region" />
+
+### InLayoutRegion
+
+<Signature @component="InLayoutRegion" />
 
 ### MenuToggle
 

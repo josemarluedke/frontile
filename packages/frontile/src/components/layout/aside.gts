@@ -1,12 +1,15 @@
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
+import { service } from '@ember/service';
 import { registerDestructor } from '@ember/destroyable';
+import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 import Drawer from '../overlays/drawer';
 import { AppLayoutState } from './app-layout-state';
 import { layoutVariants, type AppLayoutContext } from './context';
 import type { AppLayoutVariants } from '@frontile/theme';
+import type FrontileLayoutRegionsService from '../../services/frontile-layout-regions';
 import type Owner from '@ember/owner';
 
 interface AsideArgs {
@@ -33,6 +36,14 @@ interface AsideArgs {
   state?: AppLayoutState;
 
   /**
+   * Fill the aside from `<InLayoutRegion @name="…">` with this name, from
+   * any template including a route template, instead of from its own block.
+   * While nothing fills it, the aside and `AsideToggle` render nothing.
+   * Region names are global to the app. Read once.
+   */
+  region?: string;
+
+  /**
    * Supplied by `AppLayout`. Not part of the public API.
    *
    * @internal
@@ -55,7 +66,12 @@ interface AsideSignature {
  * is always inline.
  */
 class Aside extends Component<AsideSignature> {
+  @service('frontile-layout-regions')
+  declare regions: FrontileLayoutRegionsService;
+
   fallbackState = new AppLayoutState();
+  /** `@region`, read once. */
+  region: string | undefined;
 
   constructor(owner: Owner, args: AsideArgs) {
     super(owner, args);
@@ -63,7 +79,38 @@ class Aside extends Component<AsideSignature> {
     if (unregister) {
       registerDestructor(this, unregister);
     }
+    this.region = args.region;
+    if (args.region !== undefined) {
+      // A drawer with nothing in it closes, so that content coming back
+      // never opens a modal by itself. The inline column is only hidden
+      // while empty and keeps its open state.
+      registerDestructor(
+        this,
+        this.regions.onEmpty(args.region, () => {
+          if (this.inDrawer) {
+            this.state.closeAside();
+          }
+        })
+      );
+    }
   }
+
+  /**
+   * Always true for a block aside; one with `@region` needs a source. Also
+   * read by the layout's `hasAside` (`RegisteredAside`).
+   */
+  get available(): boolean {
+    const region = this.region;
+    return region === undefined || this.regions.hasContent(region);
+  }
+
+  /** Makes the `aside` element the region's target. Nothing without `@region`. */
+  registerTarget = modifier((element: HTMLElement) => {
+    const region = this.region;
+    return region === undefined
+      ? undefined
+      : this.regions.registerTarget(region, element);
+  });
 
   get state(): AppLayoutState {
     return this.args.layout?.state ?? this.args.state ?? this.fallbackState;
@@ -101,6 +148,30 @@ class Aside extends Component<AsideSignature> {
     this.state.closeAside();
   };
 
+  /**
+   * Open only while there is something to show. The drawer stays mounted
+   * while empty, so emptying it plays the close transition instead of
+   * removing it at once.
+   */
+  get isOpen(): boolean {
+    return this.state.asideOpen && this.available;
+  }
+
+  /**
+   * A drawer closed because it emptied has no toggle to return focus to
+   * (`AsideToggle` is hidden too), so focus goes to `Main` instead of the
+   * page body.
+   */
+  didCloseDrawer = (): void => {
+    const active = document.activeElement;
+    if (this.available || (active && active !== document.body)) {
+      return;
+    }
+    const mainId = this.args.layout?.mainId;
+    const main = mainId ? document.getElementById(mainId) : null;
+    main?.focus();
+  };
+
   @cached
   get styles() {
     const layout = this.args.layout;
@@ -126,8 +197,9 @@ class Aside extends Component<AsideSignature> {
   <template>
     {{#if this.inDrawer}}
       <Drawer
-        @isOpen={{this.state.asideOpen}}
+        @isOpen={{this.isOpen}}
         @onClose={{this.closeDrawer}}
+        @didClose={{this.didCloseDrawer}}
         @placement={{this.placement}}
         @size="xs"
         @variant="flat"
@@ -139,20 +211,22 @@ class Aside extends Component<AsideSignature> {
           aria-label={{this.label}}
           data-part="mobile-aside"
           class={{this.mobileClassNames}}
+          {{this.registerTarget}}
           ...attributes
         >
-          {{yield}}
+          {{#unless this.region}}{{yield}}{{/unless}}
         </aside>
       </Drawer>
-    {{else if this.state.asideOpen}}
+    {{else if this.isOpen}}
       <aside
         id={{this.id}}
         aria-label={{this.label}}
         data-part="aside"
         class={{this.classNames}}
+        {{this.registerTarget}}
         ...attributes
       >
-        {{yield}}
+        {{#unless this.region}}{{yield}}{{/unless}}
       </aside>
     {{/if}}
   </template>

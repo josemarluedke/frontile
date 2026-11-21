@@ -348,6 +348,8 @@ const appLayout = tv({
     // The aside's `aside` element inside the drawer: as tall as the drawer.
     mobileAside: 'min-h-0 flex-1 overflow-y-auto p-4 font-body text-body-sm',
     asideToggle: iconButton,
+    // A `layout.Region`: its children lay out as children of its parent.
+    region: 'contents',
 
     skipLink: [
       ...focusVisibleRing,
